@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.unifyprinciples.Typography
 
@@ -26,6 +27,14 @@ class ToolbarPromoCheckout : Toolbar {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         init()
+    }
+
+    fun disableResetButton() {
+        buttonResetPromo.setTextColor(ContextCompat.getColor(context, R.color.Neutral_N700_20))
+    }
+
+    fun enableResetButton() {
+        buttonResetPromo.setTextColor(ContextCompat.getColor(context, R.color.Green_G500))
     }
 
     private fun init() {

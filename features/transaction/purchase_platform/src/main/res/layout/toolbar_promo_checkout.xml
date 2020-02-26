@@ -40,7 +40,7 @@
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:text="Reset Promo"
-        android:textColor="@color/bg_button_green_border_outline"
+        android:textColor="@color/Green_G500"
         app:typographyType="heading_5" />
 
 

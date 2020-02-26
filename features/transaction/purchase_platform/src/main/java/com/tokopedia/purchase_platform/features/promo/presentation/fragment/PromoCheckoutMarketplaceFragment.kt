@@ -36,6 +36,9 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
+    private lateinit var fragmentUiModel: FragmentUiModel
+
+    private var toolbar: ToolbarPromoCheckout? = null
 
     override fun initInjector() {
         activity?.let {
@@ -70,13 +73,34 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         button_apply_promo.setOnClickListener {
             // Todo : add action to hit API
         }
+
+        initFragmentUiModel()
+        checkHasPromoSellected()
+        renderFragmentState()
+    }
+
+    private fun initFragmentUiModel() {
+        fragmentUiModel = FragmentUiModel(
+                uiState = FragmentUiModel.UiState().apply {
+                    hasAnyPromoSellected = false
+                    hasFailedToLoad = false
+                }
+        )
+    }
+
+    private fun renderFragmentState() {
+        if (fragmentUiModel.uiState.hasAnyPromoSellected) {
+            toolbar?.enableResetButton()
+        } else {
+            toolbar?.disableResetButton()
+        }
     }
 
     private fun setupToolbar(view: View) {
         activity?.let {
             val appbar = view.findViewById<Toolbar>(R.id.toolbar)
             appbar.removeAllViews()
-            val toolbar = toolbarPromoCheckout()
+            toolbar = toolbarPromoCheckout()
             toolbar?.let {
                 appbar.addView(toolbar)
                 (activity as AppCompatActivity).setSupportActionBar(appbar)
@@ -315,8 +339,22 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                         }
                 )
                 adapter.modifyData(itemPosition, newData)
+
+                checkHasPromoSellected()
+                renderFragmentState()
             }
         }
+    }
+
+    private fun checkHasPromoSellected() {
+        var hasAnyPromoSellected = false
+        adapter.list.forEach {
+            if (it is PromoListItemUiModel && it.uiState.isSellected) {
+                hasAnyPromoSellected = true
+                return@forEach
+            }
+        }
+        fragmentUiModel.uiState.hasAnyPromoSellected = hasAnyPromoSellected
     }
 
     // -- END OF PROMO LIST SECTION
