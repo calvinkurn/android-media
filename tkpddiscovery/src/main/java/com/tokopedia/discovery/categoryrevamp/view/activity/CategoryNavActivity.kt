@@ -54,7 +54,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLDecoder
 import javax.inject.Inject
 
-private const val EXTRA_CATEGORY_DEPARTMENT_ID = "CATEGORY_ID"
+private const val EXTRA_CATEGORY_CATEGORY_ID = "CATEGORY_ID"
 private const val EXTRA_CATEGORY_DEPARTMENT_NAME = "CATEGORY_NAME"
 private const val EXTRA_PARENT_ID = " PARENT_ID"
 private const val EXTRA_PARENT_NAME = " PARENT_NAME"
@@ -106,16 +106,16 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
             newBundle.putString(BrowseProductRouter.DEPARTMENT_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID))
             try {
                 newBundle.putString(EXTRA_TRACKER_ATTRIBUTION,
-                        URLDecoder.decode(bundle.getString("tracker_attribution", ""), "UTF-8")
+                        URLDecoder.decode(bundle.getString(EXTRA_TRACKER_ATTRIBUTION, ""), "UTF-8")
                 )
             } catch (e: UnsupportedEncodingException) {
                 e.printStackTrace()
                 newBundle.putString(EXTRA_TRACKER_ATTRIBUTION,
-                        bundle.getString("tracker_attribution", "").replace("%20".toRegex(), " ")
+                        bundle.getString(EXTRA_TRACKER_ATTRIBUTION, "").replace("%20".toRegex(), " ")
                 )
             }
-            if (bundle.containsKey("DEPARTMENT_ID")) {
-                newBundle.putString(EXTRA_CATEGORY_DEPARTMENT_ID, bundle.getString("DEPARTMENT_ID"))
+            if (bundle.containsKey(BrowseProductRouter.DEPARTMENT_ID)) {
+                newBundle.putString(EXTRA_CATEGORY_CATEGORY_ID, bundle.getString(BrowseProductRouter.DEPARTMENT_ID))
             }
             return intent.putExtras(newBundle)
         }
@@ -147,7 +147,7 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
         fun getCategoryIntentWithDepartmentId(context: Context,
                                         departmentId: String): Intent {
             val intent = Intent(context, CategoryNavActivity::class.java)
-            intent.putExtra("DEPARTMENT_ID", departmentId)
+            intent.putExtra(BrowseProductRouter.DEPARTMENT_ID, departmentId)
             return intent
         }
 
@@ -404,8 +404,8 @@ class CategoryNavActivity : BaseActivity(), CategoryNavigationListener,
                 }
             }
 
-            if (bundle.containsKey(EXTRA_CATEGORY_DEPARTMENT_ID)) {
-                departmentId = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_ID, "")
+            if (bundle.containsKey(EXTRA_CATEGORY_CATEGORY_ID)) {
+                departmentId = bundle.getString(EXTRA_CATEGORY_CATEGORY_ID, "")
                 departmentName = bundle.getString(EXTRA_CATEGORY_DEPARTMENT_NAME, "")
 
                 if (bundle.containsKey(EXTRA_PARENT_ID)) {
