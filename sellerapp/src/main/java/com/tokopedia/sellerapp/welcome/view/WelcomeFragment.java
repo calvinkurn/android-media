@@ -82,13 +82,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         return fragment;
     }
 
-    private UserSessionInterface getUserSession() {
-        if (userSession == null) {
-            userSession = new UserSession(getActivity());
-        }
-        return userSession;
-    }
-
     @Override
     protected String getScreenName() {
         return null;
@@ -404,5 +397,12 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                     HomeRouter.INIT_STATE_FRAGMENT_FEED);
             startActivity(intent);
         }
+    }
+
+    private UserSessionInterface getUserSession() {
+        if (userSession == null) {
+            userSession = new UserSession(getActivity());
+        }
+        return userSession;
     }
 }
