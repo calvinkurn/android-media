@@ -5,14 +5,28 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.tokopedia.unifyprinciples.Typography
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginBottom="@dimen/layout_lvl2"
-        android:text="@string/flight_search_filter_ticket_price_label"
-        android:textColor="@color/Neutral_N700_96"
-        app:typographyType="heading_4" />
+        android:orientation="horizontal">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            android:layout_weight="1"
+            android:text="@string/flight_search_filter_ticket_price_label"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_4" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/icFlightFoldableArrow"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_gravity="center_vertical"
+            app:srcCompat="@drawable/ic_system_action_arrow_up_gray_24" />
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerPriceText"
