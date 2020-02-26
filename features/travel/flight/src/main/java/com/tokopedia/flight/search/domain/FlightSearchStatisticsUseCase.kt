@@ -53,6 +53,8 @@ class FlightSearchStatisticsUseCase @Inject constructor(
         val refundableTrackArray = SparseIntArray()
 
         var isHaveSpecialPrice = false
+        var isHaveBaggage = false
+        var isHaveInFlightMeal = false
 
         for (journeyAndRoutes in journeyAndRoutesList) {
             val price = journeyAndRoutes.flightJourneyTable.sortPriceNumeric
@@ -146,6 +148,18 @@ class FlightSearchStatisticsUseCase @Inject constructor(
             if (!TextUtils.isEmpty(journeyAndRoutes.flightJourneyTable.beforeTotal)) {
                 isHaveSpecialPrice = true
             }
+
+            if (!isHaveBaggage || !isHaveInFlightMeal) {
+                for (route in journeyAndRoutes.routes) {
+                    if (route.amenities.contains("baggage")) {
+                        isHaveBaggage = true
+                    } else if (route.amenities.contains("meal")) {
+                        isHaveInFlightMeal = true
+                    }
+
+                    if (isHaveBaggage && isHaveInFlightMeal) break
+                }
+            }
         }
 
         //sort array
@@ -155,7 +169,7 @@ class FlightSearchStatisticsUseCase @Inject constructor(
         refundableTypeStatList.sortWith(Comparator { o1, o2 -> o1.refundableEnum.id - o2.refundableEnum.id })
 
         return FlightSearchStatisticModel(minPrice, maxPrice, minDuration, maxDuration, transitTypeStatList,
-                airlineStatList, departureTimeStatList, refundableTypeStatList, isHaveSpecialPrice)
+                airlineStatList, departureTimeStatList, refundableTypeStatList, isHaveSpecialPrice, isHaveBaggage, isHaveInFlightMeal)
     }
 
     fun createRequestParams(flightFilterModel: FlightFilterModel): RequestParams {
