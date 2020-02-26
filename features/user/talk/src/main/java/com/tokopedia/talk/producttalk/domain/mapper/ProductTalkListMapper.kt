@@ -49,7 +49,7 @@ class ProductTalkListMapper @Inject constructor() : Func1<Response<DataResponse<
 
         val chatBanner = ChatBannerUiModel(
                 pojo.product_id.toString(), pojo.product_image, pojo.product_name,
-                pojo.product_price, pojo.product_url
+                pojo.product_price, pojo.product_url, pojo.shop_id.toString(), pojo.shop_name
         )
         listThread.add(chatBanner)
 

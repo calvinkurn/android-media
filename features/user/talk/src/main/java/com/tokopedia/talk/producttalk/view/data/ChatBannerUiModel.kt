@@ -8,7 +8,9 @@ data class ChatBannerUiModel(
         val productImageUrl: String = "",
         val productName: String = "",
         val productPrice: String = "",
-        val productUrl: String = ""
+        val productUrl: String = "",
+        val shopId: String = "",
+        val shopName: String = ""
 ) : Visitable<ProductTalkListTypeFactory> {
 
     override fun type(typeFactory: ProductTalkListTypeFactory): Int {

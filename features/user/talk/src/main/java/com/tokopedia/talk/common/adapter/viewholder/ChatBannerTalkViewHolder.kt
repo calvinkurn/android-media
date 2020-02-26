@@ -10,9 +10,12 @@ import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.chat_common.data.preview.ProductPreview
+import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.talk.R
 import com.tokopedia.talk.producttalk.view.data.ChatBannerUiModel
 
@@ -66,7 +69,7 @@ class ChatBannerTalkViewHolder(itemView: View?, private val listener: Listener) 
     private fun assignClickTextImplementation(spannable: SpannableString, element: ChatBannerUiModel) {
         val clickAction = object : ClickableSpan() {
             override fun onClick(widget: View) {
-                Toast.makeText(widget.context, "text", Toast.LENGTH_SHORT).show()
+                goToChatRoom(element)
             }
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
@@ -74,6 +77,26 @@ class ChatBannerTalkViewHolder(itemView: View?, private val listener: Listener) 
             }
         }
         spannable.setSpan(clickAction, 0, spannable.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+    }
+
+    private fun goToChatRoom(element: ChatBannerUiModel) {
+        val productPreviews = listOf(
+                ProductPreview(
+                        id = element.productId,
+                        imageUrl = element.productImageUrl,
+                        name = element.productName,
+                        price = element.productPrice,
+                        url = element.productUrl
+                )
+        )
+        val stringProductPreviews = CommonUtil.toJson(productPreviews)
+        val intent = RouteManager.getIntent(itemView.context,
+                ApplinkConst.TOPCHAT_ASKSELLER, element.shopId, "",
+                ApplinkConst.Chat.SOURCE_ASK_SELLER, element.shopName, ""
+        ).apply {
+            putExtra(ApplinkConst.Chat.PRODUCT_PREVIEWS, stringProductPreviews)
+        }
+        itemView.context?.startActivity(intent)
     }
 
     companion object {

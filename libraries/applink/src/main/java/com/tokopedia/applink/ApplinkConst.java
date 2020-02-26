@@ -415,6 +415,8 @@ public interface ApplinkConst {
 
         String PATH_ASK_SELLER = "askseller";
         String PATH_ASK_BUYER = "askbuyer";
+
+        String SOURCE_ASK_SELLER = "tx_ask_seller";
     }
 
     interface AttachInvoice {
