@@ -27,6 +27,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     : BaseViewModel(dispatcher) {
 
     var inquiryIdBrizzi: Int = 0
+    var token: String = ""
 
     val issuerId = SingleLiveEvent<Int>()
     val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
@@ -52,9 +53,13 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 }
             }.getSuccessData<BrizziTokenResponse>()
 
-            //initiate token and secret key
-            brizziInstance.Init(data.tokenResponse.token, AuthKey.BRIZZI_CLIENT_SECRET)
-            brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
+            if (data.tokenResponse.token != token) {
+                token = data.tokenResponse.token
+
+                //initiate token and secret key
+                brizziInstance.Init(token, AuthKey.BRIZZI_CLIENT_SECRET)
+                brizziInstance.setUserName(AuthKey.BRIZZI_CLIENT_ID)
+            }
 
             brizziInstance.getBalanceInquiry(intent, object : Callback {
                 override fun OnFailure(brizziException: BrizziException?) {
