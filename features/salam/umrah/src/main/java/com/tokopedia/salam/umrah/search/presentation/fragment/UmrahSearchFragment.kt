@@ -283,7 +283,6 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
             })
         }
         umrah_search_bottom_action_view.visible()
-        partial_umrah_empty_search.gone()
         renderList(data, data.size >= searchParam.limit)
     }
 
@@ -307,7 +306,6 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         umrah_search_bottom_action_view.gone()
-        partial_umrah_empty_search.show()
         val emptyModel = EmptyModel()
 //        emptyModel.iconRes = R.drawable.umrah_img_empty_search_png
 //        emptyModel.title = getString(R.string.umrah_search_empty_title)
@@ -327,6 +325,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     }
 
     override fun showEmpty() {
+        partial_umrah_empty_search.show()
         umrahSearchViewModel.resetSearchParam()
         loadInitialData()
     }
