@@ -60,6 +60,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_search_sort.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_search.*
+import kotlinx.android.synthetic.main.partial_umrah_search_empty.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -80,6 +81,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     private val searchParam = UmrahSearchProductDataParam()
     private val selectedFilter = ParamFilter()
     private var isRVInited = false
+    private var isPassingEmpty = false
 
     override fun onEmptyContentItemTextClicked() {}
 
@@ -120,7 +122,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                     }
                 }
                 REQUEST_PDP -> loadInitialData()
-                REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
+                REQUEST_CODE_LOGIN -> context?.let { checkChatSession() }
 
             }
 
@@ -136,7 +138,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         }
     }
 
-    private fun checkChatSession(){
+    private fun checkChatSession() {
         if (userSessionInterface.isLoggedIn) {
             context?.let {
                 startChatUmrah(it)
@@ -151,7 +153,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         setHideFAB()
     }
 
-    private fun startChatUmrah(context: Context){
+    private fun startChatUmrah(context: Context) {
         val intent = RouteManager.getIntent(context,
                 ApplinkConst.TOPCHAT_ASKSELLER,
                 resources.getString(R.string.umrah_shop_id), "",
@@ -223,7 +225,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         umrah_search_bottom_action_view.setButton2OnClickListener { openFilterFragment() }
     }
 
-    private fun setHideFAB(){
+    private fun setHideFAB() {
         fab_umrah_search_message.hide()
     }
 
@@ -283,6 +285,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
             })
         }
         umrah_search_bottom_action_view.visible()
+        emptyState(isPassingEmpty)
         renderList(data, data.size >= searchParam.limit)
     }
 
@@ -301,22 +304,12 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     }
 
     private fun openFilterFragment() {
+        isPassingEmpty = false
         startActivityForResult(context?.let { UmrahSearchFilterActivity.createIntent(it) }, REQUEST_FILTER)
     }
 
     override fun getEmptyDataViewModel(): Visitable<*> {
-        umrah_search_bottom_action_view.gone()
         val emptyModel = EmptyModel()
-//        emptyModel.iconRes = R.drawable.umrah_img_empty_search_png
-//        emptyModel.title = getString(R.string.umrah_search_empty_title)
-//
-//        if (!isFilter) {
-//            emptyModel.content = getString(R.string.umrah_search_empty_subtitle)
-//            emptyModel.buttonTitle = getString(R.string.umrah_empty_button)
-//        } else {
-//            emptyModel.content = getString(R.string.umrah_search_filter_empty_subtitle)
-//            emptyModel.buttonTitle = getString(R.string.umrah_search_filter_empty_button)
-//        }
         return emptyModel
     }
 
@@ -325,7 +318,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     }
 
     override fun showEmpty() {
-        partial_umrah_empty_search.show()
+        isPassingEmpty = true
         umrahSearchViewModel.resetSearchParam()
         loadInitialData()
     }
@@ -424,6 +417,22 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
         }
+    }
+
+    private fun showEmptyState() {
+        partial_umrah_empty_search.show()
+        btn_umrah_search_empty_open_filter.setOnClickListener {
+            openFilterFragment()
+        }
+    }
+
+    private fun hideEmptyState(){
+        partial_umrah_empty_search.gone()
+    }
+
+    private fun emptyState(isPasssingEmpty:Boolean){
+        if(isPasssingEmpty)showEmptyState()
+        else hideEmptyState()
     }
 
 }
