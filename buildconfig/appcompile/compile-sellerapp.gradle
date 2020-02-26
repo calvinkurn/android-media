@@ -17,6 +17,7 @@ include "features:communication:broadcast_message_common"
 
 include "features:content:affiliate_common"
 include "features:content:feed_component"
+include "features:content:createpost"
 include "features:content:kol"
 include "features:content:kol_common"
 include "features:content:profile"
