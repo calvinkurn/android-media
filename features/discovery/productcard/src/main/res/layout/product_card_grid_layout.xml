@@ -95,33 +95,27 @@
             android:clickable="true"
             android:focusable="true"
             app:layout_goneMarginBottom="@dimen/dp_0"
-            app:layout_constraintBottom_toTopOf="@id/buttonAddToCart"
+            app:layout_constraintBottom_toTopOf="@id/buttonAddToCartStub"
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/product_card_ic_three_dots"
             tools:visibility="visible" />
 
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/buttonAddToCart"
+        <ViewStub
+            android:id="@+id/buttonAddToCartStub"
+            android:inflatedId="@+id/buttonAddToCart"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_button_add_to_cart_height"
+            android:layout="@layout/product_card_button_add_to_cart"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:text="@string/product_card_text_add_to_cart_grid"
-            android:foreground="?attr/selectableItemBackground"
-            android:visibility="gone"
-            android:clickable="true"
-            android:focusable="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            app:unifyButtonType="transaction"
-            app:unifyButtonVariant="ghost"
-            app:unifyButtonSize="small"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

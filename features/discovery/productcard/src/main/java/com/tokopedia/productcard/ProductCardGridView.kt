@@ -3,16 +3,21 @@ package com.tokopedia.productcard
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewStub
 import com.bumptech.glide.Glide
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
+import kotlinx.android.synthetic.main.product_card_grid_layout.view.cardViewProductCard
+import kotlinx.android.synthetic.main.product_card_grid_layout.view.imageProduct
+import kotlinx.android.synthetic.main.product_card_grid_layout.view.imageThreeDots
+import kotlinx.android.synthetic.main.product_card_grid_layout.view.labelProductStatus
+import kotlinx.android.synthetic.main.product_card_grid_layout.view.textTopAds
+import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 
 class ProductCardGridView: BaseCustomView {
 
@@ -43,7 +48,36 @@ class ProductCardGridView: BaseCustomView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasOptions)
 
-        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+        if (productCardModel.hasAddToCartButton) {
+            if (buttonAddToCartStub != null) buttonAddToCartStub?.inflate()
+
+            buttonAddToCart?.visible()
+        }
+        else {
+            if (buttonAddToCartStub == null) {
+                buttonAddToCart?.gone()
+            }
+        }
+
+        buttonAddToCartStub.executeInflation(
+                productCardModel.hasAddToCartButton,
+                {
+                    buttonAddToCart?.visible()
+                },
+                {
+                    buttonAddToCart?.gone()
+                }
+        )
+    }
+
+    private fun ViewStub?.executeInflation(shouldRender: Boolean, doRender: () -> Unit, removeRendered: () -> Unit) {
+        if (shouldRender) {
+            this?.inflate()
+            doRender()
+        }
+        else if (this == null) {
+            removeRendered()
+        }
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {
