@@ -7,7 +7,6 @@ import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.FlightFilterFacilityModel
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.FACILITY_ORDER
 import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
 import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
 
@@ -16,7 +15,7 @@ import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
  */
 class FlightFilterFacilityViewHolder(view: View,
                                      private val listener: FlightFilterSortListener,
-                                     private var selectedFacility: List<FlightFilterFacilityEnum>)
+                                     var selectedFacility: List<FlightFilterFacilityEnum>)
     : AbstractViewHolder<FlightFilterFacilityModel>(view) {
 
     override fun bind(element: FlightFilterFacilityModel?) {
@@ -35,7 +34,6 @@ class FlightFilterFacilityViewHolder(view: View,
                     // No Show More Action
                 }
             }
-            if (listener.shouldReset(FACILITY_ORDER)) resetSelectedFacilities()
             flight_sort_widget.buildView(getItems())
         }
     }
@@ -65,16 +63,12 @@ class FlightFilterFacilityViewHolder(view: View,
     }
 
     fun resetView() {
+        selectedFacility = arrayListOf()
         for (item in itemView.flight_sort_widget.getItems()) {
             item.isSelected = false
         }
-        resetSelectedFacilities()
         itemView.flight_sort_widget.onResetChip()
         itemView.flight_sort_widget.notifyDataSetChanged()
     }
 
-    private fun resetSelectedFacilities() {
-        selectedFacility = arrayListOf()
-        listener.hasBeenReset(FACILITY_ORDER)
-    }
 }

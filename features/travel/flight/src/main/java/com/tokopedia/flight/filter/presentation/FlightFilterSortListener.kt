@@ -23,6 +23,4 @@ interface FlightFilterSortListener {
     fun onFacilityChanged(selectedFacilities: List<FlightFilterFacilityEnum>)
     fun onPriceRangeChanged(minPrice: Int, maxPrice: Int)
 
-    fun shouldReset(index: Int): Boolean
-    fun hasBeenReset(index: Int)
 }

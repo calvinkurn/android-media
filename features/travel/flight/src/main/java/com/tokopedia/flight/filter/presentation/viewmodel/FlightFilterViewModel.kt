@@ -45,8 +45,6 @@ class FlightFilterViewModel @Inject constructor(
 
     val filterViewData = MediatorLiveData<List<BaseFilterSortModel>>()
 
-    private val shouldResetView = arrayListOf<Boolean>()
-
     init {
         mediatorFlightCount.addSource(mutableFilterModel) {
             getFlightCount()
@@ -54,10 +52,6 @@ class FlightFilterViewModel @Inject constructor(
 
         filterViewData.addSource(mutableStatisticModel) {
             mapStatisticToModel()
-        }
-
-        if (shouldResetView.size < FILTER_SECTION_SIZE) {
-            for (i in 0 until FILTER_SECTION_SIZE) shouldResetView.add(false)
         }
     }
 
@@ -113,19 +107,9 @@ class FlightFilterViewModel @Inject constructor(
     fun resetFilter() {
         mutableSelectedSort.value = SORT_DEFAULT_VALUE
         mutableFilterModel.value = resetFilterModel()
-
-        for (index in shouldResetView.indices) {
-            shouldResetView[index] = true
-        }
     }
 
     fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
-
-    fun isShouldReset(index: Int): Boolean = shouldResetView[index]
-
-    fun hasBeenReset(index: Int) {
-        shouldResetView[index] = false
-    }
 
     private fun getStatistics() {
         launch(dispatcherProvider.ui()) {

@@ -6,7 +6,6 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.TransitModel
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.TRANSIT_ORDER
 import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
@@ -44,7 +43,6 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
                     //do nothing
                 }
             }
-            if (listener.shouldReset(TRANSIT_ORDER)) resetSelectedData()
             flight_sort_widget.buildView(getTransitItem())
         }
     }
@@ -74,17 +72,12 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
             }
 
     fun resetView() {
+        selectedTransits = arrayListOf()
         for (item in itemView.flight_sort_widget.getItems()) {
             item.isSelected = false
         }
-        resetSelectedData()
         itemView.flight_sort_widget.onResetChip()
         itemView.flight_sort_widget.notifyDataSetChanged()
-    }
-
-    private fun resetSelectedData() {
-        selectedTransits = arrayListOf()
-        listener.hasBeenReset(TRANSIT_ORDER)
     }
 
 }

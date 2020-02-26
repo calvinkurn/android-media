@@ -18,7 +18,8 @@ import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.OnFlightFilterListener
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapter
 import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterTypeFactory
-import com.tokopedia.flight.filter.presentation.adapter.viewholder.*
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightFilterWidgetAirlineViewHolder
+import com.tokopedia.flight.filter.presentation.adapter.viewholder.FlightSortViewHolder
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel
 import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_DEFAULT_VALUE
@@ -215,12 +216,6 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         flightFilterViewModel.filterPrices(minPrice, maxPrice)
     }
 
-    override fun shouldReset(index: Int): Boolean = flightFilterViewModel.isShouldReset(index)
-
-    override fun hasBeenReset(index: Int) {
-        flightFilterViewModel.hasBeenReset(index)
-    }
-
     private fun showLoading() {
         with(mChildView) {
             containerLoading.visibility = View.VISIBLE
@@ -236,27 +231,28 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
     }
 
     private fun resetAllView() {
-        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.SORT_ORDER) != null) {
-            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.SORT_ORDER) as FlightSortViewHolder).resetView()
-        }
-        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.TRANSIT_ORDER) != null) {
-            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.TRANSIT_ORDER) as FlightFilterTransitViewHolder).resetView()
-        }
-        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.DEPARTURE_TIME_ORDER) != null) {
-            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.DEPARTURE_TIME_ORDER) as FlightFilterDepartureTimeViewHolder).resetView()
-        }
-        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.ARRIVAL_TIME_ORDER) != null) {
-            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.ARRIVAL_TIME_ORDER) as FlightFilterArrivalTimeViewHolder).resetView()
-        }
-        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) != null) {
-            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder).resetView()
-        }
-        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.FACILITY_ORDER) != null) {
-            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.FACILITY_ORDER) as FlightFilterFacilityViewHolder).resetView()
-        }
-        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.PRICE_ORDER) != null) {
-            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.PRICE_ORDER) as FlightFilterPriceRangeViewHolder).resetView()
-        }
+        (rvFlightFilter.adapter as FlightFilterSortAdapter).resetFilter()
+//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.SORT_ORDER) != null) {
+//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.SORT_ORDER) as FlightSortViewHolder).resetView()
+//        }
+//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.TRANSIT_ORDER) != null) {
+//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.TRANSIT_ORDER) as FlightFilterTransitViewHolder).resetView()
+//        }
+//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.DEPARTURE_TIME_ORDER) != null) {
+//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.DEPARTURE_TIME_ORDER) as FlightFilterDepartureTimeViewHolder).resetView()
+//        }
+//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.ARRIVAL_TIME_ORDER) != null) {
+//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.ARRIVAL_TIME_ORDER) as FlightFilterArrivalTimeViewHolder).resetView()
+//        }
+//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) != null) {
+//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.AIRLINE_ORDER) as FlightFilterWidgetAirlineViewHolder).resetView()
+//        }
+//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.FACILITY_ORDER) != null) {
+//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.FACILITY_ORDER) as FlightFilterFacilityViewHolder).resetView()
+//        }
+//        if (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.PRICE_ORDER) != null) {
+//            (rvFlightFilter.findViewHolderForAdapterPosition(FlightFilterViewModel.PRICE_ORDER) as FlightFilterPriceRangeViewHolder).resetView()
+//        }
     }
 
     companion object {

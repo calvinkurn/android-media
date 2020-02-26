@@ -7,7 +7,6 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.FlightSortModel
-import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.SORT_ORDER
 import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
 import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
 
@@ -41,8 +40,6 @@ class FlightSortViewHolder(view: View, val listener: FlightFilterSortListener, v
 
             }
             flight_sort_widget.buildView(getSortItem())
-
-            if (listener.shouldReset(SORT_ORDER)) resetView()
         }
     }
 
@@ -59,7 +56,6 @@ class FlightSortViewHolder(view: View, val listener: FlightFilterSortListener, v
 
     fun resetView() {
         performClickOnSortId(TravelSortOption.CHEAPEST)
-        listener.hasBeenReset(SORT_ORDER)
     }
 
     private fun getSortItem(): List<FlightSortModel> {
