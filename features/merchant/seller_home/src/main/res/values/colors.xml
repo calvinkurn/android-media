@@ -8,4 +8,6 @@
     <color name="sah_color_fbe7ff">#fbe7ff</color>
     <color name="sah_color_00ebffef">#00ebffef</color>
     <color name="sah_color_ebffef">#ebffef</color>
+
+    <color name="setting_divider_color">#e5e7e9</color>
 </resources>
