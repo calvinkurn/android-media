@@ -26,6 +26,6 @@
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/globalError"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center_horizontal" />
 </ViewFlipper>

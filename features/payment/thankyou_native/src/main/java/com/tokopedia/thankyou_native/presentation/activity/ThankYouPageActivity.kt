@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.view.activity
+package com.tokopedia.thankyou_native.presentation.activity
 
 import android.content.Context
 import android.content.Intent
@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.thankyou_native.di.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.ThanksPageData
-import com.tokopedia.thankyou_native.view.fragment.InstantPaymentFragment
-import com.tokopedia.thankyou_native.view.fragment.LoaderFragment
+import com.tokopedia.thankyou_native.presentation.fragment.InstantPaymentFragment
+import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
 
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>, ThankYouPageDataLoadCallback {
@@ -37,7 +37,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                     .baseAppComponent).build()
 
     private fun getGetFragmentByPaymentMode(thanksPageData: ThanksPageData): Fragment {
-        return InstantPaymentFragment.getLoaderFragmentInstance(null)
+        return InstantPaymentFragment.getLoaderFragmentInstance(null, thanksPageData)
     }
 
     companion object {

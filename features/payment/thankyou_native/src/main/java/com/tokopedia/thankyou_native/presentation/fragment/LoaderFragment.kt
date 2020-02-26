@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.view.fragment
+package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
@@ -9,14 +9,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.ThanksPageData
-import com.tokopedia.thankyou_native.view.ThanksPageDataViewModel
-import com.tokopedia.thankyou_native.view.activity.ThankYouPageDataLoadCallback
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
+import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageDataLoadCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_loader.*
@@ -79,13 +77,10 @@ class LoaderFragment : BaseDaggerFragment() {
 
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
         loading_layout.visibility = View.GONE
-        /*globalError.setOnClickListener {
-            thanksPageDataViewModel.getThanksPageData(654186, "tokopediatest")
-        }*/
-
-
-
+        globalError.visibility = View.VISIBLE
+        globalError.setType(GlobalError.MAINTENANCE)
     }
+
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
         loading_layout.visibility = View.GONE
         callback?.onThankYouPageDataLoaded(data)
@@ -98,3 +93,4 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
 }
+

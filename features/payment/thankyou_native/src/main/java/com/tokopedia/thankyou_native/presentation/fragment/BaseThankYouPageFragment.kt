@@ -1,13 +1,13 @@
-package com.tokopedia.thankyou_native.view.fragment
+package com.tokopedia.thankyou_native.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.annotation.IdRes
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.domain.OrderList
 
 abstract class BaseThankYouPageFragment : BaseDaggerFragment() {
 
@@ -27,10 +27,16 @@ abstract class BaseThankYouPageFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showProductBottomSheet()
     }
 
-    fun showProductBottomSheet() {
+    fun showProductBottomSheet(orderList: ArrayList<OrderList>) {
+        activity?.let {
+            val orderDetailListFragment: OrderDetailListFragment = OrderDetailListFragment.getInstance(orderList)
+            orderDetailListFragment.show(it.supportFragmentManager, "OrderList")
+        }
+    }
+
+    fun addPurchasedProductToView(){
 
     }
 }

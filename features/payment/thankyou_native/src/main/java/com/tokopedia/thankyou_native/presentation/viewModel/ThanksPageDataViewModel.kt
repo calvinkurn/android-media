@@ -1,4 +1,4 @@
-package com.tokopedia.thankyou_native.view
+package com.tokopedia.thankyou_native.presentation.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel

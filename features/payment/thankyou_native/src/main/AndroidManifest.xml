@@ -3,12 +3,19 @@
 
     <application>
         <activity
-            android:name="com.tokopedia.thankyou_native.view.activity.ThankYouPageActivity"
+            android:name="com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity"
             android:label="ThankYou"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+
             <intent-filter android:autoVerify="true">
+
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

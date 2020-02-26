@@ -1,174 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/viewFlipper"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/iv_instant_payment_success"
+        android:layout_width="@dimen/dp_192"
+        android:layout_height="@dimen/dp_144"
+        android:layout_marginTop="@dimen/dp_16"
+        android:src="@drawable/thank_instant_payment_banner"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_instant_payment_success"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginTop="@dimen/dp_8"
+        android:gravity="center"
+        android:text="@string/thank_instant_payment_successful"
+        android:textColor="@color/Neutral_N700_96"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_instant_payment_success"
+        app:typographyType="heading_4"
+        tools:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/iv_instant_payment_success"
-            android:layout_width="@dimen/dp_192"
-            android:layout_height="@dimen/dp_144"
-            android:layout_marginTop="@dimen/dp_16"
-            android:src="@drawable/thank_instant_payment_banner"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_instant_payment_success_check_order"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:gravity="center"
+        android:text="@string/thank_instant_payment_check_order"
+        android:textColor="@color/light_disabled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_success"
+        app:typographyType="heading_6"
+        app:typographyWeight="reguler"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_instant_payment_success"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
-            android:gravity="center"
-            android:text="@string/thank_instant_payment_successful"
-            android:textColor="@color/Neutral_N700_96"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_instant_payment_success"
-            app:typographyType="heading_4"
-            tools:visibility="visible" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_instant_payment_total_pay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:gravity="center"
+        android:text="@string/thank_instant_payment_total_pay"
+        android:textColor="@color/light_disabled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_success_check_order"
+        app:typographyType="heading_6"
+        app:typographyWeight="reguler"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_instant_payment_success_check_order"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_4"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:gravity="center"
-            android:text="@string/thank_instant_payment_check_order"
-            android:textColor="@color/light_disabled"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_success"
-            app:typographyType="heading_6"
-            app:typographyWeight="reguler"
-            tools:visibility="visible" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_instant_payment_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_2"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:gravity="center"
+        android:textColor="@color/Yellow_Y500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_total_pay"
+        app:typographyType="heading_4"
+        app:typographyWeight="bold"
+        tools:text="Rp 10000"
+        tools:visibility="visible" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_instant_payment_total_pay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:gravity="center"
-            android:text="@string/thank_instant_payment_total_pay"
-            android:textColor="@color/light_disabled"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_success_check_order"
-            app:typographyType="heading_6"
-            app:typographyWeight="reguler"
-            tools:visibility="visible" />
+    <View
+        android:id="@+id/view_divider_1"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_9"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@color/thank_divider_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_amount" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_instant_payment_amount"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_2"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:gravity="center"
-            android:textColor="@color/Yellow_Y500"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_total_pay"
-            app:typographyType="heading_4"
-            app:typographyWeight="bold"
-            tools:text="Rp 10000"
-            tools:visibility="visible" />
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_instant_payment_payment_method"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginTop="@dimen/dp_11"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:gravity="center"
+        android:text="@string/thank_payment_method"
+        android:textColor="@color/light_disabled"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
+        app:typographyType="heading_6"
+        app:typographyWeight="reguler"
+        tools:visibility="visible" />
 
-        <View
-            android:id="@+id/view_divider_1"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_9"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:background="@color/thank_divider_color"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_amount" />
+    <ImageView
+        android:id="@+id/iv_instant_payment_ovo"
+        android:layout_width="@dimen/dp_32"
+        android:layout_height="@dimen/dp_32"
+        app:layout_constraintEnd_toStartOf="@id/tv_instant_payment_payment_method_name"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_payment_method"
+        app:srcCompat="@drawable/ic_ovo_logo_purple" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_instant_payment_payment_method"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_11"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:gravity="center"
-            android:text="@string/thank_payment_method"
-            android:textColor="@color/light_disabled"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view_divider_1"
-            app:typographyType="heading_6"
-            app:typographyWeight="reguler"
-            tools:visibility="visible" />
-
-        <ImageView
-            android:id="@+id/iv_instant_payment_ovo"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_32"
-            app:layout_constraintEnd_toStartOf="@id/tv_instant_payment_payment_method_name"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_instant_payment_payment_method"
-            app:srcCompat="@drawable/ic_ovo_logo_purple" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_instant_payment_payment_method_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:gravity="center"
-            android:text="OVO"
-            android:textColor="@color/black_70"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_instant_payment_ovo"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toEndOf="@+id/iv_instant_payment_ovo"
-            app:layout_constraintTop_toTopOf="@+id/iv_instant_payment_ovo"
-            app:typographyType="body_2"
-            app:typographyWeight="reguler"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/btn_instant_see_transaction_list"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:background="@drawable/bg_button_green_enabled"
-            android:gravity="center"
-            android:padding="@dimen/dp_11"
-            android:text="@string/thank_see_transaction_list"
-            android:textColor="@color/Neutral_N0"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/iv_instant_payment_ovo"
-            app:typographyType="heading_5"
-            app:typographyWeight="bold"
-            tools:visibility="visible" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <com.tokopedia.globalerror.GlobalError
-        android:id="@+id/globalError"
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_instant_payment_payment_method_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal" />
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:gravity="center"
+        android:text="OVO"
+        android:textColor="@color/black_70"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_instant_payment_ovo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/iv_instant_payment_ovo"
+        app:layout_constraintTop_toTopOf="@+id/iv_instant_payment_ovo"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
+        tools:visibility="visible" />
 
-</ViewFlipper>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btn_instant_see_transaction_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:background="@drawable/bg_button_green_enabled"
+        android:gravity="center"
+        android:padding="@dimen/dp_11"
+        android:text="@string/thank_see_transaction_list"
+        android:textColor="@color/Neutral_N0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/iv_instant_payment_ovo"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
