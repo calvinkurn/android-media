@@ -10,7 +10,7 @@ import com.tokopedia.shop.home.WidgetSliderSquareBanner
  * Created by rizqiaryansa on 2020-02-24.
  */
 
-class PaddingItemDecorationShopPage(val typeWidget: String): RecyclerView.ItemDecoration() {
+class PaddingItemDecorationShopPage(private val typeWidget: String): RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
