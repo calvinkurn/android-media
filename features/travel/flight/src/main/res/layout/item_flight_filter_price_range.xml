@@ -31,7 +31,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/containerPriceText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/layout_lvl2">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/flightLowestLabel"
@@ -82,5 +83,11 @@
             app:step="1000" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/Neutral_N75" />
 
 </LinearLayout>
