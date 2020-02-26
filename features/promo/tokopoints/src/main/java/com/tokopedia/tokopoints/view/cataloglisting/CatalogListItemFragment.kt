@@ -27,7 +27,6 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.adapter.CatalogListAdapter
 import com.tokopedia.tokopoints.view.adapter.SpacesItemDecoration
-import com.tokopedia.tokopoints.view.catalogdetail.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.contract.CatalogListItemContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
 import com.tokopedia.tokopoints.view.customview.ServerErrorView
@@ -346,11 +345,13 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
             }
             for (i in 0 until mAdapter!!.itemCount) {
                 val item = mAdapter!!.items[i]
-                if (each.catalogID == item.id) {
-                    item.isDisabled = each.isDisabled
-                    item.isDisabledButton = each.isDisabledButton
-                    item.upperTextDesc = each.upperTextDesc
-                    item.quota = each.quota
+                item?.let {
+                    if (each.catalogID == item.id) {
+                        item.isDisabled = each.isDisabled
+                        item.isDisabledButton = each.isDisabledButton
+                        item.upperTextDesc = each.upperTextDesc
+                        item.quota = each.quota
+                    }
                 }
             }
         }

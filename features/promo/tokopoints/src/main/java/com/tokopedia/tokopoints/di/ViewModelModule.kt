@@ -10,6 +10,7 @@ import com.tokopedia.tokopoints.view.coupondetail.CouponDetailViewModel
 import com.tokopedia.tokopoints.view.couponlisting.CouponLisitingStackedViewModel
 import com.tokopedia.tokopoints.view.couponlisting.StackedCouponActivtyViewModel
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryViewModel
+import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -57,5 +58,11 @@ abstract class ViewModelModule {
     @TokoPointScope
     @ViewModelKey(CatalogListingViewModel::class)
     abstract fun getCatalogListingViewModel(viewModel: CatalogListingViewModel) : ViewModel
+
+    @IntoMap
+    @Binds
+    @TokoPointScope
+    @ViewModelKey(TokoPointsHomeViewModel::class)
+    abstract fun getTokopointsHome(viewModel: TokoPointsHomeViewModel) : ViewModel
 
 }

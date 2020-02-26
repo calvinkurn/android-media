@@ -3,8 +3,6 @@ package com.tokopedia.tokopoints.view.cataloglisting
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.tokopoints.view.catalogdetail.ConfirmRedeemDialog
-import com.tokopedia.tokopoints.view.catalogdetail.ValidateMessageDialog
 import com.tokopedia.tokopoints.view.model.CatalogStatusItem
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.RedeemCouponEntity

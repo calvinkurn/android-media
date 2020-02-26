@@ -6,7 +6,7 @@
 
     <application>
         <activity
-            android:name=".view.activity.TokoPointsHomeNewActivity"
+            android:name=".view.tokopointhome.TokoPointsHomeNewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/TokoPointTransparentStatus" >
             <intent-filter>

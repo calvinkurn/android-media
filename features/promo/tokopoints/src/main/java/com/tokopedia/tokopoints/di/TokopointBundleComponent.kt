@@ -9,6 +9,7 @@ import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment
 import com.tokopedia.tokopoints.view.fragment.SendGiftFragment
 import com.tokopedia.tokopoints.view.pointhistory.PointHistoryFragment
+import com.tokopedia.tokopoints.view.tokopointhome.TokoPointsHomeFragmentNew
 import dagger.Component
 
 
@@ -30,4 +31,6 @@ interface TokopointBundleComponent {
     fun inject(fragment: CatalogListingFragment)
 
     fun inject(fragment: CatalogListItemFragment)
+
+    fun inject(fragment: TokoPointsHomeFragmentNew)
 }
