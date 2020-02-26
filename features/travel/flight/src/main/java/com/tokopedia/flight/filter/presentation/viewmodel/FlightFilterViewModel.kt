@@ -111,6 +111,10 @@ class FlightFilterViewModel @Inject constructor(
 
     fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
 
+    fun setStatistics(statistics: FlightSearchStatisticModel) {
+        mutableStatisticModel.postValue(statistics)
+    }
+
     private fun getStatistics() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.let {

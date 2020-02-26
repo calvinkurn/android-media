@@ -30,7 +30,7 @@ class FlightSearchStatisticsUseCase @Inject constructor(
                 .map { mapToFlightSearchStatisticsModel(it.journeyAndRoutes) }
     }
 
-    fun executeCoroutine(requestParams: RequestParams): FlightSearchStatisticModel {
+    fun executeCoroutine(requestParams: RequestParams): FlightSearchStatisticModel? {
         val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
         return mapToFlightSearchStatisticsModel(flightSearchRepository.getSearchFilterStatisticCoroutine(
                 TravelSortOption.CHEAPEST, filterModel).journeyAndRoutes)
