@@ -224,16 +224,16 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
                 abis.contains(ARCHITECTURE_ARM64) || abis.contains(ARCHITECTURE_ARM32)
     }
 
-    private fun executeBrizzi(refresh: Boolean, intent: Intent) {
+    private fun executeBrizzi(needRefreshToken: Boolean, intent: Intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && isSupportBrizzi()) {
-            getTokenBrizzi(refresh, intent)
+            getBalanceBrizzi(needRefreshToken, intent)
 
             brizziBalanceViewModel.emoneyInquiry.observe(this, Observer {
                 showCardLastBalance(it)
             })
 
             brizziBalanceViewModel.tokenNeedRefresh.observe(this, Observer {
-                getTokenBrizzi(true, intent)
+                getBalanceBrizzi(true, intent)
             })
 
             brizziBalanceViewModel.issuerId.observe(this, Observer {
@@ -255,11 +255,11 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun getTokenBrizzi(refresh: Boolean, intent: Intent) {
-        brizziBalanceViewModel.getTokenBrizzi(brizziInstance,
+    private fun getBalanceBrizzi(needRefreshToken: Boolean, intent: Intent) {
+        brizziBalanceViewModel.processBrizziTagIntent(intent, brizziInstance,
                 GraphqlHelper.loadRawString(resources, R.raw.query_token_brizzi),
                 GraphqlHelper.loadRawString(resources, R.raw.mutation_emoney_log_brizzi),
-                intent, refresh)
+                needRefreshToken)
     }
 
     private fun getOperatorName(issuerId: Int): String {
