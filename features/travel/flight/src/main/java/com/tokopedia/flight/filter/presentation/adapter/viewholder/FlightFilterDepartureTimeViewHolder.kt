@@ -6,6 +6,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.BaseFilterSortModel
 import com.tokopedia.flight.filter.presentation.model.DepartureTimeModel
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.DEPARTURE_TIME_ORDER
 import com.tokopedia.flight.filter.presentation.widget.FlightFilterSortFoldableWidget
 import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import kotlinx.android.synthetic.main.item_flight_filter_sort.view.*
@@ -41,6 +42,7 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
                     //do nothing
                 }
             }
+            if (listener.shouldReset(DEPARTURE_TIME_ORDER)) resetSelectedDepartureTime()
             flight_sort_widget.buildView(getItems())
         }
     }
@@ -53,19 +55,35 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
     }
 
     private fun getItems(): List<DepartureTimeModel> {
-        return listOf(DepartureTimeModel(DepartureTimeEnum._00, getString(R.string.departure_0000_to_0600_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._00)),
-                DepartureTimeModel(DepartureTimeEnum._06, getString(R.string.departure_0600_to_1200_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._06)),
-                DepartureTimeModel(DepartureTimeEnum._12, getString(R.string.departure_1200_to_1800_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._12)),
-                DepartureTimeModel(DepartureTimeEnum._18, getString(R.string.departure_1800_to_2400_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._18)))
+        val data = arrayListOf<DepartureTimeModel>()
+        listener.getStatisticModel()?.let {
+            for (item in it.arrivalTimeStatList) {
+                data.add(generateDepartureTimeModelFromTimeEnum(item.departureTime))
+            }
+        }
+        return data
     }
 
+    private fun generateDepartureTimeModelFromTimeEnum(timeEnum: DepartureTimeEnum): DepartureTimeModel =
+            when (timeEnum) {
+                DepartureTimeEnum._00 -> DepartureTimeModel(timeEnum, getString(R.string.departure_0000_to_0600_with_desc), getSelectedByDepartureTimeEnum(timeEnum))
+                DepartureTimeEnum._06 -> DepartureTimeModel(timeEnum, getString(R.string.departure_0600_to_1200_with_desc), getSelectedByDepartureTimeEnum(timeEnum))
+                DepartureTimeEnum._12 -> DepartureTimeModel(timeEnum, getString(R.string.departure_1200_to_1800_with_desc), getSelectedByDepartureTimeEnum(timeEnum))
+                DepartureTimeEnum._18 -> DepartureTimeModel(timeEnum, getString(R.string.departure_1800_to_2400_with_desc), getSelectedByDepartureTimeEnum(timeEnum))
+            }
+
     fun resetView() {
-        selectedDepartureTime = arrayListOf()
         for (item in itemView.flight_sort_widget.getItems()) {
             item.isSelected = false
         }
+        resetSelectedDepartureTime()
         itemView.flight_sort_widget.onResetChip()
         itemView.flight_sort_widget.notifyDataSetChanged()
+    }
+
+    private fun resetSelectedDepartureTime() {
+        selectedDepartureTime = arrayListOf()
+        listener.hasBeenReset(DEPARTURE_TIME_ORDER)
     }
 
 }

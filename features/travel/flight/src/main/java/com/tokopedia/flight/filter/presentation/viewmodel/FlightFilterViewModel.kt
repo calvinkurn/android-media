@@ -45,6 +45,8 @@ class FlightFilterViewModel @Inject constructor(
 
     val filterViewData = MediatorLiveData<List<BaseFilterSortModel>>()
 
+    private val shouldResetView = arrayListOf<Boolean>()
+
     init {
         mediatorFlightCount.addSource(mutableFilterModel) {
             getFlightCount()
@@ -52,6 +54,10 @@ class FlightFilterViewModel @Inject constructor(
 
         filterViewData.addSource(mutableStatisticModel) {
             mapStatisticToModel()
+        }
+
+        if (shouldResetView.size < FILTER_SECTION_SIZE) {
+            for (i in 0 until FILTER_SECTION_SIZE) shouldResetView.add(false)
         }
     }
 
@@ -61,15 +67,6 @@ class FlightFilterViewModel @Inject constructor(
 
         getStatistics()
         getFlightCount()
-    }
-
-    private fun getStatistics() {
-        launch(dispatcherProvider.ui()) {
-            filterModel.value?.let {
-                mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
-                        flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
-            }
-        }
     }
 
     fun setSelectedSort(selectedId: Int) {
@@ -113,6 +110,32 @@ class FlightFilterViewModel @Inject constructor(
         mutableFilterModel.value = updateFilterModel
     }
 
+    fun resetFilter() {
+        mutableSelectedSort.value = SORT_DEFAULT_VALUE
+        mutableFilterModel.value = resetFilterModel()
+
+        for (index in shouldResetView.indices) {
+            shouldResetView[index] = true
+        }
+    }
+
+    fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
+
+    fun isShouldReset(index: Int): Boolean = shouldResetView[index]
+
+    fun hasBeenReset(index: Int) {
+        shouldResetView[index] = false
+    }
+
+    private fun getStatistics() {
+        launch(dispatcherProvider.ui()) {
+            filterModel.value?.let {
+                mutableStatisticModel.postValue(flightSearchStatisticUseCase.executeCoroutine(
+                        flightSearchStatisticUseCase.createRequestParams(filterModel.value!!)))
+            }
+        }
+    }
+
     private fun getFlightCount() {
         launch(dispatcherProvider.ui()) {
             filterModel.value?.run {
@@ -121,13 +144,6 @@ class FlightFilterViewModel @Inject constructor(
             }
         }
     }
-
-    fun resetFilter() {
-        mutableSelectedSort.value = SORT_DEFAULT_VALUE
-        mutableFilterModel.value = resetFilterModel()
-    }
-
-    fun getAirlineList(): List<AirlineStat> = statisticModel.value?.airlineStatList ?: arrayListOf()
 
     private fun mapStatisticToModel() {
         val items = arrayListOf<BaseFilterSortModel>()
@@ -178,6 +194,7 @@ class FlightFilterViewModel @Inject constructor(
         filterModel.arrivalTimeList = arrayListOf()
         filterModel.refundableTypeList = arrayListOf()
         filterModel.facilityList = arrayListOf()
+
         return filterModel
     }
 
@@ -189,6 +206,8 @@ class FlightFilterViewModel @Inject constructor(
         const val ARRIVAL_TIME_ORDER = 4
         const val TRANSIT_ORDER = 5
         const val FACILITY_ORDER = 6
+
+        const val FILTER_SECTION_SIZE = 7
 
         const val SORT_DEFAULT_VALUE = TravelSortOption.CHEAPEST
     }

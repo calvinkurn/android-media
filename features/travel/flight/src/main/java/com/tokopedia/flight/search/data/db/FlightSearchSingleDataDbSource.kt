@@ -349,8 +349,7 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
                     when (transitEnum) {
                         TransitEnum.DIRECT -> "FlightJourneyTable.totalTransit = 0 "
                         TransitEnum.ONE -> "FlightJourneyTable.totalTransit = 1 "
-                        TransitEnum.TWO -> "FlightJourneyTable.totalTransit = 2 "
-                        TransitEnum.THREE_OR_MORE -> "FlightJourneyTable.totalTransit > 3 "
+                        TransitEnum.TWO -> "FlightJourneyTable.totalTransit > 2 "
                     }
             )
             if (i < transitList.size - 1) {

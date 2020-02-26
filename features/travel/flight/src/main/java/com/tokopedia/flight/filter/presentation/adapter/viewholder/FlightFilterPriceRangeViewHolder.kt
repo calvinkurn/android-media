@@ -6,6 +6,7 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightCurrencyFormatUtil
 import com.tokopedia.flight.filter.presentation.FlightFilterSortListener
 import com.tokopedia.flight.filter.presentation.model.PriceRangeModel
+import com.tokopedia.flight.filter.presentation.viewmodel.FlightFilterViewModel.Companion.PRICE_ORDER
 import com.tokopedia.unifycomponents.RangeSliderUnify
 import kotlinx.android.synthetic.main.item_flight_filter_price_range.view.*
 
@@ -16,20 +17,24 @@ class FlightFilterPriceRangeViewHolder(val view: View,
                                        private val listener: FlightFilterSortListener)
     : AbstractViewHolder<PriceRangeModel>(view) {
 
-    var startValue: Int = 0
-    var endValue: Int = 0
+    private var startValue: Int = 0
+    private var endValue: Int = 0
 
     override fun bind(element: PriceRangeModel) {
         with(view) {
-
             startValue = element.initialStartValue
-            endValue = element.selectedEndValue
+            endValue = element.initialEndValue
 
             etFlightLowestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.selectedStartValue))
             etFlightHighestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.selectedEndValue))
             rsuFlightFilterPrice.updateStartValue(element.initialStartValue)
             rsuFlightFilterPrice.updateEndValue(element.initialEndValue)
-            rsuFlightFilterPrice.setInitialValue(element.selectedStartValue, element.selectedEndValue)
+
+            if (listener.shouldReset(PRICE_ORDER)) {
+                resetView()
+            } else {
+                rsuFlightFilterPrice.setInitialValue(element.selectedStartValue, element.selectedEndValue)
+            }
 
             rsuFlightFilterPrice.onSliderMoveListener = object : RangeSliderUnify.OnSliderMoveListener {
                 override fun onSliderMove(p0: Pair<Int, Int>) {
@@ -43,6 +48,7 @@ class FlightFilterPriceRangeViewHolder(val view: View,
 
     fun resetView() {
         view.rsuFlightFilterPrice.setInitialValue(startValue, endValue)
+        listener.hasBeenReset(PRICE_ORDER)
     }
 
     companion object {

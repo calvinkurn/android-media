@@ -192,6 +192,8 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
         }
     }
 
+    override fun getStatisticModel(): FlightSearchStatisticModel? = flightFilterViewModel.statisticModel.value
+
     override fun getAirlineList(): List<AirlineStat> =
             flightFilterViewModel.getAirlineList()
 
@@ -211,6 +213,12 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
 
     override fun onPriceRangeChanged(minPrice: Int, maxPrice: Int) {
         flightFilterViewModel.filterPrices(minPrice, maxPrice)
+    }
+
+    override fun shouldReset(index: Int): Boolean = flightFilterViewModel.isShouldReset(index)
+
+    override fun hasBeenReset(index: Int) {
+        flightFilterViewModel.hasBeenReset(index)
     }
 
     private fun showLoading() {
