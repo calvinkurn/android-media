@@ -3,6 +3,7 @@ package com.tokopedia.shop.newproduct.utils.mapper
 import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
@@ -12,6 +13,8 @@ import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgr
 import com.tokopedia.shop.newproduct.view.datamodel.*
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
+import java.text.NumberFormat
+import java.text.ParseException
 import kotlin.math.roundToInt
 
 object ShopPageProductListMapper {
@@ -121,4 +124,31 @@ object ShopPageProductListMapper {
         return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
     }
 
+    fun mapToProductCardModel(shopProductViewModel: ShopProductViewModel): ProductCardModel {
+        val totalReview = try {
+            NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
+        } catch (ignored: ParseException) {
+            0
+        }
+
+        val discountPercentage = if (shopProductViewModel.discountPercentage == "0") {
+            ""
+        } else {
+            "${shopProductViewModel.discountPercentage}%"
+        }
+
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon!!)
+
+        return ProductCardModel(
+                productImageUrl = shopProductViewModel.imageUrl ?: "",
+                productName = shopProductViewModel.name ?: "",
+                discountPercentage = discountPercentage,
+                slashedPrice = shopProductViewModel.originalPrice ?: "",
+                formattedPrice = shopProductViewModel.displayedPrice ?: "",
+                ratingCount = shopProductViewModel.rating.toInt(),
+                reviewCount = totalReview,
+                freeOngkir = freeOngkirObject,
+                labelGroupList = listOf() // TODO:: Add Label Groups
+        )
+    }
 }

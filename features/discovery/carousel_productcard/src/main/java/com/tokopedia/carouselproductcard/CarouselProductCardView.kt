@@ -2,6 +2,7 @@ package com.tokopedia.carouselproductcard
 
 import android.app.Activity
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.util.SparseIntArray
 import android.view.View
@@ -10,9 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
-import com.tokopedia.productcard.ProductCardModel
 import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,34 +25,51 @@ class CarouselProductCardView: BaseCustomView {
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
     private val carouselAdapter = CarouselProductCardAdapter()
     private val snapHelper = StartSnapHelper()
+    private var isUseDefaultItemDecorator = true
 
     constructor(context: Context): super(context) {
-        init()
+        init(null)
     }
 
     constructor(context: Context, attrs: AttributeSet?): super(context, attrs) {
-        init()
+        init(attrs)
     }
 
-    constructor(
-            context: Context,
-            attrs: AttributeSet?,
-            defStyleAttr: Int
-    ) : super(context, attrs, defStyleAttr) {
-        init()
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        init(attrs)
     }
     
-    private fun init() {
+    private fun init(attrs: AttributeSet?) {
         View.inflate(context, R.layout.carousel_product_card_layout, this)
+
+        defineCustomAttributes(attrs)
 
         addDefaultItemDecorator()
     }
 
-    private fun addDefaultItemDecorator() {
-        if (carouselProductCardRecyclerView.itemDecorationCount > 0)
-            carouselProductCardRecyclerView.removeItemDecorationAt(0)
+    private fun defineCustomAttributes(attrs: AttributeSet?) {
+        if (attrs != null) {
+            val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.CarouselProductCardView, 0, 0)
 
-        carouselProductCardRecyclerView.addItemDecoration(defaultRecyclerViewDecorator)
+            try {
+                tryDefineCustomAttributes(styledAttributes)
+            } finally {
+                styledAttributes.recycle()
+            }
+        }
+    }
+
+    private fun tryDefineCustomAttributes(styledAttributes: TypedArray) {
+        isUseDefaultItemDecorator = styledAttributes.getBoolean(R.styleable.CarouselProductCardView_useDefaultItemDecorator, true)
+    }
+
+    private fun addDefaultItemDecorator() {
+        if (isUseDefaultItemDecorator) {
+            if (carouselProductCardRecyclerView.itemDecorationCount > 0)
+                carouselProductCardRecyclerView.removeItemDecorationAt(0)
+
+            carouselProductCardRecyclerView.addItemDecoration(defaultRecyclerViewDecorator)
+        }
     }
 
     fun bindCarouselProductCardViewGrid(

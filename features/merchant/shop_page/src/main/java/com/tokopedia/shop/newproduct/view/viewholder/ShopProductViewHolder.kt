@@ -15,6 +15,7 @@ import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
+import com.tokopedia.shop.newproduct.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
@@ -69,29 +70,8 @@ class ShopProductViewHolder(
     }
 
     override fun bind(shopProductViewModel: ShopProductViewModel) {
-        val totalReview = try {
-            NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
-        } catch (ignored: ParseException) {
-            0
-        }
-        val discountPercentage = if (shopProductViewModel.discountPercentage == "0") {
-            ""
-        } else {
-            "${shopProductViewModel.discountPercentage}%"
-        }
-        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon!!)
         productCard.setProductModel(
-                ProductCardModel(
-                        productImageUrl = shopProductViewModel.imageUrl ?: "",
-                        productName = shopProductViewModel.name ?: "",
-                        discountPercentage = discountPercentage,
-                        slashedPrice = shopProductViewModel.originalPrice ?: "",
-                        formattedPrice = shopProductViewModel.displayedPrice ?: "",
-                        ratingCount = shopProductViewModel.rating.toInt(),
-                        reviewCount = totalReview,
-                        freeOngkir = freeOngkirObject,
-                        labelGroupList = listOf() // TODO:: Add Label Groups
-                )
+                ShopPageProductListMapper.mapToProductCardModel(shopProductViewModel)
         )
 
         productCard.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {
@@ -115,12 +95,12 @@ class ShopProductViewHolder(
 
         })
 
-        if (shopProductViewModel.isCarousel) {
-            productCard.shopPage_carouselHideComponent(
-                    isInvisibleRatingAndReview = shopProductViewModel.rating <= 0 && totalReview <= 0,
-                    isInvisibleFreeOngkirBadge = !freeOngkirObject.isActive || freeOngkirObject.imageUrl.isEmpty(),
-                    isInvisibleDiscountAndSlashPrice = shopProductViewModel.discountPercentage.toIntOrZero() <= 0
-            )
-        }
+//        if (shopProductViewModel.isCarousel) {
+//            productCard.shopPage_carouselHideComponent(
+//                    isInvisibleRatingAndReview = shopProductViewModel.rating <= 0 && totalReview <= 0,
+//                    isInvisibleFreeOngkirBadge = !freeOngkirObject.isActive || freeOngkirObject.imageUrl.isEmpty(),
+//                    isInvisibleDiscountAndSlashPrice = shopProductViewModel.discountPercentage.toIntOrZero() <= 0
+//            )
+//        }
     }
 }
