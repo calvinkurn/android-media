@@ -17,6 +17,7 @@ import java.net.UnknownHostException
 object ErrorHelper {
 
     private const val CODE_PRODUCT_ERR_NOT_FOUND = "2001"
+    private const val CODE_PRODUCT_ERR_NOT_FOUND_GENERAL = "400"
     private const val CODE_ERR_GENERAL = "1"
     const val CODE_PRODUCT_ERR_BANNED = "2998"
     const val CODE_PRODUCT_ERR_DELETED = "3000"
@@ -42,6 +43,9 @@ object ErrorHelper {
                         CODE_PRODUCT_ERR_BANNED
                     }
                     else -> {
+                        if (fromDeeplink && t.errorCode == CODE_PRODUCT_ERR_NOT_FOUND_GENERAL) {
+                            logDeeplinkError(deeplinkUrl, t.errorCode.toIntOrZero())
+                        }
                         CODE_ERR_GENERAL
                     }
                 }
@@ -65,10 +69,6 @@ object ErrorHelper {
                         GlobalError.SERVER_ERROR.toString()
                     }
                     else -> {
-                        if (fromDeeplink && t.localizedMessage.toIntOrNull() == 400) {
-                            logDeeplinkError(deeplinkUrl, t.localizedMessage.toIntOrZero())
-                        }
-
                         GlobalError.SERVER_ERROR.toString()
                     }
                 }
