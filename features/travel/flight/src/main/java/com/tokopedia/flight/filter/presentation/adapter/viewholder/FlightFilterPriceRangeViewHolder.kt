@@ -28,6 +28,7 @@ class FlightFilterPriceRangeViewHolder(val view: View,
             etFlightHighestPrice.setText(FlightCurrencyFormatUtil.convertToIdrPriceWithoutSymbol(element.selectedEndValue))
             rsuFlightFilterPrice.updateStartValue(element.initialStartValue)
             rsuFlightFilterPrice.updateEndValue(element.initialEndValue)
+            rsuFlightFilterPrice.setInitialValue(element.selectedStartValue, element.selectedEndValue)
 
             rsuFlightFilterPrice.onSliderMoveListener = object : RangeSliderUnify.OnSliderMoveListener {
                 override fun onSliderMove(p0: Pair<Int, Int>) {

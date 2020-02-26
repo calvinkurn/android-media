@@ -19,13 +19,13 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
                                          var filterModel: FlightFilterModel) :
         BaseAdapterTypeFactory() {
 
-    lateinit var sortViewHolder: FlightSortViewHolder
-    lateinit var transitViewHolder: FlightFilterTransitViewHolder
-    lateinit var departureViewHolder: FlightFilterDepartureTimeViewHolder
-    lateinit var arrivalViewHolder: FlightFilterArrivalTimeViewHolder
-    lateinit var airlineViewHolder: FlightFilterWidgetAirlineViewHolder
-    lateinit var facilityViewHolder: FlightFilterFacilityViewHolder
-    lateinit var priceRangeViewHolder: FlightFilterPriceRangeViewHolder
+    private lateinit var sortViewHolder: FlightSortViewHolder
+    private lateinit var transitViewHolder: FlightFilterTransitViewHolder
+    private lateinit var departureViewHolder: FlightFilterDepartureTimeViewHolder
+    private lateinit var arrivalViewHolder: FlightFilterArrivalTimeViewHolder
+    private lateinit var airlineViewHolder: FlightFilterWidgetAirlineViewHolder
+    private lateinit var facilityViewHolder: FlightFilterFacilityViewHolder
+    private lateinit var priceRangeViewHolder: FlightFilterPriceRangeViewHolder
 
     fun type(model: FlightSortModel): Int = TYPE_FLIGHT_SORT
 
@@ -116,13 +116,13 @@ class FlightFilterSortAdapterTypeFactory(val listener: FlightFilterSortListener,
     }
 
     fun resetFilter() {
-        sortViewHolder.resetView()
-        transitViewHolder.resetView()
-        departureViewHolder.resetView()
-        arrivalViewHolder.resetView()
-        airlineViewHolder.resetView()
-        facilityViewHolder.resetView()
-        priceRangeViewHolder.resetView()
+        if (::sortViewHolder.isInitialized) sortViewHolder.resetView()
+        if (::transitViewHolder.isInitialized) transitViewHolder.resetView()
+        if (::departureViewHolder.isInitialized) departureViewHolder.resetView()
+        if (::arrivalViewHolder.isInitialized) arrivalViewHolder.resetView()
+        if (::airlineViewHolder.isInitialized) airlineViewHolder.resetView()
+        if (::facilityViewHolder.isInitialized) facilityViewHolder.resetView()
+        if (::priceRangeViewHolder.isInitialized) priceRangeViewHolder.resetView()
     }
 
     companion object {
