@@ -69,7 +69,6 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setHasOptionsMenu(true)
         activity?.run {
             viewModel = ViewModelProviders.of(this, factory).get(HomeEventViewModel::class.java)
         }
@@ -130,7 +129,6 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-//            R.id.action_favorite -> actionMenuFavorite()
             R.id.action_more -> actionMenuMore()
         }
         return super.onOptionsItemSelected(item)
@@ -160,7 +158,6 @@ class EventHomeFragment : BaseDaggerFragment(), FragmentView, MenuSheet.ItemClic
         if (!coachMark.hasShown(activity, COACH_MARK_TAG)) {
             var coachItems = ArrayList<CoachMarkItem>()
             coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.txt_search), getString(R.string.coach_mark_title_1), getString(R.string.coach_mark_desc_1)))
-//            coachItems.add(CoachMarkItem(view?.rootView?.findViewById(R.id.action_favorite), getString(R.string.coach_mark_title_2), getString(R.string.coach_mark_desc_2)))
             coachMark.show(activity, COACH_MARK_TAG, coachItems)
         }
     }
