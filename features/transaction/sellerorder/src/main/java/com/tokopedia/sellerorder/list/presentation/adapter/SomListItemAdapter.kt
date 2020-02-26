@@ -27,10 +27,6 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
 
     private var actionListener: ActionListener? = null
 
-    interface ActionListener {
-        fun onListItemClicked(orderId: String)
-    }
-
     private var somItemList = mutableListOf<SomListOrder.Data.OrderList.Order>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,17 +35,6 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
 
     override fun getItemCount(): Int {
         return somItemList.size
-    }
-
-    fun addList(list: List<SomListOrder.Data.OrderList.Order>) {
-        somItemList.clear()
-        somItemList.addAll(list)
-        notifyDataSetChanged()
-    }
-
-    fun appendList(list: List<SomListOrder.Data.OrderList.Order>) {
-        somItemList.addAll(list)
-        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -117,6 +102,21 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
     }
 
+    fun setActionListener(fragment: SomListFragment) {
+        this.actionListener = fragment
+    }
+
+    fun addList(list: List<SomListOrder.Data.OrderList.Order>) {
+        somItemList.clear()
+        somItemList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun appendList(list: List<SomListOrder.Data.OrderList.Order>) {
+        somItemList.addAll(list)
+        notifyDataSetChanged()
+    }
+
     private fun createOrderLabelList(holder: ViewHolder, position: Int) {
         holder.itemView.ll_label_order?.removeAllViews()
 
@@ -148,9 +148,10 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
     }
 
+    interface ActionListener {
+        fun onListItemClicked(orderId: String)
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    fun setActionListener(fragment: SomListFragment) {
-        this.actionListener = fragment
-    }
 }
