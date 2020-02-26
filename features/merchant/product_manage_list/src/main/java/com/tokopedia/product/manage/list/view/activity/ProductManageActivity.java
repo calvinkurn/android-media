@@ -81,7 +81,7 @@ public class ProductManageActivity extends BaseSellerReceiverDrawerActivity {
 
     private void goToSellerAppDashboard() {
         if(GlobalConfig.isSellerApp()) {
-            RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_APP_DASHBOARD);
+            RouteManager.route(this, ApplinkConstInternalMarketplace.SELLER_HOME);
         }
     }
 }
