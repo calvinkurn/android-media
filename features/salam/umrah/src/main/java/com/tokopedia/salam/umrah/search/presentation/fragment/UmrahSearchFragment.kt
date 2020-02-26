@@ -24,6 +24,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
@@ -282,6 +283,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
             })
         }
         umrah_search_bottom_action_view.visible()
+        partial_umrah_empty_search.gone()
         renderList(data, data.size >= searchParam.limit)
     }
 
@@ -305,18 +307,28 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun getEmptyDataViewModel(): Visitable<*> {
         umrah_search_bottom_action_view.gone()
+        partial_umrah_empty_search.show()
         val emptyModel = EmptyModel()
-        emptyModel.iconRes = R.drawable.umrah_img_empty_search_png
-        emptyModel.title = getString(R.string.umrah_search_empty_title)
-
-        if (!isFilter) {
-            emptyModel.content = getString(R.string.umrah_search_empty_subtitle)
-            emptyModel.buttonTitle = getString(R.string.umrah_empty_button)
-        } else {
-            emptyModel.content = getString(R.string.umrah_search_filter_empty_subtitle)
-            emptyModel.buttonTitle = getString(R.string.umrah_search_filter_empty_button)
-        }
+//        emptyModel.iconRes = R.drawable.umrah_img_empty_search_png
+//        emptyModel.title = getString(R.string.umrah_search_empty_title)
+//
+//        if (!isFilter) {
+//            emptyModel.content = getString(R.string.umrah_search_empty_subtitle)
+//            emptyModel.buttonTitle = getString(R.string.umrah_empty_button)
+//        } else {
+//            emptyModel.content = getString(R.string.umrah_search_filter_empty_subtitle)
+//            emptyModel.buttonTitle = getString(R.string.umrah_search_filter_empty_button)
+//        }
         return emptyModel
+    }
+
+    override fun isListEmpty(): Boolean {
+        return super.isListEmpty()
+    }
+
+    override fun showEmpty() {
+        umrahSearchViewModel.resetSearchParam()
+        loadInitialData()
     }
 
     override fun onEmptyButtonClicked() {

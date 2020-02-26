@@ -18,11 +18,12 @@
 
             <include
                 android:id="@+id/partial_umrah_empty_search"
-                android:visibility="visible"
+                android:visibility="gone"
                 layout="@layout/partial_umrah_search_empty"
                 />
 
             <FrameLayout
+                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
