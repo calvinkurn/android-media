@@ -166,12 +166,8 @@ class AddToCartDoneBottomSheet :
             activity?.windowManager?.defaultDisplay?.getMetrics(displaymetrics)
             val screenHeight = displaymetrics.heightPixels
             val maxHeight = (screenHeight * 0.9f).toInt()
-            parent.measure(
-                    View.MeasureSpec.makeMeasureSpec(parent.width, View.MeasureSpec.EXACTLY),
-                    View.MeasureSpec.makeMeasureSpec(maxHeight, View.MeasureSpec.AT_MOST)
-            )
             val params = parent.layoutParams
-            params.height = parent.measuredHeight
+            params.height = maxHeight
             parent.layoutParams = params
         }
     }
