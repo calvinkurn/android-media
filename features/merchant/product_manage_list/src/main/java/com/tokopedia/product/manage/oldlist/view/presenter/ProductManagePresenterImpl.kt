@@ -23,7 +23,7 @@ import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.oldlist.view.listener.ProductManageView
 import com.tokopedia.product.manage.oldlist.view.mapper.ProductListMapperView
 import com.tokopedia.product.manage.oldlist.view.model.ProductManageViewModel
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListResponse
+import com.tokopedia.shop.common.data.source.cloud.model.oldproductlist.ProductListResponse
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetProductListUseCase
 import com.tokopedia.topads.common.data.model.DataDeposit

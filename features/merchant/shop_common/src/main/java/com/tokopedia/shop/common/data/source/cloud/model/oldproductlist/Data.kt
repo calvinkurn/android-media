@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.data.source.cloud.model.productlist
+package com.tokopedia.shop.common.data.source.cloud.model.oldproductlist
 
 
 import com.google.gson.annotations.Expose
