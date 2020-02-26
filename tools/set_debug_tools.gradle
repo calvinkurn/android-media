@@ -1,0 +1,20 @@
+task("configDebugTools") {
+    if (allowDistribution() == "true") {
+        rootProject.ext.debugToolsEnabled = true
+        return
+    }
+    def taskNames = project.gradle.startParameter.taskNames
+    if (taskNames==null || taskNames.size() == 0) {
+        rootProject.ext.debugToolsEnabled = true
+    } else {
+        rootProject.ext.debugToolsEnabled = false
+        for ( taskName in taskNames ) {
+            if ( taskName.toLowerCase().contains("debug") ||
+                    taskName.toLowerCase().contains("dev") ) {
+                rootProject.ext.debugToolsEnabled = true
+                break
+            }
+        }
+    }
+}
+preBuild.dependsOn configDebugTools
