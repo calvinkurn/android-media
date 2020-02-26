@@ -7,9 +7,10 @@ import com.tokopedia.flight.filter.presentation.adapter.FlightFilterSortAdapterT
  * @author by jessica on 2020-02-20
  */
 
-data class FlightSortModel(
+class FlightSortModel(
         val selectedOption: Int = TravelSortOption.CHEAPEST,
-        override var title: String = "",
-        override var isSelected: Boolean = false): BaseFilterSortModel() {
+        title: String = "",
+        isSelected: Boolean = false)
+    : BaseFilterSortModel(title, isSelected) {
     override fun type(typeFactory: FlightFilterSortAdapterTypeFactory): Int = typeFactory.type(this)
 }

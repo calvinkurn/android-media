@@ -43,12 +43,9 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
     fun getFilteredJourneys(filterModel: FlightFilterModel, @TravelSortOption flightSortOption: Int):
             Observable<List<JourneyAndRoutes>> {
         return Observable.create<List<JourneyAndRoutes>> {
-            val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
-                "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
-                        "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
-            } else {
-                "SELECT * FROM FlightJourneyTable WHERE "
-            }
+            val sqlQuery = "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
+                    "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
+
             val query = buildQuery(sqlQuery, filterModel, flightSortOption)
             val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
             val facilityFilterList = getFacilityFilter(filterModel.facilityList)
@@ -63,12 +60,9 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
     fun getFilteredJourneysCoroutine(filterModel: FlightFilterModel, @TravelSortOption flightSortOption: Int):
             List<JourneyAndRoutes> {
-        val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
-            "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
-                    "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
-        } else {
-            "SELECT * FROM FlightJourneyTable WHERE "
-        }
+        val sqlQuery = "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
+                "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
+
         val query = buildQuery(sqlQuery, filterModel, flightSortOption)
         val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
         val facilityFilterList = getFacilityFilter(filterModel.facilityList)
@@ -80,12 +74,9 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
     fun getFilteredJourneysStatisticCoroutine(filterModel: FlightFilterModel, @TravelSortOption flightSortOption: Int):
             List<JourneyAndRoutes> {
-        val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
-            "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
-                    "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
-        } else {
-            "SELECT * FROM FlightJourneyTable WHERE "
-        }
+        val sqlQuery = "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
+                "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
+
         val query = buildQueryStatistic(sqlQuery, filterModel, flightSortOption)
         val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
         val facilityFilterList = getFacilityFilter(filterModel.facilityList)
@@ -167,12 +158,9 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
     }
 
     fun getSearchCountCoroutine(filterModel: FlightFilterModel): Int {
-        val sqlQuery = if (filterModel.airlineList != null && !filterModel.airlineList.isEmpty()) {
-            "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
-                    "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
-        } else {
-            "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable WHERE "
-        }
+        val sqlQuery = "SELECT DISTINCT FlightJourneyTable.* FROM FlightJourneyTable LEFT JOIN FlightRouteTable ON " +
+                "FlightJourneyTable.id = FlightRouteTable.journeyId WHERE "
+
         val query = buildQuery(sqlQuery, filterModel, TravelSortOption.CHEAPEST)
         val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
         val facilityFilter = getFacilityFilter(filterModel.facilityList)

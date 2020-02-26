@@ -175,7 +175,8 @@ class FlightSearchStatisticsUseCase @Inject constructor(
                 for (route in journeyAndRoutes.routes) {
                     if (route.amenities.contains("baggage")) {
                         isHaveBaggage = true
-                    } else if (route.amenities.contains("meal")) {
+                    }
+                    if (route.amenities.contains("meal")) {
                         isHaveInFlightMeal = true
                     }
 
