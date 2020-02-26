@@ -184,5 +184,6 @@
     <string name="banned_product_title">Barang ini dilarang</string>
     <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
 
+    <string name="available_all_indonesia">Tersedia di seluruh Indonesia</string>
 
 </resources>

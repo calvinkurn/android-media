@@ -160,6 +160,7 @@
             android:paddingTop="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_8"
             android:textColor="@color/black_70"
+            android:text="@string/available_all_indonesia"
             app:layout_constraintTop_toBottomOf="@+id/tv_trade_in_promo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
