@@ -123,6 +123,8 @@ public interface ApplinkConst {
     String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";
     String PROFILE_COMPLETION = "tokopedia://profilecompletion";
     String HOWTOPAY = "tokopedia://howtopay";
+    String GOLD_MERCHANT_STATISTIC_DASHBOARD = "tokopedia://gold-merchant-statistic-dashboard";
+    String SHOP_SCORE_DETAIL = "tokopedia://shop-score-detail";
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";

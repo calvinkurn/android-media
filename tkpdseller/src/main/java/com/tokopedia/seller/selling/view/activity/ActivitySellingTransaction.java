@@ -251,7 +251,6 @@ public class ActivitySellingTransaction extends TkpdActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         clearNotif();
-        inflateView(R.layout.activity_shop_transaction_v2);
         setView();
         initVariable();
         setAdapter();
@@ -280,19 +279,19 @@ public class ActivitySellingTransaction extends TkpdActivity
     private void setDrawerPosition(int position) {
         switch (position) {
             case TAB_POSITION_SELLING_NEW_ORDER:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
+                sellerDrawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_NEW_ORDER);
                 break;
             case TAB_POSITION_SELLING_CONFIRM_SHIPPING:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
+                sellerDrawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_CONFIRM_SHIPPING);
                 break;
             case TAB_POSITION_SELLING_SHIPPING_STATUS:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
+                sellerDrawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_SHIPPING_STATUS);
                 break;
             case TAB_POSITION_SELLING_TRANSACTION_LIST:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
+                sellerDrawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_TRANSACTION_LIST);
                 break;
             case TAB_POSITION_SELLING_OPPORTUNITY:
-                drawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
+                sellerDrawerHelper.setSelectedPosition(TkpdState.DrawerPosition.SHOP_OPPORTUNITY_LIST);
                 break;
             default:
                 break;
@@ -305,6 +304,11 @@ public class ActivitySellingTransaction extends TkpdActivity
         sellerTickerView.setVisibility(View.GONE);
         mViewPager = findViewById(R.id.pager);
         indicator = findViewById(R.id.indicator);
+    }
+
+    @Override
+    protected Integer getParentViewLayoutId() {
+        return R.layout.activity_shop_transaction_v2;
     }
 
     @Override
