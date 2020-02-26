@@ -78,6 +78,10 @@ public class FlightSearchStatisticModel {
         return departureTimeStatList;
     }
 
+    public List<DepartureStat> getArrivalTimeStatList() {
+        return arrivalTimeStatList;
+    }
+
     public List<TransitStat> getTransitTypeStatList() {
         return transitTypeStatList;
     }

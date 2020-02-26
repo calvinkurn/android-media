@@ -41,14 +41,20 @@ class FlightFilterFacilityViewHolder(view: View,
     }
 
     private fun getItems(): List<FlightFilterFacilityModel> {
-        return listOf(
-                FlightFilterFacilityModel(facilityEnum = FlightFilterFacilityEnum.BAGGAGE,
+        val data = arrayListOf<FlightFilterFacilityModel>()
+        listener.getStatisticModel()?.let {
+            if (it.isHaveBaggage) {
+                data.add(FlightFilterFacilityModel(facilityEnum = FlightFilterFacilityEnum.BAGGAGE,
                         title = FlightFilterFacilityEnum.BAGGAGE.value,
-                        isSelected = isSelected(FlightFilterFacilityEnum.BAGGAGE)),
-                FlightFilterFacilityModel(facilityEnum = FlightFilterFacilityEnum.MEAL,
+                        isSelected = isSelected(FlightFilterFacilityEnum.BAGGAGE)))
+            }
+            if (it.isHaveInFlightMeal) {
+                data.add(FlightFilterFacilityModel(facilityEnum = FlightFilterFacilityEnum.MEAL,
                         title = FlightFilterFacilityEnum.MEAL.value,
-                        isSelected = isSelected(FlightFilterFacilityEnum.MEAL))
-        )
+                        isSelected = isSelected(FlightFilterFacilityEnum.MEAL)))
+            }
+        }
+        return data
     }
 
     private fun isSelected(item: FlightFilterFacilityEnum): Boolean {

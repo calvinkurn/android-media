@@ -80,8 +80,7 @@ class FlightSearchStatisticsUseCase @Inject constructor(
             val transitTypeDef = when (journeyAndRoutes.flightJourneyTable.totalTransit) {
                 0 -> TransitEnum.DIRECT
                 1 -> TransitEnum.ONE
-                2 -> TransitEnum.TWO
-                else -> TransitEnum.THREE_OR_MORE
+                else -> TransitEnum.TWO
             }
             if (transitIDTrackArray.get(transitTypeDef.id, -1) == -1) {
                 transitTypeStatList.add(TransitStat(transitTypeDef, price, priceString))

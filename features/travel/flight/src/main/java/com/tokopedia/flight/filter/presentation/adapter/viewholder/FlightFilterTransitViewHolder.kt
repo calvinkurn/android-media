@@ -19,12 +19,6 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
                                     var selectedTransits: MutableList<TransitEnum>)
     : AbstractViewHolder<TransitModel>(view) {
 
-    init {
-        for ((index, transit) in selectedTransits.withIndex()) {
-            if (transit.id == TransitEnum.THREE_OR_MORE.id) selectedTransits.removeAt(index)
-        }
-    }
-
     companion object {
         val LAYOUT = R.layout.item_flight_filter_sort
     }
@@ -42,8 +36,8 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
                     items.forEach {
                         transits.add((it as TransitModel).transitEnum)
                     }
-                    selectedTransits = combineTwoAndThreeTransit(transits)
-                    listener.onTransitFilterChanged(combineTwoAndThreeTransit(transits).toList())
+                    selectedTransits = transits
+                    listener.onTransitFilterChanged(transits)
                 }
 
                 override fun onClickShowMore() {
@@ -55,19 +49,6 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
         }
     }
 
-    private fun combineTwoAndThreeTransit(transits: MutableList<TransitEnum>): MutableList<TransitEnum> {
-        var twoTransitPosition: Int? = null
-        var threeTrasitPosition: Int? = null
-        for ((index, transit) in transits.withIndex()) {
-            if (transit.id == TransitEnum.TWO.id) twoTransitPosition = index
-            else if (transit.id == TransitEnum.THREE_OR_MORE.id) threeTrasitPosition = index
-        }
-        if (twoTransitPosition != null && threeTrasitPosition == null) transits.add(TransitEnum.THREE_OR_MORE)
-        else if (twoTransitPosition == null && threeTrasitPosition != null) transits.removeAt(threeTrasitPosition)
-
-        return transits
-    }
-
     private fun getSelectedByTransitEnum(transitEnum: TransitEnum): Boolean {
         for (selectedTransit in selectedTransits) {
             if (transitEnum.id == selectedTransit.id) return true
@@ -76,10 +57,21 @@ class FlightFilterTransitViewHolder(view: View, val listener: FlightFilterSortLi
     }
 
     private fun getTransitItem(): List<TransitModel> {
-        return listOf(TransitModel(TransitEnum.DIRECT, getString(R.string.direct), getSelectedByTransitEnum(TransitEnum.DIRECT)),
-                TransitModel(TransitEnum.ONE, getString(R.string.one_transit_without_1), getSelectedByTransitEnum(TransitEnum.ONE)),
-                TransitModel(TransitEnum.TWO, getString(R.string.two_plus_transit), getSelectedByTransitEnum(TransitEnum.TWO)))
+        val data = arrayListOf<TransitModel>()
+        listener.getStatisticModel()?.let {
+            for (item in it.transitTypeStatList) {
+                data.add(generateTransitModelFromTransitEnum(item.transitType))
+            }
+        }
+        return data
     }
+
+    private fun generateTransitModelFromTransitEnum(transitEnum: TransitEnum): TransitModel =
+            when (transitEnum) {
+                TransitEnum.DIRECT -> TransitModel(transitEnum, getString(R.string.direct), getSelectedByTransitEnum(transitEnum))
+                TransitEnum.ONE -> TransitModel(transitEnum, getString(R.string.one_transit_without_1), getSelectedByTransitEnum(transitEnum))
+                TransitEnum.TWO -> TransitModel(transitEnum, getString(R.string.two_plus_transit), getSelectedByTransitEnum(transitEnum))
+            }
 
     fun resetView() {
         for (item in itemView.flight_sort_widget.getItems()) {

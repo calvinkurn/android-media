@@ -55,11 +55,22 @@ class FlightFilterDepartureTimeViewHolder(view: View, val listener: FlightFilter
     }
 
     private fun getItems(): List<DepartureTimeModel> {
-        return listOf(DepartureTimeModel(DepartureTimeEnum._00, getString(R.string.departure_0000_to_0600_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._00)),
-                DepartureTimeModel(DepartureTimeEnum._06, getString(R.string.departure_0600_to_1200_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._06)),
-                DepartureTimeModel(DepartureTimeEnum._12, getString(R.string.departure_1200_to_1800_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._12)),
-                DepartureTimeModel(DepartureTimeEnum._18, getString(R.string.departure_1800_to_2400_with_desc), getSelectedByDepartureTimeEnum(DepartureTimeEnum._18)))
+        val data = arrayListOf<DepartureTimeModel>()
+        listener.getStatisticModel()?.let {
+            for (item in it.arrivalTimeStatList) {
+                data.add(generateDepartureTimeModelFromTimeEnum(item.departureTime))
+            }
+        }
+        return data
     }
+
+    private fun generateDepartureTimeModelFromTimeEnum(timeEnum: DepartureTimeEnum): DepartureTimeModel =
+            when (timeEnum) {
+                DepartureTimeEnum._00 -> DepartureTimeModel(timeEnum, getString(R.string.departure_0000_to_0600_with_desc), getSelectedByDepartureTimeEnum(timeEnum))
+                DepartureTimeEnum._06 -> DepartureTimeModel(timeEnum, getString(R.string.departure_0600_to_1200_with_desc), getSelectedByDepartureTimeEnum(timeEnum))
+                DepartureTimeEnum._12 -> DepartureTimeModel(timeEnum, getString(R.string.departure_1200_to_1800_with_desc), getSelectedByDepartureTimeEnum(timeEnum))
+                DepartureTimeEnum._18 -> DepartureTimeModel(timeEnum, getString(R.string.departure_1800_to_2400_with_desc), getSelectedByDepartureTimeEnum(timeEnum))
+            }
 
     fun resetView() {
         for (item in itemView.flight_sort_widget.getItems()) {
