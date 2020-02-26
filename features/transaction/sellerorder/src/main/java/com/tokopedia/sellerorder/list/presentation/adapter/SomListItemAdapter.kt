@@ -31,7 +31,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         fun onListItemClicked(orderId: String)
     }
 
-    var somItemList = mutableListOf<SomListOrder.Data.OrderList.Order>()
+    private var somItemList = mutableListOf<SomListOrder.Data.OrderList.Order>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.som_list_item, parent, false))
@@ -41,12 +41,15 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         return somItemList.size
     }
 
-    fun addItems(list: List<SomListOrder.Data.OrderList.Order>) {
+    fun addList(list: List<SomListOrder.Data.OrderList.Order>) {
+        somItemList.clear()
         somItemList.addAll(list)
+        notifyDataSetChanged()
     }
 
-    fun removeAll() {
-        somItemList.clear()
+    fun appendList(list: List<SomListOrder.Data.OrderList.Order>) {
+        somItemList.addAll(list)
+        notifyDataSetChanged()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
