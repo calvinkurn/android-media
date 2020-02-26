@@ -116,7 +116,31 @@ internal fun ImageView.loadIcon(url: String?) {
     }
 }
 
-internal fun String?.toUnifyLabelType(): Int {
+internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
+    if (labelGroup == null) hide()
+    else showLabel(labelGroup)
+}
+
+private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
+    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+        it.text = MethodChecker.fromHtml(labelGroup.title)
+        it.determineLabelType(labelGroup.type)
+    }
+}
+
+private fun Label.determineLabelType(labelGroupType: String) {
+    val labelType = labelGroupType.toUnifyLabelType()
+
+    if (labelType != -1) {
+        setLabelType(labelType)
+    }
+    else {
+        unlockFeature = true
+        setLabelType(labelGroupType.toUnifyLabelTypeString())
+    }
+}
+
+private fun String?.toUnifyLabelType(): Int {
     return when (this) {
         LIGHT_GREY -> Label.GENERAL_LIGHT_GREY
         LIGHT_BLUE -> Label.GENERAL_LIGHT_BLUE
@@ -128,19 +152,14 @@ internal fun String?.toUnifyLabelType(): Int {
         DARK_GREEN -> Label.GENERAL_DARK_GREEN
         DARK_RED -> Label.GENERAL_DARK_RED
         DARK_ORANGE -> Label.GENERAL_DARK_ORANGE
-        else -> Label.GENERAL_LIGHT_GREY
+        else -> -1
     }
 }
 
-internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
-    if (labelGroup == null) hide()
-    else showLabel(labelGroup)
-}
-
-private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
-    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
-        it.text = MethodChecker.fromHtml(labelGroup.title)
-        it.setLabelType(labelGroup.type.toUnifyLabelType())
+private fun String?.toUnifyLabelTypeString(): String {
+    return when (this) {
+        TRANSPARENT_BLACK -> COLOR_LABEL_TRANSPARENT_BLACK
+        else -> COLOR_LABEL_DEFAULT
     }
 }
 
