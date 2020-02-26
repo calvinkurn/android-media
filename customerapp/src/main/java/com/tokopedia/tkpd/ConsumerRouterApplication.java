@@ -214,6 +214,10 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.usecase.UseCase;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -281,11 +285,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         ILoyaltyRouter,
         ResolutionRouter,
         ProductDetailRouter,
-        KYCRouter,
-        CustomerRouter.IrisInstallRouter {
-
-    public static final String IRIS_ANALYTICS_EVENT_KEY = "event";
-    public static final String IRIS_ANALYTICS_APP_INSTALL = "appInstall";
+        KYCRouter {
 
     @Inject
     ReactNativeHost reactNativeHost;
@@ -935,13 +935,13 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     @Override
     public Observable<TKPDMapParam<String, Object>> verifyEventPromo(com.tokopedia.usecase.RequestParams requestParams) {
         boolean isEventOMS = remoteConfig.getBoolean("event_oms_android", false);
+        if(eventComponent == null){
+            eventComponent = DaggerEventComponent.builder()
+                    .baseAppComponent((this).getBaseAppComponent())
+                    .eventModule(new EventModule(this))
+                    .build();
+        }
         if (!isEventOMS) {
-            if(eventComponent == null){
-                eventComponent = DaggerEventComponent.builder()
-                        .baseAppComponent((this).getBaseAppComponent())
-                        .eventModule(new EventModule(this))
-                        .build();
-            }
             return eventComponent.getVerifyCartWrapper().verifyPromo(requestParams);
         } else {
             return new PostVerifyCartWrapper(this, eventComponent.getPostVerifyCartUseCase())
@@ -1288,7 +1288,19 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     public void onAppsFlyerInit() {
+        WeaveInterface appsflyerInitWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeAppflyerInit();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(appsflyerInitWeave, RemoteConfigKey.ENABLE_ASYNC_APPSFLYER_INIT, getApplicationContext());
+    }
+
+    private boolean executeAppflyerInit(){
         TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
+        return true;
     }
 
     @Override
@@ -1379,13 +1391,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 break;
         }
         return baseDaggerFragment;
-    }
-
-    @Override
-    public void sendIrisInstallEvent() {
-        Map<String, Object> map = new HashMap<>();
-        map.put(IRIS_ANALYTICS_EVENT_KEY, IRIS_ANALYTICS_APP_INSTALL);
-        mIris.sendEvent(map);
     }
 
     @Override

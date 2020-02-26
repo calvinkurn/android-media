@@ -102,6 +102,7 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
@@ -226,6 +227,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private int[] positionSticky = new int[2];
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
+    private JankyFramesMonitoringListener jankyFramesMonitoringListener;
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
@@ -245,6 +247,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         super.onAttach(context);
         mainParentStatusBarListener = (MainParentStatusBarListener)context;
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context);
+        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context);
         requestStatusBarDark();
     }
 
@@ -298,6 +301,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     private HomePerformanceMonitoringListener castContextToHomePerformanceMonitoring(Context context) {
         if(context instanceof HomePerformanceMonitoringListener) {
             return (HomePerformanceMonitoringListener) context;
+        }
+        return null;
+    }
+
+    private JankyFramesMonitoringListener castContextToJankyFramesMonitoring(Context context) {
+        if(context instanceof JankyFramesMonitoringListener) {
+            return (JankyFramesMonitoringListener) context;
         }
         return null;
     }
@@ -638,6 +648,23 @@ public class HomeFragment extends BaseDaggerFragment implements
             }
 
             adapter.submitList(data);
+            if (jankyFramesMonitoringListener != null && !isCache && jankyFramesMonitoringListener.needToSubmitDynamicChannelCount()) {
+                Map<String, Integer> layoutCounter = new HashMap<>();
+                for (Visitable visitable: data) {
+                    if (visitable instanceof DynamicChannelViewModel) {
+                        DynamicChannelViewModel dynamicChannelViewModel = (((DynamicChannelViewModel) visitable));
+                        DynamicHomeChannel.Channels channel = dynamicChannelViewModel.getChannel();
+                        if (channel != null && layoutCounter.get(channel.getLayout()) != null) {
+                            int currentCount = layoutCounter.get(channel.getLayout());
+                            layoutCounter.put(channel.getLayout(), ++currentCount);
+                        } else if (layoutCounter.get(channel.getLayout()) == null) {
+                            layoutCounter.put(channel.getLayout(), 1);
+                        }
+                    }
+                }
+
+                jankyFramesMonitoringListener.submitDynamicChannelCount(layoutCounter);
+            }
 
             if (isDataValid(data)) {
                 removeNetworkError();
