@@ -83,6 +83,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.analyticsDependencies.moengageAmp
+    implementation project(rootProject.ext.libraries.weaver)
 }
 
 project.ext {
