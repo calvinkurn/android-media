@@ -2,10 +2,8 @@ package com.tokopedia.tokopoints.di;
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.tokopoints.view.fragment.AddPointsFragment;
-import com.tokopedia.tokopoints.view.fragment.CatalogListItemFragment;
-import com.tokopedia.tokopoints.view.fragment.CatalogListingFragment;
-import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogFragment;
-import com.tokopedia.tokopoints.view.fragment.SendGiftFragment;
+import com.tokopedia.tokopoints.view.cataloglisting.CatalogListItemFragment;
+import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingFragment;
 import com.tokopedia.tokopoints.view.fragment.TokoPointsHomeFragmentNew;
 import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment;
 
@@ -17,9 +15,9 @@ public interface TokoPointComponent {
 
     void inject(TokoPointsHomeFragmentNew fragment);
 
-    void inject(CatalogListingFragment fragment);
 
-    void inject(CatalogListItemFragment fragment);
+
+
 
 
 
