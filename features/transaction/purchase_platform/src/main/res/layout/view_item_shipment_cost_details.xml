@@ -10,8 +10,12 @@
     <View
         android:id="@+id/item_divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_8"
-        android:background="@color/checkout_module_color_background" />
+        android:layout_height="@dimen/dp_1"
+        android:background="@color/checkout_module_color_background"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_summary"

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.*
 import com.google.android.material.appbar.AppBarLayout
@@ -55,6 +56,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.ViewUtils
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -111,6 +113,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var tvTotalPrice: TextView
     lateinit var tvPromoBenefitInfo: TextView
     lateinit var tvPromoUsageInfo: TextView
+    lateinit var clPromoFunnel: ConstraintLayout
     lateinit var rlContent: RelativeLayout
     lateinit var cbSelectAll: CheckBox
     lateinit var llHeader: LinearLayout
@@ -376,6 +379,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         tvTotalPrice = view.findViewById(R.id.tv_total_prices)
         tvPromoBenefitInfo = view.findViewById(R.id.tv_promo_benefit)
         tvPromoUsageInfo = view.findViewById(R.id.tv_promo_usage)
+        clPromoFunnel = view.findViewById(R.id.cl_promo_funnel)
         rlContent = view.findViewById(R.id.rl_content)
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
         cardHeader = view.findViewById(R.id.card_header)
@@ -1291,8 +1295,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderPromoFunnel(cartListData: CartListData) {
-        tvPromoBenefitInfo.text = cartListData.promoBenefitInfo
-        tvPromoUsageInfo.text = cartListData.promoUsageInfo
+        clPromoFunnel.background = ViewUtils.generateBackgroundWithShadow(clPromoFunnel)
+        // tvPromoBenefitInfo.text = cartListData.promoBenefitInfo
+        // tvPromoUsageInfo.text = cartListData.promoUsageInfo
     }
 
     private fun renderPromoGlobal(promoStackingData: PromoStackingData) {

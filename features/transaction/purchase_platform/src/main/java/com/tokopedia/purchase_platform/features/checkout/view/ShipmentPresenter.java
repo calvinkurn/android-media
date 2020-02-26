@@ -622,6 +622,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         getView().setPromoStackingData(cartShipmentAddressFormData);
 
+        getView().setPromoRevampData();
+
         setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                 cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
         );
