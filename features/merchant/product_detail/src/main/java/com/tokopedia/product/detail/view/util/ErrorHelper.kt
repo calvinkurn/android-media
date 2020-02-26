@@ -33,7 +33,7 @@ object ErrorHelper {
                 errorCode = when (t.errorCode) {
                     CODE_PRODUCT_ERR_NOT_FOUND, CODE_PRODUCT_ERR_DELETED, CODE_PRODUCT_ERR_KELONTONG -> {
                         if (fromDeeplink && t.errorCode == CODE_PRODUCT_ERR_NOT_FOUND) {
-                            logDeeplinkError(deeplinkUrl, t.errorCode.toInt())
+                            logDeeplinkError(deeplinkUrl, t.errorCode.toIntOrZero())
                         }
 
                         GlobalError.PAGE_NOT_FOUND.toString()
