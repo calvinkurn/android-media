@@ -81,6 +81,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_initial_register.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -1245,7 +1246,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.let {
                 registerAnalytics.eventViewBanner()
-                ImageHandler.LoadImage(bannerRegister, dynamicBannerDataModel.banner.imgUrl)
+                ImageUtils.loadImageWithLoadedStatus(bannerRegister, dynamicBannerDataModel.banner.imgUrl) { isLoaded ->
+                    if (!isLoaded) {
+                        bannerRegister.hide()
+                        showTicker()
+                    }
+                }
                 bannerRegister.visibility = View.VISIBLE
             }
         } else {

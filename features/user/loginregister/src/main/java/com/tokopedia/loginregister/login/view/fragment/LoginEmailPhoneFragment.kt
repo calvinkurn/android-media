@@ -90,6 +90,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import kotlinx.android.synthetic.main.fragment_login_with_phone.container
 import kotlinx.android.synthetic.main.fragment_login_with_phone.emailExtension
@@ -1329,7 +1330,12 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.let {
                 analytics.eventViewBanner()
-                ImageHandler.LoadImage(bannerLogin, dynamicBannerDataModel.banner.imgUrl)
+                ImageUtils.loadImageWithLoadedStatus(bannerLogin, dynamicBannerDataModel.banner.imgUrl) { isLoaded ->
+                    if (!isLoaded) {
+                        bannerLogin.hide()
+                        showTicker()
+                    }
+                }
                 bannerLogin.visibility = View.VISIBLE
             }
         } else {
