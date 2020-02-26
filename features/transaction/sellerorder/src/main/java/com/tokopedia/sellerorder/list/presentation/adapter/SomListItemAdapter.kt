@@ -107,8 +107,9 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
                 holder.itemView.ll_label_order?.visibility = View.GONE
             }
 
+            val orderId = somItemList[position].orderId
             holder.itemView.setOnClickListener {
-                actionListener?.onListItemClicked(somItemList[position].orderId)
+                actionListener?.onListItemClicked(orderId)
             }
         }
     }
