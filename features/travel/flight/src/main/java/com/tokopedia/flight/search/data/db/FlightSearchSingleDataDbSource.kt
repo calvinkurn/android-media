@@ -395,30 +395,6 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
         return stringBuilder.toString()
     }
 
-//    private fun getFacilityCondition(facilityEnumList: List<FlightFilterFacilityEnum>?): String? {
-//        if (facilityEnumList == null || facilityEnumList.isEmpty()) {
-//            return ""
-//        }
-//        val stringBuilder = StringBuilder()
-//        stringBuilder.append("(")
-//        for (i in facilityEnumList.indices) {
-//            val facilityEnum = facilityEnumList[i]
-//            stringBuilder.append(
-//                    when (facilityEnum) {
-//                        FlightFilterFacilityEnum.BAGGAGE -> {
-//                        }
-//                        FlightFilterFacilityEnum.MEAL -> {
-//                        }
-//                    }
-//            )
-//            if (i < facilityEnumList.size - 1) {
-//                stringBuilder.append("AND ")
-//            }
-//        }
-//        stringBuilder.append(") AND ")
-//        return stringBuilder.toString()
-//    }
-
     private fun getOrderBy(@TravelSortOption flightSortOption: Int): String {
         return when (flightSortOption) {
             TravelSortOption.CHEAPEST -> " ORDER BY FlightJourneyTable.sortPriceNumeric ASC, FlightJourneyTable.departureTimeInt ASC"
