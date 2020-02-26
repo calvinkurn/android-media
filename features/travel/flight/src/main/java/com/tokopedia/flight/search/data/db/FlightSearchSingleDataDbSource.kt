@@ -79,9 +79,8 @@ open class FlightSearchSingleDataDbSource @Inject constructor(
 
         val query = buildQueryStatistic(sqlQuery, filterModel, flightSortOption)
         val filteredJourney = flightJourneyDao.findFilteredJourneys(query)
-        val facilityFilterList = getFacilityFilter(filterModel.facilityList)
 
-        return getJourneyFilteredByFacility(filteredJourney, facilityFilterList).map {
+        return filteredJourney.map {
             populateCompactJourneyAndRoutesCoroutine(it)
         }.toList()
     }
