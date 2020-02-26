@@ -80,11 +80,14 @@ class FlightFilterViewModelTestNew {
         departureStats.add(DepartureStat(DepartureTimeEnum._00, 0, ""))
         departureStats.add(DepartureStat(DepartureTimeEnum._06, 30, "30"))
 
+        val arrivalStats = mutableListOf<DepartureStat>()
+        arrivalStats.add(DepartureStat(DepartureTimeEnum._00, 0, ""))
+
         val refundableStats = mutableListOf<RefundableStat>()
         refundableStats.add(RefundableStat(RefundableEnum.REFUNDABLE, 0, ""))
 
         val statistics = FlightSearchStatisticModel(30,  60, 60, 90,
-                transitStats, airlineStats, departureStats, refundableStats, false)
+                transitStats, airlineStats, departureStats, arrivalStats, refundableStats, false, true, true)
 
         coEvery {
             flightSearchStatisticsUseCase.executeCoroutine(any())
@@ -99,11 +102,15 @@ class FlightFilterViewModelTestNew {
         assert(actualStatisticModel?.transitTypeStatList?.size == 1)
         assert(actualStatisticModel?.airlineStatList?.size == 3)
         assert(actualStatisticModel?.departureTimeStatList?.size == 2)
+        assert(actualStatisticModel?.arrivalTimeStatList?.size == 1)
         assert(actualStatisticModel?.refundableTypeStatList?.size == 1)
         assert(actualStatisticModel?.minPrice == 30)
         assert(actualStatisticModel?.maxPrice == 60)
         assert(actualStatisticModel?.minDuration == 60)
         assert(actualStatisticModel?.maxDuration == 90)
+        assert(actualStatisticModel?.isHaveSpecialPrice == false)
+        assert(actualStatisticModel?.isHaveBaggage == true)
+        assert(actualStatisticModel?.isHaveInFlightMeal == true)
     }
 
     @Test
@@ -251,7 +258,7 @@ class FlightFilterViewModelTestNew {
         coEvery {
             flightSearchStatisticsUseCase.executeCoroutine(any())
         } returns FlightSearchStatisticModel(0, 1000, 60, 90,
-                listOf(), airlinesMockData, listOf(), listOf(), false)
+                listOf(), airlinesMockData, listOf(), listOf(), listOf(), false, true, true)
         flightFilterViewModel.init(0, FlightFilterModel())
 
         //when
@@ -270,7 +277,7 @@ class FlightFilterViewModelTestNew {
         coEvery {
             flightSearchStatisticsUseCase.executeCoroutine(any())
         } returns FlightSearchStatisticModel(0, 100000, 60, 90,
-                listOf(), listOf(), listOf(), listOf(), false)
+                listOf(), listOf(), listOf(), listOf(), listOf(), false, true, true)
 
         val filterModel = FlightFilterModel()
         filterModel.priceMin = 20000
