@@ -117,5 +117,6 @@ class PopularKeywordViewHolder (val view: View,
     interface PopularKeywordListener {
         fun onPopularKeywordSectionReloadClicked(position: Int, channel: DynamicHomeChannel.Channels)
         fun onPopularKeywordItemClicked(applink: String, channel: DynamicHomeChannel.Channels)
+        fun onPopularKeywordItemImpressed(applink: String, channel: DynamicHomeChannel.Channels)
     }
 }

@@ -11,6 +11,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.StringBuilder
 
@@ -43,10 +44,14 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
         val tvCount = view.findViewById<Typography>(R.id.tv_count)
 
         fun bind(data : PopularKeywordViewModel, popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener, channel: DynamicHomeChannel.Channels) {
+
             ivImage.loadImage(data.imageUrl)
             tvProduct.text = data.title
             val countString = StringBuilder().append(data.productCount).append(" Produk")
             tvCount.text = countString
+            itemView.addOnImpressionListener(data.impressHolder) {
+                popularKeywordListener.onPopularKeywordItemImpressed(data.applink, channel)
+            }
             cardProduct.setOnClickListener{
                 popularKeywordListener.onPopularKeywordItemClicked(data.applink, channel)
             }
