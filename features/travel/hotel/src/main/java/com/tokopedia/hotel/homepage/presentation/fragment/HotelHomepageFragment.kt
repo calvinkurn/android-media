@@ -220,7 +220,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
         hotelHomepageModel.checkInDate = updatedCheckInCheckOutDate.first
         hotelHomepageModel.checkOutDate = updatedCheckInCheckOutDate.second
         hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkInDate))
-        hotelHomepageModel.checkInDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
+        hotelHomepageModel.checkOutDateFmt = TravelDateUtil.dateToString(TravelDateUtil.DEFAULT_VIEW_FORMAT, TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, hotelHomepageModel.checkOutDate))
         hotelHomepageModel.nightCounter = countRoomDuration()
     }
 

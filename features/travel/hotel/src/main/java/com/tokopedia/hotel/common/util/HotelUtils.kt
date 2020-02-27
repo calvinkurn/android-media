@@ -30,11 +30,11 @@ class HotelUtils {
                 updatedCheckInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
                 updatedCheckOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
             } else if (updatedCheckInDate.isBlank()) {
-                val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOutDate)
+                val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, updatedCheckOutDate)
                 val dayBeforeCheckOut = TravelDateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
                 updatedCheckInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayBeforeCheckOut)
             } else if (updatedCheckOutDate.isBlank()) {
-                val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkInDate)
+                val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, updatedCheckInDate)
                 val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
                 updatedCheckOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
             }
@@ -44,10 +44,15 @@ class HotelUtils {
                 updatedCheckInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
             }
             //if check out date has passed or check out date < check in date
-            if (countCurrentDayDifference(updatedCheckOutDate) < 1 || countDayDifference(updatedCheckInDate, updatedCheckOutDate) < 1) {
-                val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkInDate)
+            if (countCurrentDayDifference(updatedCheckOutDate) < 1) {
+                val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, updatedCheckInDate)
                 val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
                 updatedCheckOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
+            }
+
+            if (countDayDifference(updatedCheckInDate, updatedCheckOutDate) < 1) {
+                updatedCheckInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
+                updatedCheckOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
             }
 
             return Pair(updatedCheckInDate, updatedCheckOutDate)
