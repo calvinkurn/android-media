@@ -639,15 +639,18 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun showFAB() {
-        goToCreatePost(getSellerApplink())
-        shopAnalytics.eventClickCreatePost()
+        fab_feed.show()
+        fab_feed.setOnClickListener {
+            goToCreatePost(getSellerApplink())
+            shopAnalytics.eventClickCreatePost()
+        }
     }
 
     private fun getSellerApplink(): String {
         var applink = ApplinkConst.CONTENT_CREATE_POST
         if (whitelistDomain.authors.size != 0) {
             for (author in whitelistDomain.authors) {
-                if (!author.equals(Author.TYPE_AFFILIATE)) {
+                if (author.type.equals(Author.TYPE_SHOP)) {
                     applink = author.link
                 }
             }
