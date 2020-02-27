@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper
 
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.*
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.*
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.*
 import javax.inject.Inject
 
 class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
@@ -47,8 +47,11 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
         addressModel.provinceName = address.provinceName
         addressModel.receiverName = address.receiverName
 
-        addressModel.fullAddress = address.addressStreet + address.districtName + address.cityName +
-                address.provinceName + address.postalCode
+        addressModel.fullAddress = address.addressStreet + ", " +
+                address.districtName + ", " +
+                address.cityName + ", " +
+                address.provinceName + ", " +
+                address.postalCode
 
 
         return addressModel
