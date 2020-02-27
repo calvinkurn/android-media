@@ -5,7 +5,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class ProductUpdateV3Data(
-        @SerializedName("productListMetaHeader")
+        @SerializedName("header")
         @Expose
         val header: ProductUpdateV3Header = ProductUpdateV3Header(),
         @SerializedName("isSuccess")

@@ -165,7 +165,7 @@ class ProductManageModule {
         return """
             mutation productUpdateV3(${'$'}input: ProductInputV3!){
               ProductUpdateV3(input:${'$'}input) {
-                productListMetaHeader {
+                header {
                   messages
                   reason
                   errorCode

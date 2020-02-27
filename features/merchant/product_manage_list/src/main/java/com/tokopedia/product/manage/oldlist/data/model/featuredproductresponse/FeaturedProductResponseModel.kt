@@ -8,7 +8,7 @@ data class FeaturedProductResponseModel (
 )
 
 data class GoldManageFeaturedProductV2 (
-        @SerializedName("productListMetaHeader")
+        @SerializedName("header")
         val header: Header? = null
 )
 
