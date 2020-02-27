@@ -1,13 +1,15 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 
-import android.content.Context
-import android.util.TypedValue
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -39,7 +41,8 @@ class PromoListItemViewHolder(private val view: View,
         }
 
         itemView.label_promo_item_title.text = element.uiData.title
-        itemView.label_promo_item_sub_title.text = element.uiData.subTitle
+        formatSubTitle(element)
+
         if (element.uiState.isEnabled) {
             renderEnablePromoItem(element)
         } else {
@@ -81,5 +84,30 @@ class PromoListItemViewHolder(private val view: View,
         itemView.image_select_promo.gone()
         setImageFilterGrayScale(itemView.image_promo_item)
     }
+
+    private fun formatSubTitle(element: PromoListItemUiModel) {
+        val clickableText = " Lihat detail"
+        if (!element.uiData.subTitle.contains(clickableText)) element.uiData.subTitle += clickableText
+
+        val startSpan = element.uiData.subTitle.indexOf(clickableText)
+        val endSpan = element.uiData.subTitle.indexOf(clickableText) + clickableText.length
+        val formattedClickableText = SpannableString(element.uiData.subTitle)
+        val clickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                listener.onClickPromoItemDetail(element)
+            }
+
+            override fun updateDrawState(textPaint: TextPaint) {
+                super.updateDrawState(textPaint)
+                textPaint.isUnderlineText = false
+                textPaint.color = ContextCompat.getColor(itemView.context, R.color.Green_G500)
+            }
+        }
+        formattedClickableText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        itemView.label_promo_item_sub_title.movementMethod = LinkMovementMethod.getInstance()
+        itemView.label_promo_item_sub_title.text = formattedClickableText
+    }
+
 
 }

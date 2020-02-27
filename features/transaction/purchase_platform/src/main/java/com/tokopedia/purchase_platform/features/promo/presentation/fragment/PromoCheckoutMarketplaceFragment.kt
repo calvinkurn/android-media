@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
@@ -298,6 +299,10 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         fragmentUiModel.uiState.hasAnyPromoSellected = hasAnyPromoSellected
 
         return hasAnyPromoSellected
+    }
+
+    override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
+        Toast.makeText(context, "Go to detail promo", Toast.LENGTH_SHORT).show()
     }
 
     // -- END OF PROMO LIST SECTION
