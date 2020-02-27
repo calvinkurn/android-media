@@ -47,7 +47,9 @@ public class PerformanceMonitoring {
         if(trace != null){
             trace.stop();
             performanceLogModel.setEndTime(System.currentTimeMillis());
-            FpmLogger.getInstance(context).save(performanceLogModel);
+            if (context != null) {
+                FpmLogger.getInstance(context).save(performanceLogModel);
+            }
         }
     }
 

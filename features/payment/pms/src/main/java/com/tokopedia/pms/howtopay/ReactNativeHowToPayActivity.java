@@ -26,7 +26,7 @@ public class ReactNativeHowToPayActivity extends BaseSimpleActivity {
 
     @DeepLink(ApplinkConst.HOWTOPAY)
     public static Intent getHowToPayApplinkCallingIntent(Context context, Bundle bundle){
-        ReactUtils.startTracing(MP_PAYMENT_MANAGEMENT_SYSTEM);
+        ReactUtils.startTracing(context, MP_PAYMENT_MANAGEMENT_SYSTEM);
         return ReactNativeHowToPayActivity.createApplinkCallingIntent(context, ReactConst.Screen.HOW_TO_PAY, "Cara Pembayaran", bundle);
     }
 

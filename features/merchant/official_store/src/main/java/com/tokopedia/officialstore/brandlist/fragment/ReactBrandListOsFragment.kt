@@ -20,7 +20,7 @@ class ReactBrandListOsFragment : ReactNativeFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        ReactUtils.startTracing(MP_BRAND_LIST)
+        ReactUtils.startTracing(context, MP_BRAND_LIST)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
