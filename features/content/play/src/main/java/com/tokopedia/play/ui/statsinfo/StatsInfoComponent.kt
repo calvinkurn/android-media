@@ -34,6 +34,9 @@ open class StatsInfoComponent(
                             is ScreenStateEvent.VideoStreamChanged ->
                                 uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
                             is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
+                                uiView.hide()
+                            }
                         }
                     }
         }

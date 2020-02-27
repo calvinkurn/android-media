@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
-import com.tokopedia.play.ui.stats.StatsView
 import com.tokopedia.play.view.uimodel.TotalLikeUiModel
 import com.tokopedia.play.view.uimodel.TotalViewUiModel
 import com.tokopedia.unifycomponents.UnifyButton
@@ -28,14 +27,11 @@ class EndLiveInfoView(
             LayoutInflater.from(container.context).inflate(R.layout.view_end_live_info, container, true)
                     .findViewById(R.id.cl_play_live_ended)
 
-    private val clPlayLiveEnded = view as ConstraintLayout
     private val txtLiveEndedTitle = view.findViewById<TextView>(R.id.txt_live_ended_title)
     private val txtLiveEndedBody = view.findViewById<TextView>(R.id.txt_live_ended_body)
     private val btnLiveEndedAction = view.findViewById<UnifyButton>(R.id.btn_live_ended_action)
     private val tvTotalViews = view.findViewById<Typography>(R.id.tv_total_views)
     private val tvTotalLikes = view.findViewById<Typography>(R.id.tv_total_likes)
-
-    internal val statsView = StatsView(clPlayLiveEnded)
 
     private val resources: Resources
         get() = view.resources
