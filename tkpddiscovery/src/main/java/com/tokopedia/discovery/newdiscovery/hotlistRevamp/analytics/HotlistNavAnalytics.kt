@@ -1,6 +1,6 @@
 package com.tokopedia.discovery.newdiscovery.hotlistRevamp.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.categoryrevamp.data.productModel.ProductsItem
 import com.tokopedia.filter.common.data.Option
@@ -90,7 +90,7 @@ class HotlistNavAnalytics {
     // 7 user click on social share
 
     fun eventShareClicked(isUserLoggedIn: Boolean,
-                          pagePath: String, share_icon: String) {
+                          pagePath: String) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
                 KEY_EVENT, KEY_CLICK_HOTLIST,

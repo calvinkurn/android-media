@@ -39,6 +39,7 @@
 /features/common/developer_options                  	@tokopedia/core-team
 /features/common/nps                                	@tokopedia/core-team
 /features/common/resources_common                   	@tokopedia/core-team
+/features/common/qr_scanner                   	        @tokopedia/core-team
 
 /features/discovery/category_common/                	@tokopedia/minion-stuart
 /features/discovery/flashsale_management/               @tokopedia/minion-stuart
@@ -47,6 +48,7 @@
 /features/fintech/mitra_toppers/                        @tokopedia/minion-stuart
 
 /features/merchant/atc_variant/                         @tokopedia/minion-stuart
+/features/merchant/brandlist/                           @tokopedia/minion-stuart
 /features/merchant/gold_merchant/                       @tokopedia/minion-stuart
 /features/merchant/gold_merchant_common/                @tokopedia/minion-stuart
 /features/merchant/gold_merchant_resource/              @tokopedia/minion-stuart
@@ -214,6 +216,7 @@
 /libraries/push_notification/							@tokopedia/core-team
 /libraries/react_native/								@tokopedia/core-team
 /libraries/remote_config/								@tokopedia/core-team
+/libraries/remoteresourcerequest/						@tokopedia/core-team
 /libraries/sharedata/									@tokopedia/core-team
 /libraries/track/										@nathaniel09
 /libraries/tracking_optimizer/							@nathaniel09
