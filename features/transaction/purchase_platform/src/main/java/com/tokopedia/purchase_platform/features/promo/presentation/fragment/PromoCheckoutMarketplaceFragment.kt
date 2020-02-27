@@ -122,6 +122,8 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory> {
         adapter = PromoCheckoutAdapter(adapterTypeFactory)
+        itemDecorator.adapter = adapter
+
         return adapter
     }
 
