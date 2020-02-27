@@ -18,7 +18,7 @@ import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.Cir
 import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home_page_banner.presentation.widgets.pageIndicator.CircularPageIndicator
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.iris.util.ConstantKt
+import com.tokopedia.iris.util.*
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -114,7 +114,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                         val dataLayer = HomePageTracking.getBannerImpressionDataLayer(
                                 it[position]
                         )
-                        dataLayer.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId())
+                        dataLayer.put(KEY_SESSION_IRIS, irisSession.getSessionId())
                         listener.putEEToTrackingQueue(dataLayer)
                         it[position].invoke()
                     }

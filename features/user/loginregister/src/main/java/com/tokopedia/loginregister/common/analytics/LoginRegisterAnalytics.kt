@@ -21,7 +21,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
 
-const val KEY_SESSION_IRIS = "sessionIris"
+import com.tokopedia.iris.util.*
 
 /**
  * @author by nisie on 10/2/18.

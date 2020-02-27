@@ -15,7 +15,7 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
 import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.iris.util.ConstantKt
+import com.tokopedia.iris.util.*
 
 
 object DynamicProductDetailTracking {
@@ -30,7 +30,7 @@ object DynamicProductDetailTracking {
         customDimension[KEY_PAGE_TYPE] = "/product"
         customDimension[KEY_SHOP_TYPE] = shopType
         customDimension[KEY_PRODUCT_ID] = productId
-        customDimension[ConstantKt.KEY_SESSION_IRIS] = irisSessionId
+        customDimension[KEY_SESSION_IRIS] = irisSessionId
 
         TrackApp.getInstance().gtm.sendScreenAuthenticated(ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME, customDimension)
     }
@@ -505,7 +505,7 @@ object DynamicProductDetailTracking {
                         ProductTrackingConstant.Tracking.NON_VARIANT
                     }
             )
-            mapEvent[ConstantKt.KEY_SESSION_IRIS] = irisSessionId
+            mapEvent[KEY_SESSION_IRIS] = irisSessionId
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, action)
         }
 
@@ -783,7 +783,7 @@ object DynamicProductDetailTracking {
             }?.firstOrNull()?.uRLOriginal ?: ""
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                    ConstantKt.KEY_SESSION_IRIS,  irisSessionId,
+                    KEY_SESSION_IRIS,  irisSessionId,
                     ProductTrackingConstant.Tracking.KEY_EVENT, "viewProduct",
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, "product page",
                     ProductTrackingConstant.Tracking.KEY_ACTION, "view product page",
