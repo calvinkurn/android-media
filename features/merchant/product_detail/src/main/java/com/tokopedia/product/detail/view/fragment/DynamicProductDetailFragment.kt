@@ -224,6 +224,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
+    private val irisSessionId by lazy {
+        context?.let{ IrisSession(it).getSessionId() } ?: ""
+    }
 
     //Performance Monitoring
     lateinit var performanceMonitoringP1: PerformanceMonitoring
@@ -1225,11 +1228,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             viewModel.shopInfo?.let { shopInfo ->
                 DynamicProductDetailTracking.Moengage.sendMoEngageOpenProduct(p1, shopInfo.shopCore.name)
                 DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
-                val context = getContext()
-                var irisSessionId = ""
-                if(context != null){
-                    irisSessionId = IrisSession(context)   .getSessionId()
-                }
 
                 DynamicProductDetailTracking.sendScreen(
                         irisSessionId,
@@ -1739,9 +1737,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
-                val irisSessionId:String = context?.let {
-                    IrisSession(it).getSessionId()?:""
-                } ?: ""
                 DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListName, productInfo, shopInfo, trackerAttribution,
                         isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
                 return
@@ -2040,9 +2035,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         actionButtonView.addToCartClick = {
             viewModel.getDynamicProductInfoP1?.let {
                 if (viewModel.isUserSessionActive) {
-                    val irisSessionId:String = context?.let {
-                        IrisSession(it).getSessionId()?:""
-                    } ?: ""
                     DynamicProductDetailTracking.Click.eventAddToCart(irisSessionId, viewModel.getDynamicProductInfoP1,
                             it.data.variant.isVariant)
                 } else {
