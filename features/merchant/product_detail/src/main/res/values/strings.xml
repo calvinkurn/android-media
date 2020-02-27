@@ -185,4 +185,9 @@
     <string name="banned_product_description">Barang ini tidak diperjual belikan \nkarena melanggar syarat dan ketentuan Tokopedia</string>
 
 
+    //Variant section
+    <string name="variant_option_builder_1">Pilih %1$s : </string>
+    <string name="variant_option_builder_2">%1$d Pilihan</string>
+
+
 </resources>

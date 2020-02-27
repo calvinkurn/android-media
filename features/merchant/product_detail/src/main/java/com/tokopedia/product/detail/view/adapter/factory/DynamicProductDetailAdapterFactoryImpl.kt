@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.*
 
@@ -66,6 +67,10 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
     }
 
     override fun type(data: PageErrorDataModel): Int {
+        return PageErrorViewHolder.LAYOUT
+    }
+
+    override fun type(data: VariantDataModel): Int {
         return PageErrorViewHolder.LAYOUT
     }
 
