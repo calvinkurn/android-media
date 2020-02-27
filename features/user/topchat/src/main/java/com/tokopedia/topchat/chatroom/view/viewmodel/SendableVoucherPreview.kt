@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
+import androidx.annotation.Keep
 import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER_ATTACHMENT
 import com.tokopedia.chat_common.data.SendableViewModel
@@ -78,6 +79,7 @@ class SendableVoucherPreview(
         return false
     }
 
+    @Keep
     class WebsocketVoucherPayload(
             val voucher_id: Int,
             val tnc: String,
