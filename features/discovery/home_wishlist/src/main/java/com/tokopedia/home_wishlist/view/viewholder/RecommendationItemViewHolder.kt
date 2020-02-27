@@ -36,7 +36,14 @@ class RecommendationItemViewHolder(view: View) : SmartAbstractViewHolder<Recomme
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = element.recommendationItem.isFreeOngkirActive,
                                     imageUrl = element.recommendationItem.freeOngkirImageUrl
-                            )
+                            ),
+                            labelGroupList = element.recommendationItem.labelGroupList.map {
+                                ProductCardModel.LabelGroup(
+                                        title = it.title,
+                                        position = it.position,
+                                        type = it.type
+                                )
+                            }
                     )
             )
 
