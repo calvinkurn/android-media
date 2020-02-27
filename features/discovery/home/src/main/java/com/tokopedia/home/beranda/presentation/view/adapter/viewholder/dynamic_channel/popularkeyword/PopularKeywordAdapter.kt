@@ -34,7 +34,7 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
     }
 
     override fun onBindViewHolder(holder: Holder, position: Int) {
-        holder.bind(dataList[position], popularKeywordListener, channel)
+        holder.bind(dataList[position], popularKeywordListener, channel, position)
     }
 
     class Holder(view: View): RecyclerView.ViewHolder(view) {
@@ -43,17 +43,16 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
         val tvProduct = view.findViewById<Typography>(R.id.tv_product)
         val tvCount = view.findViewById<Typography>(R.id.tv_count)
 
-        fun bind(data : PopularKeywordViewModel, popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener, channel: DynamicHomeChannel.Channels) {
-
+        fun bind(data : PopularKeywordViewModel, popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener, channel: DynamicHomeChannel.Channels, position: Int) {
             ivImage.loadImage(data.imageUrl)
             tvProduct.text = data.title
             val countString = StringBuilder().append(data.productCount).append(" Produk")
             tvCount.text = countString
             itemView.addOnImpressionListener(data.impressHolder) {
-                popularKeywordListener.onPopularKeywordItemImpressed(data.applink, channel)
+                popularKeywordListener.onPopularKeywordItemImpressed(channel, position, data.title)
             }
             cardProduct.setOnClickListener{
-                popularKeywordListener.onPopularKeywordItemClicked(data.applink, channel)
+                popularKeywordListener.onPopularKeywordItemClicked(data.applink, channel, position, data.title)
             }
         }
     }

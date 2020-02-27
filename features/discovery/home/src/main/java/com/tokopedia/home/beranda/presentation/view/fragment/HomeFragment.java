@@ -1369,14 +1369,15 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onPopularKeywordItemImpressed(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel) {
-        //implement track
+    public void onPopularKeywordItemImpressed(@NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
+        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword));
     }
 
     @Override
-    public void onPopularKeywordItemClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel) {
+    public void onPopularKeywordItemClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
         RouteManager.route(getContext(),applink);
-        //implement track
+        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickItem(channel, position, keyword));
+
     }
 
     protected void registerBroadcastReceiverTokoCash() {
