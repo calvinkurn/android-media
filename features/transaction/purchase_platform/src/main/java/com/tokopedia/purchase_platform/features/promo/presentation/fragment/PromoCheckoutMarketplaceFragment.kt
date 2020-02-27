@@ -188,7 +188,12 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     // --- RECOMMENDATION SECTION
 
-    override fun onClickApplyRecommendedPromo() {
+    override fun onClickApplyRecommendedPromo(element: PromoRecommendationUiModel) {
+        val newData = PromoRecommendationUiModel.clone(element).apply {
+            uiState.isButtonSelectEnabled = false
+        }
+        adapter.modifyData(adapter.data.indexOf(element), newData)
+
         // Todo : get recommendation promo from current list
         // Todo : hit API
         // Todo : if success >> update recommendation layout; if failed >> show toast error

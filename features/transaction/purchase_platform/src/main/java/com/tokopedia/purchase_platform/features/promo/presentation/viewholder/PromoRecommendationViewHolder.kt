@@ -20,11 +20,11 @@ class PromoRecommendationViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoRecommendationUiModel) {
-        itemView.button_apply_promo_recommendation.setOnClickListener {
-            listener.onClickApplyRecommendedPromo()
-            playAnimation()
-        }
         if (element.uiState.isButtonSelectEnabled) {
+            itemView.button_apply_promo_recommendation.setOnClickListener {
+                playAnimation()
+                listener.onClickApplyRecommendedPromo(element)
+            }
             itemView.image_check_promo_recommendation.gone()
             itemView.button_apply_promo_recommendation.isEnabled = true
             itemView.button_apply_promo_recommendation.text = "Pilih"
