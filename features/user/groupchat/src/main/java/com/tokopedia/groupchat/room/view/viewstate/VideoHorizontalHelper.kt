@@ -1,15 +1,13 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
-import androidx.fragment.app.FragmentActivity
 import android.view.View
+import androidx.fragment.app.FragmentActivity
 import com.google.android.youtube.player.YouTubePlayer
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.common.analytics.GroupChatAnalytics
-import com.tokopedia.groupchat.room.view.activity.PlayActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
@@ -23,7 +21,6 @@ class VideoHorizontalHelper(
         private var videoContainer: View,
         private var youTubePlayer: YouTubePlayer?,
         private var setChatListHasSpaceOnTop: (Int) -> Unit,
-        private var liveIndicator: View,
         analytics: GroupChatAnalytics,
         var activity: FragmentActivity
 ): PlayBaseHelper(model) {
@@ -64,10 +61,9 @@ class VideoHorizontalHelper(
         hideVideoToggle.hide()
     }
 
-    fun showVideoOnly(videoLive: Boolean) {
+    fun showVideoOnly() {
         showVideo()
         hideAllToggle()
-        liveIndicator.showWithCondition(videoLive)
     }
 
     fun onPlayed() {
@@ -89,7 +85,6 @@ class VideoHorizontalHelper(
 
         hideAllToggle()
         videoContainer.hide()
-        liveIndicator.hide()
     }
 
     fun clearDataVideoHorizontal() {

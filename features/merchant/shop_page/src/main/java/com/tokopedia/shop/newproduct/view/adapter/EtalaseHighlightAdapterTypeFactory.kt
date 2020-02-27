@@ -14,13 +14,17 @@ import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.newproduct.view.datamodel.EtalaseHighlightCarouselViewModel
 import com.tokopedia.shop.newproduct.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
+import com.tokopedia.shop.newproduct.view.listener.ShopProductImpressionListener
 import com.tokopedia.shop.product.view.adapter.viewholder.ErrorNetworkWrapViewHolder
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductCarouselViewHolder
 import com.tokopedia.shop.product.view.model.HideViewModel
 
-class EtalaseHighlightAdapterTypeFactory(private val shopProductClickedListener: ShopProductClickedListener?,
-                                         private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?,
-                                         private val deviceWidth: Int) : BaseAdapterTypeFactory() {
+class EtalaseHighlightAdapterTypeFactory(
+        private val shopProductClickedListener: ShopProductClickedListener?,
+        private val shopProductImpressionListener: ShopProductImpressionListener?,
+        private val shopCarouselSeeAllClickedListener: ShopCarouselSeeAllClickedListener?,
+        private val deviceWidth: Int
+) : BaseAdapterTypeFactory() {
 
     override fun type(viewModel: LoadingModel): Int {
         return LoadingShimmeringGridViewHolder.LAYOUT
@@ -49,7 +53,7 @@ class EtalaseHighlightAdapterTypeFactory(private val shopProductClickedListener:
             ErrorNetworkWrapViewHolder(parent)
         } else if (type == ShopProductCarouselViewHolder.LAYOUT) {
             ShopProductCarouselViewHolder(parent, deviceWidth, shopProductClickedListener,
-                    "", ShopTrackProductTypeDef.ETALASE_HIGHLIGHT, shopCarouselSeeAllClickedListener)
+                    shopProductImpressionListener,"", ShopTrackProductTypeDef.ETALASE_HIGHLIGHT, shopCarouselSeeAllClickedListener)
         } else if (type == HideViewHolder.LAYOUT) {
             HideViewHolder(parent)
         } else {
