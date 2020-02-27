@@ -94,13 +94,5 @@ class ShopProductViewHolder(
             }
 
         })
-
-//        if (shopProductViewModel.isCarousel) {
-//            productCard.shopPage_carouselHideComponent(
-//                    isInvisibleRatingAndReview = shopProductViewModel.rating <= 0 && totalReview <= 0,
-//                    isInvisibleFreeOngkirBadge = !freeOngkirObject.isActive || freeOngkirObject.imageUrl.isEmpty(),
-//                    isInvisibleDiscountAndSlashPrice = shopProductViewModel.discountPercentage.toIntOrZero() <= 0
-//            )
-//        }
     }
 }

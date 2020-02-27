@@ -5,6 +5,7 @@ import com.tokopedia.merchantvoucher.common.gql.data.MerchantVoucherModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.constant.ShopEtalaseTypeDef
+import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.data.viewmodel.BaseMembershipViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemRegisteredViewModel
 import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
@@ -62,9 +63,17 @@ object ShopPageProductListMapper {
                     it.isShowFreeOngkir = freeOngkir.isActive
                     it.freeOngkirPromoIcon = freeOngkir.imgUrl
                     it.etalaseId = etalaseId
+                    it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 }
             }
 
+    private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupViewModel {
+        return LabelGroupViewModel(
+                position = labelGroup.position,
+                title = labelGroup.title,
+                type = labelGroup.type
+        )
+    }
 
     fun mapShopFeaturedProductToProductViewModel(shopFeaturedProduct: ShopFeaturedProduct, isMyOwnProduct: Boolean): ShopProductViewModel =
             with(shopFeaturedProduct) {
@@ -90,6 +99,7 @@ object ShopPageProductListMapper {
                     it.isShowWishList = !isMyOwnProduct
                     it.isShowFreeOngkir = freeOngkir.isActive
                     it.freeOngkirPromoIcon = freeOngkir.imgUrl
+                    it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 }
             }
 
@@ -148,7 +158,17 @@ object ShopPageProductListMapper {
                 ratingCount = shopProductViewModel.rating.toInt(),
                 reviewCount = totalReview,
                 freeOngkir = freeOngkirObject,
-                labelGroupList = listOf() // TODO:: Add Label Groups
+                labelGroupList = shopProductViewModel.labelGroupList.map {
+                    mapToProductCardLabelGroup(it)
+                }
+        )
+    }
+
+    private fun mapToProductCardLabelGroup(labelGroupViewModel: LabelGroupViewModel): ProductCardModel.LabelGroup {
+        return ProductCardModel.LabelGroup(
+                position = labelGroupViewModel.position,
+                title = labelGroupViewModel.title,
+                type = labelGroupViewModel.type
         )
     }
 }
