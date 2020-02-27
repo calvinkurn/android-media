@@ -13,6 +13,8 @@ import com.tokopedia.digital.product.view.fragment.DigitalProductFragment;
 
 import java.util.Objects;
 
+import timber.log.Timber;
+
 /**
  * @author anggaprasetiyo on 4/25/17.
  *
@@ -62,6 +64,7 @@ public class DigitalProductActivity extends BaseSimpleActivity
             passData = getIntent().getExtras().getParcelable(DigitalExtraParam.EXTRA_CATEGORY_PASS_DATA);
         }
         super.onCreate(savedInstanceState);
+        handleIntentSlice(getIntent());
     }
 
     @Override
@@ -112,5 +115,12 @@ public class DigitalProductActivity extends BaseSimpleActivity
                 passData.getAdditionalETollBalance(),
                 passData.getAdditionalETollLastUpdatedDate(),
                 passData.getAdditionalETollOperatorName());
+    }
+
+    private void handleIntentSlice(Intent intent){
+        if(intent.getData() != null) {
+            String trackingSliceClick = intent.getStringExtra("RECHARGE_PRODUCT_EXTRA");
+            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#"+trackingSliceClick);
+        }
     }
 }

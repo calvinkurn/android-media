@@ -15,8 +15,6 @@ import com.tokopedia.digital.home.di.DigitalHomePageComponent
 import com.tokopedia.digital.home.di.DigitalHomePageComponentInstance
 import com.tokopedia.digital.home.presentation.fragment.DigitalHomePageFragment
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.recharge_slice.data.Product
-import com.tokopedia.recharge_slice.data.TrackingData
 import timber.log.Timber
 
 /**
@@ -77,8 +75,8 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
 
     private fun Intent.handleExtra(){
         if(intent.data != null) {
-            val trackingClick = intent.getParcelableExtra<TrackingData>(RECHARGE_PRODUCT_EXTRA)
-            Timber.d("P2#ActionSlice_Click_Recharge#$trackingClick")
+            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
+            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
         }
     }
 

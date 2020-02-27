@@ -46,7 +46,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.firebase.appIndexing
-    implementation project(rootProject.ext.features.recharge_slice)
 }
 
 project.ext {

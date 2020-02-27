@@ -13,6 +13,7 @@ import com.tokopedia.vouchergame.common.view.model.VoucherGameExtraParam
 import com.tokopedia.vouchergame.list.di.DaggerVoucherGameListComponent
 import com.tokopedia.vouchergame.list.di.VoucherGameListComponent
 import com.tokopedia.vouchergame.list.view.fragment.VoucherGameListFragment
+import timber.log.Timber
 
 /**
  * Created by resakemal on 12/08/19.
@@ -60,11 +61,14 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        intent?.handleExtra()
+
     }
 
     override fun shouldShowOptionMenu(): Boolean {
         return true
     }
+
 
     companion object {
 
@@ -73,6 +77,9 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         const val PARAM_OPERATOR_ID = "operator_id"
         const val PARAM_PRODUCT_ID = "product_id"
         const val VOUCHER_GAME_SCREEN_NAME = "/digital/voucher game"
+
+        const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
+
 
         fun newInstance(context: Context, categoryId: String, menuId: String, operatorId: String = "", productId: String = ""): Intent {
             val intent = Intent(context, VoucherGameListActivity::class.java)
@@ -87,5 +94,12 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
     override fun onBackPressed() {
         (fragment as VoucherGameListFragment).onBackPressed()
         super.onBackPressed()
+    }
+
+    private fun Intent.handleExtra() {
+        if (intent.data != null) {
+            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
+            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
+        }
     }
 }

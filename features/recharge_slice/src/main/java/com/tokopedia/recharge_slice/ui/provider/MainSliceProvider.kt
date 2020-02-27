@@ -73,12 +73,12 @@ class MainSliceProvider : SliceProvider() {
         }
     }
 
-    private fun createPendingIntent(id: Int?, applink: String?, trackingClick:TrackingData): PendingIntent? {
+    private fun createPendingIntent(id: Int?, applink: String?, trackingClick:String): PendingIntent? {
         return id?.let {
             PendingIntent.getActivity(
                     contextNonNull,
                     it,
-                    RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                    RouteManager.getIntent(contextNonNull, applink)
                             .putExtra(RECHARGE_PRODUCT_EXTRA, trackingClick),
                     PendingIntent.FLAG_UPDATE_CURRENT
             )
@@ -104,7 +104,6 @@ class MainSliceProvider : SliceProvider() {
                         }
                     }
             } else {
-                var userSession = UserSession(contextNonNull)
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
@@ -139,8 +138,8 @@ class MainSliceProvider : SliceProvider() {
                                     it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
                                     it?.get(i)?.title?.capitalizeWords()?.let { it1 -> setSubtitle(it1) }
                                 }
-                                val trackingClick = TrackingData(userSession.userId, listOf(product))
-                                primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME, trackingClick)?.let {
+                                val trackingClick = TrackingData(listOf(product))
+                                primaryAction = createPendingIntent(recommendationModel?.get(i)?.position, recommendationModel?.get(i)?.appLink, trackingClick.toString())?.let {
                                     SliceAction.create(
                                             it,
                                             createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()),
@@ -150,8 +149,8 @@ class MainSliceProvider : SliceProvider() {
                                 }
                             }
                         }
-                    val trackingImpression = TrackingData(userSession.userId,listProduct)
-                    Timber.d("P2#ActionSlice_Impression_Recharge#$trackingImpression")
+                    val trackingImpression = TrackingData(listProduct)
+                    Timber.d("P2#ACTION_SLICE_RECHARGE_IMPRESSION#$trackingImpression")
                     }
                 }
             //}

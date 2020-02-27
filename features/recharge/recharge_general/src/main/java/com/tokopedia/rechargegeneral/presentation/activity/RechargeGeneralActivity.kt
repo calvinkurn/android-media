@@ -2,6 +2,7 @@ package com.tokopedia.rechargegeneral.presentation.activity
 
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -9,6 +10,7 @@ import com.tokopedia.common.topupbills.CommonTopupBillsComponentInstance
 import com.tokopedia.rechargegeneral.di.DaggerRechargeGeneralComponent
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.fragment.RechargeGeneralFragment
+import timber.log.Timber
 
 /**
  * applink
@@ -30,13 +32,18 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
 
     override fun getComponent(): RechargeGeneralComponent {
         return DaggerRechargeGeneralComponent.builder()
-                    .commonTopupBillsComponent(CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application))
-                    .build()
+                .commonTopupBillsComponent(CommonTopupBillsComponentInstance.getCommonTopupBillsComponent(application))
+                .build()
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
         (fragment as RechargeGeneralFragment).onBackPressed()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        intent?.handleExtra()
     }
 
     companion object {
@@ -46,6 +53,8 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         val PARAM_OPERATOR_ID = "operator_id"
         val PARAM_PRODUCT_ID = "product_id"
         val PARAM_CLIENT_NUMBER = "client_number"
+
+        const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
 
         fun newInstance(context: Context,
                         categoryId: Int,
@@ -58,6 +67,13 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
             intent.putExtra(PARAM_OPERATOR_ID, operatorId.toString())
             intent.putExtra(PARAM_PRODUCT_ID, productId)
             return intent
+        }
+    }
+
+    private fun Intent.handleExtra() {
+        if (intent.data != null) {
+            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
+            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
         }
     }
 }

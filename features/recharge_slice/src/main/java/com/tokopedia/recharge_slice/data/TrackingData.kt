@@ -4,15 +4,12 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class TrackingData(
-        var user_id :String = "",
         var products : List<Product> = emptyList()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString(),
             parcel.createTypedArrayList(Product))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(user_id)
         parcel.writeTypedList(products)
 
     }
