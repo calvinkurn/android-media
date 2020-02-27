@@ -13,7 +13,7 @@ import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDes
  * @author by jessica on 2020-01-02
  */
 
-class GetEmptyViewModelsUseCase {
+class GetEmptyModelsUseCase {
 
     fun requestEmptyViewModels(): List<TravelDestinationItemModel> {
         return listOf(TravelDestinationSummaryModel(),

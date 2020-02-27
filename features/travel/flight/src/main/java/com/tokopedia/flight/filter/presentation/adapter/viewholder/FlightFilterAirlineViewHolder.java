@@ -1,16 +1,17 @@
-package com.tokopedia.flight.search.presentation.adapter.viewholder;
+package com.tokopedia.flight.filter.presentation.adapter.viewholder;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import androidx.annotation.LayoutRes;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.LayoutRes;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder;
