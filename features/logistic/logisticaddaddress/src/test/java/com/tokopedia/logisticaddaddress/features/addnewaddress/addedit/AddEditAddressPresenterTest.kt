@@ -23,7 +23,6 @@ object AddEditAddressPresenterTest : Spek({
 
     val saveUseCase: AddAddressUseCase = mockk(relaxUnitFun = true)
     val zipUseCase: GetZipCodeUseCase = mockk(relaxUnitFun = true)
-    val context: Context = mockk()
     val view: AddEditAddressListener = mockk(relaxed = true)
 
     mockkObject(AddNewAddressAnalytics)
@@ -34,7 +33,7 @@ object AddEditAddressPresenterTest : Spek({
     lateinit var presenter: AddEditAddressPresenter
 
     beforeEachTest {
-        presenter = AddEditAddressPresenter(context, saveUseCase, zipUseCase)
+        presenter = AddEditAddressPresenter(saveUseCase, zipUseCase)
         presenter.attachView(view)
     }
 

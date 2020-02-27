@@ -39,10 +39,9 @@ class AddNewAddressModule {
     @Provides
     @AddNewAddressScope
     fun provideAddEditAddressPresenter(
-            @ApplicationContext context: Context,
             addAddressUseCase: AddAddressUseCase,
             zipCodeUseCase: GetZipCodeUseCase): AddEditAddressPresenter {
-        return AddEditAddressPresenter(context, addAddressUseCase, zipCodeUseCase)
+        return AddEditAddressPresenter(addAddressUseCase, zipCodeUseCase)
     }
 
     @Provides
