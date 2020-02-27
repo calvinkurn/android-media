@@ -1341,12 +1341,14 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.let {
                 analytics.eventViewBanner()
-                ImageUtils.loadImageWithLoadedStatus(bannerLogin, dynamicBannerDataModel.banner.imgUrl) { isLoaded ->
-                    if (!isLoaded) {
+                ImageUtils.loadImage(bannerLogin, dynamicBannerDataModel.banner.imgUrl, imageLoaded = {
+                    if (it) {
+                        bannerLogin.hide()
+                    } else {
                         bannerLogin.hide()
                         showTicker()
                     }
-                }
+                })
                 bannerLogin.visibility = View.VISIBLE
             }
         } else {

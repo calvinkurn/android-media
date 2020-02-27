@@ -39,6 +39,7 @@ import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
@@ -1243,13 +1244,14 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.let {
                 registerAnalytics.eventViewBanner()
-                ImageUtils.loadImageWithLoadedStatus(bannerRegister, dynamicBannerDataModel.banner.imgUrl) { isLoaded ->
-                    if (!isLoaded) {
+                ImageUtils.loadImage(bannerRegister, dynamicBannerDataModel.banner.imgUrl, imageLoaded = {
+                    if (it) {
+                        bannerRegister.show()
+                    } else {
                         bannerRegister.hide()
                         showTicker()
                     }
-                }
-                bannerRegister.visibility = View.VISIBLE
+                })
             }
         } else {
             showTicker()
