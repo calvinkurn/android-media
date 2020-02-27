@@ -3,6 +3,7 @@ package com.tokopedia.tradein.view.viewcontrollers;
 import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
+import androidx.fragment.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -27,15 +28,16 @@ import com.laku6.tradeinsdk.api.Laku6TradeIn;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.tradein.viewmodel.HomeResult;
 import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
-import com.tokopedia.tradein_common.Constants;
+import com.tokopedia.tradein.Constants;
 import com.tokopedia.design.dialog.IAccessRequestListener;
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel;
+import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -45,7 +47,7 @@ import timber.log.Timber;
 
 import static com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
 
-public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessRequestListener {
+public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener {
 
 
     private TextView mTvPriceElligible;
@@ -116,7 +118,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     }
 
     @Override
-    protected void initView() {
+    public void initView() {
         mTvPriceElligible = findViewById(R.id.tv_price_elligible);
         mButtonRemove = findViewById(R.id.button_remove);
         mTvModelName = findViewById(R.id.tv_model_name);
@@ -145,7 +147,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     }
 
     @Override
-    protected void setViewModel(BaseViewModel viewModel) {
+    public void setViewModel(BaseViewModel viewModel) {
         tradeInHomeViewModel = (TradeInHomeViewModel) viewModel;
         getLifecycle().addObserver(tradeInHomeViewModel);
     }
@@ -153,6 +155,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        tradeInHomeViewModel.initilizeAppContext(getApplication());
         tradeInHomeViewModel.getHomeResultData().observe(this, (homeResult -> {
             if (!homeResult.isSuccess()) {
                 mTvInitialPrice.setText(homeResult.getDisplayMessage());
@@ -237,6 +240,16 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
         }));
     }
 
+    protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.Companion.newInstance();
+        accessDialog.setBodyText(bodyText);
+        accessDialog.setTitle(titleText);
+        accessDialog.setPositiveButton(positiveButton);
+        accessDialog.setNegativeButton(negativeButton);
+        accessDialog.show(fragmentManager, AccessRequestDialogFragment.TAG);
+    }
+
     private void sendGoToProductDetailGTM() {
         sendGeneralEvent(clickEvent,
                 category,
@@ -316,16 +329,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity implements IAccessR
     @Override
     protected int getLayoutRes() {
         return R.layout.layout_activity_tradeinhome;
-    }
-
-    @Override
-    protected int getBottomSheetLayoutRes() {
-        return 0;
-    }
-
-    @Override
-    protected boolean doNeedReattach() {
-        return false;
     }
 
     @Override

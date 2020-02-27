@@ -1,11 +1,11 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.app.Application
+import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.OnLifecycleEvent
-import android.content.Intent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.common_tradein.model.TradeInParams
@@ -15,15 +15,13 @@ import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.model.*
-import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import rx.Subscriber
 import java.util.*
-import kotlin.coroutines.CoroutineContext
 
-class FinalPriceViewModel(application: Application, val intent: Intent) : BaseTradeInViewModel(application), LifecycleObserver, CoroutineScope {
+class FinalPriceViewModel(val context: Application, val intent: Intent) : BaseTradeInViewModel(), LifecycleObserver {
     val deviceDiagData: MutableLiveData<DeviceDataResponse> = MutableLiveData()
     val addressLiveData = MutableLiveData<AddressResult>()
     val STATUS_NO_ADDRESS: Int = 12324
@@ -61,7 +59,7 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseTr
 
             override fun onError(e: Throwable) {
                 e.printStackTrace()
-                warningMessage.value = applicationInstance.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout)
+                warningMessage.value = context.getString(com.tokopedia.abstraction.R.string.default_request_error_timeout)
             }
 
             override fun onNext(graphqlResponse: GraphqlResponse?) {
@@ -95,7 +93,7 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseTr
                     "show_corner" to false,
                     "show_address" to true)
             val queryString = GraphqlHelper.loadRawString(getResource(), R.raw.tradein_address_corner)
-            val response = repository?.getGQLData(queryString, MoneyInKeroGetAddressResponse.ResponseData::class.java, request) as MoneyInKeroGetAddressResponse.ResponseData?
+            val response = getMYRepository()?.getGQLData(queryString, MoneyInKeroGetAddressResponse.ResponseData::class.java, request) as MoneyInKeroGetAddressResponse.ResponseData?
             progBarVisibility.value = false
             response?.let {
                 it.keroGetAddress.data?.let { listAddress ->
@@ -117,9 +115,5 @@ class FinalPriceViewModel(application: Application, val intent: Intent) : BaseTr
             errorMessage.value = it.localizedMessage
         })
     }
-
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
 
 }

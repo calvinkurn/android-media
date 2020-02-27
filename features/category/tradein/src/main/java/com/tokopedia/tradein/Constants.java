@@ -1,4 +1,5 @@
-package com.tokopedia.tradein_common;
+package com.tokopedia.tradein;
+
 
 import com.tokopedia.url.TokopediaUrl;
 
