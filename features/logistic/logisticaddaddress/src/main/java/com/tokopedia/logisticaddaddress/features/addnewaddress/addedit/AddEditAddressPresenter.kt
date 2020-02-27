@@ -5,10 +5,12 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import rx.Subscriber
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -17,7 +19,8 @@ import javax.inject.Inject
 class AddEditAddressPresenter
 @Inject constructor(
         private val addAddressUseCase: AddAddressUseCase,
-        private val zipCodeUseCase: GetZipCodeUseCase)
+        private val zipCodeUseCase: GetZipCodeUseCase,
+        private val getDistrictUseCase: GetDistrictUseCase)
     : BaseDaggerPresenter<AddEditView>() {
 
     fun saveAddress(model: SaveAddressDataModel, typeForm: String) {
@@ -68,6 +71,20 @@ class AddEditAddressPresenter
                                 }
                             }
                         }, {}, {}
+                )
+    }
+
+    fun getDistrict(placeId: String) {
+        getDistrictUseCase.execute(placeId)
+                .subscribe(
+                        { model ->
+                            val lat = model.latitude.toDouble()
+                            val long = model.longitude.toDouble()
+                            view.moveMap(lat, long)
+                        },
+                        {
+                            Timber.d(it)
+                        }, {}
                 )
     }
 

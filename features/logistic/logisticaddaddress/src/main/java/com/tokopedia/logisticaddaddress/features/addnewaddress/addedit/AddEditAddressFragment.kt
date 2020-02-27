@@ -36,17 +36,12 @@ import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewA
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapListener
-import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.data.entity.address.Token
-import com.tokopedia.logisticdata.data.entity.response.Data
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.form_add_new_address_data_item.*
@@ -64,7 +59,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         ResultCallback<LocationSettingsResult>, AddEditView,
         DiscomBottomSheetFragment.ActionListener,
         AutocompleteBottomSheetListener,
-        PinpointMapListener,
         ZipCodeChipsAdapter.ActionListener, IOnBackPressed,
         LabelAlamatChipsAdapter.ActionListener {
 
@@ -100,9 +94,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     @Inject
     lateinit var autoCompletePresenter: AutocompleteBottomSheetPresenter
-
-    @Inject
-    lateinit var pinpointMapPresenter: PinpointMapPresenter
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -773,10 +764,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         labelAlamatChipsAdapter.notifyDataSetChanged()
     }
 
-    override fun showLoading() {
-        // no op
-    }
-
     private fun setSaveAddressModel() {
         var address1 = ""
         val detailAddress: String
@@ -869,7 +856,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     .inject(this@AddEditAddressFragment)
             presenter.attachView(this@AddEditAddressFragment)
             autoCompletePresenter.attachView(this@AddEditAddressFragment)
-            pinpointMapPresenter.attachView(this@AddEditAddressFragment)
         }
     }
 
@@ -934,31 +920,13 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
-        pinpointMapPresenter.getDistrict(dataUiModel.listPredictions[0].placeId)
+        presenter.getDistrict(dataUiModel.listPredictions[0].placeId)
     }
 
-    override fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel) {
-        currentLat = getDistrictDataUiModel.latitude.toDouble()
-        currentLong = getDistrictDataUiModel.longitude.toDouble()
+    override fun moveMap(latitude: Double, longitude: Double) {
+        currentLat = latitude
+        currentLong = longitude
         moveMap(getLatLng(currentLat, currentLong))
-    }
-
-    override fun onSuccessAutofill(autofillDataUiModel: Data, errMsg: String) {
-    }
-
-    override fun showFailedDialog() {
-    }
-
-    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean) {
-    }
-
-    override fun onSuccessGetDistrictBoundary(districtBoundaryGeometryUiModel: DistrictBoundaryGeometryUiModel) {
-    }
-
-    override fun showOutOfReachDialog() {
-    }
-
-    override fun showUndetectedDialog() {
     }
 
     private fun hideKeyboard() {
@@ -974,9 +942,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
         saveAddressDataModel?.postalCode = zipCode
         AddNewAddressAnalytics.eventClickChipsKodePosChangeAddressNegative(eventLabel = LOGISTIC_LABEL)
-    }
-
-    override fun showAutoComplete(lat: Double, long: Double) {
     }
 
     override fun onBackPressed(): Boolean {
@@ -1037,9 +1002,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                 createFragment()
             }
         }
-    }
-
-    override fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean) {
     }
 
     private fun setDetailAlamatWatcher(): TextWatcher {

@@ -11,4 +11,5 @@ interface AddEditView : CustomerView {
     fun showZipCodes(zipcodes: List<String>)
     fun showManualZipCodes()
     fun showError(t: Throwable?)
+    fun moveMap(latitude: Double, longitude: Double)
 }

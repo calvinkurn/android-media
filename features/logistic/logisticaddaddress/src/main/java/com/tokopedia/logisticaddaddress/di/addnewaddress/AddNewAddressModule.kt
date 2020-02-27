@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.logisticaddaddress.domain.executor.MainSchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
@@ -28,11 +27,10 @@ class AddNewAddressModule {
     @AddNewAddressScope
     fun providePinpointMapPresenter(
             getDistrictUseCase: GetDistrictUseCase,
-            getDistrictMapper: GetDistrictMapper,
             revGeocodeUseCase: RevGeocodeUseCase,
             districtBoundaryUseCase: DistrictBoundaryUseCase,
             districtBoundaryMapper: DistrictBoundaryMapper): PinpointMapPresenter {
-        return PinpointMapPresenter(getDistrictUseCase, getDistrictMapper, revGeocodeUseCase,
+        return PinpointMapPresenter(getDistrictUseCase, revGeocodeUseCase,
                 districtBoundaryUseCase, districtBoundaryMapper)
     }
 
@@ -40,8 +38,9 @@ class AddNewAddressModule {
     @AddNewAddressScope
     fun provideAddEditAddressPresenter(
             addAddressUseCase: AddAddressUseCase,
-            zipCodeUseCase: GetZipCodeUseCase): AddEditAddressPresenter {
-        return AddEditAddressPresenter(addAddressUseCase, zipCodeUseCase)
+            zipCodeUseCase: GetZipCodeUseCase,
+            getDistrictUseCase: GetDistrictUseCase): AddEditAddressPresenter {
+        return AddEditAddressPresenter(addAddressUseCase, zipCodeUseCase, getDistrictUseCase)
     }
 
     @Provides

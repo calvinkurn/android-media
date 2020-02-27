@@ -3,7 +3,6 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import android.app.Activity
 import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
@@ -32,7 +31,6 @@ const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
 
 @AddNewAddressScope
 class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: GetDistrictUseCase,
-                                               private val getDistrictMapper: GetDistrictMapper,
                                                private val revGeocodeUseCase: RevGeocodeUseCase,
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
                                                private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapListener>() {
@@ -41,20 +39,19 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     fun getDistrict(placeId: String) {
-        getDistrictUseCase.clearCache()
-        getDistrictUseCase.setParams(placeId)
-        getDistrictUseCase.execute(RequestParams.create(), object: Subscriber<GraphqlResponse>() {
-            override fun onNext(t: GraphqlResponse?) {
-                val getDistrictResponseUiModel = getDistrictMapper.map(t)
-                view.onSuccessPlaceGetDistrict(getDistrictResponseUiModel.data)
-            }
+        getDistrictUseCase
+                .execute(placeId)
+                .subscribe(object : Subscriber<GetDistrictDataUiModel>() {
+                    override fun onNext(model: GetDistrictDataUiModel) {
+                        view.onSuccessPlaceGetDistrict(model)
+                    }
 
-            override fun onCompleted() {}
+                    override fun onCompleted() {}
 
-            override fun onError(e: Throwable?) {
-               e?.printStackTrace()
-            }
-        })
+                    override fun onError(e: Throwable?) {
+                        Timber.d(e)
+                    }
+                })
     }
 
     fun autofill(lat: Double, long: Double, zoom: Float) {
