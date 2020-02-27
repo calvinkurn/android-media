@@ -1,198 +1,173 @@
 package com.tokopedia.travelhomepage.homepage.presentation.viewmodel
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
-import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.travelhomepage.InstantTaskExecutorRuleSpek
-import com.tokopedia.travelhomepage.homepage.data.*
-import com.tokopedia.travelhomepage.homepage.presentation.*
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageBannerModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
+import com.tokopedia.travelhomepage.homepage.presentation.DUMMY_BANNER
+import com.tokopedia.travelhomepage.homepage.presentation.DUMMY_CATEGORIES
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
-import com.tokopedia.travelhomepage.shouldBeEquals
+import com.tokopedia.travelhomepage.shouldBe
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
-import org.spekframework.spek2.Spek
-import org.spekframework.spek2.style.gherkin.Feature
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+
 
 /**
  * @author by furqan on 04/02/2020
  */
-class TravelHomepageViewModelTest : Spek({
 
-    InstantTaskExecutorRuleSpek(this)
+class TravelHomepageViewModelTest {
 
-    Feature("Create Travel Homepage View Model") {
-        Scenario("Create Travel Homepage View Model with Initial List") {
-            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
 
-            When("Create Travel Homepage and Create Initial Items") {
-                viewModel.getIntialList(true)
-            }
+    private val graphqlRepository = mockk<GraphqlRepository>()
+    private val emptyUseCase = GetEmptyModelsUseCase()
+    private val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
 
-            Then("Verify initial item is 6 items with isLoadFromCloud true for shimmering") {
-                viewModel.travelItemList.value!!.size shouldBeEquals 6
+    private val travelDispatcherProvider = TravelTestDispatcherProvider()
 
-                viewModel.travelItemList.value!!.forEach {
-                    it.isLoadFromCloud shouldBeEquals true
-                }
+    private lateinit var viewModel: TravelHomepageViewModel
 
-                viewModel.isAllError.value shouldBeEquals false
-            }
-        }
-
-        Scenario("Create Travel Homepage View Model without Initial List") {
-            val viewModel = TravelHomepageViewModel(mockk(), mockk(), mockk(), mockk(), TravelTestDispatcherProvider())
-
-            Then("all value should be null") {
-                viewModel.travelItemList.value shouldBeEquals null
-                viewModel.isAllError.value shouldBeEquals null
-            }
-        }
+    @Before
+    fun setup() {
+        viewModel = TravelHomepageViewModel(graphqlRepository, emptyUseCase, bannerUseCase, mockk(), travelDispatcherProvider)
     }
 
-    Feature("Handle Fetch Banner") {
-        Scenario("Fetch Banner Failed") {
-            val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
-            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyModelsUseCase(), bannerUseCase, mockk(), TravelTestDispatcherProvider())
+    @Test
+    fun onGetInitialList_WithInitialList_ValueShouldBeInitialValue() {
+        // given
+        val viewModel = TravelHomepageViewModel(mockk(), emptyUseCase, mockk(), mockk(), travelDispatcherProvider)
 
-            Given("Banner UseCase throw Exception") {
-                coEvery { bannerUseCase.execute(any(), any(), any()) } coAnswers { Fail(Throwable()) }
-            }
+        // when
+        viewModel.getIntialList(true)
 
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Banner") {
-                viewModel.getBanner("", true)
-            }
-
-            Then("Banner Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBeEquals false
-            }
+        // then
+        viewModel.travelItemList.value!!.size shouldBe 6
+        viewModel.travelItemList.value!!.forEach {
+            it.isLoaded shouldBe false
+            it.isLoadFromCloud shouldBe true
         }
 
-        Scenario("Fetch Banner Success") {
-            val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
-            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyModelsUseCase(), bannerUseCase, mockk(), TravelTestDispatcherProvider())
-            val dummyData = DUMMY_BANNER
-
-            Given("Banner UseCase return dummy response") {
-                coEvery { bannerUseCase.execute(any(), any(), any()) } returns Success(dummyData)
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Banner") {
-                viewModel.getBanner("", true)
-            }
-
-            Then("Banner Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBeEquals true
-            }
-
-            Then("Banner Data should be the same as response") {
-                val bannerData = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER] as TravelHomepageBannerModel).travelCollectiveBannerModel
-                for ((index, item) in bannerData.banners.withIndex()) {
-                    item.id shouldBeEquals dummyData.banners[index].id
-                    item.product shouldBeEquals dummyData.banners[index].product
-                    item.attribute.webUrl shouldBeEquals dummyData.banners[index].attribute.webUrl
-                    item.attribute.appUrl shouldBeEquals dummyData.banners[index].attribute.appUrl
-                    item.attribute.description shouldBeEquals dummyData.banners[index].attribute.description
-                    item.attribute.imageUrl shouldBeEquals dummyData.banners[index].attribute.imageUrl
-                    item.attribute.promoCode shouldBeEquals dummyData.banners[index].attribute.promoCode
-                }
-            }
-
-            Then("Banner Meta should be the same as response") {
-                val bannerMetaData = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER] as TravelHomepageBannerModel).travelCollectiveBannerModel.meta
-                bannerMetaData.webUrl shouldBeEquals dummyData.meta.webUrl
-                bannerMetaData.appUrl shouldBeEquals dummyData.meta.appUrl
-                bannerMetaData.title shouldBeEquals dummyData.meta.title
-                bannerMetaData.type shouldBeEquals dummyData.meta.type
-            }
-
-            Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBeEquals false
-            }
-        }
+        viewModel.isAllError.value shouldBe false
     }
 
-    Feature("Handle Fetch Categories") {
-        Scenario("Fetch Categories Failed") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
+    @Test
+    fun onCreateViewModel_WithoutInitialList_ValueShouldBeNull() {
+        //given
 
-            Given("Fetch Categories throw Exception") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
-            }
+        // when
+        val viewModel = TravelHomepageViewModel(mockk(), mockk(), mockk(), mockk(), travelDispatcherProvider)
 
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Categories") {
-                viewModel.getCategories("", true)
-            }
-
-            Then("Categories Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBeEquals false
-            }
-        }
-
-        Scenario("Fetch Categories Success") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val dummyData = DUMMY_CATEGORIES
-            val graphqlSuccessResponse = GraphqlResponse(
-                    mapOf(TravelHomepageCategoryListModel.Response::class.java to TravelHomepageCategoryListModel.Response(dummyData)),
-                    mapOf(),
-                    false
-            )
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
-
-            Given("Fetch Categories return dummy response") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Categories") {
-                viewModel.getCategories("", true)
-            }
-
-            Then("Categories Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBeEquals true
-            }
-
-            Then("Category Data should be the same as response") {
-                val categories = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER] as TravelHomepageCategoryListModel).categories
-                for ((index, item) in categories.withIndex()) {
-                    item.product shouldBeEquals dummyData.categories[index].product
-                    item.attributes.appUrl shouldBeEquals dummyData.categories[index].attributes.appUrl
-                    item.attributes.imageUrl shouldBeEquals dummyData.categories[index].attributes.imageUrl
-                    item.attributes.title shouldBeEquals dummyData.categories[index].attributes.title
-                    item.attributes.webUrl shouldBeEquals dummyData.categories[index].attributes.webUrl
-                }
-            }
-
-            Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBeEquals false
-            }
-        }
+        // then
+        viewModel.travelItemList.value shouldBe null
+        viewModel.isAllError.value shouldBe null
     }
 
+    @Test
+    fun onGetBanner_FailedToFetchBanner_BannerValueShouldBeRepresentFailedToFetch() {
+        // given
+        coEvery { bannerUseCase.execute(any(), any(), any()) } coAnswers { Fail(Throwable()) }
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getBanner("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe false
+    }
+
+    @Test
+    fun onGetBanner_SuccessToFetchBanner_BannerValueShouldBeSameAsDummyData() {
+        // given
+        coEvery { bannerUseCase.execute(any(), any(), any()) } returns Success(DUMMY_BANNER)
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getBanner("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe true
+
+        val bannerData = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER] as TravelHomepageBannerModel).travelCollectiveBannerModel
+        for ((index, item) in bannerData.banners.withIndex()) {
+            item.id shouldBe DUMMY_BANNER.banners[index].id
+            item.product shouldBe DUMMY_BANNER.banners[index].product
+            item.attribute.webUrl shouldBe DUMMY_BANNER.banners[index].attribute.webUrl
+            item.attribute.appUrl shouldBe DUMMY_BANNER.banners[index].attribute.appUrl
+            item.attribute.description shouldBe DUMMY_BANNER.banners[index].attribute.description
+            item.attribute.imageUrl shouldBe DUMMY_BANNER.banners[index].attribute.imageUrl
+            item.attribute.promoCode shouldBe DUMMY_BANNER.banners[index].attribute.promoCode
+        }
+
+        val bannerMetaData = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER] as TravelHomepageBannerModel).travelCollectiveBannerModel.meta
+        bannerMetaData.webUrl shouldBe DUMMY_BANNER.meta.webUrl
+        bannerMetaData.appUrl shouldBe DUMMY_BANNER.meta.appUrl
+        bannerMetaData.title shouldBe DUMMY_BANNER.meta.title
+        bannerMetaData.type shouldBe DUMMY_BANNER.meta.type
+
+        viewModel.isAllError.value shouldBe false
+    }
+
+    @Test
+    fun onGetCategories_FailedToFetchCategories_CategoryValueShouldBeRepresentFailedToFetch() {
+        // given
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getCategories("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
+    }
+
+    @Test
+    fun onGetCategories_SuccessToFetchCategories_CategoryValueShouldBeSameAsDummyData() {
+        // given
+        val graphqlSuccessResponse = GraphqlResponse(
+                mapOf(TravelHomepageCategoryListModel.Response::class.java to TravelHomepageCategoryListModel.Response(DUMMY_CATEGORIES)),
+                mapOf(),
+                false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getCategories("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe true
+
+        val categories = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER] as TravelHomepageCategoryListModel).categories
+        for ((index, item) in categories.withIndex()) {
+            item.product shouldBe DUMMY_CATEGORIES.categories[index].product
+            item.attributes.appUrl shouldBe DUMMY_CATEGORIES.categories[index].attributes.appUrl
+            item.attributes.imageUrl shouldBe DUMMY_CATEGORIES.categories[index].attributes.imageUrl
+            item.attributes.title shouldBe DUMMY_CATEGORIES.categories[index].attributes.title
+            item.attributes.webUrl shouldBe DUMMY_CATEGORIES.categories[index].attributes.webUrl
+        }
+
+        viewModel.isAllError.value shouldBe false
+    }
+
+    /*
+
+     */
+}
+/*
     Feature("Handle Fetch Order List") {
         Scenario("Fetch Order List Failed") {
             val graphqlRepository = mockk<GraphqlRepository>()
@@ -211,8 +186,8 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Order List Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
             }
         }
 
@@ -239,29 +214,29 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Order List Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe true
             }
 
             Then("Order List Data mapper should map response correctly") {
                 val orderList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER] as TravelHomepageSectionModel)
-                orderList.title shouldBeEquals dummyData.travelMeta.title
-                orderList.type shouldBeEquals TravelHomepageFragment.TYPE_ORDER_LIST
-                orderList.seeAllUrl shouldBeEquals dummyData.travelMeta.appUrl
+                orderList.title shouldBe dummyData.travelMeta.title
+                orderList.type shouldBe TravelHomepageFragment.TYPE_ORDER_LIST
+                orderList.seeAllUrl shouldBe dummyData.travelMeta.appUrl
 
                 for ((index, item) in orderList.list.withIndex()) {
-                    item.title shouldBeEquals dummyData.orders[index].title
-                    item.subtitle shouldBeEquals dummyData.orders[index].subtitle
-                    item.prefix shouldBeEquals dummyData.orders[index].prefix
-                    item.value shouldBeEquals dummyData.orders[index].value
-                    item.appUrl shouldBeEquals dummyData.orders[index].appUrl
-                    item.imageUrl shouldBeEquals dummyData.orders[index].imageUrl
-                    item.product shouldBeEquals dummyData.orders[index].product
+                    item.title shouldBe dummyData.orders[index].title
+                    item.subtitle shouldBe dummyData.orders[index].subtitle
+                    item.prefix shouldBe dummyData.orders[index].prefix
+                    item.value shouldBe dummyData.orders[index].value
+                    item.appUrl shouldBe dummyData.orders[index].appUrl
+                    item.imageUrl shouldBe dummyData.orders[index].imageUrl
+                    item.product shouldBe dummyData.orders[index].product
                 }
             }
 
             Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBeEquals false
+                viewModel.isAllError.value shouldBe false
             }
         }
     }
@@ -284,8 +259,8 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Recent Search Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
             }
         }
 
@@ -308,29 +283,29 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Recent Search Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe true
             }
 
             Then("Recent Search Data mapper should map response correctly") {
                 val recentSearchList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER] as TravelHomepageSectionModel)
-                recentSearchList.title shouldBeEquals dummyData.travelMeta.title
-                recentSearchList.type shouldBeEquals TravelHomepageFragment.TYPE_RECENT_SEARCH
-                recentSearchList.seeAllUrl shouldBeEquals dummyData.travelMeta.appUrl
+                recentSearchList.title shouldBe dummyData.travelMeta.title
+                recentSearchList.type shouldBe TravelHomepageFragment.TYPE_RECENT_SEARCH
+                recentSearchList.seeAllUrl shouldBe dummyData.travelMeta.appUrl
 
                 for ((index, item) in recentSearchList.list.withIndex()) {
-                    item.title shouldBeEquals dummyData.items[index].title
-                    item.subtitle shouldBeEquals dummyData.items[index].subtitle
-                    item.prefix shouldBeEquals dummyData.items[index].prefix
-                    item.value shouldBeEquals dummyData.items[index].value
-                    item.appUrl shouldBeEquals dummyData.items[index].appUrl
-                    item.imageUrl shouldBeEquals dummyData.items[index].imageUrl
-                    item.product shouldBeEquals dummyData.items[index].product
+                    item.title shouldBe dummyData.items[index].title
+                    item.subtitle shouldBe dummyData.items[index].subtitle
+                    item.prefix shouldBe dummyData.items[index].prefix
+                    item.value shouldBe dummyData.items[index].value
+                    item.appUrl shouldBe dummyData.items[index].appUrl
+                    item.imageUrl shouldBe dummyData.items[index].imageUrl
+                    item.product shouldBe dummyData.items[index].product
                 }
             }
 
             Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBeEquals false
+                viewModel.isAllError.value shouldBe false
             }
         }
     }
@@ -353,8 +328,8 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Recommendation Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
             }
         }
 
@@ -381,29 +356,29 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Recommendation Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe true
             }
 
             Then("Recommendation Data mapper should map response correctly") {
                 val recommendationList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER] as TravelHomepageSectionModel)
-                recommendationList.title shouldBeEquals dummyData.travelMeta.title
-                recommendationList.type shouldBeEquals TravelHomepageFragment.TYPE_RECOMMENDATION
-                recommendationList.seeAllUrl shouldBeEquals dummyData.travelMeta.appUrl
+                recommendationList.title shouldBe dummyData.travelMeta.title
+                recommendationList.type shouldBe TravelHomepageFragment.TYPE_RECOMMENDATION
+                recommendationList.seeAllUrl shouldBe dummyData.travelMeta.appUrl
 
                 for ((index, item) in recommendationList.list.withIndex()) {
-                    item.title shouldBeEquals dummyData.items[index].title
-                    item.subtitle shouldBeEquals dummyData.items[index].subtitle
-                    item.prefix shouldBeEquals dummyData.items[index].prefix
-                    item.value shouldBeEquals dummyData.items[index].value
-                    item.appUrl shouldBeEquals dummyData.items[index].appUrl
-                    item.imageUrl shouldBeEquals dummyData.items[index].imageUrl
-                    item.product shouldBeEquals dummyData.items[index].product
+                    item.title shouldBe dummyData.items[index].title
+                    item.subtitle shouldBe dummyData.items[index].subtitle
+                    item.prefix shouldBe dummyData.items[index].prefix
+                    item.value shouldBe dummyData.items[index].value
+                    item.appUrl shouldBe dummyData.items[index].appUrl
+                    item.imageUrl shouldBe dummyData.items[index].imageUrl
+                    item.product shouldBe dummyData.items[index].product
                 }
             }
 
             Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBeEquals false
+                viewModel.isAllError.value shouldBe false
             }
         }
     }
@@ -426,8 +401,8 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Destination Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
             }
         }
 
@@ -454,25 +429,25 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Destination Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe true
             }
 
             Then("Destination Data should be the same as response data") {
                 val destinationModel = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER] as TravelHomepageDestinationModel)
-                destinationModel.meta.title shouldBeEquals dummyData.meta.title
+                destinationModel.meta.title shouldBe dummyData.meta.title
 
                 for ((index, item) in destinationModel.destination.withIndex()) {
-                    item.attributes.title shouldBeEquals dummyData.destination[index].attributes.title
-                    item.attributes.subtitle shouldBeEquals dummyData.destination[index].attributes.subtitle
-                    item.attributes.webUrl shouldBeEquals dummyData.destination[index].attributes.webUrl
-                    item.attributes.appUrl shouldBeEquals dummyData.destination[index].attributes.appUrl
-                    item.attributes.imageUrl shouldBeEquals dummyData.destination[index].attributes.imageUrl
+                    item.attributes.title shouldBe dummyData.destination[index].attributes.title
+                    item.attributes.subtitle shouldBe dummyData.destination[index].attributes.subtitle
+                    item.attributes.webUrl shouldBe dummyData.destination[index].attributes.webUrl
+                    item.attributes.appUrl shouldBe dummyData.destination[index].attributes.appUrl
+                    item.attributes.imageUrl shouldBe dummyData.destination[index].attributes.imageUrl
                 }
             }
 
             Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBeEquals false
+                viewModel.isAllError.value shouldBe false
             }
         }
     }
@@ -525,37 +500,37 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Banner Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe false
             }
 
             Then("Categories Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
             }
 
             Then("Order List Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
             }
 
             Then("Recent Search Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
             }
 
             Then("Recommendation Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
             }
 
             Then("Destination Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
             }
 
             Then("isAllError should be true") {
-                viewModel.isAllError.value shouldBeEquals true
+                viewModel.isAllError.value shouldBe true
             }
         }
 
@@ -607,37 +582,37 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Banner Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe true
             }
 
             Then("Categories Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
             }
 
             Then("Order List Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
             }
 
             Then("Recent Search Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
             }
 
             Then("Recommendation Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
             }
 
             Then("Destination Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
             }
 
             Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBeEquals false
+                viewModel.isAllError.value shouldBe false
             }
         }
 
@@ -680,37 +655,37 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("Banner Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBeEquals true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe true
             }
 
             Then("Categories Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
             }
 
             Then("Order List Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
             }
 
             Then("Recent Search Data should be Unloaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBeEquals false
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
             }
 
             Then("Recommendation Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
             }
 
             Then("Destination Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBeEquals true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBeEquals false
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
             }
 
             Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBeEquals false
+                viewModel.isAllError.value shouldBe false
             }
         }
 
@@ -727,8 +702,8 @@ class TravelHomepageViewModelTest : Spek({
             }
 
             Then("isAllError should be null") {
-                viewModel.isAllError.value shouldBeEquals null
+                viewModel.isAllError.value shouldBe null
             }
         }
     }
-})
+})*/
