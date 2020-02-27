@@ -87,7 +87,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var viewModel: NormalCheckoutViewModel
-    lateinit var irisSession:IrisSession
+    var irisSession = ""
 
     var loadingProgressDialog: AlertDialog? = null
     val fragmentViewModel: FragmentViewModel by lazy {
@@ -200,7 +200,9 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
                     .inject(this@NormalCheckoutFragment)
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             viewModel = viewModelProvider.get(NormalCheckoutViewModel::class.java)
-            irisSession = IrisSession(context)
+            irisSession = context?.let {
+                IrisSession(it).getSessionId()
+            } ?: ""
         }
     }
 
@@ -812,7 +814,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyInVariant(
-                        irisSession.getSessionId(),
+                        irisSession,
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,
@@ -853,7 +855,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             onFinishAddToCart()
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickBuyTradeIn(
-                        irisSession.getSessionId(),
+                        irisSession,
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,
@@ -901,7 +903,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
 
             selectedProductInfo?.run {
                 normalCheckoutTracking.eventClickAddToCartInVariant(
-                        irisSession.getSessionId(),
+                        irisSession,
                         originalProduct,
                         selectedVariantId ?: "",
                         this, quantity,

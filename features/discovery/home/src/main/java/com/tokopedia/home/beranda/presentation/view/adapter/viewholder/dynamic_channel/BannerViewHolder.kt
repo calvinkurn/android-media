@@ -18,6 +18,7 @@ import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.Cir
 import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home_page_banner.presentation.widgets.pageIndicator.CircularPageIndicator
 import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.ConstantKt
 
 /**
  * @author by errysuprayogi on 11/28/17.
