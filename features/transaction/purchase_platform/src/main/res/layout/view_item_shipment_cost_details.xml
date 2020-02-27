@@ -505,6 +505,72 @@
         tools:visibility="visible" />
 
     <RelativeLayout
+        android:id="@+id/rl_total_promo_checkout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_below="@id/tv_product_discount_label">
+
+        <View
+            android:id="@+id/item_divider_promo_checkout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:background="@color/checkout_module_color_background"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_promo_checkout_summary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/item_divider_promo_checkout"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:paddingTop="@dimen/dp_16"
+            android:text="@string/promo_checkout_summary_label"
+            android:textColor="@color/text_black"
+            app:typographyType="body_2"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_total_promo_checkout_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_promo_checkout_summary"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:textColor="@color/text_black"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            android:text="@string/promo_checkout_total_label"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_total_promo_checkout_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_promo_checkout_summary"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_toEndOf="@+id/tv_total_promo_checkout_label"
+            android:layout_toRightOf="@+id/tv_total_promo_checkout_label"
+            android:gravity="end"
+            android:textColor="@color/text_black"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            tools:ignore="RelativeOverlap"
+            tools:text="30.000" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/rl_total_cashback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

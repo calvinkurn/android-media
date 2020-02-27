@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.tokopedia.promocheckout.common.view.model.PromoRevampData;
+import com.tokopedia.promocheckout.common.view.model.PromoCheckoutData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -46,7 +46,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterAct
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentFragment;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataRequestConverter;
-import com.tokopedia.purchase_platform.features.checkout.view.viewholder.PromoRevampViewHolder;
+import com.tokopedia.purchase_platform.features.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentCostViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentDonationViewHolder;
@@ -93,7 +93,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
     private PromoStackingData promoGlobalStackData;
-    private PromoRevampData promoRevampData;
+    private PromoCheckoutData promoCheckoutData;
     private List<PromoStackingData.Builder> listPromoStackingMerchantData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
@@ -152,8 +152,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return ShipmentRecipientAddressViewHolder.ITEM_VIEW_RECIPIENT_ADDRESS;
         } else if (item instanceof ShipmentCartItemModel) {
             return ShipmentItemViewHolder.ITEM_VIEW_SHIPMENT_ITEM;
-        } else if (item instanceof PromoRevampData) {
-            return PromoRevampViewHolder.getITEM_VIEW_PROMO_REVAMP();
+        } else if (item instanceof PromoCheckoutData) {
+            return PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT();
         } else if (item instanceof ShipmentCostModel) {
             return ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST;
         } else if (item instanceof ShipmentInsuranceTncModel) {
@@ -189,8 +189,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShipmentItemViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, shipmentAdapterActionListener);
-        } else if (viewType == PromoRevampViewHolder.getITEM_VIEW_PROMO_REVAMP()) {
-            return new PromoRevampViewHolder(view);
+        } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
+            return new PromoCheckoutViewHolder(view);
         } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
             return new ShipmentInsuranceTncViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK) {
@@ -226,8 +226,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     (ShipmentCartItemModel) data, shipmentDataList, recipientAddressModel,
                     ratesDataConverter, showCaseObjectList);
             setShowCase(holder.itemView.getContext());
-        } else if (viewType == PromoRevampViewHolder.getITEM_VIEW_PROMO_REVAMP()) {
-            ((PromoRevampViewHolder) holder).bindViewHolder();
+        } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
+            ((PromoCheckoutViewHolder) holder).bindViewHolder();
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             ((ShipmentCostViewHolder) holder).bindViewHolder((ShipmentCostModel) data);
         } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
@@ -311,7 +311,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         shipmentCartItemModelList = null;
         recipientAddressModel = null;
         shipmentCostModel = null;
-        promoRevampData = null;
+        promoCheckoutData = null;
         shipmentInsuranceTncModel = null;
         shipmentSellerCashbackModel = null;
         shipmentDonationModel = null;
@@ -373,10 +373,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
     }
 
-    public void addPromoRevampData(PromoRevampData promoRevampData) {
-        if (promoRevampData != null) {
-            this.promoRevampData = promoRevampData;
-            shipmentDataList.add(promoRevampData);
+    public void addPromoCheckoutData(PromoCheckoutData promoCheckoutData) {
+        if (promoCheckoutData != null) {
+            this.promoCheckoutData = promoCheckoutData;
+            shipmentDataList.add(promoCheckoutData);
         }
     }
 
@@ -966,6 +966,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
         }
 
+        // promo checkout
+        shipmentCostModel.setTotalPromoCheckoutLabel("Total Cashback");
+        shipmentCostModel.setTotalPromoCheckoutAmount("30.000");
+
         long macroInsurancePrice = 0;
         String macroInsurancLabel = "";
         if (insuranceCartList != null && !insuranceCartList.isEmpty()) {
@@ -1090,6 +1094,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             shipmentCostModel.setProductDiscountLabel("");
             shipmentCostModel.setCashbackAmount(0);
             shipmentCostModel.setCashbackLabel("");
+            shipmentCostModel.setTotalPromoCheckoutLabel("");
+            shipmentCostModel.setTotalPromoCheckoutAmount("");
         }
     }
 
@@ -1350,8 +1356,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return promoGlobalStackData;
     }
 
-    public PromoRevampData getPromoRevampData() {
-        return promoRevampData;
+    public PromoCheckoutData getPromoCheckoutData() {
+        return promoCheckoutData;
     }
 
     public String getInsuranceProductId() {

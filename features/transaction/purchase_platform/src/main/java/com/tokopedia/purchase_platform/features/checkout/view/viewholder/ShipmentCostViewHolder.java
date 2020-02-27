@@ -10,6 +10,7 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author Aghny A. Putra on 02/03/18
@@ -53,6 +54,9 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
     private RelativeLayout mRlTotalCashback;
     private TextView mTvTotalCashbackLabel;
     private TextView mTvTotalCashbackAmount;
+    private Typography mTvTotalPromoCheckoutLabel;
+    private Typography mTvTotalPromoCheckoutAmount;
+    private RelativeLayout mRlTotalPromoCheckout;
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
 
@@ -94,6 +98,9 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
         mRlTotalCashback = itemView.findViewById(R.id.rl_total_cashback);
         mTvTotalCashbackLabel = itemView.findViewById(R.id.tv_total_cashback_label);
         mTvTotalCashbackAmount = itemView.findViewById(R.id.tv_total_cashback_amount);
+        mTvTotalPromoCheckoutLabel = itemView.findViewById(R.id.tv_total_promo_checkout_label);
+        mTvTotalPromoCheckoutAmount = itemView.findViewById(R.id.tv_total_promo_checkout_amount);
+        mRlTotalPromoCheckout = itemView.findViewById(R.id.rl_total_promo_checkout);
 
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
     }
@@ -131,6 +138,14 @@ public class ShipmentCostViewHolder extends RecyclerView.ViewHolder {
             mTvBookingFee.setVisibility(View.GONE);
         }
         mTvBookingFee.setText(getPriceFormat(mTvBookingFeeLabel, mTvBookingFee, shipmentCost.getBookingFee()));
+
+        if (!shipmentCost.getTotalPromoCheckoutAmount().isEmpty()) {
+            mRlTotalPromoCheckout.setVisibility(View.VISIBLE);
+            mTvTotalPromoCheckoutLabel.setText(shipmentCost.getTotalPromoCheckoutLabel());
+            mTvTotalPromoCheckoutAmount.setText(shipmentCost.getTotalPromoCheckoutAmount());
+        } else {
+            mRlTotalPromoCheckout.setVisibility(View.GONE);
+        }
 
         renderDiscount(shipmentCost);
         renderCashback(shipmentCost);

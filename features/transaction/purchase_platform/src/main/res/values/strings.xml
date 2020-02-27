@@ -266,4 +266,7 @@
     <string name="promo_funnel_label">Makin hemat pakai promo</string>
     <string name="promo_benefit_info">3 promo dipakai</string>
     <string name="promo_funnel_icon_chev_desc">promo_funnel_icon_2</string>
+
+    <string name="promo_checkout_summary_label">Ringkasan keuntungan</string>
+    <string name="promo_checkout_total_label">Total Cashback</string>
 </resources>

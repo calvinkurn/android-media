@@ -86,7 +86,7 @@
                     tools:visibility="visible"
                     android:background="@color/white">
 
-                    <include layout="@layout/item_promo_revamp" />
+                    <include layout="@layout/item_promo_checkout" />
 
                     <LinearLayout
                         android:layout_width="match_parent"

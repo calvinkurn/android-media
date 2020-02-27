@@ -6,8 +6,8 @@ import android.os.Parcelable
 /**
  * Created by fwidjaja on 2020-02-26.
  */
-data class PromoRevampData (var promoLabel: String = "",
-                            var promoUsageInfo: String = "") : Parcelable {
+data class PromoCheckoutData (var promoLabel: String = "",
+                              var promoUsageInfo: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "")
@@ -21,12 +21,12 @@ data class PromoRevampData (var promoLabel: String = "",
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<PromoRevampData> {
-        override fun createFromParcel(parcel: Parcel): PromoRevampData {
-            return PromoRevampData(parcel)
+    companion object CREATOR : Parcelable.Creator<PromoCheckoutData> {
+        override fun createFromParcel(parcel: Parcel): PromoCheckoutData {
+            return PromoCheckoutData(parcel)
         }
 
-        override fun newArray(size: Int): Array<PromoRevampData?> {
+        override fun newArray(size: Int): Array<PromoCheckoutData?> {
             return arrayOfNulls(size)
         }
     }
@@ -38,7 +38,7 @@ data class PromoRevampData (var promoLabel: String = "",
         fun promoLabel(promoLabel: String) = apply { this.promoLabel = promoLabel }
         fun promoUsageInfo(promoUsageInfo: String) = apply { this.promoUsageInfo = promoUsageInfo }
 
-        fun build() = PromoRevampData(
+        fun build() = PromoCheckoutData(
                 promoLabel,
                 promoUsageInfo)
     }

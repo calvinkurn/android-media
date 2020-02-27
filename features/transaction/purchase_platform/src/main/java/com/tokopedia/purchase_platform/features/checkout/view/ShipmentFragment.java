@@ -35,7 +35,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.promocheckout.common.view.model.PromoRevampData;
+import com.tokopedia.promocheckout.common.view.model.PromoCheckoutData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
@@ -128,7 +128,6 @@ import com.tokopedia.purchase_platform.features.checkout.subfeature.promo_benefi
 import com.tokopedia.purchase_platform.features.checkout.subfeature.webview.CheckoutWebViewActivity;
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
-import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
@@ -234,7 +233,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     EgoldAttributeModel savedEgoldAttributeModel;
     RecipientAddressModel savedRecipientAddressModel;
     PromoStackingData savedPromoStackingData;
-    PromoRevampData savedPromoRevampData;
+    PromoCheckoutData savedPromoCheckoutData;
     ShipmentDonationModel savedShipmentDonationModel;
     BenefitSummaryInfoUiModel benefitSummaryInfoUiModel;
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
@@ -297,7 +296,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 savedShipmentDonationModel = saveInstanceCacheManager.get(ShipmentDonationModel.class.getSimpleName(), ShipmentDonationModel.class);
                 savedShipmentButtonPaymentModel = saveInstanceCacheManager.get(ShipmentButtonPaymentModel.class.getSimpleName(), ShipmentButtonPaymentModel.class);
                 savedPromoStackingData = saveInstanceCacheManager.get(PromoStackingData.class.getSimpleName(), PromoStackingData.class);
-                savedPromoRevampData = saveInstanceCacheManager.get(PromoRevampData.class.getSimpleName(), PromoRevampData.class);
+                savedPromoCheckoutData = saveInstanceCacheManager.get(PromoCheckoutData.class.getSimpleName(), PromoCheckoutData.class);
             }
             ArrayList<ShipmentSelectionStateData> shipmentSelectionStateData =
                     saveInstanceCacheManager.get(EXTRA_STATE_SHIPMENT_SELECTION,
@@ -369,7 +368,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
             shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
-            shipmentAdapter.addPromoRevampData(savedPromoRevampData);
+            shipmentAdapter.addPromoCheckoutData(savedPromoCheckoutData);
             shipmentAdapter.addPromoStackingVoucherData(savedPromoStackingData);
             renderCheckoutPage(true, false, isOneClickShipment());
             swipeToRefresh.setEnabled(false);
@@ -428,7 +427,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                       RecipientAddressModel recipientAddressModel,
                                       List<ShipmentCartItemModel> shipmentCartItemModelList,
                                       ShipmentDonationModel shipmentDonationModel,
-                                      PromoRevampData promoRevampData,
+                                      PromoCheckoutData promoCheckoutData,
                                       ShipmentCostModel shipmentCostModel,
                                       EgoldAttributeModel egoldAttributeModel,
                                       ShipmentButtonPaymentModel shipmentButtonPaymentModel,
@@ -484,7 +483,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.addEgoldAttributeData(egoldAttributeModel);
         }
 
-        shipmentAdapter.addPromoRevampData(promoRevampData);
+        shipmentAdapter.addPromoCheckoutData(promoCheckoutData);
 
         shipmentAdapter.addShipmentCostData(shipmentCostModel);
         shipmentAdapter.updateShipmentSellerCashbackVisibility();
@@ -709,7 +708,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 recipientAddressModel,
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
-                shipmentAdapter.getPromoRevampData(),
+                shipmentAdapter.getPromoCheckoutData(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
@@ -748,7 +747,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getRecipientAddressModel(),
                 oldShipmentCartItemModelList,
                 shipmentPresenter.getShipmentDonationModel(),
-                shipmentAdapter.getPromoRevampData(),
+                shipmentAdapter.getPromoCheckoutData(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
@@ -765,7 +764,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getRecipientAddressModel(),
                 shipmentPresenter.getShipmentCartItemModelList(),
                 shipmentPresenter.getShipmentDonationModel(),
-                shipmentAdapter.getPromoRevampData(),
+                shipmentAdapter.getPromoCheckoutData(),
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
@@ -1020,10 +1019,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void setPromoRevampData() {
-        PromoRevampData.Builder builder = new PromoRevampData.Builder();
+        PromoCheckoutData.Builder builder = new PromoCheckoutData.Builder();
         builder.promoLabel(getString(R.string.promo_funnel_label));
         builder.promoUsageInfo(getString(R.string.promo_benefit_info));
-        shipmentAdapter.addPromoRevampData(builder.build());
+        shipmentAdapter.addPromoCheckoutData(builder.build());
         shipmentAdapter.notifyDataSetChanged();
     }
 
