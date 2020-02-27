@@ -13,7 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
-import com.tokopedia.loginfingerprint.utils.CryptographyUtils
+import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginfingerprint.viewmodel.RegisterOnboardingViewModel
 import com.tokopedia.sessioncommon.ErrorHandlerSession

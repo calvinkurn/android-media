@@ -3,11 +3,11 @@ package com.tokopedia.loginfingerprint.viewmodel
 import androidx.lifecycle.Observer
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
+import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
 import com.tokopedia.loginfingerprint.util.InstantTaskExecutorRule
-import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.loginfingerprint.utils.TestDispatcherProvider
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -23,8 +23,8 @@ class RegisterOnboardingViewModelTest : Spek({
     InstantTaskExecutorRule(this)
     val registerFingerprintUseCase = mockk<RegisterFingerprintUseCase>(relaxed = true)
     val userSession = mockk<UserSessionInterface>(relaxed = true)
-    val preferenceHelper = mockk<FingerprintPreferenceHelper>(relaxed = true)
-    val cryptographyUtils = mockk<CryptographyUtils>(relaxed = true)
+    val fingerprintSetting = mockk<FingerprintSetting>(relaxed = true)
+    val cryptographyUtils = mockk<Cryptography>(relaxed = true)
 
     val dispatcher = TestDispatcherProvider()
 
@@ -32,7 +32,7 @@ class RegisterOnboardingViewModelTest : Spek({
             dispatcher = dispatcher,
             userSession = userSession,
             cryptographyUtils = cryptographyUtils,
-            fingerprintPreferenceHelper = preferenceHelper,
+            fingerprintSetting = fingerprintSetting,
             registerFingerprintUseCase = registerFingerprintUseCase
     )
 
@@ -42,7 +42,7 @@ class RegisterOnboardingViewModelTest : Spek({
                 viewModel.unregisterFP()
             }
             Then("preference helper called") {
-                verify { preferenceHelper.unregisterFingerprint() }
+                verify { fingerprintSetting.unregisterFingerprint() }
             }
         }
     }
@@ -70,8 +70,8 @@ class RegisterOnboardingViewModelTest : Spek({
                 viewModel.registerFingerprint()
             }
             Then("it should return registration info correctly") {
-                verify { preferenceHelper.registerFingerprint() }
-                verify { preferenceHelper.saveUserId(any()) }
+                verify { fingerprintSetting.registerFingerprint() }
+                verify { fingerprintSetting.saveUserId(any()) }
                 verify { observerSuccess.onChanged(registerFpResultSuccess) }
                 viewModel.verifyRegisterFingerprintResult.value.shouldBeInstanceOf<Success<RegisterFingerprintResult>>()
             }
