@@ -7,7 +7,7 @@ import android.content.Context
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class FingerprintPreferenceHelper(context: Context) {
+class FingerprintPreferenceHelper(context: Context): FingerprintSetting {
 
     companion object {
         const val LOGIN_FINGERPRINT_STATUS_KEY = "loginFingerprintStatusKey"
@@ -18,23 +18,23 @@ class FingerprintPreferenceHelper(context: Context) {
     private var prefs = context.getSharedPreferences(
             prefName, Context.MODE_PRIVATE)
 
-    fun registerFingerprint(){
+    override fun registerFingerprint(){
         prefs.edit().putBoolean(LOGIN_FINGERPRINT_STATUS_KEY, true).apply()
     }
 
-    fun saveUserId(userId: String){
+    override fun saveUserId(userId: String){
         prefs.edit().putString(LOGIN_FINGERPRINT_USER_ID_KEY, userId).apply()
     }
 
-    fun removeUserId(){
+    override fun removeUserId(){
         prefs.edit().putString(LOGIN_FINGERPRINT_USER_ID_KEY, "0").apply()
     }
 
-    fun getFingerprintUserId(): String = prefs.getString(LOGIN_FINGERPRINT_USER_ID_KEY, "0") ?: "0"
+    override fun getFingerprintUserId(): String = prefs.getString(LOGIN_FINGERPRINT_USER_ID_KEY, "0") ?: "0"
 
-    fun unregisterFingerprint(){
+    override fun unregisterFingerprint(){
         prefs.edit().putBoolean(LOGIN_FINGERPRINT_STATUS_KEY, false).apply()
     }
 
-    fun isFingerprintRegistered(): Boolean = prefs.getBoolean(LOGIN_FINGERPRINT_STATUS_KEY, false)
+    override fun isFingerprintRegistered(): Boolean = prefs.getBoolean(LOGIN_FINGERPRINT_STATUS_KEY, false)
 }
