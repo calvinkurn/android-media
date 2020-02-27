@@ -61,25 +61,26 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
         adapter = PreferenceListAdapter(getListener())
         rvPreferenceList?.adapter = adapter
         btnAddPreference?.setOnClickListener {
-            bottomSheet?.dismiss()
+            dismiss()
             listener.onAddPreference()
         }
     }
 
     private fun getListener(): PreferenceListAdapter.PreferenceListAdapterListener = object : PreferenceListAdapter.PreferenceListAdapterListener {
         override fun onPreferenceSelected(preference: Preference) {
-            bottomSheet?.dismiss()
+            dismiss()
             listener.onChangePreference(preference)
         }
 
         override fun onPreferenceEditClicked(preference: Preference) {
-            bottomSheet?.dismiss()
+            dismiss()
             listener.onEditPreference(preference)
         }
     }
 
     fun dismiss() {
         bottomSheet?.dismiss()
+        onCleared()
     }
 
     fun reload() {
@@ -88,14 +89,14 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
         btnAddPreference?.gone()
     }
 
-    fun updateList(preferences: List<Preference>) {
+    private fun updateList(preferences: List<Preference>) {
         adapter?.submitList(preferences)
         progressBar?.gone()
         rvPreferenceList?.visible()
         btnAddPreference?.visible()
     }
 
-    fun onCleared() {
+    private fun onCleared() {
         cancel()
     }
 

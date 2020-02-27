@@ -139,6 +139,8 @@ public class ShippingDurationBottomsheet extends BottomSheets
         setArguments(bundle);
     }
 
+    // TODO: 2020-02-26 send shipping duration viewmodel here to prevent loading
+
     private void initializeInjector() {
         BaseMainApplication baseMainApplication = (BaseMainApplication) getActivity().getApplication();
         ShippingDurationComponent component = DaggerShippingDurationComponent.builder()
