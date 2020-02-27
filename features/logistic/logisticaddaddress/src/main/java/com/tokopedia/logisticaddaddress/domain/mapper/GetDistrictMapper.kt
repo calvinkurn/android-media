@@ -3,7 +3,6 @@ package com.tokopedia.logisticaddaddress.domain.mapper
 import com.tokopedia.logisticaddaddress.domain.model.get_district.Data
 import com.tokopedia.logisticaddaddress.domain.model.get_district.GetDistrictResponse
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictResponseUiModel
 import javax.inject.Inject
 
 /**
