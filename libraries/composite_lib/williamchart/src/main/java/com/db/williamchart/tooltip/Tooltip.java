@@ -33,6 +33,7 @@ import com.db.williamchart.listener.TooltipSearchForTextViewListener;
 import com.db.williamchart.model.TooltipModel;
 import com.db.williamchart.renderer.StringFormatRenderer;
 import com.db.williamchart.renderer.TooltipFormatRenderer;
+import com.db.williamchart.util.KMNumbers;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -50,7 +51,8 @@ public class Tooltip extends RelativeLayout {
 
     private Alignment mHorizontalAlignment = Alignment.CENTER;
 
-    private TextView mTooltipValue;
+    private TextView tvTooltipTitle = null;
+    private TextView tvTooltipValue;
 
     private OnTooltipEventListener mTooltipEventListener;
 
@@ -98,7 +100,7 @@ public class Tooltip extends RelativeLayout {
         super(context);
         init();
         initView(context, layoutId);
-        mTooltipValue = (TextView) findViewById(valueId);
+        tvTooltipValue = (TextView) findViewById(valueId);
     }
 
     public Tooltip(Context context, int layoutId, int valueId, boolean isSearchForTextView) {
@@ -110,7 +112,7 @@ public class Tooltip extends RelativeLayout {
         if (isSearchForTextView) {
             searchForTextView(this);
         } else {
-            mTooltipValue = (TextView) findViewById(valueId);
+            tvTooltipValue = (TextView) findViewById(valueId);
         }
     }
 
@@ -119,6 +121,12 @@ public class Tooltip extends RelativeLayout {
                    int valueId, StringFormatRenderer stringFormatRenderer) {
 
         this(context, layoutId, valueId, stringFormatRenderer, false);
+    }
+
+    public Tooltip(Context context, int layoutId, int titleId,
+                   int valueId, StringFormatRenderer stringFormatRenderer) {
+        this(context, layoutId, valueId, stringFormatRenderer, false);
+        tvTooltipTitle = findViewById(titleId);
     }
 
     public Tooltip(Context context, int layoutId,
@@ -218,8 +226,26 @@ public class Tooltip extends RelativeLayout {
                 ((TooltipFormatRenderer) stringFormatRenderer).formatValue(textViews, value);
             }
         } else {
-            if (mTooltipValue != null)
-                mTooltipValue.setText(stringFormatRenderer.formatString(String.valueOf(value.getValue())));
+            if (tvTooltipValue != null) {
+                if (tvTooltipTitle != null) {
+                    tvTooltipTitle.setText(value.getTitle());
+                    if (value.hasCustomValue()) {
+                        tvTooltipValue.setText(value.getCustomValue());
+                    } else {
+                        try {
+                            tvTooltipValue.setText(KMNumbers.formatRupiahString((long) Float.parseFloat(value.getValue())));
+                        } catch (NumberFormatException e) {
+                            tvTooltipValue.setText(stringFormatRenderer.formatString(String.valueOf(value.getValue())));
+                        }
+                    }
+                } else {
+                    if (value.hasCustomValue()) {
+                        tvTooltipValue.setText(value.getCustomValue());
+                    } else {
+                        tvTooltipValue.setText(stringFormatRenderer.formatString(String.valueOf(value.getValue())));
+                    }
+                }
+            }
         }
     }
 

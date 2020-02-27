@@ -25,10 +25,12 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
+
 import androidx.annotation.ColorInt;
 import androidx.annotation.FloatRange;
 import androidx.annotation.IntRange;
 import androidx.annotation.NonNull;
+
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -370,8 +372,6 @@ public abstract class ChartView extends RelativeLayout {
         super.onDraw(canvas);
 
         if (mReadyToDraw) {
-            //long time = System.currentTimeMillis();
-
             // Draw grid
             if (mGridType == GridType.FULL || mGridType == GridType.VERTICAL)
                 drawVerticalGrid(canvas);
@@ -387,14 +387,14 @@ public abstract class ChartView extends RelativeLayout {
                         getInnerChartTop(), data.get(0).getEntry(mThresholdEndLabel).getX(),
                         getInnerChartBottom());
 
-            // Draw data
-            if (!data.isEmpty()) onDrawChart(canvas, data);
-
             // Draw Axis Y
             yRndr.draw(canvas);
 
             // Draw axis X
             xRndr.draw(canvas);
+
+            // Draw data
+            if (!data.isEmpty()) onDrawChart(canvas, data);
         }
 
         mIsDrawing = false;
@@ -700,7 +700,6 @@ public abstract class ChartView extends RelativeLayout {
             dismissTooltip(mTooltip, rect, value);
         }
     }
-
 
 
     /**
@@ -1651,8 +1650,14 @@ public abstract class ChartView extends RelativeLayout {
                                     dataDisplayTooltip.get(j).setPosition(j);
                                     toggleTooltip(getEntryRect(mRegions.get(i).get(j)), dataDisplayTooltip.get(j));
                                 } else {
-                                    TooltipModel tooltipModel = new TooltipModel("", String.valueOf(data.get(i).getValue(j)));
-                                    toggleTooltip(getEntryRect(mRegions.get(i).get(j)), tooltipModel);
+                                    String customValue = data.get(i).getCustomValue(j);
+                                    if (null != customValue && !"".equals(customValue)) {
+                                        TooltipModel tooltipModel = new TooltipModel(data.get(i).getLabel(j), String.valueOf(data.get(i).getValue(j)), customValue);
+                                        toggleTooltip(getEntryRect(mRegions.get(i).get(j)), tooltipModel);
+                                    } else {
+                                        TooltipModel tooltipModel = new TooltipModel(data.get(i).getLabel(j), String.valueOf(data.get(i).getValue(j)));
+                                        toggleTooltip(getEntryRect(mRegions.get(i).get(j)), tooltipModel);
+                                    }
                                 }
                             }
                             return true;

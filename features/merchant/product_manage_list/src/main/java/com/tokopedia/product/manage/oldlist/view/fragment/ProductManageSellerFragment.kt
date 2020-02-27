@@ -16,7 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
 import com.tokopedia.product.manage.oldlist.R
 import com.tokopedia.product.manage.oldlist.constant.DRAFT_PRODUCT
-import com.tokopedia.product.manage.oldlist.di.DaggerProductManageComponent
+import com.tokopedia.product.manage.oldlist.di.DaggerOldProductManageComponent
 import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
 import com.tokopedia.product.manage.oldlist.view.listener.ProductDraftListCountView
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
@@ -68,7 +68,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         super.initInjector()
         activity?.let{
             val appComponent = (it.application as BaseMainApplication).baseAppComponent
-            DaggerProductManageComponent.builder()
+            DaggerOldProductManageComponent.builder()
                     .baseAppComponent(appComponent)
                     .build()
                     .inject(this)

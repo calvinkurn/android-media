@@ -35,7 +35,6 @@ import java.util.List;
 
 /**
  * @author normansyahputa on 7/6/17.
- *
  */
 public class BaseWilliamChartConfig {
     public static final String TAG = "BaseWilliamChartConfig";
@@ -48,6 +47,11 @@ public class BaseWilliamChartConfig {
     private Tooltip tooltip;
     private XRenderer.XRendererListener xRendererListener;
     private int[] overlapOrder;
+    private LineSet lineSet = null;
+
+    public void setLineSet(LineSet lineSet) {
+        this.lineSet = lineSet;
+    }
 
     public BaseWilliamChartConfig() {
 //        baseWilliamChartModels = new ArrayList<>();
@@ -114,24 +118,36 @@ public class BaseWilliamChartConfig {
             BaseWilliamChartModel baseWilliamChartModel = pairConfig.getModel1();
             DataSetConfiguration dataSetConfiguration = pairConfig.getModel2();
 
-            LineSet dataset = new LineSet();
-            dataset.setmPointVisible(dataSetConfiguration.isVisible());
+            if (lineSet == null) lineSet = new LineSet();
 
-            for (int i = 0; i < baseWilliamChartModel.size(); i++) {
-                dataset.addPoint(
-                        baseWilliamChartModel.getLabels()[i],
-                        baseWilliamChartModel.getValues()[i]);
+            lineSet.setmPointVisible(dataSetConfiguration.isVisible());
+
+            if (baseWilliamChartModel.hasCustomValues()) {
+                for (int i = 0; i < baseWilliamChartModel.size(); i++) {
+                    lineSet.addPoint(
+                            baseWilliamChartModel.getLabels()[i],
+                            baseWilliamChartModel.getValues()[i],
+                            baseWilliamChartModel.getCustomValues()[i]
+                    );
+                }
+            } else {
+                for (int i = 0; i < baseWilliamChartModel.size(); i++) {
+                    lineSet.addPoint(
+                            baseWilliamChartModel.getLabels()[i],
+                            baseWilliamChartModel.getValues()[i]
+                    );
+                }
             }
 
-            dataset.setSmooth(LineSet.SMOOTH_QUAD)
+            lineSet.setSmooth(LineSet.SMOOTH_QUAD)
                     .setThickness(Tools.fromDpToPx(dataSetConfiguration.lineThickness()))
                     .setColor(dataSetConfiguration.lineColor());
 
             if (dataSetConfiguration.isVisible()) {
-                dataset.setDotsRadius(Tools.fromDpToPx(dataSetConfiguration.pointsSize()))
+                lineSet.setDotsRadius(Tools.fromDpToPx(dataSetConfiguration.pointsSize()))
                         .setDotsColor(dataSetConfiguration.pointColor());
             }
-            chart.addData(dataset);
+            chart.addData(lineSet);
         }
 
         return chart;

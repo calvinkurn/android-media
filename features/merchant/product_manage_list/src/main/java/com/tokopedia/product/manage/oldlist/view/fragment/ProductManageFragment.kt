@@ -84,7 +84,7 @@ import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageFilterModel
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageSortModel
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
-import com.tokopedia.product.manage.oldlist.di.DaggerProductManageComponent
+import com.tokopedia.product.manage.oldlist.di.DaggerOldProductManageComponent
 import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
 import com.tokopedia.product.manage.oldlist.view.activity.ProductManageFilterActivity
 import com.tokopedia.product.manage.oldlist.view.activity.ProductManageSortActivity
@@ -173,7 +173,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_product_manage_dark, menu)
+        var menuViewId = R.menu.menu_product_manage_dark
+        if (GlobalConfig.isSellerApp()) menuViewId = R.menu.menu_product_manage
+        inflater.inflate(menuViewId, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -317,7 +319,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         activity?.let {
             GraphqlClient.init(it)
             val appComponent = (it.application as BaseMainApplication).baseAppComponent
-            DaggerProductManageComponent.builder()
+            DaggerOldProductManageComponent.builder()
                     .baseAppComponent(appComponent)
                     .build()
                     .inject(this)

@@ -10,10 +10,10 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@ProductManageScope
+@OldProductManageScope
 abstract  class ViewModelModule {
 
-    @ProductManageScope
+    @OldProductManageScope
     @Binds
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 

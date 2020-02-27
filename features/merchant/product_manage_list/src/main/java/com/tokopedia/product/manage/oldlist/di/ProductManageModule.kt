@@ -50,10 +50,10 @@ import javax.inject.Named
  * Created by zulfikarrahman on 9/26/17.
  */
 @Module(includes = [ProductManageNetworkModule::class])
-@ProductManageScope
+@OldProductManageScope
 class ProductManageModule {
     @Provides
-    @ProductManageScope
+    @OldProductManageScope
     fun provideManageProductPresenter(editPriceUseCase: EditPriceUseCase?,
                                       gqlGetShopInfoUseCase: GQLGetShopInfoUseCase?,
                                       userSession: UserSessionInterface?,
@@ -76,74 +76,74 @@ class ProductManageModule {
             clearAllDraftProductUseCase, updateUploadingDraftProductUseCase)
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
         return UserSession(context)
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase {
         return GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
     }
 
     @Provides
-    @ProductManageScope
+    @OldProductManageScope
     fun provideGraphqlUseCase(): GraphqlUseCase {
         return GraphqlUseCase()
     }
 
     @Provides
-    @ProductManageScope
+    @OldProductManageScope
     fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
                                      @Named(GQLQueryNamedConstant.SHOP_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
         return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
     }
 
     @Provides
-    @ProductManageScope
+    @OldProductManageScope
     fun provideGmCommonRepository(gmCommonDataSource: GMCommonDataSource?): GMCommonRepository {
         return GMCommonRepositoryImpl(gmCommonDataSource)
     }
 
     @Provides
-    @ProductManageScope
+    @OldProductManageScope
     fun provideTopAdsSourceTracking(@ApplicationContext context: Context?): TopAdsSourceTaggingLocal {
         return TopAdsSourceTaggingLocal(context)
     }
 
     @Provides
-    @ProductManageScope
+    @OldProductManageScope
     fun provideTopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal: TopAdsSourceTaggingLocal?): TopAdsSourceTaggingDataSource {
         return TopAdsSourceTaggingDataSource(topAdsSourceTaggingLocal)
     }
 
     @Provides
-    @ProductManageScope
+    @OldProductManageScope
     fun provideTopAdsSourceTaggingRepository(dataSource: TopAdsSourceTaggingDataSource?): TopAdsSourceTaggingRepository {
         return TopAdsSourceTaggingRepositoryImpl(dataSource)
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     internal fun provideProductDraftRepository(productDraftDataSource: ProductDraftDataSource?, @ApplicationContext context: Context?): ProductDraftRepository {
         return ProductDraftRepositoryImpl(productDraftDataSource, context)
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     internal fun provideProductDraftDb(@ApplicationContext context: Context?): ProductDraftDB {
         return getInstance(context!!)
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     internal fun provideProductDraftDao(productDraftDB: ProductDraftDB): ProductDraftDao {
         return productDraftDB.getProductDraftDao()
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     @Named(GQL_POPUP_NAME)
     fun requestQuery(): String {
@@ -158,7 +158,7 @@ class ProductManageModule {
         """.trimIndent()
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     @Named(GQL_UPDATE_PRODUCT)
     fun provideUpdateProduct(): String {
@@ -176,7 +176,7 @@ class ProductManageModule {
         """.trimIndent()
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     @Named(ShopCommonParamApiConstant.GQL_PRODUCT_LIST)
     fun provideProductListQuery(@ApplicationContext context: Context): String {
@@ -186,7 +186,7 @@ class ProductManageModule {
         )
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
     fun provideGqlQueryShopInfo(@ApplicationContext context: Context): String {
@@ -195,7 +195,7 @@ class ProductManageModule {
             com.tokopedia.shop.common.R.raw.gql_get_shop_info)
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     @Named(GQL_FEATURED_PRODUCT)
     fun provideGqlMutationFeaturedProduct(@ApplicationContext context: Context): String {

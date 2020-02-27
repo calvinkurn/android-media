@@ -21,27 +21,27 @@ import retrofit2.Retrofit
 class ProductManageNetworkModule {
 
     @Provides
-    @ProductManageScope
+    @OldProductManageScope
     fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
         return ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools())
     }
 
-    @GMProductManageQualifier
-    @ProductManageScope
+    @OldGMProductManageQualifier
+    @OldProductManageScope
     @Provides
-    fun provideGMRetrofit(@GMProductManageQualifier okHttpClient: OkHttpClient,
+    fun provideGMRetrofit(@OldGMProductManageQualifier okHttpClient: OkHttpClient,
                           retrofitBuilder: Retrofit.Builder): Retrofit {
         return retrofitBuilder.baseUrl(GMCommonUrl.BASE_URL).client(okHttpClient).build()
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     fun provideGMAuthInterceptor(@ApplicationContext context: Context,
                                  abstractionRouter: AbstractionRouter): GMAuthInterceptor {
         return GMAuthInterceptor(context, abstractionRouter)
     }
 
-    @GMProductManageQualifier
+    @OldGMProductManageQualifier
     @Provides
     fun provideGMOkHttpClient(gmAuthInterceptor: GMAuthInterceptor,
                               chuckInterceptor: ChuckInterceptor,
@@ -64,12 +64,12 @@ class ProductManageNetworkModule {
 
 
     @Provides
-    @ProductManageScope
-    fun provideGmCommonApi(@GMProductManageQualifier retrofit: Retrofit): GMCommonApi {
+    @OldProductManageScope
+    fun provideGmCommonApi(@OldGMProductManageQualifier retrofit: Retrofit): GMCommonApi {
         return retrofit.create(GMCommonApi::class.java)
     }
 
-    @ProductManageScope
+    @OldProductManageScope
     @Provides
     fun provideApiCacheInterceptor(@ApplicationContext context: Context): CacheApiInterceptor {
         return CacheApiInterceptor(context)

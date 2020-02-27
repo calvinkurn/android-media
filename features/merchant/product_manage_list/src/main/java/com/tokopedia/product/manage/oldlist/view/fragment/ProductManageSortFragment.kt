@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_SORT_SELECTED
 import com.tokopedia.product.manage.oldlist.constant.option.SortProductOption
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageSortModel
-import com.tokopedia.product.manage.oldlist.di.DaggerProductManageComponent
+import com.tokopedia.product.manage.oldlist.di.DaggerOldProductManageComponent
 import com.tokopedia.product.manage.oldlist.view.adapter.ProductManageSortAdapter
 import com.tokopedia.product.manage.oldlist.view.adapter.ProductManageSortViewHolder
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductManageSortViewModel
@@ -50,7 +50,7 @@ class ProductManageSortFragment : BaseDaggerFragment(), ProductManageSortViewHol
         activity?.let {
             val appComponent = (it.application as BaseMainApplication).baseAppComponent
 
-            DaggerProductManageComponent.builder()
+            DaggerOldProductManageComponent.builder()
                     .baseAppComponent(appComponent)
                     .build()
                     .inject(this)
