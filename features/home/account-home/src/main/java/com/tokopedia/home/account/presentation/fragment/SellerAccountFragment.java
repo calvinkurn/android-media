@@ -70,7 +70,7 @@ public class SellerAccountFragment extends BaseAccountFragment implements Accoun
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        fpmSeller = PerformanceMonitoring.start(this, FPM_SELLER);
+        fpmSeller = PerformanceMonitoring.start(getContext(), FPM_SELLER);
         initInjector();
     }
 
