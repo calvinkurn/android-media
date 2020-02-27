@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
@@ -27,9 +28,9 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.LeftCha
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.textbubble.RightChatMessageViewHolder
 import com.tokopedia.topchat.chatroom.view.listener.DualAnnouncementListener
 import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
-import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 
 open class TopChatTypeFactoryImpl(
         imageAnnouncementListener: ImageAnnouncementListener,
@@ -62,11 +63,11 @@ open class TopChatTypeFactoryImpl(
         }
     }
 
-    override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementViewModel): Int {
+    override fun type(imageDualAnnouncementViewModel: ImageDualAnnouncementUiModel): Int {
         return ImageDualAnnouncementViewHolder.LAYOUT
     }
 
-    override fun type(voucherViewModel: TopChatVoucherViewModel): Int {
+    override fun type(voucherViewModel: TopChatVoucherUiModel): Int {
         return TopChatVoucherViewHolder.LAYOUT
     }
 
@@ -86,8 +87,12 @@ open class TopChatTypeFactoryImpl(
         return RoomSettingFraudAlertViewHolder.LAYOUT
     }
 
-    override fun type(quotationViewModel: QuotationViewModel): Int {
+    override fun type(quotationViewModel: QuotationUiModel): Int {
         return QuotationViewHolder.LAYOUT
+    }
+
+    override fun type(viewModel: EmptyModel): Int {
+        return TopchatEmptyViewHolder.LAYOUT
     }
 
     // Check if chat bubble first, if not return default ViewHolder
@@ -105,6 +110,7 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)
             QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent, chatLinkHandlerListener, quotationListener)
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
             RoomSettingFraudAlertViewHolder.LAYOUT -> RoomSettingFraudAlertViewHolder(parent)

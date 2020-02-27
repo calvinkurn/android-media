@@ -3,7 +3,7 @@ package com.tokopedia.search.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
@@ -49,7 +49,6 @@ public class SearchTracking {
     public static final String EVENT_LABEL_CLICK_FOLLOW_ACTION_PROFILE = "keyword: %s - profile: %s - profile id: %s - po: %s";
     public static final String PROMO_VIEW = "promoView";
     public static final String EVENT_ACTION_CLICK_SEE_ALL_NAV_WIDGET = "click - lihat semua widget";
-    public static final String EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT = "click widget - digital product";
     public static final String EVENT_ACTION_IMPRESSION_WIDGET_DIGITAL_PRODUCT = "impression widget - digital product";
 
     public static void screenTrackSearchSectionFragment(String screen) {
@@ -448,8 +447,8 @@ public class SearchTracking {
                                                           String applink) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(EVENT, SearchEventTracking.Event.PROMO_CLICK,
-                        EVENT_CATEGORY, EVENT_CATEGORY_SEARCH_RESULT,
-                        EVENT_ACTION, EVENT_ACTION_CLICK_WIDGET_DIGITAL_PRODUCT,
+                        EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                        EVENT_ACTION, SearchEventTracking.Action.CLICK,
                         EVENT_LABEL, generateEventLabelGlobalNav(keyword, productName, applink),
                         ECOMMERCE, DataLayer.mapOf(
                                 PROMO_CLICK, DataLayer.mapOf(

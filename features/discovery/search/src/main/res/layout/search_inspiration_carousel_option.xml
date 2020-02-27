@@ -17,16 +17,21 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/optionTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_11"
-            android:text="@string/inspiration_carousel_item_title"
+            android:layout_marginRight="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_8"
+            android:text="@string/inspiration_carousel_option_title"
             app:typographyType="heading_4"
+            android:ellipsize="end"
+            android:maxLines="1"
             android:textColor="@color/charcoal_grey_96"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/viewAllOption"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/viewAllOption"
@@ -34,14 +39,15 @@
             android:layout_height="@dimen/dp_0"
             android:layout_marginEnd="@dimen/dp_8"
             android:layout_marginRight="@dimen/dp_8"
-            android:text="@string/inspiration_carousel_item_view_all"
+            android:text="@string/inspiration_carousel_option_view_all"
             app:typographyType="body_3"
             app:typographyWeight="bold"
             android:textColor="@color/green_tokopedia"
             android:gravity="center"
             app:layout_constraintTop_toTopOf="@id/optionTitle"
             app:layout_constraintBottom_toBottomOf="@id/optionTitle"
-            app:layout_constraintRight_toRightOf="parent"/>
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/optionTitle"/>
 
         <View
             android:id="@+id/viewSeparator"

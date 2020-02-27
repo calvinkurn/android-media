@@ -151,4 +151,5 @@ yang ditemukan</string>
     <string name="title_topchat_manage_product">Atur Toko</string>
     <string name="title_topchat_success_atw">Anda berhasil menambahkan wishlist</string>
     <string name="title_topchat_success_rfw">Anda berhasil menghapus wishlist</string>
+    <string name="title_topchat_list_template">Daftar Template</string>
 </resources>

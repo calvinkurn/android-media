@@ -8,7 +8,6 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
-import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
@@ -78,9 +77,7 @@ class PlayViewModel @Inject constructor(
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
         get() = _observableVideoProperty
 
-    private val _observableVOD = MutableLiveData<ExoPlayer>()
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
-    private val _observableChanelInfo = MutableLiveData<ChannelInfoUiModel>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableNewChat = MutableLiveData<PlayChatUiModel>()
@@ -122,17 +119,43 @@ class PlayViewModel @Inject constructor(
         override fun onChanged(t: Unit?) {}
     }
 
-    val isLive: Boolean
-        get() = _observableChanelInfo.value?.isLive ?: false
-    val contentId: Int
-        get() = _observableChanelInfo.value?.contentId.toZeroIfNull()
-    val contentType: Int
-        get() = _observableChanelInfo.value?.contentType.toZeroIfNull()
-    val likeType: Int
-        get() = _observableChanelInfo.value?.likeType.toZeroIfNull()
+    val isLive: PlayChannelType get() {
+        val channelInfo = _observableGetChannelInfo.value
+        return if (channelInfo != null && channelInfo is Success) {
+            channelInfo.data.channelType
+        } else {
+            PlayChannelType.Unknown
+        }
+    }
+
+    val contentId: Int get() {
+        val channelInfo = _observableGetChannelInfo.value
+        return if (channelInfo != null && channelInfo is Success) {
+            channelInfo.data.contentId
+        } else {
+            0
+        }
+    }
+
+    val contentType: Int get() {
+        val channelInfo = _observableGetChannelInfo.value
+        return if (channelInfo != null && channelInfo is Success) {
+            channelInfo.data.contentType
+        } else {
+            0
+        }
+    }
+
+    val likeType: Int get() {
+        val channelInfo = _observableGetChannelInfo.value
+        return if (channelInfo != null && channelInfo is Success) {
+            channelInfo.data.likeType
+        } else {
+            0
+        }
+    }
 
     init {
-        _observableVOD.value = playManager.videoPlayer
         stateHandler.observeForever(stateHandlerObserver)
     }
 
@@ -185,7 +208,6 @@ class PlayViewModel @Inject constructor(
             val completeInfoUiModel = createCompleteInfoModel(channel)
 
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
-            _observableChanelInfo.value = completeInfoUiModel.channelInfo
             _observableTotalViews.value = completeInfoUiModel.totalView
             _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
             _observableQuickReply.value = completeInfoUiModel.quickReply
@@ -259,27 +281,19 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
-        val partnerType = PartnerType.getTypeByValue(channel.partnerType)
         val partnerId = channel.partnerId
-        return if (partnerType == PartnerType.ADMIN) {
+        return if (channel.partnerType == PartnerType.ADMIN) {
             PartnerInfoUiModel(
                     id = partnerId,
                     name = channel.moderatorName,
-                    type = partnerType,
+                    type = channel.partnerType,
                     isFollowed = true,
                     isFollowable = false
             )
         } else {
-            val shopInfo = getPartnerInfo(partnerId, partnerType)
+            val shopInfo = getPartnerInfo(partnerId, channel.partnerType)
             mapPartnerInfoFromShop(shopInfo)
         }
-    }
-
-    private fun checkIsFollowedShop() {
-        launchCatchError(block = {
-            val channel = _observableChanelInfo.value?.copy()
-            if (channel != null) _observablePartnerInfo.value = getPartnerInfo(channel)
-        }, onError = {})
     }
 
     private suspend fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = withContext(dispatchers.io) {
@@ -353,10 +367,10 @@ class PlayViewModel @Inject constructor(
             id = channel.channelId,
             title = channel.title,
             description = channel.description,
-            isLive = channel.videoStream.isLive,
+            channelType = if (channel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
             moderatorName = channel.moderatorName,
             partnerId = channel.partnerId,
-            partnerType = channel.partnerType,
+            partnerType = PartnerType.getTypeByValue(channel.partnerType),
             contentId = channel.contentId,
             contentType = channel.contentType,
             likeType = channel.likeType

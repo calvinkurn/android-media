@@ -141,6 +141,8 @@
     <string name="point_center">Point Center</string>
     <string name="no_pinpoint">Belum Pinpoint</string>
     <string name="havent_pinpoint">Sudah Pinpoint</string>
+    <string name="not_found_location">Lokasi tidak terdeteksi</string>
+    <string name="not_found_location_desc">Kami tidak dapat menentukan lokasimu, silakan geser pada peta atau tulis secara manual</string>
 
     <string-array name="cityList">
         <item>Jakarta</item>

@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.UriUtil;
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.campaign.shake.landing.R;
 import com.tokopedia.campaign.shake.landing.di.CampaignComponent;
@@ -253,5 +254,12 @@ public class ShakeDetectCampaignActivity extends BaseSimpleActivity implements S
                     requestCode, permissions,
                     grantResults);
         }
+    }
+
+    @Override
+    public void goToGeneralSetting() {
+        Intent intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.GENERAL_SETTING);
+        startActivity(intent);
+        finish();
     }
 }

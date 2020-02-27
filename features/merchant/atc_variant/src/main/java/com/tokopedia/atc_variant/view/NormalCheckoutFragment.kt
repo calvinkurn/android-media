@@ -324,11 +324,11 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
             when (requestCode) {
                 ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE -> if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID),
-                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE) ?: "none/other",
                             data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE))
                 ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST -> if (data != null)
                     onGotoTradeinShipment(data.getStringExtra(TradeInParams.PARAM_DEVICE_ID),
-                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE),
+                            data.getStringExtra(TradeInParams.PARAM_PHONE_TYPE) ?: "none/other",
                             data.getStringExtra(TradeInParams.PARAM_PHONE_PRICE))
                 REQUEST_CODE_LOGIN_THEN_BUY -> doCheckoutAction(ATC_AND_BUY)
                 REQUEST_CODE_LOGIN_THEN_ATC -> doCheckoutAction(ATC_ONLY)
@@ -1228,6 +1228,7 @@ class NormalCheckoutFragment : BaseListFragment<Visitable<*>, AddToCartVariantAd
         }
         selectedVariantId = inputSelectedVariantId
         selectedProductInfo = getSelectedProductInfo(originalProduct, selectedVariantId)
+        selectedVariantId = (selectedProductInfo?.basic?.id ?: inputSelectedVariantId).toString()
         selectedProductInfo?.let {
             val viewModels = ModelMapper.convertVariantToModels(it, viewModel.selectedwarehouse,
                     originalProduct.productVariant, notes, quantity)

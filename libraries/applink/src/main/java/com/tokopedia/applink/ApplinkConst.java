@@ -127,6 +127,7 @@ public interface ApplinkConst {
     String PROFILE_SUCCESS_POST = "tokopedia://people/{user_id}?success_post=true";
     String PROFILE_COMPLETION = "tokopedia://profilecompletion";
     String HOWTOPAY = "tokopedia://howtopay";
+    String OPEN_SHOP = "tokopedia://buka-toko-online-gratis";
 
     String EVENTS = "tokopedia://events";
     String EVENTS_ACTIVITIES = "tokopedia://events/activities";
@@ -411,6 +412,9 @@ public interface ApplinkConst {
         String INVOICE_STATUS_ID = "invoice_status_id";
         String INVOICE_STATUS = "invoice_status";
         String INVOICE_TOTAL_AMOUNT = "invoice_total_amount";
+
+        String PATH_ASK_SELLER = "askseller";
+        String PATH_ASK_BUYER = "askbuyer";
     }
 
     interface AttachInvoice {

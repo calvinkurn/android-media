@@ -150,6 +150,7 @@
             android:name="com.tokopedia.core.home.SimpleWebViewWithFilePickerActivity"
             android:label="@string/app_name"
             android:theme="@style/Toolbar.White"
+            android:configChanges="uiMode"
             android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
@@ -160,19 +161,6 @@
             android:screenOrientation="portrait" />
 
         <!-- ======================================================= -->
-        <!-- RECEIVERS REGISTRY -->
-        <!-- ======================================================= -->
-        <receiver
-            android:name="com.tokopedia.core.InstallReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.android.vending.INSTALL_REFERRER" />
-            </intent-filter>
-
-            <meta-data
-                android:name="forward.Kochava"
-                android:value="com.kochava.android.tracker.ReferralCapture" />
-        </receiver>
 
         <!-- ======================================================= -->
         <!-- PROVIDERS REGISTRY -->

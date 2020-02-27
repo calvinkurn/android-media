@@ -1,6 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -727,7 +727,7 @@ object DynamicProductDetailTracking {
             val productId = productInfo?.basic?.productID ?: ""
             val listOfCategoryId = productInfo?.basic?.category?.detail
             val categoryName = productInfo?.basic?.category?.name.orEmpty()
-            val categoryString = "${listOfCategoryId?.get(0)?.id.orEmpty()} / ${listOfCategoryId?.get(1)?.id.orEmpty()} / ${listOfCategoryId?.get(2)?.id.orEmpty()} / $categoryName "
+            val categoryString = "${listOfCategoryId?.getOrNull(0)?.id.orEmpty()} / ${listOfCategoryId?.getOrNull(1)?.id.orEmpty()} / ${listOfCategoryId?.getOrNull(2)?.id.orEmpty()} / $categoryName "
 
             val mapEvent = DataLayer.mapOf(
                     ProductTrackingConstant.Tracking.KEY_EVENT, "promoView",

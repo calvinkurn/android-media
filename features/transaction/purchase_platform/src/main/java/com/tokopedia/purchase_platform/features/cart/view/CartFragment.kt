@@ -16,11 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
-import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
-import com.chuckerteam.chucker.api.Chucker
+import androidx.recyclerview.widget.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -62,7 +58,6 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
-import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.data.api.CartApiInterceptor
@@ -330,11 +325,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             val cartItemDataList = getAllSelectedCartDataList()
             activity?.let {
                 if (hasChanges && cartItemDataList?.isNotEmpty() == true && !FLAG_BEGIN_SHIPMENT_PROCESS) {
-                    val service = Intent(it, UpdateCartIntentService::class.java)
-                    service.putParcelableArrayListExtra(
-                            UpdateCartIntentService.EXTRA_CART_ITEM_DATA_LIST, ArrayList(cartAdapter.selectedCartItemData)
-                    )
-                    it.startService(service)
+                    dPresenter.processUpdateCartData(true)
                 }
             }
         } catch (e: IllegalStateException) {
@@ -569,9 +560,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (toBeDeletedCartItemDataList.isNotEmpty()) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, toBeDeletedCartItemDataList, getAppliedPromoCodeList(toBeDeletedCartItemDataList), false, true)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                            dPresenter.generateCartDataAnalytics(
-                                    toBeDeletedCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-                            )
+                            dPresenter.generateDeleteCartDataAnalytics(toBeDeletedCartItemDataList)
                     )
                 }
                 dialog.dismiss()
@@ -602,7 +591,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         cartAdapter.selectedInsuranceProductId,
                         cartAdapter.selectedInsuranceProductTitle)
             }
-            dPresenter.processUpdateCartData()
+            dPresenter.processUpdateCartData(false)
         } else {
             showToastMessageRed(message)
             sendAnalyticsOnButtonCheckoutClickedFailed()
@@ -675,9 +664,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (cartItemDatas.isNotEmpty()) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, true, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedWithAddToWishList(
-                            dPresenter.generateCartDataAnalytics(
-                                    cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
-                            )
+                            dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
                 }
                 dialog.dismiss()
@@ -686,9 +673,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (cartItemDatas.size > 0) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                            dPresenter.generateCartDataAnalytics(
-                                    cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
-                            )
+                            dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
                 }
                 dialog.dismiss()
@@ -700,9 +685,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (cartItemDatas.size > 0) {
                     dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, appliedPromoCodes, false, removeMacroInsurance)
                     sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                            dPresenter.generateCartDataAnalytics(
-                                    cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION
-                            )
+                            dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
                     )
                 }
                 dialog.dismiss()
@@ -2295,7 +2278,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
             recommendationList?.let {
                 sendAnalyticsOnViewProductRecommendation(
-                        dPresenter.generateRecommendationDataAnalytics(it, FLAG_IS_CART_EMPTY)
+                        dPresenter.generateRecommendationImpressionDataAnalytics(it, FLAG_IS_CART_EMPTY)
                 )
             }
         }
@@ -2366,17 +2349,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 break
             }
         }
-        sendAnalyticsOnClickRemoveCartConstrainedProduct(dPresenter.generateCartDataAnalytics(
-                allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-        ))
+        sendAnalyticsOnClickRemoveCartConstrainedProduct(
+                dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
+        )
 
         dialog?.setPrimaryCTAClickListener {
             if (allDisabledCartItemDataList.size > 0) {
                 dPresenter.processDeleteCartItem(allCartItemDataList, allDisabledCartItemDataList, null, false, false)
                 sendAnalyticsOnClickConfirmationRemoveCartConstrainedProductNoAddToWishList(
-                        dPresenter.generateCartDataAnalytics(
-                                allDisabledCartItemDataList, EnhancedECommerceCartMapData.REMOVE_ACTION
-                        )
+                        dPresenter.generateDeleteCartDataAnalytics(allDisabledCartItemDataList)
                 )
             }
             dialog.dismiss()
@@ -2401,7 +2382,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         dialog?.setPrimaryCTAClickListener {
             dPresenter.processDeleteCartItem(allCartItemDataList, cartItemDatas, null, false, false)
             sendAnalyticsOnClickConfirmationRemoveCartSelectedNoAddToWishList(
-                    dPresenter.generateCartDataAnalytics(cartItemDatas, EnhancedECommerceCartMapData.REMOVE_ACTION)
+                    dPresenter.generateDeleteCartDataAnalytics(cartItemDatas)
             )
             dialog.dismiss()
         }

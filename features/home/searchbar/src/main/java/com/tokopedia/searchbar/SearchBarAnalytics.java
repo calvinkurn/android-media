@@ -20,16 +20,6 @@ public class SearchBarAnalytics {
         irisSession = new IrisSession(context);
     }
 
-    public void eventTrackingSqanQr() {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchBarConstant.CLICK_HOME_PAGE,
-                SearchBarConstant.TOP_NAV,
-                String.format("%s %s", SearchBarConstant.CLICK,
-                        SearchBarConstant.SCAN_QR),
-                ""
-        ));
-    }
-
     public void eventTrackingWishlist(String item, String screenName) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getDataEvent(screenName,

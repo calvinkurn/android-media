@@ -18,6 +18,7 @@ if (hasProperty('buildScan')) {
 apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
+apply from: '../tools/set_debug_tools.gradle'
 
 def getDpiId(String density) {
 
@@ -95,12 +96,19 @@ def renameAPKFile(variant, density, versionCode) {
     return fileName;
 }
 
+def isFirebasePerformanceLogEnabled() {
+    if (project.hasProperty('firebasePerformanceLogEnabled') && firebasePerformanceLogEnabled == "true") {
+        return "true"
+    }
+    return "false"
+}
+
 project.ext {
     defaultVersionCode = 341001101;
     defaultVersionName = "3.41";
     react = [
             nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
-            enableHermes: true,
+            enableHermes         : true,
     ]
 }
 
@@ -188,6 +196,7 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            ext.enableCrashlytics = false
             FirebasePerformance {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic HTTP/S network request monitoring
@@ -200,7 +209,13 @@ android {
                 signingConfig signingConfigs.debug
             }
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
-            minifyEnabled true
+
+            if (isFirebasePerformanceLogEnabled().toBoolean()) {
+                minifyEnabled false
+            } else {
+                minifyEnabled true
+            }
+
             zipAlignEnabled true
             if (project.hasProperty("enable-shrinkresource")) {
                 shrinkResources true
@@ -219,7 +234,6 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-
         }
     }
 
@@ -236,6 +250,7 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
+        manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
     }
 
     dexOptions {
@@ -279,8 +294,6 @@ android {
         generateAssetFile(project, dynamicFeatures)
     }
 }
-
-
 
 dependencies {
 
@@ -338,10 +351,10 @@ dependencies {
     implementation project(rootProject.ext.features.logisticdata)
     implementation project(rootProject.ext.features.logisticorder)
     implementation project(rootProject.ext.features.logisticaddaddress)
-    implementation project(rootProject.ext.features.topchat)
     implementation project(rootProject.ext.features.chatcommon)
     implementation project(rootProject.ext.features.nps)
     implementation project(rootProject.ext.features.developerOptions)
+    implementation project(rootProject.ext.features.qrscanner)
     implementation project(rootProject.ext.features.withdraw)
     implementation project(rootProject.ext.features.wishlistCommon)
     implementation project(rootProject.ext.features.productCard)
@@ -372,6 +385,7 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.brandlist)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.playCommon)
     implementation project(rootProject.ext.libraries.iris)
@@ -405,6 +419,11 @@ dependencies {
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.common_promo)
@@ -426,7 +445,6 @@ dependencies {
     implementation project(rootProject.ext.features.csat_rating)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.agerestriction)
-    implementation project(rootProject.ext.features.scanner)
     implementation project(rootProject.ext.libraries.promotionsTarget)
     implementation project(rootProject.ext.features.promoGamificationCommon)
     implementation project(rootProject.ext.libraries.shakeDetect)
@@ -456,6 +474,8 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
     implementation rootProject.ext.miscDependencies.lottie
+    implementation project(rootProject.ext.features.install_referral)
+
 
     implementation rootProject.ext.miscDependencies.bcaxcoWidget
     implementation rootProject.ext.firebase.config
@@ -526,7 +546,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
     implementation rootProject.ext.miscDependencies.rxJavaMath
-    implementation rootProject.ext.miscDependencies.scannerZxing
     compileOnly rootProject.ext.miscDependencies.javaxAnnotation
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
@@ -599,11 +618,5 @@ dependencies {
 }
 
 
-project.ext.sentryCli = [
-        logLevel   : "debug",
-        flavorAware: true
-]
-
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
-apply from: "../buildconfig/reactnative/sentry.gradle"

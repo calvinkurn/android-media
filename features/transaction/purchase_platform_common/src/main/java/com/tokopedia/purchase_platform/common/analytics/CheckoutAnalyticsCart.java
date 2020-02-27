@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.common.analytics;
 
 import android.content.Context;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
