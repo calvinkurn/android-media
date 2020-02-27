@@ -40,6 +40,7 @@ object DeleteCartUseCaseTest : Spek({
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
                         DeleteCartDataResponse(status = "OK", data = Data(0))
                 )), null, false))
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 
             When("create observable") {
@@ -60,6 +61,7 @@ object DeleteCartUseCaseTest : Spek({
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
                         DeleteCartDataResponse(status = "ERROR", errorMessage = arrayListOf(errorMessage, errorMessage2), data = Data(0))
                 )), null, false))
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 
             When("create observable") {
@@ -77,6 +79,7 @@ object DeleteCartUseCaseTest : Spek({
                 every { graphqlUseCase.createObservable(any()) } returns Observable.just(GraphqlResponse(mapOf(DeleteCartGqlResponse::class.java to DeleteCartGqlResponse(
                         DeleteCartDataResponse(status = "ERROR", data = Data(0))
                 )), null, false))
+                every { updateCartCounterUseCase.createObservable(any()) } returns Observable.just(0)
             }
 
             When("create observable") {

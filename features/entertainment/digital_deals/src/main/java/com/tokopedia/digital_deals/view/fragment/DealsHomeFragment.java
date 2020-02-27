@@ -125,7 +125,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private LinearLayoutManager layoutManager;
     private TextView tvSeeAllBrands;
     private TextView toolbarTitle;
-    private TextView tvSeeAllPromo;
+    private TextView tvSeeAllPromos;
     private TextView tvSeeAllTrendingDeals;
     private int adapterPosition = -1;
     private boolean forceRefresh;
@@ -210,7 +210,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
         coachItems.add(new CoachMarkItem(toolbarNameLayout, getString(com.tokopedia.digital_deals.R.string.coachicon_title_location), getString(com.tokopedia.digital_deals.R.string.coachicon_description_location)));
         coachItems.add(new CoachMarkItem(searchInputView, getString(com.tokopedia.digital_deals.R.string.coachicon_title_searchbar), getString(com.tokopedia.digital_deals.R.string.coachicon_description_searchbar)));
-        coachItems.add(new CoachMarkItem(promoheading, getString(com.tokopedia.digital_deals.R.string.coachicon_title_promo), getString(com.tokopedia.digital_deals.R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, com.tokopedia.design.R.color.white, nestedScrollView));
+        coachItems.add(new CoachMarkItem(rvPromos, getString(com.tokopedia.digital_deals.R.string.coachicon_title_promo), getString(com.tokopedia.digital_deals.R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, com.tokopedia.design.R.color.white, nestedScrollView));
         CoachMark coachMark = new CoachMarkBuilder().build();
         coachMark.setShowCaseStepListener(new CoachMark.OnShowCaseStepListener() {
             @Override
@@ -259,11 +259,11 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         clBrands = view.findViewById(com.tokopedia.digital_deals.R.id.cl_brands);
         clPromos = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promos);
         rvPromos = view.findViewById(com.tokopedia.digital_deals.R.id.rv_trending_promos);
+        tvSeeAllPromos = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all_promos);
         noContent = view.findViewById(com.tokopedia.digital_deals.R.id.no_content);
         tvSeeAllBrands = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all_brands);
         tvSeeAllTrendingDeals = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all_deals);
         curatedDealsLayout = view.findViewById(com.tokopedia.digital_deals.R.id.curated_deals);
-        promoheading = view.findViewById(com.tokopedia.digital_deals.R.id.tv_promos);
         topDealsHeading = view.findViewById(com.tokopedia.digital_deals.R.id.tv_popular);
         tvSeeAllBrands.setOnClickListener(this);
         searchInputView.setOnClickListener(this);
@@ -281,7 +281,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         setDrawableTint(img);
 
         searchInputView.setCompoundDrawablesWithIntrinsicBounds(img, null, null, null);
-
 
         appBarLayout = view.findViewById(com.tokopedia.digital_deals.R.id.app_bar_layout);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
@@ -316,6 +315,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 }
             }
         });
+
         overFlowIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -334,6 +334,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 popupMenu.show();
             }
         });
+
+        tvSeeAllPromos.setOnClickListener(v ->
+                RouteManager.route(getActivity(), ApplinkConst.PROMO)
+        );
 
     }
 

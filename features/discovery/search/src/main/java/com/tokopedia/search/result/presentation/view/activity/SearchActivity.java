@@ -519,7 +519,6 @@ public class SearchActivity extends BaseActivity
         availableSearchTabs.add(SearchConstant.ActiveTab.PRODUCT);
         availableSearchTabs.add(SearchConstant.ActiveTab.SHOP);
         availableSearchTabs.add(SearchConstant.ActiveTab.PROFILE);
-        availableSearchTabs.add(SearchConstant.ActiveTab.CATALOG);
 
         return !availableSearchTabs.contains(activeTab);
     }
@@ -559,7 +558,6 @@ public class SearchActivity extends BaseActivity
         searchSectionItemList.add(productTabTitle);
         searchSectionItemList.add(shopTabTitle);
         searchSectionItemList.add(profileTabTitle);
-        searchSectionItemList.add(catalogTabTitle);
     }
 
     private void initTabLayout() {

@@ -61,7 +61,14 @@ public abstract class MainApplication extends MainRouterApplication{
     }
 
     protected void initRemoteConfig() {
-        remoteConfig = new FirebaseRemoteConfigImpl(this);
+        WeaveInterface remoteConfigWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return remoteConfig = new FirebaseRemoteConfigImpl(MainApplication.this);
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineNow(remoteConfigWeave);
     }
 
     @Override
@@ -96,7 +103,6 @@ public abstract class MainApplication extends MainRouterApplication{
         instance = this;
         userSession = new UserSession(this);
         initCrashlytics();
-        initBranch();
         PACKAGE_NAME = getPackageName();
         isResetTickerState = true;
 
@@ -125,6 +131,7 @@ public abstract class MainApplication extends MainRouterApplication{
 
     @NotNull
     private Boolean executeInBackground(){
+        initBranch();
         TooLargeTool.startLogging(MainApplication.this);
         init();
         upgradeSecurityProvider();

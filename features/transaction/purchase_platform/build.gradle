@@ -60,9 +60,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.playServicesDependencies.maps
-    implementation rootProject.ext.playServicesDependencies.tagManager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 

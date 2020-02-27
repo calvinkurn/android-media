@@ -43,12 +43,16 @@ class DigitalHomePageViewModel @Inject constructor(
         digitalHomePageUseCase.isFromCloud = isLoadFromCloud
         launch(Dispatchers.IO) {
             val data = digitalHomePageUseCase.executeOnBackground()
-            if (data.isNotEmpty()) {
-                _digitalHomePageList.postValue(data)
+            if (data.isEmpty() || checkError(data)) {
+                _isAllError.postValue(true)
             } else {
-                _isAllError.value = true
+                _digitalHomePageList.postValue(data)
             }
         }
+    }
+
+    private fun checkError(data: List<DigitalHomePageItemModel>): Boolean {
+        return data.all { !it.isSuccess }
     }
 
     companion object {
