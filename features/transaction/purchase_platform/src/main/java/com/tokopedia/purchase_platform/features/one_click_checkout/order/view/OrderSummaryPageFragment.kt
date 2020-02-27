@@ -66,7 +66,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         orderProductCard = OrderProductCard(view, this)
         val product = OrderProduct()
         product.apply {
-            quantity = QuantityUiModel("", 100, 100, 1, "", "", "", "", "", "", "", false, 100, "")
+            quantity = QuantityUiModel("", 100, 1, 1, "", "", "", "", "", "", "", false, 100, "")
 
             selectedVariantOptionsIdMap = linkedMapOf(
                     9798944 to 41522204,

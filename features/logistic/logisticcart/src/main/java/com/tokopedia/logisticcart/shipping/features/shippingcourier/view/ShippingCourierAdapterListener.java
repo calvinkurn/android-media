@@ -13,4 +13,6 @@ public interface ShippingCourierAdapterListener {
 
     boolean isToogleYearEndPromotionOn();
 
+    boolean shouldShowNotifier();
+
 }

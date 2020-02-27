@@ -1,18 +1,16 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view;
 
 import android.os.Bundle;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.BottomSheets;
-import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.logisticcart.R;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierComponent;
@@ -23,6 +21,9 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +40,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
     public static final String ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST";
     public static final String ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION";
     public static final String ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL";
+    public static final String ARGUMENT_SHOULD_SHOW_NOTIFIER = "ARGUMENT_SHOULD_SHOW_NOTIFIER";
 
     private LinearLayout llContent;
     private RecyclerView rvCourier;
@@ -64,6 +66,22 @@ public class ShippingCourierBottomsheet extends BottomSheets
         }
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
+        shippingCourierBottomsheet.setArguments(bundle);
+
+        return shippingCourierBottomsheet;
+    }
+
+    public static ShippingCourierBottomsheet newInstance(List<ShippingCourierViewModel> shippingCourierViewModels,
+                                                         RecipientAddressModel recipientAddressModel,
+                                                         int cartPosition, boolean shouldShowNotifer) {
+        ShippingCourierBottomsheet shippingCourierBottomsheet = new ShippingCourierBottomsheet();
+        Bundle bundle = new Bundle();
+        if (shippingCourierViewModels != null) {
+            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        }
+        bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
+        bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
+        bundle.putBoolean(ARGUMENT_SHOULD_SHOW_NOTIFIER, shouldShowNotifer);
         shippingCourierBottomsheet.setArguments(bundle);
 
         return shippingCourierBottomsheet;
@@ -189,6 +207,14 @@ public class ShippingCourierBottomsheet extends BottomSheets
         if (getActivity() != null) {
             RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
             return remoteConfig.getBoolean("mainapp_enable_year_end_promotion");
+        }
+        return false;
+    }
+
+    @Override
+    public boolean shouldShowNotifier() {
+        if (getArguments() != null) {
+            return getArguments().getBoolean(ARGUMENT_SHOULD_SHOW_NOTIFIER, false);
         }
         return false;
     }

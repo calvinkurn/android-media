@@ -10,7 +10,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
  * Created by Irfan Khoirul on 08/08/18.
  */
 
-public class ShippingCourierViewModel implements Parcelable {
+public class ShippingCourierViewModel implements Parcelable, RatesViewModelType {
 
     private ProductData productData;
     private ServiceData serviceData;
