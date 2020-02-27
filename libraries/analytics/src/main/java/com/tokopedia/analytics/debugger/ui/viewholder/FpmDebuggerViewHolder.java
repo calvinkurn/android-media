@@ -29,7 +29,7 @@ public class FpmDebuggerViewHolder extends AbstractViewHolder<FpmDebuggerViewMod
         duration = itemView.findViewById(R.id.fpm_text_duration);
         metrics = itemView.findViewById(R.id.fpm_text_metrics);
         txtAtrributes = itemView.findViewById(R.id.fpm_text_attributes);
-        timestamp = itemView.findViewById(R.id.text_timestamp);
+        timestamp = itemView.findViewById(R.id.fpm_text_timestamp);
     }
 
     @Override
