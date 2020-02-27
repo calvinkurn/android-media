@@ -18,10 +18,7 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResultCallback
 import com.google.android.gms.location.LocationSettingsResult
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
-import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.textfield.TextInputLayout
@@ -96,6 +93,8 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     private var isLatitudeNotEmpty: Boolean? = false
     private var isLongitudeNotEmpty: Boolean? = false
 
+    lateinit var mapView: MapView
+
     @Inject
     lateinit var presenter: AddEditAddressPresenter
 
@@ -153,6 +152,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         getView = view
+        mapView = view.findViewById(R.id.map_view_detail)
         savedInstanceState?.let {
             getSavedInstanceState = savedInstanceState
         }
@@ -166,7 +166,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     private fun prepareMap() {
-        presenter.connectGoogleApi(this)
         map_view_detail.onCreate(getSavedInstanceState)
         map_view_detail.getMapAsync(this)
     }
@@ -212,9 +211,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
 
         back_button_detail.setOnClickListener {
-            map_view_detail?.onPause()
-
-            presenter.disconnectGoogleApi()
+//            presenter.disconnectGoogleApi()
 
             if (!isMismatch && !isMismatchSolved) {
                 AddNewAddressAnalytics.eventClickBackArrowOnPositivePageChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
@@ -881,29 +878,34 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     }
 
     override fun onResume() {
-        map_view_detail?.onResume()
         super.onResume()
+        mapView.onResume()
         arrangeLayout(isMismatch, isMismatchSolved)
     }
 
-    override fun onPause() {
-        map_view_detail?.onPause()
-        super.onPause()
+    override fun onStart() {
+        super.onStart()
+        mapView.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        presenter.disconnectGoogleApi()
+        mapView.onStop()
+    }
+
+    override fun onPause() {
+        mapView.onPause()
+        super.onPause()
     }
 
     override fun onDestroy() {
-        map_view_detail?.onDestroy()
+        mapView.onDestroy()
         super.onDestroy()
     }
 
     override fun onLowMemory() {
-        map_view_detail?.onLowMemory()
         super.onLowMemory()
+        mapView.onLowMemory()
     }
 
     override fun onConnected(p0: Bundle?) {}
