@@ -65,7 +65,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     var price: Long? = null
 
     // Express Checkout
-    var isExpressCheckout = true
+    var isExpressCheckout = false
     var isInstantCheckout = false
 
     var categoryName = ""
@@ -73,14 +73,6 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     var productName = ""
 
     private var checkVoucherJob: Job? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        savedInstanceState?.run {
-            promoCode = this.getString(EXTRA_PROMO_CODE, "")
-        }
-    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -161,12 +153,27 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        savedInstanceState?.run {
+            promoCode = getString(EXTRA_PROMO_CODE, promoCode)
+            categoryId = getInt(EXTRA_CATEGORY_ID, categoryId)
+            productId = getInt(EXTRA_PRODUCT_ID, productId)
+        }
+
         val checkoutView = getCheckoutView()
         checkoutView?.run {
             promoTicker = getPromoTicker()
             promoTicker?.actionListener = getPromoListener()
-            resetPromoTicker()
+            promoTicker?.resetPromoTicker()
         }
+
+        if (promoCode.isNotEmpty() && categoryId > 0 && productId > 0) checkVoucher()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (promoCode.isNotEmpty()) outState.putString(EXTRA_PROMO_CODE, promoCode)
+        if (categoryId > 0) outState.putInt(EXTRA_CATEGORY_ID, categoryId)
+        if (productId > 0) outState.putInt(EXTRA_PRODUCT_ID, productId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -210,13 +217,15 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
             override fun onResetPromoDiscount() {
                 if (checkVoucherJob?.isActive != true) {
                     commonTopupBillsAnalytics.eventClickRemovePromo()
-                    resetPromoTicker()
+                    promoCode = ""
+                    promoTicker?.resetPromoTicker()
                 }
             }
 
             override fun onDisablePromoDiscount() {
                 if (checkVoucherJob?.isActive != true) {
-                    resetPromoTicker()
+                    promoCode = ""
+                    promoTicker?.resetPromoTicker()
                 }
             }
 
@@ -273,14 +282,11 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     }
 
-    private fun resetPromoTicker() {
-        promoTicker?.run {
-            promoCode = ""
-            isCoupon = false
-            title = ""
-            desc = ""
-            state = TickerPromoStackingCheckoutView.State.EMPTY
-        }
+    private fun TickerPromoStackingCheckoutView.resetPromoTicker() {
+        isCoupon = false
+        title = ""
+        desc = ""
+        state = TickerPromoStackingCheckoutView.State.EMPTY
     }
 
     fun checkPromo() {
@@ -384,6 +390,9 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
+
+        const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
+        const val EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID"
         const val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
         const val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
         const val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"

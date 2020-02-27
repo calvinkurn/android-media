@@ -85,7 +85,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             field = value
             productId = value?.id?.toIntOrNull() ?: 0
             price = value?.attributes?.pricePlain?.toLongOrNull()
-            if (promoCode.isNotEmpty()) checkPromo()
+//            if (promoCode.isNotEmpty()) checkPromo()
         }
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
@@ -117,6 +117,10 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
+            // Initalize variables of base topup bills fragment
+            categoryId = voucherGameExtraParam.categoryId.toIntOrNull() ?: 0
+            productId = voucherGameExtraParam.productId.toIntOrNull() ?: 0
+
             voucherGameOperatorData =
                     it.getParcelable(EXTRA_PARAM_OPERATOR_DATA) ?: CatalogOperatorAttributes()
             it.getString(EXTRA_INPUT_FIELD_1)?.let { input -> inputData[EXTRA_INPUT_FIELD_1] = input }
@@ -211,8 +215,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
         checkout_view.setVisibilityLayout(false)
         checkout_view.listener = this
-//        promoTicker = checkout_view.getPromoTicker()
-//        promoTicker?.actionListener = getPromoListener()
     }
 
     override fun processEnquiry(data: TopupBillsEnquiryData) {
@@ -574,7 +576,6 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
 
     override fun getCheckoutView(): TopupBillsCheckoutWidget? {
         return checkout_view
-//        return null
     }
 
     override fun onClickNextBuyButton() {
@@ -584,10 +585,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                         voucherGameOperatorData.name, product = this)
             }
         }
-//        processCheckout()
-        val inputs = inputData
-        inputs[TopupBillsViewModel.ENQUIRY_PARAM_OPERATOR_ID] = voucherGameExtraParam.operatorId
-        processExpressCheckout(inputs)
+
+        if (isExpressCheckout) {
+            val inputs = inputData
+            inputs[TopupBillsViewModel.ENQUIRY_PARAM_OPERATOR_ID] = voucherGameExtraParam.operatorId
+            processExpressCheckout(inputs)
+        } else {
+            processCheckout()
+        }
     }
 
     private fun processCheckout() {

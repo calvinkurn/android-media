@@ -99,9 +99,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         set(value) {
             field = value
             value?.run {
-                productId = id?.toIntOrNull() ?: 0
+                productId = id.toIntOrNull() ?: 0
                 productName = title
-                price = price?.toLongOrNull()
+                this@RechargeGeneralFragment.price = price.toLongOrNull()
 
                 // Show product info ticker
                 if (description.isNotEmpty()) {
@@ -217,7 +217,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState != null) {
-            categoryId = savedInstanceState.getInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
             menuId = savedInstanceState.getInt(EXTRA_PARAM_MENU_ID, menuId)
             operatorId = savedInstanceState.getInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
             selectedProduct = savedInstanceState.getParcelable(EXTRA_PARAM_PRODUCT)
@@ -279,7 +278,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putInt(EXTRA_PARAM_CATEGORY_ID, categoryId)
         outState.putInt(EXTRA_PARAM_MENU_ID, menuId)
         outState.putInt(EXTRA_PARAM_OPERATOR_ID, operatorId)
         outState.putParcelable(EXTRA_PARAM_PRODUCT, selectedProduct)
@@ -825,11 +823,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             promoTicker = checkoutView.getPromoTicker()
             promoTicker?.actionListener = getPromoListener()
             // Check promo
-            if (promoCode.isNotEmpty()
-                    && categoryId > 0
-                    && productId > 0) {
-                checkVoucher()
-            }
+//            if (promoCode.isNotEmpty()
+//                    && categoryId > 0
+//                    && productId > 0) {
+//                checkVoucher()
+//            }
 
             fragmentManager?.let { fm ->
                 checkoutBottomSheet.show(fm, "checkout view bottom sheet")
