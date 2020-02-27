@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
-import android.widget.Toast
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -465,9 +464,6 @@ class TopChatRoomPresenter @Inject constructor(
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
             attachment.sendTo(messageId, opponentId, listInterceptor)
-            if (attachment is SendableVoucherPreview) {
-                Toast.makeText(view.context, attachment.voucherPreview.toString(), Toast.LENGTH_LONG).show()
-            }
             view.sendAnalyticAttachmentSent(attachment)
         }
         view.notifyAttachmentsSent()
