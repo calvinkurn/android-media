@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
     android:orientation="vertical"
-    android:padding="@dimen/dp_16">
+    android:paddingLeft="@dimen/dp_16"
+    android:paddingRight="@dimen/dp_16">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_16"
         android:background="@drawable/ic_promo_recommendation"
         android:orientation="horizontal"
         android:paddingLeft="@dimen/dp_12"
@@ -59,8 +62,8 @@
             android:layout_width="@dimen/dp_80"
             android:layout_height="wrap_content"
             android:enabled="true"
-            android:foreground="?selectableItemBackground"
             android:text="Pilih"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:unifyButtonInvers="true"
@@ -69,4 +72,18 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</LinearLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_button_apply_promo_recommendation"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginRight="@dimen/dp_12"
+        android:scaleType="fitCenter"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lottie_autoPlay="false"
+        app:lottie_rawRes="@raw/anim_promo_recommendation" />
+
+</FrameLayout>

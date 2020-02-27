@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 
+import android.animation.Animator
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,6 +22,7 @@ class PromoRecommendationViewHolder(private val view: View,
     override fun bind(element: PromoRecommendationUiModel) {
         itemView.button_apply_promo_recommendation.setOnClickListener {
             listener.onClickApplyRecommendedPromo()
+            playAnimation()
         }
         if (element.uiState.isButtonSelectEnabled) {
             itemView.image_check_promo_recommendation.gone()
@@ -33,6 +35,24 @@ class PromoRecommendationViewHolder(private val view: View,
         }
         itemView.label_promo_recommendation_title.text = element.uiData.title
         itemView.label_promo_recommendation_sub_title.text = element.uiData.subTitle
+    }
+
+    private fun playAnimation() {
+        itemView.lottie_button_apply_promo_recommendation.addAnimatorListener(object : Animator.AnimatorListener {
+            override fun onAnimationRepeat(animator: Animator?) {}
+
+            override fun onAnimationEnd(animator: Animator?) {
+
+            }
+
+            override fun onAnimationCancel(animator: Animator?) {}
+
+            override fun onAnimationStart(animator: Animator?) {}
+        })
+        if (!itemView.lottie_button_apply_promo_recommendation.isAnimating) {
+            itemView.lottie_button_apply_promo_recommendation.playAnimation()
+        }
+
     }
 
 }
