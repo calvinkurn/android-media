@@ -12,4 +12,8 @@
 
     <style name="BottomSheetDialogTheme" parent="BaseBottomSheetDialog" />
 
+    <style name="Theme.Green.WhiteMenu" parent="Theme.Green">
+        <item name="android:colorBackground">@color/white</item>
+    </style>
+
 </resources>
