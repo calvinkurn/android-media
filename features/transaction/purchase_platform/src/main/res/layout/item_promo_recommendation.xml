@@ -21,18 +21,21 @@
             android:id="@+id/image_check_promo_recommendation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_check" />
+            app:srcCompat="@drawable/ic_check_circle" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_promo_recommendation_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginLeft="@dimen/dp_6"
             android:ellipsize="end"
             android:text="Ada 3 promo terbaik untukmu"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toStartOf="@+id/button_apply_promo"
+            app:layout_constraintEnd_toStartOf="@+id/button_apply_promo_recommendation"
             app:layout_constraintStart_toEndOf="@+id/image_check_promo_recommendation"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
@@ -42,9 +45,11 @@
             android:id="@+id/label_promo_recommendation_sub_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_6"
+            android:layout_marginLeft="@dimen/dp_6"
             android:text="Kamu bisa hemat Rp45.000"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toStartOf="@+id/button_apply_promo"
+            app:layout_constraintEnd_toStartOf="@+id/button_apply_promo_recommendation"
             app:layout_constraintStart_toEndOf="@+id/image_check_promo_recommendation"
             app:layout_constraintTop_toBottomOf="@+id/label_promo_recommendation_title"
             app:typographyType="body_3" />

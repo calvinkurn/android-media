@@ -14,6 +14,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.promocheckout.common.analytics.FROM_CART
+import com.tokopedia.promocheckout.common.data.*
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.*
@@ -303,6 +307,14 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
         Toast.makeText(context, "Go to detail promo", Toast.LENGTH_SHORT).show()
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
+            putExtra(EXTRA_KUPON_CODE, "12345")
+            putExtra(EXTRA_IS_USE, true)
+            putExtra(ONE_CLICK_SHIPMENT, false)
+            putExtra(PAGE_TRACKING, FROM_CART)
+//            putExtra(CHECK_PROMO_CODE_FIRST_STEP_PARAM, Any())
+        }
+        startActivity(intent)
     }
 
     // -- END OF PROMO LIST SECTION
