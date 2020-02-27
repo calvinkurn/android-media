@@ -28,6 +28,8 @@ open class NotificationItemViewBean(
         var dataNotification: DataNotification = DataNotification(),
         var products: List<ProductData> = emptyList(),
         var isLongerContent: Boolean = false,
+        var isShowBottomSheet: Boolean = false,
+        var typeBottomSheet: Int = 0,
         var options: NotificationOptions = NotificationOptions()
 ) : Parcelable, Visitable<BaseNotificationTypeFactory> {
 
@@ -50,6 +52,9 @@ open class NotificationItemViewBean(
         hasShop = `in`.readInt() != 0
         typeLink = `in`.readInt()
         totalProduct = `in`.readInt()
+        isLongerContent = `in`.readInt() != 0
+        isShowBottomSheet = `in`.readInt() != 0
+        typeBottomSheet = `in`.readInt()
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -67,6 +72,9 @@ open class NotificationItemViewBean(
         parcel.writeInt(if (hasShop) 1 else 0)
         parcel.writeInt(typeLink)
         parcel.writeInt(totalProduct)
+        parcel.writeInt(if (isLongerContent) 1 else 0)
+        parcel.writeInt(if (isShowBottomSheet) 1 else 0)
+        parcel.writeInt(typeBottomSheet)
     }
 
     override fun describeContents(): Int = 0
