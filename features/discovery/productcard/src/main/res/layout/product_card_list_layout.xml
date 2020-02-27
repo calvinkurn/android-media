@@ -110,17 +110,47 @@
             app:srcCompat="@drawable/product_card_ic_three_dots"
             tools:visibility="visible" />
 
-        <ViewStub
-            android:id="@+id/buttonRemoveFromWishlistStub"
+        <FrameLayout
+            android:id="@+id/buttonRemoveFromWishlist"
             android:layout_width="@dimen/dp_32"
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
+            android:background="@drawable/productcard_module_bg_button_delete"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?selectableItemBackground"
+            android:padding="@dimen/dp_6"
+            android:tint="@color/Neutral_N400"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintVertical_bias="1.0"
-            tools:visibility="visible" />
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/imageRemoveFromWishlist"
+                android:layout_width="@dimen/dp_20"
+                android:layout_height="@dimen/dp_20"
+                android:tint="@color/Neutral_N400"
+                app:srcCompat="@drawable/ic_system_action_delete_black_24"/>
+
+        </FrameLayout>
+
+<!--        <ViewStub-->
+<!--            android:id="@+id/buttonRemoveFromWishlist"-->
+<!--            android:inflatedId="@id/buttonRemoveFromWishlist"-->
+<!--            android:layout="@layout/product_card_button_remove_from_wishlist"-->
+<!--            android:layout_width="@dimen/dp_32"-->
+<!--            android:layout_height="@dimen/dp_32"-->
+<!--            android:layout_marginLeft="@dimen/dp_8"-->
+<!--            android:layout_marginStart="@dimen/dp_8"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/barrierImageContent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintVertical_bias="1.0"-->
+<!--            tools:visibility="visible" />-->
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonAddToCart"
@@ -136,7 +166,7 @@
             android:visibility="gone"
             android:clickable="true"
             android:focusable="true"
-            app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlistStub"
+            app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"
             app:layout_constraintTop_toBottomOf="@id/barrierImageContent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -145,6 +175,23 @@
             app:unifyButtonVariant="ghost"
             app:unifyButtonSize="small"
             tools:visibility="visible" />
+
+<!--        <ViewStub-->
+<!--            android:id="@+id/buttonAddToCartStub"-->
+<!--            android:layout="@layout/product_card_list_button_add_to_cart"-->
+<!--            android:layout_width="@dimen/dp_0"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginLeft="@dimen/dp_8"-->
+<!--            android:layout_marginStart="@dimen/dp_8"-->
+<!--            android:layout_marginTop="@dimen/dp_8"-->
+<!--            android:layout_marginEnd="@dimen/dp_8"-->
+<!--            android:layout_marginRight="@dimen/dp_8"-->
+<!--            app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/barrierImageContent"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintVertical_bias="1.0"-->
+<!--            tools:visibility="visible" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
