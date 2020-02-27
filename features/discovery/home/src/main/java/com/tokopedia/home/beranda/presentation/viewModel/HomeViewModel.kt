@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -38,9 +39,12 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
@@ -68,7 +72,7 @@ open class HomeViewModel @Inject constructor(
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
         private val getBusinessWidgetTab: GetBusinessWidgetTab,
         private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
-        homeDispatcher: HomeDispatcherProvider
+        private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
     companion object {
@@ -133,6 +137,8 @@ open class HomeViewModel @Inject constructor(
     private var getPendingCashBalanceJob: Job? = null
     private var dismissReviewJob: Job? = null
     private var buWidgetJob: Job? = null
+    private var jobChannel: Job? = null
+    private val channel = Channel<Pair<Int, Visitable<*>>>()
 
 // ============================================================================================
 // ================================== Local variable ==========================================
@@ -147,6 +153,7 @@ open class HomeViewModel @Inject constructor(
 
     private val homeRateLimit = RateLimiter<String>(timeout = 3, timeUnit = TimeUnit.MINUTES)
     init {
+        initChannel()
         initFlow()
     }
 
@@ -231,15 +238,14 @@ open class HomeViewModel @Inject constructor(
             isWalletDataError?.let { headerViewModel.isWalletDataError = it }
             isTokoPointDataError?.let { headerViewModel.isTokoPointDataError = it }
             headerViewModel.isUserLogin = userSession.isLoggedIn
-
-            val homeListWithNewHeader = _homeLiveData.value?.list?.copy()?.toMutableList()
-            homeListWithNewHeader?.let {
-                it[currentPosition] = headerViewModel.copy()
-                val newHomeViewModel = _homeLiveData.value?.copy(
-                        list = it
-                )
-                _homeLiveData.postValue(newHomeViewModel)
-            }
+            launch { channel.send(Pair(currentPosition, headerViewModel)) }
+//            val homeListWithNewHeader = _homeLiveData.value?.list?.toMutableList()
+//            homeListWithNewHeader?.let {
+//                it[currentPosition] = headerViewModel.copy()
+//                _homeLiveData.value = _homeLiveData.value?.copy(
+//                        list = it
+//                )
+//            }
         }
 
     }
@@ -307,11 +313,11 @@ open class HomeViewModel @Inject constructor(
         newList.addAll(_homeLiveData.value?.list ?: listOf())
         val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
         if(playIndex != -1 && newList[playIndex] is PlayCardViewModel){
-            newList[playIndex] = playCardViewModel
+            launch { channel.send(Pair(playIndex, playCardViewModel)) }
         }
-        _homeLiveData.postValue(_homeLiveData.value?.copy(
-                list = newList
-        ))
+//        _homeLiveData.value = (_homeLiveData.value?.copy(
+//                list = newList
+//        ))
     }
 
     // play widget it will be removed when load image is failed (deal from PO)
@@ -323,7 +329,7 @@ open class HomeViewModel @Inject constructor(
         val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
         if(playIndex != -1) {
             newList.removeAt(playIndex)
-            _homeLiveData.postValue(_homeLiveData.value?.copy(
+            _homeLiveData.value = (_homeLiveData.value?.copy(
                     list = newList
             ))
         }
@@ -363,8 +369,7 @@ open class HomeViewModel @Inject constructor(
                         list = it
                 )
             }
-            _homeLiveData.postValue(newHomeViewModel)
-
+            _homeLiveData.value = (newHomeViewModel)
         }
 
     }
@@ -397,7 +402,7 @@ open class HomeViewModel @Inject constructor(
                 val newHomeViewModel = _homeLiveData.value?.copy(
                         list = it
                 )
-                _homeLiveData.postValue(newHomeViewModel)
+                _homeLiveData.value = (newHomeViewModel)
             }
         }
     }
@@ -408,7 +413,7 @@ open class HomeViewModel @Inject constructor(
         detectGeolocation?.let {
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
-            _homeLiveData.postValue(homeViewModel.copy(list = currentList))
+            _homeLiveData.value = (homeViewModel.copy(list = currentList))
         }
     }
 
@@ -418,7 +423,7 @@ open class HomeViewModel @Inject constructor(
         detectTicker?.let {
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
-            _homeLiveData.postValue(homeViewModel.copy(list = currentList))
+            _homeLiveData.value = (homeViewModel.copy(list = currentList))
         }
     }
 
@@ -553,7 +558,9 @@ open class HomeViewModel @Inject constructor(
                 var homeData = evaluateGeolocationComponent(it)
                 if (it?.isCache == false) {
                     homeData = evaluateAvailableComponent(homeData)
-                    _homeLiveData.postValue(homeData)
+                    withContext(homeDispatcher.ui()){
+                        _homeLiveData.value = (homeData)
+                    }
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
@@ -566,6 +573,12 @@ open class HomeViewModel @Inject constructor(
             }
         }) {
             _updateNetworkLiveData.postValue(Result.error(Throwable(), null))
+        }
+    }
+
+    private fun initChannel(){
+        jobChannel = launch{
+            updateChannel(channel)
         }
     }
 
@@ -689,19 +702,16 @@ open class HomeViewModel @Inject constructor(
     fun getBusinessUnitTabData(position: Int){
         launchCatchError(coroutineContext, block = {
             val data = getBusinessWidgetTab.executeOnBackground()
-            if(_homeLiveData.value?.list?.get(position) is NewBusinessUnitWidgetDataModel){
-                val newList = _homeLiveData.value?.list.copy().toMutableList()
-                newList[position] = (newList[position] as NewBusinessUnitWidgetDataModel).copy(
+            (_homeLiveData.value?.list?.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
+                val buWidgetData = buWidget.copy(
                         tabList = data.tabBusinessList,
                         backColor = data.widgetHeader.backColor,
                         contentsList = data.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
-                _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
+                channel.send(Pair(position, buWidgetData))
             }
         }){
-            if(_homeLiveData.value?.list?.get(position) is NewBusinessUnitWidgetDataModel){
-                val newList = _homeLiveData.value?.list.copy().toMutableList()
-                newList[position] = (newList[position] as NewBusinessUnitWidgetDataModel).copy(tabList = listOf())
-                _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
+            (_homeLiveData.value?.list?.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
+                channel.send(Pair(position, buWidget.copy(tabList = listOf())))
             }
         }
     }
@@ -711,23 +721,21 @@ open class HomeViewModel @Inject constructor(
         buWidgetJob = launchCatchError(coroutineContext, block = {
             getBusinessUnitDataUseCase.setParams(tabId)
             val data = getBusinessUnitDataUseCase.executeOnBackground()
-            _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let {
-                val newList = _homeLiveData.value?.list.copy().toMutableList()
-                val oldBuData = (newList[it.index] as NewBusinessUnitWidgetDataModel)
+            _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
+                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
                 val newBuList = oldBuData.contentsList.copy().toMutableList()
                 newBuList[position] = newBuList[position].copy(list = data)
-                newList[it.index] = oldBuData.copy(contentsList = newBuList)
-                _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
+                channel.send(Pair(buModel.index, oldBuData.copy(contentsList = newBuList)))
             }
         }){
             // show error
-            _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let {
-                val newList = _homeLiveData.value?.list.copy().toMutableList()
-                val oldBuData = (newList[it.index] as NewBusinessUnitWidgetDataModel)
+            _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let { buModel ->
+                val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
                 val newBuList = oldBuData.contentsList.copy().toMutableList()
                 newBuList[position] = newBuList[position].copy(list = listOf())
-                newList[it.index] = oldBuData.copy(contentsList = newBuList)
-                _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
+                val newList = _homeLiveData.value?.list.copy().toMutableList()
+                newList[buModel.index] = oldBuData.copy(contentsList = newBuList)
+                channel.send(Pair(buModel.index, oldBuData.copy(contentsList = newBuList)))
             }
         }
     }
@@ -789,6 +797,21 @@ open class HomeViewModel @Inject constructor(
 
         })
     }
+    
+    private suspend fun updateChannel(channel: Channel<Pair<Int, Visitable<*>>>){
+        for(visitable in channel){
+            val newList = _homeLiveData.value?.list?.toMutableList()
+            if(newList != null && newList.size >  visitable.first){
+                newList[visitable.first] = visitable.second
+                Log.d("HOME", "${visitable.first}, ${visitable.second::class.java.name}")
+                withContext(homeDispatcher.ui()){
+                    _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
+                }
+            }
+        }
+    }
+
+
 
     private fun mapToHomeHeaderWalletAction(walletBalanceModel: WalletBalanceModel): HomeHeaderWalletAction? {
         val data = HomeHeaderWalletAction()

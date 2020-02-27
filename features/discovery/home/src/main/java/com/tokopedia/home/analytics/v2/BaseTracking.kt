@@ -136,7 +136,7 @@ abstract class BaseTracking {
             map[KEY_NAME] = product.name
             map[KEY_BRAND] = product.brand
             map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice
+            map[KEY_PRICE] = product.productPrice.toString()
             map[KEY_CATEGORY] = product.category
             map[KEY_POSITION] = product.productPosition.toString()
             map[KEY_DIMENSION_83] = if(product.freeOngkir) FREE_ONGKIR else NONE
@@ -148,7 +148,7 @@ abstract class BaseTracking {
             map[KEY_NAME] = product.name
             map[KEY_BRAND] = product.brand
             map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice
+            map[KEY_PRICE] = product.productPrice.toString()
             map[KEY_CATEGORY] = product.category
             map[KEY_POSITION] = product.productPosition.toString()
             map[KEY_LIST] = list

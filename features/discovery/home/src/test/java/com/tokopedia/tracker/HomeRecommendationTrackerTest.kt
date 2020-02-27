@@ -132,7 +132,7 @@ class HomeFeedTrackerTest : Spek({
                  every { testTracker.getTracker() } returns DataLayer.mapOf(
                          "event", "productView",
                          "eventCategory", "homepage",
-                         "eventAction", "product recommendation impression - non login - top ads",
+                         "eventAction", "product recommendation impression - non login - topads",
                          "eventLabel", "for you",
                          "ecommerce", DataLayer.mapOf(
                          "currencyCode","IDR",

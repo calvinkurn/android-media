@@ -44,6 +44,7 @@ import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -329,24 +330,24 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     public void onProductImpression(HomeFeedViewModel model, int position) {
         if (model.isTopAds()) {
             if(userSession.isLoggedIn()){
-                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLoginTopAds(
+                homeTrackingQueue.putEETracking((HashMap<String, Object>) HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(),
                         model
                 ));
             } else {
-                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductViewNonLoginTopAds(
+                homeTrackingQueue.putEETracking((HashMap<String, Object>) HomeRecommendationTracking.INSTANCE.getRecommendationProductViewNonLoginTopAds(
                         tabName.toLowerCase(),
                         model
                 ));
             }
         } else {
             if(userSession.isLoggedIn()){
-                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLogin(
+                homeTrackingQueue.putEETracking((HashMap<String, Object>) HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLogin(
                         tabName.toLowerCase(),
                         model
                 ));
             } else {
-                TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductViewNonLogin(
+                homeTrackingQueue.putEETracking((HashMap<String, Object>) HomeRecommendationTracking.INSTANCE.getRecommendationProductViewNonLogin(
                         tabName.toLowerCase(),
                         model
                 ));
