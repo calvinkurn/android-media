@@ -1,0 +1,95 @@
+package com.tokopedia.updateinactivephone.activity
+
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
+import android.view.View
+import android.view.WindowManager
+
+import com.airbnb.deeplinkdispatch.DeepLink
+import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.core.app.MainApplication
+import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.updateinactivephone.R
+import com.tokopedia.updateinactivephone.fragment.ChangeInactivePhoneFragment
+
+class ChangeInactivePhoneActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
+
+    override fun getNewFragment(): Fragment? {
+        return ChangeInactivePhoneFragment.instance
+    }
+
+    override fun setupLayout(savedInstanceState: Bundle) {
+        super.setupLayout(savedInstanceState)
+        setupToolbar()
+        initView()
+    }
+
+    override fun getLayoutRes(): Int {
+        return R.layout.change_inactive_phone_layout
+    }
+
+    private fun initView() {
+        val bundle = Bundle()
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        var fragment = supportFragmentManager.findFragmentByTag(ChangeInactivePhoneFragment::class.java.simpleName)
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+        if (fragment == null) {
+            fragment = ChangeInactivePhoneFragment.instance
+        }
+        fragmentTransaction.replace(R.id.parent_view, fragment, fragment.javaClass.simpleName)
+        fragmentTransaction.commit()
+
+    }
+
+
+    private fun setupToolbar() {
+        toolbar = findViewById(R.id.toolbar)
+        toolbar.setNavigationIcon(R.drawable.ic_icon_back_black)
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowTitleEnabled(true)
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.title = ""
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window = window
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.white)
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+    }
+
+    override fun getComponent(): AppComponent {
+        return (application as MainApplication).appComponent
+    }
+
+    companion object {
+
+        private val TITLE = "title"
+
+        private fun getChangeInactivePhoneIntent(context: Context): Intent {
+            return Intent(context, ChangeInactivePhoneActivity::class.java)
+        }
+    }
+
+    object DeeplinkIntent{
+        @JvmStatic
+        @DeepLink(ApplinkConst.CHANGE_INACTIVE_PHONE)
+        fun getCallingApplinkIntent(context: Context, bundle: Bundle): Intent {
+            val uri = Uri.parse(bundle.getString(DeepLink.URI)).buildUpon()
+            val intent = getChangeInactivePhoneIntent(context)
+            return intent.setData(uri.build())
+        }
+    }
+}
