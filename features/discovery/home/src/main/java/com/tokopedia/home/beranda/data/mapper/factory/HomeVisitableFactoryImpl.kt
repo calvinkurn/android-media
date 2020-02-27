@@ -159,54 +159,54 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
             val position = index+1
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
-//                DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
-//                DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {
-//                    homeData?.spotlight?.let { spotlight ->  createSpotlight(spotlight, isCache)} }
+                DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
+                DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {
+                    homeData?.spotlight?.let { spotlight ->  createSpotlight(spotlight, isCache)} }
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
-//                DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
-//                            isCombined = true)
-//                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingDataForCombination = channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
-//                            isCombined = true)
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
-//                    createDynamicChannel(channel)
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
-//                            isCombined = true)
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO, DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage,
-//                            isCombined = true
-//                    )
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC, DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingData = channel.enhanceImpressionProductChannelMix
-//                    )
-//                    if(!isCache) trackingQueue?.putEETracking(channel.enhanceImpressionBannerChannelMix)
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
-//                    createDynamicChannel(
-//                            channel = channel,
-//                            trackingData = channel.enhanceImpressionProductChannelMix
-//                    )
-//                    if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
-//                }
-//                DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
-//                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
-//                DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
+                DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
+                            isCombined = true)
+                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingDataForCombination = channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
+                            isCombined = true)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
+                    createDynamicChannel(channel)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
+                            isCombined = true)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO, DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage,
+                            isCombined = true
+                    )
+                }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC, DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = channel.enhanceImpressionProductChannelMix
+                    )
+                    if(!isCache) trackingQueue?.putEETracking(channel.enhanceImpressionBannerChannelMix)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = channel.enhanceImpressionProductChannelMix
+                    )
+                    if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
+                }
+                DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
+                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
+                DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
             }
         }
 
