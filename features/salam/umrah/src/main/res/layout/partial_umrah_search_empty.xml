@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        >
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iw_umrah_search_empty"
         android:layout_width="0dp"
@@ -24,7 +28,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_percent="0.4"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iw_umrah_search_empty"
@@ -33,7 +37,6 @@
         app:typographyType="heading_4"
         android:textColor="@color/Neutral_N700"
         android:layout_marginTop="@dimen/dp_26"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
         />
 
@@ -41,7 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintWidth_percent="0.4"
         app:layout_constraintTop_toBottomOf="@+id/tg_umrah_search_empty_title"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/iw_umrah_search_empty"
@@ -49,7 +52,6 @@
         app:typographyWeight="reguler"
         app:typographyType="body_3"
         android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginLeft="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
         />
 
@@ -58,12 +60,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/iw_umrah_search_empty"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="@dimen/dp_18"
         app:unifyButtonType="main"
         app:unifyButtonSize="small"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_24"
+        android:layout_marginBottom="@dimen/dp_8"
         android:text="@string/umrah_search_empty_state_button"
         />
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/grey_100"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:paddingLeft="@dimen/dp_16"
+        android:layout_marginTop="8dp"
+        android:paddingTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_16"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Neutral_N700"
+        android:text="@string/umrah_search_empty_state_text"
+        />
+</LinearLayout>

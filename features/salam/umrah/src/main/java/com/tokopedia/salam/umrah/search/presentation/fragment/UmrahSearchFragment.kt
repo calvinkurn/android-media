@@ -85,7 +85,6 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     private val selectedFilter = ParamFilter()
     private var isRVInited = false
     private var isPassingEmpty = false
-    private var isAlreadyShowEmpty = false
 
     override fun onEmptyContentItemTextClicked() {}
 

@@ -1,8 +1,6 @@
 package com.tokopedia.salam.umrah.search.presentation.adapter.viewholder
 
 import android.view.View
-import android.view.ViewGroup
-import android.widget.AbsListView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.search.data.UmrahSearchEmpty
@@ -10,8 +8,6 @@ import kotlinx.android.synthetic.main.partial_umrah_search_empty.view.*
 
 class UmrahSearchEmptyViewHolder(itemView: View, val listener:OnClickListener) : AbstractViewHolder<UmrahSearchEmpty>(itemView) {
     override fun bind(element: UmrahSearchEmpty) {
-        itemView.layoutParams = AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT)
         itemView.btn_umrah_search_empty_open_filter.setOnClickListener {
             listener.umrahSearchEmptyOnClickListener()
         }
