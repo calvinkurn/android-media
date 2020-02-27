@@ -41,7 +41,7 @@ class EventGridEventViewHolder(itemView: View, action: ((data: EventItemModel,
         itemView.ent_title_card.text = element.title
         itemAdapter.items = element.items
         itemView.btn_see_all.setOnClickListener {
-            EventHomePageTracking.getInstance().clickSeeAllCuratedEventProduct()
+            EventHomePageTracking.getInstance().clickSeeAllCuratedEventProduct(element.title, adapterPosition + 1)
         }
     }
 
