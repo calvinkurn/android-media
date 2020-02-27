@@ -7,13 +7,11 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.utils.executeInflation
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
-import kotlinx.android.synthetic.main.product_card_grid_button_add_to_cart.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
 class ProductCardGridView: BaseCustomView {
@@ -45,7 +43,7 @@ class ProductCardGridView: BaseCustomView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasOptions)
 
-        buttonAddToCartStub.executeInflation(buttonAddToCart, productCardModel.hasAddToCartButton)
+        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {

@@ -202,25 +202,3 @@ private fun safeParseColor(color: String): Int {
         0
     }
 }
-
-internal fun ViewStub?.executeInflation(shouldRender: Boolean, doRender: () -> Unit, removeRendered: () -> Unit) {
-    if (shouldRender) {
-        this?.inflate()
-        doRender()
-    }
-    else if (this == null) {
-        removeRendered()
-    }
-}
-
-internal fun ViewStub?.executeInflation(view: View?, isVisible: Boolean, onViewVisible: (View) -> Unit = {}) {
-    if (isVisible) {
-        this?.inflate()
-        view?.visible()
-
-        if (view != null) onViewVisible(view)
-    }
-    else if (this == null) {
-        view?.gone()
-    }
-}

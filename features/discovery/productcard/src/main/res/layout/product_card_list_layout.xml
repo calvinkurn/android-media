@@ -40,7 +40,6 @@
             android:layout_marginStart="@dimen/dp_4"
             android:layout_marginLeft="@dimen/dp_4"
             android:layout_marginBottom="@dimen/dp_4"
-            android:background="@drawable/product_card_product_status_background"
             android:gravity="center"
             android:paddingStart="@dimen/dp_4"
             android:paddingEnd="@dimen/dp_4"
@@ -116,7 +115,7 @@
             android:layout_height="@dimen/dp_32"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:background="@drawable/productcard_module_bg_button_delete"
+            android:background="@drawable/product_card_bg_button_delete"
             android:clickable="true"
             android:focusable="true"
             android:foreground="?selectableItemBackground"
@@ -138,24 +137,10 @@
 
         </FrameLayout>
 
-<!--        <ViewStub-->
-<!--            android:id="@+id/buttonRemoveFromWishlist"-->
-<!--            android:inflatedId="@id/buttonRemoveFromWishlist"-->
-<!--            android:layout="@layout/product_card_button_remove_from_wishlist"-->
-<!--            android:layout_width="@dimen/dp_32"-->
-<!--            android:layout_height="@dimen/dp_32"-->
-<!--            android:layout_marginLeft="@dimen/dp_8"-->
-<!--            android:layout_marginStart="@dimen/dp_8"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/barrierImageContent"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintVertical_bias="1.0"-->
-<!--            tools:visibility="visible" />-->
-
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonAddToCart"
             android:layout_width="@dimen/dp_0"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/product_card_button_add_to_cart_height"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_8"
@@ -175,23 +160,6 @@
             app:unifyButtonVariant="ghost"
             app:unifyButtonSize="small"
             tools:visibility="visible" />
-
-<!--        <ViewStub-->
-<!--            android:id="@+id/buttonAddToCartStub"-->
-<!--            android:layout="@layout/product_card_list_button_add_to_cart"-->
-<!--            android:layout_width="@dimen/dp_0"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginLeft="@dimen/dp_8"-->
-<!--            android:layout_marginStart="@dimen/dp_8"-->
-<!--            android:layout_marginTop="@dimen/dp_8"-->
-<!--            android:layout_marginEnd="@dimen/dp_8"-->
-<!--            android:layout_marginRight="@dimen/dp_8"-->
-<!--            app:layout_constraintStart_toEndOf="@id/buttonRemoveFromWishlist"-->
-<!--            app:layout_constraintTop_toBottomOf="@id/barrierImageContent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent"-->
-<!--            app:layout_constraintVertical_bias="1.0"-->
-<!--            tools:visibility="visible" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
