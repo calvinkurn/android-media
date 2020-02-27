@@ -169,7 +169,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         val promoListHeaderUiModel = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = "Kupon saya global"
-                    subTitle = "Hanya bisa pilih 1 kupon"
+                    subTitle = "Hanya bisa pilih 1"
                     promoType = PROMO_TYPE_GLOBAL
                     identifierId = 1
                 },
@@ -185,6 +185,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     parentIdentifierId = 1
                     title = "Promo pertama"
                     subTitle = "Berakhir 1 jam lagi"
+                    imageResourceUrl = "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isEnabled = true
@@ -222,7 +223,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         val promoListHeaderUiModel1 = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = "Ini promo power merchant"
-                    subTitle = "Hanya bisa pilih 1 kupon"
+                    subTitle = "Hanya bisa pilih 1"
                     promoType = PROMO_TYPE_POWER_MERCHANT
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
@@ -245,7 +246,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         val promoListHeaderUiModel2 = PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = "Ini promo official store"
-                    subTitle = "Hanya bisa pilih 1 kupon"
+                    subTitle = "Hanya bisa pilih 1"
                     promoType = PROMO_TYPE_MERCHANT_OFFICIAL
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
@@ -263,12 +264,18 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     // --- FRAGMENT LEVEL ACTION
 
     override fun onClickResetPromo() {
-        val promoList = HashMap<Int, PromoListItemUiModel>()
+        val promoList = HashMap<Int, Visitable<*>>()
         adapter.data.forEach {
             if (it is PromoListItemUiModel && it.uiState.isSellected) {
-                val newData = PromoListItemUiModel.clone(it)
-                newData.uiState.isSellected = false
-                promoList.put(adapter.data.indexOf(it), newData)
+                val newData = PromoListItemUiModel.clone(it).apply {
+                    uiState.isSellected = false
+                }
+                promoList[adapter.data.indexOf(it)] = newData
+            } else if (it is PromoListHeaderUiModel) {
+                val newData = PromoListHeaderUiModel.clone(it).apply {
+                    uiData.subTitle = "Hanya bisa pilih 1"
+                }
+                promoList[adapter.data.indexOf(it)] = newData
             }
         }
         adapter.modifyDataList(promoList)
@@ -343,7 +350,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 if (hasSelectPromo) {
                     uiData.subTitle = "Promo dipilih"
                 } else {
-                    uiData.subTitle = "Hanya bisa pilih 1 kupon"
+                    uiData.subTitle = "Hanya bisa pilih 1"
                 }
             }
             renderFragmentState()

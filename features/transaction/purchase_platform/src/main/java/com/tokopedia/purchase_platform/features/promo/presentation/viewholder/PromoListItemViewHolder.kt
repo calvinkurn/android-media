@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker.getDrawable
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
@@ -27,8 +28,11 @@ class PromoListItemViewHolder(private val view: View,
     override fun bind(element: PromoListItemUiModel) {
         if (element.uiData.imageResourceUrl.isNotBlank()) {
             ImageHandler.loadImageRounded2(itemView.context, itemView.image_promo_item, element.uiData.imageResourceUrl)
+            itemView.label_promo_item_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
+                    itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
             itemView.image_promo_item.show()
         } else {
+            itemView.label_promo_item_title.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
             itemView.image_promo_item.gone()
         }
 
@@ -56,6 +60,8 @@ class PromoListItemViewHolder(private val view: View,
 
     private fun renderEnablePromoItem(element: PromoListItemUiModel) {
         itemView.label_promo_item_error_message.gone()
+        itemView.label_promo_item_sub_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_2).toInt(),
+                itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
         if (element.uiState.isSellected) {
             itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER_ACTIVE
             itemView.image_select_promo.show()
@@ -69,6 +75,8 @@ class PromoListItemViewHolder(private val view: View,
         itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER_DISABLED
         itemView.label_promo_item_error_message.text = element.uiData.errorMessage
         itemView.label_promo_item_error_message.show()
+        itemView.label_promo_item_sub_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
+                itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
         itemView.image_select_promo.gone()
     }
 
