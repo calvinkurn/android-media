@@ -299,17 +299,9 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             val oldData = adapter.data[itemPosition]
             if (oldData is PromoListHeaderUiModel) {
                 if (!oldData.uiState.isCollapsed) {
-                    val newData = PromoListHeaderUiModel(
-                            uiData = PromoListHeaderUiModel.UiData().apply {
-                                title = oldData.uiData.title
-                                subTitle = oldData.uiData.subTitle
-                                promoType = oldData.uiData.promoType
-                                identifierId = oldData.uiData.identifierId
-                            },
-                            uiState = PromoListHeaderUiModel.UiState().apply {
-                                isCollapsed = !oldData.uiState.isCollapsed
-                            }
-                    )
+                    val newData = PromoListHeaderUiModel.clone(oldData).apply {
+                        uiState.isCollapsed = !oldData.uiState.isCollapsed
+                    }
                     adapter.modifyData(itemPosition, newData)
 
                     val modifiedData = ArrayList<PromoListItemUiModel>()
@@ -322,18 +314,10 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     newData.uiData.tmpPromoItemList = modifiedData
                     adapter.removeList(modifiedData)
                 } else {
-                    val newData = PromoListHeaderUiModel(
-                            uiData = PromoListHeaderUiModel.UiData().apply {
-                                identifierId = oldData.uiData.identifierId
-                                title = oldData.uiData.title
-                                subTitle = oldData.uiData.subTitle
-                                promoType = oldData.uiData.promoType
-                                tmpPromoItemList = emptyList()
-                            },
-                            uiState = PromoListHeaderUiModel.UiState().apply {
-                                isCollapsed = oldData.uiState.isCollapsed.not()
-                            }
-                    )
+                    val newData = PromoListHeaderUiModel.clone(oldData).apply {
+                        uiData.tmpPromoItemList = emptyList()
+                        uiState.isCollapsed = !oldData.uiState.isCollapsed
+                    }
                     adapter.modifyData(itemPosition, newData)
                     adapter.addVisitableList(itemPosition + 1, oldData.uiData.tmpPromoItemList)
                 }
@@ -352,21 +336,13 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         }
         oldData?.let {
             val hasSelectPromo = checkHasPromoSellected(it.uiData.identifierId)
-            val newData = PromoListHeaderUiModel(
-                    uiData = PromoListHeaderUiModel.UiData().apply {
-                        title = it.uiData.title
-                        if (hasSelectPromo) {
-                            subTitle = "Promo dipilih"
-                        } else {
-                            subTitle = "Hanya bisa pilih 1 kupon"
-                        }
-                        promoType = it.uiData.promoType
-                        identifierId = it.uiData.identifierId
-                    },
-                    uiState = PromoListHeaderUiModel.UiState().apply {
-                        isCollapsed = it.uiState.isCollapsed
-                    }
-            )
+            val newData = PromoListHeaderUiModel.clone(it).apply {
+                if (hasSelectPromo) {
+                    uiData.subTitle = "Promo dipilih"
+                } else {
+                    uiData.subTitle = "Hanya bisa pilih 1 kupon"
+                }
+            }
             renderFragmentState()
             val headerIndex = adapter.data.indexOf(oldData)
             adapter.modifyData(headerIndex, newData)
@@ -380,21 +356,9 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 } else {
                     val promoItem = adapter.data[index] as PromoListItemUiModel
                     if (promoItem.uiData.promoId != element.uiData.promoId && promoItem.uiState.isSellected) {
-                        newPromoItemData = PromoListItemUiModel(
-                                uiData = PromoListItemUiModel.UiData().apply {
-                                    promoId = promoItem.uiData.promoId
-                                    title = promoItem.uiData.title
-                                    subTitle = promoItem.uiData.subTitle
-                                    errorMessage = promoItem.uiData.errorMessage
-                                    imageResourceUrl = promoItem.uiData.imageResourceUrl
-                                    parentIdentifierId = promoItem.uiData.parentIdentifierId
-                                },
-                                uiState = PromoListItemUiModel.UiState().apply {
-                                    isSellected = false
-                                    isEnabled = promoItem.uiState.isEnabled
-                                    isVisible = promoItem.uiState.isVisible
-                                }
-                        )
+                        newPromoItemData = PromoListItemUiModel.clone(promoItem).apply {
+                            uiState.isSellected = false
+                        }
                         unCheckIndex = index
                         break
                     }
