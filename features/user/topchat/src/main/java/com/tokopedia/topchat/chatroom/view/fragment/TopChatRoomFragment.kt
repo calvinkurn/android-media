@@ -836,7 +836,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         presenter.clearAttachmentPreview()
     }
 
-    override fun notifyAttachmentsSent() {
+    override fun clearAttachmentPreviews() {
         getViewState().clearAttachmentPreview()
     }
 
