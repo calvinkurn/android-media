@@ -8,6 +8,7 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 
 import org.json.JSONArray;
@@ -41,9 +42,11 @@ public class PurchaseTracking extends TrackingUtils {
     public static final String USER_ID = "userId";
 
     public static void marketplace(Context context, Pair<Purchase, Bundle> purchaseBundlePair) {
+        IrisSession irisSession = new IrisSession(context);
         Purchase purchase = purchaseBundlePair.getFirst();
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
+                "sessionIris", irisSession.getSessionId(),
                 AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
                 AppEventTracking.EVENT_ACTION, purchase.getEventAction(),
                 AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
@@ -65,8 +68,10 @@ public class PurchaseTracking extends TrackingUtils {
     }
 
     public static void digital(Context context, Purchase purchase) {
+        IrisSession irisSession = new IrisSession(context);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
+                        "sessionIris", irisSession.getSessionId(),
                         AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                         AppEventTracking.EVENT_CATEGORY, "digital - thanks",
                         AppEventTracking.EVENT_ACTION, "view purchase attempt",
