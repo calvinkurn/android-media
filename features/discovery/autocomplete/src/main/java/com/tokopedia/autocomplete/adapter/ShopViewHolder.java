@@ -137,7 +137,10 @@ public class ShopViewHolder extends AbstractViewHolder<ShopSearch> {
                     ),
                     tabName
             );
-            listener.onItemClicked(boundedShopSearch.getApplink(), boundedShopSearch.getUrl());
+
+            if (listener != null) {
+                listener.onItemClicked(boundedShopSearch.getApplink(), boundedShopSearch.getUrl());
+            }
         });
     }
 

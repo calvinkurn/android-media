@@ -18,10 +18,8 @@ class StickyLoginUseCase @Inject constructor(
 ): GraphqlUseCase<StickyLoginTickerPojo.TickerResponse>(repository) {
 
     init {
-        val query = GraphqlHelper.loadRawString(resources, R.raw.gql_sticky_login_query)
-
         setTypeClass(StickyLoginTickerPojo.TickerResponse::class.java)
-        setGraphqlQuery(query)
+        setGraphqlQuery(GraphqlHelper.loadRawString(resources, R.raw.gql_sticky_login_query))
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).apply {
             setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_1.`val`())
             setSessionIncluded(true)

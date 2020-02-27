@@ -103,6 +103,21 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val SETTING_PROFILE = "$INTERNAL_GLOBAL/setting-profile"
 
+    // LandingShopCreationActivity
+    // tokopedia-android-internal://global/landing-shop-creation
+    @JvmField
+    val LANDING_SHOP_CREATION = "$INTERNAL_GLOBAL/landing-shop-creation"
+
+    // PhoneShopCreationActivity
+    // tokopedia-android-internal://global/phone-shop-creation
+    @JvmField
+    val PHONE_SHOP_CREATION = "$INTERNAL_GLOBAL/phone-shop-creation"
+
+    // NameShopCreationActivity
+    // tokopedia-android-internal://global/name-shop-creation
+    @JvmField
+    val NAME_SHOP_CREATION = "$INTERNAL_GLOBAL/name-shop-creation"
+
     @JvmField
     val USER_IDENTIFICATION_INFO_BASE = "$INTERNAL_GLOBAL/user-identification-info"
 
@@ -132,21 +147,30 @@ object ApplinkConstInternalGlobal {
     // TalkProductActivity
     // tokopedia-android-internal://global/product-talk
     @JvmField
-    val SHOP_TALK = "$INTERNAL_GLOBAL/shop-talk"
+    val SHOP_TALK_BASE = "$INTERNAL_GLOBAL/shop-talk/"
+    @JvmField
+    val SHOP_TALK = "$SHOP_TALK_BASE{shop_id}/"
     @JvmField
     val PARAM_SHOP_ID = "shop_id"
 
     // TalkProductActivity
     // tokopedia-android-internal://global/product-talk
     @JvmField
-    val PRODUCT_TALK = "$INTERNAL_GLOBAL/product-talk"
+    val PRODUCT_TALK_BASE = "$INTERNAL_GLOBAL/product-talk/"
+    @JvmField
+    val PRODUCT_TALK = "$PRODUCT_TALK_BASE{product_id}/"
     @JvmField
     val PARAM_PRODUCT_ID = "product_id"
 
     // TalkDetailsActivity
     // tokopedia-android-internal://global/detail-talk
     @JvmField
-    val DETAIL_TALK = "$INTERNAL_GLOBAL/detail-talk"
+    val DETAIL_TALK_BASE = "$INTERNAL_GLOBAL/detail-talk/"
+    @JvmField
+    val DETAIL_TALK = "$DETAIL_TALK_BASE{talk_id}/?" +
+            "shop_id={shop_id}&" +
+            "comment_id={comment_id}&" +
+            "source={source}"
 
     // AddTalkActivity
     // tokopedia-android-internal://global/add-talk
@@ -380,6 +404,11 @@ object ApplinkConstInternalGlobal {
     // tokopedia-android-internal://global/push-notification-troubleshooter
     @JvmField
     val PUSH_NOTIFICATION_TROUBLESHOOTER = "$INTERNAL_GLOBAL/push-notification-troubleshooter"
+
+    // Topchat
+    @JvmField
+    val TOPCHAT = "$INTERNAL_GLOBAL/topchat"
+
 
     // Phone Number Verification Activity
     // tokopedia-android-internal://global/setting-referral-phone-verification

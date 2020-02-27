@@ -1,6 +1,8 @@
 // Sort alphabetically by name
 include "libraries:adapter_delegate"
 include "libraries:analytics"
+include "libraries:analytics_debugger"
+include "libraries:analytics_debugger_noop"
 include "libraries:applink"
 include "libraries:banner_dynamic"
 include "libraries:base_adapter"
@@ -28,6 +30,7 @@ include "libraries:logger"
 include "libraries:instrumentation_test"
 include 'libraries:iris'
 //include 'libraries:iris_no_op'
+include "libraries:mediauploader"
 include "libraries:oms"
 include "libraries:push_notification"
 include 'libraries:permissionchecker'

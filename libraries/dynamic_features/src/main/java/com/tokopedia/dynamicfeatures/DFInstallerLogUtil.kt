@@ -20,6 +20,7 @@ import java.io.File
  */
 object DFInstallerLogUtil {
     private const val DFM_TAG = "DFM"
+    private const val PLAY_STORE_PACKAGE_NAME = "com.android.vending"
     private const val MEGA_BYTE = 1024 * 1024
     private var storageStatsManager: StorageStatsManager? = null
 
@@ -90,12 +91,7 @@ object DFInstallerLogUtil {
 
             messageBuilder.append(";dl_times=$downloadTimes")
 
-            messageBuilder.append(";err=")
-            if (errorList.isNotEmpty()) {
-                messageBuilder.append(errorList.joinToString("|"))
-            } else {
-                messageBuilder.append("--")
-            }
+            messageBuilder.append(";err='${getError(errorList)}'")
 
             messageBuilder.append(";mod_size=")
             if (moduleSize > 0) {
@@ -107,8 +103,7 @@ object DFInstallerLogUtil {
             messageBuilder.append(";phone_size=")
             val phoneSize = getTotalInternalSpaceBytes(context)
             if (phoneSize > 0) {
-                val phoneSizeInMB = getSizeInMB(phoneSize)
-                messageBuilder.append(phoneSizeInMB)
+                messageBuilder.append(getSizeInMB(phoneSize))
             } else {
                 messageBuilder.append(-1)
             }
@@ -127,7 +122,7 @@ object DFInstallerLogUtil {
                 messageBuilder.append(-1)
             }
 
-            messageBuilder.append(";play_str=${getPlayStoreVersionName(context)}")
+            messageBuilder.append(";play_str='${getPlayStoreVersionName(context)}'")
             messageBuilder.append(";play_str_l=${getPlayStoreLongVersionCode(context)}")
             messageBuilder.append(";play_srv=${getPlayServiceLongVersionCode(context)}")
             messageBuilder.append(";installer_pkg=${getInstallerPackageName(context)}")
@@ -140,11 +135,23 @@ object DFInstallerLogUtil {
         return String.format("%.2f", size.toDouble() / MEGA_BYTE)
     }
 
+    private fun getError(errorList: List<String>):String {
+        if (errorList.isEmpty()) {
+            return "0"
+        }
+        var errorText = errorList.first()
+        for (error in errorList) if (error != errorText) {
+            errorText = errorList.joinToString("|")
+            break
+        }
+        return errorText
+    }
+
     private fun getPlayStoreVersionName(context: Context):String {
         return try {
             val pm: PackageManager = context.packageManager
             val playStoreInfo = pm.getInstalledPackages(PackageManager.GET_META_DATA).first {
-                it.packageName == "com.android.vending"
+                it.packageName == PLAY_STORE_PACKAGE_NAME
             }
             playStoreInfo.versionName
         } catch (e: Exception) {
@@ -157,7 +164,7 @@ object DFInstallerLogUtil {
         return try {
             val pm: PackageManager = context.packageManager
             val playStoreInfo = pm.getInstalledPackages(PackageManager.GET_META_DATA).first {
-                it.packageName == "com.android.vending"
+                it.packageName == PLAY_STORE_PACKAGE_NAME
             }
             playStoreInfo.longVersionCode
         } catch (e: Exception) {
