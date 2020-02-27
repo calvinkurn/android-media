@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.BaseOnTabSelectedListener
@@ -29,6 +30,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     private val tabLayout = view.findViewById<TabLayout>(R.id.tab_layout)
     private val containerUnify= view.findViewById<ContainerUnify>(R.id.container_unify)
     private val viewPager = view.findViewById<ViewPager2>(R.id.view_pager)
+    private val loadingView = view.findViewById<LinearLayout>(R.id.loading_view)
     private var model: NewBusinessUnitWidgetDataModel? = null
     private val adapterBusinessWidget = BusinessUnitAdapter(object: NewBusinessUnitViewHolder.BusinessUnitListener{
         override fun getBusinessUnit(position: Int) {
@@ -63,6 +65,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
+        loadingView.show()
         errorBuWidget.hide()
         tabLayout.show()
         viewPager.show()
@@ -92,8 +95,10 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                     errorBuWidget.show()
                     tabLayout.hide()
                     viewPager.hide()
+                    loadingView.hide()
                 } else if(bundle.containsKey(UPDATE_BUNDLE_TAB_LAYOUT)){
                     errorBuWidget.hide()
+                    loadingView.hide()
                     tabLayout.show()
                     viewPager.show()
                     if (element?.tabList != null) {
@@ -116,6 +121,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
             }
         }catch (e: Exception){
             errorBuWidget.show()
+            loadingView.hide()
             tabLayout.hide()
             viewPager.hide()
         }

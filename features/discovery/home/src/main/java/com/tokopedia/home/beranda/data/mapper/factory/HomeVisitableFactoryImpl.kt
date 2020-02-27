@@ -22,8 +22,7 @@ import com.tokopedia.topads.sdk.domain.model.ProductImage
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) : HomeVisitableFactory {
     private var context: Context? = null
@@ -239,10 +238,6 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
             visitableList.add(NewBusinessUnitWidgetDataModel(
                     position = position,
                     isCache = false))
-//            visitableList.add(BusinessUnitViewModel(
-//                    context?.getString(R.string.digital_widget_title),
-//                    position,
-//                    false))
         }
     }
 

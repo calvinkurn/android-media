@@ -555,7 +555,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private void observeHomeData(){
         viewModel.getHomeLiveData().observe(this, data -> {
             if(data != null){
-                if (data.getList().size() > 0 ) {
+                if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER ) {
                     configureHomeFlag(data.getHomeFlag());
                     setData(new ArrayList(data.getList()), data.isCache());
                 } else if (!data.isCache()){
@@ -666,7 +666,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 jankyFramesMonitoringListener.submitDynamicChannelCount(layoutCounter);
             }
 
-            if (isDataValid(data)) {
+            if (!isDataValid(data)) {
                 removeNetworkError();
             } else {
                 showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);

@@ -531,10 +531,10 @@ open class HomeViewModel @Inject constructor(
                 }
                 visitableMutableList.remove(findLoadingModel)
                 visitableMutableList.remove(findRetryModel)
-//                visitableMutableList.add(HomeLoadingMoreModel())
+                visitableMutableList.add(HomeLoadingMoreModel())
                 val newHomeViewModel = homeDataModel.copy(
                         list = visitableMutableList)
-//                getFeedTabData()
+                getFeedTabData()
                 return newHomeViewModel
             }
         }

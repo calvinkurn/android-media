@@ -24,4 +24,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"/>
+    <LinearLayout
+        android:id="@+id/loading_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_weight="3"
+            app:width_weight="0.8" />
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginStart="@dimen/dp_12"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_weight="3"
+            app:width_weight="0.8" />
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="0dp"
+            android:layout_height="@dimen/dp_30"
+            android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_weight="3"
+            app:width_weight="0.8" />
+    </LinearLayout>
+
 </com.tokopedia.unifycomponents.ContainerUnify>
