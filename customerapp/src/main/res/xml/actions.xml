@@ -4,17 +4,17 @@
 
         <fulfillment
             fulfillmentMode="actions.fulfillment.SLICE"
-            urlTemplate="content://com.tokopedia.recharge_slice/get_invoice/{serviceName}"
+            urlTemplate="content://com.tokopedia.recharge_slice/get_invoice"
             >
-            <parameter-mapping
-                intentParameter="invoice.forService.name"
-                required="true"
-                urlParameter="serviceName"/>
+            <!--            <parameter-mapping-->
+            <!--                intentParameter="invoice.forService.name"-->
+            <!--                required="true"-->
+            <!--                urlParameter="serviceName"/>-->
         </fulfillment>
 
-        <fulfillment
-            fulfillmentMode="actions.fulfillment.DEEPLINK"
-            urlTemplate="tokopedia://recharge/home" />
+        <!--        <fulfillment-->
+        <!--            fulfillmentMode="actions.fulfillment.DEEPLINK"-->
+        <!--            urlTemplate="tokopedia://recharge/home" />-->
 
     </action>
 </actions>
