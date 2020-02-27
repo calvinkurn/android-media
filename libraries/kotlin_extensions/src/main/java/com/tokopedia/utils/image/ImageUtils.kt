@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.text.TextUtils
 import android.widget.ImageView
 import android.widget.ImageView.ScaleType.*
+import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.bumptech.glide.Glide
@@ -161,8 +162,8 @@ object ImageUtils {
     fun loadImage(imageView: ImageView, url: String,
                   radius: Float = 0f,
                   signatureKey: ObjectKey? = null,
-                  placeHolder: Int = 0,
-                  resOnError: Int = R.drawable.ic_loading_error,
+                  @DrawableRes placeHolder: Int = 0,
+                  @DrawableRes resOnError: Int = R.drawable.ic_loading_error,
                   isAnimate: Boolean = false,
                   imageLoaded: ((Boolean) -> Unit)? = null,
                   imageCleared: ((Boolean) -> Unit)? = null) {
