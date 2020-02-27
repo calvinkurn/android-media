@@ -79,6 +79,11 @@ public class FpmDebuggerPresenter implements AnalyticsDebugger.Presenter {
         });
     }
 
+    @Override
+    public void saveToDisk() {
+
+    }
+
     private void setRequestParams(int page, String keyword) {
         requestParams.putString(AnalyticsDebuggerConst.KEYWORD, keyword);
         requestParams.putInt(AnalyticsDebuggerConst.PAGE, page);

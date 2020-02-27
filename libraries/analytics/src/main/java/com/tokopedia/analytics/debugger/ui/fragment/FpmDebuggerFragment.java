@@ -166,14 +166,17 @@ public class FpmDebuggerFragment
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_analytics_debugger, menu);
+        inflater.inflate(R.menu.menu_fpm_debugger, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_menu_delete) {
+        if (item.getItemId() == R.id.fpm_action_menu_delete) {
             presenter.deleteAll();
+            return true;
+        } else if (item.getItemId() == R.id.fpm_action_menu_save) {
+            presenter.saveToDisk();
             return true;
         }
         return super.onOptionsItemSelected(item);

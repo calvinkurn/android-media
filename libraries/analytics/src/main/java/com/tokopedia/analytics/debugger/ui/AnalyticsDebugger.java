@@ -26,5 +26,7 @@ public interface AnalyticsDebugger {
         void reloadData();
 
         void deleteAll();
+
+        void saveToDisk();
     }
 }
