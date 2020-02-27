@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterGrayScale
+import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterNormal
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.unifycomponents.CardUnify
 import kotlinx.android.synthetic.main.item_promo_list_item.view.*
@@ -39,10 +41,8 @@ class PromoListItemViewHolder(private val view: View,
         itemView.label_promo_item_title.text = element.uiData.title
         itemView.label_promo_item_sub_title.text = element.uiData.subTitle
         if (element.uiState.isEnabled) {
-            itemView.card_promo_item.isClickable = true
             renderEnablePromoItem(element)
         } else {
-            itemView.card_promo_item.isClickable = false
             renderDisablePromoItem(element)
         }
 
@@ -69,6 +69,7 @@ class PromoListItemViewHolder(private val view: View,
             itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER
             itemView.image_select_promo.gone()
         }
+        setImageFilterNormal(itemView.image_promo_item)
     }
 
     private fun renderDisablePromoItem(element: PromoListItemUiModel) {
@@ -78,6 +79,7 @@ class PromoListItemViewHolder(private val view: View,
         itemView.label_promo_item_sub_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
                 itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
         itemView.image_select_promo.gone()
+        setImageFilterGrayScale(itemView.image_promo_item)
     }
 
 }

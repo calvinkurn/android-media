@@ -15,16 +15,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
-import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
+import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_GLOBAL
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_MERCHANT_OFFICIAL
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_POWER_MERCHANT
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
 import javax.inject.Inject
 
@@ -137,124 +134,18 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun loadData(page: Int) {
         hideLoading()
-        val promoRecommendationUiModel = PromoRecommendationUiModel(
-                uiData = PromoRecommendationUiModel.UiData().apply {
-                    title = "Title aaaaaa"
-                    subTitle = "Sub title aaaa"
-                },
-                uiState = PromoRecommendationUiModel.UiState().apply {
-                    isButtonSelectEnabled = true
-                }
-        )
-        adapter.addVisitable(promoRecommendationUiModel)
+        adapter.addVisitable(mockPromoRecommendation())
+        adapter.addVisitable(mockPromoInput())
 
-        val promoInputUiModel = PromoInputUiModel(
-                uiData = PromoInputUiModel.UiData().apply {
-                    promoCode = ""
-                },
-                uiState = PromoInputUiModel.UiState().apply {
-                    isButtonSelectEnabled = false
-                }
-        )
-        adapter.addVisitable(promoInputUiModel)
+        adapter.addVisitable(mockEligibleHeader())
+        adapter.addVisitableList(mockEligiblePromoGlobalSection())
+        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
+        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
 
-        val promoEligibleHeaderUiModel = PromoEligibleHeaderUiModel(
-                uiData = PromoEligibleHeaderUiModel.UiData().apply {
-                    title = "Kamu bisa bisa bisa pakai promo"
-                    subTitle = "Pilih salah satu aja"
-                }
-        )
-        adapter.addVisitable(promoEligibleHeaderUiModel)
-
-        val promoListHeaderUiModel = PromoListHeaderUiModel(
-                uiData = PromoListHeaderUiModel.UiData().apply {
-                    title = "Kupon saya global"
-                    subTitle = "Hanya bisa pilih 1"
-                    promoType = PROMO_TYPE_GLOBAL
-                    identifierId = 1
-                },
-                uiState = PromoListHeaderUiModel.UiState().apply {
-                    isCollapsed = false
-                }
-        )
-        adapter.addVisitable(promoListHeaderUiModel)
-
-        val promoListItemUiModel = PromoListItemUiModel(
-                uiData = PromoListItemUiModel.UiData().apply {
-                    promoId = 0
-                    parentIdentifierId = 1
-                    title = "Promo pertama"
-                    subTitle = "Berakhir 1 jam lagi"
-                    imageResourceUrl = "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
-                },
-                uiState = PromoListItemUiModel.UiState().apply {
-                    isEnabled = true
-                }
-        )
-        adapter.addVisitable(promoListItemUiModel)
-
-        val promoListItemUiModel1 = PromoListItemUiModel(
-                uiData = PromoListItemUiModel.UiData().apply {
-                    promoId = 1
-                    parentIdentifierId = 1
-                    title = "Promo kedua"
-                    subTitle = "Berakhir 2 jam lagi"
-                    errorMessage = "Kena Error"
-                },
-                uiState = PromoListItemUiModel.UiState().apply {
-                    isEnabled = false
-                }
-        )
-        adapter.addVisitable(promoListItemUiModel1)
-
-        val promoListItemUiModel2 = PromoListItemUiModel(
-                uiData = PromoListItemUiModel.UiData().apply {
-                    promoId = 2
-                    parentIdentifierId = 1
-                    title = "Promo ketiga"
-                    subTitle = "Berakhir 3 jam lagi"
-                },
-                uiState = PromoListItemUiModel.UiState().apply {
-                    isEnabled = true
-                }
-        )
-        adapter.addVisitable(promoListItemUiModel2)
-
-        val promoListHeaderUiModel1 = PromoListHeaderUiModel(
-                uiData = PromoListHeaderUiModel.UiData().apply {
-                    title = "Ini promo power merchant"
-                    subTitle = "Hanya bisa pilih 1"
-                    promoType = PROMO_TYPE_POWER_MERCHANT
-                },
-                uiState = PromoListHeaderUiModel.UiState().apply {
-                    isCollapsed = true
-                }
-        )
-        adapter.addVisitable(promoListHeaderUiModel1)
-
-        val promoListItemUiModel3 = PromoListItemUiModel(
-                uiData = PromoListItemUiModel.UiData().apply {
-                    promoId = 3
-                    parentIdentifierId = 2
-                },
-                uiState = PromoListItemUiModel.UiState().apply {
-                    isEnabled = true
-                }
-        )
-        adapter.addVisitable(promoListItemUiModel3)
-
-        val promoListHeaderUiModel2 = PromoListHeaderUiModel(
-                uiData = PromoListHeaderUiModel.UiData().apply {
-                    title = "Ini promo official store"
-                    subTitle = "Hanya bisa pilih 1"
-                    promoType = PROMO_TYPE_MERCHANT_OFFICIAL
-                },
-                uiState = PromoListHeaderUiModel.UiState().apply {
-                    isCollapsed = true
-                }
-        )
-        adapter.addVisitable(promoListHeaderUiModel2)
-
+        adapter.addVisitable(mockIneligibleHeader())
+        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
+        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
+        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -274,6 +165,9 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             } else if (it is PromoListHeaderUiModel) {
                 val newData = PromoListHeaderUiModel.clone(it).apply {
                     uiData.subTitle = "Hanya bisa pilih 1"
+                    it.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
+                        promoListItemUiModel.uiState.isSellected = false
+                    }
                 }
                 promoList[adapter.data.indexOf(it)] = newData
             }

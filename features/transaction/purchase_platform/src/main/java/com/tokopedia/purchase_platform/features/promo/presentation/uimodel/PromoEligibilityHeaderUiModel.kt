@@ -3,8 +3,9 @@ package com.tokopedia.purchase_platform.features.promo.presentation.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapterTypeFactory
 
-data class PromoEligibleHeaderUiModel(
-        var uiData: UiData
+data class PromoEligibilityHeaderUiModel(
+        var uiData: UiData,
+        var uiState: UiState
 ) : Visitable<PromoCheckoutAdapterTypeFactory> {
 
     override fun type(typeFactory: PromoCheckoutAdapterTypeFactory): Int {
@@ -15,20 +16,27 @@ data class PromoEligibleHeaderUiModel(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PromoEligibleHeaderUiModel
+        other as PromoEligibilityHeaderUiModel
 
         if (uiData != other.uiData) return false
+        if (uiState != other.uiState) return false
 
         return true
     }
 
     override fun hashCode(): Int {
-        return uiData.hashCode()
+        var result = uiData.hashCode()
+        result = 31 * result + uiState.hashCode()
+        return result
     }
 
     data class UiData(
             var title: String = "",
             var subTitle: String = ""
+    )
+
+    data class UiState(
+            var isEnabled: Boolean = false
     )
 
 }

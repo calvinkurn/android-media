@@ -8,7 +8,7 @@
     android:padding="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/label_promo_eligible_header_title"
+        android:id="@+id/label_promo_eligibility_header_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
@@ -19,12 +19,12 @@
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/label_promo_eligible_header_subtitle"
+        android:id="@+id/label_promo_eligibility_header_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Kamu bisa gabungkan promo biar makin hemat"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_promo_eligible_header_title"
+        app:layout_constraintTop_toBottomOf="@+id/label_promo_eligibility_header_title"
         app:typographyType="body_3" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

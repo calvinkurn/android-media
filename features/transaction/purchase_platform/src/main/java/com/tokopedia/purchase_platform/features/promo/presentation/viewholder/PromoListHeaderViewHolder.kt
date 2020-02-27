@@ -3,8 +3,12 @@ package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterGrayScale
+import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterNormal
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_GLOBAL
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_MERCHANT_OFFICIAL
@@ -38,6 +42,22 @@ class PromoListHeaderViewHolder(private val view: View,
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) listener.onClickPromoListHeader(adapterPosition)
         }
+
+        if (element.uiState.isEnabled) {
+            renderEnablePromoListHeader()
+        } else {
+            renderDisablePromoListHeader()
+        }
+    }
+
+    private fun renderEnablePromoListHeader() {
+        setImageFilterNormal(itemView.image_promo_list_header)
+        itemView.label_promo_list_header_sub_title.show()
+    }
+
+    private fun renderDisablePromoListHeader() {
+        setImageFilterGrayScale(itemView.image_promo_list_header)
+        itemView.label_promo_list_header_sub_title.gone()
     }
 
 }
