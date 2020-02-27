@@ -48,7 +48,7 @@ class NotificationHelper {
         NotificationCompat.BigTextStyle inboxStyle = new NotificationCompat.BigTextStyle().bigText(data.getData());
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ANDROID_GENERAL_CHANNEL")
                 .setContentIntent(pendingIntent)
-                .setContentTitle("Open Analytics Debugger")
+                .setContentTitle("Open Performance Debugger")
                 .setContentText(data.getTraceName())
                 .setAutoCancel(true)
                 .setShowWhen(true)

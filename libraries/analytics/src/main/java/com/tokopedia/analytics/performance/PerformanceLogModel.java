@@ -59,9 +59,8 @@ public class PerformanceLogModel {
     }
 
     public String getData() {
-        return new StringBuilder()
-                .append("Duration: ").append(String.valueOf(getDuration()))
-                .append("Attributes: ").append(attributes)
-                .append("Metrics: ").append(metrics).toString();
+        return "Duration: " + getDuration() + "ms" +
+                "\r\nAttributes: " + attributes +
+                "\r\nMetrics: " + metrics;
     }
 }
