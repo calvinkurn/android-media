@@ -1,5 +1,5 @@
 query getEtalaseList($shopId:String!){
-  shopShowcasesByShopID(shopId:$shopId, hideNoCount:false,hideShowcaseGroup:false,isOwner:false) {
+  shopShowcasesByShopID(shopId:$shopId, hideNoCount:true,hideShowcaseGroup:true,isOwner:false) {
     result {
       id
       name

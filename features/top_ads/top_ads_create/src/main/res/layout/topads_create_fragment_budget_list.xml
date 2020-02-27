@@ -8,6 +8,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginBottom="@dimen/dp_20"
         app:layout_constraintBottom_toTopOf="@+id/bottom"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -60,17 +61,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <EditText
-                        android:id="@+id/budget"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/dp_16"
-                        android:hint="Rp"
-                        android:inputType="number"
-                        android:maxLines="1"
-                        app:layout_constraintHorizontal_bias="0.5"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/budget_parent"
+                        style="@style/TextInputLayout"
+                        android:layout_width="0dp"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.VerySmall"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/subtitle" />
+                        app:layout_constraintTop_toBottomOf="@+id/subtitle"
+                        app:layout_constraintWidth_percent=".70">
+
+                        <com.tokopedia.seller.common.widget.PrefixEditText
+                            android:id="@+id/budget"
+                            style="@style/EditText.Currency"
+                            android:layout_width="match_parent"
+                            android:maxLines="1"
+                            app:prefix="Rp " />
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/recom_txt"
@@ -78,8 +84,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/recommendated_bid_message"
-                        app:layout_constraintStart_toStartOf="@+id/budget"
-                        app:layout_constraintTop_toBottomOf="@+id/budget"
+                        app:layout_constraintStart_toStartOf="@+id/budget_parent"
+                        app:layout_constraintTop_toBottomOf="@+id/budget_parent"
                         app:typographyType="body_3" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -88,8 +94,8 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/bright_red"
                         android:visibility="gone"
-                        app:layout_constraintStart_toStartOf="@+id/budget"
-                        app:layout_constraintTop_toBottomOf="@+id/budget"
+                        app:layout_constraintStart_toStartOf="@+id/budget_parent"
+                        app:layout_constraintTop_toBottomOf="@+id/budget_parent"
                         app:typographyType="body_3"
                         tools:text="@string/error_max_length_keyword"
                         tools:visibility="visible" />

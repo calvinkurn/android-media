@@ -22,6 +22,10 @@ open class CreateManualAdsStepperModel() : StepperModel {
     var minBid = 0
     var dailyBudget = 0
     var adIds = mutableListOf<Int>()
+    var adIdsPromo = mutableListOf<Int>()
+    var adIdsNonPromo = mutableListOf<Int>()
+    var selectedPromo = mutableListOf<Int>()
+    var selectedNonPromo = mutableListOf<Int>()
 
     constructor(parcel: Parcel) : this() {
         groupId = parcel.readString()
@@ -38,6 +42,12 @@ open class CreateManualAdsStepperModel() : StepperModel {
         adIds = arrayListOf<Int>().apply {
             parcel.readList(this, Int::class.java.classLoader)
         }
+        adIdsPromo = arrayListOf<Int>().apply {
+            parcel.readList(this, Int::class.java.classLoader)
+        }
+        adIdsNonPromo = arrayListOf<Int>().apply {
+            parcel.readList(this, Int::class.java.classLoader)
+        }
         selectedKeywords = arrayListOf<String>().apply {
             parcel.readList(this, String::class.java.classLoader)
         }
@@ -46,6 +56,12 @@ open class CreateManualAdsStepperModel() : StepperModel {
         }
         selectedSuggestBid = arrayListOf<Int>().apply {
             parcel.readList(this, String::class.java.classLoader)
+        }
+        selectedPromo = arrayListOf<Int>().apply {
+            parcel.readList(this, Int::class.java.classLoader)
+        }
+        selectedNonPromo = arrayListOf<Int>().apply {
+            parcel.readList(this, Int::class.java.classLoader)
         }
     }
 
@@ -61,8 +77,12 @@ open class CreateManualAdsStepperModel() : StepperModel {
         parcel.writeInt(minBid)
         parcel.writeInt(dailyBudget)
         parcel.writeList(adIds)
+        parcel.writeList(adIdsPromo)
+        parcel.writeList(adIdsNonPromo)
         parcel.writeInt(finalBidPerClick)
         parcel.writeInt(minSuggestBidKeyword)
+        parcel.writeList(selectedPromo)
+        parcel.writeList(selectedNonPromo)
     }
 
     override fun describeContents(): Int {

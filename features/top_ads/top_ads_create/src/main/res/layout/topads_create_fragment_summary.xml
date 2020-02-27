@@ -54,23 +54,29 @@
                     app:typographyType="body_2" />
 
 
-            <com.tokopedia.design.component.EditTextCompat
-                android:id="@+id/daily_budget"
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:visibility="gone"
-                android:inputType="number"
-                android:maxLines="1"
-                android:layout_marginRight="@dimen/dp_16"
-                android:layout_below="@id/summary"
-                tools:visibility="visible"
-                android:hint="Rp"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/budget_parent"
+                    style="@style/TextInputLayout"
+                    android:layout_width="match_parent"
+                    android:layout_below="@+id/summary"
+                    android:layout_marginRight="@dimen/dp_16"
+                    tools:visibility="visible">
+
+                    <com.tokopedia.seller.common.widget.PrefixEditText
+                        android:id="@+id/daily_budget"
+                        style="@style/EditText.Currency"
+                        android:layout_width="match_parent"
+                        android:maxLines="1"
+                        android:visibility="gone"
+                        app:prefix="Rp "
+                        tools:visibility="visible" />
+                </com.google.android.material.textfield.TextInputLayout>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/error_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/daily_budget"
+                    android:layout_below="@id/budget_parent"
                     android:text="@string/daily_budget_error"
                     android:textColor="@color/bright_red"
                     android:visibility="gone"
@@ -110,6 +116,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_11"
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -136,6 +143,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_11"
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -162,6 +170,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_11"
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -187,6 +196,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_11"
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -212,6 +222,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_11"
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -238,6 +249,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dp_11"
                     android:orientation="horizontal">
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -251,6 +263,7 @@
 
                     <com.tokopedia.unifyprinciples.Typography
                         style="@style/TextView.Micro"
+                        android:id="@+id/daily_budget_butt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"

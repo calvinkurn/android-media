@@ -1,15 +1,14 @@
 package com.tokopedia.topads.view.fragment
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.topads.Utils
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
@@ -78,22 +77,24 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-     //   btn_submit.isEnabled = false
         btn_submit.setOnClickListener {
-            if(group_name_input.text.toString().trim()==""){
-                SnackbarManager.make(activity,
-                        resources.getString(R.string.group_name_empty_error),
-                        Snackbar.LENGTH_LONG)
-                        .show()
-            }
-            else {
-                validateGroup(group_name_input.text.toString())
-                gotoNextPage()
-            }
+            validateGroup(group_name_input.text.toString())
         }
         tip_btn.setOnClickListener {
             InfoSheetGroupList.newInstance(it.context).show()
         }
+        group_name_input.addTextChangedListener(object:TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                btn_submit.isEnabled = true
+            }
+
+        })
         group_name_input.setOnEditorActionListener { v, actionId, _ ->
             when(actionId){
                 EditorInfo.IME_ACTION_SEARCH -> validateGroup(v?.text.toString())
@@ -105,24 +106,26 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     private fun validateGroup(s: String?) {
         s?.let {
-            if (s.isNotEmpty()) {
-                viewModel.validateGroup(it, this::onSuccess, this::onError)
-            }
+            viewModel.validateGroup(it, this::onSuccess, this::onError)
         }
     }
 
     private fun onError(t: Throwable) {
-//        SnackbarManager.make(activity, t.message,
-//                Snackbar.LENGTH_LONG)
-//                .show()
+        error_text.visibility = View.VISIBLE
+        error_text.text = t.message
+        typography19.visibility = View.GONE
+        btn_submit.isEnabled = false
         NetworkErrorHelper.createSnackbarRedWithAction(activity, t.localizedMessage) {
-            btn_submit.isEnabled = false
             validateGroup(group_name_input.text.toString())
         }
     }
 
     private fun onSuccess(data: TopAdsGroupValidateName.Data) {
+        error_text.visibility = View.GONE
+        typography19.visibility = View.VISIBLE
         btn_submit.isEnabled = true
+        gotoNextPage()
+
     }
 
     override fun updateToolBar() {

@@ -148,8 +148,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
     private fun onEmptySuggestion() {
         coachitem_title.visibility = View.GONE
         keywordListAdapter.items = mutableListOf(KeywordEmptyViewModel())
-        addManualKeywordsEmpty()
         tip_btn.visibility = View.INVISIBLE
+        addManualKeywordsEmpty()
         showSelectMessage()
     }
 
@@ -158,8 +158,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         stepperModel?.manualKeywords!!.forEach {
             list.add(viewModel.addNewKeyword(it))
         }
-        if (stepperModel?.manualKeywords?.size != 0)
+        if (stepperModel?.manualKeywords?.size != 0) {
+            tip_btn.visibility = View.VISIBLE
             keywordListAdapter.addManual(list)
+        }
         keywordListAdapter.setSelectedList(stepperModel?.selectedKeywords!!)
     }
 
@@ -238,11 +240,7 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         add_btn.isEnabled = false
         add_btn.setOnClickListener {
             coachitem_title.visibility = View.GONE
-            var alreadyExists: Boolean = keywordListAdapter.addNewKeyword(viewModel.addNewKeyword(editText.text.toString()))
-            showSelectMessage()
-            if (alreadyExists) {
-                makeToast()
-            }
+            keywordValidation(editText.text.toString())
         }
         btn_next.setOnClickListener { gotoNextPage() }
         tip_btn.setOnClickListener { TipSheetKeywordList.newInstance(view.context).show() }
@@ -251,7 +249,10 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         editText.addTextChangedListener(object : TextWatcher {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 var text = validateKeyword(s)
-                if (!text.isNullOrBlank()) {
+
+                if (s.toString().trim().isEmpty()) {
+                    add_btn.isEnabled = false
+                } else if (!text.isNullOrBlank()) {
                     setValues(false)
                     error_text.text = text
                 } else {
@@ -266,19 +267,25 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
         })
-        editText.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    var alreadyExists: Boolean = keywordListAdapter.addNewKeyword(viewModel.addNewKeyword(editText.text.toString()))
-                    showSelectMessage()
-                    if (alreadyExists) {
-                        makeToast()
-                    }
-                }
+        editText.setOnEditorActionListener { v, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                keywordValidation(editText.text.toString().trim())
                 Utils.dismissKeyboard(context, v)
-                return true
+
             }
-        })
+            true
+        }
+    }
+
+     private fun keywordValidation(key: String) {
+         tip_btn.visibility = View.VISIBLE
+         if(key.isNotEmpty()) {
+            val alreadyExists: Boolean = keywordListAdapter.addNewKeyword(viewModel.addNewKeyword(key))
+            showSelectMessage()
+            if (alreadyExists) {
+                makeToast(getString(R.string.keyword_already_exists))
+            }
+        }
     }
 
     private fun setValues(flag: Boolean) {
@@ -294,9 +301,8 @@ class KeywordAdsListFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
         }
     }
 
-    private fun makeToast() {
-        SnackbarManager.make(activity,
-                getString(R.string.keyword_already_exists),
+    private fun makeToast(s: String) {
+        SnackbarManager.make(activity, s,
                 Snackbar.LENGTH_LONG)
                 .show()
     }

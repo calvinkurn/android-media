@@ -65,7 +65,7 @@
     <string name="iklan_manual">Iklan Manual</string>
     <string name="iklan_otomatis">Iklan Otomatis</string>
     <string name="buat_iklan_dengan_pengaturan_lengkap">Buat iklan dengan pengaturan lengkap</string>
-    <string name="mulai_iklan_manual">Mulai Iklan Manual</string>
+    <string name="mulai_iklan_manual">Gunakan Iklan Manual</string>
     <string name="gunakan_grup_iklan_untuk_mengiklankan_produkmu_sekaligus">Gunakan grup iklan untuk mengiklankan produkmu sekaligus.</string>
     <string name="ilustration">Ilustration</string>
     <string name="ketik_kata_kunci">Ketik kata kunci</string>
@@ -79,6 +79,7 @@
     <string name="coach_mark_desc_2">Sistem cerdas TopAds akan memberikan rekomendasi kata kunci yang sesuai dengan kategori produkmu</string>
     <string name="coach_mark_desc_3">Optimalkan penjualanmu dengan cek kata kunci yang paling sering dicari oleh pembeli untuk produk serupa</string>
     <string name="keyword_already_exists">Kata kunci sudah dipilih, silahkan coba kata kunci lainnya</string>
+    <string name="keyword_empty">Empty Keyword</string>
     <string name="no_keyword_selected_for_bid">Optimalkan iklan produkmu dengan menggunakan kata kunci.</string>
     <string name="add_keywords">Tambah Kata Kunci</string>
     <string name="format_selected_produk">%d produk dipilih</string>

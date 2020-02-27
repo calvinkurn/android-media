@@ -64,10 +64,7 @@ class ProductFilterSheetList {
     }
 
     fun getSelectedFilter(): String {
-        return if (selectedItem.name == "Semua Etalase" || selectedItem.name == "Semua Produk")
-            ""
-        else
-            selectedItem.id
+        return selectedItem.id
     }
 
     private fun onItemClick(pos: Int) {

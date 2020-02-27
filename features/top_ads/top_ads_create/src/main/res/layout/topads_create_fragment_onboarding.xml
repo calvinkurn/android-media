@@ -172,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/dp_12"
                     android:gravity="left"
-                    android:text="@string/pengaturan_iklan_akan_diperbarui_secara_berkala_untuk_tingkatkan_potensi_penjualanmu"
+                    android:text="@string/kami_akan_memilih_produk_dan_biaya_iklan_terbaik_untuk_optimalkan_iklanmu"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/icon3"
                     app:layout_constraintTop_toBottomOf="@+id/typography2"
@@ -209,9 +209,9 @@
                     android:id="@+id/typography5"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="left"
                     android:layout_marginLeft="@dimen/dp_12"
-                    android:text="@string/kami_akan_memilih_produk_dan_biaya_iklan_terbaik_untuk_optimalkan_iklanmu"
+                    android:gravity="left"
+                    android:text="@string/pengaturan_iklan_akan_diperbarui_secara_berkala_untuk_tingkatkan_potensi_penjualanmu"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/icon4"
                     app:layout_constraintTop_toBottomOf="@+id/typography3"
@@ -317,7 +317,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/icon6"
                     app:layout_constraintTop_toBottomOf="@+id/typography10"
-                    app:typographyType="heading_6" />
+                    app:typographyType="heading_5" />
 
 
                 <com.tokopedia.unifyprinciples.Typography

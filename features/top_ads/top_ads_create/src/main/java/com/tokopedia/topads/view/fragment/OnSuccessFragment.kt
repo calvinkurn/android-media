@@ -1,5 +1,6 @@
 package com.tokopedia.topads.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -31,8 +32,9 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         btn_go_to_dashboard.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
-
+            val intent =RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            startActivity(intent)
         }
     }
 

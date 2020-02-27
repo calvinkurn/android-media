@@ -58,11 +58,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BudgetingAdsViewModel::class.java)
-        bidInfoAdapter = BidInfoAdapter(BidInfoAdapterTypeFactoryImpl(stepperModel!!.selectedKeywords, stepperModel!!.selectedSuggestBid, this::onClickCloseButton, this::onEdit))
+        bidInfoAdapter = BidInfoAdapter(BidInfoAdapterTypeFactoryImpl(stepperModel!!.selectedKeywords, stepperModel!!.selectedSuggestBid, this::onClickCloseButton, this::onEdit, this::actionEnable))
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
     }
 
+    private fun actionEnable(flag: Boolean) {
+        btn_next.isEnabled = flag
+    }
     private fun onEdit(): Int {
         return minSuggestKeyword
     }
@@ -84,7 +87,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun gotoNextPage() {
         try {
-            stepperModel?.finalBidPerClick = Integer.parseInt(budget.text.toString())
+            stepperModel?.finalBidPerClick = Integer.parseInt(budget.textWithoutPrefix.toString())
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
@@ -181,12 +184,14 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 try {
-                    val result = Integer.parseInt(budget.text.toString())
+                    val result = Integer.parseInt(budget.textWithoutPrefix.toString())
                     stepperModel?.finalBidPerClick = result
                     if (result < minBid) {
                         error_text.visibility = View.VISIBLE
                         recom_txt.visibility = View.GONE
+                        actionEnable(false)
                     } else {
+                        actionEnable(true)
                         error_text.visibility = View.GONE
                         recom_txt.visibility = View.VISIBLE
                     }

@@ -2,7 +2,10 @@ package com.tokopedia.topads.view.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.text.*
+import android.text.Editable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.LayoutInflater
@@ -11,10 +14,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.*
+import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.*
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.NoCreditActivity
@@ -23,7 +28,6 @@ import com.tokopedia.topads.view.activity.SuccessActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_create_fragment_summary.*
-import java.lang.NumberFormatException
 import javax.inject.Inject
 
 /**
@@ -40,11 +44,13 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     var group = Group()
     private var keywordsList: MutableList<KeywordsItem> = mutableListOf()
     private var adsItemsList: MutableList<AdsItem> = mutableListOf()
+    var isEnoughDeposit = false
+    private var dailyBudget = 0
+
 
     companion object {
         private const val MORE_INFO = " Info Selengkapnya"
         private const val MULTIPLIER = 40
-        private const val dailyBudget = 0
         fun createInstance(): Fragment {
 
             val fragment = SummaryAdsFragment()
@@ -84,39 +90,56 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
         return inflater.inflate(R.layout.topads_create_fragment_summary, container, false)
     }
 
-    fun onSuccess(data: TopAdsDepositResponse.Data) {
-
+    private fun onSuccess(data: TopAdsDepositResponse.Data) {
+        isEnoughDeposit = data.topadsDashboardDeposits.data.amount > 0
+        val intent: Intent = if (isEnoughDeposit) {
+            Intent(context, SuccessActivity::class.java)
+        } else {
+            Intent(context, NoCreditActivity::class.java)
+        }
+        startActivity(intent)
     }
 
-    fun errorResponse(throwable: Throwable) {
+    private fun errorResponse(throwable: Throwable) {
+        SnackbarManager.make(activity,
+                throwable.message,
+                Snackbar.LENGTH_LONG)
+                .show()
 
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_submit.setOnClickListener {
-            //  viewModel.getTopAdsDeposit(this::onSuccess, this::errorResponse)
             var map = convertToParam(view)
             viewModel.topAdsCreated(map, this::onSuccessActivation, this::onErrorActivation)
         }
-        var suggestion = (stepperModel?.suggestedBidPerClick!!) * MULTIPLIER
+        var suggestion = (stepperModel?.finalBidPerClick!!) * MULTIPLIER
+        stepperModel?.dailyBudget = suggestion
         error_text.text = String.format(getString(R.string.daily_budget_error), suggestion)
-
+        dailyBudget = stepperModel?.finalBidPerClick!! * 40
+        daily_budget.setText(dailyBudget.toString())
         toggle.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 daily_budget.visibility = View.VISIBLE
+                daily_budget_butt.text = "Anggaran harian Dibatasi"
                 var budget = 0
                 try {
-                    budget = Integer.parseInt(daily_budget.text.toString())
+                    budget = Integer.parseInt(daily_budget.textWithoutPrefix.toString())
                 } catch (e: NumberFormatException) {
 
                 }
                 if (budget < suggestion && daily_budget.isVisible) {
                     error_text.visibility = View.VISIBLE
+                    btn_submit.isEnabled = false
+
                 }
             } else {
+                daily_budget_butt.text = "Tidak dibatasi"
                 daily_budget.visibility = View.GONE
                 error_text.visibility = View.GONE
+                btn_submit.isEnabled = true
+
             }
 
         }
@@ -147,15 +170,19 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 try {
                     var input = 0
+                    var s = s.toString().replaceFirst("Rp ".toRegex(), "").trim()
                     if (s.isNotEmpty()) {
                         input = Integer.parseInt(s.toString())
-                        stepperModel?.dailyBudget = input
                     }
-                    if (input < stepperModel?.suggestedBidPerClick!! * MULTIPLIER
+                    if (input < stepperModel?.finalBidPerClick!! * MULTIPLIER
                             && daily_budget.isVisible) {
                         error_text.visibility = View.VISIBLE
-                    } else
+                        btn_submit.isEnabled = false
+                    } else {
+                        stepperModel?.dailyBudget = input
                         error_text.visibility = View.GONE
+                        btn_submit.isEnabled = true
+                    }
 
                 } catch (e: NumberFormatException) {
                     e.printStackTrace()
@@ -214,17 +241,14 @@ class SummaryAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() {
     }
 
     private fun onSuccessActivation(data: ResponseCreateGroup) {
-        val group = data.topadsCreateGroupAds.data.group
-        val intent:Intent
-        intent = if (group.isEnoughDeposit) {
-            Intent(context, SuccessActivity::class.java)
-        } else {
-            Intent(context, NoCreditActivity::class.java)
-        }
-        startActivity(intent)
+        viewModel.getTopAdsDeposit(this::onSuccess, this::errorResponse)
     }
 
     private fun onErrorActivation(throwable: Throwable) {
+        SnackbarManager.make(activity,
+                throwable.message,
+                Snackbar.LENGTH_LONG)
+                .show()
 
     }
 

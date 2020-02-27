@@ -16,7 +16,6 @@ import com.tokopedia.topads.data.response.TopAdsDepositResponse
 import com.tokopedia.topads.internal.ParamObject.CREDIT_DATA
 import com.tokopedia.topads.internal.ParamObject.SHOP_DATA
 import com.tokopedia.topads.internal.ParamObject.SHOP_Id
-import com.tokopedia.topads.internal.QueryObject.QUERY_TOPADS_DEPOSIT
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +28,6 @@ class SummaryViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         @Named("Main")
         private val dispatcher: CoroutineDispatcher,
-        private val rawQueries: Map<String, String>,
         private val repository: GraphqlRepository) : BaseViewModel(dispatcher) {
 
     fun getTopAdsDeposit(onSuccessGetDeposit: ((TopAdsDepositResponse.Data) -> Unit),
@@ -37,9 +35,9 @@ class SummaryViewModel @Inject constructor(
         launchCatchError(
                 block = {
                     val param = mapOf(SHOP_Id to userSession.shopId.toInt(),
-                            CREDIT_DATA to "", SHOP_DATA to "")
+                            CREDIT_DATA to "unclaimed", SHOP_DATA to "0")
                     val data = withContext(Dispatchers.IO) {
-                        val request = GraphqlRequest(rawQueries[QUERY_TOPADS_DEPOSIT],
+                        val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_topads_deposit),
                                 TopAdsDepositResponse.Data::class.java,
                                 param, false)
                         val cacheStrategy = GraphqlCacheStrategy
