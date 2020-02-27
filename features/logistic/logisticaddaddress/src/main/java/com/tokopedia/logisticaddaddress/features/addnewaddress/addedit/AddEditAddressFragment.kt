@@ -108,7 +108,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
     lateinit var userSession: UserSessionInterface
 
     companion object {
-        @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
         @JvmStatic
         fun newInstance(extra: Bundle): AddEditAddressFragment {
             return AddEditAddressFragment().apply {
@@ -211,12 +210,9 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         }
 
         back_button_detail.setOnClickListener {
-//            presenter.disconnectGoogleApi()
-
             if (!isMismatch && !isMismatchSolved) {
                 AddNewAddressAnalytics.eventClickBackArrowOnPositivePageChangeAddressPositive(eventLabel = LOGISTIC_LABEL)
             }
-
             activity?.finish()
         }
 
