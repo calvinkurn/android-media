@@ -29,6 +29,7 @@ import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -92,6 +93,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private lateinit var shopId: String
     private var isLoading = false
     private var isForceRefresh = false
+
+    private var whitelistDomain: WhitelistDomain = WhitelistDomain()
 
     @Inject
     lateinit var presenter: FeedShopContract.Presenter
@@ -277,6 +280,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onSuccessGetFeedFirstPage(element: List<Visitable<*>>, lastCursor: String, whitelistDomain: WhitelistDomain) {
         val dataList = ArrayList<Visitable<*>>()
+        this.whitelistDomain = whitelistDomain
         isForceRefresh = true
         isLoading = false
         if (element.isNotEmpty()) {
@@ -635,12 +639,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     fun showFAB() {
-        fab_feed.show()
-        fab_feed.setOnClickListener {
-            goToCreatePost()
-            shopAnalytics.eventClickCreatePost()
-        }
+        goToCreatePost(getSellerApplink())
+        shopAnalytics.eventClickCreatePost()
+    }
 
+    private fun getSellerApplink(): String {
+        var applink = ApplinkConst.CONTENT_CREATE_POST
+        if (whitelistDomain.authors.size != 0) {
+            for (author in whitelistDomain.authors) {
+                if (!author.equals(Author.TYPE_AFFILIATE)) {
+                    applink = author.link
+                }
+            }
+        }
+        return applink
     }
 
     fun updateShopInfo(shopInfo: ShopInfo) {
@@ -649,10 +661,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     private fun goToCreatePost() {
+          goToCreatePost(getSellerApplink())
+    }
+
+    private fun goToCreatePost(link : String) {
         startActivityForResult(
                 RouteManager.getIntent(
                         requireContext(),
-                        ApplinkConst.CONTENT_CREATE_POST
+                        link
                 ),
                 CREATE_POST
         )
