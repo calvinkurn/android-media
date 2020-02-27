@@ -99,6 +99,11 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
 
         initInjector()
 
+        activity?.let {
+            brizziInstance.setNfcAdapter(it)
+            processTagIntent(it.intent)
+        }
+
         view_update_balance_result.setListener(object : ETollUpdateBalanceResultView.OnTopupETollClickListener {
             override fun onClick(operatorId: String, issuerId: Int) {
                 emoneyAnalytics.onClickTopupEmoney(getOperatorName(issuerId))
@@ -148,7 +153,6 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
                     .baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
                     .build()
             emoneyComponent.inject(this)
-            if (brizziInstance.nfcAdapter == null) brizziInstance.setNfcAdapter(it)
         }
     }
 
