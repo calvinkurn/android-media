@@ -1,5 +1,6 @@
 package com.tokopedia.productcard.utils
 
+import android.content.Context
 import android.graphics.Color
 import android.view.View
 import android.view.ViewStub
@@ -13,7 +14,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.productcard.R
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifycomponents.Label
@@ -32,6 +35,10 @@ internal fun View.doIfVisible(action: (View) -> Unit) {
     if(this.isVisible) {
         action(this)
     }
+}
+
+internal fun ImageView.glideClear(context: Context) {
+    Glide.with(context).clear(this)
 }
 
 internal fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
@@ -203,5 +210,17 @@ internal fun ViewStub?.executeInflation(shouldRender: Boolean, doRender: () -> U
     }
     else if (this == null) {
         removeRendered()
+    }
+}
+
+internal fun ViewStub?.executeInflation(view: View?, isVisible: Boolean, onViewVisible: (View) -> Unit = {}) {
+    if (isVisible) {
+        this?.inflate()
+        view?.visible()
+
+        if (view != null) onViewVisible(view)
+    }
+    else if (this == null) {
+        view?.gone()
     }
 }

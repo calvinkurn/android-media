@@ -101,7 +101,7 @@
 
         <ViewStub
             android:id="@+id/buttonAddToCartStub"
-            android:layout="@layout/product_card_button_add_to_cart"
+            android:layout="@layout/product_card_grid_button_add_to_cart"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_button_add_to_cart_height"
             android:layout_marginLeft="@dimen/dp_8"

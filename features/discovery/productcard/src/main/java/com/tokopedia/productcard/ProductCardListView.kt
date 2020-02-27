@@ -3,10 +3,10 @@ package com.tokopedia.productcard
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.bumptech.glide.Glide
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.utils.executeInflation
+import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -44,11 +44,7 @@ class ProductCardListView: BaseCustomView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasOptions)
 
-        buttonRemoveFromWishlistStub.executeInflation(
-                productCardModel.hasRemoveFromWishlistButton,
-                { buttonRemoveFromWishlist?.visible() },
-                { buttonRemoveFromWishlist.gone() }
-        )
+        buttonRemoveFromWishlistStub.executeInflation(buttonRemoveFromWishlist, productCardModel.hasRemoveFromWishlistButton)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
     }
@@ -76,8 +72,8 @@ class ProductCardListView: BaseCustomView {
     }
 
     fun recycle() {
-        Glide.with(context).clear(imageProduct)
-        Glide.with(context).clear(imageFreeOngkirPromo)
+        imageProduct?.glideClear(context)
+        imageFreeOngkirPromo?.glideClear(context)
     }
 
 

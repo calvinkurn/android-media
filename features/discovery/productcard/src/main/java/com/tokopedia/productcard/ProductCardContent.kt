@@ -139,25 +139,3 @@ private fun View.renderFreeOngkir(productCardModel: ProductCardModel) {
 private fun View.renderTextShipping(productCardModel: ProductCardModel) {
     textViewShipping?.initLabelGroup(productCardModel.getLabelShipping())
 }
-
-
-
-
-/**
- *  Special cases for specific pages
- * */
-internal fun View.renderRatingAndReviewInvisible() {
-    imageRatingString?.visibility = View.INVISIBLE
-    textViewRatingString?.visibility = View.INVISIBLE
-    linearLayoutImageRating?.visibility = View.INVISIBLE
-    textViewReviewCount?.visibility = View.INVISIBLE
-}
-
-internal fun View.renderFreeOngkirInvisible() {
-    imageFreeOngkirPromo?.visibility = View.INVISIBLE
-}
-
-internal fun View.renderDiscountInvisible() {
-    labelDiscount?.visibility = View.INVISIBLE
-    textViewSlashedPrice?.visibility = View.INVISIBLE
-}
