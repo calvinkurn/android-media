@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.hardware.fingerprint.FingerprintManager
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
@@ -1302,12 +1303,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     override fun onErrorCheckStatusFingerprint(e: Throwable) {
         dismissLoadingLogin()
         e.printStackTrace()
-        view?.run {
-            val errorMessage = ErrorHandlerSession.getErrorMessage(context, e)
-            Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
-        }
     }
-
 
     override fun onSuccessCheckStatusFingerprint(data: StatusFingerprint) {
         dismissLoadingLogin()
@@ -1479,11 +1475,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
-    override fun onFingerprintValid() {
-        Toaster.make(parent_container, "SUKSES", Toaster.LENGTH_LONG, type = Toaster.TYPE_NORMAL)
-    }
+    override fun onFingerprintValid() {}
 
     override fun onFingerprintError(msg: String, errCode: Int) {
-        Toaster.make(parent_container, msg, Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR)
+        if(errCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT){
+            view?.run {
+                Toaster.showError(this, msg, Snackbar.LENGTH_LONG)
+            }
+        }
     }
 }

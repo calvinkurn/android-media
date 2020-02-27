@@ -24,7 +24,6 @@ import com.tokopedia.loginfingerprint.di.LoginFingerprintSettingModule
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginfingerprint.viewmodel.ScanFingerprintViewModel
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -141,7 +140,6 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
             hideProgressBar()
             viewState.postValue(STATE_ERROR)
         }
-        Toaster.make(activity?.findViewById(android.R.id.content)!!, ErrorHandlerSession.getErrorMessage(context, e), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -165,6 +163,9 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
                     ?: Toaster.make(fingerprint_main_layout, context.getString(R.string.error_no_fp_hardware), Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR)
             dismiss()
         }
+
+        fingerprint_lottie_success_animation_view?.cancelAnimation()
+        fingerprint_lottie_error_animation_view?.cancelAnimation()
 
         return super.onCreateDialog(savedInstanceState)
 }
@@ -207,7 +208,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
             context.supportFragmentManager.run {
                 show(this, TAG)
             }
-        }else listener?.onFingerprintError("Must pass valid mode", 0)
+        }else listener?.onFingerprintError(context.getString(R.string.error_fingerprint_invalid_mode), 0)
     }
 
     private fun showProgressBar(){
@@ -266,8 +267,13 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
         return object : FingerprintManagerCompat.AuthenticationCallback() {
             override fun onAuthenticationError(errMsgId: Int, errString: CharSequence) {
                 animateLottieError {
-                    listener?.onFingerprintError(errString.toString(), errMsgId)
+                    var errorString = errString.toString()
                     viewState.postValue(STATE_ERROR)
+                    if(errMsgId == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT) {
+                        errorString = getString(R.string.error_too_many_attempts)
+                        dismiss()
+                    }
+                    listener?.onFingerprintError(errorString, errMsgId)
                 }
             }
 
@@ -286,7 +292,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
                 counter++
                 if (counter > MAX_ATTEMPTS) {
                     animateLottieError {
-                        listener?.onFingerprintError(getString(R.string.error_too_many_attempts), FP_ERROR_TOO_MANY_ATTEMPT)
+                        listener?.onFingerprintError(getString(R.string.error_too_many_attempts), FingerprintManager.FINGERPRINT_ERROR_LOCKOUT)
                         viewState.postValue(STATE_ERROR)
                         dismiss()
                     }
@@ -295,7 +301,6 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
                     animateLottieError {
                         listener?.onFingerprintError(getString(R.string.error_not_recognized), FP_ERROR_NOT_RECOGNIZED)
                         viewState.postValue(STATE_INVALID)
-
                     }
                 }
                 super.onAuthenticationFailed()

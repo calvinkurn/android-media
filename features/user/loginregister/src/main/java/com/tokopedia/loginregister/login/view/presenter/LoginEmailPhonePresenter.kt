@@ -239,7 +239,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     view.onSuccessGetUserInfoAddPin(),
-                    view.onErrorGetUserInfo()))
+                    view.onErrorGetUserInfo())
+            )
         }
     }
 
@@ -247,7 +248,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     { checkStatusFingerprint() },
-                    view.onErrorGetUserInfo()))
+                    view.onErrorGetUserInfo())
+            )
         }
     }
 
@@ -265,7 +267,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         statusFingerprintUseCase.executeCoroutines({
             onCheckStatusFingerprintSuccess(it)
         }, {
-            view.onErrorCheckStatusFingerprint(it)
             view.onSuccessLogin()
         }, signature)
     }
