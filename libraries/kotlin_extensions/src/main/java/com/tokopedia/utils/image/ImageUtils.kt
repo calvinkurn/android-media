@@ -162,7 +162,7 @@ object ImageUtils {
                   radius: Float = 0f,
                   signatureKey: ObjectKey? = null,
                   placeHolder: Int = 0,
-                  resOnError: Int = 0,
+                  resOnError: Int = R.drawable.ic_loading_error,
                   isAnimate: Boolean = false,
                   imageLoaded: ((Boolean) -> Unit)? = null,
                   imageCleared: ((Boolean) -> Unit)? = null) {
