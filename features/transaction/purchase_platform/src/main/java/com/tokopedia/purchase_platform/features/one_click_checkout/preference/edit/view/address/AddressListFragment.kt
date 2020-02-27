@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
@@ -23,6 +25,10 @@ class AddressListFragment : BaseDaggerFragment() {
 
     private val viewModel: AddressListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[AddressListViewModel::class.java]
+    }
+
+    companion object {
+        const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
     }
 
     val adapter = AddressListItemAdapter()
@@ -47,18 +53,29 @@ class AddressListFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
 
-        btn_save_address.setOnClickListener {
-            if(empty_state_order_list.visibility == View.GONE) {
-                address_list_layout.visibility = View.GONE
-                empty_state_order_list.visibility = View.VISIBLE
-            } else {
+        if(empty_state_order_list.visibility == View.GONE){
+            btn_save_address.text = getString(R.string.label_button_input_address)
+            btn_save_address.setOnClickListener {
                 goToNextStep()
+            }
+        } else {
+            address_list_layout.visibility = View.GONE
+            empty_state_order_list.visibility = View.VISIBLE
+            btn_save_address.text = getString(R.string.label_button_input_address_empty)
+            btn_save_address.setOnClickListener {
+                goToPickLocation()
             }
         }
 
         address_list_rv.adapter = adapter
         address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
+    }
+
+    private fun goToPickLocation(){
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
+        intent.putExtra(EXTRA_IS_FULL_FLOW, true)
+        startActivity(intent)
     }
 
     override fun onStart() {
