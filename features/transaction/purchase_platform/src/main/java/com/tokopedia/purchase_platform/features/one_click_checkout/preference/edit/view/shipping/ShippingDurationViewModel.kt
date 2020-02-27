@@ -11,4 +11,5 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetPreferenceEd
     private val _shippingDuration: MutableLiveData<List<Preference>> = MutableLiveData(listOf(Preference(), Preference(), Preference(), Preference(), Preference(), Preference()))
     val shippingDuration: LiveData<List<Preference>>
     get() = _shippingDuration
+
 }

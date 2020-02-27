@@ -100,7 +100,7 @@
             android:layout_marginStart="@dimen/dp_8" />
 
         <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
-            android:id="@+id/rb_option_clash"
+            android:id="@+id/item_address_radio"
             android:layout_width="@dimen/dp_24"
             android:layout_height="@dimen/dp_24"
             android:layout_centerVertical="true"

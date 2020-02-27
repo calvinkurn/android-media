@@ -49,7 +49,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         }
     }
 
-    fun setTitle(title: String) {
+    fun setTitles(title: String) {
         tv_title.text = title
     }
 
