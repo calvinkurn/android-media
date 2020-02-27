@@ -7,6 +7,7 @@ import java.util.Map;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by meta on 04/08/18.
@@ -77,7 +78,7 @@ public class SearchBarAnalytics {
                 SearchBarConstant.CLICK_SEARCH_BOX,
                 ""
         );
-        stringObjectMap.put("sessionIris", irisSession.getSessionId());
+        stringObjectMap.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
         TrackApp.getInstance().getGTM().sendGeneralEvent(stringObjectMap);
     }
 }

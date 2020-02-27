@@ -16,6 +16,7 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventLabel;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.EventName;
 import static com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics.Key;
+import com.tokopedia.iris.util.ConstantKt;
 
 
 /**
@@ -325,7 +326,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.E_COMMERCE, cartMap,
                 Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
-        dataLayer.put("sessionIris", irisSession.getSessionId());
+        dataLayer.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
 
         sendEnhancedEcommerce(dataLayer);
     }

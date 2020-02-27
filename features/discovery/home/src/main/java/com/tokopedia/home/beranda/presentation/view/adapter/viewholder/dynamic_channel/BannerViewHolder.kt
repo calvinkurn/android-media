@@ -113,7 +113,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
                         val dataLayer = HomePageTracking.getBannerImpressionDataLayer(
                                 it[position]
                         )
-                        dataLayer.put("sessionIris", irisSession.getSessionId())
+                        dataLayer.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId())
                         listener.putEEToTrackingQueue(dataLayer)
                         it[position].invoke()
                     }

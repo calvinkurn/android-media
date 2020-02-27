@@ -8,6 +8,7 @@ import com.appsflyer.AFInAppEventType;
 import com.google.android.gms.tagmanager.DataLayer;
 import com.tokopedia.core.analytics.appsflyer.Jordan;
 import com.tokopedia.core.analytics.nishikino.model.Purchase;
+import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 
@@ -26,6 +27,7 @@ import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_CAT;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_ID;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_NAME;
 import static com.tokopedia.core.analytics.nishikino.model.Product.KEY_QTY;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by okasurya on 12/8/17.
@@ -46,7 +48,7 @@ public class PurchaseTracking extends TrackingUtils {
         Purchase purchase = purchaseBundlePair.getFirst();
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
                 AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
-                "sessionIris", irisSession.getSessionId(),
+                ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId(),
                 AppEventTracking.EVENT_CATEGORY, purchase.getEventCategory(),
                 AppEventTracking.EVENT_ACTION, purchase.getEventAction(),
                 AppEventTracking.EVENT_LABEL, purchase.getEventLabel(),
@@ -71,7 +73,7 @@ public class PurchaseTracking extends TrackingUtils {
         IrisSession irisSession = new IrisSession(context);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        "sessionIris", irisSession.getSessionId(),
+                        ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId(),
                         AppEventTracking.EVENT, PurchaseTracking.TRANSACTION,
                         AppEventTracking.EVENT_CATEGORY, "digital - thanks",
                         AppEventTracking.EVENT_ACTION, "view purchase attempt",

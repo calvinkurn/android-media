@@ -27,6 +27,7 @@ import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_CATEGO
 import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_LABEL;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.IS_RESULT_FOUND;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.USER_ID;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -215,7 +216,7 @@ public class SearchTracking {
                         ))
         );
         if(!TextUtils.isEmpty(irisSessionId))
-            map.put("sessionIris", irisSessionId);
+            map.put(ConstantKt.KEY_SESSION_IRIS, irisSessionId);
 
         trackingQueue.putEETracking(
                 map

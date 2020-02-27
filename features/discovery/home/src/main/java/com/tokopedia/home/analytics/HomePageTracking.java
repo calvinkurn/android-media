@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import com.tokopedia.iris.util.IrisSession;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by Akmal on 2/6/18.
@@ -278,7 +279,7 @@ public class HomePageTracking {
             if (tracker != null) {
                 HashMap<String, String> customDimensions = new HashMap<>();
                 customDimensions.put(SCREEN_DIMENSION_IS_LOGGED_IN_STATUS, String.valueOf(isUserLoggedIn));
-                customDimensions.put("sessionIris", new IrisSession(activity).getSessionId());
+                customDimensions.put(ConstantKt.KEY_SESSION_IRIS, new IrisSession(activity).getSessionId());
                 tracker.sendScreenAuthenticated(
                         screenName, customDimensions);
             }

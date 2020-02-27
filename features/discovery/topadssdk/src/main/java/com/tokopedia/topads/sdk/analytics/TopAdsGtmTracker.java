@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Author errysuprayogi on 24,January,2019
@@ -100,7 +101,7 @@ public class TopAdsGtmTracker {
                             )
                     ));
             if(!TextUtils.isEmpty(irisSessionId))
-                map.put("sessionIris", irisSessionId);
+                map.put(ConstantKt.KEY_SESSION_IRIS, irisSessionId);
             trackingQueue.putEETracking((HashMap<String, Object>) map);
             clearDataLayerList();
         }
@@ -300,7 +301,7 @@ public class TopAdsGtmTracker {
             );
             IrisSession irisSession = new IrisSession(context);
             if(!TextUtils.isEmpty(irisSession.getSessionId()))
-                map.put("sessionIris", irisSession.getSessionId());
+                map.put(ConstantKt.KEY_SESSION_IRIS, irisSession.getSessionId());
             tracker.sendEnhanceEcommerceEvent(map);
         }
     }

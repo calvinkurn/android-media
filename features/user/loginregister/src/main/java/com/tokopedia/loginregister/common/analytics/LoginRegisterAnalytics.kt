@@ -20,6 +20,7 @@ import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.HashMap
+import com.tokopedia.iris.util.ConstantKt
 
 /**
  * @author by nisie on 10/2/18.
@@ -38,7 +39,7 @@ class LoginRegisterAnalytics @Inject constructor(
                 + " | " + Build.TAGS)
 
         val hashMap = mutableMapOf<String, String>()
-        hashMap["sessionIris"] = irisSession.getSessionId()
+        hashMap[ConstantKt.KEY_SESSION_IRIS] = irisSession.getSessionId()
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, hashMap)
     }
 
@@ -55,8 +56,8 @@ class LoginRegisterAnalytics @Inject constructor(
                         "click"
                 )
 
-                if(!hashMap.containsKey("sessionIris")){
-                    hashMap["sessionIris"] = irisSession.getSessionId()
+                if(!hashMap.containsKey(ConstantKt.KEY_SESSION_IRIS)){
+                    hashMap[ConstantKt.KEY_SESSION_IRIS] = irisSession.getSessionId()
                 }
             }
             Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
@@ -73,8 +74,8 @@ class LoginRegisterAnalytics @Inject constructor(
                         "click"
                 )
 
-                if(!hashMap.containsKey("sessionIris")){
-                    hashMap["sessionIris"] = irisSession.getSessionId()
+                if(!hashMap.containsKey(ConstantKt.KEY_SESSION_IRIS)){
+                    hashMap[ConstantKt.KEY_SESSION_IRIS] = irisSession.getSessionId()
                 }
             }
         }
@@ -99,9 +100,7 @@ class LoginRegisterAnalytics @Inject constructor(
                         String.format("failed - %s", errorMessage)
                 )
 
-                if(!hashMap.containsKey("sessionIris")){
-                    hashMap["sessionIris"] = irisSession.getSessionId()
-                }
+
             }
             Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
                     EVENT_CLICK_LOGIN,
@@ -117,8 +116,8 @@ class LoginRegisterAnalytics @Inject constructor(
                         String.format("failed - %s", errorMessage)
                 )
 
-                if(!hashMap.containsKey("sessionIris")){
-                    hashMap["sessionIris"] = irisSession.getSessionId()
+                if(!hashMap.containsKey(ConstantKt.KEY_SESSION_IRIS)){
+                    hashMap[ConstantKt.KEY_SESSION_IRIS] = irisSession.getSessionId()
                 }
             }
         }
@@ -141,8 +140,8 @@ class LoginRegisterAnalytics @Inject constructor(
                         "success"
                 )
 
-                if(!hashMap.containsKey("sessionIris")){
-                    hashMap["sessionIris"] = irisSession.getSessionId()
+                if(!hashMap.containsKey(ConstantKt.KEY_SESSION_IRIS)){
+                    hashMap[ConstantKt.KEY_SESSION_IRIS] = irisSession.getSessionId()
                 }
             }
             Patterns.PHONE.matcher(inputText).matches() -> hashMap = TrackAppUtils.gtmData(
@@ -159,8 +158,8 @@ class LoginRegisterAnalytics @Inject constructor(
                         "success"
                 )
 
-                if(!hashMap.containsKey("sessionIris")){
-                    hashMap["sessionIris"] = irisSession.getSessionId()
+                if(!hashMap.containsKey(ConstantKt.KEY_SESSION_IRIS)){
+                    hashMap[ConstantKt.KEY_SESSION_IRIS] = irisSession.getSessionId()
                 }
             }
         }
@@ -247,8 +246,8 @@ class LoginRegisterAnalytics @Inject constructor(
                 "click"
         )
 
-        if(!hashMap.containsKey("sessionIris")){
-            hashMap["sessionIris"] = irisSession.getSessionId()
+        if(!hashMap.containsKey(ConstantKt.KEY_SESSION_IRIS)){
+            hashMap[ConstantKt.KEY_SESSION_IRIS] = irisSession.getSessionId()
         }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
@@ -284,8 +283,8 @@ class LoginRegisterAnalytics @Inject constructor(
                 "success"
         )
 
-        if(!hashMap.containsKey("sessionIris")){
-            hashMap["sessionIris"] = irisSession.getSessionId()
+        if(!hashMap.containsKey(ConstantKt.KEY_SESSION_IRIS)){
+            hashMap[ConstantKt.KEY_SESSION_IRIS] = irisSession.getSessionId()
         }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
@@ -719,8 +718,8 @@ class LoginRegisterAnalytics @Inject constructor(
                 String.format("failed - %s", errorMessage)
         )
 
-        if(!hashMap.containsKey("sessionIris")){
-            hashMap["sessionIris"] = irisSession.getSessionId()
+        if(!hashMap.containsKey(ConstantKt.KEY_SESSION_IRIS)){
+            hashMap[ConstantKt.KEY_SESSION_IRIS] = irisSession.getSessionId()
         }
 
         TrackApp.getInstance().gtm.sendGeneralEvent(hashMap)
