@@ -169,7 +169,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeTotalLikes()
         observeTotalViews()
         observeChatList()
-        observePinnedMessage()
+        observePinned()
         observeFollowShop()
         observeLikeContent()
         observeKeyboardState()
@@ -283,8 +283,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         })
     }
 
-    private fun observePinnedMessage() {
-        playViewModel.observablePinnedMessage.observe(viewLifecycleOwner, Observer(::setPinnedMessage))
+    private fun observePinned() {
+        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer(::setPinned))
     }
 
     private fun observeLoggedInInteractionEvent() {
@@ -849,7 +849,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
+    private fun setPinned(pinnedMessage: PinnedUiModel) {
         launch {
           EventBusFactory.get(viewLifecycleOwner)
                   .emit(

@@ -69,8 +69,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableEvent
     val observableKeyboardState: LiveData<KeyboardState>
         get() = _observableKeyboardState
-    val observablePinnedMessage: LiveData<PinnedMessageUiModel>
-        get() = _observablePinnedMessage
+    val observablePinned: LiveData<PinnedUiModel>
+        get() = _observablePinned
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
         get() = _observableVideoProperty
 
@@ -86,7 +86,9 @@ class PlayViewModel @Inject constructor(
     private val _observableEvent = MutableLiveData<EventUiModel>()
     private val _observableKeyboardState = MutableLiveData<KeyboardState>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
+    private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
             _observableVideoProperty.value = VideoPropertyUiModel(it.channelType, _observableVideoProperty.value?.state
@@ -154,6 +156,10 @@ class PlayViewModel @Inject constructor(
 
     init {
         stateHandler.observeForever(stateHandlerObserver)
+
+        _observablePinned.addSource(_observablePinnedMessage, _observablePinned::setValue)
+        _observablePinned.addSource(_observablePinnedProduct, _observablePinned::setValue)
+
 //        startMockFreeze()
     }
 

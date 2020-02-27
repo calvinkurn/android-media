@@ -51,7 +51,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     override fun onNewChannel(channelId: String?) {
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fl_fragment, getFragment(channelId), PLAY_FRAGMENT_TAG)
+                .replace(R.id.fl_fragment, getFragment("2183"), PLAY_FRAGMENT_TAG)
                 .commit()
     }
 
