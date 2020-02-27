@@ -61,3 +61,4 @@ project.ext {
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"
+apply from: '../../../jacoco_task.gradle'

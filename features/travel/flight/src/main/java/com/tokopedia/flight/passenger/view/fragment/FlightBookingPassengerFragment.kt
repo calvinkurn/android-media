@@ -119,7 +119,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (autofillName.isNotEmpty()) loading_screen.show() else loading_screen.hide()
-        passengerViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list),
+        passengerViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list),
                 getPassengerTypeString(passengerModel.type))
         initView()
     }
@@ -236,7 +236,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
 
         passengerViewModel.updateContactList(GraphqlHelper.loadRawString(resources,
-                com.tokopedia.common.travel.R.raw.query_upsert_travel_contact_list),
+                com.tokopedia.travel.passenger.R.raw.query_upsert_travel_contact_list),
                 contact)
     }
 
