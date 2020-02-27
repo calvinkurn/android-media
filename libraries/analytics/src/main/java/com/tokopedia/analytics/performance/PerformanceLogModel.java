@@ -4,10 +4,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PerformanceLogModel {
+    private String traceName;
     private long startTime;
     private long endTime;
     private Map<String, String> attributes = new HashMap<>();
     private Map<String, Long> metrics = new HashMap<>();
+
+    public PerformanceLogModel(String traceName) {
+        this.traceName = traceName;
+    }
+
+    public String getTraceName() {
+        return traceName;
+    }
+
+    public void setTraceName(String traceName) {
+        this.traceName = traceName;
+    }
 
     public long getStartTime() {
         return startTime;
@@ -39,5 +52,16 @@ public class PerformanceLogModel {
 
     public Map<String, Long> getMetrics() {
         return metrics;
+    }
+
+    public long getDuration() {
+        return endTime - startTime;
+    }
+
+    public String getData() {
+        return new StringBuilder()
+                .append("Duration: ").append(String.valueOf(getDuration()))
+                .append("Attributes: ").append(attributes)
+                .append("Metrics: ").append(metrics).toString();
     }
 }

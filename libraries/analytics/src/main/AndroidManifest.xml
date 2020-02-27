@@ -16,6 +16,14 @@
             android:exported="true"/>
 
         <activity
+            android:name=".debugger.ui.activity.FpmDebuggerActivity"
+            android:launchMode="singleTask"
+            android:label="FPM Debugger"
+            android:taskAffinity="com.tokopedia.analytics.task"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:exported="true"/>
+
+        <activity
             android:name=".debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity"
             android:launchMode="singleTask"
             android:label="Analytics Debugger - GTM Error"

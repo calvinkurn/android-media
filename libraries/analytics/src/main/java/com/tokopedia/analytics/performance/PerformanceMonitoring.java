@@ -30,7 +30,7 @@ public class PerformanceMonitoring {
             if (fp != null) {
                 this.context = context;
                 trace = fp.newTrace(traceName);
-                performanceLogModel = new PerformanceLogModel();
+                performanceLogModel = new PerformanceLogModel(traceName);
                 if (trace != null) {
                     performanceLogModel.setStartTime(System.currentTimeMillis());
                     trace.start();

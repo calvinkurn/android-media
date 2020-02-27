@@ -1,43 +1,31 @@
 package com.tokopedia.analytics.debugger;
 
 import android.content.Context;
-import android.text.TextUtils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.analytics.database.GtmErrorLogDB;
-import com.tokopedia.analytics.debugger.data.source.GtmErrorLogDBSource;
-import com.tokopedia.analytics.debugger.data.source.GtmLogDBSource;
-import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
-import com.tokopedia.analytics.debugger.ui.activity.AnalyticsDebuggerActivity;
-import com.tokopedia.analytics.debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity;
+import com.tokopedia.analytics.debugger.data.source.FpmLogDBSource;
+import com.tokopedia.analytics.debugger.ui.activity.FpmDebuggerActivity;
 import com.tokopedia.analytics.performance.PerformanceLogModel;
 import com.tokopedia.config.GlobalConfig;
-
-import java.net.URLDecoder;
-import java.util.Map;
 
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 
 public class FpmLogger implements PerformanceLogger {
-    private static final String ANALYTICS_DEBUGGER = "ANALYTICS_DEBUGGER";
-    private static final String IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED = "is_notif_enabled";
+    private static final String FPM_DEBUGGER = "FPM_DEBUGGER";
+    private static final String IS_FPM_DEBUGGER_NOTIF_ENABLED = "is_notif_enabled";
 
     private static PerformanceLogger instance;
 
     private Context context;
-    private GtmLogDBSource dbSource;
-    private GtmErrorLogDBSource dbErrorSource;
+    private FpmLogDBSource dbSource;
     private LocalCacheHandler cache;
 
     private FpmLogger(Context context) {
         this.context = context;
-        this.dbSource = new GtmLogDBSource(context);
-        this.dbErrorSource = new GtmErrorLogDBSource(context);
-        this.cache = new LocalCacheHandler(context, ANALYTICS_DEBUGGER);
+        this.dbSource = new FpmLogDBSource(context);
+        this.cache = new LocalCacheHandler(context, FPM_DEBUGGER);
     }
 
     public static PerformanceLogger getInstance(Context context) {
@@ -55,19 +43,11 @@ public class FpmLogger implements PerformanceLogger {
     @Override
     public void save(PerformanceLogModel performanceLogModel) {
         try {
-            Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 
-            AnalyticsLogData data = new AnalyticsLogData();
-            data.setCategory((String) mapData.get("eventCategory"));
-            data.setName(name);
-            data.setData(URLDecoder.decode(gson.toJson(mapData), "UTF-8"));
+            dbSource.insertAll(performanceLogModel).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
 
-            if (!TextUtils.isEmpty(data.getName()) && !data.getName().equals("null")) {
-                dbSource.insertAll(data).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
-            }
-
-            if(cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)) {
-                NotificationHelper.show(context, data);
+            if(cache.getBoolean(IS_FPM_DEBUGGER_NOTIF_ENABLED, false)) {
+                NotificationHelper.show(context, performanceLogModel);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,18 +61,18 @@ public class FpmLogger implements PerformanceLogger {
 
     @Override
     public void openActivity() {
-        context.startActivity(AnalyticsDebuggerActivity.newInstance(context));
+        context.startActivity(FpmDebuggerActivity.newInstance(context));
     }
 
     @Override
     public void enableNotification(boolean isEnabled) {
-        cache.putBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, isEnabled);
+        cache.putBoolean(IS_FPM_DEBUGGER_NOTIF_ENABLED, isEnabled);
         cache.applyEditor();
     }
 
     @Override
     public boolean isNotificationEnabled() {
-        return cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false);
+        return cache.getBoolean(IS_FPM_DEBUGGER_NOTIF_ENABLED, false);
     }
 
     private Subscriber<? super Boolean> defaultSubscriber() {
