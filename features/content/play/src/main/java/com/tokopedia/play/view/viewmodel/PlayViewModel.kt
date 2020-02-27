@@ -77,7 +77,6 @@ class PlayViewModel @Inject constructor(
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
         get() = _observableVideoProperty
 
-    private val _observableVOD = MutableLiveData<ExoPlayer>()
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
@@ -157,7 +156,6 @@ class PlayViewModel @Inject constructor(
     }
 
     init {
-        _observableVOD.value = playManager.videoPlayer
         stateHandler.observeForever(stateHandlerObserver)
     }
 
@@ -283,18 +281,17 @@ class PlayViewModel @Inject constructor(
     }
 
     private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
-        val partnerType = PartnerType.getTypeByValue(channel.partnerType)
         val partnerId = channel.partnerId
-        return if (partnerType == PartnerType.ADMIN) {
+        return if (channel.partnerType == PartnerType.ADMIN) {
             PartnerInfoUiModel(
                     id = partnerId,
                     name = channel.moderatorName,
-                    type = partnerType,
+                    type = channel.partnerType,
                     isFollowed = true,
                     isFollowable = false
             )
         } else {
-            val shopInfo = getPartnerInfo(partnerId, partnerType)
+            val shopInfo = getPartnerInfo(partnerId, channel.partnerType)
             mapPartnerInfoFromShop(shopInfo)
         }
     }
@@ -373,7 +370,7 @@ class PlayViewModel @Inject constructor(
             channelType = if (channel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
             moderatorName = channel.moderatorName,
             partnerId = channel.partnerId,
-            partnerType = channel.partnerType,
+            partnerType = PartnerType.getTypeByValue(channel.partnerType),
             contentId = channel.contentId,
             contentType = channel.contentType,
             likeType = channel.likeType

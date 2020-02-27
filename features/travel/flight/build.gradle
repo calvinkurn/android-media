@@ -70,6 +70,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.multiDex
@@ -81,7 +82,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
     // Room components
@@ -97,6 +98,9 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
+
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {

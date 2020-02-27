@@ -7,7 +7,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
@@ -404,7 +404,7 @@ public class HomePageTracking {
                         PROMO_CLICK, DataLayer.mapOf(
                                 PROMOTIONS, DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                FIELD_ID, grid.getId(),
+                                                FIELD_ID, channel.getId() + "_" + grid.getId(),
                                                 FIELD_NAME, channel.getPromoName(),
                                                 FIELD_CREATIVE, grid.getAttribution(),
                                                 FIELD_CREATIVE_URL, grid.getImageUrl(),
