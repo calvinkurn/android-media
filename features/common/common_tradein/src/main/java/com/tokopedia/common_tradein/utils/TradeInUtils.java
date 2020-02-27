@@ -7,11 +7,9 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import android.telephony.TelephonyManager;
 
-import androidx.core.content.ContextCompat;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.user.session.UserSession;
@@ -65,7 +63,7 @@ public class TradeInUtils {
     }
 
     @Nullable
-    public static String getImeiNumber(Context context){
+    private static String getImeiNumber(Context context){
         LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_IMEI);
         return localCacheHandler.getString(IMEI_NUMBER);
     }

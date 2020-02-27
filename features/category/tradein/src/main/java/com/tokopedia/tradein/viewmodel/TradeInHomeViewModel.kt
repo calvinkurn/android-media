@@ -1,6 +1,5 @@
 package com.tokopedia.tradein.viewmodel
 
-import android.app.Application
 import android.content.Intent
 import android.os.Build
 import androidx.lifecycle.LifecycleObserver
@@ -16,20 +15,9 @@ import com.tokopedia.tradein.model.DeviceDiagInputResponse
 import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.usecase.CheckMoneyInUseCase
 import com.tokopedia.tradein.usecase.ProcessMessageUseCase
-import com.tokopedia.tradein.R
-import com.tokopedia.tradein.model.DeviceAttr
-import com.tokopedia.tradein.model.DeviceDiagInput
-import com.tokopedia.tradein.model.DeviceDiagInputResponse
-import com.tokopedia.tradein.model.DeviceDiagnostics
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
 import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_OFFLINE
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.tradein_common.Constants
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
@@ -45,16 +33,7 @@ class TradeInHomeViewModel @Inject constructor(
     var tradeInParams = TradeInParams()
     var imeiStateLiveData: MutableLiveData<Boolean> = MutableLiveData()
 
-    init {
-        tradeInParams = if (intent.hasExtra(TradeInParams::class.java.simpleName)) {
-            val parcelable = intent.getParcelableExtra(TradeInParams::class.java.simpleName) as TradeInParams?
-            parcelable ?: TradeInParams()
-        } else
-            TradeInParams()
-    }
-
     var tradeInType: Int = TRADEIN_OFFLINE
-    val fcmDeviceId = UserSession(applicationInstance).deviceId
 
     override fun doOnCreate() {
         super.doOnCreate()
@@ -143,7 +122,7 @@ class TradeInHomeViewModel @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (tradeInParams.deviceId == null || tradeInParams.deviceId == fcmDeviceId)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (tradeInParams.deviceId == null || tradeInParams.deviceId == checkMoneyInUseCase.fcmDeviceId)) {
             imeiStateLiveData.value = true
             setHomeResultData(jsonObject)
         } else {

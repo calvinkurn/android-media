@@ -31,6 +31,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.common_tradein.utils.TradeInUtils;
 import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.tradein.R;
@@ -50,7 +51,6 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import timber.log.Timber;
-import tradein_common.TradeInUtils;
 
 import static com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
 

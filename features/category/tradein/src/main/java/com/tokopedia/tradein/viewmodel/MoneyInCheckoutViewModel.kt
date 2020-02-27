@@ -52,7 +52,7 @@ class MoneyInCheckoutViewModel @Inject constructor(
             errorLiveData.value = CourierPriceError(it.localizedMessage ?: "")
         })
     }
-http://jenkins.tkpd:8080/job/branch-builder/17792/
+
     fun makeCheckoutMutation(hardwareId: String, addressId : Int, spId: Int, pickupTimeStart: Int, pickupTimeEnd: Int) {
         launchCatchError(block = {
             val response = moneyInCheckoutUseCase.makeCheckoutMutation(
