@@ -29,7 +29,7 @@ class AnalyticsDebuggerModule {
 
     @Provides
     @Named(NAMED_FPM_ANALYTICS)
-    fun providePresenter(getFpmLogUseCase: GetFpmLogUseCase?,
+    fun provideFpmPresenter(getFpmLogUseCase: GetFpmLogUseCase?,
                          deleteFpmLogUseCase: DeleteFpmLogUseCase?): AnalyticsDebugger.Presenter {
         return FpmDebuggerPresenter(getFpmLogUseCase, deleteFpmLogUseCase)
     }
