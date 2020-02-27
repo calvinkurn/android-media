@@ -65,11 +65,10 @@ public interface TokoPointsHomeContract {
         void showTokopoint2020(PopupNotification data);
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-        void destroyView();
+    interface Presenter{
 
         void getTokoPointDetail();
 
-        void tokopointOnboarding2020();
+        void tokopointOnboarding2020(TokoPointsHomeContract.View view);
     }
 }

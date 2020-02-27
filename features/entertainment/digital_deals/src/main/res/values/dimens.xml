@@ -33,5 +33,6 @@
     <dimen name="shimmer_title_width">123dp</dimen>
     <dimen name="dp_58">58dp</dimen>
     <dimen name="dp_66">66dp</dimen>
+    <dimen name="deals_dp_12">12dp</dimen>
 
 </resources>
