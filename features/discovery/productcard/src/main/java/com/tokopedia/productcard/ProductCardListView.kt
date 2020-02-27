@@ -4,14 +4,14 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.bumptech.glide.Glide
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.utils.executeInflation
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.UnifyButton
+import kotlinx.android.synthetic.main.product_card_button_remove_from_wishlist.view.*
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_list_layout.view.*
 
@@ -44,7 +44,11 @@ class ProductCardListView: BaseCustomView {
 
         imageThreeDots?.showWithCondition(productCardModel.hasOptions)
 
-        buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
+        buttonRemoveFromWishlistStub.executeInflation(
+                productCardModel.hasRemoveFromWishlistButton,
+                { buttonRemoveFromWishlist?.visible() },
+                { buttonRemoveFromWishlist.gone() }
+        )
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
     }

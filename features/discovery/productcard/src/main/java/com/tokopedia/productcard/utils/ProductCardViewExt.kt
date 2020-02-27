@@ -2,6 +2,7 @@ package com.tokopedia.productcard.utils
 
 import android.graphics.Color
 import android.view.View
+import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DimenRes
@@ -192,5 +193,15 @@ private fun safeParseColor(color: String): Int {
     catch (throwable: Throwable) {
         throwable.printStackTrace()
         0
+    }
+}
+
+internal fun ViewStub?.executeInflation(shouldRender: Boolean, doRender: () -> Unit, removeRendered: () -> Unit) {
+    if (shouldRender) {
+        this?.inflate()
+        doRender()
+    }
+    else if (this == null) {
+        removeRendered()
     }
 }

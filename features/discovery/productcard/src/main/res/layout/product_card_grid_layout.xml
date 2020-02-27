@@ -24,7 +24,6 @@
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
-            android:src="@drawable/error_drawable"
             android:visibility="visible"
             app:layout_constraintDimensionRatio="H,1:1"
             app:layout_constraintEnd_toEndOf="parent"
@@ -102,10 +101,9 @@
 
         <ViewStub
             android:id="@+id/buttonAddToCartStub"
-            android:inflatedId="@+id/buttonAddToCart"
+            android:layout="@layout/product_card_button_add_to_cart"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/product_card_button_add_to_cart_height"
-            android:layout="@layout/product_card_button_add_to_cart"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
