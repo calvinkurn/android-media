@@ -18,7 +18,7 @@ class AddEditAddressPresenter
 @Inject constructor(
         private val addAddressUseCase: AddAddressUseCase,
         private val zipCodeUseCase: GetZipCodeUseCase)
-    : BaseDaggerPresenter<AddEditAddressListener>() {
+    : BaseDaggerPresenter<AddEditView>() {
 
     fun saveAddress(model: SaveAddressDataModel, typeForm: String) {
         addAddressUseCase

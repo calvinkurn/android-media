@@ -1,6 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.addedit
 
-import android.content.Context
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.logisticaddaddress.domain.model.add_address.Data
@@ -23,7 +22,7 @@ object AddEditAddressPresenterTest : Spek({
 
     val saveUseCase: AddAddressUseCase = mockk(relaxUnitFun = true)
     val zipUseCase: GetZipCodeUseCase = mockk(relaxUnitFun = true)
-    val view: AddEditAddressListener = mockk(relaxed = true)
+    val view: AddEditView = mockk(relaxed = true)
 
     mockkObject(AddNewAddressAnalytics)
     every { AddNewAddressAnalytics.eventClickButtonSimpanSuccess(any()) } just Runs

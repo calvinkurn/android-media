@@ -61,7 +61,7 @@ import javax.inject.Inject
  */
 class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
-        ResultCallback<LocationSettingsResult>, AddEditAddressListener,
+        ResultCallback<LocationSettingsResult>, AddEditView,
         DiscomBottomSheetFragment.ActionListener,
         AutocompleteBottomSheetListener,
         PinpointMapListener,
