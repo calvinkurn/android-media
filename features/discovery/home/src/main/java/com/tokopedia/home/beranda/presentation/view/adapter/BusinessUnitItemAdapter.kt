@@ -1,7 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
+import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
@@ -29,10 +31,11 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
     private var adapterTypeFactory = BusinessWidgetTypeFactory(listener)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SizeSmallBusinessViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
         return when(viewType) {
-            SizeSmallBusinessViewHolder.LAYOUT -> SizeSmallBusinessViewHolder(parent, listener)
-            SizeMiddleBusinessViewHolder.LAYOUT -> SizeMiddleBusinessViewHolder(parent, listener)
-            SizeLargeBusinessViewHolder.LAYOUT -> SizeLargeBusinessViewHolder(parent, listener)
+            SizeSmallBusinessViewHolder.LAYOUT -> SizeSmallBusinessViewHolder(view, listener)
+            SizeMiddleBusinessViewHolder.LAYOUT -> SizeMiddleBusinessViewHolder(view, listener)
+            SizeLargeBusinessViewHolder.LAYOUT -> SizeLargeBusinessViewHolder(view, listener)
             else -> super.createViewHolder(parent, viewType)
         }
     }
