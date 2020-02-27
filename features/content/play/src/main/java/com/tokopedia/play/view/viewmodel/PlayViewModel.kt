@@ -383,10 +383,9 @@ class PlayViewModel @Inject constructor(
 
     private fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-//            channelType = if (videoStream.isLive
-//                    && videoStream.type.equals(PlayChannelType.Live.value, true))
-//                PlayChannelType.Live else PlayChannelType.VOD,
-            channelType = PlayChannelType.Live,
+            channelType = if (videoStream.isLive
+                    && videoStream.type.equals(PlayChannelType.Live.value, true))
+                PlayChannelType.Live else PlayChannelType.VOD,
             isActive = isActive
     )
 
