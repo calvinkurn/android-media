@@ -84,7 +84,7 @@ abstract class BaseNotificationItemViewHolder(
 
     protected open fun bindNotificationContent(element: NotificationItemViewBean) {
         title.text = element.title
-        if (element.body.length > element.options.contentMaxLonger) {
+        if (element.isLongerContent) {
             var shorten = element.body.take(element.options.contentMaxLonger)
             val inFull = getStringResource(R.string.in_full)
             shorten = "$shorten... $inFull"
@@ -117,7 +117,7 @@ abstract class BaseNotificationItemViewHolder(
         container.setOnClickListener {
             listener.itemClicked(element, adapterPosition)
             element.isRead = true
-            if (element.body.length > element.options.contentMaxLonger) {
+            if (element.isLongerContent) {
                 listener.showTextLonger(element)
             } else {
                 RouteManager.route(itemView.context, element.appLink)
