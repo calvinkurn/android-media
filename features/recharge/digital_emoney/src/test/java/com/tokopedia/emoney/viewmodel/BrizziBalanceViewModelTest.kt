@@ -79,8 +79,8 @@ class BrizziBalanceViewModelTest {
         brizziBalanceViewModel.processBrizziTagIntent(intent, brizzi, "", "",true)
 
         //then
-        assertNotNull(brizziBalanceViewModel.cardIsBrizzi.value)
-        assertEquals(false, brizziBalanceViewModel.cardIsBrizzi.value)
+        assertNotNull(brizziBalanceViewModel.cardIsNotBrizzi.value)
+        assertEquals(false, brizziBalanceViewModel.cardIsNotBrizzi.value)
     }
 
     @Test

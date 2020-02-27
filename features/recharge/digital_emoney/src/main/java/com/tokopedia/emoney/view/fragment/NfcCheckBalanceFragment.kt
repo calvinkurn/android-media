@@ -207,8 +207,8 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
             view_tap_emoney_card.setIssuerId(it)
         })
 
-        emoneyBalanceViewModel.cardIsEmoney.observe(this, Observer { cardIsEmoney ->
-            if (!cardIsEmoney) executeBrizzi(false, intent)
+        emoneyBalanceViewModel.cardIsNotEmoney.observe(this, Observer {
+            executeBrizzi(false, intent)
         })
     }
 
@@ -244,11 +244,9 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
                 showError(it)
             })
 
-            brizziBalanceViewModel.cardIsBrizzi.observe(this, Observer { cardIsBrizzi ->
-                if (!cardIsBrizzi) {
+            brizziBalanceViewModel.cardIsNotBrizzi.observe(this, Observer {
                     emoneyAnalytics.onErrorReadingCard()
                     showError(resources.getString(R.string.emoney_card_isnot_supported))
-                }
             })
         } else {
             showError(resources.getString(R.string.emoney_device_isnot_supported))

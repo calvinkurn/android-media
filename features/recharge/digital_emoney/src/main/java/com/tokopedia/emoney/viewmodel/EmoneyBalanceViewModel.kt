@@ -21,7 +21,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                                                  val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    val cardIsEmoney = SingleLiveEvent<Boolean>()
+    val cardIsNotEmoney = SingleLiveEvent<Boolean>()
     val issuerId = SingleLiveEvent<Int>()
     val errorCardMessage = SingleLiveEvent<String>()
     val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
@@ -60,15 +60,14 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                     mapAttributes[PARAM_ISSUER_ID] = ISSUER_ID_EMONEY
                     mapAttributes[PARAM_CARD_UUID] = responseCardUID
                     mapAttributes[PARAM_LAST_BALANCE] = responseCardLastBalance
-                    cardIsEmoney.postValue(true)
                     getEmoneyInquiryBalance(intent, PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
                 } else {
                     isoDep.close()
-                    cardIsEmoney.postValue(false)
-                    errorCardMessage.postValue(NfcCardErrorTypeDef.CARD_NOT_FOUND)
+                    cardIsNotEmoney.postValue(true)
                 }
             }
         } catch (e: IOException) {
+            isoDep.close()
             errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
     }

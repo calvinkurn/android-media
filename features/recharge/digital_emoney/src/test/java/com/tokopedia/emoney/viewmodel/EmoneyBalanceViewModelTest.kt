@@ -82,8 +82,8 @@ class EmoneyBalanceViewModelTest {
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
 
-        assertNotNull(emoneyBalanceViewModel.cardIsEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsEmoney.value, true)
+        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
+        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.emoneyInquiry.value)
         assertEquals(emoneyBalanceViewModel.emoneyInquiry.value, emoneyInquiry)
@@ -113,8 +113,8 @@ class EmoneyBalanceViewModelTest {
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
 
-        assertNotNull(emoneyBalanceViewModel.cardIsEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsEmoney.value, true)
+        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
+        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.errorInquiryBalance.value)
         assertEquals(errorGql.message, emoneyBalanceViewModel.errorInquiryBalance.value?.message)
@@ -139,8 +139,8 @@ class EmoneyBalanceViewModelTest {
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
 
-        assertNotNull(emoneyBalanceViewModel.cardIsEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsEmoney.value, true)
+        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
+        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.emoneyInquiry.value)
         assertEquals(emoneyBalanceViewModel.emoneyInquiry.value, emoneyInquiry)
@@ -164,8 +164,8 @@ class EmoneyBalanceViewModelTest {
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
 
-        assertNotNull(emoneyBalanceViewModel.cardIsEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsEmoney.value, true)
+        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
+        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.errorInquiryBalance.value)
         assertEquals(errorGql.message, emoneyBalanceViewModel.errorInquiryBalance.value?.message)
@@ -190,8 +190,8 @@ class EmoneyBalanceViewModelTest {
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
 
-        assertNotNull(emoneyBalanceViewModel.cardIsEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsEmoney.value, true)
+        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
+        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
         assertEquals(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE, emoneyBalanceViewModel.errorCardMessage.value)
@@ -207,8 +207,8 @@ class EmoneyBalanceViewModelTest {
         emoneyBalanceViewModel.processEmoneyTagIntent(intent, isoDep, "", 0)
 
         //then
-        assertNotNull(emoneyBalanceViewModel.cardIsEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsEmoney.value, false)
+        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
+        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, false)
 
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
         assertEquals(NfcCardErrorTypeDef.CARD_NOT_FOUND, emoneyBalanceViewModel.errorCardMessage.value)

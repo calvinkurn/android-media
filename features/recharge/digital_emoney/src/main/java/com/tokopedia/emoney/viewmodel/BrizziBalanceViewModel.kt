@@ -32,7 +32,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     val issuerId = SingleLiveEvent<Int>()
     val emoneyInquiry = SingleLiveEvent<EmoneyInquiry>()
     val tokenNeedRefresh = SingleLiveEvent<Boolean>()
-    val cardIsBrizzi = SingleLiveEvent<Boolean>()
+    val cardIsNotBrizzi = SingleLiveEvent<Boolean>()
     val errorCardMessage = SingleLiveEvent<String>()
 
     fun processBrizziTagIntent(intent: Intent, brizziInstance: Brizzi,
@@ -70,7 +70,6 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
                 override fun OnSuccess(brizziCardObject: BrizziCardObject) {
                     issuerId.postValue(ISSUER_ID_BRIZZI)
-                    cardIsBrizzi.postValue(true)
                     val balanceInquiry = brizziCardObjectMapper.mapperBrizzi(brizziCardObject, EmoneyInquiryError(title = "Tidak ada pending balance"))
                     balanceInquiry.attributesEmoneyInquiry?.let {
                         logBrizzi(0, it.cardNumber, rawLogBrizzi, "success", it.lastBalance.toDouble())
@@ -116,7 +115,7 @@ class BrizziBalanceViewModel @Inject constructor(private val graphqlRepository: 
     private fun handleError(brizziException: BrizziException) {
         when {
             brizziException.errorCode == BRIZZI_TOKEN_EXPIRED -> tokenNeedRefresh.postValue(true)
-            brizziException.errorCode == BRIZZI_CARD_NOT_FOUND -> cardIsBrizzi.postValue(false)
+            brizziException.errorCode == BRIZZI_CARD_NOT_FOUND -> cardIsNotBrizzi.postValue(true)
             else -> errorCardMessage.postValue(NfcCardErrorTypeDef.FAILED_READ_CARD)
         }
     }
