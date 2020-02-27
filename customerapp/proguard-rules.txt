@@ -414,7 +414,3 @@
 -dontwarn com.google.android.exoplayer2.audio.AudioAttributes
 -dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
 -dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar
-
--keep public class com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentData
--keep public class com.tokopedia.topchat.chatroom.view.viewmodel.WebsocketAttachmentContract
--keep public class com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview.WebsocketVoucherPayload
