@@ -35,7 +35,7 @@ import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationItemModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.EXTRA_DESTINATION_WEB_URL
 import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity.Companion.PARAM_CITY_ID
@@ -348,27 +348,27 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
                 cityId, "EVENTS", CITY_EVENT_ORDER)
     }
 
-    override fun onTrackOrderListImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int) {
+    override fun onTrackOrderListImpression(list: List<TravelDestinationSectionModel.Item>, firstVisiblePosition: Int) {
         travelDestinationTrackingUtil.orderListImpression(list, firstVisiblePosition)
     }
 
-    override fun onTrackOrderClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+    override fun onTrackOrderClick(item: TravelDestinationSectionModel.Item, position: Int) {
         travelDestinationTrackingUtil.orderListClicked(item, position)
     }
 
-    override fun onTrackRecommendationsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int) {
+    override fun onTrackRecommendationsImpression(list: List<TravelDestinationSectionModel.Item>, firstVisiblePosition: Int) {
         travelDestinationTrackingUtil.cityRecommendationImpression(list, firstVisiblePosition)
     }
 
-    override fun onTrackRecommendationItemClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+    override fun onTrackRecommendationItemClick(item: TravelDestinationSectionModel.Item, position: Int) {
         travelDestinationTrackingUtil.cityRecommendationItemClicked(item, position)
     }
 
-    override fun onTrackEventsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int) {
+    override fun onTrackEventsImpression(list: List<TravelDestinationSectionModel.Item>, firstVisiblePosition: Int) {
         travelDestinationTrackingUtil.cityEventsImpression(list, firstVisiblePosition)
     }
 
-    override fun onTrackEventItemClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+    override fun onTrackEventItemClick(item: TravelDestinationSectionModel.Item, position: Int) {
         travelDestinationTrackingUtil.cityEventsClick(item, position)
     }
 
@@ -376,11 +376,11 @@ class TravelDestinationFragment : BaseListFragment<TravelDestinationItemModel, T
         travelDestinationTrackingUtil.cityEventsSeeAllClicked()
     }
 
-    override fun onTrackDealsImpression(list: List<TravelDestinationSectionViewModel.Item>, firstVisiblePosition: Int) {
+    override fun onTrackDealsImpression(list: List<TravelDestinationSectionModel.Item>, firstVisiblePosition: Int) {
         travelDestinationTrackingUtil.cityDealsImpression(list, firstVisiblePosition)
     }
 
-    override fun onTrackDealsItemClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+    override fun onTrackDealsItemClick(item: TravelDestinationSectionModel.Item, position: Int) {
         travelDestinationTrackingUtil.cityDealsClick(item, position)
     }
 

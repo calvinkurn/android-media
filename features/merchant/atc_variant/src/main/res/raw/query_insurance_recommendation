@@ -1,4 +1,5 @@
 query getTransactionalProducts($digitalProducts: InsuretechDigitalProductRequestInput!) {
+  status
   insuretechGetTransactionalProducts(InsuretechProductData: $digitalProducts) {
     shops{
       shop_id
