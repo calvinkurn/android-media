@@ -272,6 +272,9 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             }
         }
         adapter.modifyDataList(promoList)
+
+        fragmentUiModel.uiState.hasAnyPromoSellected = false
+        renderFragmentState()
     }
 
     // --- END OF FRAGMENT LEVEL ACTION
