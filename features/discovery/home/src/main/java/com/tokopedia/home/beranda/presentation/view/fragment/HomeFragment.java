@@ -274,6 +274,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         viewModel = viewModelProvider.get(HomeViewModel.class);
         setGeolocationPermission();
         needToShowGeolocationComponent();
+        getStickyContent();
     }
 
     @Override
