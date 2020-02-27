@@ -31,7 +31,9 @@ data class NotificationUpdateItem(
         @Expose @SerializedName("data_notification") var dataNotification: DataNotification,
         @Expose @SerializedName("product_data") var productData: List<ProductData>,
         @Expose @SerializedName("total_product") var totalProducts: Int = 0,
-        @Expose @SerializedName("is_longer_content") var isLongerContent: Boolean = false
+        @Expose @SerializedName("is_longer_content") var isLongerContent: Boolean = false,
+        @Expose @SerializedName("show_bottomsheet") var isShowBottomSheet: Boolean = false,
+        @Expose @SerializedName("type_bottomsheet") var typeBottomSheet: Int = 0
 )
 
 data class ProductData(
