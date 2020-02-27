@@ -36,7 +36,8 @@ data class PromoListItemUiModel(
             var subTitle: String = "",
             var errorMessage: String = "",
             var imageResourceUrl: String = "",
-            var parentIdentifierId: Int = 0
+            var parentIdentifierId: Int = 0,
+            var promoCode: String = ""
     )
 
     data class UiState(
@@ -56,6 +57,7 @@ data class PromoListItemUiModel(
                         errorMessage = oldData.uiData.errorMessage
                         imageResourceUrl = oldData.uiData.imageResourceUrl
                         parentIdentifierId = oldData.uiData.parentIdentifierId
+                        promoCode = oldData.uiData.promoCode
                     },
                     uiState = UiState().apply {
                         isEnabled = oldData.uiState.isEnabled

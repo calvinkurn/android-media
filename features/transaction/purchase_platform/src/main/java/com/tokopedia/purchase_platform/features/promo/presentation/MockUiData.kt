@@ -71,7 +71,7 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
                 parentIdentifierId = 1
                 title = "Promo pertama"
                 subTitle = "Berakhir 1 jam lagi"
-                imageResourceUrl = "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                promoCode = "TOKOPEDIACASHBACK"
             },
             uiState = PromoListItemUiModel.UiState().apply {
                 isEnabled = true
@@ -99,6 +99,7 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
                 parentIdentifierId = 1
                 title = "Promo ketiga"
                 subTitle = "Berakhir 3 jam lagi"
+                imageResourceUrl = "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
             },
             uiState = PromoListItemUiModel.UiState().apply {
                 isEnabled = true

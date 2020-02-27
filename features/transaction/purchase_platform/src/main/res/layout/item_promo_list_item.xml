@@ -3,9 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="-4dp"
     android:background="@color/white"
     android:orientation="horizontal"
-    android:layout_marginTop="-4dp"
     android:paddingLeft="@dimen/dp_16"
     android:paddingRight="@dimen/dp_16"
     android:paddingBottom="@dimen/dp_12">
@@ -47,15 +47,35 @@
                 app:typographyWeight="bold" />
 
             <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/label_promo_item_error_message"
+                android:id="@+id/label_promo_code_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_2"
                 android:layout_marginRight="@dimen/dp_12"
                 android:layout_marginBottom="@dimen/dp_8"
-                android:text="Tambah Rp10.000 untuk pakai promo."
+                android:text="Kode promo: "
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label_promo_item_title"
+                app:typographyType="body_3" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/label_promo_code_value"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_2"
+                android:text="HHBSFDUJKSBS"
+                app:layout_constraintStart_toEndOf="@+id/label_promo_code_info"
+                app:layout_constraintTop_toBottomOf="@+id/label_promo_item_title"
+                app:typographyType="body_3"
+                app:typographyWeight="bold" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/label_promo_item_error_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tambah Rp10.000 untuk pakai promo."
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/label_promo_code_info"
                 app:typographyType="body_3" />
 
             <com.tokopedia.unifyprinciples.Typography

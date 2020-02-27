@@ -40,6 +40,15 @@ class PromoListItemViewHolder(private val view: View,
             itemView.image_promo_item.gone()
         }
 
+        if (element.uiData.promoCode.isNotBlank()) {
+            itemView.label_promo_code_value.text = element.uiData.promoCode
+            itemView.label_promo_code_value.show()
+            itemView.label_promo_code_info.show()
+        } else {
+            itemView.label_promo_code_value.gone()
+            itemView.label_promo_code_info.gone()
+        }
+
         itemView.label_promo_item_title.text = element.uiData.title
         formatSubTitle(element)
 
