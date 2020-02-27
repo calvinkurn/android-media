@@ -32,11 +32,30 @@ data class PromoEligibilityHeaderUiModel(
 
     data class UiData(
             var title: String = "",
-            var subTitle: String = ""
+            var subTitle: String = "",
+            var tmpPromo: List<Visitable<*>> = emptyList()
     )
 
     data class UiState(
-            var isEnabled: Boolean = false
+            var isEnabled: Boolean = false,
+            var isCollapsed: Boolean = false
     )
 
+    companion object {
+
+        fun clone(oldData: PromoEligibilityHeaderUiModel): PromoEligibilityHeaderUiModel {
+            return PromoEligibilityHeaderUiModel(
+                    uiData = UiData().apply {
+                        title = oldData.uiData.title
+                        subTitle = oldData.uiData.subTitle
+                        tmpPromo = oldData.uiData.tmpPromo
+                    },
+                    uiState = UiState().apply {
+                        isEnabled = oldData.uiState.isEnabled
+                        isCollapsed = oldData.uiState.isCollapsed
+                    }
+            )
+        }
+
+    }
 }

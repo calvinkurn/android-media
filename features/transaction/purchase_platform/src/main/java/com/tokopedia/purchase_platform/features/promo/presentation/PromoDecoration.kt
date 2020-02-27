@@ -33,12 +33,23 @@ class PromoDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
                 outRect.bottom = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
             }
             is PromoListHeaderViewHolder -> {
-                if ((adapter.data[position] as PromoListHeaderUiModel).uiState.isEnabled) {
-                    outRect.top = parent.context?.resources?.getDimension(R.dimen.dp_2)?.toInt() ?: 0
-                    outRect.bottom = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
-                } else {
-                    outRect.top = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
-                    outRect.bottom = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
+                try {
+                    if ((adapter.data[position] as PromoListHeaderUiModel).uiState.isEnabled) {
+                        outRect.top = parent.context?.resources?.getDimension(R.dimen.dp_2)?.toInt() ?: 0
+                        outRect.bottom = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
+                    } else {
+                        outRect.top = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
+                        outRect.bottom = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
+                        view.setPadding(
+                                parent.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
+                                parent.context?.resources?.getDimension(R.dimen.dp_4)?.toInt() ?: 0,
+                                parent.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
+                                parent.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
+                        )
+                    }
+                } catch (exception: ArrayIndexOutOfBoundsException) {
+                    outRect.top = parent.context?.resources?.getDimension(com.tokopedia.purchase_platform.R.dimen.dp_0)?.toInt() ?: 0
+                    outRect.bottom = parent.context?.resources?.getDimension(com.tokopedia.purchase_platform.R.dimen.dp_0)?.toInt() ?: 0
                 }
             }
             else -> {

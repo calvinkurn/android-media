@@ -324,5 +324,33 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         startActivity(intent)
     }
 
+    override fun onClickPromoEligibilityHeader(position: Int, element: PromoEligibilityHeaderUiModel) {
+        val modifiedData = ArrayList<Visitable<*>>()
+
+        if (element.uiState.isCollapsed) {
+            val startIndex = position + 1
+            for (index in startIndex until adapter.data.size) {
+                val oldPromoItem = adapter.data[index]
+                modifiedData.add(oldPromoItem)
+            }
+
+            val newData = PromoEligibilityHeaderUiModel.clone(element).apply {
+                uiState.isCollapsed = !element.uiState.isCollapsed
+                uiData.tmpPromo = modifiedData
+            }
+
+            adapter.modifyData(position, newData)
+            adapter.removeList(modifiedData)
+        } else {
+            val newData = PromoEligibilityHeaderUiModel.clone(element).apply {
+                uiState.isCollapsed = !element.uiState.isCollapsed
+                uiData.tmpPromo = emptyList()
+            }
+
+            adapter.modifyData(position, newData)
+            adapter.addVisitableList(position + 1, element.uiData.tmpPromo)
+        }
+    }
+
     // -- END OF PROMO LIST SECTION
 }
