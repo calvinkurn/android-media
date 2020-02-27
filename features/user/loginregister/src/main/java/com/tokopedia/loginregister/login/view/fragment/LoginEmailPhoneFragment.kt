@@ -49,7 +49,7 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
+import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginregister.R
@@ -119,7 +119,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     lateinit var presenter: LoginEmailPhonePresenter
 
     @Inject
-    lateinit var fingerprintPreferenceHelper: FingerprintPreferenceHelper
+    lateinit var fingerprintPreferenceHelper: FingerprintSetting
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
