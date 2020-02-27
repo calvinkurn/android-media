@@ -43,8 +43,8 @@ public class FpmDebuggerViewHolder extends AbstractViewHolder<FpmDebuggerViewMod
         }
 
         duration.setText(String.valueOf(element.getDuration()));
-        metrics.setText(element.getMetrics());
-        txtAtrributes.setText(element.getAttributes());
+        metrics.setText(element.getPreviewMetrics());
+        txtAtrributes.setText(element.getPreviewAttributes());
         timestamp.setText(element.getTimestamp());
     }
 }

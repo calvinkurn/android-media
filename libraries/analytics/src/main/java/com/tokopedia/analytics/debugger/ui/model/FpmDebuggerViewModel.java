@@ -12,6 +12,8 @@ public class FpmDebuggerViewModel implements Visitable<FpmDebuggerTypeFactory>,P
     private long duration;
     private String metrics;
     private String attributes;
+    private String previewMetrics;
+    private String previewAttributes;
     private String timestamp;
 
     public FpmDebuggerViewModel() {
@@ -61,6 +63,22 @@ public class FpmDebuggerViewModel implements Visitable<FpmDebuggerTypeFactory>,P
 
     public void setAttributes(String attributes) {
         this.attributes = attributes;
+    }
+
+    public String getPreviewMetrics() {
+        return previewMetrics;
+    }
+
+    public void setPreviewMetrics(String previewMetrics) {
+        this.previewMetrics = previewMetrics;
+    }
+
+    public String getPreviewAttributes() {
+        return previewAttributes;
+    }
+
+    public void setPreviewAttributes(String previewAttributes) {
+        this.previewAttributes = previewAttributes;
     }
 
     public String getTimestamp() {

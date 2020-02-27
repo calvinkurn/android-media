@@ -35,6 +35,8 @@ public class FpmLogMapper implements Func1<FpmLogDB, Observable<Visitable>> {
         viewModel.setDuration(fpmLogDB.getDuration());
         viewModel.setMetrics(fpmLogDB.getMetrics());
         viewModel.setAttributes(fpmLogDB.getAttributes());
+        viewModel.setPreviewMetrics(formatDataExcerpt(fpmLogDB.getMetrics()));
+        viewModel.setPreviewAttributes(formatDataExcerpt(fpmLogDB.getAttributes()));
         viewModel.setTimestamp(dateFormat.format(new Date(fpmLogDB.getTimestamp())));
 
         return Observable.just((Visitable) viewModel);
