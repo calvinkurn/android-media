@@ -86,8 +86,8 @@ class FlightFilterSortFoldableWidget @JvmOverloads constructor(context: Context,
     override fun onResetChip() {
         for (i in 0 until widgetAdapter.itemCount) {
             if (!widgetAdapter.items[i].isSelected) {
-                with(rvFlightFilterSortWidget.findViewHolderForAdapterPosition(i) as FlightFilterSortWidgetViewHolder) {
-                    this.unselectChip()
+                rvFlightFilterSortWidget.findViewHolderForAdapterPosition(i)?.let {
+                    (it as FlightFilterSortWidgetViewHolder).unselectChip()
                 }
             }
         }
