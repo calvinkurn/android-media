@@ -237,6 +237,21 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
 
 fun mockIneligiblePromoGoldMerchantSection(): List<Visitable<*>> {
     val dataList = ArrayList<Visitable<*>>()
+    val promoListHeaderUiModel1 = PromoListHeaderUiModel(
+            uiData = PromoListHeaderUiModel.UiData().apply {
+                identifierId = 22
+                title = "Ini promo power merchant"
+                subTitle = "Hanya bisa pilih 1"
+                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_POWER_MERCHANT
+                tmpPromoItemList = emptyList()
+            },
+            uiState = PromoListHeaderUiModel.UiState().apply {
+                isCollapsed = false
+                isEnabled = false
+            }
+    )
+    dataList.add(promoListHeaderUiModel1)
+
     val promoListItemUiModel3 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
                 promoId = 201
@@ -249,26 +264,28 @@ fun mockIneligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 isEnabled = false
             }
     )
-    val promoListHeaderUiModel1 = PromoListHeaderUiModel(
-            uiData = PromoListHeaderUiModel.UiData().apply {
-                identifierId = 22
-                title = "Ini promo power merchant"
-                subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_POWER_MERCHANT
-                tmpPromoItemList = arrayListOf(promoListItemUiModel3)
-            },
-            uiState = PromoListHeaderUiModel.UiState().apply {
-                isCollapsed = true
-                isEnabled = false
-            }
-    )
-    dataList.add(promoListHeaderUiModel1)
+    dataList.add(promoListItemUiModel3)
 
     return dataList
 }
 
 fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
     val dataList = ArrayList<Visitable<*>>()
+    val promoListHeaderUiModel2 = PromoListHeaderUiModel(
+            uiData = PromoListHeaderUiModel.UiData().apply {
+                identifierId = 33
+                title = "Ini promo official store"
+                subTitle = "Hanya bisa pilih 1"
+                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_MERCHANT_OFFICIAL
+                tmpPromoItemList = emptyList()
+            },
+            uiState = PromoListHeaderUiModel.UiState().apply {
+                isCollapsed = false
+                isEnabled = false
+            }
+    )
+    dataList.add(promoListHeaderUiModel2)
+
     val promoListItemUiModel4 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
                 promoId = 301
@@ -281,20 +298,7 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 isEnabled = false
             }
     )
-    val promoListHeaderUiModel2 = PromoListHeaderUiModel(
-            uiData = PromoListHeaderUiModel.UiData().apply {
-                identifierId = 33
-                title = "Ini promo official store"
-                subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_MERCHANT_OFFICIAL
-                tmpPromoItemList = arrayListOf(promoListItemUiModel4)
-            },
-            uiState = PromoListHeaderUiModel.UiState().apply {
-                isCollapsed = true
-                isEnabled = false
-            }
-    )
-    dataList.add(promoListHeaderUiModel2)
+    dataList.add(promoListItemUiModel4)
 
     return dataList
 }

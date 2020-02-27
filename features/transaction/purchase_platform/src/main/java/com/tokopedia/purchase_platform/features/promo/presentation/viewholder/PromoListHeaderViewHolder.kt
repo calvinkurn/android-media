@@ -31,16 +31,14 @@ class PromoListHeaderViewHolder(private val view: View,
         } else if (element.uiData.promoType == PROMO_TYPE_POWER_MERCHANT) {
             itemView.image_promo_list_header.setImageResource(R.drawable.ic_power_merchant)
         }
+
         itemView.label_promo_list_header_title.text = element.uiData.title
         itemView.label_promo_list_header_sub_title.text = element.uiData.subTitle
+
         if (!element.uiState.isCollapsed) {
             itemView.image_chevron.rotation = 180f
         } else {
             itemView.image_chevron.rotation = 0f
-        }
-        itemView.setOnClickListener {
-            val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) listener.onClickPromoListHeader(adapterPosition)
         }
 
         if (element.uiState.isEnabled) {
@@ -53,11 +51,18 @@ class PromoListHeaderViewHolder(private val view: View,
     private fun renderEnablePromoListHeader() {
         setImageFilterNormal(itemView.image_promo_list_header)
         itemView.label_promo_list_header_sub_title.show()
+        itemView.image_chevron.show()
+        itemView.setOnClickListener {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) listener.onClickPromoListHeader(adapterPosition)
+        }
     }
 
     private fun renderDisablePromoListHeader() {
         setImageFilterGrayScale(itemView.image_promo_list_header)
         itemView.label_promo_list_header_sub_title.gone()
+        itemView.image_chevron.gone()
+        itemView.setOnClickListener {}
     }
 
 }
