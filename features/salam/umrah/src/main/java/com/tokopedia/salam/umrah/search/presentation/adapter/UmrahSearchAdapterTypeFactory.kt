@@ -7,22 +7,26 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyViewHolder
+import com.tokopedia.salam.umrah.search.data.UmrahSearchEmpty
+import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
+import com.tokopedia.salam.umrah.search.presentation.adapter.viewholder.UmrahSearchEmptyViewHolder
 import com.tokopedia.salam.umrah.search.presentation.adapter.viewholder.UmrahSearchLoadingViewHolder
 import com.tokopedia.salam.umrah.search.presentation.adapter.viewholder.UmrahSearchViewHolder
 
 /**
  * @author by furqan on 20/10/2019
  */
-class UmrahSearchAdapterTypeFactory(private val callback: BaseEmptyViewHolder.Callback) : BaseAdapterTypeFactory() {
+class UmrahSearchAdapterTypeFactory(private val callback: BaseEmptyViewHolder.Callback, val umrahEmptyClickListener:UmrahSearchEmptyViewHolder.OnClickListener) : BaseAdapterTypeFactory() {
 
-    fun type(): Int = UmrahSearchViewHolder.LAYOUT
+    fun type(searchProduct: UmrahSearchProduct): Int = UmrahSearchViewHolder.LAYOUT
+    fun type(searchEmpty: UmrahSearchEmpty) : Int = UmrahSearchEmptyViewHolder.LAYOUT
     override fun type(viewModel: LoadingModel): Int = UmrahSearchLoadingViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> =
             when (type) {
                 UmrahSearchViewHolder.LAYOUT -> UmrahSearchViewHolder(parent)
                 UmrahSearchLoadingViewHolder.LAYOUT -> UmrahSearchLoadingViewHolder(parent)
-                EmptyViewHolder.LAYOUT -> EmptyViewHolder(parent, callback)
+                UmrahSearchEmptyViewHolder.LAYOUT -> UmrahSearchEmptyViewHolder(parent,umrahEmptyClickListener)
                 else -> super.createViewHolder(parent, type)
             }
 }

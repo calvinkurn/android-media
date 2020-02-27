@@ -32,6 +32,7 @@ import com.tokopedia.salam.umrah.common.data.DefaultOption
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity
+import com.tokopedia.salam.umrah.search.data.UmrahSearchEmpty
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.search.data.model.ParamFilter
@@ -51,6 +52,7 @@ import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchFilterA
 import com.tokopedia.salam.umrah.search.presentation.adapter.UmrahSearchAdapter
 import com.tokopedia.salam.umrah.search.presentation.adapter.UmrahSearchAdapterTypeFactory
 import com.tokopedia.salam.umrah.search.presentation.adapter.UmrahSearchSortAdapter
+import com.tokopedia.salam.umrah.search.presentation.adapter.viewholder.UmrahSearchEmptyViewHolder
 import com.tokopedia.salam.umrah.search.presentation.viewmodel.UmrahSearchFilterSortViewModel
 import com.tokopedia.salam.umrah.search.presentation.viewmodel.UmrahSearchViewModel
 import com.tokopedia.salam.umrah.search.util.SearchOrCategory
@@ -71,7 +73,8 @@ import javax.inject.Inject
  * @author by furqan on 18/10/2019
  */
 class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdapterTypeFactory>(),
-        BaseEmptyViewHolder.Callback, UmrahSearchAdapter.OnClickListener, UmrahSearchActivity.OnBackListener {
+        BaseEmptyViewHolder.Callback, UmrahSearchAdapter.OnClickListener, UmrahSearchActivity.OnBackListener,
+        UmrahSearchEmptyViewHolder.OnClickListener {
 
     private val umrahSearchSortAdapter: UmrahSearchSortAdapter by lazy { UmrahSearchSortAdapter() }
     private var sort = DefaultOption()
@@ -82,6 +85,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     private val selectedFilter = ParamFilter()
     private var isRVInited = false
     private var isPassingEmpty = false
+    private var isAlreadyShowEmpty = false
 
     override fun onEmptyContentItemTextClicked() {}
 
@@ -235,7 +239,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun hasInitialSwipeRefresh(): Boolean = true
 
-    override fun getAdapterTypeFactory(): UmrahSearchAdapterTypeFactory = UmrahSearchAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): UmrahSearchAdapterTypeFactory = UmrahSearchAdapterTypeFactory(this,this)
 
     override fun onItemClicked(product: UmrahSearchProduct?) {}
     override fun onItemClicked(product: UmrahSearchProduct, position: Int) {
@@ -285,8 +289,9 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
             })
         }
         umrah_search_bottom_action_view.visible()
-        emptyState(isPassingEmpty)
         renderList(data, data.size >= searchParam.limit)
+        if((adapter.data.size/searchParam.limit)==1)
+        emptyState(isPassingEmpty)
     }
 
     private fun trackImpression(startIndex: Int, lastIndex: Int, data: MutableList<out Any>) {
@@ -311,10 +316,6 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     override fun getEmptyDataViewModel(): Visitable<*> {
         val emptyModel = EmptyModel()
         return emptyModel
-    }
-
-    override fun isListEmpty(): Boolean {
-        return super.isListEmpty()
     }
 
     override fun showEmpty() {
@@ -420,19 +421,16 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     }
 
     private fun showEmptyState() {
-        partial_umrah_empty_search.show()
-        btn_umrah_search_empty_open_filter.setOnClickListener {
-            openFilterFragment()
-        }
-    }
-
-    private fun hideEmptyState(){
-        partial_umrah_empty_search.gone()
+        adapter.addElement(0,UmrahSearchEmpty())
     }
 
     private fun emptyState(isPasssingEmpty:Boolean){
-        if(isPasssingEmpty)showEmptyState()
-        else hideEmptyState()
+        if(isPasssingEmpty){
+            showEmptyState()
+        }
     }
 
+    override fun umrahSearchEmptyOnClickListener() {
+        openFilterFragment()
+    }
 }
