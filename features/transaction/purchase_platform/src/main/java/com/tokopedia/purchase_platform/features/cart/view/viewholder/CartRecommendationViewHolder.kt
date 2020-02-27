@@ -20,7 +20,7 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
     }
 
     fun bind(element: CartRecommendationItemHolderData) {
-        itemView.productCardView.apply {
+        itemView.productCardView?.apply {
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.recommendationItem.slashedPrice,
@@ -60,6 +60,6 @@ class CartRecommendationViewHolder(view: View, val actionListener: ActionListene
     }
 
     fun clearImage() {
-//        itemView.productCardView.setImageProductVisible(false)
+        itemView.productCardView?.recycle()
     }
 }
