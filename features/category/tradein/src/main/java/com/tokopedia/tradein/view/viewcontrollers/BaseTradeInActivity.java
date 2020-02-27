@@ -23,12 +23,15 @@ import android.view.WindowManager;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
+import com.tokopedia.abstraction.base.app.BaseMainApplication;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
 import com.tokopedia.tradein.TradeInGTMConstants;
 import com.tokopedia.tradein.viewmodel.BaseTradeInViewModel;
-import com.tokopedia.tradein.viewmodel.TradeInVMFactory;
+import com.tokopedia.tradein.di.DaggerTradeInComponent;
+import com.tokopedia.tradein.di.TradeInComponent;
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
 import com.tokopedia.unifycomponents.Toaster;
@@ -37,8 +40,9 @@ import org.jetbrains.annotations.NotNull;
 
 import com.tokopedia.common_tradein.utils.TradeInUtils;
 
+import javax.inject.Inject;
 
-public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extends BaseViewModelActivity<T> implements ContextInterface {
+public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extends BaseViewModelActivity<T> implements ContextInterface, HasComponent<TradeInComponent> {
     public static final int MY_PERMISSIONS_REQUEST_READ_PHONE_STATE = 123;
     public static final int LOGIN_REQUEST = 514;
     public static final int TRADEIN_HOME_REQUEST = 22345;
@@ -60,6 +64,8 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
     protected boolean isTncShowing = false;
     abstract protected int getMenuRes();
 
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -190,12 +196,6 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
         return TradeInUtils.getDeviceId(this);
     }
 
-    @NotNull
-    @Override
-    public ViewModelProvider.AndroidViewModelFactory getVMFactory() {
-        return TradeInVMFactory.getInstance(this.getApplication(), getIntent());
-    }
-
 
     protected void showTnC(int tncResId) {
         isTncShowing = true;
@@ -276,5 +276,18 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
     @Override
     public Context getContextFromActivity() {
         return this;
+    }
+    @Override
+    public TradeInComponent getComponent() {
+        return DaggerTradeInComponent.builder().
+                baseAppComponent(((BaseMainApplication) getApplication()).
+                        getBaseAppComponent()).
+                build();
+    }
+
+    @NotNull
+    @Override
+    public ViewModelProvider.Factory getVMFactory() {
+        return viewModelFactory;
     }
 }

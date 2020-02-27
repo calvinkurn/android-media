@@ -4,7 +4,6 @@ package com.tokopedia.tradein.viewmodel
 import android.content.res.Resources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.tokopedia.tradein.TradeInRepository
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.tradein.view.viewcontrollers.ContextInterface
 
@@ -24,10 +23,6 @@ open class BaseTradeInViewModel() : BaseViewModel() {
 
     fun getErrorMessage(): LiveData<String> {
         return errorMessage
-    }
-
-    fun getMYRepository(): TradeInRepository {
-        return TradeInRepository()
     }
 
     fun setContextInterface(contextInterface: ContextInterface) {

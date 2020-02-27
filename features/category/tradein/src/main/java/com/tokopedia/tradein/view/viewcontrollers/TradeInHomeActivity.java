@@ -118,7 +118,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     }
 
     @Override
+    public void initInject() {
+        getComponent().inject(this);
+    }
+
+    @Override
     public void initView() {
+        setTradeInParams();
         mTvPriceElligible = findViewById(R.id.tv_price_elligible);
         mButtonRemove = findViewById(R.id.button_remove);
         mTvModelName = findViewById(R.id.tv_model_name);
@@ -141,6 +147,12 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         mTvGoToProductDetails.setText(closeButtonText);
     }
 
+    private void setTradeInParams() {
+        if (getIntent().hasExtra(TradeInParams.class.getSimpleName())) {
+            tradeInHomeViewModel.setTradeInParams(getIntent().getParcelableExtra(TradeInParams.class.getSimpleName()));
+        }
+    }
+
     @Override
     public Class<TradeInHomeViewModel> getViewModelType() {
         return TradeInHomeViewModel.class;
@@ -155,7 +167,6 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        tradeInHomeViewModel.initilizeAppContext(getApplication());
         tradeInHomeViewModel.getHomeResultData().observe(this, (homeResult -> {
             if (!homeResult.isSuccess()) {
                 mTvInitialPrice.setText(homeResult.getDisplayMessage());
@@ -200,7 +211,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         mTvGoToProductDetails.setText(R.string.moneyin_sell_now);
                         if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
-                            sendIrisEvent(homeResult.maxPrice, homeResult.minPrice);
+                            sendIrisEvent(homeResult.maxPrice != null ? homeResult.maxPrice : 0 , homeResult.minPrice!= null ? homeResult.minPrice : 0 );
                         }
                         mTvGoToProductDetails.setOnClickListener(v -> goToHargaFinal(homeResult.getDeviceDisplayName()));
                         goToHargaFinal(homeResult.getDeviceDisplayName());
@@ -218,7 +229,7 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
 
                         });
                         if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
-                            sendIrisEvent(homeResult.maxPrice, homeResult.minPrice);
+                            sendIrisEvent(homeResult.maxPrice != null ? homeResult.maxPrice : 0 , homeResult.minPrice!= null ? homeResult.minPrice : 0 );
                         }
                         viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
