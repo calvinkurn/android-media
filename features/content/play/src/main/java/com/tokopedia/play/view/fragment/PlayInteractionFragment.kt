@@ -104,6 +104,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private val offset24 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
     private val offset8 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl3) }
+    private val offset4 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl2) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
@@ -607,7 +608,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int, @IdRes toolbarComponentId: Int) {
+        fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int, @IdRes toolbarComponentId: Int, @IdRes videoControlComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
@@ -615,7 +616,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.apply {
                 connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
                 connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
-                connect(id, ConstraintSet.BOTTOM, likeComponentId, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.TOP)
             }
 
             constraintSet.applyTo(container)
@@ -628,7 +629,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
             constraintSet.apply {
                 connect(id, ConstraintSet.END, toolbarComponentId, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.TOP, offset8)
+                connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.BOTTOM)
             }
 
             constraintSet.applyTo(container)
@@ -662,14 +663,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutVideoControl(container: ViewGroup, @IdRes id: Int, @IdRes toolbarComponentId: Int, @IdRes sizeContainerComponentId: Int) {
+        fun layoutVideoControl(container: ViewGroup, @IdRes id: Int, @IdRes toolbarComponentId: Int, @IdRes sizeContainerComponentId: Int, @IdRes likeComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
                 connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
-                connect(id, ConstraintSet.END, toolbarComponentId, ConstraintSet.END)
+                connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
                 connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
             }
 
@@ -779,9 +780,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         layoutSizeContainer(container, sizeContainerComponentId)
         layoutToolbar(container, toolbarComponentId, sizeContainerComponentId)
-        layoutVideoControl(container, videoControlComponentId, toolbarComponentId, sizeContainerComponentId)
+        layoutVideoControl(container, videoControlComponentId, toolbarComponentId, sizeContainerComponentId, likeComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId, toolbarComponentId)
-        layoutChat(container, sendChatComponentId, likeComponentId, toolbarComponentId)
+        layoutChat(container, sendChatComponentId, likeComponentId, toolbarComponentId, videoControlComponentId)
         layoutChatList(container, chatListComponentId, quickReplyComponentId, likeComponentId, toolbarComponentId)
         layoutPinned(container, pinnedComponentId, chatListComponentId, likeComponentId, toolbarComponentId)
         layoutPlayButton(container, playButtonComponentId)

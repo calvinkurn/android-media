@@ -154,8 +154,7 @@ class PlayViewModel @Inject constructor(
 
     init {
         stateHandler.observeForever(stateHandlerObserver)
-
-        startMockFreeze()
+//        startMockFreeze()
     }
 
     override fun onCleared() {
@@ -384,9 +383,10 @@ class PlayViewModel @Inject constructor(
 
     private fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            channelType = if (videoStream.isLive
-                    && videoStream.type.equals(PlayChannelType.Live.value, true))
-                PlayChannelType.Live else PlayChannelType.VOD,
+//            channelType = if (videoStream.isLive
+//                    && videoStream.type.equals(PlayChannelType.Live.value, true))
+//                PlayChannelType.Live else PlayChannelType.VOD,
+            channelType = PlayChannelType.Live,
             isActive = isActive
     )
 

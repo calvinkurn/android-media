@@ -37,6 +37,7 @@ open class StatsInfoComponent(
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
                                 uiView.hide()
                             }
+                            is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
                         }
                     }
         }
