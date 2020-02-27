@@ -1,6 +1,9 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
+import android.content.Context;
+
 import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -19,9 +22,10 @@ import static com.tokopedia.purchase_platform.common.analytics.ConstantTransacti
  * @author anggaprasetiyo on 18/05/18.
  */
 public class CheckoutAnalyticsCart extends TransactionAnalytics {
+    IrisSession irisSession;
 
-    public CheckoutAnalyticsCart() {
-
+    public CheckoutAnalyticsCart(Context context) {
+        irisSession = new IrisSession(context);
     }
 
     @Deprecated
@@ -312,6 +316,7 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
 
 
     private void sendEnhancedECommerce(Map<String, Object> cartMap, String eventLabel) {
+
         Map<String, Object> dataLayer = DataLayer.mapOf(
                 Key.EVENT, EventName.CHECKOUT,
                 Key.EVENT_CATEGORY, EventCategory.CART,
@@ -320,6 +325,8 @@ public class CheckoutAnalyticsCart extends TransactionAnalytics {
                 Key.E_COMMERCE, cartMap,
                 Key.CURRENT_SITE, CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
         );
+        dataLayer.put("sessionIris", irisSession.getSessionId());
+
         sendEnhancedEcommerce(dataLayer);
     }
 
