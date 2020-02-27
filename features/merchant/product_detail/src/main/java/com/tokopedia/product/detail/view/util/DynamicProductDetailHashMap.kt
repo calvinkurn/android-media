@@ -176,7 +176,7 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
                 nearestWarehouse = it.nearestWarehouse
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
-                statusTitle = it.shopInfo?.statusInfo?.statusMessage ?: ""
+                statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
                 shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1
             }
 
