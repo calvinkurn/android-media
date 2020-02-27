@@ -86,6 +86,8 @@ include "features:home:account-home"
 
 include "features:im:common_promo"
 include "features:im:referral"
+include "features:im:install_referral"
+
 include "features:kyc"
 
 include "features:logistic:logisticorder"
@@ -112,6 +114,7 @@ include "features:merchant:shop_settings"
 include "features:merchant:shop_etalase_picker"
 //include "features:merchant:shop_etalase_picker_no_op"
 include "features:merchant:official_store"
+include "features:merchant:brandlist"
 include "features:merchant:atc_variant"
 
 include "features:operational:contact_us"

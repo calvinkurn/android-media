@@ -546,7 +546,7 @@ class RegisterAnalytics @Inject constructor() {
     fun eventViewBanner() {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_VIEW_REGISTER_IRIS,
-                CATEGORY_LOGIN_PAGE,
+                CATEGORY_REGISTER_PAGE,
                 ACTION_VIEW_BANNER,
                 LABEL_BEBAS_ONGKIR
         ))

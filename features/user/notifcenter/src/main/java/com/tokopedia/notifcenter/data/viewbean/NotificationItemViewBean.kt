@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.NotificationOptions
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.entity.UserInfo
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.base.BaseNotificationTypeFactory
 
 open class NotificationItemViewBean(
@@ -30,7 +31,8 @@ open class NotificationItemViewBean(
         var isLongerContent: Boolean = false,
         var isShowBottomSheet: Boolean = false,
         var typeBottomSheet: Int = 0,
-        var options: NotificationOptions = NotificationOptions()
+        var options: NotificationOptions = NotificationOptions(),
+        var userInfo: UserInfo = UserInfo()
 ) : Parcelable, Visitable<BaseNotificationTypeFactory> {
 
     override fun type(typeFactory: BaseNotificationTypeFactory): Int {
