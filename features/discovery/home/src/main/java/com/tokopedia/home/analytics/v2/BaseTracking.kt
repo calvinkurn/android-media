@@ -40,11 +40,11 @@ abstract class BaseTracking {
     protected object Ecommerce {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
-        private const val CLICK = "click"
-        private const val IMPRESSIONS = "impressions"
-        private const val PROMO_VIEW = "promoView"
-        private const val PROMO_CLICK = "promoClick"
-        private const val PROMOTIONS = "promotions"
+        const val CLICK = "click"
+        const val IMPRESSIONS = "impressions"
+        const val PROMO_VIEW = "promoView"
+        const val PROMO_CLICK = "promoClick"
+        const val PROMOTIONS = "promotions"
         private const val PRODUCTS = "products"
         private const val ACTION_FIELD = "actionField"
         private const val CURRENCY_CODE = "currencyCode"
@@ -54,17 +54,17 @@ abstract class BaseTracking {
         private const val NONE = "none / other"
 
 
-        private const val KEY_ID = "id"
-        private const val KEY_NAME = "name"
-        private const val KEY_CREATIVE = "creative"
-        private const val KEY_CREATIVE_URL = "creative_url"
-        private const val KEY_PRICE = "price"
-        private const val KEY_BRAND = "brand"
-        private const val KEY_VARIANT = "variant"
-        private const val KEY_CATEGORY = "category"
-        private const val KEY_POSITION = "position"
-        private const val KEY_LIST = "list"
-        private const val KEY_DIMENSION_83 = "dimension83"
+        const val KEY_ID = "id"
+        const val KEY_NAME = "name"
+        const val KEY_CREATIVE = "creative"
+        const val KEY_CREATIVE_URL = "creative_url"
+        const val KEY_PRICE = "price"
+        const val KEY_BRAND = "brand"
+        const val KEY_VARIANT = "variant"
+        const val KEY_CATEGORY = "category"
+        const val KEY_POSITION = "position"
+        const val KEY_LIST = "list"
+        const val KEY_DIMENSION_83 = "dimension83"
 
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
@@ -157,7 +157,7 @@ abstract class BaseTracking {
         }
     }
 
-    class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String)
+    open class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String): ImpressHolder()
     open class Product(val id: String, val name: String, val productPrice: Int, val brand: String, val variant: String, val category: String, val productPosition: Int, val freeOngkir: Boolean): ImpressHolder()
 
     open fun getBasicPromotionView(

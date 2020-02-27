@@ -66,6 +66,8 @@ open class HomeViewModel @Inject constructor(
         private val getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase,
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
+        private val getBusinessWidgetTab: GetBusinessWidgetTab,
+        private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
         homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
@@ -130,6 +132,7 @@ open class HomeViewModel @Inject constructor(
     private var getSuggestedReviewJob: Job? = null
     private var getPendingCashBalanceJob: Job? = null
     private var dismissReviewJob: Job? = null
+    private var buWidgetJob: Job? = null
 
 // ============================================================================================
 // ================================== Local variable ==========================================
@@ -528,10 +531,10 @@ open class HomeViewModel @Inject constructor(
                 }
                 visitableMutableList.remove(findLoadingModel)
                 visitableMutableList.remove(findRetryModel)
-                visitableMutableList.add(HomeLoadingMoreModel())
+//                visitableMutableList.add(HomeLoadingMoreModel())
                 val newHomeViewModel = homeDataModel.copy(
                         list = visitableMutableList)
-                getFeedTabData()
+//                getFeedTabData()
                 return newHomeViewModel
             }
         }
@@ -680,6 +683,52 @@ open class HomeViewModel @Inject constructor(
 
         }){
             _stickyLogin.postValue(Result.error(it))
+        }
+    }
+
+    fun getBusinessUnitTabData(position: Int){
+        launchCatchError(coroutineContext, block = {
+            val data = getBusinessWidgetTab.executeOnBackground()
+            if(_homeLiveData.value?.list?.get(position) is NewBusinessUnitWidgetDataModel){
+                val newList = _homeLiveData.value?.list.copy().toMutableList()
+                newList[position] = (newList[position] as NewBusinessUnitWidgetDataModel).copy(
+                        tabList = data.tabBusinessList,
+                        backColor = data.widgetHeader.backColor,
+                        contentsList = data.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
+                _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
+            }
+        }){
+            if(_homeLiveData.value?.list?.get(position) is NewBusinessUnitWidgetDataModel){
+                val newList = _homeLiveData.value?.list.copy().toMutableList()
+                newList[position] = (newList[position] as NewBusinessUnitWidgetDataModel).copy(tabList = listOf())
+                _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
+            }
+        }
+    }
+
+    fun getBusinessUnitData(tabId: Int, position: Int){
+        if(buWidgetJob?.isActive == true) return
+        buWidgetJob = launchCatchError(coroutineContext, block = {
+            getBusinessUnitDataUseCase.setParams(tabId)
+            val data = getBusinessUnitDataUseCase.executeOnBackground()
+            _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let {
+                val newList = _homeLiveData.value?.list.copy().toMutableList()
+                val oldBuData = (newList[it.index] as NewBusinessUnitWidgetDataModel)
+                val newBuList = oldBuData.contentsList.copy().toMutableList()
+                newBuList[position] = newBuList[position].copy(list = data)
+                newList[it.index] = oldBuData.copy(contentsList = newBuList)
+                _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
+            }
+        }){
+            // show error
+            _homeLiveData.value?.list?.withIndex()?.find { it.value is NewBusinessUnitWidgetDataModel }?.let {
+                val newList = _homeLiveData.value?.list.copy().toMutableList()
+                val oldBuData = (newList[it.index] as NewBusinessUnitWidgetDataModel)
+                val newBuList = oldBuData.contentsList.copy().toMutableList()
+                newBuList[position] = newBuList[position].copy(list = listOf())
+                newList[it.index] = oldBuData.copy(contentsList = newBuList)
+                _homeLiveData.postValue(_homeLiveData.value?.copy(list = newList))
+            }
         }
     }
 

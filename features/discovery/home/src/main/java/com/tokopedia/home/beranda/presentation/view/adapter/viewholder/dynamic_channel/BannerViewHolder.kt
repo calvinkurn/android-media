@@ -12,11 +12,11 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeBannerAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
-import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularListener
-import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularModel
-import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularPageChangeListener
-import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularViewPager
-import com.tokopedia.home_page_banner.presentation.widgets.pageIndicator.CircularPageIndicator
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
+import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -24,7 +24,7 @@ import com.tokopedia.home_page_banner.presentation.widgets.pageIndicator.Circula
 
 class BannerViewHolder(itemView: View, private val listener: HomeCategoryListener)
     : AbstractViewHolder<BannerViewModel>(itemView),
-        CircularListener{
+        CircularListener {
     private val context: Context = itemView.context
     private var slidesList: List<BannerSlidesModel>? = null
     private var isCache = true
@@ -70,7 +70,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
             }
         })
 
-        circularViewPager.setPageChangeListener(object: CircularPageChangeListener{
+        circularViewPager.setPageChangeListener(object: CircularPageChangeListener {
             override fun onPageScrolled(position: Int) {
                 onPromoScrolled(position)
             }

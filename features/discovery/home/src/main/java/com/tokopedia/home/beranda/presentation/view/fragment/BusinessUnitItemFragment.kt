@@ -21,6 +21,7 @@ import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.BusinessUnitItemDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.viewmodel.ItemTabBusinessViewModel
@@ -125,9 +126,9 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
     override fun onItemClicked(element: HomeWidget.ContentItemTab) {
         HomePageTracking.eventEnhancedClickHomeWidget(
                 activity,
-                element.id.toString(),
+                element.contentId.toString(),
                 String.format("/ - p%s - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
-                MethodChecker.fromHtml(element.name).toString(),
+                MethodChecker.fromHtml(element.contentName).toString(),
                 element.imageUrl,
                 adapter.data.indexOf(element).toString(),
                 "no code"
@@ -204,13 +205,13 @@ class BusinessUnitItemFragment : BaseListFragment<HomeWidget.ContentItemTab, Bus
         onGetListErrorWithEmptyData(throwable)
     }
 
-    override fun onImpressed(element: HomeWidget.ContentItemTab, position: Int) {
+    override fun onImpressed(element: BusinessUnitItemDataModel, position: Int) {
         HomePageTracking.eventEnhancedImpressionHomeWidget(
                 trackingQueue,
-                element.id.toString(),
+                element.content.contentId.toString(),
                 String.format("/ - p%s - bu widget - %s", positionWidget.toString(), nameTab.toLowerCase()),
-                MethodChecker.fromHtml(element.name).toString(),
-                element.imageUrl,
+                MethodChecker.fromHtml(element.content.contentName).toString(),
+                element.content.imageUrl,
                 position.toString(),
                 "no code"
         )
@@ -221,5 +222,5 @@ interface BusinessUnitItemView {
     fun onReloadButtonClick()
     fun onSuccessGetData(data: HomeWidget)
     fun onErrorGetData(throwable: Throwable)
-    fun onImpressed(element: HomeWidget.ContentItemTab, position: Int)
+    fun onImpressed(element: BusinessUnitItemDataModel, position: Int)
 }

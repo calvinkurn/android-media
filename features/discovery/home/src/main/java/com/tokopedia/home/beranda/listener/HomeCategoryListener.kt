@@ -88,4 +88,8 @@ interface HomeCategoryListener {
     fun getWindowWidth(): Int
 
     fun refreshHomeData()
+
+    fun getTabBusinessWidget(position: Int)
+
+    fun getBusinessUnit(tabId: Int, position: Int)
 }

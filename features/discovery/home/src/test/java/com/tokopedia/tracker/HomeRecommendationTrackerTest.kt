@@ -353,7 +353,3 @@ fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean
     }
     return true
 }
-
-interface TestTracker{
-    fun getTracker(): Map<String, Any>
-}

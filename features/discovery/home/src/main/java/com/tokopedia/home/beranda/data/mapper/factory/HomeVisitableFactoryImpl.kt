@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.data.mapper.factory
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
@@ -160,54 +159,54 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
             val position = index+1
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
-                DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
-                DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {
-                    homeData?.spotlight?.let { spotlight ->  createSpotlight(spotlight, isCache)} }
+//                DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
+//                DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {
+//                    homeData?.spotlight?.let { spotlight ->  createSpotlight(spotlight, isCache)} }
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
-                DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
-                            isCombined = true)
-                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingDataForCombination = channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
-                            isCombined = true)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
-                    createDynamicChannel(channel)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
-                            isCombined = true)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO, DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage,
-                            isCombined = true
-                    )
-                }
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC, DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = channel.enhanceImpressionProductChannelMix
-                    )
-                    if(!isCache) trackingQueue?.putEETracking(channel.enhanceImpressionBannerChannelMix)
-                }
-                DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
-                    createDynamicChannel(
-                            channel = channel,
-                            trackingData = channel.enhanceImpressionProductChannelMix
-                    )
-                    if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
-                }
-                DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
-                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
-                DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
+//                DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
+//                    createDynamicChannel(
+//                            channel = channel,
+//                            trackingDataForCombination = channel.convertPromoEnhanceDynamicChannelDataLayerForCombination(),
+//                            isCombined = true)
+//                DynamicHomeChannel.Channels.LAYOUT_6_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_LEGO_4_IMAGE -> {
+//                    createDynamicChannel(
+//                            channel = channel,
+//                            trackingDataForCombination = channel.convertPromoEnhanceLegoBannerDataLayerForCombination(),
+//                            isCombined = true)
+//                }
+//                DynamicHomeChannel.Channels.LAYOUT_SPRINT -> {
+//                    createDynamicChannel(channel)
+//                }
+//                DynamicHomeChannel.Channels.LAYOUT_SPRINT_CAROUSEL -> {
+//                    createDynamicChannel(
+//                            channel = channel,
+//                            trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
+//                            isCombined = true)
+//                }
+//                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO, DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
+//                    createDynamicChannel(
+//                            channel = channel,
+//                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage,
+//                            isCombined = true
+//                    )
+//                }
+//                DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC, DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
+//                    createDynamicChannel(
+//                            channel = channel,
+//                            trackingData = channel.enhanceImpressionProductChannelMix
+//                    )
+//                    if(!isCache) trackingQueue?.putEETracking(channel.enhanceImpressionBannerChannelMix)
+//                }
+//                DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> {
+//                    createDynamicChannel(
+//                            channel = channel,
+//                            trackingData = channel.enhanceImpressionProductChannelMix
+//                    )
+//                    if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
+//                }
+//                DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
+//                DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
+//                DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
             }
         }
 
@@ -237,10 +236,14 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
 
     private fun createBusinessUnitWidget(position: Int) {
         if (!isCache) {
-            visitableList.add(BusinessUnitViewModel(
-                    context?.getString(R.string.digital_widget_title),
-                    position,
-                    false))}
+            visitableList.add(NewBusinessUnitWidgetDataModel(
+                    position = position,
+                    isCache = false))
+//            visitableList.add(BusinessUnitViewModel(
+//                    context?.getString(R.string.digital_widget_title),
+//                    position,
+//                    false))
+        }
     }
 
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {

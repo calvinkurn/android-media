@@ -274,6 +274,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         viewModel = viewModelProvider.get(HomeViewModel.class);
         setGeolocationPermission();
         needToShowGeolocationComponent();
+        getStickyContent();
     }
 
     @Override
@@ -315,6 +316,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
+        homeMainToolbar.setVisibility(View.GONE);
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
         homeRecyclerView = view.findViewById(R.id.list);
         homeRecyclerView.setHasFixedSize(true);
@@ -531,7 +533,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         refreshLayout.post(() -> {
             viewModel.searchHint();
             viewModel.refreshHomeData();
-            /**
+            /*
              * set notification gimmick
              */
             homeMainToolbar.setNotificationNumber(0);
@@ -553,7 +555,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private void observeHomeData(){
         viewModel.getHomeLiveData().observe(this, data -> {
             if(data != null){
-                if (data.getList().size() > VISITABLE_SIZE_WITH_DEFAULT_BANNER ) {
+                if (data.getList().size() > 0 ) {
                     configureHomeFlag(data.getHomeFlag());
                     setData(new ArrayList(data.getList()), data.isCache());
                 } else if (!data.isCache()){
@@ -673,7 +675,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private boolean isDataValid(List<HomeVisitable> visitables) {
-        return containsInstance(visitables, BannerViewModel.class);
+        return !containsInstance(visitables, BannerViewModel.class);
     }
 
     private <T> boolean containsInstance(List<T> list, Class type){
@@ -1030,7 +1032,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void getStickyContent(){
         boolean isShowSticky = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
-        if(isShowSticky) viewModel.getStickyContent();
+        if(isShowSticky && !userSession.isLoggedIn()) viewModel.getStickyContent();
     }
 
     private void hideLoading() {
@@ -1265,6 +1267,16 @@ public class HomeFragment extends BaseDaggerFragment implements
             intent.putExtra(EXTRA_URL, url);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void getTabBusinessWidget(int position) {
+        viewModel.getBusinessUnitTabData(position);
+    }
+
+    @Override
+    public void getBusinessUnit(int tabId, int position) {
+        viewModel.getBusinessUnitData(tabId, position);
     }
 
     public void openWebViewURL(String url) {

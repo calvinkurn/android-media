@@ -12,6 +12,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.mapper.FeedTabMapper
 import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
 import com.tokopedia.home.beranda.data.mapper.HomeFeedMapper
+import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
 import com.tokopedia.home.beranda.data.repository.HomeRepository
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
@@ -140,6 +141,24 @@ class HomeUseCaseModule {
         val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ResponsePendingCashback>(graphqlRepository)
         usecase.setGraphqlQuery(query)
         return GetCoroutinePendingCashbackUseCase(usecase)
+    }
+
+    @HomeScope
+    @Provides
+    fun getGetBusinessWidgetTab(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetBusinessWidgetTab {
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_tab_business_widget)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return GetBusinessWidgetTab(usecase)
+    }
+
+    @HomeScope
+    @Provides
+    fun getGetBusinessUnitDataTab(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): GetBusinessUnitDataUseCase {
+        val query = GraphqlHelper.loadRawString(context.resources, R.raw.query_content_tab_business_widget)
+        val usecase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeWidget.Data>(graphqlRepository)
+        usecase.setGraphqlQuery(query)
+        return GetBusinessUnitDataUseCase(usecase)
     }
 
     @Provides

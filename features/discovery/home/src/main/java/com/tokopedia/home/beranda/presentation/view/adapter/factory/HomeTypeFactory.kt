@@ -22,6 +22,8 @@ interface HomeTypeFactory {
 
     fun type(businessUnitViewModel: BusinessUnitViewModel): Int
 
+    fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int
+
     fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int
 
     fun type(dynamicIconSectionViewModel: DynamicIconSectionViewModel): Int

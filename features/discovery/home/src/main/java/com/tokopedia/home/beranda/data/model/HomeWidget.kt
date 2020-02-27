@@ -73,17 +73,14 @@ class HomeWidget(
             @SerializedName("back_color")
             @Expose
             val backColor: String)
-    {
-
-    }
 
     class ContentItemTab(
             @SerializedName("id")
             @Expose
-            val id: Int,
+            val contentId: Int,
             @SerializedName("name")
             @Expose
-            val name: String = "",
+            val contentName: String = "",
             @SerializedName("image_url")
             @Expose
             val imageUrl: String = "",
@@ -123,7 +120,7 @@ class HomeWidget(
             @SerializedName("template_id")
             @Expose
             val templateId: Int
-    ): ImpressHolder(), Visitable<BusinessWidgetTypeFactory> {
+    ): Visitable<BusinessWidgetTypeFactory>, ImpressHolder() {
 
         override fun type(typeFactory: BusinessWidgetTypeFactory?): Int {
             return typeFactory!!.type(this)
@@ -148,8 +145,8 @@ class HomeWidget(
         )
 
         override fun writeToParcel(parcel: Parcel, flags: Int) {
-            parcel.writeInt(id)
-            parcel.writeString(name)
+            parcel.writeInt(contentId)
+            parcel.writeString(contentName)
             parcel.writeString(imageUrl)
             parcel.writeString(url)
             parcel.writeString(applink)
