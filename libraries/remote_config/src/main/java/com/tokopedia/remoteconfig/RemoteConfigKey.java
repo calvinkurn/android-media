@@ -151,7 +151,6 @@ public class RemoteConfigKey {
 
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
 
-    public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
 
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
@@ -159,7 +158,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
     public static final String ENABLE_CART_ICON_IN_SHOP = "android_customer_enable_cart_icon_in_shop";
 
-    public static final String APP_ENABLE_CATALOG_REVAMP = "app_enable_catalog_revamp";
     public static final String TOPCHAT_OLD = "android_topchat_old";
     public static final String TOPCHAT_SELLER_BROADCAST = "android_topchat_seller_broadcast";
     public static final String ENABLE_PASS_GA_CLIENT_ID_WEB = "enable_pass_ga_client_to_web";
@@ -191,12 +189,23 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
 
-    public static final String ENABLE_NETWORK_CLIENT_INIT_ASYNC = "android_init_nwclient_async";
     public static final String ENABLE_SEQ1_ASYNC = "android_exec_seq1_async";
     public static final String ENABLE_SEQ2_ASYNC = "android_exec_seq2_async";
     public static final String ENABLE_SEQ3_ASYNC = "android_exec_seq3_async";
     public static final String ENABLE_SEQ4_ASYNC = "android_exec_seq4_async";
     public static final String ENABLE_SEQ5_ASYNC = "android_exec_seq5_async";
+    public static final String ENABLE_ASYNC_REMOTECONF_FETCH = "android_async_remoteconf_fetch";
+    public static final String ENABLE_ASYNC_DEFFERED_DEEPLINK_FETCH = "android_async_deffered_deeplink_fetch";
+    public static final String ENABLE_ASYNC_MOVETOHOME = "android_async_movetohome";
+    public static final String ENABLE_ASYNC_APPSFLYER_INIT = "android_async_appsflyer_init";
+    public static final String ENABLE_ASYNC_ONBOARDING_CREATE = "android_async_onboarding_create";
+    public static final String ENABLE_ASYNC_OPENHOME_EVENT = "android_async_openhome_event";
+    public static final String ENABLE_ASYNC_FIRSTTIME_EVENT = "android_async_firsttime_event";
+    public static final String ENABLE_ASYNC_CREATE_APPSFLYER = "android_async_create_appsflyer";
+    public static final String ENABLE_ASYNC_GTMREFRESH = "android_async_gtmrefresh";
+    public static final String ENABLE_ASYNC_INSTALLTRACK = "android_async_installtrack";
     public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
+    public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
+    public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
 
 }
