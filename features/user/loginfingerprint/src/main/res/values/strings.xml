@@ -16,4 +16,7 @@
     <string name="error_default_fp">Terjadi kesalahan, silahkan coba sesaat lagi</string>
     <string name="title_choose_account">Silahkan pilih akun kamu</string>
 
+    <string name="error_fingerprint_invalid_mode">Must pass valid mode</string>
+
+
 </resources>
