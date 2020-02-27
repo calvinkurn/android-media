@@ -9,7 +9,7 @@ import javax.inject.Inject
  * @author by jessica on 06/03/19
  */
 
-class FlightSearchDataCacheSource @Inject
+open class FlightSearchDataCacheSource @Inject
 constructor(private val cacheManager: CacheManager) {
 
     val isExpired: Observable<Boolean>

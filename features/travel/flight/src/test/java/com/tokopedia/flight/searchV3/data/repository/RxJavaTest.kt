@@ -135,18 +135,18 @@ class RxJavaTest {
 //        }
 //    }
 
-    @Test
-    fun testRepeat() {
-        val isNeedRefresh = true
-
-        Observable.just(isNeedRefresh)
-                .repeat()
-                .takeUntil { !it }
-                .last()
-                .subscribe {
-                    println(it)
-                }
-    }
+//    @Test
+//    fun testRepeat() {
+//        val isNeedRefresh = true
+//
+//        Observable.just(isNeedRefresh)
+//                .repeat()
+//                .takeUntil { !it }
+//                .last()
+//                .subscribe {
+//                    println(it)
+//                }
+//    }
 
 
 
