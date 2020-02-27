@@ -5,7 +5,7 @@ import com.tokopedia.core.base.domain.UseCase
 import com.tokopedia.core.base.domain.executor.PostExecutionThread
 import com.tokopedia.core.base.domain.executor.ThreadExecutor
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepository
-import com.tokopedia.updateinactivephone.model.request.UploadHostModel
+import com.tokopedia.updateinactivephone.data.model.request.UploadHostModel
 
 import rx.Observable
 

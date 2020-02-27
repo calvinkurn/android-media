@@ -7,7 +7,7 @@ import com.tokopedia.core.base.domain.executor.ThreadExecutor
 import com.tokopedia.core.util.ImageUploadHandler
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
-import com.tokopedia.updateinactivephone.model.request.UploadImageModel
+import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
 
 import java.io.File
 import java.util.HashMap

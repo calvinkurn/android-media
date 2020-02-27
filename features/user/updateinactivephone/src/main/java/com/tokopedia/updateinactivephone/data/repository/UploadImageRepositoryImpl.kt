@@ -2,8 +2,8 @@ package com.tokopedia.updateinactivephone.data.repository
 
 import com.tokopedia.core.network.retrofit.utils.TKPDMapParam
 import com.tokopedia.updateinactivephone.data.factory.UploadImageSourceFactory
-import com.tokopedia.updateinactivephone.model.request.UploadHostModel
-import com.tokopedia.updateinactivephone.model.request.UploadImageModel
+import com.tokopedia.updateinactivephone.data.model.request.UploadHostModel
+import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
 
 import javax.inject.Inject
 

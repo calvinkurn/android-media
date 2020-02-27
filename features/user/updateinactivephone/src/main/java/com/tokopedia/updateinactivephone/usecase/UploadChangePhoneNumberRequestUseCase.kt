@@ -12,9 +12,9 @@ import com.tokopedia.core.network.ErrorMessageException
 import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.model.request.ChangePhoneNumberRequestModel
-import com.tokopedia.updateinactivephone.model.request.UploadHostModel
-import com.tokopedia.updateinactivephone.model.request.UploadImageModel
+import com.tokopedia.updateinactivephone.data.model.request.ChangePhoneNumberRequestModel
+import com.tokopedia.updateinactivephone.data.model.request.UploadHostModel
+import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
 
 import org.json.JSONException
 import org.json.JSONObject

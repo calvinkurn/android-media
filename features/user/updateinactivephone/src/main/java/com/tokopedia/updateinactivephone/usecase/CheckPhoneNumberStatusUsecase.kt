@@ -6,8 +6,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.updateinactivephone.R
-import com.tokopedia.updateinactivephone.model.response.GqlCheckPhoneStatusResponse
-import com.tokopedia.updateinactivephone.subscriber.CheckPhoneNumberStatusSubscriber
+import com.tokopedia.updateinactivephone.data.model.response.GqlCheckPhoneStatusResponse
+import com.tokopedia.updateinactivephone.viewmodel.subscriber.CheckPhoneNumberStatusSubscriber
 
 import java.util.HashMap
 

@@ -2,7 +2,7 @@ package com.tokopedia.updateinactivephone.data.source
 
 import com.tokopedia.updateinactivephone.data.mapper.UploadImageMapper
 import com.tokopedia.updateinactivephone.data.network.service.UploadImageService
-import com.tokopedia.updateinactivephone.model.request.UploadImageModel
+import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
 
 import okhttp3.RequestBody
 import rx.Observable

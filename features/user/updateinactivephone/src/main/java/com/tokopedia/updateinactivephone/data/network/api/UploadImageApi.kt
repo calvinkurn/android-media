@@ -2,7 +2,7 @@ package com.tokopedia.updateinactivephone.data.network.api
 
 import com.tokopedia.core.network.retrofit.response.TkpdResponse
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL
-import com.tokopedia.updateinactivephone.model.response.UploadImageData
+import com.tokopedia.updateinactivephone.data.model.response.UploadImageData
 
 import okhttp3.RequestBody
 import retrofit2.Response

@@ -15,7 +15,7 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.FILE_UPLOADED
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.USER_ID
-import com.tokopedia.updateinactivephone.model.response.GqlUpdatePhoneStatusResponse
+import com.tokopedia.updateinactivephone.data.model.response.GqlUpdatePhoneStatusResponse
 
 import java.util.ArrayList
 import java.util.HashMap

@@ -10,8 +10,8 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.OPE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.EMAIL
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.USER_ID
-import com.tokopedia.updateinactivephone.model.response.GqlValidateUserDataResponse
-import com.tokopedia.updateinactivephone.subscriber.ValidateUserDataSubscriber
+import com.tokopedia.updateinactivephone.data.model.response.GqlValidateUserDataResponse
+import com.tokopedia.updateinactivephone.viewmodel.subscriber.ValidateUserDataSubscriber
 
 import java.util.HashMap
 
