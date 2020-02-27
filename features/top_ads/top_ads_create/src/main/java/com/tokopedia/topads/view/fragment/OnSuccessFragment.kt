@@ -32,10 +32,9 @@ class OnSuccessFragment : TkpdBaseV4Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         btn_go_to_dashboard.setOnClickListener {
-            val intent =RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_BUY_CREDIT)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            val intent =RouteManager.getIntent(context,ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
             startActivity(intent)
+            activity?.finish()
         }
     }
-
 }

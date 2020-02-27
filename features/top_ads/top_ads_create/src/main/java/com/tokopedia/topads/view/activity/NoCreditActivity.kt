@@ -1,16 +1,21 @@
 package com.tokopedia.topads.view.activity
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.topads.create.R
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.view.fragment.NoCreditFragment
-import com.tokopedia.topads.view.fragment.OnSuccessFragment
 
 class NoCreditActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         return NoCreditFragment.newInstance()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = RouteManager.getIntent(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL)
+        startActivity(intent)
+        finish()
     }
 
 }
