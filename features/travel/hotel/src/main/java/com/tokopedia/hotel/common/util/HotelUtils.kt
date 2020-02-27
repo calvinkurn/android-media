@@ -1,7 +1,6 @@
 package com.tokopedia.hotel.common.util
 
 import com.tokopedia.common.travel.utils.TravelDateUtil
-import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -17,6 +16,42 @@ class HotelUtils {
         fun countDayDifference(date1: String, date2: String): Long =
                 (TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, date2).time -
                         TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, date1).time) / ONE_DAY
+
+        fun validateCheckInAndCheckOutDate(checkInDate: String, checkOutDate: String): Pair<String, String> {
+            val todayWithoutTime = TravelDateUtil.removeTime(TravelDateUtil.getCurrentCalendar().time)
+            val tomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 1)
+            val dayAfterTomorrow = TravelDateUtil.addTimeToSpesificDate(todayWithoutTime, Calendar.DATE, 2)
+
+            var updatedCheckInDate = checkInDate
+            var updatedCheckOutDate = checkOutDate
+
+            //if check in and / or check out param is empty
+            if (checkInDate.isBlank() && checkOutDate.isBlank()) {
+                updatedCheckInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
+                updatedCheckOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterTomorrow)
+            } else if (checkInDate.isBlank()) {
+                val checkout = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkOutDate)
+                val dayBeforeCheckOut = TravelDateUtil.addTimeToSpesificDate(checkout, Calendar.DATE, -1)
+                updatedCheckInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayBeforeCheckOut)
+            } else if (checkOutDate.isBlank()) {
+                val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkInDate)
+                val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
+                updatedCheckOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
+            }
+
+            //if check in date has passed
+            if (countCurrentDayDifference(checkInDate) < 1) {
+                updatedCheckInDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, tomorrow)
+            }
+            //if check out date has passed or check out date < check in date
+            if (countCurrentDayDifference(checkOutDate) < 1 || countDayDifference(checkInDate, checkOutDate) < 1) {
+                val checkin = TravelDateUtil.stringToDate(TravelDateUtil.YYYY_MM_DD, checkInDate)
+                val dayAfterCheckIn = TravelDateUtil.addTimeToSpesificDate(checkin, Calendar.DATE, 1)
+                updatedCheckOutDate = TravelDateUtil.dateToString(TravelDateUtil.YYYY_MM_DD, dayAfterCheckIn)
+            }
+
+            return Pair(updatedCheckInDate, updatedCheckOutDate)
+        }
     }
 
 }
