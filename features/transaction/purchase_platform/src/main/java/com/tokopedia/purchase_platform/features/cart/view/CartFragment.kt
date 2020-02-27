@@ -123,6 +123,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var bottomLayoutShadow: View
     lateinit var llNetworkErrorView: LinearLayout
     lateinit var llCartContainer: LinearLayout
+    lateinit var llPromoCheckout: LinearLayout
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
@@ -389,6 +390,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         llHeader = view.findViewById(R.id.ll_header)
         btnRemove = view.findViewById(R.id.btn_delete_all_cart)
         llCartContainer = view.findViewById(R.id.ll_cart_container)
+        llPromoCheckout = view.findViewById(R.id.ll_promo_checkout)
 
         activity?.let {
             refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
@@ -435,10 +437,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         if ((parent.layoutManager as GridLayoutManager).findFirstVisibleItemPosition() >= firstCartSectionHeaderPosition) {
                             if (cardHeader.visibility != View.GONE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
                                 cardHeader.gone()
+                                llPromoCheckout.gone()
                                 setToolbarShadowVisibility(true)
                             }
                         } else if (cardHeader.visibility != View.VISIBLE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
                             cardHeader.show()
+                            llPromoCheckout.show()
                             setToolbarShadowVisibility(false)
                         }
                     }
@@ -1429,6 +1433,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.gone()
         bottomLayoutShadow.gone()
         cardHeader.gone()
+        llPromoCheckout.gone()
     }
 
     private fun showMainContainer() {
@@ -1437,6 +1442,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.show()
         bottomLayoutShadow.show()
         cardHeader.show()
+        llPromoCheckout.show()
     }
 
     private fun showErrorContainer() {
@@ -1445,6 +1451,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.gone()
         bottomLayoutShadow.gone()
         cardHeader.gone()
+        llPromoCheckout.gone()
     }
 
     private fun showEmptyCartContainer() {
@@ -1452,6 +1459,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.gone()
         bottomLayoutShadow.gone()
         cardHeader.gone()
+        llPromoCheckout.gone()
     }
 
     private fun showSnackbarRetry(message: String) {
@@ -1573,9 +1581,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         this.noAvailableItems = noAvailableItems
         if (noAvailableItems) {
             cardHeader.visibility = View.GONE
+            llPromoCheckout.gone()
             cartAdapter.removeCartSelectAll()
         } else {
             cardHeader.visibility = View.VISIBLE
+            llPromoCheckout.show()
             cartAdapter.addCartSelectAll()
         }
         tvTotalPrice.text = subtotalPrice
