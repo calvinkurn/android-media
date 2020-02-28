@@ -208,8 +208,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     private fun loadAutocomplete(input: String) {
         showLoadingList()
-
-        presenter.clearCacheAutocomplete()
         presenter.getAutocomplete(input)
     }
 
