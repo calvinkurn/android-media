@@ -35,4 +35,8 @@ class AutoCompleteUseCase
                 .observeOn(scheduler.ui())
     }
 
+    fun unsubscribe() {
+        gql.unsubscribe()
+    }
+
 }
