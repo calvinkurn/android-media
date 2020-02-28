@@ -1,7 +1,7 @@
 package com.tokopedia.sellerhome.settings.view.uimodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherSettingTypeFactory
+import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 
 class BalanceUiModel(): Visitable<OtherSettingTypeFactory> {
 

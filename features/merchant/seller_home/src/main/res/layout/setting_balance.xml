@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="200dp"
+    android:layout_width="match_parent"
     android:layout_height="70dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
@@ -17,18 +17,19 @@
         android:id="@+id/balanceTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:text = "Saldo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/guidelineVertical"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/balanceValue"
         app:layout_constraintHorizontal_weight="10"
-        app:typographyType="body_2"
-        tools:text = "Saldo"/>
+        app:typographyType="body_2"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/balanceValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:text="Rp523.299.490"
         app:layout_constraintTop_toBottomOf="@id/balanceTitle"
         app:layout_constraintStart_toStartOf="@id/guidelineVertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,8 +37,7 @@
         app:layout_constraintHorizontal_bias="0.1"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        android:textColor="@color/black"
-        tools:text = "Rp523.299.490"/>
+        android:textColor="@color/black"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineVertical"

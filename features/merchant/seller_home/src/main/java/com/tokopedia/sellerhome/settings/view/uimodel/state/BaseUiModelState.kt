@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.settings.view.uimodel
+package com.tokopedia.sellerhome.settings.view.uimodel.state
 
 sealed class BaseUiModelState {
     object Loading: BaseUiModelState()
