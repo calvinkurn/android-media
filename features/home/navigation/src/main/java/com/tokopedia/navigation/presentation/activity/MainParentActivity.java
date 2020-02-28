@@ -1157,14 +1157,16 @@ public class MainParentActivity extends BaseActivity implements
 
     private void incrementAllFramesFragmentMetrics(FrameMetrics frameMetricsCopy) {
         PerformanceData performanceData = fragmentPerformanceDatas.get(currentSelectedFragmentPosition);
-        performanceData.incrementAllFrames();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            float totalDurationMs = (float) (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION));
-            if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
-                performanceData.incremenetJankyFrames();
+        if (performanceData != null) {
+            performanceData.incrementAllFrames();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                float totalDurationMs = (float) (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION));
+                if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
+                    performanceData.incremenetJankyFrames();
+                }
             }
+            fragmentPerformanceDatas.setValueAt(currentSelectedFragmentPosition, performanceData);
         }
-        fragmentPerformanceDatas.setValueAt(currentSelectedFragmentPosition, performanceData);
     }
 
     private void setupMetrics() {
