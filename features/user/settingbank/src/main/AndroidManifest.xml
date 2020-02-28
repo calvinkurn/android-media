@@ -33,12 +33,10 @@
         <activity
             android:name=".banklist.v2.view.activity.AddBankActivity"
             android:label="@string/sbank_title_add_bank_account"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"/>
         <activity
             android:name=".banklist.v2.view.activity.ChooseBankActivity"
-            android:launchMode="singleInstance"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Translucent">
             <intent-filter android:autoVerify="true">

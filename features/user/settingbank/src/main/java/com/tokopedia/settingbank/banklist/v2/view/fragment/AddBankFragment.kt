@@ -25,7 +25,6 @@ import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.*
 import com.tokopedia.settingbank.banklist.v2.view.activity.AddBankActivity
-import com.tokopedia.settingbank.banklist.v2.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.banklist.v2.view.viewModel.*
 import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.settingbank.banklist.v2.view.widgets.BankTNCBottomSheet
@@ -59,6 +58,7 @@ class AddBankFragment : BaseDaggerFragment() {
     private lateinit var addAccountViewModel: AddAccountViewModel
 
     private lateinit var tncBottomSheet: BankTNCBottomSheet
+    private lateinit var bankListBottomSheet: CloseableBottomSheetFragment
     private lateinit var confirmationDialog: AlertDialog
 
     val builder: AddBankRequest.Builder = AddBankRequest.Builder()
@@ -231,9 +231,12 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun openBankListForSelection() {
-        activity?.let {
-            startActivity(ChooseBankActivity.createIntent(it))
-        }
+        bankListBottomSheet = CloseableBottomSheetFragment.newInstance(SelectBankFragment(),
+                true,
+                getString(R.string.sbank_choose_a_bank),
+                null,
+                CloseableBottomSheetFragment.STATE_FULL)
+        bankListBottomSheet.show(activity!!.supportFragmentManager, "")
     }
 
     private fun showManualAccountNameError(error: String?) {
@@ -330,6 +333,10 @@ class AddBankFragment : BaseDaggerFragment() {
                 tncBottomSheet.show(templateData)
             }
         }
+    }
+
+    fun closeBottomSheet() {
+        bankListBottomSheet.dismiss()
     }
 
     fun onBankSelected(selectedBank: Bank) {

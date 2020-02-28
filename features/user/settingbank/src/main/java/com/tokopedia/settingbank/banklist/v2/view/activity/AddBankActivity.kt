@@ -11,8 +11,10 @@ import com.tokopedia.settingbank.banklist.v2.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.view.fragment.AddBankFragment
+import com.tokopedia.settingbank.banklist.v2.view.fragment.OnBankSelectedListener
 
-class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>{
+class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>,
+        OnBankSelectedListener {
 
     override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication)
@@ -32,7 +34,7 @@ class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>
         return AddBankFragment::class.java.name
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    /*override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         intent?.let {
             if (intent.hasExtra(ARG_BANK_DATA))
@@ -45,6 +47,16 @@ class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>
                 }
         }
 
+    }*/
+
+    override fun onBankSelected(bank: Bank) {
+        val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+        fragment?.let {
+            if (fragment is AddBankFragment) {
+                fragment.closeBottomSheet()
+                fragment.onBankSelected(bank)
+            }
+        }
     }
 
     companion object {
