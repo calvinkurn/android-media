@@ -28,7 +28,6 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -92,10 +91,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
-import kotlinx.android.synthetic.main.fragment_login_with_phone.container
-import kotlinx.android.synthetic.main.fragment_login_with_phone.emailExtension
-import kotlinx.android.synthetic.main.fragment_login_with_phone.progress_bar
-import kotlinx.android.synthetic.main.fragment_login_with_phone.socmed_btn
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -836,7 +831,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                 val forbiddenMessage = context?.getString(
                         com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
                 val errorMessage = ErrorHandler.getErrorMessage(context, it)
-                if (errorMessage == forbiddenMessage){
+                if (errorMessage == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
                     onErrorLogin(errorMessage)
@@ -1341,15 +1336,17 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.let {
                 analytics.eventViewBanner()
-                ImageUtils.loadImage(bannerLogin, dynamicBannerDataModel.banner.imgUrl, imageLoaded = {
-                    if (it) {
-                        bannerLogin.hide()
-                    } else {
-                        bannerLogin.hide()
-                        showTicker()
-                    }
-                })
-                bannerLogin.visibility = View.VISIBLE
+                ImageUtils.loadImage(
+                        imageView = bannerLogin,
+                        url = dynamicBannerDataModel.banner.imgUrl,
+                        imageLoaded = {
+                            if (it) {
+                                bannerLogin.hide()
+                            } else {
+                                bannerLogin.hide()
+                                showTicker()
+                            }
+                        })
             }
         } else {
             showTicker()
