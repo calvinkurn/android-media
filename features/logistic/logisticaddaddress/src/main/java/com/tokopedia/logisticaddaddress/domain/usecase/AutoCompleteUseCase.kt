@@ -1,9 +1,7 @@
 package com.tokopedia.logisticaddaddress.domain.usecase
 
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.data.query.AutoCompleteQuery
 import com.tokopedia.logisticaddaddress.domain.executor.SchedulerProvider
 import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
@@ -13,7 +11,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import rx.Observable
 import javax.inject.Inject
 
-class AutocompleteUseCase
+class AutoCompleteUseCase
 @Inject constructor(
         private val gql: GraphqlUseCase,
         private val scheduler: SchedulerProvider,
@@ -36,4 +34,5 @@ class AutocompleteUseCase
                 .subscribeOn(scheduler.io())
                 .observeOn(scheduler.ui())
     }
+
 }
