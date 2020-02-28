@@ -37,7 +37,7 @@ class HomeWidget(
     )
 
     data class PopularKeyword(
-            @SerializedName("url")
+            @SerializedName("mobile_url")
             @Expose
             val url: String = "",
             @SerializedName("image_url")
