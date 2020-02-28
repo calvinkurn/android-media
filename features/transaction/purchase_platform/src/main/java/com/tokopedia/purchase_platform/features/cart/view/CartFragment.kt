@@ -55,6 +55,7 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
+import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.ViewUtils
 import com.tokopedia.purchase_platform.R
@@ -124,6 +125,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var llNetworkErrorView: LinearLayout
     lateinit var llCartContainer: LinearLayout
     lateinit var llPromoCheckout: LinearLayout
+    lateinit var promoCheckoutBtn: ButtonPromoCheckoutView
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
@@ -378,9 +380,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecyclerView = view.findViewById(R.id.rv_cart)
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
         tvTotalPrice = view.findViewById(R.id.tv_total_prices)
-        tvPromoBenefitInfo = view.findViewById(R.id.tv_promo_benefit)
-        tvPromoUsageInfo = view.findViewById(R.id.tv_promo_usage)
-        clPromoFunnel = view.findViewById(R.id.cl_promo_funnel)
+        // tvPromoBenefitInfo = view.findViewById(R.id.tv_promo_benefit)
+        // tvPromoUsageInfo = view.findViewById(R.id.tv_promo_usage)
+        // clPromoFunnel = view.findViewById(R.id.cl_promo_funnel)
         rlContent = view.findViewById(R.id.rl_content)
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
         cardHeader = view.findViewById(R.id.card_header)
@@ -391,6 +393,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         btnRemove = view.findViewById(R.id.btn_delete_all_cart)
         llCartContainer = view.findViewById(R.id.ll_cart_container)
         llPromoCheckout = view.findViewById(R.id.ll_promo_checkout)
+        promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
 
         activity?.let {
             refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
@@ -1215,7 +1218,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.resetData()
 
             renderTickerAnnouncement(it)
-            renderPromoFunnel(it)
+            renderPromoCheckout(it)
 
             if (it.shopGroupAvailableDataList.isEmpty() && it.shopGroupWithErrorDataList.isEmpty()) {
                 renderCartEmpty(it)
@@ -1298,10 +1301,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    private fun renderPromoFunnel(cartListData: CartListData) {
-        clPromoFunnel.background = ViewUtils.generateBackgroundWithShadow(clPromoFunnel)
-        // tvPromoBenefitInfo.text = cartListData.promoBenefitInfo
-        // tvPromoUsageInfo.text = cartListData.promoUsageInfo
+    private fun renderPromoCheckout(cartListData: CartListData) {
+        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
     }
 
     private fun renderPromoGlobal(promoStackingData: PromoStackingData) {

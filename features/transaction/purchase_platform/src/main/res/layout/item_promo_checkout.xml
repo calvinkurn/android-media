@@ -1,102 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_promo_funnel"
+    <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
+        android:id="@+id/promo_checkout_btn_shipment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginBottom="@dimen/dp_16">
-
-        <ImageView
-            android:id="@+id/iv_promo_funnel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_promo_percentage"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_12"
-            android:layout_marginBottom="@dimen/dp_12"
-            android:contentDescription="@string/promo_funnel_icon_desc"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toEndOf="@id/iv_promo_funnel"
-            app:layout_constraintTop_toTopOf="@id/iv_promo_funnel"
-            app:layout_constraintBottom_toBottomOf="@id/iv_promo_funnel"
-            android:orientation="vertical">
-
-            <com.elyeproj.loaderviewlibrary.LoaderTextView
-                android:id="@+id/promo_loading_state"
-                android:layout_width="@dimen/dp_200"
-                android:layout_height="@dimen/dp_16"
-                app:corners="20"
-                android:layout_margin="@dimen/dp_8"
-                android:visibility="gone"/>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_promo_benefit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/promo_funnel_label"
-                app:typographyWeight="bold"
-                android:textColor="@color/gr_700"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginTop="@dimen/dp_6"
-                android:visibility="visible"/>
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_promo_usage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/unify_N700_44"
-                android:text="@string/promo_benefit_info"
-                app:typographyWeight="reguler"
-                android:layout_marginStart="@dimen/dp_8"
-                android:layout_marginLeft="@dimen/dp_8"
-                android:layout_marginBottom="@dimen/dp_6"
-                android:visibility="visible"/>
-
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_promo_revamp_chevron_right"
-            android:layout_marginRight="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:contentDescription="@string/promo_funnel_icon_chev_desc"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <View
-        android:id="@+id/item_divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        android:background="@color/checkout_module_color_background"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_below="@id/cl_promo_funnel"
-        android:visibility="gone"/>
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

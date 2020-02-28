@@ -93,7 +93,12 @@
                         android:orientation="vertical"
                         tools:visibility="visible">
 
-                        <include layout="@layout/item_promo_checkout" />
+                        <!--<include layout="@layout/item_promo_checkout" />-->
+
+                        <com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
+                            android:id="@+id/promo_checkout_btn_cart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
 
                     </LinearLayout>
 

@@ -2,8 +2,7 @@ package com.tokopedia.purchase_platform.features.checkout.view.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.promocheckout.common.view.widget.ViewUtils
+import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.purchase_platform.R
 import kotlinx.android.synthetic.main.item_promo_checkout.view.*
 
@@ -18,7 +17,6 @@ class PromoCheckoutViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
     }
 
     fun bindViewHolder() {
-        itemView.cl_promo_funnel.background = ViewUtils.generateBackgroundWithShadow(itemView.cl_promo_funnel)
-        itemView.item_divider.gone()
+        itemView.promo_checkout_btn_shipment.state = ButtonPromoCheckoutView.State.ACTIVE
     }
 }
