@@ -180,7 +180,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         intent.run {
             shopId = getStringExtra(SHOP_ID)
-            shopRef = getStringExtra(SHOP_REF)
+            shopRef = getStringExtra(SHOP_REF).orEmpty()
             shopDomain = getStringExtra(SHOP_DOMAIN)
             shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
             tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
