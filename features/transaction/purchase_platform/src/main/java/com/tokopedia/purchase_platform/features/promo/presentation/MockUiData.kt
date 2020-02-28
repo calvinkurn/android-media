@@ -34,17 +34,7 @@ fun mockEligibleHeader(): PromoEligibilityHeaderUiModel {
             },
             uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                 isEnabled = true
-            }
-    )
-}
-
-fun mockIneligibleHeader(): PromoEligibilityHeaderUiModel {
-    return PromoEligibilityHeaderUiModel(
-            uiData = PromoEligibilityHeaderUiModel.UiData().apply {
-                title = "Kupon yang belum bisa dipakai"
-            },
-            uiState = PromoEligibilityHeaderUiModel.UiState().apply {
-                isEnabled = false
+                isCollapsed = false
             }
     )
 }
@@ -171,6 +161,18 @@ fun mockEligiblePromoOfficialStoreSection(): List<Visitable<*>> {
     dataList.add(promoListHeaderUiModel2)
 
     return dataList
+}
+
+fun mockIneligibleHeader(): PromoEligibilityHeaderUiModel {
+    return PromoEligibilityHeaderUiModel(
+            uiData = PromoEligibilityHeaderUiModel.UiData().apply {
+                title = "Kupon yang belum bisa dipakai"
+            },
+            uiState = PromoEligibilityHeaderUiModel.UiState().apply {
+                isEnabled = false
+                isCollapsed = false
+            }
+    )
 }
 
 fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {

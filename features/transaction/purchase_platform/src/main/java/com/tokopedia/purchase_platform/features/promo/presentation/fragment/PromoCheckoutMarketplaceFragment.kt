@@ -327,7 +327,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     override fun onClickPromoEligibilityHeader(position: Int, element: PromoEligibilityHeaderUiModel) {
         val modifiedData = ArrayList<Visitable<*>>()
 
-        if (element.uiState.isCollapsed) {
+        if (!element.uiState.isCollapsed) {
             val startIndex = position + 1
             for (index in startIndex until adapter.data.size) {
                 val oldPromoItem = adapter.data[index]
