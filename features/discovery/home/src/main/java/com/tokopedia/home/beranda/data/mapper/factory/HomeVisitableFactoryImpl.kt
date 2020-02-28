@@ -213,6 +213,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                             isCombined = false
                     )
                 }
+                DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
@@ -386,6 +387,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
             playCardViewModel.setTrackingData(trackingData)
         }
         return playCardViewModel
+    }
+
+    private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
+        visitableList.add(PopularKeywordListViewModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
     override fun build(): List<Visitable<*>> = visitableList
