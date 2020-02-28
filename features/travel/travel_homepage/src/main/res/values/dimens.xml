@@ -10,4 +10,8 @@
     <dimen name="destination_margin_top_info">-72dp</dimen>
     <dimen name="destination_margin_top_indicator">10dp</dimen>
 
+    <dimen name="homepage_product_card_picture_height">140dp</dimen>
+    <dimen name="travel_homepage_dp_2">2dp</dimen>
+    <dimen name="travel_homepage_dp_4">4dp</dimen>
+
 </resources>

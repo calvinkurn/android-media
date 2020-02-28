@@ -1,0 +1,52 @@
+package com.tokopedia.travelhomepage.homepage.presentation.adapter
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.travelhomepage.R
+import com.tokopedia.travelhomepage.homepage.data.ProductGridCardItemModel
+import kotlinx.android.synthetic.main.item_travel_homepage_product_widget_card.view.*
+
+/**
+ * @author by jessica on 2020-02-28
+ */
+
+class TravelHomepageProductGridCardAdapter(var list: List<ProductGridCardItemModel>): RecyclerView.Adapter<TravelHomepageProductGridCardAdapter.ViewHolder>() {
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun getItemCount(): Int = list.size
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(list[position])
+    }
+
+    class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+
+        fun bind(item: ProductGridCardItemModel) {
+            with(itemView) {
+                travel_homepage_product_image.loadImage(item.imageUrl)
+                travel_homepage_product_title.text = item.title
+                travel_homepage_product_strikethrough_price.text = item.strikethroughPrice
+                travel_homepage_product_final_price.text = item.price
+
+                if (item.tag.isNotEmpty()) {
+                    travel_homepage_product_discount_tag.show()
+                    travel_homepage_product_discount_tag.text = item.tag
+                }
+            }
+        }
+
+        companion object {
+            val LAYOUT = R.layout.item_travel_homepage_product_widget_card
+        }
+    }
+
+
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/travel_homepage_product_widget_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/layout_lvl1">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/travel_homepage_product_widget_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_3"
+            tools:text="Travel Activity" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/travel_homepage_product_widget_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:layout_marginTop="@dimen/travel_homepage_dp_4"
+            android:layout_marginEnd="@dimen/layout_lvl2"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="body_2"
+            tools:text="Akhir pekan? Waktunya makan-makan!" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/travel_homepage_product_rv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:clipToPadding="false"
+            android:paddingStart="@dimen/travel_homepage_dp_4"
+            android:paddingLeft="@dimen/travel_homepage_dp_4"
+            android:paddingEnd="@dimen/travel_homepage_dp_4"
+            android:paddingRight="@dimen/travel_homepage_dp_4"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginRight="@dimen/layout_lvl1"
+            android:nestedScrollingEnabled="false"/>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/travel_homepage_product_widget_see_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tampilkan Semua"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            app:unifyButtonVariant="ghost"
+            app:unifyButtonType="alternate"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            />
+
+
+    </LinearLayout>
+
+<!--    <include android:id="@+id/shimmering"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        layout="@layout/layout_travel_destination_section_shimmering"-->
+<!--        android:visibility="gone"-->
+<!--        />-->
+
+</FrameLayout>
+
+
