@@ -1,10 +1,10 @@
-package com.tokopedia.analytics.debugger.data.source;
+package com.tokopedia.analyticsdebugger.debugger.data.source;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 
-import com.tokopedia.analytics.database.FpmLogDB;
+import com.tokopedia.analyticsdebugger.database.FpmLogDB;
 
 import java.util.List;
 

@@ -1,11 +1,11 @@
 package com.tokopedia.analyticsdebugger.debugger.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerFragment
 import com.tokopedia.analyticsdebugger.debugger.ui.AnalyticsDebugger
 import com.tokopedia.analyticsdebugger.debugger.ui.fragment.AnalyticsDebuggerFragment
 import com.tokopedia.analyticsdebugger.debugger.ui.fragment.AnalyticsDebuggerGtmErrorFragment
-import com.tokopedia.analyticsdebugger.ui.fragment.FpmDebuggerFragment
-import com.tokopedia.analyticsdebugger.ui.presenter.FpmDebugger
+import com.tokopedia.analyticsdebugger.debugger.ui.presenter.FpmDebugger
 import dagger.Component
 import javax.inject.Named
 

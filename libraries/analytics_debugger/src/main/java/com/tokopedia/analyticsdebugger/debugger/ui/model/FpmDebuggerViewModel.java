@@ -1,10 +1,10 @@
-package com.tokopedia.analytics.debugger.ui.model;
+package com.tokopedia.analyticsdebugger.debugger.ui.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.analytics.debugger.ui.adapter.FpmDebuggerTypeFactory;
+import com.tokopedia.analyticsdebugger.debugger.ui.adapter.FpmDebuggerTypeFactory;
 
 public class FpmDebuggerViewModel implements Visitable<FpmDebuggerTypeFactory>,Parcelable {
     private long id;

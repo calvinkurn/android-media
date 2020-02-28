@@ -1,7 +1,7 @@
-package com.tokopedia.analytics.debugger.domain;
+package com.tokopedia.analyticsdebugger.debugger.domain;
 
-import com.tokopedia.analytics.debugger.data.repository.FpmLogLocalRepository;
-import com.tokopedia.analytics.debugger.data.repository.FpmLogRepository;
+import com.tokopedia.analyticsdebugger.debugger.data.repository.FpmLogLocalRepository;
+import com.tokopedia.analyticsdebugger.debugger.data.repository.FpmLogRepository;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 

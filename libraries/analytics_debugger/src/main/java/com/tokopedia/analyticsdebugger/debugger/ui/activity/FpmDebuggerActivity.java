@@ -1,4 +1,4 @@
-package com.tokopedia.analytics.debugger.ui.activity;
+package com.tokopedia.analyticsdebugger.debugger.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -7,9 +7,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.tokopedia.analytics.R;
-import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerFragment;
 import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerFragment;
+import com.tokopedia.analyticsdebugger.R;
 
 public class FpmDebuggerActivity extends AppCompatActivity {
 

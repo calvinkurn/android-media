@@ -8,9 +8,9 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData;
+import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel;
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerActivity;
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity;
-import com.tokopedia.analyticsdebugger.performance.PerformanceLogModel;
 
 /**
  * @author okasurya on 6/28/18.

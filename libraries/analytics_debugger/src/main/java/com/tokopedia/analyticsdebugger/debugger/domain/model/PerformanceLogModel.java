@@ -1,4 +1,4 @@
-package com.tokopedia.analytics.performance;
+package com.tokopedia.analyticsdebugger.debugger.domain.model;
 
 import java.util.HashMap;
 import java.util.Map;

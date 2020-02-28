@@ -1,4 +1,4 @@
-package com.tokopedia.analytics.debugger.ui.presenter;
+package com.tokopedia.analyticsdebugger.debugger.ui.presenter;
 
 import android.content.Context;
 import android.net.Uri;

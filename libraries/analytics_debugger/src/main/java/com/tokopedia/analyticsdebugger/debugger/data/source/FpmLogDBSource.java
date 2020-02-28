@@ -1,13 +1,13 @@
-package com.tokopedia.analytics.debugger.data.source;
+package com.tokopedia.analyticsdebugger.debugger.data.source;
 
 import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tokopedia.analytics.database.FpmLogDB;
-import com.tokopedia.analytics.database.TkpdAnalyticsDatabase;
-import com.tokopedia.analytics.debugger.AnalyticsDebuggerConst;
-import com.tokopedia.analytics.performance.PerformanceLogModel;
+import com.tokopedia.analyticsdebugger.database.FpmLogDB;
+import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase;
+import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst;
+import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

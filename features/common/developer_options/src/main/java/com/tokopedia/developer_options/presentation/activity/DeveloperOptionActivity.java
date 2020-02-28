@@ -29,7 +29,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.airbnb.deeplinkdispatch.DeepLink;
 import com.chuckerteam.chucker.api.Chucker;
-import com.tokopedia.analytics.debugger.FpmLogger;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.developer_options.utils.OneOnClick;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;

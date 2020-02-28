@@ -1,10 +1,7 @@
-package com.tokopedia.analytics.debugger.ui.fragment;
+package com.tokopedia.analyticsdebugger.debugger.ui.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -13,10 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
-import com.tokopedia.analytics.R;
-import com.tokopedia.analytics.debugger.ui.model.FpmDebuggerViewModel;
+import com.tokopedia.analyticsdebugger.R;
+import com.tokopedia.analyticsdebugger.debugger.ui.model.FpmDebuggerViewModel;
 
-import static com.tokopedia.analytics.debugger.AnalyticsDebuggerConst.DATA_DETAIL;
+import static com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst.DATA_DETAIL;
 
 public class FpmDebuggerDetailFragment extends TkpdBaseV4Fragment {
     private TextView textTimestamp;

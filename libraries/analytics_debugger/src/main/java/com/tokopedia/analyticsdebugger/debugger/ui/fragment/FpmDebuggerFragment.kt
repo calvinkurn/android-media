@@ -2,8 +2,6 @@ package com.tokopedia.analytics.debugger.ui.fragment
 
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
@@ -15,27 +13,23 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
-import com.tokopedia.analytics.R
-import com.tokopedia.analytics.debugger.di.AnalyticsDebuggerComponent
-import com.tokopedia.analytics.debugger.di.DaggerAnalyticsDebuggerComponent
-import com.tokopedia.analytics.debugger.ui.activity.FpmDebuggerDetailActivity
-import com.tokopedia.analytics.debugger.ui.adapter.FpmDebuggerTypeFactory
-import com.tokopedia.analytics.debugger.ui.model.FpmDebuggerViewModel
-import com.tokopedia.analytics.debugger.ui.presenter.FpmDebugger
-import java.io.FileOutputStream
+import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
+import com.tokopedia.analyticsdebugger.debugger.di.DaggerAnalyticsDebuggerComponent
+import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerDetailActivity
+import com.tokopedia.analyticsdebugger.debugger.ui.adapter.FpmDebuggerTypeFactory
 
-class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerTypeFactory>(), FpmDebugger.View {
+class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerTypeFactory>(), com.tokopedia.analyticsdebugger.debugger.ui.presenter.FpmDebugger.View {
 
     private var buttonSearch: Button? = null
 
-    var presenter: FpmDebugger.Presenter? = null
+    var presenter: com.tokopedia.analyticsdebugger.debugger.ui.presenter.FpmDebugger.Presenter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_analytics_debugger, container, false)
@@ -87,7 +81,7 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
     }
 
     override fun onItemClicked(visitable: Visitable<*>) {
-        if (visitable is FpmDebuggerViewModel) {
+        if (visitable is com.tokopedia.analyticsdebugger.debugger.ui.model.FpmDebuggerViewModel) {
             openDetail(visitable)
         }
     }
@@ -180,7 +174,7 @@ class FpmDebuggerFragment : BaseSearchListFragment<Visitable<*>, FpmDebuggerType
         }
     }
 
-    private fun openDetail(viewModel: FpmDebuggerViewModel) {
+    private fun openDetail(viewModel: com.tokopedia.analyticsdebugger.debugger.ui.model.FpmDebuggerViewModel) {
         startActivity(FpmDebuggerDetailActivity.newInstance(context, viewModel))
     }
 

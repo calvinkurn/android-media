@@ -1,4 +1,4 @@
-package com.tokopedia.analytics.debugger.ui.viewholder;
+package com.tokopedia.analyticsdebugger.debugger.ui.viewholder;
 
 import android.text.TextUtils;
 import android.view.View;
@@ -7,9 +7,8 @@ import android.widget.TextView;
 import androidx.annotation.LayoutRes;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.analytics.R;
-import com.tokopedia.analytics.debugger.ui.model.AnalyticsDebuggerViewModel;
-import com.tokopedia.analytics.debugger.ui.model.FpmDebuggerViewModel;
+import com.tokopedia.analyticsdebugger.R;
+import com.tokopedia.analyticsdebugger.debugger.ui.model.FpmDebuggerViewModel;
 
 public class FpmDebuggerViewHolder extends AbstractViewHolder<FpmDebuggerViewModel> {
     @LayoutRes

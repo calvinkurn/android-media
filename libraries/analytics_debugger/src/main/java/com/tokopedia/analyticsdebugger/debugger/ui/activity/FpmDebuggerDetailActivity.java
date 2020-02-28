@@ -1,4 +1,4 @@
-package com.tokopedia.analytics.debugger.ui.activity;
+package com.tokopedia.analyticsdebugger.debugger.ui.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -8,13 +8,11 @@ import android.text.TextUtils;
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerDetailFragment;
-import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerDetailFragment;
-import com.tokopedia.analytics.debugger.ui.model.AnalyticsDebuggerViewModel;
-import com.tokopedia.analytics.debugger.ui.model.FpmDebuggerViewModel;
+import com.tokopedia.analyticsdebugger.debugger.ui.fragment.FpmDebuggerDetailFragment;
+import com.tokopedia.analyticsdebugger.debugger.ui.model.FpmDebuggerViewModel;
 
-import static com.tokopedia.analytics.debugger.AnalyticsDebuggerConst.DATA_DETAIL;
-import static com.tokopedia.analytics.debugger.AnalyticsDebuggerConst.EVENT_NAME;
+import static com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst.DATA_DETAIL;
+import static com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst.EVENT_NAME;
 
 public class FpmDebuggerDetailActivity extends BaseSimpleActivity {
 

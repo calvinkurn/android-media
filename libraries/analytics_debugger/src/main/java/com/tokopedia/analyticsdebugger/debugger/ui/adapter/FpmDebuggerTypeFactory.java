@@ -1,11 +1,11 @@
-package com.tokopedia.analytics.debugger.ui.adapter;
+package com.tokopedia.analyticsdebugger.debugger.ui.adapter;
 
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.analytics.debugger.ui.model.FpmDebuggerViewModel;
-import com.tokopedia.analytics.debugger.ui.viewholder.FpmDebuggerViewHolder;
+import com.tokopedia.analyticsdebugger.debugger.ui.model.FpmDebuggerViewModel;
+import com.tokopedia.analyticsdebugger.debugger.ui.viewholder.FpmDebuggerViewHolder;
 
 /**
  * @author okasurya on 5/16/18.

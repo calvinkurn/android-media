@@ -1,9 +1,7 @@
-package com.tokopedia.analytics.debugger.data.repository;
+package com.tokopedia.analyticsdebugger.debugger.data.repository;
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
-import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
-import com.tokopedia.analytics.debugger.ui.model.FpmDebuggerViewModel;
-import com.tokopedia.analytics.performance.PerformanceLogModel;
+import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel;
 import com.tokopedia.usecase.RequestParams;
 
 import java.util.List;

@@ -1,8 +1,6 @@
-package com.tokopedia.analytics.debugger;
+package com.tokopedia.analyticsdebugger.debugger;
 
-import com.tokopedia.analytics.performance.PerformanceLogModel;
-
-import java.util.Map;
+import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel;
 
 public interface PerformanceLogger {
     void save(PerformanceLogModel performanceLogModel);

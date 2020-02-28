@@ -1,18 +1,16 @@
-package com.tokopedia.analytics.debugger.ui.presenter
+package com.tokopedia.analyticsdebugger.debugger.ui.presenter
 
 import android.net.Uri
 import android.os.AsyncTask
 import android.widget.Toast
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.analytics.R
-import com.tokopedia.analytics.debugger.AnalyticsDebuggerConst
-import com.tokopedia.analytics.debugger.domain.DeleteFpmLogUseCase
-import com.tokopedia.analytics.debugger.domain.GetFpmAllDataUseCase
-import com.tokopedia.analytics.debugger.domain.GetFpmLogUseCase
-import com.tokopedia.analytics.debugger.ui.AnalyticsDebugger
-import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerFragment
-import com.tokopedia.analytics.debugger.ui.model.FpmDebuggerViewModel
+import com.tokopedia.analyticsdebugger.R
+import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
+import com.tokopedia.analyticsdebugger.debugger.domain.DeleteFpmLogUseCase
+import com.tokopedia.analyticsdebugger.debugger.domain.GetFpmAllDataUseCase
+import com.tokopedia.analyticsdebugger.debugger.domain.GetFpmLogUseCase
+import com.tokopedia.analyticsdebugger.debugger.ui.model.FpmDebuggerViewModel
 import com.tokopedia.usecase.RequestParams
 
 import rx.Subscriber
@@ -158,7 +156,7 @@ class FpmDebuggerPresenter(private val getFpmLogUseCase: GetFpmLogUseCase,
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         for (model in modelList) {
                             val s = "\r\n\r\n\r\ntraceName: " + model.name +
-                                    "\r\ntraceDuration: " + model.duration + "ms"
+                                    "\r\ntraceDuration: " + model.duration + "ms" +
                                     "\r\nmetrics: " + model.metrics +
                                     "\r\nattributes: " + model.attributes +
                                     "\r\ntimestamp: " + model.timestamp

@@ -1,11 +1,11 @@
-package com.tokopedia.analytics.debugger;
+package com.tokopedia.analyticsdebugger.debugger;
 
 import android.content.Context;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.analytics.debugger.data.source.FpmLogDBSource;
-import com.tokopedia.analytics.debugger.ui.activity.FpmDebuggerActivity;
-import com.tokopedia.analytics.performance.PerformanceLogModel;
+import com.tokopedia.analyticsdebugger.debugger.data.source.FpmLogDBSource;
+import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel;
+import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity;
 import com.tokopedia.config.GlobalConfig;
 
 import rx.Subscriber;

@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
-import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.analytics.debugger.FpmLogger;
 
 import timber.log.Timber;
