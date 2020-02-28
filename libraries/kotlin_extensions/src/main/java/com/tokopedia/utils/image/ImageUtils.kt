@@ -161,7 +161,7 @@ object ImageUtils {
     @JvmOverloads
     fun loadImage(imageView: ImageView, url: String,
                   radius: Float = 0f,
-                  signatureKey: ObjectKey? = null,
+                  signatureKey: String = "",
                   @DrawableRes placeHolder: Int = 0,
                   @DrawableRes resOnError: Int = R.drawable.ic_loading_error,
                   isAnimate: Boolean = false,
@@ -179,7 +179,7 @@ object ImageUtils {
             imageCleared?.invoke(false)
         } else {
             Glide.with(imageView).load(url).apply {
-                signatureKey?.let { signature(it) }
+                signature(ObjectKey(signatureKey))
                 diskCacheStrategy(DiskCacheStrategy.DATA)
                 error(drawableError)
 
