@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
@@ -29,7 +29,7 @@ public interface ShippingDurationContract {
 
         void showErrorPage(String message);
 
-        void showData(List<ShippingDurationUiModel> serviceDataList, LogisticPromoViewModel promoViewModel);
+        void showData(List<ShippingDurationUiModel> serviceDataList, LogisticPromoUiModel promoViewModel);
 
         void showNoCourierAvailable(String message);
 

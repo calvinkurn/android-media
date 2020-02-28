@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
@@ -23,10 +23,10 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         mData = mutableListOf()
     }
 
-    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoViewModel: LogisticPromoViewModel?, isDisableOrderPrioritas: Boolean) {
+    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: LogisticPromoUiModel?, isDisableOrderPrioritas: Boolean) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
         this.mData = shippingDurationUiModels.toMutableList()
-        promoViewModel?.let { this.mData.add(0, it) }
+        promoUiModel?.let { this.mData.add(0, it) }
         this.mData.add(0, NotifierModel())
         notifyDataSetChanged()
     }
@@ -62,7 +62,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     }
 
     override fun getItemViewType(position: Int): Int = when (mData.get(position)) {
-        is LogisticPromoViewModel -> ArmyViewHolder.LAYOUT
+        is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
         is NotifierModel -> NotifierViewHolder.LAYOUT
         else -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
     }
@@ -79,7 +79,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is ShippingDurationViewHolder -> holder.bindData(mData.get(position) as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
-            is ArmyViewHolder -> holder.bindData(mData.get(position) as LogisticPromoViewModel, shippingDurationAdapterListener!!)
+            is ArmyViewHolder -> holder.bindData(mData.get(position) as LogisticPromoUiModel, shippingDurationAdapterListener!!)
         }
     }
 

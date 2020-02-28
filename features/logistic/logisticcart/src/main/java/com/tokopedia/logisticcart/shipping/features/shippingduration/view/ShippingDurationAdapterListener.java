@@ -1,6 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
@@ -17,6 +17,6 @@ public interface ShippingDurationAdapterListener {
 
     boolean isToogleYearEndPromotionOn();
 
-    void onLogisticPromoClicked(LogisticPromoViewModel data);
+    void onLogisticPromoClicked(LogisticPromoUiModel data);
 
 }

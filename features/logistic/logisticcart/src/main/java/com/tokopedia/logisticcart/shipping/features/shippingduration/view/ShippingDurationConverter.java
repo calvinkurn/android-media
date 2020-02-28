@@ -2,7 +2,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
 import android.text.TextUtils;
 
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
@@ -121,10 +121,10 @@ public class ShippingDurationConverter {
         shippingCourierUiModels.add(shippingCourierUiModel);
     }
 
-    private LogisticPromoViewModel convertToPromoModel(PromoStacking promo) {
+    private LogisticPromoUiModel convertToPromoModel(PromoStacking promo) {
         if (promo == null || promo.getIsPromo() != 1) return null;
         boolean applied = promo.getIsApplied() == 1;
-        return new LogisticPromoViewModel(
+        return new LogisticPromoUiModel(
                 promo.getPromoCode(), promo.getTitle(), promo.getBenefitDesc(),
                 promo.getShipperName(), promo.getServiceId(), promo.getShipperId(),
                 promo.getShipperProductId(), promo.getShipperDesc(), promo.getShipperDisableText(),

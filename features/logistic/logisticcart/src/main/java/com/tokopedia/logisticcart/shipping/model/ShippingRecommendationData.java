@@ -12,7 +12,7 @@ import java.util.List;
 public class ShippingRecommendationData implements Parcelable {
 
     private List<ShippingDurationUiModel> shippingDurationUiModels;
-    private LogisticPromoViewModel logisticPromo;
+    private LogisticPromoUiModel logisticPromo;
     private String errorMessage;
     private String errorId;
     private String blackboxInfo;
@@ -44,11 +44,11 @@ public class ShippingRecommendationData implements Parcelable {
         this.errorId = errorId;
     }
 
-    public LogisticPromoViewModel getLogisticPromo() {
+    public LogisticPromoUiModel getLogisticPromo() {
         return logisticPromo;
     }
 
-    public void setLogisticPromo(LogisticPromoViewModel logisticPromo) {
+    public void setLogisticPromo(LogisticPromoUiModel logisticPromo) {
         this.logisticPromo = logisticPromo;
     }
 
@@ -72,7 +72,7 @@ public class ShippingRecommendationData implements Parcelable {
 
     protected ShippingRecommendationData(Parcel in) {
         this.shippingDurationUiModels = in.createTypedArrayList(ShippingDurationUiModel.CREATOR);
-        this.logisticPromo = in.readParcelable(LogisticPromoViewModel.class.getClassLoader());
+        this.logisticPromo = in.readParcelable(LogisticPromoUiModel.class.getClassLoader());
         this.errorMessage = in.readString();
         this.errorId = in.readString();
         this.blackboxInfo = in.readString();

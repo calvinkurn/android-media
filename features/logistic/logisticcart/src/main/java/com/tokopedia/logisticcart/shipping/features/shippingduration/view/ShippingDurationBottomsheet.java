@@ -21,7 +21,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerSh
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationComponent;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
@@ -276,7 +276,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void showData(List<ShippingDurationUiModel> shippingDurationUiModelList, LogisticPromoViewModel promoViewModel) {
+    public void showData(List<ShippingDurationUiModel> shippingDurationUiModelList, LogisticPromoUiModel promoViewModel) {
         shippingDurationAdapter.setShippingDurationViewModels(shippingDurationUiModelList, promoViewModel, isDisableOrderPrioritas);
         shippingDurationAdapter.initiateShowcase();
         updateHeight();
@@ -379,7 +379,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onLogisticPromoClicked(LogisticPromoViewModel data) {
+    public void onLogisticPromoClicked(LogisticPromoUiModel data) {
         mPromoTracker.eventClickPromoLogisticTicker(data.getPromoCode());
         // Project Army
         ShippingDurationUiModel serviceData = shippingDurationAdapter.getRatesDataFromLogisticPromo(data.getServiceId());
@@ -408,7 +408,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
         dismiss();
     }
 
-    private void showPslDialog(LogisticPromoViewModel data) {
+    private void showPslDialog(LogisticPromoUiModel data) {
         Dialog tkpdDialog = new Dialog(getActivity(), Dialog.Type.PROMINANCE);
         tkpdDialog.setTitle(getString(R.string.tkpd_promo_brand));
         tkpdDialog.setDesc(MethodChecker.fromHtml(data.getDialogMsg()));
