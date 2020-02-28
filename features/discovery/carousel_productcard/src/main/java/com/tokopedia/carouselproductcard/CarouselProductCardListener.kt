@@ -6,7 +6,7 @@ import com.tokopedia.productcard.ProductCardModel
 interface CarouselProductCardListener {
 
     interface OnItemClickListener {
-        fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int)
+        fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
     }
 
     interface OnItemLongClickListener {
@@ -14,12 +14,12 @@ interface CarouselProductCardListener {
     }
 
     interface OnItemImpressedListener {
-        fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int)
-        fun getImpressHolder(adapterPosition: Int): ImpressHolder
+        fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
+        fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder?
     }
 
     interface OnItemAddToCartListener {
-        fun onItemAddToCart(productCardModel: ProductCardModel, adapterPosition: Int)
+        fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
     }
 
     interface OnWishlistItemClickListener {

@@ -37,23 +37,23 @@ class AddToCartDoneRecommendationViewHolder(
             val parentPosition = adapterPosition
             product_recom.bindCarouselProductCardViewGrid(
                     carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                        override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                            val productRecommendation = products[adapterPosition]
+                        override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                            val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                             recommendationListener.onProductClick(
                                     productRecommendation,
                                     null,
                                     parentPosition,
-                                    adapterPosition
+                                    carouselProductCardPosition
                             )
                         }
                     },
                     carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                        override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
-                            return products[adapterPosition]
+                        override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                            return products.getOrNull(carouselProductCardPosition)
                         }
 
-                        override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                            val productRecommendation = products[adapterPosition]
+                        override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                            val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                             recommendationListener.onProductImpression(productRecommendation)
                         }
                     },

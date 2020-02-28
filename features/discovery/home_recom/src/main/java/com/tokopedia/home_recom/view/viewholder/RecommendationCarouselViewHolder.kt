@@ -37,25 +37,25 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
         val products = dataModel.products
         recyclerView.bindCarouselProductCardViewGrid(
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        val productRecommendation = products[adapterPosition]
+                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                         productRecommendation.listener.onProductClick(
                                 productRecommendation.productItem,
                                 productRecommendation.productItem.type,
                                 productRecommendation.parentPosition,
-                                adapterPosition)
+                                carouselProductCardPosition)
                         if (productRecommendation.productItem.isTopAds) {
                             ImpresionTask().execute(productRecommendation.productItem.clickUrl)
                         }
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
-                        return products[adapterPosition].productItem
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return products.getOrNull(carouselProductCardPosition)?.productItem
                     }
 
-                    override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        val productRecommendation = products[adapterPosition]
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = products.getOrNull(carouselProductCardPosition) ?: return
                         if(productRecommendation.productItem.isTopAds){
                             ImpresionTask().execute(productRecommendation.productItem.trackerImageUrl)
                         }

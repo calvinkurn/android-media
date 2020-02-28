@@ -136,8 +136,8 @@ class DynamicChannelThematicViewHolder(
             contentList?.bindCarouselProductCardViewGrid(
                     productCardModelList = createProductCardModelList(channelData),
                     carouselProductCardOnItemClickListener = object: CarouselProductCardListener.OnItemClickListener {
-                        override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                            dcEventHandler.onClickMixImage(channelData, adapterPosition)
+                        override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                            dcEventHandler.onClickMixImage(channelData, carouselProductCardPosition)
                         }
                     }
             )

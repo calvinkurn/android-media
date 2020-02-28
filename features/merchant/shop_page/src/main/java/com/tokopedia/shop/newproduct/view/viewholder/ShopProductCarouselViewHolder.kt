@@ -67,28 +67,26 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
     }
 
     private fun bindShopProductCarousel(shopProductViewModelList: List<ShopProductViewModel>) {
-        val productCardModelList = shopProductViewModelList.map {
-            ShopPageProductListMapper.mapToProductCardModel(it)
-        }
-
         recyclerView?.bindCarouselProductCardViewGrid(
-                productCardModelList = productCardModelList,
+                productCardModelList = shopProductViewModelList.map {
+                    ShopPageProductListMapper.mapToProductCardModel(it)
+                },
                 carouselProductCardOnItemClickListener = object: CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        if (adapterPosition > shopProductViewModelList.size) return
+                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopProductViewModelList.getOrNull(carouselProductCardPosition) ?: return
 
-                        shopProductClickedListener?.onProductClicked(shopProductViewModelList[adapterPosition], shopTrackType, adapterPosition)
+                        shopProductClickedListener?.onProductClicked(shopProductViewModel, shopTrackType, carouselProductCardPosition)
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object: CarouselProductCardListener.OnItemImpressedListener {
-                    override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        if (adapterPosition > shopProductViewModelList.size) return
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopProductViewModelList.getOrNull(carouselProductCardPosition) ?: return
 
-                        shopProductImpressionListener?.onProductImpression(shopProductViewModelList[adapterPosition], shopTrackType, adapterPosition)
+                        shopProductImpressionListener?.onProductImpression(shopProductViewModel, shopTrackType, carouselProductCardPosition)
                     }
 
-                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
-                        return shopProductViewModelList[adapterPosition]
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return shopProductViewModelList.getOrNull(carouselProductCardPosition)
                     }
                 }
         )

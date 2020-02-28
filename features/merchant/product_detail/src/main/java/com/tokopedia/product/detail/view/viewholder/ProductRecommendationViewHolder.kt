@@ -53,14 +53,14 @@ class ProductRecommendationViewHolder(private val view: View,
                 scrollToPosition = listener.getRecommendationCarouselSavedState().get(adapterPosition),
                 recyclerViewPool = listener.getParentRecyclerViewPool(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        val productRecommendation = product.recommendationItemList[adapterPosition]
+                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsClickUrl = productRecommendation.clickUrl
                         if (productCardModel.isTopAds) {
                             ImpresionTask().execute(topAdsClickUrl)
                         }
 
-                        listener.eventRecommendationClick(productRecommendation, adapterPosition, product.pageName, product.title, componentTrackDataModel)
+                        listener.eventRecommendationClick(productRecommendation, carouselProductCardPosition, product.pageName, product.title, componentTrackDataModel)
 
                         view.context?.run {
                             RouteManager.route(this,
@@ -70,23 +70,21 @@ class ProductRecommendationViewHolder(private val view: View,
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
-                        return product.recommendationItemList[adapterPosition]
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return product.recommendationItemList.getOrNull(carouselProductCardPosition)
                     }
 
-                    override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        if (product.recommendationItemList.size > adapterPosition) {
-                            val productRecommendation = product.recommendationItemList[adapterPosition]
-                            val topAdsImageUrl = productRecommendation.trackerImageUrl
-                            if (productCardModel.isTopAds) {
-                                ImpresionTask().execute(topAdsImageUrl)
-                            }
-
-                            listener.eventRecommendationImpression(productRecommendation,
-                                    adapterPosition,
-                                    product.pageName,
-                                    product.title, componentTrackDataModel)
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        val topAdsImageUrl = productRecommendation.trackerImageUrl
+                        if (productCardModel.isTopAds) {
+                            ImpresionTask().execute(topAdsImageUrl)
                         }
+
+                        listener.eventRecommendationImpression(productRecommendation,
+                                carouselProductCardPosition,
+                                product.pageName,
+                                product.title, componentTrackDataModel)
                     }
                 },
                 productCardModelList = cardModel?.toMutableList() ?: listOf())
