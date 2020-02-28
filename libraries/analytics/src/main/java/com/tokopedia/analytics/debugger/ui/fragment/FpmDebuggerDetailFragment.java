@@ -48,7 +48,7 @@ public class FpmDebuggerDetailFragment extends TkpdBaseV4Fragment {
         viewModel = getArguments().getParcelable(DATA_DETAIL);
         if (viewModel != null) {
             textTimestamp.setText(viewModel.getTimestamp());
-            duration.setText(String.valueOf(viewModel.getDuration()));
+            duration.setText(String.format("Duration: %dms", viewModel.getDuration()));
             metrics.setText(viewModel.getMetrics());
             txtAtrributes.setText(viewModel.getAttributes());
         }
