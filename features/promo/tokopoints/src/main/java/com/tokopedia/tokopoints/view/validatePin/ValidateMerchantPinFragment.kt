@@ -8,29 +8,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.widget.PinEditText
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
+import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate
 import com.tokopedia.tokopoints.view.util.CommonConstant
+import com.tokopedia.tokopoints.view.util.ErrorMessage
+import com.tokopedia.tokopoints.view.util.Success
 import javax.inject.Inject
 
 class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinContract.View, View.OnClickListener {
-    @JvmField
     @Inject
-    var mPresenter: ValidateMerchantPinPresenter? = null
+    lateinit var factory : ViewModelFactory
+
+    private val  mViewModel: ValidateMerchantPinViewModel by lazy { ViewModelProviders.of(this, factory)[ValidateMerchantPinViewModel::class.java] }
     private var mEditPin: PinEditText? = null
     private var mTextError: TextView? = null
     private var mTextInfo: TextView? = null
     private var mValidatePinCallBack: ValidatePinCallBack? = null
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
 
-    fun setmValidatePinCallBack(mValidatePinCallBack: ValidatePinCallBack?) {
+    fun setmValidatePinCallBack(mValidatePinCallBack: ValidatePinCallBack) {
         this.mValidatePinCallBack = mValidatePinCallBack
     }
 
@@ -41,7 +44,6 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mPresenter!!.attachView(this)
         mEditPin = view.findViewById(R.id.et_input_otp)
         mTextError = view.findViewById(R.id.tv_pin_error)
         mTextInfo = view.findViewById(R.id.text_info)
@@ -52,22 +54,28 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
             override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {}
             override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
                 if (mEditPin?.getText().toString().length == CommonConstant.PIN_COUNT) {
-                    mPresenter!!.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID), mEditPin?.getText().toString())
+                    mViewModel.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID) ?: "", mEditPin?.getText().toString())
                 }
             }
 
             override fun afterTextChanged(editable: Editable) {}
         })
+
+        addObserver()
     }
 
-    override fun onDestroy() {
-        mPresenter!!.destroyView()
-        super.onDestroy()
+    private fun addObserver() {
+        addSwipeObserver()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
+    private fun addSwipeObserver() = mViewModel.swipeCouponLiveData.observe(this, Observer {
+        it?.let {
+            when(it){
+                is Success -> onSuccess(it.data)
+                is ErrorMessage -> onError(it.data)
+            }
+        }
+    })
 
     override fun onClick(view: View) {
         if (view.id == R.id.button_send) {
@@ -75,12 +83,12 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
                 return
             }
             KeyboardHandler.hideSoftKeyboard(activity)
-            mPresenter!!.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID), mEditPin!!.text.toString())
+            mViewModel!!.swipeMyCoupon(arguments!!.getString(CommonConstant.EXTRA_COUPON_ID) ?: "", mEditPin!!.text.toString())
         }
     }
 
     override fun initInjector() {
-        DaggerTokoPointComponent.builder().baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent).build().inject(this)
+        DaggerTokopointBundleComponent.builder().baseAppComponent((activity!!.application as BaseMainApplication).baseAppComponent).build().inject(this)
     }
 
     override fun getScreenName(): String? {

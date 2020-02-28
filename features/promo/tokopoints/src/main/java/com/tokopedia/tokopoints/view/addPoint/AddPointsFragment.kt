@@ -13,7 +13,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
 import com.tokopedia.tokopoints.view.adapter.AddPointGridViewHolder
 import com.tokopedia.tokopoints.view.adapter.AddPointsAdapter
 import com.tokopedia.tokopoints.view.model.addpointsection.SectionsItem

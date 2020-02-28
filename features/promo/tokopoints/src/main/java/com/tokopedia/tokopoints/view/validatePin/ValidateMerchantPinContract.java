@@ -23,9 +23,7 @@ public interface ValidateMerchantPinContract {
 
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-        void destroyView();
-
+    interface Presenter {
         void swipeMyCoupon(String partnerCode, String pin);
     }
 }

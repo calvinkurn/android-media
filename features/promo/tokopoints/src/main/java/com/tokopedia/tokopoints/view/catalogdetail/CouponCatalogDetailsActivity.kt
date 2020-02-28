@@ -10,9 +10,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.DaggerTokoPointComponent
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
-import com.tokopedia.tokopoints.di.TokoPointComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil
 import com.tokopedia.tokopoints.view.util.CommonConstant
