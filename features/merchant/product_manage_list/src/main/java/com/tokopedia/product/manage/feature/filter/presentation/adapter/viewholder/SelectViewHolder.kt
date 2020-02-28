@@ -5,15 +5,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectWidget
-import com.tokopedia.product.manage.oldlist.R
 
 class SelectViewHolder(view: View, private val selectClickListener: SelectClickListener) : AbstractViewHolder<SelectViewModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_select
+        val LAYOUT = com.tokopedia.product.manage.R.layout.item_select
     }
 
-    private val selectWidget: SelectWidget = itemView.findViewById(R.id.select_widget)
+    private val selectWidget: SelectWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.select_widget)
 
     override fun bind(element: SelectViewModel) {
         selectWidget.bind(element, selectClickListener)

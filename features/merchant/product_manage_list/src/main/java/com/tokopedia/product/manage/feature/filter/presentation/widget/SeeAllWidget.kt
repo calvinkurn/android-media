@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
-import com.tokopedia.product.manage.oldlist.R
 
 class SeeAllWidget : BaseCustomView {
 
@@ -22,7 +21,7 @@ class SeeAllWidget : BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.widget_see_all, this)
+        View.inflate(context, com.tokopedia.product.manage.R.layout.widget_see_all, this)
     }
 }
 

@@ -22,7 +22,6 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.SORT_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.product.manage.oldlist.R
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
 
@@ -63,12 +62,12 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_product_manage_filter_select, container, false)
+        val view = inflater.inflate(com.tokopedia.product.manage.R.layout.fragment_product_manage_filter_select, container, false)
         val adapterTypeFactory = SelectAdapterTypeFactory(this, this)
         adapter = SelectAdapter(adapterTypeFactory)
-        recyclerView = view.findViewById(R.id.select_recycler_view)
-        toolbar = view.findViewById(R.id.select_toolbar)
-        title = view.findViewById(R.id.page_title)
+        recyclerView = view.findViewById(com.tokopedia.product.manage.R.id.select_recycler_view)
+        toolbar = view.findViewById(com.tokopedia.product.manage.R.id.select_toolbar)
+        title = view.findViewById(com.tokopedia.product.manage.R.id.page_title)
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(this.context)
         return view
@@ -106,7 +105,7 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun configToolbar() {
-        toolbar?.setNavigationIcon(R.drawable.product_manage_arrow_back)
+        toolbar?.setNavigationIcon(com.tokopedia.product.manage.R.drawable.product_manage_arrow_back)
         flag.let {
             if(it == SORT_CACHE_MANAGER_KEY) {
                 title?.text = SORT_TITLE

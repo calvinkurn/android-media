@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.product.manage.oldlist.R
 import kotlinx.android.synthetic.main.widget_chip.view.*
 
 class ChipWidget : BaseCustomView {
@@ -23,7 +22,7 @@ class ChipWidget : BaseCustomView {
     }
 
     private fun initView() {
-        View.inflate(context, R.layout.widget_chip, this)
+        View.inflate(context, com.tokopedia.product.manage.R.layout.widget_chip, this)
     }
 
     fun bind(name: String, chipClickListener: ChipClickListener, isSelected: Boolean) {

@@ -8,19 +8,22 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.decorator.SpacingItemDecoration
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.*
-import com.tokopedia.product.manage.oldlist.R
 import kotlinx.android.synthetic.main.widget_header.view.*
+import android.R.attr.button
+import androidx.core.view.ViewCompat.getRotation
+
+
 
 class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, chipClickListener: ChipClickListener) : AbstractViewHolder<FilterViewModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_filter
+        val LAYOUT = com.tokopedia.product.manage.R.layout.item_filter
     }
 
-    private val recyclerView: RecyclerView = itemView.findViewById(R.id.chips_recycler_view)
+    private val recyclerView: RecyclerView = itemView.findViewById(com.tokopedia.product.manage.R.id.chips_recycler_view)
     val adapter: ChipsAdapter
-    private val headerWidget: HeaderWidget = itemView.findViewById(R.id.filter_header)
-    private val seeAllWidget: SeeAllWidget = itemView.findViewById(R.id.filter_see_all)
+    private val headerWidget: HeaderWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.filter_header)
+    private val seeAllWidget: SeeAllWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.filter_see_all)
     private var isChipsShown = false
 
 
@@ -55,13 +58,15 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, c
     private fun hideChips() {
         recyclerView.visibility = View.GONE
         seeAllWidget.visibility = View.GONE
-        headerWidget.arrow.rotation = 180f
+        val deg = if (headerWidget.arrow.rotation == 180f) 0f else 180f
+        headerWidget.arrow.rotation = deg
     }
 
     private fun showChips() {
         recyclerView.visibility = View.VISIBLE
         seeAllWidget.visibility = View.VISIBLE
-        headerWidget.arrow.rotation = -180f
+        val deg = if (headerWidget.arrow.rotation == 180f) 0f else 180f
+        headerWidget.arrow.rotation = deg
     }
 
     private fun toggleChipsVisibility() {

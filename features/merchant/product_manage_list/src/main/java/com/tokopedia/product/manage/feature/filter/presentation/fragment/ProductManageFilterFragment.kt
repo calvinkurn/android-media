@@ -3,13 +3,10 @@ package com.tokopedia.product.manage.feature.filter.presentation.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
@@ -24,7 +21,6 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmode
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
-import com.tokopedia.product.manage.oldlist.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -47,7 +43,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
         fun createInstance(context: Context) : ProductManageFilterFragment {
             return ProductManageFilterFragment().apply{
-                val view = View.inflate(context, R.layout.fragment_filter,null)
+                val view = View.inflate(context, com.tokopedia.product.manage.R.layout.fragment_filter,null)
                 setChild(view)
                 setTitle(BOTTOMSHEET_TITLE)
                 clearClose(true)
@@ -79,7 +75,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         layoutManager = LinearLayoutManager(this.context)
-        recyclerView = view.findViewById(R.id.filter_recycler_view)
+        recyclerView = view.findViewById(com.tokopedia.product.manage.R.id.filter_recycler_view)
         val adapterTypeFactory = FilterAdapterTypeFactory(this, this)
         filterAdapter = FilterAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager

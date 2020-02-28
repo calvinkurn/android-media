@@ -21,7 +21,6 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.OTHER_FILTER_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.product.manage.oldlist.R
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
 
@@ -64,13 +63,12 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_product_manage_filter_search, container, false)
+        val view = inflater.inflate(com.tokopedia.product.manage.R.layout.fragment_product_manage_filter_search, container, false)
         val adapterTypeFactory = SelectAdapterTypeFactory(this, this)
         adapter = SelectAdapter(adapterTypeFactory)
-        recyclerView = view.findViewById(R.id.filter_search_recycler_view)
-        toolbar = view.findViewById(R.id.checklist_toolbar)
-        title = view.findViewById(R.id.page_title)
-        reset = view.findViewById(R.id.reset_checklist)
+        toolbar = view.findViewById(com.tokopedia.product.manage.R.id.checklist_toolbar)
+        title = view.findViewById(com.tokopedia.product.manage.R.id.page_title)
+        reset = view.findViewById(com.tokopedia.product.manage.R.id.reset_checklist)
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(this.context)
         return view
@@ -113,7 +111,7 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun configToolbar() {
-        toolbar?.setNavigationIcon(R.drawable.product_manage_arrow_back)
+        toolbar?.setNavigationIcon(com.tokopedia.product.manage.R.drawable.product_manage_arrow_back)
         activity?.let {
             (it as? AppCompatActivity)?.let { appCompatActivity ->
                 appCompatActivity.setSupportActionBar(toolbar)

@@ -3,19 +3,16 @@ package com.tokopedia.product.manage.feature.filter.presentation.adapter.viewhol
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistWidget
-import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.product.manage.oldlist.R
 
 class CheckListViewHolder(view: View, private val checklistClickListener: ChecklistClickListener) : AbstractViewHolder<ChecklistViewModel>(view) {
 
     companion object {
-        val LAYOUT = R.layout.item_checklist
+        val LAYOUT = com.tokopedia.product.manage.R.layout.item_checklist
     }
 
-    private var checklistWidget: ChecklistWidget = itemView.findViewById(R.id.checklist_widget)
+    private var checklistWidget: ChecklistWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.checklist_widget)
 
     override fun bind(element: ChecklistViewModel) {
         checklistWidget.bind(element, checklistClickListener)

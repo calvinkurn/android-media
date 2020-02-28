@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.product.manage.oldlist.R
 import kotlinx.android.synthetic.main.widget_header.view.*
 
 class HeaderWidget : BaseCustomView {
@@ -22,7 +21,7 @@ class HeaderWidget : BaseCustomView {
     }
 
     private fun init() {
-        View.inflate(context, R.layout.widget_header, this)
+        View.inflate(context, com.tokopedia.product.manage.R.layout.widget_header, this)
     }
 
     fun bind(title: String) {

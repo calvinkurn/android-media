@@ -4,9 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
-import com.tokopedia.product.manage.oldlist.R
 import kotlinx.android.synthetic.main.widget_select.view.*
 
 class SelectWidget : BaseCustomView {
@@ -26,7 +24,7 @@ class SelectWidget : BaseCustomView {
     private var isVisible = false
 
     private fun init() {
-        View.inflate(context, R.layout.widget_select, this)
+        View.inflate(context, com.tokopedia.product.manage.R.layout.widget_select, this)
     }
 
     fun bind(element: SelectViewModel, selectClickListener: SelectClickListener) {

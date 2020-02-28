@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.product.manage.oldlist.R
 
 class ChipsAdapter(private val listener: ChipClickListener) : RecyclerView.Adapter<ChipsAdapter.ItemViewHolder>() {
     private var namesData: List<String> = listOf()
@@ -27,7 +26,7 @@ class ChipsAdapter(private val listener: ChipClickListener) : RecyclerView.Adapt
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_chips, parent, false)
+                .inflate(com.tokopedia.product.manage.R.layout.item_chips, parent, false)
         return ItemViewHolder(itemView, listener)
     }
 
@@ -41,7 +40,7 @@ class ChipsAdapter(private val listener: ChipClickListener) : RecyclerView.Adapt
 
     inner class ItemViewHolder(itemView: View,
                                private val clickListener: ChipClickListener) : RecyclerView.ViewHolder(itemView) {
-        private var chips: ChipWidget =  itemView.findViewById(R.id.chips_item)
+        private var chips: ChipWidget =  itemView.findViewById(com.tokopedia.product.manage.R.id.chips_item)
 
         fun bind(name: String, isSelected: Boolean) {
             chips.bind(name, clickListener, isSelected)
