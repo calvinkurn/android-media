@@ -132,18 +132,6 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
         presenter.getInitialStateData(searchParameter)
     }
 
-    fun deleteAllRecentSearch() {
-        presenter.deleteAllRecentSearch()
-    }
-
-    fun deleteRecentSearch(keyword: String) {
-        presenter.deleteRecentSearchItem(keyword)
-    }
-
-    fun refreshPopularSearch(){
-        searchParameter?.let { presenter.refreshPopularSearch(it) }
-    }
-
     override fun onItemClicked(applink: String, webUrl: String) {
         dropKeyBoard()
         startActivityFromAutoComplete(applink)
@@ -163,15 +151,27 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     override fun onDeleteRecentSearchItem(keyword: String) {
-        (activity as AutoCompleteActivity).deleteRecentSearch(keyword)
+        deleteRecentSearch(keyword)
+    }
+
+    private fun deleteRecentSearch(keyword: String) {
+        presenter.deleteRecentSearchItem(keyword)
     }
 
     override fun onDeleteAllRecentSearch() {
-        (activity as AutoCompleteActivity).deleteAllRecentSearch()
+        deleteAllRecentSearch()
+    }
+
+    private fun deleteAllRecentSearch() {
+        presenter.deleteAllRecentSearch()
     }
 
     override fun onRefreshPopularSearch() {
-        (activity as AutoCompleteActivity).refreshPopularSearch()
+        refreshPopularSearch()
+    }
+
+    private fun refreshPopularSearch(){
+        searchParameter?.let { presenter.refreshPopularSearch(it) }
     }
 
     fun setSearchParameter(searchParameter: SearchParameter) {

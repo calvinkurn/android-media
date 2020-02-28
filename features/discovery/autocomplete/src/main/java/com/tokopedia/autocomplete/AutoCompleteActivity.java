@@ -269,16 +269,4 @@ public class AutoCompleteActivity extends BaseActivity
     public void setSearchQuery(String keyword) {
         searchBarView.setQuery(keyword, false, true);
     }
-
-    public void deleteAllRecentSearch() {
-        initialStateFragment.deleteAllRecentSearch();
-    }
-
-    public void deleteRecentSearch(String keyword) {
-        initialStateFragment.deleteRecentSearch(keyword);
-    }
-
-    public void refreshPopularSearch(){
-        initialStateFragment.refreshPopularSearch();
-    }
 }
