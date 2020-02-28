@@ -66,6 +66,7 @@ class ProductManageFilterExpandChecklistFragment :
         val view = inflater.inflate(com.tokopedia.product.manage.R.layout.fragment_product_manage_filter_search, container, false)
         val adapterTypeFactory = SelectAdapterTypeFactory(this, this)
         adapter = SelectAdapter(adapterTypeFactory)
+        recyclerView = view.findViewById(com.tokopedia.product.manage.R.id.filter_search_recycler_view)
         toolbar = view.findViewById(com.tokopedia.product.manage.R.id.checklist_toolbar)
         title = view.findViewById(com.tokopedia.product.manage.R.id.page_title)
         reset = view.findViewById(com.tokopedia.product.manage.R.id.reset_checklist)

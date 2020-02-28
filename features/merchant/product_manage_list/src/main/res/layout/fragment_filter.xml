@@ -6,24 +6,37 @@
     android:layout_height="wrap_content"
     android:paddingBottom="@dimen/layout_lvl2">
 
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:id="@+id/bottomsheet_divider"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/filter_recycler_view"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/bottomsheet_divider" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_close_bottom_sheet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/filter_button"
-        android:layout_margin="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/filter_recycler_view" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:id="@+id/bottomsheet_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dp_1"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/filter_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/bottomsheet_divider" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_close_bottom_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/filter_button"
+                android:layout_margin="@dimen/layout_lvl2"
+                app:layout_constraintTop_toBottomOf="@id/filter_recycler_view" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
