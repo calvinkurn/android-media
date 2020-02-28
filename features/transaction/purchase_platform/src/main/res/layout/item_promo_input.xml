@@ -14,6 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginEnd="@dimen/dp_16"
         android:layout_weight="1"
         app:text_field_input_type="text"
         app:text_field_placeholder="Masukkan kode promo" />

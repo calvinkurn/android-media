@@ -81,6 +81,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         setupToolbar(view)
         button_apply_promo.setOnClickListener {
             // Todo : add action to hit API
+            button_apply_promo.isLoading = !button_apply_promo.isLoading
         }
 
         initFragmentUiModel()
@@ -91,6 +92,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     private fun initFragmentUiModel() {
         fragmentUiModel = FragmentUiModel(
                 uiState = FragmentUiModel.UiState().apply {
+                    showContainerActionBottom = true
                     hasAnyPromoSelected = false
                     hasFailedToLoad = false
                 }
