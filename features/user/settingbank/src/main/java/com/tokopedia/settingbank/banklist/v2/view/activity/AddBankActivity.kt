@@ -34,20 +34,6 @@ class AddBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>
         return AddBankFragment::class.java.name
     }
 
-    /*override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        intent?.let {
-            if (intent.hasExtra(ARG_BANK_DATA))
-                intent.getParcelableExtra<Bank>(ARG_BANK_DATA)?.let { bank ->
-                    fragment?.let {
-                        if (fragment is AddBankFragment) {
-                            (fragment as AddBankFragment).onBankSelected(bank)
-                        }
-                    }
-                }
-        }
-
-    }*/
 
     override fun onBankSelected(bank: Bank) {
         val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
