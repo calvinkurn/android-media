@@ -87,7 +87,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
                     "deviceId: " + sessionHandler.getDeviceId() + ", " +
                     "notificationId: " + remoteMessage.getFrom() + ", " +
                     "notificationCode: " + notificationCode;
-            Crashlytics.log(Log.INFO, this.getClass().getSimpleName(), errorMessage);
+            Crashlytics.log(errorMessage);
         }
     }
 
