@@ -23,10 +23,10 @@ object DynamicProductDetailTracking {
 
     fun sendScreen(irisSessionId:String, shopID: String, shopType: String, productId: String) {
         val customDimension: MutableMap<String, String> = java.util.HashMap()
-        customDimension[ProductDetailConstant.KEY_SHOP_ID_SELLER] = shopID
-        customDimension[ProductDetailConstant.KEY_PAGE_TYPE] = "/product"
-        customDimension[ProductDetailConstant.KEY_SHOP_TYPE] = shopType
-        customDimension[ProductDetailConstant.KEY_PRODUCT_ID_] = productId
+        customDimension[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = shopID
+        customDimension[ProductTrackingConstant.Tracking.KEY_PAGE_TYPE] = "/product"
+        customDimension[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
+        customDimension[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID_] = productId
         customDimension[KEY_SESSION_IRIS] = irisSessionId
 
         TrackApp.getInstance().gtm.sendScreenAuthenticated(ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME, customDimension)
