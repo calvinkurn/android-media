@@ -77,6 +77,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        btn_submit.isEnabled = false
         btn_submit.setOnClickListener {
             validateGroup(group_name_input.text.toString())
         }
@@ -91,7 +92,7 @@ class CreateGroupAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>(
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                btn_submit.isEnabled = true
+                btn_submit.isEnabled = s.toString().trim().isNotEmpty()
             }
 
         })
