@@ -83,6 +83,10 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             // Todo : add action to hit API
             button_apply_promo.isLoading = !button_apply_promo.isLoading
         }
+        button_apply_no_promo.setOnClickListener {
+            // Todo : add action to hit API
+            button_apply_no_promo.isLoading = !button_apply_promo.isLoading
+        }
 
         initFragmentUiModel()
         checkHasPromoSellected()
@@ -92,7 +96,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     private fun initFragmentUiModel() {
         fragmentUiModel = FragmentUiModel(
                 uiState = FragmentUiModel.UiState().apply {
-                    showContainerActionBottom = true
+                    hasPresellectedPromo = false
                     hasAnyPromoSelected = false
                     hasFailedToLoad = false
                 }
@@ -100,16 +104,30 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     private fun renderFragmentState() {
-        if (fragmentUiModel.uiState.showContainerActionBottom) {
-            container_action_bottom.show()
-        } else {
-            container_action_bottom.gone()
-        }
+//        if (fragmentUiModel.uiState.hasPresellectedPromo) {
+//            container_action_bottom.show()
+//        } else {
+//            container_action_bottom.gone()
+//        }
 
         if (fragmentUiModel.uiState.hasAnyPromoSelected) {
             toolbar?.enableResetButton()
+            label_total_promo_info.show()
+            label_total_promo_amount.show()
+            button_apply_promo.show()
+            button_apply_no_promo.gone()
+            container_action_bottom.show()
         } else {
             toolbar?.disableResetButton()
+            if (fragmentUiModel.uiState.hasPresellectedPromo) {
+                label_total_promo_info.gone()
+                label_total_promo_amount.gone()
+                button_apply_promo.gone()
+                button_apply_no_promo.show()
+                container_action_bottom.show()
+            } else {
+                container_action_bottom.gone()
+            }
         }
     }
 

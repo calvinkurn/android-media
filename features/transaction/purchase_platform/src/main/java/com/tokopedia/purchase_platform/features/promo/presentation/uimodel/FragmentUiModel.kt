@@ -8,7 +8,7 @@ data class FragmentUiModel(
 ) {
 
     data class UiState(
-            var showContainerActionBottom: Boolean = false,
+            var hasPresellectedPromo: Boolean = false,
             var hasAnyPromoSelected: Boolean = false,
             var hasFailedToLoad: Boolean = false
     )
