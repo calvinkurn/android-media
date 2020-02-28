@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.autocomplete.initialstate.BaseItemInitialStateSearch;
-import com.tokopedia.autocomplete.viewmodel.BaseItemAutoCompleteSearch;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -56,6 +55,7 @@ public class AutocompleteTracking {
     public static final String CLICK_SEARCH = "click - search";
     public static final String CLICK_PROFILE_SUGGESTION = "click - profile autocomplete on suggestion list";
     public static final String CLICK_TOP_PROFILE_SUGGESTION = "click - profile autocomplete on top suggestion";
+    public static final String CLICK_REFRESH_POPULAR_SEARCH = "click refresh on popular search";
 
     public static final String ECOMMERCE = "ecommerce";
     public static final String PRODUCT_CLICK = "productClick";
@@ -193,44 +193,6 @@ public class AutocompleteTracking {
         );
     }
 
-    public static void eventClickRecentView(Context context,
-                                            String position,
-                                            BaseItemAutoCompleteSearch data) {
-        Map<String, Object> productData = convertSearchItemToProductData(data, position);
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
-                DataLayer.mapOf(EVENT, PRODUCT_CLICK,
-                        EVENT_CATEGORY, EVENTCATEGORY_TOP_NAV,
-                        EVENT_ACTION, CLICK_RECENT_VIEW_PRODUCT,
-                        EVENT_LABEL, String.
-                                format(LABEL_RECENT_VIEW_CLICK,
-                                        position,
-                                        data.getApplink()),
-                        ECOMMERCE, DataLayer.mapOf(
-                                CLICK,
-                                DataLayer.mapOf(
-                                        ACTION_FIELD, DataLayer.mapOf(LIST, RECENT_VIEW_ACTION_FIELD),
-                                        PRODUCTS, DataLayer.listOf(
-                                                productData
-                                        )
-                                )
-                        )
-                )
-        );
-    }
-
-    private static Map<String, Object> convertSearchItemToProductData(BaseItemAutoCompleteSearch data,
-                                                                      String position) {
-        return DataLayer.mapOf(
-                PRODUCT_NAME, data.getKeyword(),
-                PRODUCT_ID, data.getProductId(),
-                PRODUCT_PRICE, data.getProductPrice(),
-                PRODUCT_BRAND, NONE_OTHER,
-                PRODUCT_CATEGORY, NONE_OTHER,
-                PRODUCT_VARIANT, NONE_OTHER,
-                PRODUCT_POSITION, position
-        );
-    }
-
     public static void eventClickRecentView(String position,
                                             BaseItemInitialStateSearch data) {
         Map<String, Object> productData = convertSearchItemToProductData(data, position);
@@ -265,6 +227,15 @@ public class AutocompleteTracking {
                 PRODUCT_CATEGORY, NONE_OTHER,
                 PRODUCT_VARIANT, NONE_OTHER,
                 PRODUCT_POSITION, position
+        );
+    }
+
+    public static void eventClickRefreshPopularSearch(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                EVENT_CLICK_TOP_NAV,
+                EVENTCATEGORY_TOP_NAV + " - homepage",
+                CLICK_REFRESH_POPULAR_SEARCH,
+                ""
         );
     }
 }

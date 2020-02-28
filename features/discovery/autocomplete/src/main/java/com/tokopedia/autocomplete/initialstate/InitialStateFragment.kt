@@ -15,6 +15,7 @@ import com.tokopedia.autocomplete.AutoCompleteActivity
 import com.tokopedia.autocomplete.OnScrollListenerAutocomplete
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AppScreen
+import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.initialstate.di.DaggerInitialStateComponent
 import com.tokopedia.autocomplete.initialstate.di.InitialStateComponent
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -171,7 +172,10 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     private fun refreshPopularSearch(){
-        searchParameter?.let { presenter.refreshPopularSearch(it) }
+        searchParameter?.let {
+            AutocompleteTracking.eventClickRefreshPopularSearch()
+            presenter.refreshPopularSearch(it)
+        }
     }
 
     fun setSearchParameter(searchParameter: SearchParameter) {
