@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager
-import com.tokopedia.tokopoints.view.contract.TokoPointsHomeContract
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.model.section.SectionContent
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter

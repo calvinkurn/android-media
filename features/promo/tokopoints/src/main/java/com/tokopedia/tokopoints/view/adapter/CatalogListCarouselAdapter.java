@@ -18,7 +18,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.tokopoints.R;
 import com.tokopedia.tokopoints.view.catalogdetail.CouponCatalogDetailsActivity;
-import com.tokopedia.tokopoints.view.contract.CatalogPurchaseRedemptionPresenter;
+import com.tokopedia.tokopoints.view.cataloglisting.CatalogPurchaseRedemptionPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity;
 import com.tokopedia.tokopoints.view.util.AnalyticsTrackerUtil;
 import com.tokopedia.tokopoints.view.util.CommonConstant;

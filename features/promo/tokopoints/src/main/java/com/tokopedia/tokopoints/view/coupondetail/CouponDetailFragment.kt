@@ -40,7 +40,7 @@ import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity
 import com.tokopedia.tokopoints.view.customview.SwipeCardView
 import com.tokopedia.tokopoints.view.fragment.CloseableBottomSheetFragment
-import com.tokopedia.tokopoints.view.fragment.ValidateMerchantPinFragment
+import com.tokopedia.tokopoints.view.validatePin.ValidateMerchantPinFragment
 import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 import com.tokopedia.tokopoints.view.model.CouponSwipeDetail
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate

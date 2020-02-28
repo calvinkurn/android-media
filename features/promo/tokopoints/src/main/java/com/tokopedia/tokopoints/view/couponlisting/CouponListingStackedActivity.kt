@@ -22,7 +22,6 @@ import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.BundleModule
 import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
-import com.tokopedia.tokopoints.view.contract.StackedCouponActivityContract
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.Companion.REQUEST_CODE_STACKED_ADAPTER
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedFragment.Companion.REQUEST_CODE_STACKED_IN_ADAPTER
 import com.tokopedia.tokopoints.view.model.CouponFilterItem
