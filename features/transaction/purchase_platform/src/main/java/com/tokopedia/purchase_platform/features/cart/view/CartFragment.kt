@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.*
 import com.google.android.material.appbar.AppBarLayout
@@ -54,7 +55,9 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
+import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
+import com.tokopedia.promocheckout.common.view.widget.ViewUtils
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
@@ -109,6 +112,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var cartRecyclerView: RecyclerView
     lateinit var btnToShipment: TextView
     lateinit var tvTotalPrice: TextView
+    lateinit var tvPromoBenefitInfo: TextView
+    lateinit var tvPromoUsageInfo: TextView
+    lateinit var clPromoFunnel: ConstraintLayout
     lateinit var rlContent: RelativeLayout
     lateinit var cbSelectAll: CheckBox
     lateinit var llHeader: LinearLayout
@@ -118,6 +124,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var bottomLayoutShadow: View
     lateinit var llNetworkErrorView: LinearLayout
     lateinit var llCartContainer: LinearLayout
+    lateinit var llPromoCheckout: LinearLayout
+    lateinit var promoCheckoutBtn: ButtonPromoCheckoutView
 
     @Inject
     lateinit var dPresenter: ICartListPresenter
@@ -372,6 +380,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartRecyclerView = view.findViewById(R.id.rv_cart)
         btnToShipment = view.findViewById(R.id.go_to_courier_page_button)
         tvTotalPrice = view.findViewById(R.id.tv_total_prices)
+        // tvPromoBenefitInfo = view.findViewById(R.id.tv_promo_benefit)
+        // tvPromoUsageInfo = view.findViewById(R.id.tv_promo_usage)
+        // clPromoFunnel = view.findViewById(R.id.cl_promo_funnel)
         rlContent = view.findViewById(R.id.rl_content)
         llNetworkErrorView = view.findViewById(R.id.ll_network_error_view)
         cardHeader = view.findViewById(R.id.card_header)
@@ -381,6 +392,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         llHeader = view.findViewById(R.id.ll_header)
         btnRemove = view.findViewById(R.id.btn_delete_all_cart)
         llCartContainer = view.findViewById(R.id.ll_cart_container)
+        llPromoCheckout = view.findViewById(R.id.ll_promo_checkout)
+        promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
 
         activity?.let {
             refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
@@ -427,10 +440,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                         if ((parent.layoutManager as GridLayoutManager).findFirstVisibleItemPosition() >= firstCartSectionHeaderPosition) {
                             if (cardHeader.visibility != View.GONE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
                                 cardHeader.gone()
+                                llPromoCheckout.gone()
                                 setToolbarShadowVisibility(true)
                             }
                         } else if (cardHeader.visibility != View.VISIBLE && !noAvailableItems && bottomLayout.visibility == View.VISIBLE) {
                             cardHeader.show()
+                            llPromoCheckout.show()
                             setToolbarShadowVisibility(false)
                         }
                     }
@@ -1203,6 +1218,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             cartAdapter.resetData()
 
             renderTickerAnnouncement(it)
+            renderPromoCheckout(it)
 
             if (it.shopGroupAvailableDataList.isEmpty() && it.shopGroupWithErrorDataList.isEmpty()) {
                 renderCartEmpty(it)
@@ -1283,6 +1299,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         if (tickerData?.isValid(CART_PAGE) == true) {
             cartAdapter.addCartTicker(TickerAnnouncementHolderData(tickerData.id.toString(), tickerData.message))
         }
+    }
+
+    private fun renderPromoCheckout(cartListData: CartListData) {
+        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
     }
 
     private fun renderPromoGlobal(promoStackingData: PromoStackingData) {
@@ -1414,6 +1434,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.gone()
         bottomLayoutShadow.gone()
         cardHeader.gone()
+        llPromoCheckout.gone()
     }
 
     private fun showMainContainer() {
@@ -1422,6 +1443,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.show()
         bottomLayoutShadow.show()
         cardHeader.show()
+        llPromoCheckout.show()
     }
 
     private fun showErrorContainer() {
@@ -1430,6 +1452,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.gone()
         bottomLayoutShadow.gone()
         cardHeader.gone()
+        llPromoCheckout.gone()
     }
 
     private fun showEmptyCartContainer() {
@@ -1437,6 +1460,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.gone()
         bottomLayoutShadow.gone()
         cardHeader.gone()
+        llPromoCheckout.gone()
     }
 
     private fun showSnackbarRetry(message: String) {
@@ -1558,9 +1582,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         this.noAvailableItems = noAvailableItems
         if (noAvailableItems) {
             cardHeader.visibility = View.GONE
+            llPromoCheckout.gone()
             cartAdapter.removeCartSelectAll()
         } else {
             cardHeader.visibility = View.VISIBLE
+            llPromoCheckout.show()
             cartAdapter.addCartSelectAll()
         }
         tvTotalPrice.text = subtotalPrice

@@ -41,6 +41,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
     private int productDiscountAmount;
     private String cashbackLabel;
     private int cashbackAmount;
+    private String totalPromoCheckoutLabel;
+    private String totalPromoCheckoutAmount;
 
     public ShipmentCostModel() {
     }
@@ -76,6 +78,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         productDiscountAmount = in.readInt();
         cashbackLabel = in.readString();
         cashbackAmount = in.readInt();
+        totalPromoCheckoutLabel = in.readString();
+        totalPromoCheckoutAmount = in.readString();
     }
 
     @Override
@@ -110,6 +114,8 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         dest.writeInt(productDiscountAmount);
         dest.writeString(cashbackLabel);
         dest.writeInt(cashbackAmount);
+        dest.writeString(totalPromoCheckoutLabel);
+        dest.writeString(totalPromoCheckoutAmount);
     }
 
     @Override
@@ -365,4 +371,11 @@ public class ShipmentCostModel implements Parcelable, ShipmentData {
         this.cashbackAmount = cashbackAmount;
     }
 
+    public String getTotalPromoCheckoutLabel() { return totalPromoCheckoutLabel; }
+
+    public void setTotalPromoCheckoutLabel(String totalPromoCheckoutLabel) { this.totalPromoCheckoutLabel = totalPromoCheckoutLabel; }
+
+    public String getTotalPromoCheckoutAmount() { return totalPromoCheckoutAmount; }
+
+    public void setTotalPromoCheckoutAmount(String totalPromoCheckoutAmount) { this.totalPromoCheckoutAmount = totalPromoCheckoutAmount; }
 }

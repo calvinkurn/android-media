@@ -25,7 +25,9 @@ data class CartListData(
         var globalCouponAttrData: GlobalCouponAttrData? = null,
         var defaultPromoDialogTab: String? = null,
         var isAllSelected: Boolean = false,
-        var isShowOnboarding: Boolean = false
+        var isShowOnboarding: Boolean = false,
+        var promoBenefitInfo: String? = null,
+        var promoUsageInfo: String? = null
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -40,7 +42,9 @@ data class CartListData(
             parcel.readParcelable(GlobalCouponAttrData::class.java.classLoader),
             parcel.readString(),
             parcel.readByte() != 0.toByte(),
-            parcel.readByte() != 0.toByte()) {
+            parcel.readByte() != 0.toByte(),
+            parcel.readString(),
+            parcel.readString()) {
     }
 
     override fun equals(obj: Any?): Boolean {
@@ -69,6 +73,8 @@ data class CartListData(
         parcel.writeString(defaultPromoDialogTab)
         parcel.writeByte(if (isAllSelected) 1 else 0)
         parcel.writeByte(if (isShowOnboarding) 1 else 0)
+        parcel.writeString(promoBenefitInfo)
+        parcel.writeString(promoUsageInfo)
     }
 
     override fun describeContents(): Int {
