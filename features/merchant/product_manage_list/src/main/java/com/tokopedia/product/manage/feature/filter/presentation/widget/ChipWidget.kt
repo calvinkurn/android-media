@@ -3,8 +3,8 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.item.DeletableItemView
 import com.tokopedia.product.manage.oldlist.R
 import kotlinx.android.synthetic.main.widget_chip.view.*
 
@@ -26,7 +26,29 @@ class ChipWidget : BaseCustomView {
         View.inflate(context, R.layout.widget_chip, this)
     }
 
-    fun bind(name: String) {
+    fun bind(name: String, chipClickListener: ChipClickListener, isSelected: Boolean) {
         item_name.text = name
+        val originalColor = item_name.currentTextColor
+        if(isSelected) {
+            this.isSelected = true
+            item_name.setTextColor(ContextCompat.getColor(this.context,com.tokopedia.unifyprinciples.R.color.Green_G500))
+        }
+        this.setOnClickListener {
+            toggleSelected(originalColor)
+            chipClickListener.onChipClicked()
+        }
     }
+
+    private fun toggleSelected(originalColor: Int) {
+        isSelected = !isSelected
+        if(isSelected) {
+            item_name.setTextColor(ContextCompat.getColor(this.context,com.tokopedia.unifyprinciples.R.color.Green_G500))
+        } else {
+            item_name.setTextColor(originalColor)
+        }
+    }
+}
+
+interface ChipClickListener {
+    fun onChipClicked()
 }

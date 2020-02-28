@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="@dimen/layout_lvl1"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_18"
+    android:paddingBottom="@dimen/dp_18"
+    android:paddingLeft="@dimen/layout_lvl2"
+    android:paddingStart="@dimen/layout_lvl2"
+    android:paddingRight="@dimen/dp_18"
+    android:paddingEnd="@dimen/dp_18"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
@@ -22,9 +27,17 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl0"
         android:background="@null"
+        android:visibility="invisible"
         app:srcCompat="@drawable/ic_check_green_24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_header"
         app:layout_constraintBottom_toBottomOf="@id/tv_header" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_header"
+        app:layout_constraintStart_toStartOf="@id/tv_header"
+        app:layout_constraintEnd_toEndOf="@id/check"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

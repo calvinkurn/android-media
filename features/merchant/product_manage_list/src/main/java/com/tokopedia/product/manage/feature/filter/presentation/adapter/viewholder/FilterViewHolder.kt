@@ -11,7 +11,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.widget.*
 import com.tokopedia.product.manage.oldlist.R
 import kotlinx.android.synthetic.main.widget_header.view.*
 
-class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener) : AbstractViewHolder<FilterViewModel>(view), ItemClickListener {
+class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, chipClickListener: ChipClickListener) : AbstractViewHolder<FilterViewModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_filter
@@ -32,7 +32,7 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener) :
         recyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp))
         recyclerView.layoutManager = layoutManager
         ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
-        adapter = ChipsAdapter(this)
+        adapter = ChipsAdapter(chipClickListener)
         recyclerView.adapter = adapter
     }
 
@@ -41,13 +41,9 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener) :
         headerWidget.arrow.setOnClickListener {
 
         }
-        adapter.setData(element.names)
+        adapter.setData(element.names, element.selectData)
         seeAllWidget.setOnClickListener {
             seeAllListener.onSeeAll(element)
         }
-    }
-
-    override fun onItemClicked() {
-
     }
 }

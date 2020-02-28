@@ -33,6 +33,10 @@
             android:label="@string/title_filter_but"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.product.manage.feature.filter.presentation.activity.ProductManageFilterExpandActivity"
+            android:label="@string/filter_expand_activity"
+            android:screenOrientation="portrait" />
 
     </application>
 </manifest>

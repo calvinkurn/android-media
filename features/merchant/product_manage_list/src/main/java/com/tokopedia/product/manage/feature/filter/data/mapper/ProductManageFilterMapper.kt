@@ -23,56 +23,92 @@ class ProductManageFilterMapper {
             return filterViewModels
         }
 
+        fun mapFilterViewModelsToSelectViewModels(filterViewModel: FilterViewModel): List<SelectViewModel> {
+            val selectViewModels = mutableListOf<SelectViewModel>()
+            for(i in filterViewModel.names.indices) {
+                selectViewModels.add(
+                        SelectViewModel(
+                                filterViewModel.names[i],
+                                filterViewModel.id[i],
+                                filterViewModel.selectData[i]
+                        )
+                )
+            }
+            return selectViewModels
+        }
+
+        fun mapFilterViewModelsToChecklistViewModels(filterViewModel: FilterViewModel): List<ChecklistViewModel> {
+            val checklistViewModels = mutableListOf<ChecklistViewModel>()
+            for(i in filterViewModel.names.indices) {
+                checklistViewModels.add(
+                        ChecklistViewModel(
+                                filterViewModel.names[i],
+                                filterViewModel.id[i],
+                                filterViewModel.selectData[i]
+                        )
+                )
+            }
+            return checklistViewModels
+        }
+
         private fun mapMetaResponseToSortOptions(productListMetaData: ProductListMetaData): FilterViewModel {
             val names = mutableListOf<String>()
             val ids = mutableListOf<String>()
             val values = mutableListOf<String>()
+            val selectData = mutableListOf<Boolean>()
             for (sort in productListMetaData.sorts) {
                 if(sort.name.isNotEmpty()) {
                     names.add(sort.name)
                     ids.add(sort.id)
                     values.add(sort.value)
+                    selectData.add(false)
                 }
             }
-            return FilterViewModel(SORT_HEADER, names, ids, values)
+            return FilterViewModel(SORT_HEADER, names, ids, values, selectData)
         }
 
         private fun mapEtalaseResponseToEtalaseOptions(etalaseResponse: ArrayList<ShopEtalaseModel>): FilterViewModel {
             val names = mutableListOf<String>()
             val ids = mutableListOf<String>()
+            val selectData = mutableListOf<Boolean>()
             for (etalase in etalaseResponse) {
                 if(etalase.name.isNotEmpty()) {
                     names.add(etalase.name)
                     ids.add(etalase.id)
+                    selectData.add(false)
                 }
             }
-            return FilterViewModel(ETALASE_HEADER, names, ids)
+            return FilterViewModel(ETALASE_HEADER, names, ids, selectData = selectData)
         }
 
         private fun mapCategoryResponseToCategoryOptions(categoriesResponse: CategoriesResponse): FilterViewModel {
             val categories = mutableListOf<String>()
             val ids = mutableListOf<String>()
+            val selectData = mutableListOf<Boolean>()
             for (category in categoriesResponse.categories.categories) {
                 if(category.name.isNotEmpty()) {
                     categories.add(category.name)
                     ids.add(category.id)
+                    selectData.add(false)
                 }
             }
-            return FilterViewModel(CATEGORY_HEADER, categories, ids)
+            return FilterViewModel(CATEGORY_HEADER, categories, ids, selectData = selectData)
         }
 
         private fun mapMetaResponseToFilterOptions(productListMetaData: ProductListMetaData): FilterViewModel {
             val filters = mutableListOf<String>()
             val ids = mutableListOf<String>()
             val values = mutableListOf<String>()
+            val selectData = mutableListOf<Boolean>()
             for (filter in productListMetaData.filters) {
                 if(filter.name.isNotEmpty()) {
                     filters.add(filter.name)
                     filters.add(filter.id)
                     filters.add(filter.value.toString())
+                    selectData.add(false)
                 }
             }
-            return FilterViewModel(OTHER_FILTER_HEADER, filters, ids, values)
+            return FilterViewModel(OTHER_FILTER_HEADER, filters, ids, values, selectData)
         }
     }
 }

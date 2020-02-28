@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.filter.presentation.fragment
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,22 +17,24 @@ import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilt
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
-import com.tokopedia.product.manage.feature.filter.presentation.ProductManageFilterExpandActivity
+import com.tokopedia.product.manage.feature.filter.presentation.activity.ProductManageFilterExpandActivity
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAdapter
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAdapterTypeFactory
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.FilterAdapterTypeFactory
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.oldlist.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_filter.*
 import javax.inject.Inject
 
-class ProductManageFilterFragment : BottomSheetDialogFragment(),
+class ProductManageFilterFragment : BottomSheetUnify(),
         HasComponent<ProductManageFilterComponent>,
-        SeeAllListener {
+        SeeAllListener, ChipClickListener{
 
     companion object {
         const val ACTIVITY_EXPAND_FLAG = "expand_type"
@@ -42,8 +45,13 @@ class ProductManageFilterFragment : BottomSheetDialogFragment(),
         const val OTHER_FILTER_CACHE_MANAGER_KEY = "filter"
         const val BOTTOMSHEET_TITLE = "Filter"
 
-        fun createInstance() : ProductManageFilterFragment {
-            return ProductManageFilterFragment()
+        fun createInstance(context: Context) : ProductManageFilterFragment {
+            return ProductManageFilterFragment().apply{
+                val view = View.inflate(context, R.layout.fragment_filter,null)
+                setChild(view)
+                setTitle(BOTTOMSHEET_TITLE)
+                clearClose(true)
+            }
         }
     }
 
@@ -69,18 +77,13 @@ class ProductManageFilterFragment : BottomSheetDialogFragment(),
         savedInstanceManager?.onSave(outState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_filter, container, false)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         layoutManager = LinearLayoutManager(this.context)
         recyclerView = view.findViewById(R.id.filter_recycler_view)
-        val adapterTypeFactory = FilterAdapterTypeFactory(this)
+        val adapterTypeFactory = FilterAdapterTypeFactory(this, this)
         filterAdapter = FilterAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = filterAdapter
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         productManageFilterViewModel.getData(userSession.shopId)
         observeCombinedResponse()
     }
@@ -122,6 +125,9 @@ class ProductManageFilterFragment : BottomSheetDialogFragment(),
         }
         intent.putExtra(CACHE_MANAGER_KEY, savedInstanceManager?.id)
         this.activity?.startActivity(intent)
+    }
+
+    override fun onChipClicked() {
 
     }
 
@@ -136,13 +142,15 @@ class ProductManageFilterFragment : BottomSheetDialogFragment(),
                     filterAdapter?.updateData(ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data))
                 }
                 is Fail -> {
-                    showErrorMessage()
+                    this.dismiss()
                 }
             }
         })
     }
 
-    private fun showErrorMessage() {
-
+    private fun initView() {
+        btn_close_bottom_sheet.setOnClickListener {
+            this.dismiss()
+        }
     }
 }

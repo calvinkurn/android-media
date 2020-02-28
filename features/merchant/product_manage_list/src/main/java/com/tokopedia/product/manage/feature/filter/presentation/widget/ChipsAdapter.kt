@@ -4,22 +4,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.design.base.BaseCustomView
-import com.tokopedia.design.item.DeletableItemView
 import com.tokopedia.product.manage.oldlist.R
 
-class ChipsAdapter(private val listener: ItemClickListener) : RecyclerView.Adapter<ChipsAdapter.ItemViewHolder>() {
-    private var data: List<String> = listOf()
+class ChipsAdapter(private val listener: ChipClickListener) : RecyclerView.Adapter<ChipsAdapter.ItemViewHolder>() {
+    private var namesData: List<String> = listOf()
+    private var selectionData: List<Boolean> = listOf()
 
     companion object {
         const val MAXIMUM_CHIPS = 5
     }
 
-    fun setData(data: List<String>) {
-        if(data.size > MAXIMUM_CHIPS) {
-            this.data = data.subList(0,MAXIMUM_CHIPS-1)
+    fun setData(namesData: List<String>, selectionData: List<Boolean>) {
+        if(namesData.size > MAXIMUM_CHIPS) {
+            this.namesData = namesData.subList(0, MAXIMUM_CHIPS-1)
+            this.selectionData = selectionData.subList(0, MAXIMUM_CHIPS-1)
         } else {
-            this.data = data
+            this.namesData = namesData
+            this.selectionData = selectionData
         }
         notifyDataSetChanged()
     }
@@ -31,22 +32,19 @@ class ChipsAdapter(private val listener: ItemClickListener) : RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(namesData[position], selectionData[position])
     }
 
     override fun getItemCount(): Int {
-        return data.size
+        return namesData.size
     }
 
-    inner class ItemViewHolder(itemView: View, private val clickListener: ItemClickListener) : RecyclerView.ViewHolder(itemView) {
+    inner class ItemViewHolder(itemView: View,
+                               private val clickListener: ChipClickListener) : RecyclerView.ViewHolder(itemView) {
         private var chips: ChipWidget =  itemView.findViewById(R.id.chips_item)
 
-        fun bind(name: String) {
-            chips.bind(name)
+        fun bind(name: String, isSelected: Boolean) {
+            chips.bind(name, clickListener, isSelected)
         }
     }
-}
-
-interface ItemClickListener {
-    fun onItemClicked()
 }

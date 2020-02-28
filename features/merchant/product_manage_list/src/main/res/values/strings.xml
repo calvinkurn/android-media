@@ -107,5 +107,6 @@
     <string name="filter_see_all">Lihat Semua</string>
     <string name="filter_button">Tampilkan Produk</string>
     <string name="filter_search_bar">Cari Kategori</string>
+    <string name="filter_expand_activity">Expand</string>
 
 </resources>
