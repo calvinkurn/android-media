@@ -91,7 +91,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 )
         )
         private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
-                event = Event.PROMO_CLICK,
+                event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.CLICK_ON.format(RECOMMENDATION_LIST_CAROUSEL_PRODUCT),
                 eventLabel = grid.attribution,
