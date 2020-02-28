@@ -6,7 +6,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true">
         <activity
-            android:name="com.tokopedia.sellerhome.view.home.SellerHomeActivity"
+            android:name="com.tokopedia.sellerhome.view.activity.SellerHomeActivity"
             android:exported="true"
             android:label="@string/drawer_title_home"
             android:launchMode="singleTask"

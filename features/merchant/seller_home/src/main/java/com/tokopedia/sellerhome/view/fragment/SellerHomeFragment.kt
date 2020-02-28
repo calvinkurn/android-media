@@ -1,11 +1,14 @@
 package com.tokopedia.sellerhome.view.fragment
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +20,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.ShopStatus
@@ -30,12 +34,14 @@ import com.tokopedia.sellerhome.view.viewholder.*
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_sah.view.*
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -119,6 +125,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun setupView() = view?.run {
+        (activity as AppCompatActivity).setSupportActionBar(sahToolbar)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            activity?.window?.statusBarColor = context.getResColor(R.color.Neutral_N0)
+        activity?.setLightStatusBar(true)
+
         val gridLayoutManager = GridLayoutManager(context, 2).apply {
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
@@ -141,6 +152,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         sahGlobalError.setActionClickListener {
             reloadPage()
+        }
+
+        sahNestedScrollView.setOnScrollChangeListener { v: NestedScrollView, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
+            showToolbarShadow(scrollY != 0)
+        }
+    }
+
+    private fun showToolbarShadow(isShown: Boolean) = view?.run {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return@run
+        if (isShown) {
+            sahToolbar.elevation = 10f
+        } else {
+            sahToolbar.elevation = 0f
         }
     }
 
@@ -302,15 +326,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     private fun getWidgetsData(widgets: List<BaseWidgetUiModel<*>>) {
         widgets.forEachIndexed { i, widget ->
-                    when (widget.widgetType) {
-                        WidgetType.CARD -> getCardData()
-                        WidgetType.LINE_GRAPH -> getLineGraphData()
-                        WidgetType.PROGRESS -> getProgressData()
-                        WidgetType.CAROUSEL -> getCarouselData()
-                        WidgetType.POST_LIST -> getPostData()
-                        else -> adapter.notifyItemChanged(i)
-                    }
-                }
+            when (widget.widgetType) {
+                WidgetType.CARD -> getCardData()
+                WidgetType.LINE_GRAPH -> getLineGraphData()
+                WidgetType.PROGRESS -> getProgressData()
+                WidgetType.CAROUSEL -> getCarouselData()
+                WidgetType.POST_LIST -> getPostData()
+                else -> adapter.notifyItemChanged(i)
+            }
+        }
     }
 
     private fun setOnErrorGetLayout() = view?.run {

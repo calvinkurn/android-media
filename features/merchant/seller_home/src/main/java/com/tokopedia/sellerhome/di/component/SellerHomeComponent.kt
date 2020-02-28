@@ -5,6 +5,7 @@ import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.di.module.SellerHomeUseCaseModule
 import com.tokopedia.sellerhome.di.module.SellerHomeViewModelModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import dagger.Component
 
@@ -22,6 +23,8 @@ import dagger.Component
         dependencies = [BaseAppComponent::class]
 )
 interface SellerHomeComponent {
+
+    fun inject(sellerHomeActivity: SellerHomeActivity)
 
     fun inject(sellerHomeFragment: SellerHomeFragment)
 }

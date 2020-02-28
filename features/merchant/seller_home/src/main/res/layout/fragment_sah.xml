@@ -6,6 +6,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/sahToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        app:subtitleTextAppearance="?subtitleTextAppearance"
+        app:theme="?toolbarTheme"
+        app:titleTextAppearance="?titleTextAppearance" />
+
     <RelativeLayout
         android:id="@+id/relTicker"
         android:layout_width="match_parent"
@@ -52,9 +61,11 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.core.widget.NestedScrollView
+                android:id="@+id/sahNestedScrollView"
                 android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="@dimen/layout_lvl0"
                 android:fillViewport="true"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -70,8 +81,8 @@
                         android:id="@+id/recycler_view"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/sah_dimen_12dp"
                         android:layout_marginTop="@dimen/spacing_lvl2"
+                        android:layout_marginBottom="@dimen/sah_dimen_12dp"
                         android:background="@android:color/transparent"
                         android:overScrollMode="never"
                         android:paddingStart="@dimen/spacing_lvl2"

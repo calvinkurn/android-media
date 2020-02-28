@@ -10,5 +10,12 @@
     <string name="sah_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="sah_reload">Muat ulang</string>
 
+    <!--bottom nav-->
+    <string name="sah_home">Home</string>
+    <string name="sah_product">Product</string>
+    <string name="sah_chat">Chat</string>
+    <string name="sah_order">Order</string>
+    <string name="sah_others">Lainnya</string>
+
     <string name="sah_ticker_warning">#ecdb77</string>
 </resources>
