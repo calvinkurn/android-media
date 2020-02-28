@@ -97,6 +97,7 @@ import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*
 import javax.inject.Inject
+import com.chuckerteam.chucker.api.Chucker
 
 /**
  * @author anggaprasetiyo on 18/01/18.

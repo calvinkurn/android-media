@@ -23,11 +23,6 @@ android {
 }
 
 dependencies {
-    if (rootProject.ext.debugToolsEnabled) {
-        implementation project(rootProject.ext.libraries.analyticsDebugger)
-    } else {
-        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
-    }
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -67,3 +62,4 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../tools/set_debug_tools.gradle'
