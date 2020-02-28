@@ -8,6 +8,8 @@ import com.tokopedia.common_tradein.model.ValidateTradePDP
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.tradein.R
 import com.tokopedia.tradein.repository.TradeInRepository
+import com.tokopedia.tradein.view.viewcontrollers.BaseTradeInActivity.TRADEIN_MONEYIN
+import com.tokopedia.user.session.UserSession
 import java.util.HashMap
 import javax.inject.Inject
 
@@ -15,16 +17,18 @@ class CheckMoneyInUseCase @Inject constructor(
         @ApplicationContext private val context: Context,
         private val repository: TradeInRepository) {
 
+    val fcmDeviceId = UserSession(context).deviceId
 
     fun createRequestParams(modelId: Int, tradeInParams: TradeInParams, userId: String): HashMap<String, Any> {
-        tradeInParams.deviceId = TradeInUtils.getDeviceId(context)
+        if (tradeInParams.deviceId == null || tradeInParams.deviceId == fcmDeviceId)
+            tradeInParams.deviceId = TradeInUtils.getDeviceId(context)
         try{
             tradeInParams.userId = userId.toInt()
         } catch (e: NumberFormatException) {
             e.printStackTrace()
             tradeInParams.userId = 0
         }
-        tradeInParams.tradeInType = 2
+        tradeInParams.tradeInType = TRADEIN_MONEYIN
         tradeInParams.modelID = modelId
         val variables = HashMap<String, Any>()
         variables["params"] = tradeInParams

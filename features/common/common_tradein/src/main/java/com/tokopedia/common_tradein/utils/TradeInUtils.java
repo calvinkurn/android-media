@@ -5,18 +5,27 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
+
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import android.telephony.TelephonyManager;
 
-import androidx.core.content.ContextCompat;
 
+import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.user.session.UserSession;
 
 import static android.content.Context.TELEPHONY_SERVICE;
 
 public class TradeInUtils {
 
+    private static String CACHE_IMEI = "CACHE_IMEI";
+    private static String IMEI_NUMBER = "IMEI_NUMBER";
+
     public static String getDeviceId(Context context) {
         try {
+            if (getImeiNumber(context) != null) {
+                return getImeiNumber(context);
+            }
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(TELEPHONY_SERVICE);
             if (!(ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) == 0)) {
                 Bundle tradeInData = ((Activity) context).getIntent().getExtras();
@@ -45,5 +54,17 @@ public class TradeInUtils {
             var3.printStackTrace();
             return null;
         }
+    }
+
+    public static void setImeiNumber(Context context, String imeiNumber){
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_IMEI);
+        localCacheHandler.putString(IMEI_NUMBER, imeiNumber);
+        localCacheHandler.applyEditor();
+    }
+
+    @Nullable
+    private static String getImeiNumber(Context context){
+        LocalCacheHandler localCacheHandler = new LocalCacheHandler(context, CACHE_IMEI);
+        return localCacheHandler.getString(IMEI_NUMBER);
     }
 }

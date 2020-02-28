@@ -36,10 +36,10 @@ class MoneyInCheckoutViewModel @Inject constructor(
     fun getPickupScheduleOption() {
         launchCatchError(block = {
             val response = moneyInPickupScheduleUseCase.getPickupScheduleOption()
-            pickupScheduleOptionLiveData.value = Success(response.getPickupScheduleOption)
+            pickupScheduleOptionLiveData.value = Success(response.getPickupScheduleOption!!)
         }, onError = {
             it.printStackTrace()
-            errorLiveData.value = ScheduleTimeError(it.localizedMessage)
+            errorLiveData.value = ScheduleTimeError(it.localizedMessage ?: "")
         })
     }
 
@@ -49,7 +49,7 @@ class MoneyInCheckoutViewModel @Inject constructor(
             courierRatesLiveData.value = Success(response.ratesV4.data)
         }, onError = {
             it.printStackTrace()
-            errorLiveData.value = CourierPriceError(it.localizedMessage)
+            errorLiveData.value = CourierPriceError(it.localizedMessage ?: "")
         })
     }
 
@@ -64,7 +64,7 @@ class MoneyInCheckoutViewModel @Inject constructor(
             }
         }, onError = {
             it.printStackTrace()
-            errorLiveData.value = MutationCheckoutError(it.localizedMessage)
+            errorLiveData.value = MutationCheckoutError(it.localizedMessage ?: "")
         })
     }
 
