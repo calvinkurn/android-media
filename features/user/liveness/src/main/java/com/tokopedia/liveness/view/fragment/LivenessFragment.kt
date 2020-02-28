@@ -336,9 +336,6 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
         }
     }
 
-    /**
-     * called by local liveness detection success
-     */
     override fun onDetectionSuccess() {
         analytics.eventSuccessdHeadDetection()
         livenessView?.getLivenessData(object : LivenessGetFaceDataCallback {
@@ -349,7 +346,6 @@ class LivenessFragment : BaseDaggerFragment(), Detector.DetectorInitCallback, Li
             }
 
             override fun onGetFaceDataSuccess(entity: BaseResultEntity) {
-                // liveness detection success
                 setSuccessResultData()
             }
 

@@ -79,11 +79,11 @@ class BackgroundOverlay : View {
         val width = width
         val height = height
 
-        val radius: Float
-        radius = if (width < height)
+        val radius = if (width < height) {
             width / 2.7f
-        else
+        } else {
             height / 2.7f
+        }
 
         mPath.addCircle((right / 2).toFloat(),
                 (bottom / 3).toFloat(),
@@ -104,7 +104,6 @@ class BackgroundOverlay : View {
     }
 
     companion object {
-
         private const val CONST_STROKE_WIDTH = 1F
         private const val CONST_BORDER_STROKE_WIDTH = 10F
         private const val BACKGROUND_COLOR = "#ae000000"

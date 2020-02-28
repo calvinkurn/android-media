@@ -21,8 +21,8 @@
 
         <ImageView
             android:id="@+id/image_selfie_correct"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
+            android:layout_width="@dimen/layout_lvl9"
+            android:layout_height="@dimen/layout_lvl9"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/image_selfie_wrong"
@@ -31,8 +31,8 @@
 
         <ImageView
             android:id="@+id/image_selfie_wrong"
-            android:layout_width="128dp"
-            android:layout_height="128dp"
+            android:layout_width="@dimen/layout_lvl9"
+            android:layout_height="@dimen/layout_lvl9"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toRightOf="@id/image_selfie_correct"
@@ -52,10 +52,10 @@
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/vertical_guide"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="@dimen/kyc_centralized_0dp"
+            android:layout_height="@dimen/kyc_centralized_0dp"
             android:orientation="horizontal"
-            app:layout_constraintGuide_begin="144dp" />
+            app:layout_constraintGuide_begin="@dimen/kyc_centralized_144dp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/title"

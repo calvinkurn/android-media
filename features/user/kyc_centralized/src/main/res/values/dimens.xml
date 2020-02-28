@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="kyc_centralized_0dp">0dp</dimen>
     <dimen name="kyc_centralized_1dp">1dp</dimen>
     <dimen name="kyc_centralized_4dp">4dp</dimen>
     <dimen name="kyc_centralized_17dp">17dp</dimen>
