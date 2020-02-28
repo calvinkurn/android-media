@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
@@ -22,13 +21,15 @@ class PromoRecommendationViewHolder(private val view: View,
     override fun bind(element: PromoRecommendationUiModel) {
         if (element.uiState.isButtonSelectEnabled) {
             itemView.button_apply_promo_recommendation.setOnClickListener {
-                playAnimation()
+                itemView.button_apply_promo_recommendation.isLoading = true
                 listener.onClickApplyRecommendedPromo(element)
             }
             itemView.image_check_promo_recommendation.gone()
             itemView.button_apply_promo_recommendation.isEnabled = true
             itemView.button_apply_promo_recommendation.text = "Pilih"
         } else {
+            itemView.button_apply_promo_recommendation.isLoading = false
+            playAnimation()
             itemView.image_check_promo_recommendation.show()
             itemView.button_apply_promo_recommendation.isEnabled = false
             itemView.button_apply_promo_recommendation.text = "Dipilih"
