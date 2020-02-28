@@ -12,6 +12,8 @@ import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import java.lang.StringBuilder
 
@@ -46,8 +48,10 @@ class PopularKeywordAdapter(val dataList: List<PopularKeywordViewModel>,
         fun bind(data : PopularKeywordViewModel, popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener, channel: DynamicHomeChannel.Channels, position: Int) {
             ivImage.loadImage(data.imageUrl)
             tvProduct.text = data.title
-            val countString = StringBuilder().append(data.productCount).append(" Produk")
-            tvCount.text = countString
+            if (data.productCount.isNotEmpty()) {
+                tvCount.show()
+                tvCount.text = data.productCount
+            } else tvCount.hide()
             itemView.addOnImpressionListener(data.impressHolder) {
                 popularKeywordListener.onPopularKeywordItemImpressed(channel, position, data.title)
             }
