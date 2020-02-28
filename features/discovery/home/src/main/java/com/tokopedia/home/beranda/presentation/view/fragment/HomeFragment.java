@@ -316,7 +316,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         homeMainToolbar = view.findViewById(R.id.toolbar);
-        homeMainToolbar.setVisibility(View.GONE);
         statusBarBackground = view.findViewById(R.id.status_bar_bg);
         homeRecyclerView = view.findViewById(R.id.list);
         homeRecyclerView.setHasFixedSize(true);
