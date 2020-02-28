@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -24,6 +25,7 @@ import com.tokopedia.settingbank.banklist.v2.analytics.BankSettingAnalytics
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.domain.*
 import com.tokopedia.settingbank.banklist.v2.view.activity.AddBankActivity
+import com.tokopedia.settingbank.banklist.v2.view.activity.ChooseBankActivity
 import com.tokopedia.settingbank.banklist.v2.view.viewModel.*
 import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.settingbank.banklist.v2.view.widgets.BankTNCBottomSheet
@@ -57,7 +59,6 @@ class AddBankFragment : BaseDaggerFragment() {
     private lateinit var addAccountViewModel: AddAccountViewModel
 
     private lateinit var tncBottomSheet: BankTNCBottomSheet
-    private lateinit var bankListBottomSheet: CloseableBottomSheetFragment
     private lateinit var confirmationDialog: AlertDialog
 
     val builder: AddBankRequest.Builder = AddBankRequest.Builder()
@@ -86,8 +87,6 @@ class AddBankFragment : BaseDaggerFragment() {
         checkAccountNumberViewModel = viewModelProvider.get(CheckAccountNumberViewModel::class.java)
         accountHolderNameViewModel = viewModelProvider.get(AccountHolderNameViewModel::class.java)
         addAccountViewModel = viewModelProvider.get(AddAccountViewModel::class.java)
-        if (::bank.isInitialized)
-            textWatcherViewModel.onBankSelected(bank)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -96,22 +95,34 @@ class AddBankFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setDownArrowBankName()
         setTncText()
         startObservingViewModels()
         setBankName()
         etBankName.setOnClickListener { openBankListForSelection() }
         btnPeriksa.setOnClickListener { checkAccountNumber() }
         add_account_button.setOnClickListener { onClickAddBankAccount() }
+        setAccountNumberInputFilter()
         etBankAccountNumber.addTextChangedListener(textWatcherViewModel.getTextWatcher())
+        if (::bank.isInitialized) {
+            textWatcherViewModel.onBankSelected(bank)
+        } else {
+            openBankListForSelection()
+        }
     }
 
+    private fun setDownArrowBankName() {
+        etBankName.setCompoundDrawablesWithIntrinsicBounds(null, null,
+                ContextCompat.getDrawable(context!!, com.tokopedia.design.R.drawable.ic_arrow_down_grey), null)
+    }
 
     private fun startObservingViewModels() {
         tNCViewModel.tncPopUpTemplate.observe(this, Observer {
             when (it) {
                 is OnTNCSuccess -> openTNCBottomSheet(it.templateData)
                 is OnTNCError -> showErrorOnUI(it.throwable, null)
-                null->{}
+                null -> {
+                }
             }
 
         })
@@ -211,21 +222,18 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun checkAccountNumber() {
-        if(::bank.isInitialized) {
+        if (::bank.isInitialized) {
             bankSettingAnalytics.eventOnPericsaButtonClick()
             checkAccountNumberViewModel.checkAccountNumber(bank.bankID, etBankAccountNumber.text.toString())
-        }else{
+        } else {
             openBankListForSelection()
         }
     }
 
     private fun openBankListForSelection() {
-        bankListBottomSheet = CloseableBottomSheetFragment.newInstance(SelectBankFragment(),
-                true,
-                getString(R.string.sbank_choose_a_bank),
-                null,
-                CloseableBottomSheetFragment.STATE_FULL)
-        bankListBottomSheet.showNow(activity!!.supportFragmentManager, "")
+        activity?.let {
+            startActivity(ChooseBankActivity.createIntent(it))
+        }
     }
 
     private fun showManualAccountNameError(error: String?) {
@@ -236,7 +244,7 @@ class AddBankFragment : BaseDaggerFragment() {
         btnPeriksa.isEnabled = onTextChanged.isCheckEnable
         add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
         if (onTextChanged.clearAccountHolderName) {
-            builder.accountNumber(onTextChanged.newAccountNumber)
+            builder.accountNumber(etBankAccountNumber.text.toString())
             groupAccountNameAuto.gone()
             tvAccountHolderName.text = ""
             btnPeriksa.isEnabled = onTextChanged.isCheckEnable
@@ -245,17 +253,12 @@ class AddBankFragment : BaseDaggerFragment() {
             wrapperManualAccountHolderName.error = null
             wrapperManualAccountHolderName.gone()
         }
-        if (onTextChanged.isTextUpdateRequired) {
-            etBankAccountNumber.setText(onTextChanged.newAccountNumber)
-            etBankAccountNumber.text?.let {
-                etBankAccountNumber.setSelection(it.length)
-            }
-        }
     }
 
     private fun onAccountCheckSuccess(accountHolderName: String?) {
         btnPeriksa.isEnabled = false
         add_account_button.isEnabled = true
+        setAccountNumberError(null)
         accountHolderName?.let {
             if (it.isEmpty()) {
                 builder.isManual(true)
@@ -284,6 +287,7 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun setTncText() {
         val tncSpannableString = createTermsAndConditionSpannable()
         tvAddBankTnc.text = tncSpannableString
+        tvAddBankTnc.highlightColor = resources.getColor(android.R.color.transparent);
         tvAddBankTnc.movementMethod = LinkMovementMethod.getInstance()
     }
 
@@ -328,25 +332,27 @@ class AddBankFragment : BaseDaggerFragment() {
         }
     }
 
-    fun closeBottomSheet() {
-        bankListBottomSheet.dismiss()
-    }
-
     fun onBankSelected(selectedBank: Bank) {
         bank = selectedBank
         textWatcherViewModel.onBankSelected(bank)
         notifyAccountNumberWatcher()
-        btnPeriksa.isEnabled =  true
         hideAccountHolderName()
         setBankName()
+        setAccountNumberInputFilter()
     }
 
-    private fun notifyAccountNumberWatcher(){
-        val text = etBankAccountNumber.text.toString()
-        if(text.isNotEmpty()){
-            etBankAccountNumber.setText("")
-            etBankAccountNumber.setText(text)
+    private fun setAccountNumberInputFilter() {
+        if (::bank.isInitialized) {
+            val abbreviation = bank.abbreviation?.let { it } ?: ""
+            val bankAccountNumberCount = textWatcherViewModel.getBankTypeFromAbbreviation(abbreviation)
+            val filterArray = arrayOfNulls<InputFilter>(1)
+            filterArray[0] = InputFilter.LengthFilter(bankAccountNumberCount.count)
+            etBankAccountNumber.filters = filterArray
         }
+    }
+
+    private fun notifyAccountNumberWatcher() {
+        etBankAccountNumber.setText("")
     }
 
     private fun hideAccountHolderName() {
@@ -411,7 +417,6 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun requestAddBankAccount() {
         addAccountViewModel.addBank(builder.build())
-
     }
 
 }
