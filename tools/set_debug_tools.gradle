@@ -1,9 +1,9 @@
 task("configDebugTools") {
-    if (allowDistribution() == "true") {
-        rootProject.ext.debugToolsEnabled = true
-        println("Debug tools set true based on buildType Parameter")
-        return
-    }
+//    if (allowDistribution() == "true") {
+//        rootProject.ext.debugToolsEnabled = true
+//        println("Debug tools set true based on buildType Parameter")
+//        return
+//    }
     def taskNames = project.gradle.startParameter.taskNames
     if (taskNames==null || taskNames.size() == 0) {
         rootProject.ext.debugToolsEnabled = true
