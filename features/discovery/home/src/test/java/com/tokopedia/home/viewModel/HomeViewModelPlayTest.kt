@@ -15,7 +15,7 @@ import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
 @ExperimentalCoroutinesApi
-class HomeViewModelTest : Spek({
+class HomeViewModelPlayTest : Spek({
     InstantTaskExecutorRuleSpek(this)
 
     Feature("Get play data") {

@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
@@ -71,23 +72,22 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         viewPager.show()
 
         model = element
-//        if(element?.backColor?.isNotEmpty() == true){
-//            initContainerColor(element.backColor)
-//        }
+        Log.d("HOME", "YAH CUMAN DI ONBIND SAJA")
 
         if(element?.tabList == null) listener.getTabBusinessWidget(adapterPosition)
-
-//        if(element?.tabList != null && tabLayout.tabCount < 1){
-//            initTabLayout(element.tabList)
-//        }
-//
-//        if(element?.contentsList != null){
-//            initViewPager(element.contentsList)
-//        }
+        else loadingView.hide()
+        if(element?.tabList != null && tabLayout.tabCount < 1){
+            initTabLayout(element.tabList)
+            initContainerColor(element.backColor)
+        }
+        if(element?.contentsList != null){
+            initViewPager(element.contentsList)
+        }
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?, payloads: MutableList<Any>) {
         try {
+            Log.d("HOME", "ONBIND DENGAN PAYLOAD")
             model = element
             if (payloads.isNotEmpty() && payloads.getOrNull(0) is Bundle) {
                 val bundle = (payloads.first() as Bundle)
@@ -102,7 +102,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                     tabLayout.show()
                     viewPager.show()
                     if (element?.tabList != null) {
-                        tabLayout.removeAllTabs()
+                        clearTabLayout()
                         initTabLayout(element.tabList)
                     }
                     if(element?.contentsList != null){
@@ -120,6 +120,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                 }
             }
         }catch (e: Exception){
+            Log.d("HOME", "ERROR BIND!! ${e.localizedMessage}")
             errorBuWidget.show()
             loadingView.hide()
             tabLayout.hide()
@@ -139,12 +140,18 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         )
     }
 
+    private fun clearTabLayout(){
+        tabLayout.removeAllTabs()
+    }
+
     private fun initTabLayout(tabList: List<HomeWidget.TabItem>){
         tabLayout.show()
-        tabList.forEach {
-            tabLayout.addTab(tabLayout.newTab().setText(it.name))
+        if(tabLayout.tabCount == 0) {
+            tabList.forEach {
+                tabLayout.addTab(tabLayout.newTab().setText(it.name))
+            }
+            tabLayout.addOnTabSelectedListener(tabChangeListener)
         }
-        tabLayout.addOnTabSelectedListener(tabChangeListener)
     }
 
     private fun initViewPager(list: List<BusinessUnitDataModel>){

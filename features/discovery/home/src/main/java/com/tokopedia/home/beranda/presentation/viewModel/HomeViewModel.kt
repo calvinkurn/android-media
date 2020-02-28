@@ -230,13 +230,34 @@ open class HomeViewModel @Inject constructor(
         val currentPosition = _homeLiveData.value?.list?.withIndex()?.find { (_, model) ->  model is HeaderViewModel }?.index ?: -1
 
         headerViewModel?.let { headerViewModel ->
-            tokopointsDrawer?.let { headerViewModel.tokopointsDrawerHomeData = it }
-            homeHeaderWalletAction?.let { headerViewModel.homeHeaderWalletActionData = it }
-            cashBackData?.let { headerViewModel.cashBackData = it }
-            tokopointHomeDrawerData?.let { headerViewModel.tokoPointDrawerData = it }
-            isPendingTokocashChecked?.let { headerViewModel.isPendingTokocashChecked = it }
-            isWalletDataError?.let { headerViewModel.isWalletDataError = it }
-            isTokoPointDataError?.let { headerViewModel.isTokoPointDataError = it }
+            tokopointsDrawer?.let {
+                Log.d("HOME:", "Update tokopointsDrawer")
+                headerViewModel.tokopointsDrawerHomeData = it
+            }
+            homeHeaderWalletAction?.let {
+                Log.d("HOME:", "Update Homeheaderwalletactiondata")
+                headerViewModel.homeHeaderWalletActionData = it
+            }
+            cashBackData?.let {
+                Log.d("HOME:", "Update cashbackdata")
+                headerViewModel.cashBackData = it
+            }
+            tokopointHomeDrawerData?.let {
+                Log.d("HOME:", "Update tokopoint drawer data")
+                headerViewModel.tokoPointDrawerData = it
+            }
+            isPendingTokocashChecked?.let {
+                Log.d("HOME:", "Update pending tokocash checked $it")
+                headerViewModel.isPendingTokocashChecked = it
+            }
+            isWalletDataError?.let {
+                Log.d("HOME:", "Update is wallet data error $it")
+                headerViewModel.isWalletDataError = it
+            }
+            isTokoPointDataError?.let {
+                Log.d("HOME:", "Update is tokopoint data error  $it")
+                headerViewModel.isTokoPointDataError = it
+            }
             headerViewModel.isUserLogin = userSession.isLoggedIn
             launch { channel.send(Pair(currentPosition, headerViewModel)) }
 //            val homeListWithNewHeader = _homeLiveData.value?.list?.toMutableList()
@@ -323,15 +344,15 @@ open class HomeViewModel @Inject constructor(
     // play widget it will be removed when load image is failed (deal from PO)
     // because don't let the banner blank
     fun clearPlayBanner(){
-        val newList = mutableListOf<Visitable<*>>()
-        newList.addAll(_homeLiveData.value?.list ?: listOf())
-
-        val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
+        val playIndex = _homeLiveData.value?.list.copy().indexOfFirst { visitable -> visitable is PlayCardViewModel }
         if(playIndex != -1) {
+            val newList = mutableListOf<Visitable<*>>()
+            newList.addAll(_homeLiveData.value?.list ?: listOf())
             newList.removeAt(playIndex)
             _homeLiveData.value = (_homeLiveData.value?.copy(
                     list = newList
             ))
+            Log.d("HOME", "remove play banner line 332")
         }
     }
 
@@ -362,16 +383,8 @@ open class HomeViewModel @Inject constructor(
             val newFindReviewViewModel = findReviewViewModel.copy(
                 suggestedProductReview = suggestedProductReview
             )
-            val currentList = _homeLiveData.value?.list?.copy()?.toMutableList()
-            currentList?.set(indexOfReviewViewModel, newFindReviewViewModel)
-            val newHomeViewModel = currentList?.let {
-                _homeLiveData.value?.copy(
-                        list = it
-                )
-            }
-            _homeLiveData.value = (newHomeViewModel)
+            launch { channel.send(Pair(indexOfReviewViewModel, newFindReviewViewModel)) }
         }
-
     }
 
     private fun removeSuggestedReview(homeDataModel: HomeDataModel?): HomeDataModel? {
@@ -403,6 +416,7 @@ open class HomeViewModel @Inject constructor(
                         list = it
                 )
                 _homeLiveData.value = (newHomeViewModel)
+                Log.d("HOME", "Remove suggested review")
             }
         }
     }
@@ -414,6 +428,7 @@ open class HomeViewModel @Inject constructor(
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
             _homeLiveData.value = (homeViewModel.copy(list = currentList))
+            Log.d("HOME", "Remove Geo location")
         }
     }
 
@@ -424,6 +439,7 @@ open class HomeViewModel @Inject constructor(
             val currentList = homeViewModel.list.toMutableList()
             currentList.remove(it)
             _homeLiveData.value = (homeViewModel.copy(list = currentList))
+            Log.d("HOME", "Remove ticker")
         }
     }
 
@@ -561,13 +577,17 @@ open class HomeViewModel @Inject constructor(
                     withContext(homeDispatcher.ui()){
                         _homeLiveData.value = (homeData)
                     }
+                    Log.d("HOME", "Update home value line 557 (init flow from cache)")
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
 
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
-                    _homeLiveData.postValue(homeData)
+                    Log.d("HOME", "Update home value line 564 (init flow from network)")
+                    withContext(homeDispatcher.ui()){
+                        _homeLiveData.value = (homeData)
+                    }
                     refreshHomeData()
                 }
             }
@@ -764,7 +784,6 @@ open class HomeViewModel @Inject constructor(
                 homeRecommendationFeedViewModel.feedTabModel = t
                 homeRecommendationFeedViewModel.isNewData = true
                 visitableMutableList.add(homeRecommendationFeedViewModel)
-
                 val newHomeViewModel = currentData?.copy(
                         list = visitableMutableList)
 
