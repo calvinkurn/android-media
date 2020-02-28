@@ -6,7 +6,7 @@ import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 /**
  * Created by Fajar Ulin Nuha on 15/10/18.
  */
-public class AddressViewModel implements Visitable<AddressTypeFactory> {
+public class AddressUiModel implements Visitable<AddressTypeFactory> {
 
 
     private String addressId;
@@ -41,10 +41,10 @@ public class AddressViewModel implements Visitable<AddressTypeFactory> {
 
     private String districtName;
 
-    public AddressViewModel() {
+    public AddressUiModel() {
     }
 
-    public AddressViewModel(String addressId, String receiverPhone, Integer addressStatus, String postalCode, String latitude, String addressStreet, String cityName, String districtId, String cityId, String countryName, String longitude, String provinceId, String addressName, String receiverName, String provinceName, String districtName) {
+    public AddressUiModel(String addressId, String receiverPhone, Integer addressStatus, String postalCode, String latitude, String addressStreet, String cityName, String districtId, String cityId, String countryName, String longitude, String provinceId, String addressName, String receiverName, String provinceName, String districtName) {
         this.addressId = addressId;
         this.receiverPhone = receiverPhone;
         this.addressStatus = addressStatus;
