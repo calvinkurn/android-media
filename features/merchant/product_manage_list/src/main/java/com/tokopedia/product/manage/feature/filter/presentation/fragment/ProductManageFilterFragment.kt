@@ -86,6 +86,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         recyclerView?.adapter = filterAdapter
         productManageFilterViewModel.getData(userSession.shopId)
         observeCombinedResponse()
+        initView()
     }
 
     override fun onDestroy() {

@@ -16,8 +16,8 @@ class ChipsAdapter(private val listener: ChipClickListener) : RecyclerView.Adapt
 
     fun setData(namesData: List<String>, selectionData: List<Boolean>) {
         if(namesData.size > MAXIMUM_CHIPS) {
-            this.namesData = namesData.subList(0, MAXIMUM_CHIPS-1)
-            this.selectionData = selectionData.subList(0, MAXIMUM_CHIPS-1)
+            this.namesData = namesData.subList(0, MAXIMUM_CHIPS)
+            this.selectionData = selectionData.subList(0, MAXIMUM_CHIPS)
         } else {
             this.namesData = namesData
             this.selectionData = selectionData

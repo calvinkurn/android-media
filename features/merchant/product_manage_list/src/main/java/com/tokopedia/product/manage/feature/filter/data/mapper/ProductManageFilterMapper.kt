@@ -13,6 +13,8 @@ class ProductManageFilterMapper {
         const val ETALASE_HEADER = "Etalase"
         const val CATEGORY_HEADER = "Kategori"
         const val OTHER_FILTER_HEADER = "Filter Lainnya"
+        const val SHOW_CHIPS = true
+        const val HIDE_CHIPS = false
 
         fun mapCombinedResultToFilterViewModels(combinedData: CombinedResponse): List<FilterViewModel> {
             val filterViewModels = mutableListOf<FilterViewModel>()
@@ -64,7 +66,7 @@ class ProductManageFilterMapper {
                     selectData.add(false)
                 }
             }
-            return FilterViewModel(SORT_HEADER, names, ids, values, selectData)
+            return FilterViewModel(SORT_HEADER, names, ids, values, selectData, isChipsShown = SHOW_CHIPS)
         }
 
         private fun mapEtalaseResponseToEtalaseOptions(etalaseResponse: ArrayList<ShopEtalaseModel>): FilterViewModel {
@@ -78,7 +80,7 @@ class ProductManageFilterMapper {
                     selectData.add(false)
                 }
             }
-            return FilterViewModel(ETALASE_HEADER, names, ids, selectData = selectData)
+            return FilterViewModel(ETALASE_HEADER, names, ids, selectData = selectData, isChipsShown = SHOW_CHIPS)
         }
 
         private fun mapCategoryResponseToCategoryOptions(categoriesResponse: CategoriesResponse): FilterViewModel {
@@ -92,7 +94,7 @@ class ProductManageFilterMapper {
                     selectData.add(false)
                 }
             }
-            return FilterViewModel(CATEGORY_HEADER, categories, ids, selectData = selectData)
+            return FilterViewModel(CATEGORY_HEADER, categories, ids, selectData = selectData, isChipsShown = HIDE_CHIPS)
         }
 
         private fun mapMetaResponseToFilterOptions(productListMetaData: ProductListMetaData): FilterViewModel {
@@ -103,12 +105,12 @@ class ProductManageFilterMapper {
             for (filter in productListMetaData.filters) {
                 if(filter.name.isNotEmpty()) {
                     filters.add(filter.name)
-                    filters.add(filter.id)
-                    filters.add(filter.value.toString())
+                    ids.add(filter.id)
+                    values.add(filter.value.toString())
                     selectData.add(false)
                 }
             }
-            return FilterViewModel(OTHER_FILTER_HEADER, filters, ids, values, selectData)
+            return FilterViewModel(OTHER_FILTER_HEADER, filters, ids, values, selectData, HIDE_CHIPS)
         }
     }
 }

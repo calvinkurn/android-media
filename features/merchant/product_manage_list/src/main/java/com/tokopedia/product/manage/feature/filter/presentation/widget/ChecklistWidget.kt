@@ -7,7 +7,6 @@ import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
 import com.tokopedia.product.manage.oldlist.R
 import kotlinx.android.synthetic.main.widget_checklist.view.*
-import kotlinx.android.synthetic.main.widget_select.view.*
 
 class ChecklistWidget: BaseCustomView {
 
@@ -29,6 +28,9 @@ class ChecklistWidget: BaseCustomView {
 
     fun bind(element: ChecklistViewModel, checklistClickListener: ChecklistClickListener) {
         this.checklist.text = element.name
+        if(element.isSelected) {
+            this.checklist.isChecked = true
+        }
         this.setOnClickListener {
             toggleChecked()
             checklistClickListener.onChecklistClick(element)

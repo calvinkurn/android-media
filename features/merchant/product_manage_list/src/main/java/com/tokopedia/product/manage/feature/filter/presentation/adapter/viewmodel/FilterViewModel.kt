@@ -8,7 +8,8 @@ class FilterViewModel (
         val names: List<String>,
         val id: List<String>,
         val values: List<String> = listOf(),
-        val selectData: List<Boolean>
+        val selectData: List<Boolean>,
+        val isChipsShown: Boolean
 ) : Visitable <FilterAdapterTypeFactory> {
 
     override fun type(typeFactory: FilterAdapterTypeFactory): Int {

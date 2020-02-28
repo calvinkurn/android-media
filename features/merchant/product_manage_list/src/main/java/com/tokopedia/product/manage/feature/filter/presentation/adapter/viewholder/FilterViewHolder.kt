@@ -18,9 +18,10 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, c
     }
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.chips_recycler_view)
-    private val adapter: ChipsAdapter
+    val adapter: ChipsAdapter
     private val headerWidget: HeaderWidget = itemView.findViewById(R.id.filter_header)
     private val seeAllWidget: SeeAllWidget = itemView.findViewById(R.id.filter_see_all)
+    private var isChipsShown = false
 
 
     init {
@@ -38,12 +39,37 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, c
 
     override fun bind(element: FilterViewModel) {
         headerWidget.bind(element.title)
+        isChipsShown = element.isChipsShown
+        if(!element.isChipsShown) {
+            hideChips()
+        }
         headerWidget.arrow.setOnClickListener {
-
+            toggleChipsVisibility()
         }
         adapter.setData(element.names, element.selectData)
         seeAllWidget.setOnClickListener {
             seeAllListener.onSeeAll(element)
+        }
+    }
+
+    private fun hideChips() {
+        recyclerView.visibility = View.GONE
+        seeAllWidget.visibility = View.GONE
+        headerWidget.arrow.rotation = 180f
+    }
+
+    private fun showChips() {
+        recyclerView.visibility = View.VISIBLE
+        seeAllWidget.visibility = View.VISIBLE
+        headerWidget.arrow.rotation = -180f
+    }
+
+    private fun toggleChipsVisibility() {
+        isChipsShown = !isChipsShown
+        if(isChipsShown) {
+            showChips()
+        } else {
+            hideChips()
         }
     }
 }
