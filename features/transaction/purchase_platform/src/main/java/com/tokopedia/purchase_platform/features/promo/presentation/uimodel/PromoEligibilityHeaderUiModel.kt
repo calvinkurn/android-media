@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.promo.presentation.uimodel
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapterTypeFactory
 
-data class PromoIneligibleHeaderUiModel(
+data class PromoEligibilityHeaderUiModel(
         var uiData: UiData,
         var uiState: UiState
 ) : Visitable<PromoCheckoutAdapterTypeFactory> {
@@ -16,7 +16,7 @@ data class PromoIneligibleHeaderUiModel(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as PromoIneligibleHeaderUiModel
+        other as PromoEligibilityHeaderUiModel
 
         if (uiData != other.uiData) return false
         if (uiState != other.uiState) return false
@@ -31,11 +31,31 @@ data class PromoIneligibleHeaderUiModel(
     }
 
     data class UiData(
-            var title: String = ""
+            var title: String = "",
+            var subTitle: String = "",
+            var tmpPromo: List<Visitable<*>> = emptyList()
     )
 
     data class UiState(
+            var isEnabled: Boolean = false,
             var isCollapsed: Boolean = false
     )
 
+    companion object {
+
+        fun clone(oldData: PromoEligibilityHeaderUiModel): PromoEligibilityHeaderUiModel {
+            return PromoEligibilityHeaderUiModel(
+                    uiData = UiData().apply {
+                        title = oldData.uiData.title
+                        subTitle = oldData.uiData.subTitle
+                        tmpPromo = oldData.uiData.tmpPromo
+                    },
+                    uiState = UiState().apply {
+                        isEnabled = oldData.uiState.isEnabled
+                        isCollapsed = oldData.uiState.isCollapsed
+                    }
+            )
+        }
+
+    }
 }

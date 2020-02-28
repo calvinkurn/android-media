@@ -10,9 +10,7 @@ interface PromoCheckoutTypeFactory {
 
     fun type(uiModel: PromoInputUiModel): Int
 
-    fun type(uiModel: PromoEligibleHeaderUiModel): Int
-
-    fun type(uiModel: PromoIneligibleHeaderUiModel): Int
+    fun type(uiModel: PromoEligibilityHeaderUiModel): Int
 
     fun type(uiModel: PromoListHeaderUiModel): Int
 

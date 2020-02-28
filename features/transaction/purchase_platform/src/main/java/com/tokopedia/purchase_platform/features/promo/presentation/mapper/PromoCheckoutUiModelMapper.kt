@@ -24,9 +24,12 @@ fun mapPromoInputUiModel(): PromoInputUiModel {
     )
 }
 
-fun mapPromoEligibleHeaderUiModel(): PromoEligibleHeaderUiModel {
-    return PromoEligibleHeaderUiModel(
-            uiData = PromoEligibleHeaderUiModel.UiData().apply {
+fun mapPromoEligibleHeaderUiModel(): PromoEligibilityHeaderUiModel {
+    return PromoEligibilityHeaderUiModel(
+            uiData = PromoEligibilityHeaderUiModel.UiData().apply {
+
+            },
+            uiState = PromoEligibilityHeaderUiModel.UiState().apply {
 
             }
     )
@@ -49,17 +52,6 @@ fun mapPromoListItemUiModel(): PromoListItemUiModel {
 
             },
             uiState = PromoListItemUiModel.UiState().apply {
-
-            }
-    )
-}
-
-fun mapPromoIneligibleHeadewrUiModel(): PromoIneligibleHeaderUiModel {
-    return PromoIneligibleHeaderUiModel(
-            uiData = PromoIneligibleHeaderUiModel.UiData().apply {
-
-            },
-            uiState = PromoIneligibleHeaderUiModel.UiState().apply {
 
             }
     )

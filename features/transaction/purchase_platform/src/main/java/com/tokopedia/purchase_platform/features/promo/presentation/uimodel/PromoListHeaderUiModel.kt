@@ -32,13 +32,41 @@ class PromoListHeaderUiModel(
 
     data class UiData(
             var title: String = "",
-            var description: String = "",
-            var imageResourceUrl: String = "",
-            var identifierId: Int = 0
-    )
+            var subTitle: String = "",
+            var promoType: Int = 0,
+            var identifierId: Int = 0,
+            var tmpPromoItemList: List<PromoListItemUiModel> = emptyList()
+    ) {
+        companion object {
+            const val PROMO_TYPE_GLOBAL = 1
+            const val PROMO_TYPE_MERCHANT_OFFICIAL = 2
+            const val PROMO_TYPE_POWER_MERCHANT = 3
+        }
+    }
 
     data class UiState(
+            var isEnabled: Boolean = false,
             var isCollapsed: Boolean = false
     )
+
+    companion object {
+
+        fun clone(oldData: PromoListHeaderUiModel): PromoListHeaderUiModel {
+            return PromoListHeaderUiModel(
+                    uiData = UiData().apply {
+                        title = oldData.uiData.title
+                        subTitle = oldData.uiData.subTitle
+                        promoType = oldData.uiData.promoType
+                        identifierId = oldData.uiData.identifierId
+                        tmpPromoItemList = oldData.uiData.tmpPromoItemList
+                    },
+                    uiState = UiState().apply {
+                        isEnabled = oldData.uiState.isEnabled
+                        isCollapsed = oldData.uiState.isCollapsed
+                    }
+            )
+        }
+
+    }
 
 }

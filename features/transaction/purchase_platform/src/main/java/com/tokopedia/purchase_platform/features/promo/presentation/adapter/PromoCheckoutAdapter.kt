@@ -14,10 +14,43 @@ class PromoCheckoutAdapter(adapterTypeFactory: PromoCheckoutMarketplaceAdapterTy
         updateList(newList)
     }
 
-    fun addVisitables(visitableList: ArrayList<Visitable<*>>) {
+    fun addVisitableList(visitableList: List<Visitable<*>>) {
         val newList: MutableList<Visitable<*>> = mutableListOf()
         newList.addAll(list)
         newList.addAll(visitableList)
+        updateList(newList)
+    }
+
+    fun addVisitableList(indexStart: Int, visitableList: List<Visitable<*>>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        var index = indexStart
+        visitableList.forEach {
+            newList.add(index++, it)
+        }
+        updateList(newList)
+    }
+
+    fun modifyData(itemPosition: Int, visitable: Visitable<*>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList[itemPosition] = visitable
+        updateList(newList)
+    }
+
+    fun removeList(visitableList: List<Visitable<*>>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        newList.removeAll(visitableList)
+        updateList(newList)
+    }
+
+    fun modifyDataList(visitableListMap: Map<Int, Visitable<*>>) {
+        val newList: MutableList<Visitable<*>> = mutableListOf()
+        newList.addAll(list)
+        visitableListMap.forEach {
+            newList[it.key] = it.value
+        }
         updateList(newList)
     }
 

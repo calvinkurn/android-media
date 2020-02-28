@@ -33,13 +33,40 @@ data class PromoListItemUiModel(
     data class UiData(
             var promoId: Int = 0,
             var title: String = "",
-            var description: String = "",
+            var subTitle: String = "",
+            var errorMessage: String = "",
             var imageResourceUrl: String = "",
-            var parentIdentifierId: Int = 0
+            var parentIdentifierId: Int = 0,
+            var promoCode: String = ""
     )
 
     data class UiState(
-            var isSellected: Boolean = false
+            var isEnabled: Boolean = false,
+            var isSellected: Boolean = false,
+            var isVisible: Boolean = true
     )
+
+    companion object {
+
+        fun clone(oldData: PromoListItemUiModel): PromoListItemUiModel {
+            return PromoListItemUiModel(
+                    uiData = UiData().apply {
+                        promoId = oldData.uiData.promoId
+                        title = oldData.uiData.title
+                        subTitle = oldData.uiData.subTitle
+                        errorMessage = oldData.uiData.errorMessage
+                        imageResourceUrl = oldData.uiData.imageResourceUrl
+                        parentIdentifierId = oldData.uiData.parentIdentifierId
+                        promoCode = oldData.uiData.promoCode
+                    },
+                    uiState = UiState().apply {
+                        isEnabled = oldData.uiState.isEnabled
+                        isSellected = oldData.uiState.isSellected
+                        isVisible = oldData.uiState.isVisible
+                    }
+            )
+        }
+
+    }
 
 }
