@@ -20,6 +20,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
+import com.tokopedia.salam.umrah.common.data.TravelAgent
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getYearNow
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
@@ -268,6 +270,15 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onPerformanceHomepageListener() {
         performanceMonitoring.stopTrace()
+    }
+
+    override fun onImpressionPartnerTravel(headerTitle: String, umrahTravelAgentsEntity: UmrahTravelAgentsEntity) {
+        trackingUmrahUtil.umrahHomepagePartnerTravelImpression(headerTitle,umrahTravelAgentsEntity)
+
+    }
+
+    override fun onClickPartnerTravel(headerTitle: String, travelAgent: TravelAgent) {
+        trackingUmrahUtil.umrahHomepagePartnerTravelClick(headerTitle,travelAgent)
     }
 
     companion object {

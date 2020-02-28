@@ -1,6 +1,8 @@
 package com.tokopedia.salam.umrah.homepage.presentation.listener
 
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
+import com.tokopedia.salam.umrah.common.data.TravelAgent
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
@@ -34,4 +36,7 @@ interface onItemBindListener{
     fun onClickBanner(banner: UmrahBanner, position: Int)
 
     fun onPerformanceHomepageListener()
+
+    fun onImpressionPartnerTravel(headerTitle: String, umrahTravelAgentsEntity: UmrahTravelAgentsEntity)
+    fun onClickPartnerTravel(headerTitle: String, travelAgent: TravelAgent)
 }

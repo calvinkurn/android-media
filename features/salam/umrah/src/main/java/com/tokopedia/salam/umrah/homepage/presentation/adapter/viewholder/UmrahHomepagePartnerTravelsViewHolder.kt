@@ -24,6 +24,7 @@ class UmrahHomepagePartnerTravelsViewHolder(view: View, private val onItemBindLi
             if (element.isLoaded && element.umrahTravelAgents.isNotEmpty()) {
                 umrah_partner_section_layout.show()
                 umrah_partner_section_shimmering.hide()
+                onItemBindListener.onImpressionPartnerTravel(resources.getString(R.string.umrah_home_page_partner_label),element)
                 adapterPartnerTravel.setList(element.umrahTravelAgents)
                 rv_umrah_home_page_partner_travel.apply {
                     adapter = adapterPartnerTravel

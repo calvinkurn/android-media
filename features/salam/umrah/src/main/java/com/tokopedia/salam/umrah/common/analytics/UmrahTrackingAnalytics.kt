@@ -2,7 +2,9 @@ package com.tokopedia.salam.umrah.common.analytics
 
 import com.google.android.gms.tagmanager.DataLayer
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
+import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
@@ -795,6 +797,49 @@ class UmrahTrackingAnalytics {
             list.add(map)
 
         return DataLayer.listOf(*list.toTypedArray<Any>())
+    }
+
+
+    fun umrahHomepagePartnerTravelImpression(headerTitle: String,travelAgents:UmrahTravelAgentsEntity){
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_PROMO_VIEW
+        map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_IMPRESSION_TRAVEL_AGENT
+        map[TrackAppUtils.EVENT_LABEL] = headerTitle
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(
+                UMRAH_EVENT_PROMO_VIEW, DataLayer.mapOf(
+                PROMOTIONS_LABEL, getTravelAgentImpression(travelAgents.umrahTravelAgents)
+        ))
+
+       TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun getTravelAgentImpression(listAgent:List<TravelAgent>): List<Any>{
+        val list = ArrayList<Map<String, Any>>()
+        val size = list.size-1
+        for(position in 0..size) {
+            val map = HashMap<String, Any>()
+            map[ID] = listAgent[position].id
+            map[NAME] = "$UMRAH_CATEGORY_HOME_PAGE - $UMRAH_TRAVEL_AGENT"
+            map[CREATIVE] = listAgent[position].imageUrl
+            map[POSITION] = position + 1
+            list.add(map)
+        }
+
+        return DataLayer.listOf(*list.toTypedArray<Any>())
+    }
+
+    fun umrahHomepagePartnerTravelClick(headerTitle: String,travelAgent: TravelAgent){
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_PROMO_CLICK
+        map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_CATEGORY_HOME_PAGE
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_TRAVEL_AGENT
+        map[TrackAppUtils.EVENT_LABEL] = headerTitle
+        map[ECOMMERCE_LABEL] = DataLayer.mapOf(
+                UMRAH_EVENT_PROMO_VIEW, DataLayer.mapOf(
+                PROMOTIONS_LABEL, getTravelAgentImpression(listOf(travelAgent))))
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
     }
 
 
