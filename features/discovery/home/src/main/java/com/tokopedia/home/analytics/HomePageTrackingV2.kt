@@ -1,7 +1,9 @@
 package com.tokopedia.home.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.home.analytics.v2.BaseTracking
+import com.tokopedia.home.analytics.v2.BaseTracking.Action.IMPRESSION_ON
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.ContextAnalytics
@@ -67,20 +69,20 @@ object HomePageTrackingV2 : BaseTracking() {
         fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
                 event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = Action.IMPRESSION_ON.format(RECOMMENDATION_LIST_CAROUSEL_PRODUCT),
+                eventAction = "impression on carousel product",
                 eventLabel = Label.NONE,
                 products = channel.grids.mapIndexed { index, grid ->
                     Product(
                             name = grid.name,
                             id = grid.id,
-                            productPrice = grid.price,
+                            productPrice = convertRupiahToInt(
+                                    grid.price
+                            ).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
                             variant = Value.NONE_OTHER,
                             productPosition = (index + 1).toString(),
-                            dimension83 = "",
-                            dimension84 = channel.id,
-                            list = "",
+                            channelId = channel.id,
                             isFreeOngkir = grid.freeOngkir.isActive
                     )
                 },
@@ -88,7 +90,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         Value.LIST, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
                 )
         )
-        private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductClick(
+        private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
                 event = Event.PROMO_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = Action.CLICK_ON.format(RECOMMENDATION_LIST_CAROUSEL_PRODUCT),
@@ -102,11 +104,9 @@ object HomePageTrackingV2 : BaseTracking() {
                                 brand = Value.NONE_OTHER,
                                 category = Value.NONE_OTHER,
                                 variant = Value.NONE_OTHER,
-                                list = "",
                                 productPosition = (position + 1).toString(),
-                                dimension84 = channel.id,
-                                isFreeOngkir = grid.freeOngkir.isActive,
-                                dimension83 = ""
+                                channelId = channel.id,
+                                isFreeOngkir = grid.freeOngkir.isActive
                         )
                 ),
                 list = String.format(
@@ -134,5 +134,13 @@ object HomePageTrackingV2 : BaseTracking() {
 
     private fun getTracker(): ContextAnalytics {
         return TrackApp.getInstance().gtm
+    }
+
+    private fun convertRupiahToInt(rupiah: String): Int {
+        var rupiah = rupiah
+        rupiah = rupiah.replace("Rp", "")
+        rupiah = rupiah.replace(".", "")
+        rupiah = rupiah.replace(" ", "")
+        return Integer.parseInt(rupiah)
     }
 }

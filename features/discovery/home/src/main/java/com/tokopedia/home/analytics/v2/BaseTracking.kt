@@ -133,8 +133,8 @@ abstract class BaseTracking {
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun createPromotionMap(promotion: Promotion) : Map<String, Any>{
-            val map = HashMap<String, Any>()
+        private fun createPromotionMap(promotion: Promotion) : Map<String, String>{
+            val map = HashMap<String, String>()
             map[KEY_ID] = promotion.id
             map[KEY_NAME] = promotion.name
             map[KEY_CREATIVE] = promotion.creative
@@ -143,35 +143,33 @@ abstract class BaseTracking {
             return map
         }
 
-        private fun createProductMap(product: Product) : Map<String, Any>{
-            val map = HashMap<String, Any>()
+        private fun createProductMap(product: Product, list: String = "") : Map<String, String>{
+            val map = HashMap<String, String>()
             map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
             map[KEY_BRAND] = product.brand
             map[KEY_VARIANT] = product.variant
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition.toString()
+            map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
-            return map
-        }
-        private fun createProductMap(product: Product, list: String) : Map<String, Any>{
-            val map = HashMap<String, Any>()
-            map[KEY_ID] = product.id
-            map[KEY_NAME] = product.name
-            map[KEY_BRAND] = product.brand
-            map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice
-            map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition.toString()
-            map[KEY_LIST] = list
-            map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
+            if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
+            if (list.isNotEmpty()) map[KEY_LIST] = list
             return map
         }
     }
 
     class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String)
-    class Product(val name: String, val id: String, val productPrice: String, val brand: String, val category: String, val variant: String, val list: String, val productPosition: String, val dimension83: String, val dimension84: String, val isFreeOngkir: Boolean)
+    open class Product(
+            val name: String,
+            val id: String,
+            val productPrice: String,
+            val brand: String,
+            val category: String,
+            val variant: String,
+            val productPosition: String,
+            val isFreeOngkir: Boolean,
+            val channelId: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(
         event: String,
@@ -221,6 +219,23 @@ abstract class BaseTracking {
             eventAction: String,
             eventLabel: String,
             list: String,
+            products: List<Product>
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list)
+        )
+    }
+
+    open fun getBasicProductChannelClick(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            list: String,
             channelId: String,
             products: List<Product>
     ): Map<String, Any>{
@@ -229,6 +244,7 @@ abstract class BaseTracking {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
+                Label.CHANNEL_LABEL, channelId,
                 Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list)
         )
     }
