@@ -64,7 +64,7 @@ import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicat
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity
 import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
-import com.tokopedia.product.manage.oldlist.R
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ERROR_CODE_LIMIT_CASHBACK
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
@@ -245,15 +245,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun initView(view: View) {
         progressDialog = ProgressDialog(activity)
         progressDialog.setTitle(com.tokopedia.abstraction.R.string.title_loading)
-        bulkCheckBox = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.bulk_check_box)
-        coordinatorLayout = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.coordinator_layout)
-        bottomActionView = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.bottom_action_view)
-        bulkCountTxt = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.bulk_count_txt)
-        topAdsWidgetFreeClaim = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.topads_free_claim_widget)
-        btnBulk = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.btn_bulk_edit)
-        containerBtnBulk = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.container_btn_bulk)
-        containerChechBoxBulk = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.container_bulk_check_box)
-        checkBoxView = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.line_check_box)
+        bulkCheckBox = view.findViewById(com.tokopedia.product.manage.R.id.bulk_check_box)
+        coordinatorLayout = view.findViewById(com.tokopedia.product.manage.R.id.coordinator_layout)
+        bottomActionView = view.findViewById(com.tokopedia.product.manage.R.id.bottom_action_view)
+        bulkCountTxt = view.findViewById(com.tokopedia.product.manage.R.id.bulk_count_txt)
+        topAdsWidgetFreeClaim = view.findViewById(com.tokopedia.product.manage.R.id.topads_free_claim_widget)
+        btnBulk = view.findViewById(com.tokopedia.product.manage.R.id.btn_bulk_edit)
+        containerBtnBulk = view.findViewById(com.tokopedia.product.manage.R.id.container_btn_bulk)
+        containerChechBoxBulk = view.findViewById(com.tokopedia.product.manage.R.id.container_bulk_check_box)
+        checkBoxView = view.findViewById(com.tokopedia.product.manage.R.id.line_check_box)
     }
 
     private fun setupBottomSheet() {
@@ -266,7 +266,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 editProductBottomSheet = EditProductBottomSheet(context, this, it)
             }
         }
-        bulkBottomSheet.setCustomContentView(editProductBottomSheet, getString(com.tokopedia.product.manage.oldlist.R.string.product_bs_title), true)
+        bulkBottomSheet.setCustomContentView(editProductBottomSheet, getString(com.tokopedia.product.manage.R.string.product_bs_title), true)
     }
 
     private fun clearEtalaseAndStockData() {
@@ -279,7 +279,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             containerBtnBulk.visibility = View.VISIBLE
             bulkCountTxt.visibility = View.VISIBLE
             checkBoxView.visibility = View.VISIBLE
-            bulkCountTxt.text = getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_bulk_count, itemsChecked.size.toString())
+            bulkCountTxt.text = getString(com.tokopedia.product.manage.R.string.product_manage_bulk_count, itemsChecked.size.toString())
             bottomActionView.visibility = View.GONE
         } else {
             containerBtnBulk.visibility = View.GONE
@@ -404,9 +404,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         context?.let {
             if (t is MessageErrorException && t.errorCode == ERROR_CODE_LIMIT_CASHBACK) {
                 if (productManagePresenter.isIdlePowerMerchant()) {
-                    showIdlePowerMerchantBottomSheet(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_feature_name_cashback))
+                    showIdlePowerMerchantBottomSheet(getString(com.tokopedia.product.manage.R.string.product_manage_feature_name_cashback))
                 } else if (!productManagePresenter.isPowerMerchant()) {
-                    showRegularMerchantBottomSheet(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_feature_name_cashback))
+                    showRegularMerchantBottomSheet(getString(com.tokopedia.product.manage.R.string.product_manage_feature_name_cashback))
                 } else {
                     showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
                         productManagePresenter.setCashback(productId ?: "", cashback)
@@ -458,7 +458,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onSuccessMultipleDeleteProduct() {
-        showToasterNormal(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_bulk_snackbar_sucess_delete))
+        showToasterNormal(getString(com.tokopedia.product.manage.R.string.product_manage_bulk_snackbar_sucess_delete))
         loadInitialData()
     }
 
@@ -518,11 +518,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 dialog = Dialog(context)
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
                 dialog.setCancelable(false)
-                dialog.setContentView(com.tokopedia.product.manage.oldlist.R.layout.dialog_product_add)
+                dialog.setContentView(com.tokopedia.product.manage.R.layout.dialog_product_add)
 
-                btnSubmit = dialog.findViewById(com.tokopedia.product.manage.oldlist.R.id.btn_submit)
-                btnGoToPdp = dialog.findViewById(com.tokopedia.product.manage.oldlist.R.id.btn_product_list)
-                txtTipsTrick = dialog.findViewById(com.tokopedia.product.manage.oldlist.R.id.txt_tips_trick)
+                btnSubmit = dialog.findViewById(com.tokopedia.product.manage.R.id.btn_submit)
+                btnGoToPdp = dialog.findViewById(com.tokopedia.product.manage.R.id.btn_product_list)
+                txtTipsTrick = dialog.findViewById(com.tokopedia.product.manage.R.id.txt_tips_trick)
 
                 btnSubmit.setOnClickListener {
                     ProductManageTracking.trackerManageCourierButton()
@@ -572,7 +572,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
          * this logic use for catch failed update products
          */
         if (listOfResponse.failedResponse.isNotEmpty()) {
-            showToasterError(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_bulk_snackbar, listOfResponse.successResponse.size.toString(), listOfResponse.failedResponse.size.toString()),
+            showToasterError(getString(com.tokopedia.product.manage.R.string.product_manage_bulk_snackbar, listOfResponse.successResponse.size.toString(), listOfResponse.failedResponse.size.toString()),
                     getString(com.tokopedia.abstraction.R.string.retry_label)) {
                 productManagePresenter.bulkUpdateProduct(productManagePresenter.failedBulkDataMapper(listOfResponse.failedResponse, confirmationProductDataList))
             }
@@ -580,7 +580,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             confirmationProductDataList.clear()
             editProductBottomSheet.clearAllData()
             clearEtalaseAndStockData()
-            showToasterNormal(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()))
+            showToasterNormal(getString(com.tokopedia.product.manage.R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()))
         }
 
         productManageListAdapter.resetCheckedItemSet()
@@ -661,14 +661,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 containerBtnBulk.visibility = View.VISIBLE
                 btnBulk.visibility = View.VISIBLE
                 checkBoxView.visibility = View.VISIBLE
-                btnBulk.text = getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_change_btn)
+                btnBulk.text = getString(com.tokopedia.product.manage.R.string.product_manage_change_btn)
                 containerFlags.scrollFlags = 0
             }
             itemsChecked.size > 1 -> {
                 containerBtnBulk.visibility = View.VISIBLE
                 btnBulk.visibility = View.VISIBLE
                 checkBoxView.visibility = View.VISIBLE
-                btnBulk.text = getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_bulk_change_btn)
+                btnBulk.text = getString(com.tokopedia.product.manage.R.string.product_manage_bulk_change_btn)
                 containerFlags.scrollFlags = 0
                 displayOnBoardingButton()
             }
@@ -686,8 +686,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             val coachMark = CoachMarkBuilder().build()
             val coachMarkItem = ArrayList<CoachMarkItem>()
             coachMarkItem.add(CoachMarkItem(btnBulk,
-                    getString(com.tokopedia.product.manage.oldlist.R.string.coachmark_title_btn),
-                    getString(com.tokopedia.product.manage.oldlist.R.string.coachmark_desc_btn)))
+                    getString(com.tokopedia.product.manage.R.string.coachmark_title_btn),
+                    getString(com.tokopedia.product.manage.R.string.coachmark_desc_btn)))
             prefs.edit().putBoolean(HASSHOWNBTN, true).apply()
             coachMark.show(activity, "SampleCoachMark", coachMarkItem)
         }
@@ -698,8 +698,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             val coachMark = CoachMarkBuilder().build()
             val coachMarkItem = ArrayList<CoachMarkItem>()
             coachMarkItem.add(CoachMarkItem(bulkCheckBox,
-                    getString(com.tokopedia.product.manage.oldlist.R.string.coachmark_title_checkbox),
-                    getString(com.tokopedia.product.manage.oldlist.R.string.coachmark_desc_checkbox)))
+                    getString(com.tokopedia.product.manage.R.string.coachmark_title_checkbox),
+                    getString(com.tokopedia.product.manage.R.string.coachmark_desc_checkbox)))
             prefs.edit().putBoolean(ProductManageListConstant.HASSHOWNCHECKED, true).apply()
             coachMark.show(activity, "SampleCoachMark", coachMarkItem)
         }
@@ -745,9 +745,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun populateBottomSheetMenu(bottomSheetBuilder: BottomSheetBuilder, productManageViewModel: ProductManageViewModel) {
         val context: Context = this.context ?: return
 
-        bottomSheetBuilder.addItem(R.id.edit_product_menu, com.tokopedia.product.manage.oldlist.R.string.product_manage_title_edit, com.tokopedia.product.manage.oldlist.R.drawable.ic_manage_product_edit)
-        bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, com.tokopedia.product.manage.oldlist.R.drawable.ic_manage_product_duplicate)
-        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.product_manage_menu_delete_product, com.tokopedia.product.manage.oldlist.R.drawable.ic_manage_product_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
+        bottomSheetBuilder.addItem(R.id.edit_product_menu, com.tokopedia.product.manage.R.string.product_manage_title_edit, com.tokopedia.product.manage.R.drawable.ic_manage_product_edit)
+        bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, com.tokopedia.product.manage.R.drawable.ic_manage_product_duplicate)
+        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.product_manage_menu_delete_product, com.tokopedia.product.manage.R.drawable.ic_manage_product_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
 
         //Commented this code as quick fix in response to backend gql still hasn't been pushed to production env.
         //Activate it later after the backend gql as soon after backend gql prod is up running.
@@ -761,29 +761,29 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 //                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_add_featured_product, R.drawable.ic_manage_featured_product)
 //        }
 
-        bottomSheetBuilder.addItem(R.id.set_cashback_product_menu, R.string.product_manage_menu_set_cashback, com.tokopedia.product.manage.oldlist.R.drawable.ic_manage_product_set_cashback)
+        bottomSheetBuilder.addItem(R.id.set_cashback_product_menu, R.string.product_manage_menu_set_cashback, com.tokopedia.product.manage.R.drawable.ic_manage_product_set_cashback)
         if (productManageViewModel.productStatus != StatusProductOption.EMPTY) {
-            bottomSheetBuilder.addItem(R.id.set_promo_ads_product_menu, R.string.product_manage_menu_set_promo_ads, com.tokopedia.product.manage.oldlist.R.drawable.ic_manage_product_topads)
+            bottomSheetBuilder.addItem(R.id.set_promo_ads_product_menu, R.string.product_manage_menu_set_promo_ads, com.tokopedia.product.manage.R.drawable.ic_manage_product_topads)
         }
-        bottomSheetBuilder.addItem(R.id.change_price_product_menu, R.string.product_manage_menu_set_price, com.tokopedia.product.manage.oldlist.R.drawable.ic_manage_product_set_price)
-        bottomSheetBuilder.addItem(R.id.share_product_menu, com.tokopedia.product.manage.oldlist.R.string.product_manage_title_share, com.tokopedia.product.manage.oldlist.R.drawable.ic_manage_product_share)
+        bottomSheetBuilder.addItem(R.id.change_price_product_menu, R.string.product_manage_menu_set_price, com.tokopedia.product.manage.R.drawable.ic_manage_product_set_price)
+        bottomSheetBuilder.addItem(R.id.share_product_menu, com.tokopedia.product.manage.R.string.product_manage_title_share, com.tokopedia.product.manage.R.drawable.ic_manage_product_share)
 
     }
 
     private fun onOptionBottomSheetClicked(productManageViewModel: ProductManageViewModel): BottomSheetItemClickListener {
         return BottomSheetItemClickListener {
             if (productManageViewModel.productStatus == StatusProductOption.UNDER_SUPERVISION) {
-                NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_desc_product_on_supervision, productManageViewModel.productName))
+                NetworkErrorHelper.showSnackbar(activity, getString(com.tokopedia.product.manage.R.string.product_manage_desc_product_on_supervision, productManageViewModel.productName))
                 return@BottomSheetItemClickListener
             }
             val itemId = it.itemId
-            if (itemId == com.tokopedia.product.manage.oldlist.R.id.edit_product_menu) {
+            if (itemId == com.tokopedia.product.manage.R.id.edit_product_menu) {
                 goToEditProduct(productManageViewModel.id)
                 ProductManageTracking.eventProductManageOverflowMenu(it.title.toString())
-            } else if (itemId == com.tokopedia.product.manage.oldlist.R.id.duplicat_product_menu) {
+            } else if (itemId == com.tokopedia.product.manage.R.id.duplicat_product_menu) {
                 goToDuplicateProduct(productManageViewModel.id)
                 ProductManageTracking.eventProductManageOverflowMenu(it.title.toString())
-            } else if (itemId == com.tokopedia.product.manage.oldlist.R.id.delete_product_menu) {
+            } else if (itemId == com.tokopedia.product.manage.R.id.delete_product_menu) {
                 val productIdList = ArrayList<String>()
 
                 showDialogActionDeleteProduct(productIdList,
@@ -798,17 +798,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                             dialog.dismiss()
                         })
 
-            } else if (itemId == com.tokopedia.product.manage.oldlist.R.id.change_price_product_menu) {
+            } else if (itemId == com.tokopedia.product.manage.R.id.change_price_product_menu) {
                 if (productManageViewModel.isProductVariant) {
                     showDialogVariantPriceLocked()
                 } else {
                     showDialogChangeProductPrice(productManageViewModel.productId, productManageViewModel.productPricePlain, productManageViewModel.productCurrencyId)
                 }
-            } else if (itemId == com.tokopedia.product.manage.oldlist.R.id.share_product_menu) {
+            } else if (itemId == com.tokopedia.product.manage.R.id.share_product_menu) {
                 downloadBitmap(productManageViewModel)
-            } else if (itemId == com.tokopedia.product.manage.oldlist.R.id.set_cashback_product_menu) {
+            } else if (itemId == com.tokopedia.product.manage.R.id.set_cashback_product_menu) {
                 onSetCashbackClicked(productManageViewModel)
-            } else if (itemId == com.tokopedia.product.manage.oldlist.R.id.set_promo_ads_product_menu) {
+            } else if (itemId == com.tokopedia.product.manage.R.id.set_promo_ads_product_menu) {
                 onPromoTopAdsClicked(productManageViewModel)
             }
 
@@ -858,7 +858,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun showOptionCashback(productId: String, productPrice: String, productPriceSymbol: String, productCashback: Int) {
         val bottomSheetBuilder = CheckedBottomSheetBuilder(activity)
                 .setMode(BottomSheetBuilder.MODE_LIST)
-                .addTitleItem(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_cashback_title))
+                .addTitleItem(getString(com.tokopedia.product.manage.R.string.product_manage_cashback_title))
 
         addCashbackBottomSheetItemMenu(bottomSheetBuilder, productPrice, productPriceSymbol, productCashback, CashbackOption.CASHBACK_OPTION_3)
         addCashbackBottomSheetItemMenu(bottomSheetBuilder, productPrice, productPriceSymbol, productCashback, CashbackOption.CASHBACK_OPTION_4)
@@ -890,14 +890,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 else -> {
                 }
             }
-            ProductManageTracking.eventProductManageOverflowMenu(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_cashback_title) + " - " + it.title)
+            ProductManageTracking.eventProductManageOverflowMenu(getString(com.tokopedia.product.manage.R.string.product_manage_cashback_title) + " - " + it.title)
         }
     }
 
     private fun getCashbackMenuText(cashback: Int, productPriceSymbol: String, productPricePlain: Double): String {
-        var cashbackText = getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_cashback_option_none)
+        var cashbackText = getString(com.tokopedia.product.manage.R.string.product_manage_cashback_option_none)
         if (cashback > 0) {
-            cashbackText = getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_cashback_option, cashback.toString(),
+            cashbackText = getString(com.tokopedia.product.manage.R.string.product_manage_cashback_option, cashback.toString(),
                     productPriceSymbol,
                     KMNumbers.formatDouble2PCheckRound(cashback.toDouble() * productPricePlain / 100f, productPriceSymbol != "Rp"))
         }
@@ -911,13 +911,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
             val price = if (productManageViewModel.productCurrencyId == CurrencyTypeDef.TYPE_USD) productManageViewModel.productPricePlain else productManageViewModel.productPrice
             val data = ProductData()
             data.priceText = productManageViewModel.productCurrencySymbol + " " + price
-            data.cashbacktext = if (productManageViewModel.productCashback > 0) getString(com.tokopedia.product.manage.oldlist.R.string.pml_sticker_cashback, productManageViewModel.productCashback) else ""
+            data.cashbacktext = if (productManageViewModel.productCashback > 0) getString(com.tokopedia.product.manage.R.string.pml_sticker_cashback, productManageViewModel.productCashback) else ""
             data.currencySymbol = productManageViewModel.productCurrencySymbol
             data.productId = productManageViewModel.productId
             data.productName = productManageViewModel.productName
             data.productUrl = productManageViewModel.productUrl
             data.productImageUrl = productManageViewModel.imageFullUrl
-            data.shopUrl = getString(com.tokopedia.product.manage.oldlist.R.string.pml_sticker_shop_link, shopDomain)
+            data.shopUrl = getString(com.tokopedia.product.manage.R.string.pml_sticker_shop_link, shopDomain)
 
             productShare.share(data, { showLoadingProgress() }, { hideLoadingProgress() })
         }

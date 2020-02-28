@@ -8,7 +8,7 @@ import android.widget.Button
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.BottomSheets
-import com.tokopedia.product.manage.oldlist.R
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType.Companion.STOCK_DELETED
 import com.tokopedia.product.manage.oldlist.view.adapter.ConfirmationProductAdapter
@@ -45,15 +45,15 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
     override fun title(): String {
         return if (model.first().statusStock != STOCK_DELETED) {
             if (model.size == 1) {
-                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.oldlist.R.string.product_confirmation_bs_title_change_single)).toString()
+                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.R.string.product_confirmation_bs_title_change_single)).toString()
             } else {
-                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.oldlist.R.string.product_confirmation_bs_title_change, model.size.toString())).toString()
+                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.R.string.product_confirmation_bs_title_change, model.size.toString())).toString()
             }
         } else {
             if (model.size == 1) {
-                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.oldlist.R.string.product_confirmation_bs_title_delete_single)).toString()
+                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.R.string.product_confirmation_bs_title_delete_single)).toString()
             } else {
-                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.oldlist.R.string.product_confirmation_bs_title_delete, model.size.toString())).toString()
+                MethodChecker.fromHtml(getString(com.tokopedia.product.manage.R.string.product_confirmation_bs_title_delete, model.size.toString())).toString()
             }
         }
     }
@@ -62,28 +62,28 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
     override fun state(): BottomSheetsState = BottomSheetsState.FULL
 
-    override fun getLayoutResourceId(): Int = com.tokopedia.product.manage.oldlist.R.layout.confirmation_product_bottom_sheet
+    override fun getLayoutResourceId(): Int = com.tokopedia.product.manage.R.layout.confirmation_product_bottom_sheet
 
-    override fun getBaseLayoutResourceId(): Int = com.tokopedia.product.manage.oldlist.R.layout.base_confirmation_bottom_sheet
+    override fun getBaseLayoutResourceId(): Int = com.tokopedia.product.manage.R.layout.base_confirmation_bottom_sheet
 
     override fun getTheme(): Int = R.style.BaseBottomSheetDialog
 
     override fun getBottomsheet_container(): Int {
-        return com.tokopedia.product.manage.oldlist.R.id.bottomsheet_container
+        return com.tokopedia.product.manage.R.id.bottomsheet_container
     }
 
     override fun getTv_title(): Int {
-        return com.tokopedia.product.manage.oldlist.R.id.tv_title
+        return com.tokopedia.product.manage.R.id.tv_title
     }
 
     override fun getLayout_title(): Int {
-        return com.tokopedia.product.manage.oldlist.R.id.layout_title
+        return com.tokopedia.product.manage.R.id.layout_title
     }
 
     override fun configView(parentView: View) {
         getArgument()
         super.configView(parentView)
-        btnClose = parentView.findViewById(com.tokopedia.product.manage.oldlist.R.id.btn_close_confirmation)
+        btnClose = parentView.findViewById(com.tokopedia.product.manage.R.id.btn_close_confirmation)
         btnClose.setOnClickListener {
             dismiss()
         }
@@ -91,9 +91,9 @@ class ConfirmationUpdateProductBottomSheet : BottomSheets() {
 
     override fun initView(view: View) {
         view.apply {
-            rvConfirmation = findViewById(com.tokopedia.product.manage.oldlist.R.id.rv_confirmation_product)
-            btnCancel = findViewById(com.tokopedia.product.manage.oldlist.R.id.btn_cancel_confirmation)
-            btnConfirmation = findViewById(com.tokopedia.product.manage.oldlist.R.id.btn_confirmation)
+            rvConfirmation = findViewById(com.tokopedia.product.manage.R.id.rv_confirmation_product)
+            btnCancel = findViewById(com.tokopedia.product.manage.R.id.btn_cancel_confirmation)
+            btnConfirmation = findViewById(com.tokopedia.product.manage.R.id.btn_confirmation)
         }
 
         btnCancel.setOnClickListener {
