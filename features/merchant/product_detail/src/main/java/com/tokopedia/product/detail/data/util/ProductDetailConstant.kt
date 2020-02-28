@@ -3,6 +3,11 @@ package com.tokopedia.product.detail.data.util
 import com.tokopedia.url.TokopediaUrl
 
 object ProductDetailConstant {
+    const val KEY_SHOP_ID_SELLER = "shopId"
+    const val KEY_SHOP_TYPE = "shopType"
+    const val KEY_PAGE_TYPE = "pageType"
+    const val KEY_PRODUCT_ID_ = "productId"
+
     @JvmField
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 
