@@ -5,15 +5,9 @@ import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.emoney.R
-import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
 import com.tokopedia.emoney.view.fragment.NfcCheckBalanceFragment
-import com.tokopedia.emoney.viewmodel.NfcCheckBalanceViewModel
-import javax.inject.Inject
 
 /**
  * applink
@@ -24,23 +18,13 @@ import javax.inject.Inject
 
 class NfcCheckBalanceActivity : BaseSimpleActivity() {
 
-    private lateinit var nfcCheckBalanceViewModel: NfcCheckBalanceViewModel
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
     override fun getNewFragment(): Fragment? {
-        initInjector()
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        nfcCheckBalanceViewModel = viewModelProvider.get(NfcCheckBalanceViewModel::class.java)
-
         return NfcCheckBalanceFragment.newInstance()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        processTagIntent(intent)
         title = getString(R.string.emoney_toolbar_title_etoll_check_balance)
     }
 
@@ -52,13 +36,6 @@ class NfcCheckBalanceActivity : BaseSimpleActivity() {
         intent?.let {
             processTagIntent(intent)
         }
-    }
-
-    private fun initInjector() {
-        val emoneyComponent = DaggerDigitalEmoneyComponent.builder()
-                .baseAppComponent((this.application as BaseMainApplication).baseAppComponent)
-                .build()
-        emoneyComponent.inject(this)
     }
 
     override fun getCloseButton(): Int {
@@ -73,7 +50,9 @@ class NfcCheckBalanceActivity : BaseSimpleActivity() {
         if (intent != null && !TextUtils.isEmpty(intent.action) &&
                 (intent.action == NfcAdapter.ACTION_TECH_DISCOVERED ||
                         intent.action == NfcAdapter.ACTION_TAG_DISCOVERED)) {
-            nfcCheckBalanceViewModel.setIntentFromNfc(intent)
+            if (fragment != null) {
+                (fragment as NfcCheckBalanceFragment).setOnNewIntent(intent)
+            }
         }
     }
 }

@@ -29,16 +29,15 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
 import com.tokopedia.common_digital.common.presentation.model.DigitalCategoryDetailPassData
-import com.tokopedia.emoney.util.EmoneyAnalytics
 import com.tokopedia.emoney.R
 import com.tokopedia.emoney.data.EmoneyInquiry
 import com.tokopedia.emoney.di.DaggerDigitalEmoneyComponent
+import com.tokopedia.emoney.util.EmoneyAnalytics
 import com.tokopedia.emoney.view.compoundview.ETollUpdateBalanceResultView
 import com.tokopedia.emoney.view.compoundview.NFCDisabledView
 import com.tokopedia.emoney.view.compoundview.TapETollCardView
 import com.tokopedia.emoney.viewmodel.BrizziBalanceViewModel
 import com.tokopedia.emoney.viewmodel.EmoneyBalanceViewModel
-import com.tokopedia.emoney.viewmodel.NfcCheckBalanceViewModel
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.GraphqlHelper
@@ -54,7 +53,6 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
     private lateinit var permissionCheckerHelper: PermissionCheckerHelper
     private lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
     private lateinit var brizziBalanceViewModel: BrizziBalanceViewModel
-    private lateinit var nfcCheckBalanceViewModel: NfcCheckBalanceViewModel
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -81,17 +79,11 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             emoneyBalanceViewModel = viewModelProvider.get(EmoneyBalanceViewModel::class.java)
             brizziBalanceViewModel = viewModelProvider.get(BrizziBalanceViewModel::class.java)
-            nfcCheckBalanceViewModel = viewModelProvider.get(NfcCheckBalanceViewModel::class.java)
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        nfcCheckBalanceViewModel.intentFromNfc.observe(this, Observer {
-            it?.run {
-                processTagIntent(this)
-            }
-        })
+    fun setOnNewIntent(intent: Intent) {
+        processTagIntent(intent)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -178,7 +170,7 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
     private fun executeMandiri(intent: Intent) {
         val tag = intent.getParcelableExtra<Tag>(NfcAdapter.EXTRA_TAG)
         if (tag != null) {
-            emoneyBalanceViewModel.processEmoneyTagIntent(intent, IsoDep.get(tag),
+            emoneyBalanceViewModel.processEmoneyTagIntent(IsoDep.get(tag),
                     GraphqlHelper.loadRawString(resources, R.raw.query_emoney_inquiry_balance),
                     0)
         }
@@ -249,8 +241,8 @@ class NfcCheckBalanceFragment : BaseDaggerFragment() {
             })
 
             brizziBalanceViewModel.cardIsNotBrizzi.observe(this, Observer {
-                    emoneyAnalytics.onErrorReadingCard()
-                    showError(resources.getString(R.string.emoney_card_isnot_supported))
+                emoneyAnalytics.onErrorReadingCard()
+                showError(resources.getString(R.string.emoney_card_isnot_supported))
             })
         } else {
             showError(resources.getString(R.string.emoney_device_isnot_supported))

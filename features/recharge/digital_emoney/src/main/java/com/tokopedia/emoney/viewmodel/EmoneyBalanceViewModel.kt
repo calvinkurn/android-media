@@ -1,6 +1,5 @@
 package com.tokopedia.emoney.viewmodel
 
-import android.content.Intent
 import android.nfc.tech.IsoDep
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.emoney.data.EmoneyInquiry
@@ -29,7 +28,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
     private lateinit var isoDep: IsoDep
 
-    fun processEmoneyTagIntent(intent: Intent, isoDep: IsoDep, balanceRawQuery: String, idCard: Int) {
+    fun processEmoneyTagIntent(isoDep: IsoDep, balanceRawQuery: String, idCard: Int) {
         //do something with tagFromIntent
         this.isoDep = isoDep
         try {
@@ -60,7 +59,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                     mapAttributes[PARAM_ISSUER_ID] = ISSUER_ID_EMONEY
                     mapAttributes[PARAM_CARD_UUID] = responseCardUID
                     mapAttributes[PARAM_LAST_BALANCE] = responseCardLastBalance
-                    getEmoneyInquiryBalance(intent, PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
+                    getEmoneyInquiryBalance(PARAM_INQUIRY, balanceRawQuery, idCard, mapAttributes)
                 } else {
                     isoDep.close()
                     cardIsNotEmoney.postValue(true)
@@ -72,7 +71,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
-    private fun getEmoneyInquiryBalance(intent: Intent, paramCommand: String, balanceRawQuery: String, idCard: Int,
+    private fun getEmoneyInquiryBalance(paramCommand: String, balanceRawQuery: String, idCard: Int,
                                         mapAttributesParam: HashMap<String, Any>) {
         launchCatchError(block = {
             var mapParam = HashMap<String, Any>()
@@ -91,7 +90,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                 it.issuer_id = ISSUER_ID_EMONEY
 
                 if (it.status == 0) {
-                    writeBalanceToCard(intent, it.payload, balanceRawQuery, data.emoneyInquiry.id.toInt(), mapAttributesParam)
+                    writeBalanceToCard(it.payload, balanceRawQuery, data.emoneyInquiry.id.toInt(), mapAttributesParam)
                 } else {
                     emoneyInquiry.postValue(data.emoneyInquiry)
                 }
@@ -101,7 +100,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
         }
     }
 
-    private fun writeBalanceToCard(intent: Intent, payload: String, balanceRawQuery: String, id: Int, mapAttributes: HashMap<String, Any>) {
+    private fun writeBalanceToCard(payload: String, balanceRawQuery: String, id: Int, mapAttributes: HashMap<String, Any>) {
         if (::isoDep.isInitialized && isoDep.isConnected) {
             try {
                 val responseInByte = isoDep.transceive(NFCUtils.hexStringToByteArray(payload))
@@ -111,7 +110,7 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
                         // to get card payload
                         val response = NFCUtils.toHex(responseInByte)
                         mapAttributes[PARAM_PAYLOAD] = response
-                        getEmoneyInquiryBalance(intent, PARAM_SEND_COMMAND, balanceRawQuery, id, mapAttributes)
+                        getEmoneyInquiryBalance(PARAM_SEND_COMMAND, balanceRawQuery, id, mapAttributes)
                     }
                 }
             } catch (e: IOException) {
