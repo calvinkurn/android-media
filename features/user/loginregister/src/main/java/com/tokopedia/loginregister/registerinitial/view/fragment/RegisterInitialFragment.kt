@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
@@ -48,6 +49,7 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.view.activity.LoginActivity
+import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.loginregister.loginthirdparty.facebook.data.FacebookCredentialData
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent
 import com.tokopedia.loginregister.registerinitial.domain.pojo.ActivateUserPojo
@@ -99,7 +101,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private lateinit var socmedButton: ButtonCompat
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var socmedButtonsContainer: LinearLayout
-
+    private lateinit var sharedPrefs: SharedPreferences
 
     private var phoneNumber: String? = ""
     private var source: String = ""
@@ -1091,9 +1093,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
             it.setResult(Activity.RESULT_OK)
             it.finish()
+
+            saveFirstInstallTime()
         }
-
-
     }
 
     private fun isFromAccount(): Boolean = source == SOURCE_ACCOUNT
@@ -1209,6 +1211,15 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
     }
 
+    private fun saveFirstInstallTime() {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(
+                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs.edit().putLong(
+                    KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
+        }
+    }
+
     private fun <T, K, R> LiveData<T>.combineWith(
             liveData: LiveData<K>,
             block: (T?, K?) -> R
@@ -1276,6 +1287,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         private const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
+
+        private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
+        private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 

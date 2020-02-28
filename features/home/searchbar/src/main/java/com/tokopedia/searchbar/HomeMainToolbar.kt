@@ -188,7 +188,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         return shadowApplied
     }
 
-    fun setHint(placeholder: String, keyword: String){
+    fun setHint(placeholder: String, keyword: String, isFirstInstall: Boolean){
         val editTextSearch = findViewById<TextView>(R.id.et_search)
         editTextSearch.hint = if(placeholder.isEmpty()) context.getString(R.string.search_tokopedia) else placeholder
         editTextSearch.setSingleLine()
@@ -198,7 +198,12 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
             if(placeholder.isEmpty()){
                 RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
             }else{
-                RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource={source}&hint={hint}", HOME_SOURCE, safeEncodeUTF8(keyword))
+                RouteManager.route(context,
+                        ApplinkConstInternalDiscovery.AUTOCOMPLETE +
+                                "?navsource={source}&hint={hint}&first_install={first_install}",
+                        HOME_SOURCE,
+                        safeEncodeUTF8(keyword),
+                        isFirstInstall.toString())
             }
         }
     }

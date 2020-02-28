@@ -147,7 +147,7 @@ open class HomeViewModel @Inject constructor(
         initFlow()
     }
 
-    fun refresh(){
+    fun refresh(isFirstInstall: Boolean){
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
             refreshHomeData()
@@ -157,7 +157,7 @@ open class HomeViewModel @Inject constructor(
         }
         getTokocashBalance()
         getTokopoint()
-        searchHint()
+        searchHint(isFirstInstall)
     }
 
     fun hitBannerImpression(slidesModel: BannerSlidesModel) {
@@ -656,9 +656,10 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchHint(){
+    fun searchHint(isFirstInstall: Boolean) {
         if(getSearchHintJob?.isActive == true) return
         getSearchHintJob = launchCatchError(coroutineContext, block={
+            getKeywordSearchUseCase.params = GetKeywordSearchUseCase.createParams(isFirstInstall)
             val data = getKeywordSearchUseCase.executeOnBackground()
             _searchHint.postValue(data.searchData)
         }){}
