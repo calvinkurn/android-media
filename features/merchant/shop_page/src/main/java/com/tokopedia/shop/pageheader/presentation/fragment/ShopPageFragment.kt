@@ -47,7 +47,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
-import com.tokopedia.shop.home.view.fragment.ShopHomeFragment
+import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
 import com.tokopedia.shop.newproduct.view.fragment.ShopPageProductListFragment
 import com.tokopedia.shop.oldpage.di.component.DaggerOldShopPageComponent
 import com.tokopedia.shop.oldpage.di.component.OldShopPageComponent
@@ -587,13 +587,12 @@ class ShopPageFragment :
 
     private fun getListFragment(): List<Fragment> {
         val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
-        val shopReviewFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-//        (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
+        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
 //        val homeFragment = HomeProductFragment.createInstance()
-        val homeFragment = ShopHomeFragment.createInstance(shopId ?: "")
+        val homeFragment = ShopPageHomeFragment.createInstance(shopId ?: "")
         val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
         getShopInfoData()?.let {
-            homeFragment.setShopInfo(it)
+//            homeFragment.setShopInfo(it)
             shopPageProductFragment.setShopInfo(it)
         }
         return when {

@@ -1,6 +1,7 @@
 package com.tokopedia.shop.home.view.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.constant.ShopPageConstant
@@ -10,38 +11,71 @@ import com.tokopedia.shop.newproduct.utils.mapper.ShopPageProductListMapper
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
-import com.tokopedia.shop.product.domain.interactor.ShopPageHomeGetlayoutUseCase
+import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
+import com.tokopedia.shop.home.util.asyncCatchError
+import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class ShopHomeViewModel(
-        private val userSession: UserSessionInterface,
+class ShopHomeViewModel @Inject constructor(
+        userSession: UserSessionInterface,
+        private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase,
         private val getShopProductUseCase: GqlGetShopProductUseCase,
-        private val shopPageHomeGetlayoutUseCase: ShopPageHomeGetlayoutUseCase,
-        private val coroutineDispatcherProvider: CoroutineDispatcherProvider
-) : BaseViewModel(coroutineDispatcherProvider.main()) {
+        private val dispatcherProvider: CoroutineDispatcherProvider
+) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
         const val ALL_SHOWCASE_ID = "etalase"
     }
 
-//    val shopHomeLayoutData: LiveData<List<>>
+    val productListData: LiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>
+        get() = _productListData
+    private val _productListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
+
+    val shopHomeLayoutData: LiveData<Result<List<BaseShopHomeWidgetUiModel>>>
+        get() = _shopHomeLayoutData
+    private val _shopHomeLayoutData = MutableLiveData<Result<List<BaseShopHomeWidgetUiModel>>>()
+
     private val userSessionShopId = userSession.shopId ?: ""
 
-//    fun getHomeLayout(): List<ShopHomeLayout> {
-//
-//    }
-
-    fun getShopPageHomeData() {
-        launchCatchError (block =  {
-//            getAllShowcaseProductList()
+    fun getShopPageHomeData(shopId: String) {
+        launchCatchError(block = {
+            val shopLayoutWidget = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = { getShopPageHomeLayout(shopId) },
+                    onError = { null }
+            )
+            val productList = asyncCatchError(
+                    dispatcherProvider.io(),
+                    block = { getProductList(shopId, 1) },
+                    onError = { null }
+            )
+            shopLayoutWidget.await()?.let {
+                _shopHomeLayoutData.postValue(Success(it))
+            }
+            productList.await()?.let {
+                _productListData.postValue(Success(it))
+            }
         }) {
         }
     }
 
-    suspend fun getAllShowcaseProductList(
+    private suspend fun getShopPageHomeLayout(shopId: String): List<BaseShopHomeWidgetUiModel> {
+        getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId)
+        return ShopPageHomeMapper.mapToShopHomeWidgetModel(
+                getShopPageHomeLayoutUseCase.executeOnBackground(),
+                Util.isMyShop(shopId, userSessionShopId)
+        )
+    }
+
+    private suspend fun getProductList(
             shopId: String,
             page: Int
-    ): Pair<Boolean, List<ShopProductViewModel>> {
+    ): Pair<Boolean, List<ShopHomeProductViewModel>> {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(
                 shopId,
                 ShopProductFilterInput().apply {
@@ -54,7 +88,7 @@ class ShopHomeViewModel(
         return Pair(
                 isHasNextPage,
                 productListResponse.data.map {
-                    ShopPageProductListMapper.mapShopProductToProductViewModel(
+                    ShopPageHomeMapper.mapShopProductToProductViewModel(
                             it,
                             Util.isMyShop(shopId, userSessionShopId)
                     )
