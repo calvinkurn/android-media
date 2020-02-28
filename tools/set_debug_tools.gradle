@@ -1,9 +1,9 @@
 task("configDebugTools") {
-//    if (allowDistribution() == "true") {
-//        rootProject.ext.debugToolsEnabled = true
-//        println("Debug tools set true based on buildType Parameter")
-//        return
-//    }
+    if (allowDistributionLocal() == "true") {
+        rootProject.ext.debugToolsEnabled = true
+        println("Debug tools set true based on buildType Parameter")
+        return
+    }
     def taskNames = project.gradle.startParameter.taskNames
     if (taskNames==null || taskNames.size() == 0) {
         rootProject.ext.debugToolsEnabled = true
@@ -19,5 +19,12 @@ task("configDebugTools") {
             }
         }
     }
+}
+
+def allowDistributionLocal() {
+    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        return "true";
+    }
+    return "false";
 }
 preBuild.dependsOn configDebugTools
