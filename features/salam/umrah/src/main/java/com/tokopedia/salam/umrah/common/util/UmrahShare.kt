@@ -1,6 +1,7 @@
 package com.tokopedia.salam.umrah.common.util
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.tokopedia.linker.LinkerManager
@@ -28,8 +29,8 @@ class UmrahShare(private val activity: Activity) {
         private const val TYPE = "text/plain"
     }
 
-    fun share(data: TravelAgent, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
-        generateBranchLink(data,loadShare,doneLoadShare)
+    fun shareTravelAgent(data: TravelAgent, loadShare: () -> Unit, doneLoadShare: () -> Unit, context: Context) {
+        generateBranchLink(data,loadShare,doneLoadShare,context)
     }
 
     private fun openIntentShare(title: String, shareContent: String) {
@@ -44,19 +45,18 @@ class UmrahShare(private val activity: Activity) {
         activity.startActivity(Intent.createChooser(shareIntent, "Bagikan Produk Ini"))
     }
 
-    private fun generateBranchLink(data: TravelAgent, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
+    private fun generateBranchLink(data: TravelAgent, loadShare: () -> Unit, doneLoadShare: () -> Unit, context: Context) {
         loadShare()
         if(isBranchUrlActive()) {
             LinkerManager.getInstance().executeShareRequest(
                     LinkerUtils.createShareRequest(0,
-                            travelDataToLinkerDataMapper(data), object : ShareCallback {
+                            travelDataToLinkerDataMapper(data, context), object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult) {
                             openIntentShare(data.name, linkerShareData.shareContents)
                             doneLoadShare()
                         }
 
                         override fun onError(linkerError: LinkerError) {
-                            Log.d("ERRORLINKER", linkerError.errorMessage)
                             doneLoadShare()
                         }
                     }))
@@ -66,12 +66,12 @@ class UmrahShare(private val activity: Activity) {
         }
     }
 
-    private fun travelDataToLinkerDataMapper(data: TravelAgent): LinkerShareData {
+    private fun travelDataToLinkerDataMapper(data: TravelAgent, context: Context): LinkerShareData {
         return LinkerShareData().apply {
             linkerData = LinkerData().apply {
                 id = data.id
-                name = data.name
-                description = data.name
+                name = context.getString(R.string.umrah_travel_share_name, data.name)
+                description = context.getString(R.string.umrah_travel_share_desc, data.name,data.name)
                 ogUrl = null
                 imgUri = data.imageUrl
                 uri = activity.resources.getString(R.string.umrah_agen_link_share, data.slugName)

@@ -304,7 +304,7 @@ class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelList
     override fun shareTravelLink() {
         umrahTrackingUtil.umrahTravelAgentThreeDots(getEventCategoryTracking(getCurrentPositionViewPager()),UMRAH_TRAVEL_THREE_DOT_SHARE)
         activity?.run {
-            UmrahShare(this).share(travelAgent, { showLoading() }, { hideLoading() })
+            UmrahShare(this).shareTravelAgent(travelAgent, { showLoading() }, { hideLoading() },this.applicationContext)
         }
     }
 
