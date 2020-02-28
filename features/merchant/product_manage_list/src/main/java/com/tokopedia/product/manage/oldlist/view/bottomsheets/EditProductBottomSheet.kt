@@ -25,9 +25,9 @@ class EditProductBottomSheet(context: Context, val listener: EditProductInterfac
     private var btnNext: Button? = null
 
     init {
-        LayoutInflater.from(context).inflate(com.tokopedia.product.manage.oldlist.R.layout.fragment_bs_bulk_edit, this, true).apply {
-            rvBulk = findViewById(com.tokopedia.product.manage.oldlist.R.id.rv_bulk_edit)
-            btnNext = findViewById(com.tokopedia.product.manage.oldlist.R.id.btn_next_bs)
+        LayoutInflater.from(context).inflate(com.tokopedia.product.manage.R.layout.fragment_bs_bulk_edit, this, true).apply {
+            rvBulk = findViewById(com.tokopedia.product.manage.R.id.rv_bulk_edit)
+            btnNext = findViewById(com.tokopedia.product.manage.R.id.btn_next_bs)
             rvBulk?.run {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
                 adapter = editAdapter

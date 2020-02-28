@@ -10,12 +10,12 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 
 class ProductManageEmptyList(view: View) : AbstractViewHolder<EmptyModel>(view) {
 
-    private val imgEmpty:ImageView = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.img_product_empty)
+    private val imgEmpty:ImageView = view.findViewById(com.tokopedia.product.manage.R.id.img_product_empty)
 
     companion object {
         @JvmStatic
         @LayoutRes
-        val LAYOUT = com.tokopedia.product.manage.oldlist.R.layout.empty_list_product_manage
+        val LAYOUT = com.tokopedia.product.manage.R.layout.empty_list_product_manage
 
         const val IMG_EMPTY_LIST = "https://ecs7.tokopedia.net/img/android/manage_product/manage_product_empty.png"
     }
