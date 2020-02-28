@@ -2,14 +2,13 @@ package com.tokopedia.travelhomepage.homepage.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
+import com.tokopedia.common.travel.domain.TravelRecentSearchUseCase
 import com.tokopedia.common.travel.utils.TravelTestDispatcherProvider
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageBannerModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
-import com.tokopedia.travelhomepage.homepage.presentation.DUMMY_BANNER
-import com.tokopedia.travelhomepage.homepage.presentation.DUMMY_CATEGORIES
+import com.tokopedia.travelhomepage.homepage.data.*
+import com.tokopedia.travelhomepage.homepage.presentation.*
+import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
 import com.tokopedia.travelhomepage.shouldBe
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,6 +32,7 @@ class TravelHomepageViewModelTest {
     private val graphqlRepository = mockk<GraphqlRepository>()
     private val emptyUseCase = GetEmptyModelsUseCase()
     private val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
+    private val recentSearchUseCase = mockk<TravelRecentSearchUseCase>()
 
     private val travelDispatcherProvider = TravelTestDispatcherProvider()
 
@@ -40,7 +40,7 @@ class TravelHomepageViewModelTest {
 
     @Before
     fun setup() {
-        viewModel = TravelHomepageViewModel(graphqlRepository, emptyUseCase, bannerUseCase, mockk(), travelDispatcherProvider)
+        viewModel = TravelHomepageViewModel(graphqlRepository, emptyUseCase, bannerUseCase, recentSearchUseCase, travelDispatcherProvider)
     }
 
     @Test
@@ -74,7 +74,7 @@ class TravelHomepageViewModelTest {
     }
 
     @Test
-    fun onGetBanner_FailedToFetchBanner_BannerValueShouldBeRepresentFailedToFetch() {
+    fun onGetBanner_FailedToFetchBanner_BannerValueShouldRepresentFailedToFetch() {
         // given
         coEvery { bannerUseCase.execute(any(), any(), any()) } coAnswers { Fail(Throwable()) }
         viewModel.getIntialList(true)
@@ -121,7 +121,7 @@ class TravelHomepageViewModelTest {
     }
 
     @Test
-    fun onGetCategories_FailedToFetchCategories_CategoryValueShouldBeRepresentFailedToFetch() {
+    fun onGetCategories_FailedToFetchCategories_CategoryValueShouldRepresentFailedToFetch() {
         // given
         coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
         viewModel.getIntialList(true)
@@ -163,547 +163,320 @@ class TravelHomepageViewModelTest {
         viewModel.isAllError.value shouldBe false
     }
 
-    /*
+    @Test
+    fun onGetOrderList_FailedToFetchOrderList_OrderListValueShouldRepresentFailedToFetch() {
+        // given
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+        viewModel.getIntialList(true)
 
-     */
+        // when
+        viewModel.getOrderList("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
+    }
+
+    @Test
+    fun onGetOrderList_SuccessToFetchOrderList_OrderListValueShouldBeSameAsDummyData() {
+        // given
+        val graphqlSuccessResponse = GraphqlResponse(
+                mapOf(TravelHomepageOrderListModel.Response::class.java to TravelHomepageOrderListModel.Response(DUMMY_ORDER_LIST)),
+                mapOf(),
+                false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getOrderList("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe true
+
+        val orderList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER] as TravelHomepageSectionModel)
+        orderList.title shouldBe DUMMY_ORDER_LIST.travelMeta.title
+        orderList.type shouldBe TravelHomepageFragment.TYPE_ORDER_LIST
+        orderList.seeAllUrl shouldBe DUMMY_ORDER_LIST.travelMeta.appUrl
+
+        for ((index, item) in orderList.list.withIndex()) {
+            item.title shouldBe DUMMY_ORDER_LIST.orders[index].title
+            item.subtitle shouldBe DUMMY_ORDER_LIST.orders[index].subtitle
+            item.prefix shouldBe DUMMY_ORDER_LIST.orders[index].prefix
+            item.value shouldBe DUMMY_ORDER_LIST.orders[index].value
+            item.appUrl shouldBe DUMMY_ORDER_LIST.orders[index].appUrl
+            item.imageUrl shouldBe DUMMY_ORDER_LIST.orders[index].imageUrl
+            item.product shouldBe DUMMY_ORDER_LIST.orders[index].product
+        }
+
+        viewModel.isAllError.value shouldBe false
+    }
+
+    @Test
+    fun onGetRecentSearch_FailedToFetchRecentSearch_RecentSearchValueShouldRepresentFailedToFetch() {
+        // given
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getRecentSearch("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
+    }
+
+    @Test
+    fun onGetRecentSearch_SuccessToFetchRecentSearch_RecentSearchValueShouldBeSameAsDummyData() {
+        // given
+        coEvery { recentSearchUseCase.execute(any(), true) } returns DUMMY_RECENT_SEARCH
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getRecentSearch("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe true
+
+        val recentSearchList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER] as TravelHomepageSectionModel)
+        recentSearchList.title shouldBe DUMMY_RECENT_SEARCH.travelMeta.title
+        recentSearchList.type shouldBe TravelHomepageFragment.TYPE_RECENT_SEARCH
+        recentSearchList.seeAllUrl shouldBe DUMMY_RECENT_SEARCH.travelMeta.appUrl
+
+        for ((index, item) in recentSearchList.list.withIndex()) {
+            item.title shouldBe DUMMY_RECENT_SEARCH.items[index].title
+            item.subtitle shouldBe DUMMY_RECENT_SEARCH.items[index].subtitle
+            item.prefix shouldBe DUMMY_RECENT_SEARCH.items[index].prefix
+            item.value shouldBe DUMMY_RECENT_SEARCH.items[index].value
+            item.appUrl shouldBe DUMMY_RECENT_SEARCH.items[index].appUrl
+            item.imageUrl shouldBe DUMMY_RECENT_SEARCH.items[index].imageUrl
+            item.product shouldBe DUMMY_RECENT_SEARCH.items[index].product
+        }
+
+        viewModel.isAllError.value shouldBe false
+    }
+
+    @Test
+    fun onGetRecommendation_FailedToFetchRecommendation_RecommendationValueShouldRepresentFailedToFetch() {
+        // given
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getRecommendation("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
+    }
+
+    @Test
+    fun onGetRecommendation_SuccessToFetchRecommendation_RecommendationValueShouldBeSameAsDummyData() {
+        // given
+        val graphqlSuccessResponse = GraphqlResponse(
+                mapOf(TravelHomepageRecommendationModel.Response::class.java to TravelHomepageRecommendationModel.Response(DUMMY_RECOMMENDATION)),
+                mapOf(),
+                false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getRecommendation("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe true
+
+        val recommendationList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER] as TravelHomepageSectionModel)
+        recommendationList.title shouldBe DUMMY_RECOMMENDATION.travelMeta.title
+        recommendationList.type shouldBe TravelHomepageFragment.TYPE_RECOMMENDATION
+        recommendationList.seeAllUrl shouldBe DUMMY_RECOMMENDATION.travelMeta.appUrl
+
+        for ((index, item) in recommendationList.list.withIndex()) {
+            item.title shouldBe DUMMY_RECOMMENDATION.items[index].title
+            item.subtitle shouldBe DUMMY_RECOMMENDATION.items[index].subtitle
+            item.prefix shouldBe DUMMY_RECOMMENDATION.items[index].prefix
+            item.value shouldBe DUMMY_RECOMMENDATION.items[index].value
+            item.appUrl shouldBe DUMMY_RECOMMENDATION.items[index].appUrl
+            item.imageUrl shouldBe DUMMY_RECOMMENDATION.items[index].imageUrl
+            item.product shouldBe DUMMY_RECOMMENDATION.items[index].product
+        }
+
+        viewModel.isAllError.value shouldBe false
+    }
+
+    @Test
+    fun onGetDestination_FailedToFetchDestination_DestinationValueShouldRepresentFailedToFetch() {
+        // given
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getDestination("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
+    }
+
+    @Test
+    fun onGetDestination_SuccessToFetchDestination_DestinationValueShouldBeSameAsDummyData() {
+        // given
+        val graphqlSuccessResponse = GraphqlResponse(
+                mapOf(TravelHomepageDestinationModel.Response::class.java to TravelHomepageDestinationModel.Response(DUMMY_DESTINATION)),
+                mapOf(),
+                false)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getDestination("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe true
+
+        val destinationModel = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER] as TravelHomepageDestinationModel)
+        destinationModel.meta.title shouldBe DUMMY_DESTINATION.meta.title
+
+        for ((index, item) in destinationModel.destination.withIndex()) {
+            item.attributes.title shouldBe DUMMY_DESTINATION.destination[index].attributes.title
+            item.attributes.subtitle shouldBe DUMMY_DESTINATION.destination[index].attributes.subtitle
+            item.attributes.webUrl shouldBe DUMMY_DESTINATION.destination[index].attributes.webUrl
+            item.attributes.appUrl shouldBe DUMMY_DESTINATION.destination[index].attributes.appUrl
+            item.attributes.imageUrl shouldBe DUMMY_DESTINATION.destination[index].attributes.imageUrl
+        }
+
+        viewModel.isAllError.value shouldBe false
+    }
+
+    @Test
+    fun onFailedToFetchAllData_AllValueShouldRepresentFailedToFetch() {
+        // given
+        coEvery { bannerUseCase.execute(any(), any(), any()) } coAnswers { Fail(Throwable()) }
+        coEvery { recentSearchUseCase.execute(any(), true) } coAnswers { throw Throwable() }
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getBanner("", true)
+        viewModel.getCategories("", true)
+        viewModel.getOrderList("", true)
+        viewModel.getRecentSearch("", true)
+        viewModel.getRecommendation("", true)
+        viewModel.getDestination("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
+
+        viewModel.isAllError.value shouldBe true
+    }
+
+    @Test
+    fun onSomeResponseSuccessAndSomeError() {
+        // given
+        coEvery { bannerUseCase.execute(any(), any(), any()) } returns Success(DUMMY_BANNER)
+        coEvery { recentSearchUseCase.execute(any(), true) } coAnswers { throw Throwable() }
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getBanner("", true)
+        viewModel.getCategories("", true)
+        viewModel.getOrderList("", true)
+        viewModel.getRecentSearch("", true)
+        viewModel.getRecommendation("", true)
+        viewModel.getDestination("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe true
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
+
+        viewModel.isAllError.value shouldBe false
+
+    }
+
+    @Test
+    fun onSomeResponseSuccessAndSomeErrorWithSomeUnloaded() {
+        // given
+        coEvery { bannerUseCase.execute(any(), any(), any()) } returns Success(DUMMY_BANNER)
+        coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
+
+        viewModel.getIntialList(true)
+
+        // when
+        viewModel.getBanner("", true)
+        viewModel.getCategories("", true)
+        viewModel.getOrderList("", true)
+        viewModel.getRecommendation("", true)
+        viewModel.getDestination("", true)
+
+        // then
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe true
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe false
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
+
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
+        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
+
+        viewModel.isAllError.value shouldBe false
+
+    }
+
+    @Test
+    fun onTravelItemListNull_isAllErrorShouldAlsoNull() {
+        // given
+        coEvery { bannerUseCase.execute(any(), any(), any()) } coAnswers { Fail(Throwable()) }
+
+        // when
+        viewModel.getBanner("", true)
+
+        // then
+        viewModel.isAllError.value shouldBe null
+
+    }
+
 }
-/*
-    Feature("Handle Fetch Order List") {
-        Scenario("Fetch Order List Failed") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
-
-            Given("Fetch Order List throw Exception") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Order List") {
-                viewModel.getOrderList("", true)
-            }
-
-            Then("Order List Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
-            }
-        }
-
-        Scenario("Fetch Order List Success") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val dummyData = DUMMY_ORDER_LIST
-            val graphqlSuccessResponse = GraphqlResponse(
-                    mapOf(TravelHomepageOrderListModel.Response::class.java to TravelHomepageOrderListModel.Response(dummyData)),
-                    mapOf(),
-                    false
-            )
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
-
-            Given("Fetch Order List return dummy response") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Order List") {
-                viewModel.getOrderList("", true)
-            }
-
-            Then("Order List Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe true
-            }
-
-            Then("Order List Data mapper should map response correctly") {
-                val orderList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER] as TravelHomepageSectionModel)
-                orderList.title shouldBe dummyData.travelMeta.title
-                orderList.type shouldBe TravelHomepageFragment.TYPE_ORDER_LIST
-                orderList.seeAllUrl shouldBe dummyData.travelMeta.appUrl
-
-                for ((index, item) in orderList.list.withIndex()) {
-                    item.title shouldBe dummyData.orders[index].title
-                    item.subtitle shouldBe dummyData.orders[index].subtitle
-                    item.prefix shouldBe dummyData.orders[index].prefix
-                    item.value shouldBe dummyData.orders[index].value
-                    item.appUrl shouldBe dummyData.orders[index].appUrl
-                    item.imageUrl shouldBe dummyData.orders[index].imageUrl
-                    item.product shouldBe dummyData.orders[index].product
-                }
-            }
-
-            Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBe false
-            }
-        }
-    }
-
-    Feature("Handle Fetch Recent Search") {
-        Scenario("Fetch Recent Search Failed") {
-            val recentSearchUseCase = mockk<TravelRecentSearchUseCase>()
-            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyModelsUseCase(), mockk(), recentSearchUseCase, TravelTestDispatcherProvider())
-
-            Given("Fetch Recent Search throw Exception") {
-                coEvery { recentSearchUseCase.execute(any(), true) } coAnswers { throw Throwable() }
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Recent Search") {
-                viewModel.getRecentSearch("", true)
-            }
-
-            Then("Recent Search Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
-            }
-        }
-
-        Scenario("Fetch Recent Search Success") {
-            val recentSearchUseCase = mockk<TravelRecentSearchUseCase>()
-            val dummyData = DUMMY_RECENT_SEARCH
-
-            val viewModel = TravelHomepageViewModel(mockk(), GetEmptyModelsUseCase(), mockk(), recentSearchUseCase, TravelTestDispatcherProvider())
-
-            Given("Fetch Recent Search return dummy response") {
-                coEvery { recentSearchUseCase.execute(any(), true) } returns dummyData
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Recent Search") {
-                viewModel.getRecentSearch("", true)
-            }
-
-            Then("Recent Search Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe true
-            }
-
-            Then("Recent Search Data mapper should map response correctly") {
-                val recentSearchList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER] as TravelHomepageSectionModel)
-                recentSearchList.title shouldBe dummyData.travelMeta.title
-                recentSearchList.type shouldBe TravelHomepageFragment.TYPE_RECENT_SEARCH
-                recentSearchList.seeAllUrl shouldBe dummyData.travelMeta.appUrl
-
-                for ((index, item) in recentSearchList.list.withIndex()) {
-                    item.title shouldBe dummyData.items[index].title
-                    item.subtitle shouldBe dummyData.items[index].subtitle
-                    item.prefix shouldBe dummyData.items[index].prefix
-                    item.value shouldBe dummyData.items[index].value
-                    item.appUrl shouldBe dummyData.items[index].appUrl
-                    item.imageUrl shouldBe dummyData.items[index].imageUrl
-                    item.product shouldBe dummyData.items[index].product
-                }
-            }
-
-            Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBe false
-            }
-        }
-    }
-
-    Feature("Handle Fetch Recommendation") {
-        Scenario("Fetch Recommendation Failed") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
-
-            Given("Fetch Recommendation throw Exception") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Recommendation") {
-                viewModel.getRecommendation("", true)
-            }
-
-            Then("Recommendation Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
-            }
-        }
-
-        Scenario("Fetch Recommendation Success") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val dummyData = DUMMY_RECOMMENDATION
-            val graphqlSuccessResponse = GraphqlResponse(
-                    mapOf(TravelHomepageRecommendationModel.Response::class.java to TravelHomepageRecommendationModel.Response(dummyData)),
-                    mapOf(),
-                    false
-            )
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
-
-            Given("Fetch Recommendation return dummy response") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Recommendation") {
-                viewModel.getRecommendation("", true)
-            }
-
-            Then("Recommendation Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe true
-            }
-
-            Then("Recommendation Data mapper should map response correctly") {
-                val recommendationList = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER] as TravelHomepageSectionModel)
-                recommendationList.title shouldBe dummyData.travelMeta.title
-                recommendationList.type shouldBe TravelHomepageFragment.TYPE_RECOMMENDATION
-                recommendationList.seeAllUrl shouldBe dummyData.travelMeta.appUrl
-
-                for ((index, item) in recommendationList.list.withIndex()) {
-                    item.title shouldBe dummyData.items[index].title
-                    item.subtitle shouldBe dummyData.items[index].subtitle
-                    item.prefix shouldBe dummyData.items[index].prefix
-                    item.value shouldBe dummyData.items[index].value
-                    item.appUrl shouldBe dummyData.items[index].appUrl
-                    item.imageUrl shouldBe dummyData.items[index].imageUrl
-                    item.product shouldBe dummyData.items[index].product
-                }
-            }
-
-            Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBe false
-            }
-        }
-    }
-
-    Feature("Handle Fetch Destination") {
-        Scenario("Fetch Destination Failed") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
-
-            Given("Fetch Destination throw Exception") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Destination") {
-                viewModel.getDestination("", true)
-            }
-
-            Then("Destination Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
-            }
-        }
-
-        Scenario("Fetch Destination Success") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val dummyData = DUMMY_DESTINATION
-            val graphqlSuccessResponse = GraphqlResponse(
-                    mapOf(TravelHomepageDestinationModel.Response::class.java to TravelHomepageDestinationModel.Response(dummyData)),
-                    mapOf(),
-                    false
-            )
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), mockk(), mockk(), TravelTestDispatcherProvider())
-
-            Given("Fetch Destination return dummy response") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } returns graphqlSuccessResponse
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Destination") {
-                viewModel.getDestination("", true)
-            }
-
-            Then("Destination Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe true
-            }
-
-            Then("Destination Data should be the same as response data") {
-                val destinationModel = ((viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER] as TravelHomepageDestinationModel)
-                destinationModel.meta.title shouldBe dummyData.meta.title
-
-                for ((index, item) in destinationModel.destination.withIndex()) {
-                    item.attributes.title shouldBe dummyData.destination[index].attributes.title
-                    item.attributes.subtitle shouldBe dummyData.destination[index].attributes.subtitle
-                    item.attributes.webUrl shouldBe dummyData.destination[index].attributes.webUrl
-                    item.attributes.appUrl shouldBe dummyData.destination[index].attributes.appUrl
-                    item.attributes.imageUrl shouldBe dummyData.destination[index].attributes.imageUrl
-                }
-            }
-
-            Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBe false
-            }
-        }
-    }
-
-    Feature("Test All Error") {
-        Scenario("All Response Error") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
-            val recentSearchUseCase = mockk<TravelRecentSearchUseCase>()
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), bannerUseCase, recentSearchUseCase, TravelTestDispatcherProvider())
-
-            Given("Banner UseCase throw Exception") {
-                coEvery { bannerUseCase.execute(any(), any(), any()) } coAnswers { Fail(Throwable()) }
-            }
-
-            Given("Recent Search UseCase throw Exception") {
-                coEvery { recentSearchUseCase.execute(any(), true) } coAnswers { throw Throwable() }
-            }
-
-            Given("Graphql Repository throw Exception") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Banner") {
-                viewModel.getBanner("", true)
-            }
-
-            When("Fetch Categories") {
-                viewModel.getCategories("", true)
-            }
-
-            When("Fetch Order List") {
-                viewModel.getOrderList("", true)
-            }
-
-            When("Fetch Recent Search") {
-                viewModel.getRecentSearch("", true)
-            }
-
-            When("Fetch Recommendation") {
-                viewModel.getRecommendation("", true)
-            }
-
-            When("Fetch Destination") {
-                viewModel.getDestination("", true)
-            }
-
-            Then("Banner Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Categories Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Order List Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Recent Search Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Recommendation Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Destination Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
-            }
-
-            Then("isAllError should be true") {
-                viewModel.isAllError.value shouldBe true
-            }
-        }
-
-        Scenario("Some Response Success and Some Error") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
-            val dummyData = DUMMY_BANNER
-            val recentSearchUseCase = mockk<TravelRecentSearchUseCase>()
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), bannerUseCase, recentSearchUseCase, TravelTestDispatcherProvider())
-
-            Given("Banner UseCase return dummy response") {
-                coEvery { bannerUseCase.execute(any(), any(), any()) } returns Success(dummyData)
-            }
-
-            Given("Recent Search UseCase throw Exception") {
-                coEvery { recentSearchUseCase.execute(any(), true) } coAnswers { throw Throwable() }
-            }
-
-            Given("Graphql Repository throw Exception") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Banner") {
-                viewModel.getBanner("", true)
-            }
-
-            When("Fetch Categories") {
-                viewModel.getCategories("", true)
-            }
-
-            When("Fetch Order List") {
-                viewModel.getOrderList("", true)
-            }
-
-            When("Fetch Recent Search") {
-                viewModel.getRecentSearch("", true)
-            }
-
-            When("Fetch Recommendation") {
-                viewModel.getRecommendation("", true)
-            }
-
-            When("Fetch Destination") {
-                viewModel.getDestination("", true)
-            }
-
-            Then("Banner Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe true
-            }
-
-            Then("Categories Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Order List Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Recent Search Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Recommendation Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Destination Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
-            }
-
-            Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBe false
-            }
-        }
-
-        Scenario("Some Response Success and Some Error with Some Unloaded") {
-            val graphqlRepository = mockk<GraphqlRepository>()
-            val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
-            val dummyData = DUMMY_BANNER
-            val viewModel = TravelHomepageViewModel(graphqlRepository, GetEmptyModelsUseCase(), bannerUseCase, mockk(), TravelTestDispatcherProvider())
-
-            Given("Banner UseCase return dummy response") {
-                coEvery { bannerUseCase.execute(any(), any(), any()) } returns Success(dummyData)
-            }
-
-            Given("Graphql Repository throw Exception") {
-                coEvery { graphqlRepository.getReseponse(any(), any()) } coAnswers { throw Throwable() }
-            }
-
-            When("Build Initial Item List") {
-                viewModel.getIntialList(true)
-            }
-
-            When("Fetch Banner") {
-                viewModel.getBanner("", true)
-            }
-
-            When("Fetch Categories") {
-                viewModel.getCategories("", true)
-            }
-
-            When("Fetch Order List") {
-                viewModel.getOrderList("", true)
-            }
-
-            When("Fetch Recommendation") {
-                viewModel.getRecommendation("", true)
-            }
-
-            When("Fetch Destination") {
-                viewModel.getDestination("", true)
-            }
-
-            Then("Banner Data should be Successfully Loaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.BANNER_ORDER].isSuccess shouldBe true
-            }
-
-            Then("Categories Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.CATEGORIES_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Order List Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.ORDER_LIST_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Recent Search Data should be Unloaded") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isLoaded shouldBe false
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECENT_SEARCHES_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Recommendation Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.RECOMMENDATION_ORDER].isSuccess shouldBe false
-            }
-
-            Then("Destination Data should be Loaded but Unsuccessful") {
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isLoaded shouldBe true
-                (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[TravelHomepageViewModel.DESTINATION_ORDER].isSuccess shouldBe false
-            }
-
-            Then("isAllError should be false") {
-                viewModel.isAllError.value shouldBe false
-            }
-        }
-
-        Scenario("travelItemList Null, isAllError also null") {
-            val bannerUseCase = mockk<GetTravelCollectiveBannerUseCase>()
-            val viewModel = TravelHomepageViewModel(mockk(), mockk(), bannerUseCase, mockk(), TravelTestDispatcherProvider())
-
-            Given("Banner UseCase throw Exception") {
-                coEvery { bannerUseCase.execute(any(), any(), any()) } coAnswers { Fail(Throwable()) }
-            }
-
-            When("Fetch Banner") {
-                viewModel.getBanner("", true)
-            }
-
-            Then("isAllError should be null") {
-                viewModel.isAllError.value shouldBe null
-            }
-        }
-    }
-})*/
