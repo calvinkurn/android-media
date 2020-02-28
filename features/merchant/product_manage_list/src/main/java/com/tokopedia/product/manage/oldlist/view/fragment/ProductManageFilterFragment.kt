@@ -70,7 +70,7 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(com.tokopedia.product.manage.oldlist.R.layout.fragment_product_manage_filter, container, false)
+        return inflater.inflate(com.tokopedia.product.manage.R.layout.fragment_product_manage_filter, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -115,43 +115,43 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
     private fun updateFilterView() {
         productManageFilterModel?.let {
             if (TextUtils.isEmpty(it.etalaseProductOptionName)) {
-                it.etalaseProductOptionName = getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_etalase_all)
+                it.etalaseProductOptionName = getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_etalase_all)
             }
             label_etalase.setContent(MethodChecker.fromHtml(it.etalaseProductOptionName))
             if (TextUtils.isEmpty(it.categoryName)) {
-                it.categoryName = getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_category_all)
+                it.categoryName = getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_category_all)
             }
             label_category.setContent(it.categoryName)
             when (it.conditionProductOption) {
-                ConditionProductOption.ALL_CONDITION -> label_condition.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_both_condition))
-                ConditionProductOption.NEW -> label_condition.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_condition_new))
-                ConditionProductOption.USED -> label_condition.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_condition_old))
-                else -> label_condition.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_both_condition))
+                ConditionProductOption.ALL_CONDITION -> label_condition.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_both_condition))
+                ConditionProductOption.NEW -> label_condition.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_condition_new))
+                ConditionProductOption.USED -> label_condition.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_condition_old))
+                else -> label_condition.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_both_condition))
             }
             when (it.catalogProductOption) {
-                CatalogProductOption.WITH_AND_WITHOUT -> label_catalog.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_both_catalog))
-                CatalogProductOption.WITH_CATALOG -> label_catalog.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_with_catalog))
-                CatalogProductOption.WITHOUT_CATALOG -> label_catalog.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_without_catalog))
-                else -> label_catalog.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_both_catalog))
+                CatalogProductOption.WITH_AND_WITHOUT -> label_catalog.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_both_catalog))
+                CatalogProductOption.WITH_CATALOG -> label_catalog.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_with_catalog))
+                CatalogProductOption.WITHOUT_CATALOG -> label_catalog.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_without_catalog))
+                else -> label_catalog.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_both_catalog))
             }
             when (it.pictureStatusOption) {
-                PictureStatusProductOption.WITH_AND_WITHOUT -> label_product_picture.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_picture_both))
-                PictureStatusProductOption.WITH_IMAGE -> label_product_picture.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_with_picture))
-                PictureStatusProductOption.WITHOUT_IMAGE -> label_product_picture.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_without_picture))
-                else -> label_product_picture.setContent(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_picture_both))
+                PictureStatusProductOption.WITH_AND_WITHOUT -> label_product_picture.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_picture_both))
+                PictureStatusProductOption.WITH_IMAGE -> label_product_picture.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_with_picture))
+                PictureStatusProductOption.WITHOUT_IMAGE -> label_product_picture.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_without_picture))
+                else -> label_product_picture.setContent(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_picture_both))
             }
         }
     }
 
     private fun showEtalaseOption() {
         val myEtalaseItemViewModels = ArrayList<MyEtalaseItemViewModel>()
-        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_ALL_PRODUK, getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_etalase_all)))
-        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_SOLD_PRODUK, getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_sold)))
-        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_EMPTY_STOK, getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_empty_stok)))
-        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_PENDING, getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_pending)))
-        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_FREE_RETURNS, getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_free_returns)))
-        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_PREORDER, getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_preorder)))
-        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_ALL_SHOWCASE, getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_all_showcase)))
+        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_ALL_PRODUK, getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_etalase_all)))
+        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_SOLD_PRODUK, getString(com.tokopedia.product.manage.R.string.product_manage_filter_sold)))
+        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_EMPTY_STOK, getString(com.tokopedia.product.manage.R.string.product_manage_filter_empty_stok)))
+        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_PENDING, getString(com.tokopedia.product.manage.R.string.product_manage_filter_pending)))
+        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_FREE_RETURNS, getString(com.tokopedia.product.manage.R.string.product_manage_filter_free_returns)))
+        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_PREORDER, getString(com.tokopedia.product.manage.R.string.product_manage_filter_preorder)))
+        myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_ALL_SHOWCASE, getString(com.tokopedia.product.manage.R.string.product_manage_filter_all_showcase)))
         productManageFilterModel?.let {
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ETALASE_DYNAMIC_PICKER)
             intent.putExtra(SELECTED_ETALASE_ID, it.etalaseProductOption.toLong())
@@ -171,7 +171,7 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         }
 
         val categoryViewModels = ArrayList<ProductManageCategoryViewModel>()
-        categoryViewModels.add(ProductManageCategoryViewModel(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_filter_menu_category_all), ProductManageListConstant.FILTER_ALL_CATEGORY, false))
+        categoryViewModels.add(ProductManageCategoryViewModel(getString(com.tokopedia.product.manage.R.string.product_manage_filter_menu_category_all), ProductManageListConstant.FILTER_ALL_CATEGORY, false))
 
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.CATEGORY_DYNAMIC_PICKER)
         intent.putExtra(CATEGORY_ID_INIT_SELECTED, categoryId)
@@ -180,14 +180,14 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
     }
 
     private fun showConditionOption() {
-        showBottomSheetOption(label_condition.title, com.tokopedia.product.manage.oldlist.R.menu.menu_product_manage_filter_condition_option,
+        showBottomSheetOption(label_condition.title, com.tokopedia.product.manage.R.menu.menu_product_manage_filter_condition_option,
                 label_condition.content, BottomSheetItemClickListener { item ->
             val itemId = item.itemId
             productManageFilterModel?.let {
                 when (itemId) {
-                    com.tokopedia.product.manage.oldlist.R.id.both_condtion_option_menu -> it.conditionProductOption = ConditionProductOption.ALL_CONDITION
-                    com.tokopedia.product.manage.oldlist.R.id.new_condition_option_menu -> it.conditionProductOption = ConditionProductOption.NEW
-                    com.tokopedia.product.manage.oldlist.R.id.old_condition_option_menu -> it.conditionProductOption = ConditionProductOption.USED
+                    com.tokopedia.product.manage.R.id.both_condtion_option_menu -> it.conditionProductOption = ConditionProductOption.ALL_CONDITION
+                    com.tokopedia.product.manage.R.id.new_condition_option_menu -> it.conditionProductOption = ConditionProductOption.NEW
+                    com.tokopedia.product.manage.R.id.old_condition_option_menu -> it.conditionProductOption = ConditionProductOption.USED
                 }
                 updateFilterView()
             }
@@ -195,14 +195,14 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
     }
 
     private fun showCatalogOption() {
-        showBottomSheetOption(label_catalog.title, com.tokopedia.product.manage.oldlist.R.menu.menu_product_manage_filter_catalog_option,
+        showBottomSheetOption(label_catalog.title, com.tokopedia.product.manage.R.menu.menu_product_manage_filter_catalog_option,
                 label_catalog.content, BottomSheetItemClickListener { item ->
             val itemId = item.itemId
             productManageFilterModel?.let {
                 when (itemId) {
-                    com.tokopedia.product.manage.oldlist.R.id.both_catalog_option_menu -> it.catalogProductOption = CatalogProductOption.WITH_AND_WITHOUT
-                    com.tokopedia.product.manage.oldlist.R.id.without_catalog_option_menu -> it.catalogProductOption = CatalogProductOption.WITHOUT_CATALOG
-                    com.tokopedia.product.manage.oldlist.R.id.with_catalog_option_menu -> it.catalogProductOption = CatalogProductOption.WITH_CATALOG
+                    com.tokopedia.product.manage.R.id.both_catalog_option_menu -> it.catalogProductOption = CatalogProductOption.WITH_AND_WITHOUT
+                    com.tokopedia.product.manage.R.id.without_catalog_option_menu -> it.catalogProductOption = CatalogProductOption.WITHOUT_CATALOG
+                    com.tokopedia.product.manage.R.id.with_catalog_option_menu -> it.catalogProductOption = CatalogProductOption.WITH_CATALOG
                 }
                 updateFilterView()
             }
@@ -210,14 +210,14 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
     }
 
     private fun showProductPictureOption() {
-        showBottomSheetOption(label_product_picture.title, com.tokopedia.product.manage.oldlist.R.menu.menu_product_manage_filter_picture_option,
+        showBottomSheetOption(label_product_picture.title, com.tokopedia.product.manage.R.menu.menu_product_manage_filter_picture_option,
                 label_product_picture.content, BottomSheetItemClickListener { item ->
             val itemId = item.itemId
             productManageFilterModel?.let {
                 when (itemId) {
-                    com.tokopedia.product.manage.oldlist.R.id.both_picture_option_menu -> it.pictureStatusOption = PictureStatusProductOption.WITH_AND_WITHOUT
-                    com.tokopedia.product.manage.oldlist.R.id.without_picture_option_menu -> it.pictureStatusOption = PictureStatusProductOption.WITHOUT_IMAGE
-                    com.tokopedia.product.manage.oldlist.R.id.with_picture_option_menu -> it.pictureStatusOption = PictureStatusProductOption.WITH_IMAGE
+                    com.tokopedia.product.manage.R.id.both_picture_option_menu -> it.pictureStatusOption = PictureStatusProductOption.WITH_AND_WITHOUT
+                    com.tokopedia.product.manage.R.id.without_picture_option_menu -> it.pictureStatusOption = PictureStatusProductOption.WITHOUT_IMAGE
+                    com.tokopedia.product.manage.R.id.with_picture_option_menu -> it.pictureStatusOption = PictureStatusProductOption.WITH_IMAGE
                 }
                 updateFilterView()
             }

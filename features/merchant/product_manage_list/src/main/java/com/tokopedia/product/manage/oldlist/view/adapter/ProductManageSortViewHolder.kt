@@ -8,8 +8,8 @@ import com.tokopedia.product.manage.oldlist.data.model.ProductManageSortModel
 
 class ProductManageSortViewHolder(val view: View, val listener: ProductManageSortViewHolderListener) : BaseViewHolder<ProductManageSortModel>(view) {
 
-    private val titleSort: TextView = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.txt_title_sort)
-    private val imageCheckList: ImageView = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.img_view_sort)
+    private val titleSort: TextView = view.findViewById(com.tokopedia.product.manage.R.id.txt_title_sort)
+    private val imageCheckList: ImageView = view.findViewById(com.tokopedia.product.manage.R.id.img_view_sort)
     private var adapterListener: ProductManageSortViewHolderListener? = null
 
     fun setAdapterListener(adapterListener: ProductManageSortViewHolderListener) {
