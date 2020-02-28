@@ -14,10 +14,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.ResultCallback
-import com.google.android.gms.location.LocationSettingsResult
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -33,11 +29,7 @@ import com.tokopedia.logisticaddaddress.domain.model.Address
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.ChipsItemDecoration
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapActivity
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
 import com.tokopedia.logisticaddaddress.features.district_recommendation.DiscomBottomSheetFragment
 import com.tokopedia.logisticaddaddress.utils.getLatLng
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
@@ -54,9 +46,7 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 2019-05-22.
  */
-class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
-        ResultCallback<LocationSettingsResult>, AddEditView,
+class AddEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback, AddEditView,
         DiscomBottomSheetFragment.ActionListener,
         ZipCodeChipsAdapter.ActionListener, IOnBackPressed,
         LabelAlamatChipsAdapter.ActionListener {
@@ -836,9 +826,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
     }
 
-    override fun onResult(locationSettingsResult: LocationSettingsResult) {
-    }
-
     override fun getScreenName(): String {
         return AddEditAddressFragment::class.java.simpleName
     }
@@ -884,12 +871,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         super.onLowMemory()
         mapView.onLowMemory()
     }
-
-    override fun onConnected(p0: Bundle?) {}
-
-    override fun onConnectionSuspended(p0: Int) {}
-
-    override fun onConnectionFailed(p0: ConnectionResult) {}
 
     override fun onGetDistrict(districtAddress: Address) {
         val provinceName = districtAddress.provinceName
