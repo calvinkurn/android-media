@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -18,8 +19,12 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
-import com.tokopedia.promocheckout.common.data.*
+import com.tokopedia.promocheckout.common.data.EXTRA_IS_USE
+import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
+import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
+import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.*
@@ -29,6 +34,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
 import javax.inject.Inject
 
@@ -164,6 +170,17 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
+    }
+
+    fun showToastMessage(message: String) {
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        }
+    }
+
+    fun showToastMessage(throwable: Throwable) {
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        showToastMessage(errorMessage)
     }
 
     // --- FRAGMENT LEVEL ACTION
