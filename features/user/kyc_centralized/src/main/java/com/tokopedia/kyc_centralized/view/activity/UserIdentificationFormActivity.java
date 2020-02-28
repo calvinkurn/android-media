@@ -118,7 +118,7 @@ public class UserIdentificationFormActivity extends BaseStepperActivity {
             Fragment fragment = getListFragment().get(currentPosition - 1);
             Bundle fragmentArguments = fragment.getArguments();
             Bundle bundle;
-            if( null == fragmentArguments){
+            if(fragmentArguments == null){
                 bundle = new Bundle();
             }else {
                 bundle = fragmentArguments;

@@ -114,7 +114,6 @@ class LivenessActivity : AppCompatActivity(), HasComponent<LivenessDetectionComp
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    //----------request permission codes--------------
     private fun allPermissionsGranted(): Boolean {
         for (permission in requiredPermissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {

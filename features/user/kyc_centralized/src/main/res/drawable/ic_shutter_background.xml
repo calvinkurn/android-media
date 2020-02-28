@@ -4,9 +4,9 @@
     <solid android:color="@color/kyc_centralized_70ffffff"
         />
 
-    <padding android:left="1dp"
-        android:top="1dp"
-        android:right="1dp"
-        android:bottom="1dp"
+    <padding android:left="@dimen/kyc_centralized_1dp"
+        android:top="@dimen/kyc_centralized_1dp"
+        android:right="@dimen/kyc_centralized_1dp"
+        android:bottom="@dimen/kyc_centralized_1dp"
         />
 </shape>

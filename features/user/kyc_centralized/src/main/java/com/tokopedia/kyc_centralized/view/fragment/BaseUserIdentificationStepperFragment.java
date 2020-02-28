@@ -154,7 +154,7 @@ public abstract class BaseUserIdentificationStepperFragment<T extends
     }
 
     protected Boolean isKycSelfie(){
-        return !remoteConfigInstance.getABTestPlatform().getString("Liveness Detection 1").equals("Liveness Detection 1");
+        return !remoteConfigInstance.getABTestPlatform().getString(KYCConstant.KYC_AB_KEYWORD).equals(KYCConstant.KYC_AB_KEYWORD);
     }
 
     @Override

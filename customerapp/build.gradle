@@ -4,7 +4,9 @@ if (project.hasProperty("enable-shrinkresource")) {
     apply from: "$rootProject.projectDir/buildconfig/appcompile/enable-shrinkresource.gradle"
 }
 
-apply plugin: 'com.google.firebase.firebase-perf'
+if (!project.hasProperty("disable-performance-plugin")) {
+    apply plugin: 'com.google.firebase.firebase-perf'
+}
 
 if (hasProperty('buildScan')) {
     buildScan {

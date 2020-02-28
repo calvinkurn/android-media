@@ -8,6 +8,7 @@ import android.graphics.Path
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
+import java.lang.Exception
 
 class BackgroundOverlay : View {
 
@@ -15,6 +16,7 @@ class BackgroundOverlay : View {
     private var mStatusPaint: Paint? = null
     private val mPath = Path()
     private var statusColor: Boolean = false
+    private var successThread: Thread? = null
 
     constructor(context: Context) : super(context) {
         initPaints()
@@ -47,16 +49,17 @@ class BackgroundOverlay : View {
         statusColor = true
         pickColor()
 
-        val successThread = Thread {
+        successThread = Thread {
             try {
                 Thread.sleep(1000)
                 statusColor = false
                 pickColor()
-            } catch (e: InterruptedException) {
+                successThread?.interrupt()
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }
-        successThread.start()
+        successThread?.start()
     }
 
     private fun pickColor() {

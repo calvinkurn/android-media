@@ -31,7 +31,6 @@ class LivenessFailedActivity : BaseSimpleActivity(), HasComponent<LivenessDetect
     }
 
     override fun getNewFragment(): Fragment? {
-        val intent = intent
         val bundle = Bundle()
         bundle.putInt(FAILED_TYPE, intent.getIntExtra(FAILED_TYPE, DEFAULT_FAILED))
         val fragment = LivenessErrorFragment.newInstance()
