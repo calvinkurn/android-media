@@ -385,4 +385,7 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
 
+    //ManageGeneral Activity
+    @JvmField
+    val MANAGE_GENERAL = "$INTERNAL_GLOBAL/manage-general"
 }

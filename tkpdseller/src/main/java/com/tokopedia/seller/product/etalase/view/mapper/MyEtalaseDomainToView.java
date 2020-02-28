@@ -2,7 +2,7 @@ package com.tokopedia.seller.product.etalase.view.mapper;
 
 import com.tokopedia.seller.product.etalase.domain.model.MyEtalaseDomainModel;
 import com.tokopedia.seller.product.etalase.domain.model.MyEtalaseItemDomainModel;
-import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel;
+import com.tokopedia.product.manage.item.etalase.view.model.MyEtalaseItemViewModel;
 import com.tokopedia.seller.product.etalase.view.model.MyEtalaseViewModel;
 
 import java.util.ArrayList;

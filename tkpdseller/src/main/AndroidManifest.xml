@@ -71,7 +71,20 @@
         <activity
             android:name=".product.category.view.activity.CategoryDynamicPickerActivity"
             android:label="@string/title_activity_category_picker"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_category_dynamic_picker"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".product.etalase.view.activity.EtalasePickerActivity"
             android:label="@string/product_title_activity_etalase_picker"
@@ -172,7 +185,20 @@
         <activity
             android:name=".product.etalase.view.activity.EtalaseDynamicPickerActivity"
             android:label="@string/product_title_activity_etalase_picker"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_marketplace"
+                    android:path="@string/path_etalase_dynamic_picker"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".product.picker.view.ProductListPickerActivity"
             android:label="@string/title_activity_product_list_picker"

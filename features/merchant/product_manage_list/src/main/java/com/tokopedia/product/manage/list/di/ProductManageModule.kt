@@ -27,10 +27,10 @@ import com.tokopedia.product.manage.list.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.list.view.mapper.ProductListMapperView
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenterImpl
-import com.tokopedia.seller.product.draft.domain.interactor.ClearAllDraftProductUseCase
-import com.tokopedia.seller.product.draft.domain.interactor.FetchAllDraftProductCountUseCase
-import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenter
-import com.tokopedia.seller.product.draft.view.presenter.ProductDraftListCountPresenterImpl
+import com.tokopedia.product.manage.list.domain.ClearAllDraftProductUseCase
+import com.tokopedia.product.manage.list.domain.FetchAllDraftProductCountUseCase
+import com.tokopedia.product.manage.list.view.presenter.ProductDraftListCountPresenter
+import com.tokopedia.product.manage.list.view.presenter.ProductDraftListCountPresenterImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
 import com.tokopedia.shop.common.constant.ShopCommonParamApiConstant
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase

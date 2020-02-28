@@ -1,0 +1,21 @@
+package com.tokopedia.sellerhomedrawer.data.constant
+
+class SellerHomeFragmentBroadcastReceiverConstant {
+
+    companion object {
+
+        val INTENT_ACTION_MAIN_APP = "com.tokopedia.tkpd.beranda.presentation.view.fragment.HomeFragment.HomeFragmentBroadcastReceiver.ACTION_MAIN_APP"
+        val EXTRA_TOKOPOINT_DRAWER_DATA = "EXTRA_TOKOPOINT_DRAWER_DATA"
+        val EXTRA_TOKOCASH_DRAWER_DATA = "EXTRA_TOKOCASH_DRAWER_DATA"
+        val EXTRA_TOKOCASH_PENDING_AMOUNT = "EXTRA_TOKOCASH_PENDING_AMOUNT"
+        val EXTRA_TOKOCASH_PENDING__AMOUNT_TEXT = "EXTRA_TOKOCASH_PENDING_AMOUNT_TEXT"
+        val EXTRA_ACTION_RECEIVER = "EXTRA_ACTION_RECEIVER"
+
+        val ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA = 1
+        val ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA = 2
+        val ACTION_RECEIVER_RECEIVED_TOKOCASH_DATA_ERROR = 4
+        val ACTION_RECEIVER_RECEIVED_TOKOPOINT_DATA_ERROR = 5
+        val ACTION_RECEIVER_RECEIVED_TOKOCASH_PENDING_DATA = 3
+    }
+
+}

@@ -25,14 +25,14 @@ import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.appbar.AppBarLayout
-import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -43,7 +43,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.ToasterError
@@ -102,8 +101,7 @@ import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
-import com.tokopedia.seller.common.utils.KMNumbers
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
+import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -179,11 +177,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (GlobalConfig.isCustomerApp()) {
-            inflater.inflate(R.menu.menu_product_manage_dark, menu)
-        } else {
-            inflater.inflate(R.menu.menu_product_manage, menu)
-        }
+        var menuViewId = R.menu.menu_product_manage_dark
+        if (GlobalConfig.isSellerApp()) menuViewId = R.menu.menu_product_manage
+        inflater.inflate(menuViewId, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -385,14 +381,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         this.goldMerchant = goldMerchant
         isOfficialStore = officialStore
         this.shopDomain = shopDomain
-    }
-
-    override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
-        bulkCheckBox.isChecked = false
-        productManageListAdapter.resetCheckedItemSet()
-        itemsChecked.clear()
-        renderCheckedView()
     }
 
     override fun onErrorEditPrice(t: Throwable?, productId: String?, price: String?, currencyId: String?, currencyText: String?) {
@@ -607,9 +595,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        if (GlobalConfig.isSellerApp()) {
-            DrawerGetNotificationService.startService(context, true, true)
-        }
         bulkCheckBox.isChecked = false
         productManageListAdapter.resetCheckedItemSet()
         itemsChecked.clear()
@@ -743,7 +728,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun showActionProductDialog(productManageViewModel: ProductManageViewModel) {
 
         activity?.let {
-            CommonUtils.hideKeyboard(it, it.currentFocus)
+            KeyboardHandler.hideSoftKeyboard(it)
         }
 
         val bottomSheetBuilder = BottomSheetBuilder(activity)
@@ -813,7 +798,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                         },
 
                         DialogInterface.OnClickListener { dialog, _ ->
-                            ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.core2.R.string.title_cancel))
+                            ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.product.manage.item.R.string.label_cancel))
                             dialog.dismiss()
                         })
 
@@ -1016,9 +1001,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         activity?.let {
             val alertDialog = AlertDialog.Builder(it)
             alertDialog.setTitle(com.tokopedia.product.manage.item.R.string.label_delete)
-            alertDialog.setMessage(com.tokopedia.core2.R.string.dialog_delete_product)
+            alertDialog.setMessage(R.string.product_manage_dialog_delete_product)
             alertDialog.setPositiveButton(com.tokopedia.product.manage.item.R.string.label_delete, onClickListener)
-            alertDialog.setNegativeButton(com.tokopedia.core2.R.string.title_cancel, onCancelListener)
+            alertDialog.setNegativeButton(com.tokopedia.product.manage.item.R.string.label_cancel, onCancelListener)
             alertDialog.show()
         }
     }
@@ -1103,7 +1088,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     val imageUrls = it.getStringArrayListExtra(PICKER_RESULT_PATHS)
                     val imageDescList = it.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
                     if (imageUrls != null && imageUrls.size > 0) {
-                        ProductDraftListActivity.startInstagramSaveBulkFromLocal(context, imageUrls, imageDescList)
+                        openProductDraftList(imageUrls, imageDescList)
                     }
                 }
                 REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
@@ -1143,4 +1128,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
+    private fun openProductDraftList(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.PRODUCT_DRAFT)
+        intent.putStringArrayListExtra(LOCAL_PATH_IMAGE_LIST, imageUrls)
+        intent.putStringArrayListExtra(DESC_IMAGE_LIST, imageDescList)
+        startActivity(intent)
+    }
+
+    companion object {
+        private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
+        private const val DESC_IMAGE_LIST = "desc_img_list"
+    }
 }

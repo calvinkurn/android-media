@@ -117,7 +117,6 @@ import com.tokopedia.seller.reputation.view.fragment.SellerReputationFragment;
 import com.tokopedia.seller.shop.common.di.component.DaggerShopComponent;
 import com.tokopedia.seller.shop.common.di.component.ShopComponent;
 import com.tokopedia.seller.shop.common.di.module.ShopModule;
-import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkDelegate;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
@@ -125,6 +124,7 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.webview.SellerappWebViewActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -344,7 +344,7 @@ public abstract class SellerRouterApplication extends MainApplication
         Intent intent = new Intent(context, WelcomeActivity.class);
         if (SessionHandler.isV4Login(context)) {
             if (SessionHandler.isUserHasShop(context)) {
-                return DashboardActivity.createInstance(context);
+                return SellerHomeActivity.createIntent(context);
             } else {
                 return intent;
             }
@@ -361,7 +361,7 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Class<?> getHomeClass(Context context) throws ClassNotFoundException {
         if (SessionHandler.isV4Login(context)) {
-            return DashboardActivity.class;
+            return SellerHomeActivity.class;
         } else {
             return WelcomeActivity.class;
         }
@@ -379,7 +379,7 @@ public abstract class SellerRouterApplication extends MainApplication
     public void onLogout(AppComponent appComponent) {
         new CacheApiClearAllUseCase(this).executeSync();
 
-        TkpdSellerLogout.onLogOut(appComponent);
+        TkpdSellerLogout.onLogOut(appComponent, this);
     }
 
     @Override
@@ -395,7 +395,7 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     private void goToDefaultRoute(Context context) {
-        Intent intent = DashboardActivity.createInstance(context);
+        Intent intent = SellerHomeActivity.createIntent(context);
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(intent);
     }
@@ -561,7 +561,7 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void goToUserPaymentList(Activity activity) {
-        RouteManager.route(context, ApplinkConstInternalPayment.PAYMENT_SETTING);
+        RouteManager.route(activity, ApplinkConstInternalPayment.PAYMENT_SETTING);
     }
 
     @Override
@@ -708,14 +708,6 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
-    public void init() {
-    }
-
-    @Override
-    public void unregisterShake() {
-    }
-
-    @Override
     public void logInvalidGrant(Response response) {
         AnalyticsLog.logInvalidGrant(this, legacyGCMHandler(), legacySessionHandler(), response.request().url().toString());
 
@@ -782,11 +774,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getChatBotIntent(Context context, String messageId) {
         return RouteManager.getIntent(context, ApplinkConst.CHATBOT
                 .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
-    }
-
-    @Override
-    public void registerShake(String screenName, Activity activity) {
-
     }
 
     @Override
