@@ -53,8 +53,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     lateinit var onboardingAnalytics: OnboardingAnalytics
     @Inject
     lateinit var remoteConfig: RemoteConfig
-    @Inject
-    lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
 
@@ -80,7 +78,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     private fun getAbTestVariant(): String =
-            remoteConfigInstance.abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
 
     private fun setViewByAbTestVariant() {
         when (abTestVariant) {
