@@ -3,10 +3,8 @@
     package="com.tokopedia.df.emoney">
 
     <dist:module
+        dist:onDemand="false"
         dist:title="@string/title_digital_emoney">
-        <dist:delivery>
-            <dist:on-demand />
-        </dist:delivery>
         <dist:fusing dist:include="true" />
     </dist:module>
 
