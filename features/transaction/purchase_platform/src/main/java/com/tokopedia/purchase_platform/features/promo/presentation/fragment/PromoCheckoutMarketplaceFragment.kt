@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.fragment
 
 import android.os.Bundle
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.kotlin.extensions.view.gone
@@ -27,12 +29,14 @@ import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
-import com.tokopedia.purchase_platform.features.promo.presentation.*
+import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.mockEmptyState
+import com.tokopedia.purchase_platform.features.promo.presentation.mockPromoInput
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
@@ -64,7 +68,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -95,6 +99,9 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     private fun initFragmentUiModel() {
         fragmentUiModel = FragmentUiModel(
+                uiData = FragmentUiModel.UiData().apply {
+                    promoInputViewHeight = 0
+                },
                 uiState = FragmentUiModel.UiState().apply {
                     hasPresellectedPromo = false
                     hasAnyPromoSelected = false
@@ -104,12 +111,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     private fun renderFragmentState() {
-//        if (fragmentUiModel.uiState.hasPresellectedPromo) {
-//            container_action_bottom.show()
-//        } else {
-//            container_action_bottom.gone()
-//        }
-
         if (fragmentUiModel.uiState.hasAnyPromoSelected) {
             toolbar?.enableResetButton()
             label_total_promo_info.show()
@@ -174,22 +175,51 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun loadData(page: Int) {
         hideLoading()
-        adapter.addVisitable(mockPromoRecommendation())
+//        adapter.addVisitable(mockPromoRecommendation())
         adapter.addVisitable(mockPromoInput())
 
-        adapter.addVisitable(mockEligibleHeader())
-        adapter.addVisitableList(mockEligiblePromoGlobalSection())
-        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
-        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
+//        adapter.addVisitable(mockEligibleHeader())
+//        adapter.addVisitableList(mockEligiblePromoGlobalSection())
+//        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
+//        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
 
-        adapter.addVisitable(mockIneligibleHeader())
-        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
-        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
-        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
+//        adapter.addVisitable(mockIneligibleHeader())
+//        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
+//        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
+//        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
+
+        adapter.addVisitable(mockEmptyState())
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
+    }
+
+    override fun updateHeightPromoInputView(height: Int) {
+        fragmentUiModel.uiData.promoInputViewHeight = height
+    }
+
+    override fun getEmptyStateHeight(): Int {
+        if (activity != null) {
+            val displayMetrics = DisplayMetrics()
+            activity?.windowManager?.defaultDisplay?.getMetrics(displayMetrics)
+
+            val deviceHeight = displayMetrics.heightPixels
+            val appBarHeight = DisplayMetricUtils.getStatusBarHeight(activity)
+            var toolbarHeight = 0
+            val styledAttributes = activity?.theme?.obtainStyledAttributes(
+                    intArrayOf(android.R.attr.actionBarSize)
+            )
+            toolbarHeight = styledAttributes?.getDimension(0, 0f)?.toInt() ?: 0
+            styledAttributes?.recycle()
+
+            val promoInputViewHeight = fragmentUiModel.uiData.promoInputViewHeight
+            val heightInPx = deviceHeight - appBarHeight - toolbarHeight - promoInputViewHeight
+
+            return heightInPx / (activity?.resources?.displayMetrics?.density?.toInt() ?: 1)
+        } else {
+            return 0
+        }
     }
 
     fun showToastMessage(message: String) {

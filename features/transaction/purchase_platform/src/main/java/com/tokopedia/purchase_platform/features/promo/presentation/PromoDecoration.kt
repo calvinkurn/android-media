@@ -6,10 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.PromoEligibilityHeaderViewHolder
-import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.PromoInputViewHolder
-import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.PromoListHeaderViewHolder
-import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.PromoRecommendationViewHolder
+import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.*
 import javax.inject.Inject
 
 
@@ -51,6 +48,10 @@ class PromoDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
                     outRect.top = parent.context?.resources?.getDimension(com.tokopedia.purchase_platform.R.dimen.dp_0)?.toInt() ?: 0
                     outRect.bottom = parent.context?.resources?.getDimension(com.tokopedia.purchase_platform.R.dimen.dp_0)?.toInt() ?: 0
                 }
+            }
+            is PromoEmptyStateViewHolder -> {
+                outRect.top = parent.context?.resources?.getDimension(R.dimen.dp_8)?.toInt() ?: 0
+                outRect.bottom = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
             }
             else -> {
                 outRect.top = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0

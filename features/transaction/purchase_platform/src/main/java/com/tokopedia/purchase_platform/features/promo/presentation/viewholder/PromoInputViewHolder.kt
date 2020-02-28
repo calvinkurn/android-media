@@ -36,6 +36,8 @@ class PromoInputViewHolder(private val view: View,
             }
         })
 
+        itemView.text_field_input_promo.setMessage("Ini error message")
+
         itemView.text_field_input_promo.getFirstIcon().setOnClickListener {
             itemView.text_field_input_promo.textFieldInput.text.clear()
         }
@@ -46,6 +48,9 @@ class PromoInputViewHolder(private val view: View,
                 listener.onClickApplyManualInputPromo(promoCode)
             }
         }
+
+        val height = itemView.height * itemView.context.resources.displayMetrics.density.toInt()
+        listener.updateHeightPromoInputView(height)
     }
 
 

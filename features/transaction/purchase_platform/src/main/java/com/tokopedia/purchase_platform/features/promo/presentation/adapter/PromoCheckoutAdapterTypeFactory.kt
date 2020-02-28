@@ -31,6 +31,10 @@ abstract class PromoCheckoutAdapterTypeFactory(private val listener: PromoChecko
         return PromoListItemViewHolder.LAYOUT
     }
 
+    override fun type(uiModel: PromoEmptyStateUiModel): Int {
+        return PromoEmptyStateViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
             PromoRecommendationViewHolder.LAYOUT -> PromoRecommendationViewHolder(view, listener)
@@ -38,6 +42,7 @@ abstract class PromoCheckoutAdapterTypeFactory(private val listener: PromoChecko
             PromoEligibilityHeaderViewHolder.LAYOUT -> PromoEligibilityHeaderViewHolder(view, listener)
             PromoListHeaderViewHolder.LAYOUT -> PromoListHeaderViewHolder(view, listener)
             PromoListItemViewHolder.LAYOUT -> PromoListItemViewHolder(view, listener)
+            PromoEmptyStateViewHolder.LAYOUT -> PromoEmptyStateViewHolder(view, listener)
             else -> super.createViewHolder(view, viewType)
         }
 

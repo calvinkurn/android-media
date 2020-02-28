@@ -304,3 +304,12 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
 
     return dataList
 }
+
+fun mockEmptyState(): Visitable<*> {
+    return PromoEmptyStateUiModel(
+            uiData = PromoEmptyStateUiModel.UiData().apply {
+                message = "Yaah, kamu belum punya kupon belanja"
+                imageUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/06/newpm-cta-bottom-bg.jpg"
+            }
+    )
+}
