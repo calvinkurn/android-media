@@ -79,8 +79,6 @@ public class FpmLogDBSource {
     }
 
     public Observable<List<FpmLogDB>> getAllData() {
-        return Observable.unsafeCreate(subscriber -> {
-            subscriber.onNext(fpmLogDao.getAllData());
-        });
+        return Observable.just(1).map(number -> fpmLogDao.getAllData());
     }
 }

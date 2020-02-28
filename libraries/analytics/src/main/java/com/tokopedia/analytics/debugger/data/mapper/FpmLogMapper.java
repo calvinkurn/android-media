@@ -19,7 +19,7 @@ import static com.tokopedia.analytics.debugger.helper.FormatterHelperKt.formatDa
 /**
  * @author okasurya on 5/16/18.
  */
-public class FpmLogMapper implements Func1<FpmLogDB, Observable<FpmDebuggerViewModel>> {
+public class FpmLogMapper implements Func1<FpmLogDB, Observable<Visitable>> {
     private SimpleDateFormat dateFormat;
 
     @Inject
@@ -28,7 +28,7 @@ public class FpmLogMapper implements Func1<FpmLogDB, Observable<FpmDebuggerViewM
     }
 
     @Override
-    public Observable<FpmDebuggerViewModel> call(FpmLogDB fpmLogDB) {
+    public Observable<Visitable> call(FpmLogDB fpmLogDB) {
         FpmDebuggerViewModel viewModel = new FpmDebuggerViewModel();
         viewModel.setId(fpmLogDB.getId());
         viewModel.setName(fpmLogDB.getTraceName());
@@ -39,6 +39,6 @@ public class FpmLogMapper implements Func1<FpmLogDB, Observable<FpmDebuggerViewM
         viewModel.setPreviewAttributes(formatDataExcerpt(fpmLogDB.getAttributes()));
         viewModel.setTimestamp(dateFormat.format(new Date(fpmLogDB.getTimestamp())));
 
-        return Observable.just(viewModel);
+        return Observable.just((Visitable) viewModel);
     }
 }

@@ -81,7 +81,7 @@ class FpmDebuggerPresenter(private val getFpmLogUseCase: GetFpmLogUseCase,
     override fun writeAllDataToFile(fileUri: Uri?) {
         if (fileUri == null) return
 
-        getFpmAllDataUseCase.execute(requestParams, object : Subscriber<List<FpmDebuggerViewModel>>() {
+        getFpmAllDataUseCase.execute(requestParams, object : Subscriber<List<Visitable<*>>>() {
             override fun onCompleted() {
 
             }
@@ -90,12 +90,23 @@ class FpmDebuggerPresenter(private val getFpmLogUseCase: GetFpmLogUseCase,
                 e.printStackTrace()
             }
 
-            override fun onNext(modelList: List<FpmDebuggerViewModel>) {
+            override fun onNext(visitables: List<Visitable<*>>) {
+                val modelList = convertToModelList(visitables);
                 fileSaverTask = FileSaverTask(view).apply {
                     execute(Pair(fileUri, modelList))
                 }
             }
         })
+    }
+
+    private fun convertToModelList(visitables: List<Visitable<*>>): List<FpmDebuggerViewModel> {
+        val modelList : MutableList<FpmDebuggerViewModel> = ArrayList()
+
+        for (visitable in visitables) {
+            modelList += visitable as FpmDebuggerViewModel
+        }
+
+        return modelList
     }
 
     private fun setRequestParams(page: Int, keyword: String) {

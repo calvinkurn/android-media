@@ -17,5 +17,5 @@ public interface FpmLogRepository {
 
     Observable<List<Visitable>> get(RequestParams parameters);
 
-    Observable<List<FpmDebuggerViewModel>> getAllData();
+    Observable<List<Visitable>> getAllData();
 }

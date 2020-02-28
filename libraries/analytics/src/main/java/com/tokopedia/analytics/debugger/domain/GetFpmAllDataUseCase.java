@@ -13,7 +13,7 @@ import javax.inject.Inject;
 
 import rx.Observable;
 
-public class GetFpmAllDataUseCase extends UseCase<List<FpmDebuggerViewModel>> {
+public class GetFpmAllDataUseCase extends UseCase<List<Visitable>> {
     private FpmLogRepository fpmLogRepository;
 
     @Inject
@@ -22,7 +22,7 @@ public class GetFpmAllDataUseCase extends UseCase<List<FpmDebuggerViewModel>> {
     }
 
     @Override
-    public Observable<List<FpmDebuggerViewModel>> createObservable(RequestParams requestParams) {
+    public Observable<List<Visitable>> createObservable(RequestParams requestParams) {
         return fpmLogRepository.getAllData();
     }
 }

@@ -44,16 +44,11 @@ public class FpmLogLocalRepository implements FpmLogRepository {
                     public Iterable<FpmLogDB> call(List<FpmLogDB> fpmLogDBS) {
                         return fpmLogDBS;
                     }
-                }).flatMap(fpmLogMapper).map(new Func1<FpmDebuggerViewModel, Visitable>() {
-                    @Override
-                    public Visitable call(FpmDebuggerViewModel fpmDebuggerViewModel) {
-                        return fpmDebuggerViewModel;
-                    }
-                }).toList();
+                }).flatMap(fpmLogMapper).toList();
     }
 
     @Override
-    public Observable<List<FpmDebuggerViewModel>> getAllData() {
+    public Observable<List<Visitable>> getAllData() {
         return fpmLogDBSource.getAllData()
                 .flatMapIterable(new Func1<List<FpmLogDB>, Iterable<FpmLogDB>>() {
                     @Override
