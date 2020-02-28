@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.analytics.database.FpmLogDB;
 import com.tokopedia.analytics.debugger.data.mapper.FpmLogMapper;
 import com.tokopedia.analytics.debugger.data.source.FpmLogDBSource;
+import com.tokopedia.analytics.debugger.ui.model.FpmDebuggerViewModel;
 import com.tokopedia.analytics.performance.PerformanceLogModel;
 import com.tokopedia.usecase.RequestParams;
 
@@ -38,6 +39,22 @@ public class FpmLogLocalRepository implements FpmLogRepository {
     @Override
     public Observable<List<Visitable>> get(RequestParams parameters) {
         return fpmLogDBSource.getData(parameters.getParameters())
+                .flatMapIterable(new Func1<List<FpmLogDB>, Iterable<FpmLogDB>>() {
+                    @Override
+                    public Iterable<FpmLogDB> call(List<FpmLogDB> fpmLogDBS) {
+                        return fpmLogDBS;
+                    }
+                }).flatMap(fpmLogMapper).map(new Func1<FpmDebuggerViewModel, Visitable>() {
+                    @Override
+                    public Visitable call(FpmDebuggerViewModel fpmDebuggerViewModel) {
+                        return fpmDebuggerViewModel;
+                    }
+                }).toList();
+    }
+
+    @Override
+    public Observable<List<FpmDebuggerViewModel>> getAllData() {
+        return fpmLogDBSource.getAllData()
                 .flatMapIterable(new Func1<List<FpmLogDB>, Iterable<FpmLogDB>>() {
                     @Override
                     public Iterable<FpmLogDB> call(List<FpmLogDB> fpmLogDBS) {

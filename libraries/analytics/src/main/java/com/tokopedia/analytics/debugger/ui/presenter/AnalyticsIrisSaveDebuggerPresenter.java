@@ -81,11 +81,6 @@ public class AnalyticsIrisSaveDebuggerPresenter implements AnalyticsDebugger.Pre
         });
     }
 
-    @Override
-    public void saveToDisk() {
-
-    }
-
     private void setRequestParams(int page, String keyword) {
         requestParams.putString(AnalyticsDebuggerConst.KEYWORD, keyword);
         requestParams.putInt(AnalyticsDebuggerConst.PAGE, page);

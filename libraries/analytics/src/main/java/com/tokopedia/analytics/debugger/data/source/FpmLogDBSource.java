@@ -78,4 +78,7 @@ public class FpmLogDBSource {
         });
     }
 
+    public Observable<List<FpmLogDB>> getAllData() {
+        return Observable.just(fpmLogDao.getAllData());
+    }
 }

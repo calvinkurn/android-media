@@ -1,0 +1,28 @@
+package com.tokopedia.analytics.debugger.domain;
+
+import com.tokopedia.abstraction.base.view.adapter.Visitable;
+import com.tokopedia.analytics.debugger.data.repository.FpmLogLocalRepository;
+import com.tokopedia.analytics.debugger.data.repository.FpmLogRepository;
+import com.tokopedia.analytics.debugger.ui.model.FpmDebuggerViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
+
+import java.util.List;
+
+import javax.inject.Inject;
+
+import rx.Observable;
+
+public class GetFpmAllDataUseCase extends UseCase<List<FpmDebuggerViewModel>> {
+    private FpmLogRepository fpmLogRepository;
+
+    @Inject
+    GetFpmAllDataUseCase(FpmLogLocalRepository fpmLogRepository) {
+        this.fpmLogRepository = fpmLogRepository;
+    }
+
+    @Override
+    public Observable<List<FpmDebuggerViewModel>> createObservable(RequestParams requestParams) {
+        return fpmLogRepository.getAllData();
+    }
+}

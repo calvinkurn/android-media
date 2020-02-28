@@ -26,7 +26,7 @@ public class FpmDebuggerActivity extends AppCompatActivity {
         toolbar.setSubtitle("Tokopedia");
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, FpmDebuggerFragment.newInstance(), FpmDebuggerFragment.TAG)
+                    .add(R.id.container, FpmDebuggerFragment.newInstance(), FpmDebuggerFragment.getTAG())
                     .commit();
         }
     }

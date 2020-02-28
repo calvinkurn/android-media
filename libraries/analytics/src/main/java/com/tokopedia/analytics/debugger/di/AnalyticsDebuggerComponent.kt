@@ -5,6 +5,7 @@ import com.tokopedia.analytics.debugger.ui.AnalyticsDebugger
 import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerFragment
 import com.tokopedia.analytics.debugger.ui.fragment.AnalyticsDebuggerGtmErrorFragment
 import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerFragment
+import com.tokopedia.analytics.debugger.ui.presenter.FpmDebugger
 import dagger.Component
 import javax.inject.Named
 
@@ -22,7 +23,7 @@ interface AnalyticsDebuggerComponent {
     val gtmPresenter: AnalyticsDebugger.Presenter
 
     @get:Named(NAMED_FPM_ANALYTICS)
-    val fpmPresenter: AnalyticsDebugger.Presenter
+    val fpmPresenter: FpmDebugger.Presenter
 
     @get:Named(NAMED_GTM_ERROR_ANALYTICS)
     val gtmErrorPresenter: AnalyticsDebugger.Presenter
