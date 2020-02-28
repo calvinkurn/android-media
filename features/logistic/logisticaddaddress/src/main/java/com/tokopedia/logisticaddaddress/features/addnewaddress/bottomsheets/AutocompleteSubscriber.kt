@@ -1,7 +1,6 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets
 
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.logisticaddaddress.domain.mapper.AutoCompleteMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.LegacyAutoCompleteMapper
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.autocomplete_geocode.AutocompleteBottomSheetListener
 import rx.Subscriber

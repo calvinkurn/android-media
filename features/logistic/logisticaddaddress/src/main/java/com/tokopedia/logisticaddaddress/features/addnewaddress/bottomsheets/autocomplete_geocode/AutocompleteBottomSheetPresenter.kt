@@ -6,8 +6,10 @@ import com.tokopedia.logisticaddaddress.domain.mapper.AutocompleteGeocodeMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.LegacyAutoCompleteMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.AutocompleteGeocodeUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.AutocompleteSubscriber
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
 import com.tokopedia.usecase.RequestParams
+import rx.Subscriber
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -27,8 +29,20 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
     }
 
     fun getAutocomplete(input: String) {
-        autoCompleteUseCase.setParams(input)
-        autoCompleteUseCase.execute(RequestParams.create(), AutocompleteSubscriber(view, autoCompleteMapper))
+        autoCompleteUseCase
+                .execute(input)
+                .subscribe(object : Subscriber<List<SuggestedPlace>>(){
+                    override fun onNext(t: List<SuggestedPlace>) {
+                        view.onSuccessGetAutocomplete(t)
+                    }
+
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable?) {
+                        Timber.d(e)
+                        view.hideListPointOfInterest()
+                    }
+                })
     }
 
     override fun detachView() {
@@ -41,7 +55,4 @@ class AutocompleteBottomSheetPresenter @Inject constructor(private val autocompl
         autocompleteGeocodeUseCase.clearCache()
     }
 
-    fun clearCacheAutocomplete() {
-        autoCompleteUseCase.clearCache()
-    }
 }

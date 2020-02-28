@@ -20,8 +20,8 @@ import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComp
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
 import javax.inject.Inject
 
 /**
@@ -231,16 +231,15 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
     }
 
-    override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
+    override fun onSuccessGetAutocomplete(suggestedPlaces: List<SuggestedPlace>) {
         llLoading.visibility = View.GONE
         llSubtitle.visibility = View.GONE
         rvPoiList.visibility = View.VISIBLE
         mDisabledGps.visibility = View.GONE
-        if (dataUiModel.listPredictions.isNotEmpty()) {
+        if (suggestedPlaces.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false
-            adapter.dataAutocomplete = dataUiModel.listPredictions.toMutableList()
-            adapter.notifyDataSetChanged()
+            adapter.addAutoComplete(suggestedPlaces)
         }
     }
 
