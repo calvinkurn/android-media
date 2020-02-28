@@ -157,8 +157,8 @@ class FpmDebuggerPresenter(private val getFpmLogUseCase: GetFpmLogUseCase,
                 context.contentResolver.openFileDescriptor(uri, "w")?.use {
                     FileOutputStream(it.fileDescriptor).use { fos ->
                         for (model in modelList) {
-                            val s = "\r\n\r\ntraceName: " + model.name +
-                                    "\r\ntraceDuration: " + model.duration +
+                            val s = "\r\n\r\n\r\ntraceName: " + model.name +
+                                    "\r\ntraceDuration: " + model.duration + "ms"
                                     "\r\nmetrics: " + model.metrics +
                                     "\r\nattributes: " + model.attributes +
                                     "\r\ntimestamp: " + model.timestamp
