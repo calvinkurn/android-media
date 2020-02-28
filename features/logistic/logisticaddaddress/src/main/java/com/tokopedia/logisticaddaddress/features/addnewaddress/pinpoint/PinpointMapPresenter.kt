@@ -107,6 +107,10 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
     }
 
+    fun setAddress(address: SaveAddressDataModel) {
+        this.saveAddressDataModel = address
+    }
+
     fun convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?): SaveAddressDataModel {
         val saveAddressDataModel = SaveAddressDataModel()
         saveAddressDataModel.title = getDistrictDataUiModel.title
@@ -118,24 +122,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         saveAddressDataModel.latitude = getDistrictDataUiModel.latitude
         saveAddressDataModel.longitude = getDistrictDataUiModel.longitude
         saveAddressDataModel.selectedDistrict = getDistrictDataUiModel.formattedAddress
-        if (zipCodes != null) {
-            saveAddressDataModel.zipCodes = zipCodes
-        }
-        this.saveAddressDataModel = saveAddressDataModel
-        return saveAddressDataModel
-    }
-
-    fun convertAutofillToSaveAddressDataUiModel(autoFillModel: Data, zipCodes: MutableList<String>?): SaveAddressDataModel {
-        val saveAddressDataModel = SaveAddressDataModel()
-        saveAddressDataModel.title = autoFillModel.title
-        saveAddressDataModel.formattedAddress = autoFillModel.formattedAddress
-        saveAddressDataModel.districtId = autoFillModel.districtId
-        saveAddressDataModel.provinceId = autoFillModel.provinceId
-        saveAddressDataModel.cityId = autoFillModel.cityId
-        saveAddressDataModel.postalCode = autoFillModel.postalCode
-        saveAddressDataModel.latitude = autoFillModel.latitude
-        saveAddressDataModel.longitude = autoFillModel.longitude
-        saveAddressDataModel.selectedDistrict = autoFillModel.formattedAddress
         if (zipCodes != null) {
             saveAddressDataModel.zipCodes = zipCodes
         }
