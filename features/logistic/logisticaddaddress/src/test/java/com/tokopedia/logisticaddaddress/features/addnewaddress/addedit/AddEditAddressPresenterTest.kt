@@ -8,6 +8,8 @@ import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.Dis
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.DistrictZipcodes
 import com.tokopedia.logisticaddaddress.domain.model.district_recommendation.KeroDistrictRecommendation
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
@@ -22,6 +24,8 @@ object AddEditAddressPresenterTest : Spek({
 
     val saveUseCase: AddAddressUseCase = mockk(relaxUnitFun = true)
     val zipUseCase: GetZipCodeUseCase = mockk(relaxUnitFun = true)
+    val districtUseCase: GetDistrictUseCase = mockk(relaxUnitFun = true)
+    val autoCompleteUseCase: AutoCompleteUseCase = mockk(relaxUnitFun = true)
     val view: AddEditView = mockk(relaxed = true)
 
     mockkObject(AddNewAddressAnalytics)
@@ -32,7 +36,8 @@ object AddEditAddressPresenterTest : Spek({
     lateinit var presenter: AddEditAddressPresenter
 
     beforeEachTest {
-        presenter = AddEditAddressPresenter(saveUseCase, zipUseCase)
+        presenter = AddEditAddressPresenter(saveUseCase, zipUseCase,
+                districtUseCase, autoCompleteUseCase)
         presenter.attachView(view)
     }
 
