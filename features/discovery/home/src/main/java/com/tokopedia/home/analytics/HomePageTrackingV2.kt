@@ -65,11 +65,13 @@ object HomePageTrackingV2 : BaseTracking() {
 
     object RecommendationList{
         private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "carousel product"
+        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on carousel product"
+        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on carousel product"
 
         fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
                 event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = "impression on carousel product",
+                eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
                 eventLabel = Label.NONE,
                 products = channel.grids.mapIndexed { index, grid ->
                     Product(
@@ -93,7 +95,7 @@ object HomePageTrackingV2 : BaseTracking() {
         private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
-                eventAction = Action.CLICK_ON.format(RECOMMENDATION_LIST_CAROUSEL_PRODUCT),
+                eventAction = RECOMMENDATION_LIST_CLICK_EVENT_ACTION,
                 eventLabel = grid.attribution,
                 channelId = channel.id,
                 products = listOf(
