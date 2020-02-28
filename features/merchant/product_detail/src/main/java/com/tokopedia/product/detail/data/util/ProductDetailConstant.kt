@@ -98,6 +98,8 @@ object ProductDetailConstant {
     const val SEPARATOR = "separator"
     const val VALUE_PROPOSITION = "value_prop"
     const val PRODUCT_LIST = "product_list"
+    const val VARIANT_OPTIONS = "variant_options"
+    const val VARIANT = "variant"
     const val PDP_1 = "pdp_1"
     const val PDP_2 = "pdp_2"
     const val PDP_3 = "pdp_3"
@@ -138,5 +140,10 @@ object ProductDetailConstant {
     const val SAVED_ACTIVITY_RESULT = "saved_activity_result"
     const val SAVED_QUANTITY = "saved_quantity"
     const val SAVED_VARIANT = "saved_variant"
+
+    //Variant State
+    const val STATE_UNSELECTED = 0
+    const val STATE_SELECTED = 1
+    const val STATE_EMPTY = -1
 
 }

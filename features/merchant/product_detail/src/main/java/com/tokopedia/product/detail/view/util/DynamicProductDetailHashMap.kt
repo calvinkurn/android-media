@@ -10,6 +10,7 @@ import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.PDPInstallmentRecommendationResponse
+import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.productcard.v2.ProductCardModel
@@ -70,6 +71,9 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
     val valuePropositionDataModel: ProductValuePropositionDataModel?
         get() = mapOfData[ProductDetailConstant.VALUE_PROP] as? ProductValuePropositionDataModel
+
+    val productNewVariantDataModel: VariantDataModel?
+        get() = mapOfData[ProductDetailConstant.VARIANT_OPTIONS] as? VariantDataModel
 
     val listProductRecomMap: List<ProductRecommendationDataModel>? = mapOfData.filterKeys {
         it == ProductDetailConstant.PDP_1 || it == ProductDetailConstant.PDP_2

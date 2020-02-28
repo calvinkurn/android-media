@@ -2,7 +2,7 @@ package com.tokopedia.product.detail.data.model.variant
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.util.VariantMapper.STATE_SELECTED
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
 
 /**
@@ -12,7 +12,8 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class VariantDataModel(
         val type: String = "",
         val name: String = "",
-        val listOfVariantCategory: List<VariantCategory>? = null
+        var listOfVariantCategory: List<VariantCategory>? = null,
+        var mapOfSelectedVariant: MutableMap<String, Int> = mutableMapOf()
 ) : DynamicPdpDataModel {
     override fun type(): String = type
 
@@ -21,7 +22,6 @@ data class VariantDataModel(
     override fun name(): String = name
 
     override val impressHolder = ImpressHolder()
-
 }
 
 data class VariantCategory(
@@ -33,6 +33,6 @@ data class VariantCategory(
         var variantOptions: MutableList<VariantOptionWithAttribute> = arrayListOf()
 ) {
     fun getSelectedOption(): Int? {
-        return variantOptions.find { it.currentState == STATE_SELECTED }?.variantId
+        return variantOptions.find { it.currentState == ProductDetailConstant.STATE_SELECTED }?.variantId
     }
 }

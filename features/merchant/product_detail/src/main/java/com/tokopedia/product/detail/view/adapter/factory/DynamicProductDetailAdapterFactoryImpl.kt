@@ -71,7 +71,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
     }
 
     override fun type(data: VariantDataModel): Int {
-        return PageErrorViewHolder.LAYOUT
+        return ProductVariantViewHolder.LAYOUT
     }
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
@@ -91,6 +91,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
+            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

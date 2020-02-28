@@ -6,5 +6,7 @@
     <color name="green_power_badge">#43b449</color>
     <color name="green_go_apotik">#d6ffde</color>
     <color name="sticky_bg_color">#E6EBFFEF</color>
+    <color name="bg_grey_unselected">#E5E7E9</color>
+    <color name="border_circle_grey">#D3D3D3</color>
 
 </resources>

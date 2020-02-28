@@ -6,7 +6,7 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.view.adapter.variant.VariantContainerAdapter
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import kotlinx.android.synthetic.main.item_variant_container_view_holder.view.*
+import kotlinx.android.synthetic.main.item_product_variant_view_holder.view.*
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -14,19 +14,19 @@ import kotlinx.android.synthetic.main.item_variant_container_view_holder.view.*
 class ProductVariantViewHolder(val view: View,
                                val listener: DynamicProductDetailListener) : AbstractViewHolder<VariantDataModel>(view) {
 
-    val LAYOUT = R.layout.item_variant_container_view_holder
-    val containerAdapter by lazy {
-        VariantContainerAdapter(listener)
+    companion object {
+        val LAYOUT = R.layout.item_product_variant_view_holder
     }
+
     override fun bind(element: VariantDataModel) {
-        setupAdapter()
-        element.listOfVariantCategory?.let {
-            containerAdapter.submitList(it)
+        with(view) {
+            val containerAdapter = VariantContainerAdapter(listener)
+            rvContainerVariant.adapter = containerAdapter
+            element.listOfVariantCategory?.let {
+                containerAdapter.setData(it)
+            }
         }
     }
 
-    private fun setupAdapter() = with(view) {
-        rv_variant.adapter = containerAdapter
-    }
 
 }

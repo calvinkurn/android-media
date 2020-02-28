@@ -35,6 +35,7 @@ import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
+import com.google.gson.Gson
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -1285,8 +1286,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
 
-        val variantData = VariantMapper.processVariant(it.variantResp).toString()
-        Log.e("variantnya",variantData)
         onSuccessGetProductVariantInfo(it.variantResp)
         pdpHashMapUtil?.updateDataP2General(it)
         viewModel.getDynamicProductInfoP1?.run {
@@ -1360,8 +1359,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
         if (data == null || !data.hasChildren) {
             dynamicAdapter.clearElement(pdpHashMapUtil?.productVariantInfoMap)
+            dynamicAdapter.clearElement(pdpHashMapUtil?.productNewVariantDataModel)
             return
         }
+
+        pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantMapper.mapVariantIdentifierToHashMap(data)
+        val variantData = VariantMapper.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
+        pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
+        Log.e("variantnya", Gson().toJson(VariantMapper.processVariant(data)).toString())
 
         // defaulting selecting variant
         if (userInputVariant == data.parentId.toString() && data.defaultChild > 0) {

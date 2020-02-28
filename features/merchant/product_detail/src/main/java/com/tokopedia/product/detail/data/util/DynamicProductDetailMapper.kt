@@ -4,6 +4,7 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.common.data.model.product.Etalase
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 
 object DynamicProductDetailMapper {
 
@@ -49,6 +50,9 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.VALUE_PROPOSITION -> {
                     listOfComponent.add(ProductValuePropositionDataModel(type = component.type, name = component.componentName))
+                }
+                ProductDetailConstant.VARIANT -> {
+                    listOfComponent.add(VariantDataModel(type = component.type, name = component.componentName))
                 }
             }
         }

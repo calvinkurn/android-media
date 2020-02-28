@@ -8,11 +8,13 @@
     android:layout_marginTop="@dimen/dp_5"
     android:layout_marginEnd="@dimen/dp_5"
     android:layout_marginRight="@dimen/dp_5"
-    android:background="@drawable/bg_variant_chip_unselected"
+    android:background="@drawable/bg_variant_chip_disabled"
     android:ellipsize="end"
     android:maxWidth="@dimen/dp_150"
+    android:minWidth="@dimen/dp_50"
     android:maxLines="1"
     android:padding="@dimen/dp_10"
     app:typographyType="body_2"
-    tools:text="Hitam dan Putih" />
+    android:textAlignment="center"
+    tools:text="S" />
 
