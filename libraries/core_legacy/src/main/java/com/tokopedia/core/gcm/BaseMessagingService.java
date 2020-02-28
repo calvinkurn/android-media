@@ -67,7 +67,7 @@ public class BaseMessagingService extends BaseNotificationMessagingService {
 
     private void logOnMessageReceived(RemoteMessage remoteMessage) {
         try {
-            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION, "");
+            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
             String userId = sessionHandler.getUserId();
             if (whiteListedUsers.contains(userId)) {
                 executeLogOnMessageReceived(remoteMessage);

@@ -62,7 +62,7 @@ public class PushNotification {
 
     private static void logUserManuallyDisabledNotification(ApplinkNotificationModel applinkNotificationModel) {
         try {
-            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION, "");
+            String whiteListedUsers = FirebaseRemoteConfig.getInstance().getString(RemoteConfigKey.WHITELIST_USER_LOG_NOTIFICATION);
             String userId = applinkNotificationModel.getToUserId();
             if (whiteListedUsers.contains(userId)) {
                 executeLogOnMessageReceived(applinkNotificationModel);
