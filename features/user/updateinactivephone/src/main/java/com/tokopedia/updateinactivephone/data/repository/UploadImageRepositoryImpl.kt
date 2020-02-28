@@ -1,6 +1,5 @@
 package com.tokopedia.updateinactivephone.data.repository
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam
 import com.tokopedia.updateinactivephone.data.factory.UploadImageSourceFactory
 import com.tokopedia.updateinactivephone.data.model.request.UploadHostModel
 import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
@@ -10,8 +9,7 @@ import javax.inject.Inject
 import okhttp3.RequestBody
 import rx.Observable
 
-class UploadImageRepositoryImpl @Inject
-constructor(private val uploadImageSourceFactory: UploadImageSourceFactory) : UploadImageRepository {
+class UploadImageRepositoryImpl @Inject constructor(private val uploadImageSourceFactory: UploadImageSourceFactory) : UploadImageRepository {
 
     override fun uploadImage(url: String, params: Map<String, String>, imageFile: RequestBody): Observable<UploadImageModel> {
         return uploadImageSourceFactory
@@ -22,7 +20,7 @@ constructor(private val uploadImageSourceFactory: UploadImageSourceFactory) : Up
                         imageFile)
     }
 
-    override fun getUploadHost(parameters: TKPDMapParam<String, Any>): Observable<UploadHostModel> {
+    override fun getUploadHost(parameters: HashMap<String, Any>): Observable<UploadHostModel> {
         return uploadImageSourceFactory
                 .createCloudUploadHostDataStore()
                 .getUploadHost(parameters)

@@ -3,12 +3,7 @@ package com.tokopedia.updateinactivephone.usecase
 import android.text.TextUtils
 
 import com.tokopedia.core.app.MainApplication
-import com.tokopedia.core.base.domain.RequestParams
-import com.tokopedia.core.base.domain.UseCase
-import com.tokopedia.core.base.domain.executor.PostExecutionThread
-import com.tokopedia.core.base.domain.executor.ThreadExecutor
 import com.tokopedia.core.gcm.GCMHandler
-import com.tokopedia.core.network.ErrorMessageException
 import com.tokopedia.core.util.SessionHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.updateinactivephone.R
@@ -37,13 +32,14 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.USER_ID
 import com.tokopedia.updateinactivephone.usecase.GetUploadHostUseCase.Companion.PARAM_NEW_ADD
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
 
-class UploadChangePhoneNumberRequestUseCase(threadExecutor: ThreadExecutor,
-        postExecutionThread: PostExecutionThread,
+class UploadChangePhoneNumberRequestUseCase(
         private val uploadImageUseCase: UploadImageUseCase?,
         private val submitImageUseCase: SubmitImageUseCase?,
         private val getUploadHostUseCase: GetUploadHostUseCase?)
-    : UseCase<GraphqlResponse>(threadExecutor, postExecutionThread) {
+    : UseCase<GraphqlResponse>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<GraphqlResponse> {
 
@@ -59,7 +55,7 @@ class UploadChangePhoneNumberRequestUseCase(threadExecutor: ThreadExecutor,
                     changePhoneNumberRequestModel.isSuccess = uploadHostModel.isSuccess
 
                     if (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == false && changePhoneNumberRequestModel.uploadHostModel?.errorMessage != null)
-                        throw ErrorMessageException(changePhoneNumberRequestModel.uploadHostModel?.errorMessage)
+                        throw RuntimeException(changePhoneNumberRequestModel.uploadHostModel?.errorMessage)
                     else if (changePhoneNumberRequestModel.uploadHostModel?.isSuccess == false && changePhoneNumberRequestModel.uploadHostModel?.responseCode != 200)
                         throw RuntimeException(changePhoneNumberRequestModel.uploadHostModel?.responseCode.toString())
                     Observable.just(changePhoneNumberRequestModel)
@@ -75,7 +71,7 @@ class UploadChangePhoneNumberRequestUseCase(threadExecutor: ThreadExecutor,
                     changePhoneNumberRequestModel.isSuccess = uploadImageModel.isSuccess
 
                     if (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == false && changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage != null)
-                        throw ErrorMessageException(changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage)
+                        throw RuntimeException(changePhoneNumberRequestModel.uploadIdImageModel?.errorMessage)
                     else if (changePhoneNumberRequestModel.uploadIdImageModel?.isSuccess == false && changePhoneNumberRequestModel.uploadIdImageModel?.responseCode != 200)
                         throw RuntimeException(changePhoneNumberRequestModel.uploadIdImageModel?.responseCode.toString())
                     Observable.just(changePhoneNumberRequestModel)
@@ -91,7 +87,7 @@ class UploadChangePhoneNumberRequestUseCase(threadExecutor: ThreadExecutor,
                         changePhoneNumberRequestModel.isSuccess = uploadImageModel.isSuccess
 
                         if (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == false && changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage != null)
-                            throw ErrorMessageException(changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage)
+                            throw RuntimeException(changePhoneNumberRequestModel.uploadBankBookImageModel?.errorMessage)
                         else if (changePhoneNumberRequestModel.uploadBankBookImageModel?.isSuccess == false && changePhoneNumberRequestModel.uploadBankBookImageModel?.responseCode != 200)
                             throw RuntimeException(changePhoneNumberRequestModel.uploadBankBookImageModel?.responseCode.toString())
 
@@ -128,14 +124,14 @@ class UploadChangePhoneNumberRequestUseCase(threadExecutor: ThreadExecutor,
                         changePhoneNumberRequestModel.uploadBankBookImageModel?.uploadImageData?.picObj)
             }
         } catch (e: JSONException) {
-            throw ErrorMessageException(MainApplication.getAppContext().getString(R.string.default_error_upload_image))
+            throw RuntimeException(MainApplication.getAppContext().getString(R.string.default_error_upload_image))
         }
 
         return reviewPhotos.toString()
     }
 
-    private fun uploadImage(requestParams: RequestParams): Observable<UploadImageModel> {
-        return uploadImageUseCase!!.createObservable(requestParams)
+    private fun uploadImage(requestParams: RequestParams): Observable<UploadImageModel>? {
+        return uploadImageUseCase?.createObservable(requestParams)
     }
 
     private fun getUploadBookBankImageParam(requestParams: RequestParams, changePhoneNumberRequestModel: ChangePhoneNumberRequestModel?): RequestParams {

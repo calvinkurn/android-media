@@ -33,28 +33,23 @@ class UpdateInactivePhoneModule {
 
     @UpdateInactivePhoneScope
     @Provides
-    fun provideUploadImageUseCase(threadExecutor: ThreadExecutor, postExecutionThread: PostExecutionThread,
-                                           uploadImageRepository: UploadImageRepositoryImpl): UploadImageUseCase {
-        return UploadImageUseCase(threadExecutor, postExecutionThread, uploadImageRepository)
+    fun provideUploadImageUseCase(uploadImageRepository: UploadImageRepositoryImpl): UploadImageUseCase {
+        return UploadImageUseCase(uploadImageRepository)
     }
 
     @UpdateInactivePhoneScope
     @Provides
-    fun provideGetUploadHostUseCase(threadExecutor: ThreadExecutor, postExecutionThread: PostExecutionThread,
-                                             uploadImageRepository: UploadImageRepositoryImpl): GetUploadHostUseCase {
-        return GetUploadHostUseCase(threadExecutor, postExecutionThread, uploadImageRepository)
+    fun provideGetUploadHostUseCase(uploadImageRepository: UploadImageRepositoryImpl): GetUploadHostUseCase {
+        return GetUploadHostUseCase(uploadImageRepository)
     }
 
     @UpdateInactivePhoneScope
     @Provides
-    fun provideUploadChangePhoneNumberRequestUseCase(threadExecutor: ThreadExecutor,
-                      postExecutionThread: PostExecutionThread,
-                      uploadImageUseCase: UploadImageUseCase,
+    fun provideUploadChangePhoneNumberRequestUseCase(uploadImageUseCase: UploadImageUseCase,
                       submitImageUseCase: SubmitImageUseCase,
                       getUploadHostUseCase: GetUploadHostUseCase): UploadChangePhoneNumberRequestUseCase {
 
-        return UploadChangePhoneNumberRequestUseCase(threadExecutor, postExecutionThread,
-                uploadImageUseCase, submitImageUseCase, getUploadHostUseCase)
+        return UploadChangePhoneNumberRequestUseCase(uploadImageUseCase, submitImageUseCase, getUploadHostUseCase)
     }
 
     @UpdateInactivePhoneScope

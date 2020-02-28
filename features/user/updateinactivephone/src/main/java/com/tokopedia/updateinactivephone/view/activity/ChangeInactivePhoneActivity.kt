@@ -25,7 +25,7 @@ class ChangeInactivePhoneActivity : BaseSimpleActivity(), HasComponent<AppCompon
         return ChangeInactivePhoneFragment.instance
     }
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
         super.setupLayout(savedInstanceState)
         setupToolbar()
         initView()
@@ -40,12 +40,12 @@ class ChangeInactivePhoneActivity : BaseSimpleActivity(), HasComponent<AppCompon
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
-        var fragment = supportFragmentManager.findFragmentByTag(ChangeInactivePhoneFragment::class.java.simpleName)
+        var fragment = supportFragmentManager.findFragmentByTag(ChangeInactivePhoneFragment::class.java.name)
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         if (fragment == null) {
             fragment = ChangeInactivePhoneFragment.instance
         }
-        fragmentTransaction.replace(R.id.parent_view, fragment, fragment.javaClass.simpleName)
+        fragmentTransaction.replace(R.id.parent_view, fragment, fragment.javaClass.name)
         fragmentTransaction.commit()
 
     }

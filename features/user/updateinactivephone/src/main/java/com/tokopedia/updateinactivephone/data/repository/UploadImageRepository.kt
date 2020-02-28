@@ -1,6 +1,5 @@
 package com.tokopedia.updateinactivephone.data.repository
 
-import com.tokopedia.core.network.retrofit.utils.TKPDMapParam
 import com.tokopedia.updateinactivephone.data.model.request.UploadHostModel
 import com.tokopedia.updateinactivephone.data.model.request.UploadImageModel
 
@@ -11,6 +10,6 @@ interface UploadImageRepository {
 
     fun uploadImage(url: String, params: Map<String, String>, imageFile: RequestBody): Observable<UploadImageModel>
 
-    fun getUploadHost(parameters: TKPDMapParam<String, Any>): Observable<UploadHostModel>
+    fun getUploadHost(parameters: HashMap<String, Any>): Observable<UploadHostModel>
 
 }

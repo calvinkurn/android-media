@@ -83,11 +83,11 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<App
             userId = intent.extras?.getString(USER_ID)
         }
         val fragmentTransaction = supportFragmentManager.beginTransaction()
-        var fragment = supportFragmentManager.findFragmentByTag(SelectImageNewPhoneFragment::class.java.simpleName)
+        var fragment = supportFragmentManager.findFragmentByTag(SelectImageNewPhoneFragment::class.java.name)
         if (fragment == null) {
             fragment = SelectImageNewPhoneFragment.instance
         }
-        fragmentTransaction.replace(R.id.parent_view, fragment, fragment.javaClass.simpleName)
+        fragmentTransaction.replace(R.id.parent_view, fragment, fragment.javaClass.name)
         fragmentTransaction.addToBackStack(null).commit()
 
     }

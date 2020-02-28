@@ -3,7 +3,6 @@ package com.tokopedia.updateinactivephone.viewmodel.presenter
 import android.text.TextUtils
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.core.base.domain.RequestParams
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.ID
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.PARAM_BANK_BOOK_IMAGE_PATH
@@ -21,6 +20,7 @@ import com.tokopedia.updateinactivephone.viewmodel.subscriber.ValidateUserDataSu
 import com.tokopedia.updateinactivephone.usecase.UploadChangePhoneNumberRequestUseCase
 import com.tokopedia.updateinactivephone.usecase.ValidateUserDataUseCase
 import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest
+import com.tokopedia.usecase.RequestParams
 
 import java.util.regex.Matcher
 import java.util.regex.Pattern

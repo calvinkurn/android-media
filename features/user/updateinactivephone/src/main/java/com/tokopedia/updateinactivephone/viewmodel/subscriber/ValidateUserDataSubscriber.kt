@@ -1,8 +1,8 @@
 package com.tokopedia.updateinactivephone.viewmodel.subscriber
 
-import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants
 import com.tokopedia.updateinactivephone.data.model.response.GqlValidateUserDataResponse
 import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest

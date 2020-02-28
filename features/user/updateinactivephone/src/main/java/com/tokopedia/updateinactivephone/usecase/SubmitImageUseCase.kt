@@ -3,7 +3,6 @@ package com.tokopedia.updateinactivephone.usecase
 import android.content.Context
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.core.base.domain.RequestParams
 import com.tokopedia.graphql.data.ObservableFactory
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
@@ -16,6 +15,7 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.USER_ID
 import com.tokopedia.updateinactivephone.data.model.response.GqlUpdatePhoneStatusResponse
+import com.tokopedia.usecase.RequestParams
 
 import java.util.ArrayList
 import java.util.HashMap
@@ -44,7 +44,7 @@ class SubmitImageUseCase(private val context: Context) {
         val graphqlRequest = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.query_update_phone_email),
                 GqlUpdatePhoneStatusResponse::class.java,
-                variables, false)
+                variables)
 
         val graphqlRequestList = ArrayList<GraphqlRequest>()
         graphqlRequestList.add(graphqlRequest)

@@ -112,7 +112,7 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
 
         buttonContinue?.setOnClickListener { v ->
             setErrorText("")
-            presenter.checkPhoneNumberStatus(inputMobileNumber!!.text.toString())
+            presenter.checkPhoneNumberStatus(inputMobileNumber?.text.toString())
             hideKeyboard(v)
             UpdateInactivePhoneEventTracking.eventInactivePhoneClick(v.context)
         }

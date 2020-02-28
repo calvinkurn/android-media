@@ -1,6 +1,6 @@
 package com.tokopedia.updateinactivephone.data.network.api
 
-import com.tokopedia.core.network.retrofit.response.TkpdResponse
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneURL
 import com.tokopedia.updateinactivephone.data.model.response.UploadImageData
 
@@ -25,5 +25,5 @@ interface UploadImageApi {
 
     @FormUrlEncoded
     @POST(UpdateInactivePhoneURL.GET_UPLOAD_HOST)
-    fun getUploadHost(@FieldMap params: Map<String, Any>): Observable<Response<TkpdResponse>>
+    fun getUploadHost(@FieldMap params: Map<String, Any>): Observable<Response<TokopediaWsV4Response>>
 }

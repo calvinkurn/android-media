@@ -1,9 +1,6 @@
 package com.tokopedia.updateinactivephone.usecase
 
 import com.tokopedia.core.app.MainApplication
-import com.tokopedia.core.base.domain.UseCase
-import com.tokopedia.core.base.domain.executor.PostExecutionThread
-import com.tokopedia.core.base.domain.executor.ThreadExecutor
 import com.tokopedia.core.util.ImageUploadHandler
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
@@ -23,12 +20,12 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Con
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.SERVER_ID
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.TOKEN
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USERID
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.usecase.UseCase
 
-class UploadImageUseCase(threadExecutor: ThreadExecutor,
-         postExecutionThread: PostExecutionThread,
-         private val uploadImageRepository: UploadImageRepositoryImpl) : UseCase<UploadImageModel>(threadExecutor, postExecutionThread) {
+class UploadImageUseCase(private val uploadImageRepository: UploadImageRepositoryImpl) : UseCase<UploadImageModel>() {
 
-    override fun createObservable(requestParams: com.tokopedia.core.base.domain.RequestParams): Observable<UploadImageModel> {
+    override fun createObservable(requestParams: RequestParams): Observable<UploadImageModel> {
         val uploadUrl = "https://" + requestParams.getString(IMAGE_UPLOAD_URL, "") + "/upload/attachment"
 
         return uploadImageRepository.uploadImage(uploadUrl,
@@ -37,7 +34,7 @@ class UploadImageUseCase(threadExecutor: ThreadExecutor,
         )
     }
 
-    private fun generateRequestBody(requestParams: com.tokopedia.core.base.domain.RequestParams): Map<String, String> {
+    private fun generateRequestBody(requestParams: RequestParams): Map<String, String> {
         val requestBodyMap = HashMap<String, String>()
         requestBodyMap[USERID] = requestParams.getString(USERID, "")
         requestBodyMap[ID] = requestParams.getString(USERID, "")
@@ -48,7 +45,7 @@ class UploadImageUseCase(threadExecutor: ThreadExecutor,
         return requestBodyMap
     }
 
-    private fun getUploadImageFile(requestParams: com.tokopedia.core.base.domain.RequestParams): RequestBody {
+    private fun getUploadImageFile(requestParams: RequestParams): RequestBody {
         var file: File
         try {
             file = ImageUploadHandler.writeImageToTkpdPath(

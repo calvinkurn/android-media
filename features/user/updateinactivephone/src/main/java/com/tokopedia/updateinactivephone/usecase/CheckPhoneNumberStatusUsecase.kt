@@ -34,7 +34,7 @@ class CheckPhoneNumberStatusUsecase(private val context: Context) {
         val graphqlRequest = GraphqlRequest(
                 GraphqlHelper.loadRawString(context.resources, R.raw.query_check_phone_number_status),
                 GqlCheckPhoneStatusResponse::class.java,
-                variables, CHECK_USER_STATUS, false)
+                variables, CHECK_USER_STATUS)
 
         graphqlUseCase?.addRequest(graphqlRequest)
         graphqlUseCase?.execute(checkPhoneNumberStatusSubscriber)
