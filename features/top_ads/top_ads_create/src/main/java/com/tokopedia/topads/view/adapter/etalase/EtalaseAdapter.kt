@@ -16,11 +16,8 @@ class EtalaseAdapter(val typeFactory: EtalaseAdapterTypeFactory,
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EtalaseViewHolder<EtalaseViewModel> {
-        if (parent != null) {
             val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
             return typeFactory.holder(viewType, view) as EtalaseViewHolder<EtalaseViewModel>
-        }
-        throw RuntimeException("Parent is null")
     }
 
     override fun getItemViewType(position: Int): Int {

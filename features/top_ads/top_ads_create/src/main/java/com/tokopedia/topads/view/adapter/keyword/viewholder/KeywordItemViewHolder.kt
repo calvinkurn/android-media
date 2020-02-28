@@ -20,14 +20,14 @@ class KeywordItemViewHolder(val view: View, private var actionSelected: ((pos: I
     }
 
     init {
-        view?.setOnClickListener {
+        view.setOnClickListener {
             it.checkBox.isChecked = !it.checkBox.isChecked
             actionSelected?.invoke(adapterPosition)
         }
     }
 
     override fun bind(item: KeywordItemViewModel) {
-        item.data?.let {
+        item.data.let {
             view.keyword_name.text = it.keyword
             view.checkBox.setOnCheckedChangeListener(null)
             view.checkBox.isChecked = item.isChecked

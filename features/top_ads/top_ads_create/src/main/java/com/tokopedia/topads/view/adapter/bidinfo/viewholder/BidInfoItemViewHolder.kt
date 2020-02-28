@@ -19,7 +19,7 @@ class BidInfoItemViewHolder(val view: View, var selectedKeywords: MutableList<St
 
     override fun bind(item: BidInfoItemViewModel) {
         minBid = actionClick!!.invoke()
-        item?.let {
+        item.let {
             if (selectedKeywords.size != 0) {
                 view.title.text = selectedKeywords[adapterPosition]
                 if (selectedSuggestBid[adapterPosition] != 0) {

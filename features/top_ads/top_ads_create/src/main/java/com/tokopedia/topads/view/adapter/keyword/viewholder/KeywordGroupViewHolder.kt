@@ -17,8 +17,8 @@ class KeywordGroupViewHolder(val view: View): KeywordViewHolder<KeywordGroupView
     }
 
     override fun bind(item: KeywordGroupViewModel) {
-        item?.let {
-            view.group_title.setText(it.title)
+        item.let {
+            view.group_title.text = it.title
         }
     }
 

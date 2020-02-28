@@ -20,12 +20,8 @@ class BidInfoAdapter(private val typeFactory: BindInfoAdapterTypeFactory) : Recy
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BidInfoViewHolder<BidInfoViewModel> {
-
-        if (parent != null) {
-            val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-            return typeFactory.holder(viewType, view) as BidInfoViewHolder<BidInfoViewModel>
-        }
-        throw RuntimeException("Parent is null")
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return typeFactory.holder(viewType, view) as BidInfoViewHolder<BidInfoViewModel>
     }
 
     override fun getItemCount(): Int {

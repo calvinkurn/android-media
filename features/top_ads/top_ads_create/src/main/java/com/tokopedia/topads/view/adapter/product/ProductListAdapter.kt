@@ -34,11 +34,9 @@ class ProductListAdapter(val typeFactory: ProductListAdapterTypeFactory) : Recyc
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductViewHolder<ProductViewModel> {
-        if (parent != null) {
-            val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-            return typeFactory.holder(viewType, view) as ProductViewHolder<ProductViewModel>
-        }
-        throw RuntimeException("Parent is null")
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return typeFactory.holder(viewType, view) as ProductViewHolder<ProductViewModel>
+
     }
 
     fun initLoading() {

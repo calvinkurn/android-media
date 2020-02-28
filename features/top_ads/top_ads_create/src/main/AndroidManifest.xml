@@ -28,21 +28,18 @@
 
         <activity
             android:name="com.tokopedia.topads.view.activity.StepperActivity"
-            android:exported="true"
             android:label="@string/create_group"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.tokopedia.topads.view.activity.SuccessActivity"
-            android:exported="true"
             android:label="@string/create_group"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name="com.tokopedia.topads.view.activity.NoCreditActivity"
-            android:exported="true"
             android:label="@string/create_group"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"

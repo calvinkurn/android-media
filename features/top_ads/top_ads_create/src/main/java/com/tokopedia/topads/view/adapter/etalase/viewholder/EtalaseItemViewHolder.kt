@@ -23,9 +23,9 @@ class EtalaseItemViewHolder(val view: View, var actionClick: ((pos:Int) -> Unit)
     }
 
     override fun bind(item: EtalaseItemViewModel) {
-        item?.let {
-            view.title.setText(it.result.name)
-            view.subtitle.setText(String.format("%d produk", it.result.count))
+        item.let {
+            view.title.text = it.result.name
+            view.subtitle.text = String.format("%d produk", it.result.count)
             if(item.checked){
                 view.check.visibility = View.VISIBLE
             } else {

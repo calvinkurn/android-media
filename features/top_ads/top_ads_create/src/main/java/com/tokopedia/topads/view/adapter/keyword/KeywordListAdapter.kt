@@ -25,11 +25,8 @@ class KeywordListAdapter(val typeFactory: KeywordListAdapterTypeFactory) : Recyc
     private var RECOMMENDED = "Rekomendasi"
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): KeywordViewHolder<KeywordViewModel> {
-        if (parent != null) {
-            val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
-            return typeFactory.holder(viewType, view) as KeywordViewHolder<KeywordViewModel>
-        }
-        throw RuntimeException("Parent is null")
+        val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
+        return typeFactory.holder(viewType, view) as KeywordViewHolder<KeywordViewModel>
     }
 
     override fun getItemViewType(position: Int): Int {
