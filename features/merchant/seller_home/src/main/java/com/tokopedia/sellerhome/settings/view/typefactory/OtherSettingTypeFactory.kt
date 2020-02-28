@@ -1,17 +1,15 @@
 package com.tokopedia.sellerhome.settings.view.typefactory
 
-import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.sellerhome.settings.view.uimodel.BalanceUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
 
-class OtherSettingTypeFactory : BaseAdapterTypeFactory(), AdapterTypeFactory {
+interface OtherSettingTypeFactory {
 
-    override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        when(type){
+    fun type(balanceUiModel: BalanceUiModel): Int
+    fun type(dividerUiModel: DividerUiModel): Int
+    fun type(settingTitleUiModel: SettingTitleUiModel): Int
+    fun type(menuItemUiModel: MenuItemUiModel): Int
 
-        }
-        return super.createViewHolder(parent, type)
-    }
 }
