@@ -38,7 +38,6 @@ import com.tokopedia.hotel.roomdetail.presentation.viewmodel.HotelRoomDetailView
 import com.tokopedia.hotel.roomlist.data.model.HotelAddCartParam
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
-import com.tokopedia.hotel.roomlist.data.model.HotelRoomListPageModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.usecase.coroutines.Fail
@@ -98,21 +97,6 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        roomDetailViewModel.hotelRoomResult.observe(this, androidx.lifecycle.Observer {
-            when (it) {
-                is Success -> {
-                    hotelRoom = it.data
-                    initView()
-                    progressDialog.dismiss()
-                }
-                is Fail -> {
-                    progressDialog.dismiss()
-                    activity?.setResult(Activity.RESULT_OK)
-                    activity?.finish()
-                }
-            }
-        })
-
         roomDetailViewModel.addCartResponseResult.observe(this, androidx.lifecycle.Observer {
             progressDialog.dismiss()
             when (it) {
@@ -143,8 +127,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initView()
         initProgressDialog()
-        roomDetailViewModel.init(hotelRoom)
         trackingHotelUtil.hotelViewRoomDetail(hotelRoom, addToCartParam, roomIndex)
     }
 
@@ -257,7 +241,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         }
     }
 
-    fun setupRoomPayAtHotel() {
+    private fun setupRoomPayAtHotel() {
         if (!hotelRoom.additionalPropertyInfo.isDirectPayment) {
             pay_at_hotel_container.visibility = View.VISIBLE
 
@@ -275,7 +259,7 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         }
     }
 
-    fun setupRoomCancellation() {
+    private fun setupRoomCancellation() {
         if (hotelRoom.cancelPolicy.isNotEmpty()) {
             val spannableStringBuilder = SpannableStringBuilder()
             for (policy in hotelRoom.cancelPolicy) {
@@ -293,21 +277,21 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         }
     }
 
-    fun setupRoomTax() {
+    private fun setupRoomTax() {
         if (hotelRoom.taxes.isNotEmpty()) {
             room_detail_tax.setTitleAndDescription(getString(R.string.hotel_room_detail_tax), hotelRoom.taxes)
             room_detail_tax.buildView()
         }
     }
 
-    fun setupRoomDeposit() {
+    private fun setupRoomDeposit() {
         if (hotelRoom.depositInfo.isNeedDeposit) {
             room_detail_deposit.setTitleAndDescription(getString(R.string.hotel_room_detail_deposit), hotelRoom.depositInfo.depositText)
             room_detail_deposit.buildView()
         }
     }
 
-    fun setupRoomFacilities() {
+    private fun setupRoomFacilities() {
         if (hotelRoom.roomInfo.facility.isNotEmpty()) {
             val facilityList = hotelRoom.roomInfo.facility
             val stringBuilder = StringBuffer()
@@ -341,28 +325,28 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         }
     }
 
-    fun setupRoomDescription() {
+    private fun setupRoomDescription() {
         if (hotelRoom.roomInfo.description.isNotEmpty()) {
             room_detail_description.setTitleAndDescription(getString(R.string.hotel_room_detail_description), hotelRoom.roomInfo.description)
             room_detail_description.buildView()
         }
     }
 
-    fun setupRoomBreakfast() {
+    private fun setupRoomBreakfast() {
         if (hotelRoom.breakfastInfo.mealPlan.isNotEmpty()) {
             room_detail_breakfast.setTitleAndDescription(getString(R.string.hotel_room_detail_breakfast), hotelRoom.breakfastInfo.mealPlan)
             room_detail_breakfast.buildView()
         }
     }
 
-    fun setupRoomExtraBed() {
+    private fun setupRoomExtraBed() {
         if (hotelRoom.extraBedInfo.content.isNotEmpty()) {
             room_detail_extra_bed.setTitleAndDescription(getString(R.string.hotel_room_detail_extra_bed), hotelRoom.extraBedInfo.content)
             room_detail_extra_bed.buildView()
         }
     }
 
-    fun setupRoomPrice() {
+    private fun setupRoomPrice() {
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
         room_detail_button.isEnabled = true
@@ -407,8 +391,8 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         dialog.setPrimaryCTAClickListener {
             dialog.dismiss()
             progressDialog.show()
-            roomDetailViewModel.getRoomList(GraphqlHelper.loadRawString(resources, R.raw.gql_query_hotel_room_list),
-                    addToCartParam, hotelRoom.roomInfo.name)
+            activity?.setResult(Activity.RESULT_OK)
+            activity?.finish()
         }
         dialog.setCancelable(false)
         dialog.setOverlayClose(false)

@@ -22,32 +22,14 @@ import javax.inject.Inject
 
 class HotelRoomDetailViewModel @Inject constructor(
         val dispatcher: CoroutineDispatcher,
-        private val useCase: HotelAddToCartUseCase,
-        private val getHotelRoomListUseCase: GetHotelRoomListUseCase)
+        private val useCase: HotelAddToCartUseCase)
     : BaseViewModel(dispatcher) {
 
     val addCartResponseResult = MutableLiveData<Result<HotelAddCartData.Response>>()
-    val hotelRoomResult = MutableLiveData<Result<HotelRoom>>()
-
-    fun init(hotelRoom: HotelRoom) {
-        hotelRoomResult.postValue(Success(hotelRoom))
-    }
 
     fun addToCart(rawQuery: String, hotelAddCartParam: HotelAddCartParam) {
         launch {
             addCartResponseResult.value = useCase.execute(rawQuery, hotelAddCartParam)
-        }
-    }
-
-    fun getRoomList(rawQuery: String, hotelAddCartParam: HotelAddCartParam, currentRoomName: String) {
-        launchCatchError(block = {
-            val roomList = getHotelRoomListUseCase.execute(rawQuery,
-                    mapToHotelRoomListPageModel(hotelAddCartParam), true)
-            if (roomList is Success) {
-                hotelRoomResult.value = getCurrentRoom(roomList.data, currentRoomName)
-            }
-        }) {
-            hotelRoomResult.value = Fail(Throwable(FAIL_TO_REFRESH_ROOM_MESSAGE))
         }
     }
 
