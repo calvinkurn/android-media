@@ -16,6 +16,8 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.data.*
 import com.tokopedia.purchase_platform.R
@@ -52,7 +54,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                         .inject(this)
             }
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -84,14 +85,20 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     private fun initFragmentUiModel() {
         fragmentUiModel = FragmentUiModel(
                 uiState = FragmentUiModel.UiState().apply {
-                    hasAnyPromoSellected = false
+                    hasAnyPromoSelected = false
                     hasFailedToLoad = false
                 }
         )
     }
 
     private fun renderFragmentState() {
-        if (fragmentUiModel.uiState.hasAnyPromoSellected) {
+        if (fragmentUiModel.uiState.showContainerActionBottom) {
+            container_action_bottom.show()
+        } else {
+            container_action_bottom.gone()
+        }
+
+        if (fragmentUiModel.uiState.hasAnyPromoSelected) {
             toolbar?.enableResetButton()
         } else {
             toolbar?.disableResetButton()
@@ -181,7 +188,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         }
         adapter.modifyDataList(promoList)
 
-        fragmentUiModel.uiState.hasAnyPromoSellected = false
+        fragmentUiModel.uiState.hasAnyPromoSelected = false
         renderFragmentState()
     }
 
@@ -294,7 +301,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 return@forEach
             }
         }
-        fragmentUiModel.uiState.hasAnyPromoSellected = hasAnyPromoSellected
+        fragmentUiModel.uiState.hasAnyPromoSelected = hasAnyPromoSellected
 
         return hasAnyPromoSellected
     }
@@ -307,7 +314,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 return@forEach
             }
         }
-        fragmentUiModel.uiState.hasAnyPromoSellected = hasAnyPromoSellected
+        fragmentUiModel.uiState.hasAnyPromoSelected = hasAnyPromoSellected
 
         return hasAnyPromoSellected
     }
