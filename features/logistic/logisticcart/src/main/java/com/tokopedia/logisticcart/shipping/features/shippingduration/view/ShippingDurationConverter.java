@@ -3,7 +3,7 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 import android.text.TextUtils;
 
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
@@ -73,11 +73,11 @@ public class ShippingDurationConverter {
         for (ServiceData serviceData : serviceDataList) {
             ShippingDurationUiModel shippingDurationUiModel = new ShippingDurationUiModel();
             shippingDurationUiModel.setServiceData(serviceData);
-            List<ShippingCourierViewModel> shippingCourierViewModels =
+            List<ShippingCourierUiModel> shippingCourierUiModels =
                     convertToShippingCourierViewModel(shippingDurationUiModel,
                             serviceData.getProducts(), ratesId, blackboxInfo);
-            shippingDurationUiModel.setShippingCourierViewModelList(shippingCourierViewModels);
-            if (shippingCourierViewModels.size() > 0) {
+            shippingDurationUiModel.setShippingCourierViewModelList(shippingCourierUiModels);
+            if (shippingCourierUiModels.size() > 0) {
                 shippingDurationUiModels.add(shippingDurationUiModel);
             }
             if (serviceData.getError() != null && !TextUtils.isEmpty(serviceData.getError().getErrorMessage())) {
@@ -96,29 +96,29 @@ public class ShippingDurationConverter {
         return shippingDurationUiModels;
     }
 
-    private List<ShippingCourierViewModel> convertToShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
-                                                                             List<ProductData> productDataList,
-                                                                             String ratesId,
-                                                                             String blackboxInfo) {
-        List<ShippingCourierViewModel> shippingCourierViewModels = new ArrayList<>();
+    private List<ShippingCourierUiModel> convertToShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
+                                                                           List<ProductData> productDataList,
+                                                                           String ratesId,
+                                                                           String blackboxInfo) {
+        List<ShippingCourierUiModel> shippingCourierUiModels = new ArrayList<>();
         for (ProductData productData : productDataList) {
             addShippingCourierViewModel(shippingDurationUiModel, ratesId,
-                    shippingCourierViewModels, productData, blackboxInfo);
+                    shippingCourierUiModels, productData, blackboxInfo);
         }
 
-        return shippingCourierViewModels;
+        return shippingCourierUiModels;
     }
 
     private void addShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
                                              String ratesId,
-                                             List<ShippingCourierViewModel> shippingCourierViewModels,
+                                             List<ShippingCourierUiModel> shippingCourierUiModels,
                                              ProductData productData, String blackboxInfo) {
-        ShippingCourierViewModel shippingCourierViewModel = new ShippingCourierViewModel();
-        shippingCourierViewModel.setProductData(productData);
-        shippingCourierViewModel.setBlackboxInfo(blackboxInfo);
-        shippingCourierViewModel.setServiceData(shippingDurationUiModel.getServiceData());
-        shippingCourierViewModel.setRatesId(ratesId);
-        shippingCourierViewModels.add(shippingCourierViewModel);
+        ShippingCourierUiModel shippingCourierUiModel = new ShippingCourierUiModel();
+        shippingCourierUiModel.setProductData(productData);
+        shippingCourierUiModel.setBlackboxInfo(blackboxInfo);
+        shippingCourierUiModel.setServiceData(shippingDurationUiModel.getServiceData());
+        shippingCourierUiModel.setRatesId(ratesId);
+        shippingCourierUiModels.add(shippingCourierUiModel);
     }
 
     private LogisticPromoViewModel convertToPromoModel(PromoStacking promo) {

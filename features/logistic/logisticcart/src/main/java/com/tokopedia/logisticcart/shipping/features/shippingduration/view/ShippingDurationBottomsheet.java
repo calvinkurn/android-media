@@ -25,7 +25,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
@@ -332,7 +332,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModels,
                                           int cartPosition, ServiceData serviceData) {
         boolean flagNeedToSetPinpoint = false;
         int selectedServiceId = 0;
@@ -343,22 +343,22 @@ public class ShippingDurationBottomsheet extends BottomSheets
                 selectedServiceId = serviceData.getServiceId();
             }
         } else {
-            for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
-                shippingCourierViewModel.setSelected(shippingCourierViewModel.getProductData().isRecommend());
-                if (shippingCourierViewModel.getProductData().getError() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorMessage() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorId() != null &&
-                        shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+            for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
+                shippingCourierUiModel.setSelected(shippingCourierUiModel.getProductData().isRecommend());
+                if (shippingCourierUiModel.getProductData().getError() != null &&
+                        shippingCourierUiModel.getProductData().getError().getErrorMessage() != null &&
+                        shippingCourierUiModel.getProductData().getError().getErrorId() != null &&
+                        shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                     flagNeedToSetPinpoint = true;
-                    selectedServiceId = shippingCourierViewModel.getServiceData().getServiceId();
-                    shippingCourierViewModel.getServiceData().getTexts().setTextRangePrice(
-                            shippingCourierViewModel.getProductData().getError().getErrorMessage());
+                    selectedServiceId = shippingCourierUiModel.getServiceData().getServiceId();
+                    shippingCourierUiModel.getServiceData().getTexts().setTextRangePrice(
+                            shippingCourierUiModel.getProductData().getError().getErrorMessage());
                 }
             }
         }
         if (shippingDurationBottomsheetListener != null) {
             shippingDurationBottomsheetListener.onShippingDurationChoosen(
-                    shippingCourierViewModels, presenter.getCourierItemData(shippingCourierViewModels),
+                    shippingCourierUiModels, presenter.getCourierItemData(shippingCourierUiModels),
                     mRecipientAddress, cartPosition, selectedServiceId, serviceData,
                     flagNeedToSetPinpoint, true, true);
             try {

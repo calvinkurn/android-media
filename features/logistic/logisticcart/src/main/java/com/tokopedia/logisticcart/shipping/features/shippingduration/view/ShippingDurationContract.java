@@ -10,7 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 
@@ -49,9 +49,9 @@ public interface ShippingDurationContract {
 
         void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList);
 
-        CourierItemData getCourierItemData(List<ShippingCourierViewModel> shippingCourierViewModels);
+        CourierItemData getCourierItemData(List<ShippingCourierUiModel> shippingCourierUiModels);
 
-        CourierItemData getCourierItemDataById(int spId, List<ShippingCourierViewModel> shippingCourierViewModels);
+        CourierItemData getCourierItemDataById(int spId, List<ShippingCourierUiModel> shippingCourierUiModels);
 
     }
 

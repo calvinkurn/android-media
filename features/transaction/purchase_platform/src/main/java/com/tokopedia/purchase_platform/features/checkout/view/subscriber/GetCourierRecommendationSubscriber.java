@@ -6,7 +6,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract;
@@ -75,20 +75,20 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                 for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
                     if (shippingDurationUiModel.getShippingCourierViewModelList() != null &&
                             shippingDurationUiModel.getShippingCourierViewModelList().size() > 0) {
-                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
-                            shippingCourierViewModel.setSelected(false);
+                        for (ShippingCourierUiModel shippingCourierUiModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
+                            shippingCourierUiModel.setSelected(false);
                         }
-                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
-                            if (isTradeInDropOff || (shippingCourierViewModel.getProductData().getShipperProductId() == spId &&
-                                    shippingCourierViewModel.getProductData().getShipperId() == shipperId)) {
-                                if (shippingCourierViewModel.getProductData().getError() != null &&
-                                        !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getError().getErrorMessage())) {
+                        for (ShippingCourierUiModel shippingCourierUiModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
+                            if (isTradeInDropOff || (shippingCourierUiModel.getProductData().getShipperProductId() == spId &&
+                                    shippingCourierUiModel.getProductData().getShipperId() == shipperId)) {
+                                if (shippingCourierUiModel.getProductData().getError() != null &&
+                                        !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getError().getErrorMessage())) {
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
                                     return;
                                 } else {
-                                    shippingCourierViewModel.setSelected(true);
+                                    shippingCourierUiModel.setSelected(true);
                                     presenter.setShippingCourierViewModelsState(shippingDurationUiModel.getShippingCourierViewModelList(), itemPosition);
-                                    CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
+                                    CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel);
                                     if (shippingRecommendationData.getLogisticPromo() != null) {
                                         String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
                                         courierItemData.setLogPromoMsg(disableMsg);

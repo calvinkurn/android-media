@@ -14,7 +14,7 @@ import java.util.List;
 public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
 
     private ServiceData serviceData;
-    private List<ShippingCourierViewModel> shippingCourierViewModelList;
+    private List<ShippingCourierUiModel> shippingCourierUiModelList;
     private boolean selected;
     private boolean showShowCase;
     private String errorMessage;
@@ -26,7 +26,7 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
 
     protected ShippingDurationUiModel(Parcel in) {
         serviceData = in.readParcelable(ServiceData.class.getClassLoader());
-        shippingCourierViewModelList = in.createTypedArrayList(ShippingCourierViewModel.CREATOR);
+        shippingCourierUiModelList = in.createTypedArrayList(ShippingCourierUiModel.CREATOR);
         selected = in.readByte() != 0;
         showShowCase = in.readByte() != 0;
         errorMessage = in.readString();
@@ -35,7 +35,7 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(serviceData, flags);
-        dest.writeTypedList(shippingCourierViewModelList);
+        dest.writeTypedList(shippingCourierUiModelList);
         dest.writeByte((byte) (selected ? 1 : 0));
         dest.writeByte((byte) (showShowCase ? 1 : 0));
         dest.writeString(errorMessage);
@@ -74,12 +74,12 @@ public class ShippingDurationUiModel implements Parcelable, RatesViewModelType {
         this.selected = selected;
     }
 
-    public List<ShippingCourierViewModel> getShippingCourierViewModelList() {
-        return shippingCourierViewModelList;
+    public List<ShippingCourierUiModel> getShippingCourierViewModelList() {
+        return shippingCourierUiModelList;
     }
 
-    public void setShippingCourierViewModelList(List<ShippingCourierViewModel> shippingCourierViewModelList) {
-        this.shippingCourierViewModelList = shippingCourierViewModelList;
+    public void setShippingCourierViewModelList(List<ShippingCourierUiModel> shippingCourierUiModelList) {
+        this.shippingCourierUiModelList = shippingCourierUiModelList;
     }
 
     public boolean isShowShowCase() {

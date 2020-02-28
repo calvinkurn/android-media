@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.utils
 
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
@@ -16,7 +16,7 @@ class RatesResponseStateConverterTest {
             shippingDurationViewModels = listOf(
                     ShippingDurationUiModel().apply {
                         shippingCourierViewModelList = listOf(
-                                ShippingCourierViewModel().apply {
+                                ShippingCourierUiModel().apply {
                                     productData = ProductData().apply {
                                         shipperProductId = 37
                                     }

@@ -4,7 +4,7 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.variant.Ch
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.purchase_platform.R
@@ -109,11 +109,11 @@ class GetRatesSubscriber(val view: CheckoutVariantContract.View?,
         }
     }
 
-    private fun prepareViewModel(product: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>) {
+    private fun prepareViewModel(product: ProductData, serviceData: ServiceData, shippingCourierUiModels: MutableList<ShippingCourierUiModel>) {
         if (currentSpId == 0) {
             presenter.prepareViewModel(product)
         }
-        view?.updateShippingData(product, serviceData, shippingCourierViewModels)
+        view?.updateShippingData(product, serviceData, shippingCourierUiModels)
     }
 
 }
