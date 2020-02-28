@@ -80,7 +80,7 @@ class BrizziBalanceViewModelTest {
 
         //then
         assertNotNull(brizziBalanceViewModel.cardIsNotBrizzi.value)
-        assertEquals(false, brizziBalanceViewModel.cardIsNotBrizzi.value)
+        assertEquals(true, brizziBalanceViewModel.cardIsNotBrizzi.value)
     }
 
     @Test

@@ -1,13 +1,12 @@
 package com.tokopedia.emoney.viewmodel
 
-import android.content.Intent
 import android.nfc.tech.IsoDep
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.emoney.util.NFCUtils
 import com.tokopedia.emoney.data.AttributesEmoneyInquiry
 import com.tokopedia.emoney.data.EmoneyInquiry
 import com.tokopedia.emoney.data.EmoneyInquiryResponse
 import com.tokopedia.emoney.data.NfcCardErrorTypeDef
+import com.tokopedia.emoney.util.NFCUtils
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -33,7 +32,6 @@ class EmoneyBalanceViewModelTest {
     lateinit var isoDep: IsoDep
 
     private lateinit var emoneyBalanceViewModel: EmoneyBalanceViewModel
-    private lateinit var intent: Intent
     private lateinit var byteNfc: ByteArray
 
     @Before
@@ -41,7 +39,6 @@ class EmoneyBalanceViewModelTest {
         MockKAnnotations.init(this)
         mockkObject(NFCUtils.Companion)
 
-        intent = spyk()
         byteNfc = byteArrayOf()
         emoneyBalanceViewModel = EmoneyBalanceViewModel(graphqlRepository, Dispatchers.Unconfined)
     }
@@ -76,14 +73,11 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseWriteBalanceSuccess)
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(intent, isoDep, "", 0)
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
-
-        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.emoneyInquiry.value)
         assertEquals(emoneyBalanceViewModel.emoneyInquiry.value, emoneyInquiry)
@@ -107,14 +101,11 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returnsMany listOf(gqlResponseGetInquirySuccess, gqlResponseError)
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(intent, isoDep, "", 0)
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
-
-        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.errorInquiryBalance.value)
         assertEquals(errorGql.message, emoneyBalanceViewModel.errorInquiryBalance.value?.message)
@@ -133,14 +124,11 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseWriteBalanceSuccess
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(intent, isoDep, "", 0)
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
-
-        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.emoneyInquiry.value)
         assertEquals(emoneyBalanceViewModel.emoneyInquiry.value, emoneyInquiry)
@@ -158,14 +146,11 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseError
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(intent, isoDep, "", 0)
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
-
-        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.errorInquiryBalance.value)
         assertEquals(errorGql.message, emoneyBalanceViewModel.errorInquiryBalance.value?.message)
@@ -184,14 +169,11 @@ class EmoneyBalanceViewModelTest {
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns gqlResponseGetInquirySuccess
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(intent, isoDep, "", 0)
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.issuerId.value)
         assertEquals(emoneyBalanceViewModel.issuerId.value, 1)
-
-        assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
 
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
         assertEquals(NfcCardErrorTypeDef.FAILED_UPDATE_BALANCE, emoneyBalanceViewModel.errorCardMessage.value)
@@ -204,14 +186,11 @@ class EmoneyBalanceViewModelTest {
         every { NFCUtils.toHex(byteNfc) } returns "2000"
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(intent, isoDep, "", 0)
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.cardIsNotEmoney.value)
-        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, false)
-
-        assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
-        assertEquals(NfcCardErrorTypeDef.CARD_NOT_FOUND, emoneyBalanceViewModel.errorCardMessage.value)
+        assertEquals(emoneyBalanceViewModel.cardIsNotEmoney.value, true)
     }
 
     @Test
@@ -221,7 +200,7 @@ class EmoneyBalanceViewModelTest {
         every { isoDep.transceive(any()) } answers { throw IOException() }
 
         //when
-        emoneyBalanceViewModel.processEmoneyTagIntent(intent, isoDep, "", 0)
+        emoneyBalanceViewModel.processEmoneyTagIntent(isoDep, "", 0)
 
         //then
         assertNotNull(emoneyBalanceViewModel.errorCardMessage.value)
