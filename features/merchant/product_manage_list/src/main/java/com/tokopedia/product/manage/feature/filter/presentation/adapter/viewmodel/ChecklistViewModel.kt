@@ -6,7 +6,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.
 class ChecklistViewModel(
         val name: String,
         val id: String,
-        val isSelected: Boolean
+        var isSelected: Boolean
 ) : Visitable<SelectAdapterTypeFactory> {
 
     override fun type(adapterTypeFactory: SelectAdapterTypeFactory): Int {

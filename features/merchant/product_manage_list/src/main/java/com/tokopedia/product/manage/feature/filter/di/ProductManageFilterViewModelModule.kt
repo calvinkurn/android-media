@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
+import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
 import dagger.Binds
 import dagger.Module
@@ -21,4 +22,9 @@ abstract class ProductManageFilterViewModelModule {
     @IntoMap
     @ViewModelKey(ProductManageFilterViewModel::class)
     internal abstract fun productManageFilterViewModel(viewModel: ProductManageFilterViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProductManageFilterExpandChecklistViewModel::class)
+    internal abstract fun productManageFilterExpandChecklistViewModel(viewModel: ProductManageFilterExpandChecklistViewModel): ViewModel
 }

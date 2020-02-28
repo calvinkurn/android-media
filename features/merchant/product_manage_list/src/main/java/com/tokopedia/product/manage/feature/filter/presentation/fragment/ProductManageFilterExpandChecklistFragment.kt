@@ -7,11 +7,17 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
+import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
+import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
+import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.SelectAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.SelectAdapterTypeFactory
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.ChecklistViewModel
@@ -19,13 +25,17 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmode
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.CATEGORIES_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.Companion.OTHER_FILTER_CACHE_MANAGER_KEY
+import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class ProductManageFilterExpandChecklistFragment :
-        Fragment(), ChecklistClickListener, SelectClickListener {
+        Fragment(), ChecklistClickListener, SelectClickListener,
+        HasComponent<ProductManageFilterComponent> {
 
     companion object {
         const val CATEGORIES_TITLE = "Semua Kategori"
@@ -40,6 +50,9 @@ class ProductManageFilterExpandChecklistFragment :
         }
     }
 
+    @Inject
+    lateinit var productManageFilterExpandChecklistViewModel: ProductManageFilterExpandChecklistViewModel
+
     private var cacheManager: SaveInstanceCacheManager? = null
     private var toolbar: Toolbar? = null
     private var title: Typography? = null
@@ -50,9 +63,12 @@ class ProductManageFilterExpandChecklistFragment :
     private var cacheManagerId: String = ""
     private var searchView: SearchInputView? = null
     private var reset: Typography? = null
+    private var submitButton: UnifyButton? = null
+    private var dataToSave: MutableList<ChecklistViewModel> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
         arguments?.let {
             flag = it.getString(ProductManageFilterFragment.ACTIVITY_EXPAND_FLAG) ?: ""
             cacheManagerId = it.getString(ProductManageFilterFragment.CACHE_MANAGER_KEY) ?: ""
@@ -80,6 +96,7 @@ class ProductManageFilterExpandChecklistFragment :
         filterViewModel?.let {
             initView(it)
         }
+        observeDataLength()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -89,10 +106,14 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     override fun onChecklistClick(element: ChecklistViewModel) {
-        if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
-            cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY, element)
+        if(element.isSelected) {
+            element.isSelected = false
+            dataToSave.remove(element)
+            productManageFilterExpandChecklistViewModel.updateDataSize(dataToSave.size)
         } else {
-            cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY, element)
+            element.isSelected = true
+            dataToSave.add(element)
+            productManageFilterExpandChecklistViewModel.updateDataSize(dataToSave.size)
         }
     }
 
@@ -100,13 +121,23 @@ class ProductManageFilterExpandChecklistFragment :
         //No Op
     }
 
-    private fun initView(filterViewModel: FilterViewModel) {
-        if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
-            title?.text = CATEGORIES_TITLE
-            initSearchView()
-        } else {
-            title?.text = OTHER_FILTER_TITLE
+    override fun getComponent(): ProductManageFilterComponent? {
+        return activity?.run {
+            DaggerProductManageFilterComponent
+                    .builder()
+                    .productManageFilterModule(ProductManageFilterModule())
+                    .productManageComponent(ProductManageInstance.getComponent(application))
+                    .build()
         }
+    }
+
+    private fun initInjector() {
+        component?.inject(this)
+    }
+
+    private fun initView(filterViewModel: FilterViewModel) {
+        initTitle()
+        initButtons(filterViewModel)
         configToolbar()
         adapter?.updateChecklistData(ProductManageFilterMapper.mapFilterViewModelsToChecklistViewModels(filterViewModel))
     }
@@ -140,6 +171,58 @@ class ProductManageFilterExpandChecklistFragment :
             }
 
         })
+    }
+
+    private fun observeDataLength() {
+        productManageFilterExpandChecklistViewModel.dataSize.observe(this, Observer {
+            if(it > 0) {
+                showButtons()
+            } else {
+                hideButtons()
+            }
+        })
+    }
+
+    private fun showButtons() {
+        submitButton?.isEnabled = true
+        reset?.visibility = View.VISIBLE
+    }
+
+    private fun hideButtons() {
+        submitButton?.isEnabled = false
+        reset?.visibility = View.GONE
+    }
+
+    private fun initButtons(filterViewModel: FilterViewModel) {
+        submitButton?.setOnClickListener {
+            this.activity?.finish()
+            if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
+                cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY, dataToSave)
+            } else {
+                cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY, dataToSave)
+            }
+        }
+        if(filterViewModel.selectData.contains(true)) {
+            reset?.visibility = View.VISIBLE
+            submitButton?.isEnabled = true
+        } else {
+            reset?.visibility = View.GONE
+            submitButton?.isEnabled = false
+        }
+        reset?.setOnClickListener {
+            adapter?.clearAllChecklists()
+            dataToSave.clear()
+            productManageFilterExpandChecklistViewModel.updateDataSize(dataToSave.size)
+        }
+    }
+
+    private fun initTitle() {
+        if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
+            title?.text = CATEGORIES_TITLE
+            initSearchView()
+        } else {
+            title?.text = OTHER_FILTER_TITLE
+        }
     }
 
 

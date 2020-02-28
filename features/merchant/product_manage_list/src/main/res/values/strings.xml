@@ -108,5 +108,7 @@
     <string name="filter_button">Tampilkan Produk</string>
     <string name="filter_search_bar">Cari Kategori</string>
     <string name="filter_expand_activity">Expand</string>
+    <string name="filter_expand_save_button">Simpan</string>
+    <string name="filter_expand_reset">Reset</string>
 
 </resources>

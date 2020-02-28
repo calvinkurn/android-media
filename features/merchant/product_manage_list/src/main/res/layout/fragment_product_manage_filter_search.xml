@@ -19,32 +19,49 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/page_title"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:typographyType="heading_4"
-                app:typographyWeight="bold"/>
+                android:layout_marginTop="@dimen/layout_lvl2"
+                android:layout_marginRight="@dimen/layout_lvl2"
+                android:layout_marginEnd="@dimen/layout_lvl2"
+                android:layout_marginBottom="@dimen/layout_lvl2">
 
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/reset_checklist"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:typographyWeight="reguler"
-                app:typographyType="body_2"
-                android:textColor="@color/g_500"/>
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/page_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:typographyType="heading_4"
+                    app:typographyWeight="bold"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"/>
 
-            <com.tokopedia.design.text.SearchInputView
-                android:id="@+id/search_input_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="@drawable/bg_corner"
-                android:textColorHint="@android:color/darker_gray"
-                android:textSize="@dimen/sp_16"
-                app:siv_search_hint="@string/filter_search_bar"
-                app:siv_search_icon="@drawable/ic_search_bar" />
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/reset_checklist"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/filter_expand_reset"
+                    android:textColor="@color/g_500"
+                    app:typographyWeight="reguler"
+                    app:typographyType="body_2"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+                <com.tokopedia.design.text.SearchInputView
+                    android:id="@+id/search_input_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="@drawable/bg_corner"
+                    android:textColorHint="@android:color/darker_gray"
+                    android:textSize="@dimen/sp_16"
+                    android:visibility="gone"
+                    app:siv_search_hint="@string/filter_search_bar"
+                    app:siv_search_icon="@drawable/ic_search_bar"
+                    app:layout_constraintTop_toBottomOf="@id/page_title"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.appcompat.widget.Toolbar>
 
@@ -55,5 +72,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/filter_search_app_bar"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/bottomsheet_button_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        android:layout_marginBottom="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toTopOf="@id/btn_submit"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/filter_expand_save_button"
+        android:layout_margin="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

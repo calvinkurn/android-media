@@ -30,14 +30,12 @@ class ChecklistWidget: BaseCustomView {
         if(element.isSelected) {
             this.checklist.isChecked = true
         }
-        this.setOnClickListener {
-            toggleChecked()
+        this.checklist.setOnClickListener {
             checklistClickListener.onChecklistClick(element)
         }
-    }
-
-    private fun toggleChecked() {
-        this.checklist.isChecked = !this.checklist.isChecked
+        this.setOnClickListener {
+            checklistClickListener.onChecklistClick(element)
+        }
     }
 }
 
