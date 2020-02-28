@@ -26,9 +26,19 @@ class PromoInputViewHolder(private val view: View,
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
-                itemView.button_apply_promo.isEnabled = text?.length ?: 0 > 0
+                if (text?.isNotEmpty() == true) {
+                    itemView.button_apply_promo.isEnabled = true
+                    itemView.text_field_input_promo.setFirstIcon(R.drawable.unify_chips_ic_close)
+                } else {
+                    itemView.button_apply_promo.isEnabled = false
+                    itemView.text_field_input_promo.setFirstIcon(R.color.white)
+                }
             }
         })
+
+        itemView.text_field_input_promo.getFirstIcon().setOnClickListener {
+            itemView.text_field_input_promo.textFieldInput.text.clear()
+        }
 
         itemView.button_apply_promo.setOnClickListener {
             val promoCode = itemView.text_field_input_promo.textFieldInput.text.toString()
