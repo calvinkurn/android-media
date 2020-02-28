@@ -24,8 +24,6 @@ import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
-import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState;
-import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.analytic.ReputationTracking;
@@ -188,15 +186,14 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
 
     @Override
     protected int getPageLimit() {
-        return 0;
+        return OFFSCREEN_PAGE_LIMIT;
     }
 
     protected List<Fragment> getFragmentList() {
         List<Fragment> fragmentList = new ArrayList<>();
         if (GlobalConfig.isSellerApp()) {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_BUYER_REVIEW));
-            fragmentList.add(InboxReputationFragment.createInstance(TAB_SELLER_REPUTATION_HISTORY));
-            //fragmentList.add(sellerReputationFragment);
+            fragmentList.add(sellerReputationFragment);
         } else {
             fragmentList.add(InboxReputationFragment.createInstance(TAB_WAITING_REVIEW));
             fragmentList.add(InboxReputationFragment.createInstance(TAB_MY_REVIEW));
@@ -207,11 +204,6 @@ public class InboxReputationActivity extends BaseTabActivity implements HasCompo
 
         return fragmentList;
     }
-//
-//    @Override
-//    protected int setDrawerPosition() {
-//        return SellerHomeState.DrawerPosition.INSTANCE.getINBOX_REVIEW();
-//    }
 
     @Override
     public void onBackPressed() {
