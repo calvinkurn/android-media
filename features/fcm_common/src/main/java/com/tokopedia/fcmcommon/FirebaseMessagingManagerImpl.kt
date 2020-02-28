@@ -2,12 +2,15 @@ package com.tokopedia.fcmcommon
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
+import com.crashlytics.android.Crashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.fcmcommon.data.UpdateFcmTokenResponse
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import timber.log.Timber
 import javax.inject.Inject
@@ -18,6 +21,7 @@ class FirebaseMessagingManagerImpl @Inject constructor(
         private val context: Context,
         private val sharedPreferences: SharedPreferences,
         private val repository: GraphqlRepository,
+        private val userSession: UserSessionInterface,
         private val coroutineContextProvider: CoroutineContextProviders,
         private val queries: Map<String, String>
 ) : FirebaseMessagingManager, CoroutineScope {
@@ -64,14 +68,8 @@ class FirebaseMessagingManagerImpl @Inject constructor(
                 return@addOnCompleteListener
             }
 
-            launch {
-                try {
-                    withContext(coroutineContextProvider.IO) {
-                        updateTokenOnServer(currentFcmToken, listener)
-                    }
-                } catch (exception: Exception) {
-                    listener.onError(exception)
-                }
+            launch(coroutineContextProvider.IO) {
+                updateTokenOnServer(currentFcmToken, listener)
             }
         }
     }
@@ -89,16 +87,40 @@ class FirebaseMessagingManagerImpl @Inject constructor(
             newToken: String,
             listener: FirebaseMessagingManager.SyncListener? = null
     ) {
-        val request = createUpdateTokenRequest(newToken)
-        val response = repository.getReseponse(request)
-        val data = response.getSuccessData<UpdateFcmTokenResponse>()
-        if (data.updateTokenSuccess()) {
-            saveNewTokenToPref(newToken)
-            listener?.onSuccess()
-        } else {
-            val errorMessage = data.getErrorMessage()
-            val error = IllegalStateException(errorMessage)
-            listener?.onError(error)
+        try {
+            val request = createUpdateTokenRequest(newToken)
+            val response = repository.getReseponse(request)
+            val data = response.getSuccessData<UpdateFcmTokenResponse>()
+            if (data.updateTokenSuccess()) {
+                saveNewTokenToPref(newToken)
+                listener?.onSuccess()
+            } else {
+                val errorMessage = data.getErrorMessage()
+                val error = IllegalStateException(errorMessage)
+                listener?.onError(error)
+                logFailUpdateFcmToken(error, newToken)
+            }
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+            listener?.onError(exception)
+            logFailUpdateFcmToken(exception, newToken)
+        }
+    }
+
+    private fun logFailUpdateFcmToken(error: Throwable, token: String) {
+        try {
+            if (!BuildConfig.DEBUG) {
+                val errorMessage = """ Error update fcm token, 
+                    userId: ${userSession.userId},
+                    userEmail: ${userSession.email},
+                    deviceId: ${userSession.deviceId},
+                    fcmTokenShouldBe: $token
+                    errorMessage: ${error.message},
+                """.trimIndent()
+                Crashlytics.log(Log.ERROR, this.javaClass.simpleName, errorMessage)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
