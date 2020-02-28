@@ -5,6 +5,7 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.domain.model.add_address.AddAddressResponse
 import com.tokopedia.logisticaddaddress.domain.usecase.AddAddressUseCase
+import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
@@ -20,8 +21,15 @@ class AddEditAddressPresenter
 @Inject constructor(
         private val addAddressUseCase: AddAddressUseCase,
         private val zipCodeUseCase: GetZipCodeUseCase,
-        private val getDistrictUseCase: GetDistrictUseCase)
+        private val getDistrictUseCase: GetDistrictUseCase,
+        private val autoCompleteUseCase: AutoCompleteUseCase)
     : BaseDaggerPresenter<AddEditView>() {
+
+    override fun detachView() {
+        super.detachView()
+        addAddressUseCase.unsubscribe()
+        zipCodeUseCase.unsubscribe()
+    }
 
     fun saveAddress(model: SaveAddressDataModel, typeForm: String) {
         addAddressUseCase
@@ -74,7 +82,14 @@ class AddEditAddressPresenter
                 )
     }
 
-    fun getDistrict(placeId: String) {
+    fun getAutoComplete(query: String) {
+        autoCompleteUseCase.execute(query)
+                .subscribe({ modelList ->
+                    getDistrict(modelList.first().placeId)
+                }, { t -> Timber.d(t) }, {})
+    }
+
+    private fun getDistrict(placeId: String) {
         getDistrictUseCase.execute(placeId)
                 .subscribe(
                         { model ->
@@ -86,11 +101,5 @@ class AddEditAddressPresenter
                             Timber.d(it)
                         }, {}
                 )
-    }
-
-    override fun detachView() {
-        super.detachView()
-        addAddressUseCase.unsubscribe()
-        zipCodeUseCase.unsubscribe()
     }
 }

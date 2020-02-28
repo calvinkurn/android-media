@@ -58,7 +58,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         GoogleApiClient.OnConnectionFailedListener, OnMapReadyCallback,
         ResultCallback<LocationSettingsResult>, AddEditView,
         DiscomBottomSheetFragment.ActionListener,
-        AutocompleteBottomSheetListener,
         ZipCodeChipsAdapter.ActionListener, IOnBackPressed,
         LabelAlamatChipsAdapter.ActionListener {
 
@@ -91,9 +90,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
 
     @Inject
     lateinit var presenter: AddEditAddressPresenter
-
-    @Inject
-    lateinit var autoCompletePresenter: AutocompleteBottomSheetPresenter
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -855,7 +851,6 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
                     .build()
                     .inject(this@AddEditAddressFragment)
             presenter.attachView(this@AddEditAddressFragment)
-            autoCompletePresenter.attachView(this@AddEditAddressFragment)
         }
     }
 
@@ -910,17 +905,7 @@ class AddEditAddressFragment : BaseDaggerFragment(), GoogleApiClient.ConnectionC
         saveAddressDataModel?.latitude = ""
         saveAddressDataModel?.longitude = ""
         saveAddressDataModel?.zipCodes = districtAddress.zipCodes
-        autoCompletePresenter.getAutocomplete(districtName)
-    }
-
-    override fun hideListPointOfInterest() {
-    }
-
-    override fun onSuccessGetAutocompleteGeocode(dataUiModel: AutocompleteGeocodeDataUiModel) {
-    }
-
-    override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
-        presenter.getDistrict(dataUiModel.listPredictions[0].placeId)
+        presenter.getAutoComplete(districtName)
     }
 
     override fun moveMap(latitude: Double, longitude: Double) {
