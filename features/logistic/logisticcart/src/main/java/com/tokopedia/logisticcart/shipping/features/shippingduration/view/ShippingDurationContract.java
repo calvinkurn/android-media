@@ -11,7 +11,7 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 
 import java.util.List;
@@ -29,7 +29,7 @@ public interface ShippingDurationContract {
 
         void showErrorPage(String message);
 
-        void showData(List<ShippingDurationViewModel> serviceDataList, LogisticPromoViewModel promoViewModel);
+        void showData(List<ShippingDurationUiModel> serviceDataList, LogisticPromoViewModel promoViewModel);
 
         void showNoCourierAvailable(String message);
 

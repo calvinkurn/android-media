@@ -7,7 +7,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
@@ -72,13 +72,13 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&
                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
-                for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                    if (shippingDurationViewModel.getShippingCourierViewModelList() != null &&
-                            shippingDurationViewModel.getShippingCourierViewModelList().size() > 0) {
-                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationViewModel.getShippingCourierViewModelList()) {
+                for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                    if (shippingDurationUiModel.getShippingCourierViewModelList() != null &&
+                            shippingDurationUiModel.getShippingCourierViewModelList().size() > 0) {
+                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
                             shippingCourierViewModel.setSelected(false);
                         }
-                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationViewModel.getShippingCourierViewModelList()) {
+                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
                             if (isTradeInDropOff || (shippingCourierViewModel.getProductData().getShipperProductId() == spId &&
                                     shippingCourierViewModel.getProductData().getShipperId() == shipperId)) {
                                 if (shippingCourierViewModel.getProductData().getError() != null &&
@@ -87,7 +87,7 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
                                     return;
                                 } else {
                                     shippingCourierViewModel.setSelected(true);
-                                    presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList(), itemPosition);
+                                    presenter.setShippingCourierViewModelsState(shippingDurationUiModel.getShippingCourierViewModelList(), itemPosition);
                                     CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
                                     if (shippingRecommendationData.getLogisticPromo() != null) {
                                         String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
@@ -119,11 +119,11 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&
                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
-                for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                    for (ProductData productData : shippingDurationViewModel.getServiceData().getProducts()) {
+                for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                    for (ProductData productData : shippingDurationUiModel.getServiceData().getProducts()) {
                         if (productData.getShipperId() == shipperId && productData.getShipperProductId() == spId) {
                             view.updateCourierBottomssheetHasData(
-                                    shippingDurationViewModel.getShippingCourierViewModelList(),
+                                    shippingDurationUiModel.getShippingCourierViewModelList(),
                                     itemPosition, shipmentCartItemModel, shopShipmentList
                             );
                             return;

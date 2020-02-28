@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 
 /**
  * Created by Irfan Khoirul on 08/08/18.
@@ -23,9 +23,9 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         mData = mutableListOf()
     }
 
-    fun setShippingDurationViewModels(shippingDurationViewModels: List<ShippingDurationViewModel>, promoViewModel: LogisticPromoViewModel?, isDisableOrderPrioritas: Boolean) {
+    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoViewModel: LogisticPromoViewModel?, isDisableOrderPrioritas: Boolean) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
-        this.mData = shippingDurationViewModels.toMutableList()
+        this.mData = shippingDurationUiModels.toMutableList()
         promoViewModel?.let { this.mData.add(0, it) }
         this.mData.add(0, NotifierModel())
         notifyDataSetChanged()
@@ -39,10 +39,10 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
         this.cartPosition = cartPosition
     }
 
-    fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationViewModel? {
-        mData.firstOrNull { it is ShippingDurationViewModel && it.serviceData.serviceId == serId }
+    fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel? {
+        mData.firstOrNull { it is ShippingDurationUiModel && it.serviceData.serviceId == serId }
                 ?.let {
-                    if (it is ShippingDurationViewModel) {
+                    if (it is ShippingDurationUiModel) {
                         return it
                     }
                 }
@@ -52,7 +52,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
     fun initiateShowcase() {
         var position = 0
         for (mDatum in mData) {
-            if (mDatum is ShippingDurationViewModel) {
+            if (mDatum is ShippingDurationUiModel) {
                 mDatum.isShowShowCase = true
                 break
             }
@@ -78,7 +78,7 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ShippingDurationViewHolder -> holder.bindData(mData.get(position) as ShippingDurationViewModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
+            is ShippingDurationViewHolder -> holder.bindData(mData.get(position) as ShippingDurationUiModel, shippingDurationAdapterListener, isDisableOrderPrioritas)
             is ArmyViewHolder -> holder.bindData(mData.get(position) as LogisticPromoViewModel, shippingDurationAdapterListener!!)
         }
     }

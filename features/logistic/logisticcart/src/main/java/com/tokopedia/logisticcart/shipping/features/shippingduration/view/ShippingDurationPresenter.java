@@ -11,7 +11,7 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
@@ -151,9 +151,9 @@ public class ShippingDurationPresenter extends BaseDaggerPresenter<ShippingDurat
                                     } else if (shippingRecommendationData.getShippingDurationViewModels() != null &&
                                             shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
                                         if (getView().isDisableCourierPromo()) {
-                                            for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                                                shippingDurationViewModel.getServiceData().setIsPromo(0);
-                                                for (ProductData productData : shippingDurationViewModel.getServiceData().getProducts()) {
+                                            for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                                                shippingDurationUiModel.getServiceData().setIsPromo(0);
+                                                for (ProductData productData : shippingDurationUiModel.getServiceData().getProducts()) {
                                                     productData.setPromoCode("");
                                                 }
                                             }

@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ShippingRecommendationData implements Parcelable {
 
-    private List<ShippingDurationViewModel> shippingDurationViewModels;
+    private List<ShippingDurationUiModel> shippingDurationUiModels;
     private LogisticPromoViewModel logisticPromo;
     private String errorMessage;
     private String errorId;
@@ -20,12 +20,12 @@ public class ShippingRecommendationData implements Parcelable {
     public ShippingRecommendationData() {
     }
 
-    public List<ShippingDurationViewModel> getShippingDurationViewModels() {
-        return shippingDurationViewModels;
+    public List<ShippingDurationUiModel> getShippingDurationViewModels() {
+        return shippingDurationUiModels;
     }
 
-    public void setShippingDurationViewModels(List<ShippingDurationViewModel> shippingDurationViewModels) {
-        this.shippingDurationViewModels = shippingDurationViewModels;
+    public void setShippingDurationViewModels(List<ShippingDurationUiModel> shippingDurationUiModels) {
+        this.shippingDurationUiModels = shippingDurationUiModels;
     }
 
     public String getErrorMessage() {
@@ -63,7 +63,7 @@ public class ShippingRecommendationData implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeTypedList(this.shippingDurationViewModels);
+        dest.writeTypedList(this.shippingDurationUiModels);
         dest.writeParcelable(this.logisticPromo, flags);
         dest.writeString(this.errorMessage);
         dest.writeString(this.errorId);
@@ -71,7 +71,7 @@ public class ShippingRecommendationData implements Parcelable {
     }
 
     protected ShippingRecommendationData(Parcel in) {
-        this.shippingDurationViewModels = in.createTypedArrayList(ShippingDurationViewModel.CREATOR);
+        this.shippingDurationUiModels = in.createTypedArrayList(ShippingDurationUiModel.CREATOR);
         this.logisticPromo = in.readParcelable(LogisticPromoViewModel.class.getClassLoader());
         this.errorMessage = in.readString();
         this.errorId = in.readString();

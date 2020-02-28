@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
@@ -57,7 +57,7 @@ public class ShippingDurationConverter {
         return shippingRecommendationData;
     }
 
-    private List<ShippingDurationViewModel> convertShippingDuration(RatesDetailData ratesDetailData) {
+    private List<ShippingDurationUiModel> convertShippingDuration(RatesDetailData ratesDetailData) {
         List<ServiceData> serviceDataList = ratesDetailData.getServices();
         String ratesId = ratesDetailData.getRatesId();
         boolean isPromoStackingApplied = isPromoStackingApplied(ratesDetailData);
@@ -69,54 +69,54 @@ public class ShippingDurationConverter {
             blackboxInfo = ratesDetailData.getInfo().getBlackboxInfo().getTextInfo();
         }
 
-        List<ShippingDurationViewModel> shippingDurationViewModels = new ArrayList<>();
+        List<ShippingDurationUiModel> shippingDurationUiModels = new ArrayList<>();
         for (ServiceData serviceData : serviceDataList) {
-            ShippingDurationViewModel shippingDurationViewModel = new ShippingDurationViewModel();
-            shippingDurationViewModel.setServiceData(serviceData);
+            ShippingDurationUiModel shippingDurationUiModel = new ShippingDurationUiModel();
+            shippingDurationUiModel.setServiceData(serviceData);
             List<ShippingCourierViewModel> shippingCourierViewModels =
-                    convertToShippingCourierViewModel(shippingDurationViewModel,
+                    convertToShippingCourierViewModel(shippingDurationUiModel,
                             serviceData.getProducts(), ratesId, blackboxInfo);
-            shippingDurationViewModel.setShippingCourierViewModelList(shippingCourierViewModels);
+            shippingDurationUiModel.setShippingCourierViewModelList(shippingCourierViewModels);
             if (shippingCourierViewModels.size() > 0) {
-                shippingDurationViewModels.add(shippingDurationViewModel);
+                shippingDurationUiModels.add(shippingDurationUiModel);
             }
             if (serviceData.getError() != null && !TextUtils.isEmpty(serviceData.getError().getErrorMessage())) {
                 if (serviceData.getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                     serviceData.getTexts().setTextRangePrice(serviceData.getError().getErrorMessage());
                 } else {
-                    shippingDurationViewModel.setErrorMessage(serviceData.getError().getErrorMessage());
+                    shippingDurationUiModel.setErrorMessage(serviceData.getError().getErrorMessage());
                 }
             }
             if (serviceData.getCodData() != null) {
-                shippingDurationViewModel.setCodAvailable(serviceData.getCodData().getIsCod() == COD_TRUE_VAL);
-                shippingDurationViewModel.setCodText(serviceData.getCodData().getCodText());
+                shippingDurationUiModel.setCodAvailable(serviceData.getCodData().getIsCod() == COD_TRUE_VAL);
+                shippingDurationUiModel.setCodText(serviceData.getCodData().getCodText());
             }
         }
 
-        return shippingDurationViewModels;
+        return shippingDurationUiModels;
     }
 
-    private List<ShippingCourierViewModel> convertToShippingCourierViewModel(ShippingDurationViewModel shippingDurationViewModel,
+    private List<ShippingCourierViewModel> convertToShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
                                                                              List<ProductData> productDataList,
                                                                              String ratesId,
                                                                              String blackboxInfo) {
         List<ShippingCourierViewModel> shippingCourierViewModels = new ArrayList<>();
         for (ProductData productData : productDataList) {
-            addShippingCourierViewModel(shippingDurationViewModel, ratesId,
+            addShippingCourierViewModel(shippingDurationUiModel, ratesId,
                     shippingCourierViewModels, productData, blackboxInfo);
         }
 
         return shippingCourierViewModels;
     }
 
-    private void addShippingCourierViewModel(ShippingDurationViewModel shippingDurationViewModel,
+    private void addShippingCourierViewModel(ShippingDurationUiModel shippingDurationUiModel,
                                              String ratesId,
                                              List<ShippingCourierViewModel> shippingCourierViewModels,
                                              ProductData productData, String blackboxInfo) {
         ShippingCourierViewModel shippingCourierViewModel = new ShippingCourierViewModel();
         shippingCourierViewModel.setProductData(productData);
         shippingCourierViewModel.setBlackboxInfo(blackboxInfo);
-        shippingCourierViewModel.setServiceData(shippingDurationViewModel.getServiceData());
+        shippingCourierViewModel.setServiceData(shippingDurationUiModel.getServiceData());
         shippingCourierViewModel.setRatesId(ratesId);
         shippingCourierViewModels.add(shippingCourierViewModel);
     }
