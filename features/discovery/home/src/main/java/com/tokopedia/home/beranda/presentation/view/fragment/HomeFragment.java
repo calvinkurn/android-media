@@ -73,7 +73,6 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
@@ -87,6 +86,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
+import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
