@@ -112,4 +112,14 @@
     <string name="filter_expand_reset">Reset</string>
     <string name="filter_expand_category_not_found">Oops, kategori yang kamu cari tidak ditemukan.</string>
 
+    <string name="product_manage_menu_edit_price">Ubah Harga</string>
+    <string name="product_manage_menu_edit_stock">Ubah Stok</string>
+    <string name="product_manage_menu_edit_variant">Ubah Detail Varian</string>
+    <string name="product_manage_stock_format">Stok: **%d**</string>
+    <string name="product_manage_contact_cs">Hubungi CS</string>
+    <string name="product_manage_active">Aktif</string>
+    <string name="product_manage_variant">Varian</string>
+    <string name="product_manage_banned">Pelanggaran</string>
+    <string name="product_manage_draft">Draf</string>
+    <string name="product_manage_inactive">Nonaktif</string>
 </resources>
