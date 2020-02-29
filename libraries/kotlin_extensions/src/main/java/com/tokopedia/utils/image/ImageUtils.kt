@@ -161,16 +161,17 @@ object ImageUtils {
     @JvmOverloads
     fun loadImage(imageView: ImageView, url: String,
                   radius: Float = 0f,
-                  signatureKey: String = "",
+                  signatureKey: Any = Object(),
                   @DrawableRes placeHolder: Int = 0,
-                  @DrawableRes resOnError: Int = R.drawable.ic_loading_error,
+                  @DrawableRes resOnError: Int = 0,
                   isAnimate: Boolean = false,
                   imageLoaded: ((Boolean) -> Unit)? = null,
                   imageCleared: ((Boolean) -> Unit)? = null) {
 
-        var drawableError: Drawable? = null
-        if (resOnError != 0) {
-            drawableError = AppCompatResources.getDrawable(imageView.context, resOnError)
+        val drawableError: Drawable? = if (resOnError == 0) {
+            AppCompatResources.getDrawable(imageView.context, R.drawable.ic_loading_error)
+        } else {
+            AppCompatResources.getDrawable(imageView.context, resOnError)
         }
 
         if (url.isEmpty()) {
@@ -181,7 +182,7 @@ object ImageUtils {
             Glide.with(imageView).load(url).apply {
                 signature(ObjectKey(signatureKey))
                 diskCacheStrategy(DiskCacheStrategy.DATA)
-                error(drawableError)
+                drawableError?.let { error(it) }
 
                 if (placeHolder != 0) {
                     placeholder(placeHolder)
@@ -191,7 +192,7 @@ object ImageUtils {
                     dontAnimate()
                 }
 
-                when(imageView.scaleType) {
+                when (imageView.scaleType) {
                     FIT_CENTER -> fitCenter()
                     CENTER_CROP -> centerCrop()
                     CENTER_INSIDE -> centerInside()
