@@ -165,8 +165,8 @@ object ImageUtils {
                   @DrawableRes placeHolder: Int = 0,
                   @DrawableRes resOnError: Int = 0,
                   isAnimate: Boolean = false,
-                  imageLoaded: ((Boolean) -> Unit)? = Empty(),
-                  imageCleared: ((Boolean) -> Unit)? = Empty()) {
+                  imageLoaded: ((Boolean) -> Unit)? = {},
+                  imageCleared: ((Boolean) -> Unit)? = {}) {
 
         val drawableError: Drawable? = if (resOnError == 0) {
             AppCompatResources.getDrawable(imageView.context, R.drawable.ic_loading_error)
@@ -228,12 +228,6 @@ object ImageUtils {
             getRoundedImageViewTarget(imageView, radius)
         } else {
             imageView.setImageDrawable(drawable)
-        }
-    }
-
-    class Empty: (Boolean) -> Unit {
-        override fun invoke(p1: Boolean) {
-
         }
     }
 }
