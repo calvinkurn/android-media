@@ -8,24 +8,25 @@ import android.util.SparseIntArray
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import kotlinx.android.synthetic.main.carousel_product_card_layout.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
-class CarouselProductCardView: BaseCustomView {
+class CarouselProductCardView : BaseCustomView, CoroutineScope {
+
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
     private val carouselAdapter = CarouselProductCardAdapter()
     private val snapHelper = StartSnapHelper()
     private var isUseDefaultItemDecorator = true
+    private val masterJob = SupervisorJob()
+
+    override val coroutineContext = masterJob + Dispatchers.Main
 
     constructor(context: Context): super(context) {
         init(null)
@@ -82,43 +83,51 @@ class CarouselProductCardView: BaseCustomView {
     ) {
         if (productCardModelList.isEmpty()) return
 
-        CoroutineScope(Dispatchers.Main).launch {
-            val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
-                it.onItemClickListener = carouselProductCardOnItemClickListener
-                it.onItemImpressedListener = carouselProductCardOnItemImpressedListener
-                it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+        val carouselProductCardListenerInfo = CarouselProductCardListenerInfo().also {
+            it.onItemClickListener = carouselProductCardOnItemClickListener
+            it.onItemImpressedListener = carouselProductCardOnItemImpressedListener
+            it.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+        }
+
+        launch {
+            try {
+                tryBindCarousel(productCardModelList, carouselProductCardListenerInfo, recyclerViewPool, scrollToPosition)
             }
-
-            initLayoutManager(scrollToPosition)
-            initRecyclerView(recyclerViewPool)
-
-            val productCardWidth = context.resources.getDimensionPixelSize(R.dimen.carousel_product_card_width)
-            val productCardHeight = productCardModelList.getMaxHeightForGridView(context, productCardWidth)
-
-            submitList(productCardModelList, carouselProductCardListenerInfo, productCardHeight)
+            catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
         }
     }
 
-    private fun initLayoutManager(scrollToPosition: Int) {
+    private suspend fun tryBindCarousel(
+            productCardModelList: List<ProductCardModel>,
+            carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
+            recyclerViewPool: RecyclerView.RecycledViewPool? = null,
+            scrollToPosition: Int = 0
+    ) {
+        initLayoutManager()
+        initRecyclerView(productCardModelList, recyclerViewPool)
+        submitList(productCardModelList, carouselProductCardListenerInfo)
+        scrollCarousel(scrollToPosition)
+    }
+
+    private fun initLayoutManager() {
         carouselLayoutManager = createProductCardCarouselLayoutManager()
-        carouselLayoutManager.scrollToPositionWithOffset(scrollToPosition)
     }
 
     private fun createProductCardCarouselLayoutManager(): RecyclerView.LayoutManager {
         return LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
-    private fun RecyclerView.LayoutManager?.scrollToPositionWithOffset(scrollToPosition: Int) {
-        if (this is LinearLayoutManager) {
-            scrollToPositionWithOffset(scrollToPosition, context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16))
-        }
-    }
-
-    private fun initRecyclerView(recyclerViewPool: RecyclerView.RecycledViewPool?) {
+    private suspend fun initRecyclerView(
+            productCardModelList: List<ProductCardModel>,
+            recyclerViewPool: RecyclerView.RecycledViewPool?
+    ) {
         carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
-        carouselProductCardRecyclerView.itemAnimator = null
-        carouselProductCardRecyclerView.setHasFixedSize(true)
+        carouselProductCardRecyclerView?.itemAnimator = null
+        carouselProductCardRecyclerView?.setHasFixedSize(true)
         carouselProductCardRecyclerView?.adapter = carouselAdapter
+        carouselProductCardRecyclerView?.setHeightBasedOnProductCardMaxHeight(productCardModelList)
 
         recyclerViewPool?.let { carouselProductCardRecyclerView?.setRecycledViewPool(it) }
 
@@ -127,22 +136,50 @@ class CarouselProductCardView: BaseCustomView {
         }
     }
 
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+            productCardModelList: List<ProductCardModel>
+    ) {
+        val productCardWidth = context.resources.getDimensionPixelSize(R.dimen.carousel_product_card_width)
+        val productCardHeight = productCardModelList.getMaxHeightForGridView(context, Dispatchers.Default, productCardWidth)
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = productCardHeight
+        this.layoutParams = carouselLayoutParams
+    }
+
     private fun submitList(
             productCardModelList: List<ProductCardModel>,
-            carouselProductCardListenerInfo: CarouselProductCardListenerInfo,
-            productCardHeight: Int
+            carouselProductCardListenerInfo: CarouselProductCardListenerInfo
     ) {
         carouselAdapter.submitList(productCardModelList.map {
             CarouselProductCardModel(
                     productCardModel = it,
-                    carouselProductCardListenerInfo = carouselProductCardListenerInfo,
-                    forcedHeight = productCardHeight
+                    carouselProductCardListenerInfo = carouselProductCardListenerInfo
             )
         })
     }
 
+    private fun scrollCarousel(scrollToPosition: Int) {
+        post {
+            carouselLayoutManager.scrollToPositionWithOffset(scrollToPosition)
+        }
+    }
+
+    private fun RecyclerView.LayoutManager?.scrollToPositionWithOffset(scrollToPosition: Int) {
+        if (this is LinearLayoutManager) {
+            scrollToPositionWithOffset(scrollToPosition, context.applicationContext.resources.getDimensionPixelOffset(R.dimen.dp_16))
+        }
+    }
+
     fun recycle() {
+        cancelJobs()
         carouselAdapter.submitList(null)
+    }
+
+    private fun cancelJobs() {
+        if (isActive && !masterJob.isCancelled){
+            masterJob.children.map { it.cancel() }
+        }
     }
 
     /**
@@ -264,13 +301,5 @@ class CarouselProductCardView: BaseCustomView {
      */
     fun updateWishlist(position: Int, isWishlist: Boolean) {
         (carouselProductCardRecyclerView.adapter as CarouselProductCardAdapter).updateWishlist(position, isWishlist)
-    }
-
-    fun setItemDecoration(itemDecoration: RecyclerView.ItemDecoration){
-        if(carouselProductCardRecyclerView?.itemDecorationCount == 0) carouselProductCardRecyclerView?.addItemDecoration(itemDecoration)
-    }
-
-    fun setSnapHelper(snapHelper: SnapHelper){
-        snapHelper.attachToRecyclerView(carouselProductCardRecyclerView)
     }
 }

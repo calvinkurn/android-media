@@ -3,6 +3,7 @@ package com.tokopedia.productcard
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -58,9 +59,9 @@ class ProductCardGridView: BaseCustomView {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
     }
 
-    fun setCardHeight(height: Int) {
+    fun setCardHeightMatchParent() {
         val layoutParams = cardViewProductCard?.layoutParams
-        layoutParams?.height = height
+        layoutParams?.height = MATCH_PARENT
         cardViewProductCard?.layoutParams = layoutParams
     }
 

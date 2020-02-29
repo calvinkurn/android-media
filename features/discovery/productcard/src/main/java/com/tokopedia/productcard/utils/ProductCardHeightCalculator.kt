@@ -2,16 +2,16 @@
 package com.tokopedia.productcard.utils
 
 import android.content.Context
-import com.tokopedia.productcard.R
 import com.tokopedia.productcard.ProductCardModel
-import kotlinx.coroutines.Dispatchers
+import com.tokopedia.productcard.R
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import kotlin.math.max
 
-suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, productImageWidth: Int): Int {
+suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, coroutineDispatcher: CoroutineDispatcher, productImageWidth: Int): Int {
     if (this == null || context == null) return 0
 
-    return withContext(Dispatchers.Default) {
+    return withContext(coroutineDispatcher) {
         val productCardHeightList = mutableListOf<Int>()
 
         forEach { productCardModel ->
