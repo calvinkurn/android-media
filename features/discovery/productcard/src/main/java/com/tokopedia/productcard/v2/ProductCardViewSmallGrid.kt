@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.product_card_layout_v2_small_grid.view.*
 /**
  * ProductCardView with Small Grid layout.
  */
+@Deprecated("Please use ProductCardGridView or ProductCardListView")
 class ProductCardViewSmallGrid: ProductCardView {
 
     private var imageShop: ImageView? = null
