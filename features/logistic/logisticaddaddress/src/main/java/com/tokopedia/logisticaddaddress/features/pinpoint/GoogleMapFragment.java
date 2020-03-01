@@ -44,6 +44,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.common.AddressConstants;
 import com.tokopedia.logisticaddaddress.data.IMapsRepository;
 import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
@@ -425,10 +426,8 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         initMapView();
         initMapListener();
 
-        //This to fulfill 4th condition when no coordinate, no district, and no GPS
-        //TODO remove this if annoys UX or inefficient fending off GPS Error
-        presenter.initDefaultLocation();
-
+        LatLng defLatLng = new LatLng(AddressConstants.DEFAULT_LAT, AddressConstants.DEFAULT_LONG);
+        moveMap(defLatLng);
         presenter.onMapReady();
     }
 

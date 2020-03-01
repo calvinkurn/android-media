@@ -89,8 +89,6 @@ public interface GeolocationContract {
 
         void onResult(LocationSettingsResult locationSettingsResult);
 
-        LatLng getLastLocation();
-
         void requestLocationUpdate();
 
         void connectGoogleApi();
@@ -98,8 +96,6 @@ public interface GeolocationContract {
         void disconnectGoogleApi();
 
         void removeLocationUpdate();
-
-        void initDefaultLocation();
 
         void getReverseGeoCoding(String latitude, String longitude);
 

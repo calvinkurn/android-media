@@ -111,25 +111,8 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         }
     }
 
-    private void getNewLocation() {
-        checkLocationSettings();
-    }
-
     private void getExistingLocation() {
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
-    }
-
-    private void checkLocationSettings() {
-        LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
-                .addLocationRequest(locationRequest);
-
-        locationSettingsRequest.setAlwaysShow(true);
-
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi
-                        .checkLocationSettings(googleApiClient, locationSettingsRequest.build());
-
-        view.checkLocationSettings(result);
     }
 
     @Override
@@ -151,8 +134,7 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     }
 
     @SuppressLint("MissingPermission")
-    @Override
-    public LatLng getLastLocation() {
+    private LatLng getLastLocation() {
         try {
             if (isServiceConnected()) {
                 Location location = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
@@ -193,11 +175,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         if (googleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(googleApiClient, this);
         }
-    }
-
-    @Override
-    public void initDefaultLocation() {
-        view.moveMap(DEFAULT_LATLNG_JAKARTA);
     }
 
     @Override
@@ -242,13 +219,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         this.locationPass = locationPass;
     }
 
-    private void saveLatLng(LatLng target) {
-        LocalCacheHandler cache = new LocalCacheHandler(context, CACHE_LATITUDE_LONGITUDE);
-        cache.putString(CACHE_LATITUDE, String.valueOf(target.latitude));
-        cache.putString(CACHE_LONGITUDE, String.valueOf(target.longitude));
-        cache.applyEditor();
-    }
-
     @Override
     public void prepareAutoCompleteView() {
         view.initAutoCompleteAdapter(retrofitInteractor.getCompositeSubscription(),
@@ -274,7 +244,16 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
     @Override
     public void onMapReady() {
         if (!hasLocation) {
-            getNewLocation();
+            LocationSettingsRequest.Builder locationSettingsRequest = new LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest);
+
+            locationSettingsRequest.setAlwaysShow(true);
+
+            PendingResult<LocationSettingsResult> result =
+                    LocationServices.SettingsApi
+                            .checkLocationSettings(googleApiClient, locationSettingsRequest.build());
+
+            view.checkLocationSettings(result);
         } else {
             getExistingLocation();
         }
