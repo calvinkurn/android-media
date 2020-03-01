@@ -256,6 +256,10 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         dismiss()
     }
 
+    /**
+     * Hiding keyboard is called before the dismiss in each of necessary funnel, calling it onDismiss
+     * won't work probably due to some API changes from Google
+     */
     private fun hideKeyboardAndDismiss() {
         AddNewAddressUtils.hideKeyboard(etSearch, context)
         dismiss()
