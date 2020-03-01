@@ -12,8 +12,8 @@ import com.tokopedia.common_tradein.customviews.TradeInTextView
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.common_tradein.usecase.CheckTradeInUseCase
-import com.tokopedia.design.dialog.AccessRequestDialogFragment.Companion.newInstance
 import com.tokopedia.design.dialog.AccessRequestDialogFragment.Companion.TAG
+import com.tokopedia.design.dialog.AccessRequestDialogFragment.Companion.newInstance
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -56,6 +56,7 @@ class TradeInTextViewModel @Inject constructor(private val useCase: CheckTradeIn
                     tradeInParams.usedPrice = tradeInResponse.usedPrice
                     tradeInParams.remainingPrice = tradeInResponse.remainingPrice
                     tradeInParams.isUseKyc = if (tradeInResponse.isUseKyc) 1 else 0
+                    tradeInParams.widgetString = tradeInResponse.widgetString
                 } else {
                     broadcastDefaultResponse()
                 }
@@ -70,6 +71,7 @@ class TradeInTextViewModel @Inject constructor(private val useCase: CheckTradeIn
                 response.remainingPrice = tradeInParams.remainingPrice
                 response.usedPrice = tradeInParams.usedPrice
                 response.isUseKyc = tradeInParams.isUseKyc != 0
+                response.widgetString = tradeInParams.widgetString
                 responseData.setValue(response)
             } else {
                 val response = ValidateTradeInResponse()
