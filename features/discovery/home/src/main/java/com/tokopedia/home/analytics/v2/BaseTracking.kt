@@ -1,6 +1,7 @@
 package com.tokopedia.home.analytics.v2
 
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.kotlin.model.ImpressHolder
 
 abstract class BaseTracking {
@@ -14,6 +15,7 @@ abstract class BaseTracking {
         const val PROMO_CLICK = "promoClick"
         const val PRODUCT_CLICK = "productClick"
         const val PROMO_VIEW_IRIS = "promoViewIris"
+        const val CLICK_HOMEPAGE = "clickHomepage"
     }
 
     protected object Category{
@@ -24,7 +26,9 @@ abstract class BaseTracking {
     protected object Action{
         const val KEY = "eventAction"
         const val IMPRESSION = "%s impression"
+        const val IMPRESSION_ON = "impression on \"%s"
         const val CLICK = "%s click"
+        const val CLICK_ON = "click on \"%s"
     }
 
     protected object Label{
@@ -38,9 +42,17 @@ abstract class BaseTracking {
         const val FORMAT_2_ITEMS = "%s - %s"
     }
 
+    protected object Value{
+        const val NONE_OTHER = "none / other"
+        const val LIST = "/ - p%s - %s - %s"
+        fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
+    }
+
     protected object Ecommerce {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
+        private const val PRODUCT_VIEW = "productView"
+        private const val PRODUCT_CLICK = "productClick"
         private const val CLICK = "click"
         private const val IMPRESSIONS = "impressions"
         private const val PROMO_VIEW = "promoView"
@@ -67,8 +79,9 @@ abstract class BaseTracking {
         private const val KEY_CATEGORY = "category"
         private const val KEY_POSITION = "position"
         private const val KEY_LIST = "list"
+        private const val KEY_ATTRIBUTION = "attribution"
         private const val KEY_DIMENSION_83 = "dimension83"
-
+        private const val KEY_DIMENSION_84 = "dimension84"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
@@ -121,8 +134,8 @@ abstract class BaseTracking {
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun createPromotionMap(promotion: Promotion) : Map<String, Any>{
-            val map = HashMap<String, Any>()
+        private fun createPromotionMap(promotion: Promotion) : Map<String, String>{
+            val map = HashMap<String, String>()
             map[KEY_ID] = promotion.id
             map[KEY_NAME] = promotion.name
             map[KEY_CREATIVE] = promotion.creative
@@ -133,35 +146,33 @@ abstract class BaseTracking {
             return map
         }
 
-        private fun createProductMap(product: Product) : Map<String, Any>{
-            val map = HashMap<String, Any>()
+        private fun createProductMap(product: Product, list: String = "") : Map<String, String>{
+            val map = HashMap<String, String>()
             map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
             map[KEY_BRAND] = product.brand
             map[KEY_VARIANT] = product.variant
             map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition.toString()
-            map[KEY_DIMENSION_83] = if(product.freeOngkir) FREE_ONGKIR else NONE
-            return map
-        }
-        private fun createProductMap(product: Product, list: String) : Map<String, Any>{
-            val map = HashMap<String, Any>()
-            map[KEY_ID] = product.id
-            map[KEY_NAME] = product.name
-            map[KEY_BRAND] = product.brand
-            map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice
-            map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition.toString()
-            map[KEY_LIST] = list
-            map[KEY_DIMENSION_83] = if(product.freeOngkir) FREE_ONGKIR else NONE
+            map[KEY_POSITION] = product.productPosition
+            map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
+            if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
+            if (list.isNotEmpty()) map[KEY_LIST] = list
             return map
         }
     }
 
     class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String, val promoIds: String = "", val promoCodes: String = "")
-    open class Product(val id: String, val name: String, val productPrice: Int, val brand: String, val variant: String, val category: String, val productPosition: Int, val freeOngkir: Boolean): ImpressHolder()
+    open class Product(
+            val name: String,
+            val id: String,
+            val productPrice: String,
+            val brand: String,
+            val category: String,
+            val variant: String,
+            val productPosition: String,
+            val isFreeOngkir: Boolean,
+            val channelId: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(
         event: String,
@@ -218,6 +229,25 @@ abstract class BaseTracking {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list)
+        )
+    }
+
+    open fun getBasicProductChannelClick(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            list: String,
+            channelId: String,
+            products: List<Product>
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Label.CHANNEL_LABEL, channelId,
                 Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list)
         )
     }

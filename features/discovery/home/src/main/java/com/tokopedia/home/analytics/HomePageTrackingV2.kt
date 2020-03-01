@@ -1,8 +1,12 @@
 package com.tokopedia.home.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.home.analytics.v2.BaseTracking
+import com.tokopedia.home.analytics.v2.BaseTracking.Action.IMPRESSION_ON
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.ContextAnalytics
 
 object HomePageTrackingV2 : BaseTracking() {
     private object CustomEvent{
@@ -57,6 +61,89 @@ object HomePageTrackingV2 : BaseTracking() {
                 Label.CHANNEL_LABEL, channel.id
             ) as HashMap<String, Any>
         }
+    }
+
+    object RecommendationList{
+        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "carousel product"
+        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on carousel product"
+        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on carousel product"
+
+        fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
+                eventLabel = Label.NONE,
+                products = channel.grids.mapIndexed { index, grid ->
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(
+                                    grid.price
+                            ).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.freeOngkir.isActive
+                    )
+                },
+                list = String.format(
+                        Value.LIST, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                )
+        )
+        private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = RECOMMENDATION_LIST_CLICK_EVENT_ACTION,
+                eventLabel = grid.attribution,
+                channelId = channel.id,
+                products = listOf(
+                        Product(
+                                name = grid.name,
+                                id = grid.id,
+                                productPrice = grid.price,
+                                brand = Value.NONE_OTHER,
+                                category = Value.NONE_OTHER,
+                                variant = Value.NONE_OTHER,
+                                productPosition = (position + 1).toString(),
+                                channelId = channel.id,
+                                isFreeOngkir = grid.freeOngkir.isActive
+                        )
+                ),
+                list = String.format(
+                        Value.LIST, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                )
+        )
+
+        fun sendRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getRecommendationListClick(channel, grid, position))
+        }
+
+        private fun getRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
+            return DataLayer.mapOf(
+                    Event.KEY, Event.CLICK_HOMEPAGE,
+                    Category.KEY, Category.HOMEPAGE,
+                    Action.KEY, "click view all on list carousel product",
+                    Label.KEY, channel.header.name
+            ) as HashMap<String, Any>
+        }
+
+        fun sendRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channel))
+        }
+    }
+
+    private fun getTracker(): ContextAnalytics {
+        return TrackApp.getInstance().gtm
+    }
+
+    private fun convertRupiahToInt(rupiah: String): Int {
+        var rupiah = rupiah
+        rupiah = rupiah.replace("Rp", "")
+        rupiah = rupiah.replace(".", "")
+        rupiah = rupiah.replace(" ", "")
+        return Integer.parseInt(rupiah)
     }
 
     object PopularKeyword {
