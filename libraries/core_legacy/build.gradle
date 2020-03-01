@@ -39,6 +39,11 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.remoteConfig)
     implementation project(rootProject.ext.libraries.analytics)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.deviceInfo)
 
@@ -83,6 +88,7 @@ dependencies {
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation(rootProject.ext.analyticsDependencies.moengage)
     implementation rootProject.ext.analyticsDependencies.moengageAmp
+    implementation project(rootProject.ext.libraries.weaver)
 }
 
 project.ext {

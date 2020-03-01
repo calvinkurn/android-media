@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".newdiscovery.hotlistRevamp.view.fragment.HotlistNavFragment">
+    tools:context=".hotlistRevamp.view.fragment.HotlistNavFragment">
 
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh

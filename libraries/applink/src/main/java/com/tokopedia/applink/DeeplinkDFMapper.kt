@@ -21,7 +21,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.ADD_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PHONE_NUMBER
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHAT_BOT
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DYNAMIC_FEATURE_INSTALL_BASE
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL
@@ -62,6 +61,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_PASSWORD
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.DETAIL_TALK_BASE
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LIVENESS_DETECTION
 import com.tokopedia.config.GlobalConfig
 import tokopedia.applink.R
 import java.io.BufferedReader
@@ -94,6 +95,9 @@ object DeeplinkDFMapper {
     private val DFM_CATEGORY_TRADEIN = "df_category_tradein"
     @JvmField
     val DFM_MERCHANT_SELLER_CUSTOMERAPP = "df_merchant_seller"
+
+    @JvmField
+    val DFM_FACE_DETECTION = "df_user_liveness"
 
     //sellerapp
     private val DFM_PRODUCT_MANAGE_SELLER = "product_manage_seller"
@@ -195,7 +199,7 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(INBOX_TALK) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(SHOP_TALK) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(PRODUCT_TALK) }, DFM_BASE, R.string.talk_title))
-            add(DFP({ it.startsWith(DETAIL_TALK) }, DFM_BASE, R.string.talk_title))
+            add(DFP({ it.startsWith(DETAIL_TALK_BASE) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(ADD_TALK) }, DFM_BASE, R.string.talk_title))
 
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_BASE, R.string.title_salam))
@@ -203,6 +207,8 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(NOTIFICATION) }, DFM_BASE, R.string.title_notification_center))
 
             add(DFP({ it.startsWith(HOME_WISHLIST) }, DFM_BASE, R.string.title_wishlist))
+
+            add(DFP({ it.startsWith(LIVENESS_DETECTION) }, DFM_FACE_DETECTION, R.string.applink_liveness_detection))
         }
     }
 
