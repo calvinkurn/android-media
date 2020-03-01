@@ -103,8 +103,6 @@ public interface GeolocationContract {
 
         void onSuggestionItemClick(AdapterView<?> adapter, int position);
 
-        void onSubmitPointer(Activity activity);
-
         void onDestroy();
 
         void prepareDetailDestination(View view);

@@ -64,8 +64,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
 
     private Context context;
 
-    private boolean isAllowGenerateAddress;
-
     private boolean hasLocation;
     private LocationPass locationPass;
 
@@ -89,7 +87,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
                 .addConnectionCallbacks(googleMapFragment)
                 .addOnConnectionFailedListener(googleMapFragment)
                 .build();
-        this.isAllowGenerateAddress = true;
     }
 
     @Override
@@ -274,19 +271,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         retrofitInteractor.generateLatLng(
                 AuthHelper.generateParamsNetwork(userSession.getUserId(), userSession.getDeviceId(), param),
                 latLongListener());
-    }
-
-    @Override
-    public void onSubmitPointer(Activity activity) {
-        if (isAllowGenerateAddress) {
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-            Intent intent = new Intent();
-            intent.putExtras(bundle);
-            intent.putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-            activity.setResult(Activity.RESULT_OK, intent);
-            activity.finish();
-        }
     }
 
     @Override

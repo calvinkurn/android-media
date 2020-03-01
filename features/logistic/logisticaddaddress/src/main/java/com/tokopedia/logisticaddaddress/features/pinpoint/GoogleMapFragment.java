@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.pinpoint;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -50,6 +51,7 @@ import com.tokopedia.logisticaddaddress.di.DaggerGeolocationComponent;
 import com.tokopedia.logisticaddaddress.di.GeolocationModule;
 import com.tokopedia.logisticaddaddress.utils.LocationUtilsKt;
 import com.tokopedia.logisticaddaddress.utils.RequestPermissionUtil;
+import com.tokopedia.logisticdata.data.constant.LogisticConstant;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
 import com.tokopedia.user.session.UserSession;
 
@@ -148,12 +150,17 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
         submitPointer = view.findViewById(R.id.pointer_submit);
         fab = view.findViewById(R.id.fab);
 
-        submitPointer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                presenter.onSubmitPointer(getActivity());
-                analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
+        submitPointer.setOnClickListener(view1 -> {
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            intent.putExtra(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+            if (getActivity() != null) {
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
             }
+            analyticsGeoLocationListener.sendAnalyticsOnSetCurrentMarkerAsCurrentPosition();
         });
 
         presenter.setUpVariables(locationPass, hasLocation);
