@@ -3,16 +3,15 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import android.app.Activity
 import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
-import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
@@ -100,7 +99,18 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
 
     fun getDistrictBoundary(districtId: Int, keroToken: String, keroUt: Int) {
         districtBoundaryUseCase.setParams(districtId, keroToken, keroUt)
-        districtBoundaryUseCase.execute(RequestParams.create(), DistrictBoundarySubscriber(view, districtBoundaryMapper))
+        districtBoundaryUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+            override fun onNext(t: GraphqlResponse) {
+                val districtBoundaryResponseUiModel = districtBoundaryMapper.map(t)
+                view.onSuccessGetDistrictBoundary(districtBoundaryResponseUiModel.geometry.listCoordinates)
+            }
+
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable?) {
+                Timber.d(e)
+            }
+        })
     }
 
     fun requestLocation(activity: Activity) {
