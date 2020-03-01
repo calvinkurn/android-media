@@ -111,11 +111,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         }
     }
 
-    @Override
-    public void onGoogleApiConnected(Bundle bundle) {
-
-    }
-
     private void getNewLocation() {
         checkLocationSettings();
     }
@@ -135,16 +130,6 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
                         .checkLocationSettings(googleApiClient, locationSettingsRequest.build());
 
         view.checkLocationSettings(result);
-    }
-
-    @Override
-    public void onGoogleApiSuspended(int cause) {
-
-    }
-
-    @Override
-    public void onGoogleApiFailed(ConnectionResult connectionResult) {
-
     }
 
     @Override

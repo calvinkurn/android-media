@@ -406,19 +406,13 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        presenter.onGoogleApiConnected(bundle);
-    }
+    public void onConnected(@Nullable Bundle bundle) { }
 
     @Override
-    public void onConnectionSuspended(int cause) {
-        presenter.onGoogleApiSuspended(cause);
-    }
+    public void onConnectionSuspended(int cause) { }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        presenter.onGoogleApiFailed(connectionResult);
-    }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
 
     @Override
     public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {

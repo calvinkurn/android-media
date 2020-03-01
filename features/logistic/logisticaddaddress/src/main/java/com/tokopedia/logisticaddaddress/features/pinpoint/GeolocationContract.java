@@ -87,12 +87,6 @@ public interface GeolocationContract {
 
         void setUpVariables(LocationPass locationPass, boolean hasLocation);
 
-        void onGoogleApiConnected(Bundle bundle);
-
-        void onGoogleApiSuspended(int cause);
-
-        void onGoogleApiFailed(ConnectionResult connectionResult);
-
         void onResult(LocationSettingsResult locationSettingsResult);
 
         LatLng getLastLocation();
