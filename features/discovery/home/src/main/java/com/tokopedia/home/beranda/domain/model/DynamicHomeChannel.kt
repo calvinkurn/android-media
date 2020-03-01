@@ -531,6 +531,7 @@ class DynamicHomeChannel(
             const val LAYOUT_REVIEW: String = "product_review"
             const val LAYOUT_PLAY_BANNER: String = "play_widget"
             const val LAYOUT_DEFAULT_ERROR: String = "default_error"
+            const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"
             const val channelId: String = "channelId"
         }
     }

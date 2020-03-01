@@ -124,12 +124,12 @@ class ProductSnapshotViewHolder(private val view: View,
             if (wishlisted) {
                 view.fab_detail.hide()
                 view.fab_detail.isActivated = true
-                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_checked))
+                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_selected_pdp))
                 view.fab_detail.show()
             } else {
                 view.fab_detail.hide()
                 view.fab_detail.isActivated = false
-                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unchecked))
+                view.fab_detail.setImageDrawable(MethodChecker.getDrawable(it, R.drawable.ic_wishlist_unselected_pdp))
                 view.fab_detail.show()
             }
         }
