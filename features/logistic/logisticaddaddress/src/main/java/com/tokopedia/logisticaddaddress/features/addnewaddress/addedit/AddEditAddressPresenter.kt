@@ -29,6 +29,8 @@ class AddEditAddressPresenter
         super.detachView()
         addAddressUseCase.unsubscribe()
         zipCodeUseCase.unsubscribe()
+        autoCompleteUseCase.unsubscribe()
+        getDistrictUseCase.unsubscribe()
     }
 
     fun saveAddress(model: SaveAddressDataModel, typeForm: String) {
@@ -84,9 +86,10 @@ class AddEditAddressPresenter
 
     fun getAutoComplete(query: String) {
         autoCompleteUseCase.execute(query)
-                .subscribe({ modelList ->
-                    getDistrict(modelList.first().placeId)
-                }, { t -> Timber.d(t) }, {})
+                .subscribe(
+                        { modelList ->
+                            getDistrict(modelList.first().placeId)
+                        }, { t -> Timber.d(t) }, {})
     }
 
     private fun getDistrict(placeId: String) {

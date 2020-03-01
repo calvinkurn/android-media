@@ -12,6 +12,8 @@ import com.tokopedia.logisticaddaddress.domain.usecase.AutoCompleteUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetZipCodeUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.exception.MessageErrorException
 import io.mockk.*
@@ -137,15 +139,42 @@ object AddEditAddressPresenterTest : Spek({
         }
     }
 
+    Feature("get autocomplete") {
+        Scenario("positive") {
+            val givenPlaceId = "1"
+            val givenLat = 0.3131
+            val givenLong = 9.3232
+            val successModel = listOf(
+                    SuggestedPlace(placeId = givenPlaceId)
+            )
+            val successDistrict = GetDistrictDataUiModel(
+                    latitude = givenLat.toString(), longitude = givenLong.toString())
+            Given("returns positive") {
+                every { autoCompleteUseCase.execute(any()) } returns Observable.just(successModel)
+                every { districtUseCase.execute(any()) } returns Observable.just(successDistrict)
+            }
+            When("executed") {
+                presenter.getAutoComplete("")
+            }
+            Then("view moves map") {
+                verify {
+                    view.moveMap(givenLat, givenLong)
+                }
+            }
+        }
+    }
+
     Feature("detach") {
         Scenario("detached") {
             When("detached") {
                 presenter.detachView()
             }
-            Then("all usecases unsubscribed") {
-                verifyOrder {
+            Then("all use cases unsubscribed") {
+                verify {
                     saveUseCase.unsubscribe()
                     zipUseCase.unsubscribe()
+                    autoCompleteUseCase.unsubscribe()
+                    districtUseCase.unsubscribe()
                 }
             }
         }
