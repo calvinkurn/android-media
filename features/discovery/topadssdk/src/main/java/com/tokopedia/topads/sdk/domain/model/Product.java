@@ -110,6 +110,8 @@ public class Product implements Parcelable {
     @Expose
     private boolean productNewLabel = false;
 
+    private String productRatingString = "";
+
     @SerializedName(KEY_PRODUCT_RATE)
     @Expose
     private int productRating = 0;
@@ -276,6 +278,7 @@ public class Product implements Parcelable {
         productCashback = in.readByte() != 0;
         productCashbackRate = in.readString();
         productNewLabel = in.readByte() != 0;
+        productRatingString = in.readString();
         productRating = in.readInt();
         applinks = in.readString();
         wholesalePrice = in.createTypedArrayList(WholesalePrice.CREATOR);
@@ -308,6 +311,7 @@ public class Product implements Parcelable {
         dest.writeByte((byte) (productCashback ? 1 : 0));
         dest.writeString(productCashbackRate);
         dest.writeByte((byte) (productNewLabel ? 1 : 0));
+        dest.writeString(productRatingString);
         dest.writeInt(productRating);
         dest.writeString(applinks);
         dest.writeTypedList(wholesalePrice);
@@ -527,6 +531,14 @@ public class Product implements Parcelable {
 
     public void setLabels(List<Label> labels) {
         this.labels = labels;
+    }
+
+    public String getProductRatingString() {
+        return productRatingString;
+    }
+
+    public void setProductRatingString(String productRatingString) {
+        this.productRatingString = productRatingString;
     }
 
     public int getProductRating() {

@@ -62,6 +62,8 @@ import javax.inject.Named;
 
 import rx.Subscriber;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.APP_CLIENT_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.KEY_ADVERTISING_ID;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
@@ -101,9 +103,9 @@ final class ProductListPresenter
     LocalCacheHandler advertisingLocalCache;
     @Inject
     @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
-    public UseCase<DynamicFilterModel> getDynamicFilterUseCase;
+    UseCase<DynamicFilterModel> getDynamicFilterUseCase;
     @Inject
-    public SearchLocalCacheHandler searchLocalCacheHandler;
+    SearchLocalCacheHandler searchLocalCacheHandler;
 
     private boolean enableGlobalNavWidget = true;
     private boolean changeParamRow = false;
@@ -114,6 +116,7 @@ final class ProductListPresenter
     private int startFrom = 0;
     private int totalData = 0;
     private boolean hasLoadData = false;
+    private boolean useRatingString = false;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -129,6 +132,13 @@ final class ProductListPresenter
         enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
         changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
         isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+        useRatingString = getIsUseRatingString();
+    }
+
+    private boolean getIsUseRatingString() {
+        return getView().getABTestRemoteConfig()
+                .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_COMMA_STAR)
+                .equals(AB_TEST_VARIANT_COMMA_STAR);
     }
 
     @Override
@@ -578,7 +588,7 @@ final class ProductListPresenter
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
+            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -608,8 +618,8 @@ final class ProductListPresenter
     }
 
     private void getViewToShowMoreData(ProductViewModel productViewModel) {
-        productList.addAll(convertToListOfVisitable(productViewModel));
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
+        productList.addAll(list);
 
         if (inspirationCarouselViewModel.size() > 0) {
             Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
@@ -657,7 +667,8 @@ final class ProductListPresenter
                     item.setImageUrl(topAds.getProduct().getImage().getS_ecs());
                     item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
                     item.setWishlisted(topAds.getProduct().isWishlist());
-                    item.setRating(topAds.getProduct().getProductRating());
+                    item.setRatingString(useRatingString ? topAds.getProduct().getProductRatingString() : "");
+                    item.setRating(useRatingString ? 0 : topAds.getProduct().getProductRating());
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
@@ -867,7 +878,7 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
+        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 

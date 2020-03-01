@@ -495,6 +495,9 @@ public class SearchProductModel {
         @SerializedName("is_featured")
         @Expose
         private int isFeatured;
+        @SerializedName("rating_string")
+        @Expose
+        private String ratingString = "";
         @SerializedName("rating")
         @Expose
         private int rating;
@@ -613,6 +616,10 @@ public class SearchProductModel {
 
         public int getIsFeatured() {
             return isFeatured;
+        }
+
+        public String getRatingString() {
+            return ratingString;
         }
 
         public int getRating() {

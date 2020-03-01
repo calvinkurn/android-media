@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ProductViewModelMapper {
 
-    public ProductViewModel convertToProductViewModel(int lastProductItemPositionFromCache, SearchProductModel searchProductModel) {
+    public ProductViewModel convertToProductViewModel(int lastProductItemPositionFromCache, SearchProductModel searchProductModel, boolean useRatingString) {
         SearchProductModel.SearchProduct searchProduct = searchProductModel.getSearchProduct();
         ProductViewModel productViewModel = new ProductViewModel();
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
@@ -34,7 +34,7 @@ public class ProductViewModelMapper {
                 !textIsEmpty(searchProduct.getRelated().getRelatedKeyword())) {
             productViewModel.setRelatedSearchModel(convertToRelatedSearchModel(searchProduct.getRelated()));
         }
-        productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts()));
+        productViewModel.setProductList(convertToProductItemViewModelList(lastProductItemPositionFromCache, searchProduct.getProducts(), useRatingString));
         productViewModel.setAdsModel(searchProductModel.getTopAdsModel());
         productViewModel.setQuery(searchProduct.getQuery());
         productViewModel.setTickerModel(createTickerModel(searchProduct));
@@ -153,27 +153,28 @@ public class ProductViewModelMapper {
         return relatedSearchModel;
     }
 
-    private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels) {
+    private List<ProductItemViewModel> convertToProductItemViewModelList(int lastProductItemPositionFromCache, List<SearchProductModel.Product> productModels, boolean useRatingString) {
         List<ProductItemViewModel> productItemList = new ArrayList<>();
 
         int position = lastProductItemPositionFromCache;
 
         for (SearchProductModel.Product productModel : productModels) {
             position++;
-            productItemList.add(convertToProductItem(productModel, position));
+            productItemList.add(convertToProductItem(productModel, position, useRatingString));
         }
 
         return productItemList;
     }
 
-    private ProductItemViewModel convertToProductItem(SearchProductModel.Product productModel, int position) {
+    private ProductItemViewModel convertToProductItem(SearchProductModel.Product productModel, int position, boolean useRatingString) {
         ProductItemViewModel productItem = new ProductItemViewModel();
         productItem.setProductID(productModel.getId());
         productItem.setWarehouseID(productModel.getWarehouseId());
         productItem.setProductName(productModel.getName());
         productItem.setImageUrl(productModel.getImageUrl());
         productItem.setImageUrl700(productModel.getImageUrlLarge());
-        productItem.setRating(productModel.getRating());
+        productItem.setRatingString(useRatingString ? productModel.getRatingString() : "");
+        productItem.setRating(useRatingString ? 0 : productModel.getRating());
         productItem.setCountReview(productModel.getCountReview());
         productItem.setCountCourier(productModel.getCourierCount());
         productItem.setDiscountPercentage(productModel.getDiscountPercentage());

@@ -32,7 +32,7 @@ abstract class ProductItemViewHolder(
                 reviewCount = countReview,
                 freeOngkir = freeOngkirViewModel.toProductCardModelFreeOngkir(),
                 isTopAds = isTopAds,
-                ratingString = "", // TODO:: Wait for backend to be ready
+                ratingString = ratingString,
                 hasOptions = true,
                 labelGroupList = labelGroupList.toProductCardModelLabelGroup()
         )

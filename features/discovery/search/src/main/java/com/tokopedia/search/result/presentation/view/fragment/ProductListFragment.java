@@ -54,6 +54,8 @@ import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.RecommendationTracking;
@@ -1670,5 +1672,10 @@ public class ProductListFragment
             }
         }
         SearchTracking.trackImpressionInspirationCarousel(getQueryKey(), products);
+    }
+
+    @Override
+    public RemoteConfig getABTestRemoteConfig() {
+        return RemoteConfigInstance.getInstance().getABTestPlatform();
     }
 }

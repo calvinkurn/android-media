@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.filter.common.data.Filter;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
@@ -145,6 +146,8 @@ public interface ProductListSectionContract {
         void hideBottomNavigation();
 
         void sendImpressionInspirationCarousel(final InspirationCarouselViewModel inspirationCarouselViewModel);
+
+        RemoteConfig getABTestRemoteConfig();
     }
 
     interface Presenter extends CustomerPresenter<View> {
