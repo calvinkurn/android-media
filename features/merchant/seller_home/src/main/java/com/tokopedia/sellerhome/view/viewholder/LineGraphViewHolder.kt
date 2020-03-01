@@ -5,8 +5,8 @@ import android.view.View
 import com.db.williamchart.Tools
 import com.db.williamchart.base.BaseWilliamChartConfig
 import com.db.williamchart.base.BaseWilliamChartModel
-import com.db.williamchart.config.SellerHomeDataSetConfig
-import com.db.williamchart.config.SellerHomeLineGraphConfig
+import com.tokopedia.sellerhome.view.widget.linegraph.SellerHomeDataSetConfig
+import com.tokopedia.sellerhome.view.widget.linegraph.SellerHomeLineGraphConfig
 import com.db.williamchart.renderer.StringFormatRenderer
 import com.db.williamchart.tooltip.Tooltip
 import com.db.williamchart.util.GMStatisticUtil

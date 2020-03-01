@@ -1,4 +1,4 @@
-package com.db.williamchart.config;
+package com.tokopedia.sellerhome.view.widget.linegraph;
 
 import android.graphics.Color;
 
@@ -15,7 +15,7 @@ import com.db.williamchart.view.ChartView;
 
 public class SellerHomeLineGraphConfig implements AnimationGraphConfiguration {
 
-    private int marginLeft = 0, marginTop = 0, marginRight = 0, marginBottom = 0;
+    private int marginTop = 0, marginRight = 0, marginBottom = 0;
 
     public SellerHomeLineGraphConfig() {
     }
@@ -91,9 +91,6 @@ public class SellerHomeLineGraphConfig implements AnimationGraphConfiguration {
     }
 
     @Override
-    public int leftMargin() { return marginLeft; }
-
-    @Override
     public float xDistAxisToLabel() {
         return Tools.fromDpToPx(10f);
     }
@@ -138,10 +135,6 @@ public class SellerHomeLineGraphConfig implements AnimationGraphConfiguration {
         return () -> {
             // currently empty
         };
-    }
-
-    public void setMarginLeft(int marginLeft) {
-        this.marginLeft = marginLeft;
     }
 
     public void setMarginTop(int marginTop) {

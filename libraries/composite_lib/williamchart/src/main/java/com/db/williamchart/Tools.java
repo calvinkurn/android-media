@@ -33,8 +33,6 @@ import com.db.williamchart.base.BaseWilliamChartConfig;
 import com.db.williamchart.base.BaseWilliamChartModel;
 import com.db.williamchart.config.GrossGraphChartConfig;
 import com.db.williamchart.config.GrossGraphDataSetConfig;
-import com.db.williamchart.config.SellerHomeDataSetConfig;
-import com.db.williamchart.config.SellerHomeLineGraphConfig;
 import com.db.williamchart.renderer.StringFormatRenderer;
 import com.db.williamchart.renderer.XRenderer;
 import com.db.williamchart.tooltip.Tooltip;
