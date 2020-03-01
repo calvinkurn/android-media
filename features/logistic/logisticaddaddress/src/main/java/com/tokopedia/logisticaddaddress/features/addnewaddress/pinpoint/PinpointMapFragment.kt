@@ -399,7 +399,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.VISIBLE
         continueWithLocation = true
-        updateGetDistrictBottomSheet(presenter.convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel, zipCodes))
+        val savedModel = saveAddressMapper.map(getDistrictDataUiModel, zipCodes)
+        presenter.setAddress(savedModel)
+        updateGetDistrictBottomSheet(savedModel)
     }
 
     override fun onSuccessAutofill(autofillDataUiModel: Data, errMsg: String) {

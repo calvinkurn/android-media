@@ -9,14 +9,12 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.response.Data
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
@@ -109,24 +107,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
 
     fun setAddress(address: SaveAddressDataModel) {
         this.saveAddressDataModel = address
-    }
-
-    fun convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?): SaveAddressDataModel {
-        val saveAddressDataModel = SaveAddressDataModel()
-        saveAddressDataModel.title = getDistrictDataUiModel.title
-        saveAddressDataModel.formattedAddress = getDistrictDataUiModel.formattedAddress
-        saveAddressDataModel.districtId = getDistrictDataUiModel.districtId
-        saveAddressDataModel.provinceId = getDistrictDataUiModel.provinceId
-        saveAddressDataModel.cityId = getDistrictDataUiModel.cityId
-        saveAddressDataModel.postalCode = getDistrictDataUiModel.postalCode
-        saveAddressDataModel.latitude = getDistrictDataUiModel.latitude
-        saveAddressDataModel.longitude = getDistrictDataUiModel.longitude
-        saveAddressDataModel.selectedDistrict = getDistrictDataUiModel.formattedAddress
-        if (zipCodes != null) {
-            saveAddressDataModel.zipCodes = zipCodes
-        }
-        this.saveAddressDataModel = saveAddressDataModel
-        return saveAddressDataModel
     }
 
     fun getSaveAddressDataModel(): SaveAddressDataModel {
