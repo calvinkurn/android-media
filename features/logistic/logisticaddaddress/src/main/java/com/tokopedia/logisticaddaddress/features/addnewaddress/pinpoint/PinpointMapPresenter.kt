@@ -85,26 +85,6 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         districtBoundaryUseCase.unsubscribe()
     }
 
-    fun loadAddEdit(isMismatchSolved: Boolean, isChangesRequested: Boolean) {
-        if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
-            view.showFailedDialog()
-
-            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess(eventLabel = LOGISTIC_LABEL)
-            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed(eventLabel = LOGISTIC_LABEL)
-        } else if (saveAddressDataModel.postalCode.isEmpty()) {
-            view.goToAddEditActivity(true, isMismatchSolved, isUnnamedRoad = false, isZipCodeNull = true)
-        } else {
-            if (isChangesRequested) {
-                view.finishBackToAddEdit(false, isMismatchSolved)
-            } else {
-                view.goToAddEditActivity(false, isMismatchSolved, false, false)
-            }
-
-            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess(eventLabel = LOGISTIC_LABEL)
-            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeSuccess(eventLabel = LOGISTIC_LABEL)
-        }
-    }
-
     fun setAddress(address: SaveAddressDataModel) {
         this.saveAddressDataModel = address
     }

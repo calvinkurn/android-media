@@ -577,7 +577,6 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                     if (isFullFlow) {
                         doLoadAddEdit()
                         AddNewAddressAnalytics.eventClickButtonPilihLokasi(eventLabel = LOGISTIC_LABEL)
-
                     } else {
                         setResultPinpoint()
                         AddNewAddressAnalytics.eventClickButtonPilihLokasi(eventLabel = NON_LOGISTIC_LABEL)
@@ -610,10 +609,27 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             isMismatchSolved = true
         }
 
-        presenter.loadAddEdit(isMismatchSolved, isChangesRequested)
+        val addressModel = presenter.getSaveAddressDataModel()
+        if (addressModel.districtId == 0 && addressModel.postalCode.isEmpty()) {
+            showFailedDialog()
+
+            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed(eventLabel = LOGISTIC_LABEL)
+        } else if (addressModel.postalCode.isEmpty()) {
+            goToAddEditActivity(true, isMismatchSolved, isUnnamedRoad = false, isZipCodeNull = true)
+        } else {
+            if (isChangesRequested) {
+                finishBackToAddEdit(false, isMismatchSolved)
+            } else {
+                goToAddEditActivity(false, isMismatchSolved, false, false)
+            }
+
+            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess(eventLabel = LOGISTIC_LABEL)
+            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeSuccess(eventLabel = LOGISTIC_LABEL)
+        }
     }
 
-    override fun showFailedDialog() {
+    fun showFailedDialog() {
         val tkpdDialog = Dialog(activity, Dialog.Type.PROMINANCE)
         tkpdDialog.setTitle(getString(R.string.mismatch_title))
         tkpdDialog.setDesc(getString(R.string.mismatch_desc))
@@ -627,7 +643,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         else AddNewAddressAnalytics.eventViewFailedPinPointNotification(eventLabel = NON_LOGISTIC_LABEL)
     }
 
-    override fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean) {
+    fun goToAddEditActivity(isMismatch: Boolean, isMismatchSolved: Boolean, isUnnamedRoad: Boolean, isZipCodeNull: Boolean) {
         val saveModel = if (isUnnamedRoad) presenter.getUnnamedRoadModelFormat() else presenter.getSaveAddressDataModel()
         Intent(context, AddEditAddressActivity::class.java).apply {
             if (isMismatch && !isMismatchSolved) {
@@ -643,7 +659,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    override fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean) {
+    fun finishBackToAddEdit(isMismatch: Boolean, isMismatchSolved: Boolean) {
         activity?.run {
             setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(EXTRA_IS_MISMATCH, isMismatch)
