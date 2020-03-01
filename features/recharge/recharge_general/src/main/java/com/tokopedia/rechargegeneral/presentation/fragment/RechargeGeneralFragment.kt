@@ -85,7 +85,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var inputData: HashMap<String, String> = hashMapOf()
     private lateinit var inputDataKeys: List<String>
 
-    private var menuId: Int = 0
     private var operatorId: Int = 0
     set(value) {
         field = value
@@ -120,9 +119,16 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     override var promoTicker: TickerPromoStackingCheckoutView? = null
         set(value) {
             field = value
-            pendingPromoData?.run {
-                setupPromoTicker(this)
-                pendingPromoData = null
+            value?.run {
+                if (isExpressCheckout) {
+                    this.show()
+                    pendingPromoData?.let { promoData ->
+                        setupPromoTicker(promoData)
+                        pendingPromoData = null
+                    }
+                } else {
+                    this.hide()
+                }
             }
         }
 
@@ -797,7 +803,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onCheckVoucherError(error: Throwable) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        NetworkErrorHelper.showRedSnackbar(activity, error.message)
     }
 
     override fun onExpressCheckoutError(error: Throwable) {
@@ -822,12 +828,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
             promoTicker = checkoutView.getPromoTicker()
             promoTicker?.actionListener = getPromoListener()
-            // Check promo
-//            if (promoCode.isNotEmpty()
-//                    && categoryId > 0
-//                    && productId > 0) {
-//                checkVoucher()
-//            }
+            checkVoucher()
 
             fragmentManager?.let { fm ->
                 checkoutBottomSheet.show(fm, "checkout view bottom sheet")
@@ -845,21 +846,13 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun onClickCheckout(data: TopupBillsEnquiry) {
-        // Put operatorId in input list
-        val inputs = inputData.toMutableMap()
-        inputs[ENQUIRY_PARAM_OPERATOR_ID] = operatorId.toString()
-
-        if (isExpressCheckout) {
-            processExpressCheckout(inputs)
-        } else {
-            processCheckout(data)
-        }
-    }
-
-    private fun processCheckout(data: TopupBillsEnquiry) {
         rechargeGeneralAnalytics.eventClickCheckBills(categoryName, operatorName, selectedProduct?.title ?: "")
         rechargeGeneralAnalytics.eventClickBuy(categoryName, operatorName, false, data)
 
+        processCheckout(data)
+    }
+
+    private fun processCheckout(data: TopupBillsEnquiry) {
         // Setup checkout pass data
         if (validateEnquiry()) {
             selectedProduct?.run {
@@ -886,10 +879,15 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     checkoutPassDataBuilder = checkoutPassDataBuilder.fields(HashMap(otherInputs))
                 }
                 checkoutPassData = checkoutPassDataBuilder.build()
-
-                processToCart()
             }
         }
+
+        // Put operatorId in input list
+        val inputs = inputData.toMutableMap()
+        inputs[ENQUIRY_PARAM_OPERATOR_ID] = operatorId.toString()
+        inputFields = inputs
+
+        processTransaction()
     }
 
     private fun getFirstOperatorId(cluster: RechargeGeneralOperatorCluster): Int {

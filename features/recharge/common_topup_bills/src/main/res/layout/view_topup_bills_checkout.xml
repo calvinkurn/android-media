@@ -15,14 +15,14 @@
         android:id="@+id/recharge_checkout_promo_ticker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true" />
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="@dimen/dp_12" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_recharge_checkout_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/recharge_checkout_promo_ticker"
-        android:layout_marginTop="@dimen/dp_12"
         android:lineHeight="@dimen/dp_18"
         android:lines="1"
         android:text="Total Pembayaran"

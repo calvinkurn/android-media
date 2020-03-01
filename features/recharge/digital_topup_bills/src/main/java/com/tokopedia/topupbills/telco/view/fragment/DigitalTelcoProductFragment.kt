@@ -41,7 +41,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
     private lateinit var selectedOperatorName: String
 
     private var titleProduct: String = ""
-    private var selectedProductId: String = ""
+    private var selectedProductId: Int = 0
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -92,7 +92,7 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
             val productType = it.getInt(PRODUCT_TYPE)
             val operatorId = it.getString(OPERATOR_ID)
             val componentId = it.getInt(COMPONENT_TYPE)
-            selectedProductId = it.getString(SELECTED_PRODUCT_ID)
+            selectedProductId = it.getInt(SELECTED_PRODUCT_ID)
             selectedOperatorName = it.getString(OPERATOR_NAME)
 
             var mapParam = HashMap<String, kotlin.Any>()
@@ -136,9 +136,9 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
         emptyStateProductView.visibility = View.GONE
         telcoTelcoProductView.visibility = View.VISIBLE
         var position = -1
-        if (selectedProductId.isNotEmpty()) {
-            for (i in 0 until productData.rechargeProductData.productDataCollections.size) {
-                if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId) {
+        if (selectedProductId > 0) {
+            for (i in productData.rechargeProductData.productDataCollections.indices) {
+                if (productData.rechargeProductData.productDataCollections[i].product.id == selectedProductId.toString()) {
                     productData.rechargeProductData.productDataCollections[i].product.attributes.selected = true
                     position = i
                 }
@@ -180,14 +180,14 @@ class DigitalTelcoProductFragment : BaseDaggerFragment() {
 
         fun newInstance(componentType: Int, componentName: String, operatorId: String,
                         operatorName: String, productType: Int,
-                        selectedProductId: String): Fragment {
+                        selectedProductId: Int): Fragment {
             val fragment = DigitalTelcoProductFragment()
             val bundle = Bundle()
             bundle.putInt(PRODUCT_TYPE, productType)
             bundle.putInt(COMPONENT_TYPE, componentType)
             bundle.putString(OPERATOR_ID, operatorId)
             bundle.putString(COMPONENT_NAME, componentName)
-            bundle.putString(SELECTED_PRODUCT_ID, selectedProductId)
+            bundle.putInt(SELECTED_PRODUCT_ID, selectedProductId)
             bundle.putString(OPERATOR_NAME, operatorName)
             fragment.arguments = bundle
             return fragment

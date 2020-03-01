@@ -11,8 +11,7 @@ import dagger.Component
  * Created by nabillasabbaha on 07/05/19.
  */
 @DigitalTopupScope
-@Component(modules = arrayOf(DigitalTopupModule::class, DigitalTopupViewModelModule::class),
-        dependencies = arrayOf(CommonTopupBillsComponent::class))
+@Component(modules = [DigitalTopupModule::class, DigitalTopupViewModelModule::class], dependencies = [CommonTopupBillsComponent::class])
 interface DigitalTopupComponent {
 
     fun inject(digitalTelcoFragment: DigitalTelcoFragment)

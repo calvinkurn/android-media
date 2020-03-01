@@ -141,11 +141,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         return object: Subscriber<GraphqlResponse>() {
             override fun onNext(objects: GraphqlResponse) {
                 val checkVoucherData = objects.getData<CheckVoucherDigital.Response>(CheckVoucherDigital.Response::class.java).response
-                _checkVoucherData.value = if (checkVoucherData.voucherData.success) {
-                    Success(mapVoucherData(checkVoucherData.voucherData))
-                } else {
-                    Fail(MessageErrorException(checkVoucherData.voucherData.message.text))
-                }
+                _checkVoucherData.value = Success(mapVoucherData(checkVoucherData.voucherData))
             }
 
             override fun onCompleted() {
@@ -153,7 +149,7 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
             }
 
             override fun onError(e: Throwable?) {
-                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                _checkVoucherData.value = Fail(MessageErrorException(e?.message))
             }
 
         }
@@ -273,7 +269,9 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val EXPRESS_PARAM_INSTANT_CHECKOUT = "instant_checkout"
         const val EXPRESS_PARAM_TRANSACTION_AMOUNT = "transaction_amount"
         const val EXPRESS_PARAM_VOUCHER_CODE = "voucher_code"
+        const val EXPRESS_PARAM_OPERATOR_ID = "operator_id"
         const val EXPRESS_PARAM_PRODUCT_ID = "product_id"
+        const val EXPRESS_PARAM_CLIENT_NUMBER = "client_number"
         const val EXPRESS_PARAM_DEVICE_ID = "device_id"
         const val EXPRESS_PARAM_DEVICE_ID_DEFAULT_VALUE = "4"
         const val EXPRESS_PARAM_ADD_TO_BILLS = "add_to_my_bills"

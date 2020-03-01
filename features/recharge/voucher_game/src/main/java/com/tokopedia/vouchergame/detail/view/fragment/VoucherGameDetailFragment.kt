@@ -83,9 +83,11 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
     private var selectedProduct: VoucherGameProduct? = null
         set(value) {
             field = value
-            productId = value?.id?.toIntOrNull() ?: 0
-            price = value?.attributes?.pricePlain?.toLongOrNull()
-//            if (promoCode.isNotEmpty()) checkPromo()
+            if (value != null) {
+                productId = value.id.toIntOrNull() ?: 0
+                price = value.attributes.pricePlain.toLongOrNull()
+                checkVoucherWithDelay()
+            }
         }
 
     lateinit var voucherGameExtraParam: VoucherGameExtraParam
@@ -118,6 +120,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
         arguments?.let {
             voucherGameExtraParam = it.getParcelable(EXTRA_PARAM_VOUCHER_GAME) ?: VoucherGameExtraParam()
             // Initalize variables of base topup bills fragment
+            menuId = voucherGameExtraParam.menuId.toIntOrNull() ?: 0
             categoryId = voucherGameExtraParam.categoryId.toIntOrNull() ?: 0
             productId = voucherGameExtraParam.productId.toIntOrNull() ?: 0
 
@@ -586,13 +589,7 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
             }
         }
 
-        if (isExpressCheckout) {
-            val inputs = inputData
-            inputs[TopupBillsViewModel.ENQUIRY_PARAM_OPERATOR_ID] = voucherGameExtraParam.operatorId
-            processExpressCheckout(inputs)
-        } else {
-            processCheckout()
-        }
+        processCheckout()
     }
 
     private fun processCheckout() {
@@ -618,10 +615,14 @@ class VoucherGameDetailFragment: BaseTopupBillsFragment(),
                     checkoutPassDataBuilder = checkoutPassDataBuilder.zoneId(input_field_2.getInputText())
                 }
                 checkoutPassData = checkoutPassDataBuilder.build()
-
-                processToCart()
             }
         }
+
+        val inputs = inputData
+        inputs[TopupBillsViewModel.ENQUIRY_PARAM_OPERATOR_ID] = voucherGameExtraParam.operatorId
+        inputFields = inputs
+
+        processTransaction()
     }
 
     private fun getAllProductsList(data: VoucherGameDetailData): List<VoucherGameProduct> {

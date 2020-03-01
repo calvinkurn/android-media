@@ -28,6 +28,8 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
@@ -57,6 +59,8 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     open var promoTicker: TickerPromoStackingCheckoutView? = null
 
+    open var menuId: Int = 0
+
     // Promo
     var promoCode: String = ""
     var isCoupon: Boolean = false
@@ -66,7 +70,14 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     // Express Checkout
     var isExpressCheckout = false
+    set(value) {
+        field = value
+        promoTicker?.run {
+            if (value) this.show() else this.hide()
+        }
+    }
     var isInstantCheckout = false
+    var inputFields: Map<String, String> = mapOf()
 
     var categoryName = ""
     var operatorName = ""
@@ -157,7 +168,11 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
             promoCode = getString(EXTRA_PROMO_CODE, promoCode)
             categoryId = getInt(EXTRA_CATEGORY_ID, categoryId)
             productId = getInt(EXTRA_PRODUCT_ID, productId)
+            price = getLong(EXTRA_PRODUCT_PRICE, 0L)
+            isExpressCheckout = getBoolean(EXTRA_IS_EXPRESS_CHECKOUT, isExpressCheckout)
         }
+
+        getMenuDetail(menuId)
 
         val checkoutView = getCheckoutView()
         checkoutView?.run {
@@ -171,9 +186,11 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        if (promoCode.isNotEmpty()) outState.putString(EXTRA_PROMO_CODE, promoCode)
-        if (categoryId > 0) outState.putInt(EXTRA_CATEGORY_ID, categoryId)
-        if (productId > 0) outState.putInt(EXTRA_PRODUCT_ID, productId)
+        outState.putString(EXTRA_PROMO_CODE, promoCode)
+        outState.putInt(EXTRA_CATEGORY_ID, categoryId)
+        outState.putInt(EXTRA_PRODUCT_ID, productId)
+        outState.putBoolean(EXTRA_IS_EXPRESS_CHECKOUT, isExpressCheckout)
+        price?.run { outState.putLong(EXTRA_PRODUCT_PRICE, this) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -181,7 +198,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_LOGIN -> {
-                    processToCart()
+                    processTransaction()
                 }
                 REQUEST_CODE_CART_DIGITAL -> {
                     data?.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)?.let {
@@ -264,7 +281,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
     fun setupPromoTicker(data: PromoData) {
         promoTicker?.apply {
-            promoCode = if (data.isActive()) data.promoCode else ""
+            promoCode = data.promoCode
             isCoupon = data.typePromo == PromoData.TYPE_COUPON
             title = data.title
             desc = data.description
@@ -289,12 +306,15 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         state = TickerPromoStackingCheckoutView.State.EMPTY
     }
 
-    fun checkPromo() {
-        checkVoucherJob?.cancel()
-        checkVoucherJob = CoroutineScope(Dispatchers.Main).launch{
-            delay(CHECK_VOUCHER_DEBOUNCE_DELAY)
-            promoTicker?.showLoading()
-            checkVoucher()
+    // Check voucher with delay; used on pdp with changeable products
+    fun checkVoucherWithDelay() {
+        if (promoCode.isNotEmpty()) {
+            checkVoucherJob?.cancel()
+            checkVoucherJob = CoroutineScope(Dispatchers.Main).launch {
+                delay(CHECK_VOUCHER_DEBOUNCE_DELAY)
+                promoTicker?.showLoading()
+                checkVoucher()
+            }
         }
     }
 
@@ -324,10 +344,14 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         topupBillsViewModel.checkVoucher(promoCode, PromoDigitalModel(categoryId, productId, price = price ?: 0))
     }
 
-    fun processExpressCheckout(inputs: Map<String, String>) {
-        if (productId > 0 && inputs.isNotEmpty()) {
+    private fun processExpressCheckout() {
+        // Check if promo code is valid
+        val voucherCode = promoTicker?.run {
+            if (state == TickerPromoStackingCheckoutView.State.ACTIVE) promoCode else ""
+        } ?: ""
+        if (productId > 0) {
             topupBillsViewModel.processExpressCheckout(GraphqlHelper.loadRawString(resources, R.raw.query_recharge_express_checkout),
-                    topupBillsViewModel.createExpressCheckoutParams(productId, inputs, price ?: 0, promoCode))
+                    topupBillsViewModel.createExpressCheckoutParams(productId, inputFields, price ?: 0, voucherCode))
         }
     }
 
@@ -355,9 +379,13 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
         isInstantCheckout = data.instantCheckout.isEnabled
     }
 
-    fun processToCart() {
+    fun processTransaction() {
         if (userSession.isLoggedIn) {
-            navigateToCart()
+            if (isExpressCheckout) {
+                processExpressCheckout()
+            } else {
+                navigateToCart()
+            }
         } else {
             navigateToLoginPage()
         }
@@ -366,6 +394,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     fun navigateToCart() {
         if (::checkoutPassData.isInitialized) {
             checkoutPassData.idemPotencyKey = userSession.userId.generateRechargeCheckoutToken()
+            checkoutPassData.voucherCodeCopied = promoCode
             val intent = RouteManager.getIntent(context, ApplinkConsInternalDigital.CART_DIGITAL)
             intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, checkoutPassData)
             startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
@@ -393,10 +422,12 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
 
         const val EXTRA_CATEGORY_ID = "EXTRA_CATEGORY_ID"
         const val EXTRA_PRODUCT_ID = "EXTRA_PRODUCT_ID"
+        const val EXTRA_PRODUCT_PRICE = "EXTRA_PRODUCT_PRICE"
         const val EXTRA_PROMO_DIGITAL_MODEL = "EXTRA_PROMO_DIGITAL_MODEL"
         const val EXTRA_COUPON_ACTIVE = "EXTRA_COUPON_ACTIVE"
         const val EXTRA_PROMO_CODE = "EXTRA_PROMO_CODE"
         const val EXTRA_COUPON_CODE = "EXTRA_KUPON_CODE"
+        const val EXTRA_IS_EXPRESS_CHECKOUT = "EXTRA_IS_EXPRESS_CHECKOUT"
         const val EXTRA_IS_USE = "EXTRA_IS_USE"
         const val EXTRA_PROMO_DATA = "EXTRA_PROMO_DATA"
     }

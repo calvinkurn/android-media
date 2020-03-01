@@ -42,7 +42,7 @@ class DigitalTelcoCustomViewModel @Inject constructor(private val graphqlReposit
                               onError: (Throwable) -> Unit) {
         launchCatchError(block = {
             var mapParam = HashMap<String, kotlin.Any>()
-            mapParam.put(KEY_COMPONENT_ID, TelcoComponentType.CLIENT_NUMBER_PROSTPAID)
+            mapParam.put(KEY_COMPONENT_ID, TelcoComponentType.CLIENT_NUMBER_POSTPAID)
 
             val data = withContext(Dispatchers.Default) {
                 val graphqlRequest = GraphqlRequest(rawQuery, TelcoCustomComponentData::class.java, mapParam)
