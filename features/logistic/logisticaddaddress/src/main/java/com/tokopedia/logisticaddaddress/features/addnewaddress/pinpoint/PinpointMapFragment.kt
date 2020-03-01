@@ -693,7 +693,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         }
     }
 
-    override fun onSuccessGetDistrictBoundary(boundaries: List<LatLng>) {
+    override fun showBoundaries(boundaries: List<LatLng>) {
         this.googleMap?.addPolygon(PolygonOptions()
                 .addAll(boundaries)
                 .fillColor(GREEN_ARGB)

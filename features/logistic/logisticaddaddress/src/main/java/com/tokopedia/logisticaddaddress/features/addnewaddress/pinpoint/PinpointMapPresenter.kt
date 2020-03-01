@@ -102,7 +102,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         districtBoundaryUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onNext(t: GraphqlResponse) {
                 val districtBoundaryResponseUiModel = districtBoundaryMapper.map(t)
-                view.onSuccessGetDistrictBoundary(districtBoundaryResponseUiModel.geometry.listCoordinates)
+                view.showBoundaries(districtBoundaryResponseUiModel.geometry.listCoordinates)
             }
 
             override fun onCompleted() {}
