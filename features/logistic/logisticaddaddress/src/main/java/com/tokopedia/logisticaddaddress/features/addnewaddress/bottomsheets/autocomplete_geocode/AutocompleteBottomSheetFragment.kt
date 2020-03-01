@@ -11,7 +11,6 @@ import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
@@ -158,7 +157,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
         rlCurrentLocation.setOnClickListener {
             actionListener.useCurrentLocation()
-            dismiss()
+            hideKeyboardAndDismiss()
         }
     }
 
@@ -182,7 +181,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
             AddNewAddressAnalytics.eventClickBackArrowOnInputAddress(eventLabel = LOGISTIC_LABEL)
-            onCloseButtonClick()
+            hideKeyboardAndDismiss()
         }
     }
 
@@ -241,15 +240,10 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
     }
 
-    override fun onPause() {
-        KeyboardHandler.hideSoftKeyboard(activity)
-        super.onPause()
-    }
-
     override fun onPoiListClicked(placeId: String) {
         placeId.run {
             actionListener.onGetPlaceId(placeId)
-            dismiss()
+            hideKeyboardAndDismiss()
         }
         AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(eventLabel = LOGISTIC_LABEL)
     }
@@ -259,6 +253,11 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         fragmentManager?.run {
             locationInfoBottomSheetFragment.show(this, "")
         }
+        dismiss()
+    }
+
+    private fun hideKeyboardAndDismiss() {
+        AddNewAddressUtils.hideKeyboard(etSearch, context)
         dismiss()
     }
 
