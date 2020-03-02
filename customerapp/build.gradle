@@ -18,6 +18,7 @@ if (hasProperty('buildScan')) {
 apply plugin: 'io.hansel.preprocessor'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
+apply from: '../tools/set_debug_tools.gradle'
 
 def getDpiId(String density) {
 
@@ -107,7 +108,7 @@ project.ext {
     defaultVersionName = "3.41";
     react = [
             nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
-            enableHermes: true,
+            enableHermes         : true,
     ]
 }
 
@@ -209,9 +210,9 @@ android {
             }
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
-            if(isFirebasePerformanceLogEnabled().toBoolean()){
+            if (isFirebasePerformanceLogEnabled().toBoolean()) {
                 minifyEnabled false
-            }else{
+            } else {
                 minifyEnabled true
             }
 
@@ -233,7 +234,6 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-
         }
     }
 
@@ -250,7 +250,7 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
-        manifestPlaceholders = [firebasePerformanceLogEnabled:isFirebasePerformanceLogEnabled()]
+        manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
     }
 
     dexOptions {
@@ -294,8 +294,6 @@ android {
         generateAssetFile(project, dynamicFeatures)
     }
 }
-
-
 
 dependencies {
 
@@ -421,6 +419,11 @@ dependencies {
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.common_promo)
