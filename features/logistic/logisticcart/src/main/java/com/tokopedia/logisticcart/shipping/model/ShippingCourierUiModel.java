@@ -10,7 +10,7 @@ import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.Service
  * Created by Irfan Khoirul on 08/08/18.
  */
 
-public class ShippingCourierViewModel implements Parcelable {
+public class ShippingCourierUiModel implements Parcelable {
 
     private ProductData productData;
     private ServiceData serviceData;
@@ -21,10 +21,10 @@ public class ShippingCourierViewModel implements Parcelable {
     private boolean selected;
 
 
-    public ShippingCourierViewModel() {
+    public ShippingCourierUiModel() {
     }
 
-    protected ShippingCourierViewModel(Parcel in) {
+    protected ShippingCourierUiModel(Parcel in) {
         productData = in.readParcelable(ProductData.class.getClassLoader());
         serviceData = in.readParcelable(ServiceData.class.getClassLoader());
         blackboxInfo = in.readString();
@@ -50,15 +50,15 @@ public class ShippingCourierViewModel implements Parcelable {
         return 0;
     }
 
-    public static final Creator<ShippingCourierViewModel> CREATOR = new Creator<ShippingCourierViewModel>() {
+    public static final Creator<ShippingCourierUiModel> CREATOR = new Creator<ShippingCourierUiModel>() {
         @Override
-        public ShippingCourierViewModel createFromParcel(Parcel in) {
-            return new ShippingCourierViewModel(in);
+        public ShippingCourierUiModel createFromParcel(Parcel in) {
+            return new ShippingCourierUiModel(in);
         }
 
         @Override
-        public ShippingCourierViewModel[] newArray(int size) {
-            return new ShippingCourierViewModel[size];
+        public ShippingCourierUiModel[] newArray(int size) {
+            return new ShippingCourierUiModel[size];
         }
     };
 

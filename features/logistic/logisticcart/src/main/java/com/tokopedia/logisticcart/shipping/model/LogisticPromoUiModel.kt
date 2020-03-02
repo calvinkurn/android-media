@@ -6,23 +6,23 @@ import android.os.Parcelable
 /**
  * Created by fajarnuha on 29/03/19.
  */
-data class LogisticPromoViewModel(val promoCode: String,
-                                  val title: String,
-                                  val description: String,
-                                  val shipperName: String,
-                                  val serviceId: Int,
-                                  val shipperId: Int,
-                                  val shipperProductId: Int,
-                                  val shipperDesc: String,
-                                  val disableText: String,
-                                  val dialogMsg: String,
-                                  val isApplied: Boolean,
-                                  val imageUrl: String,
-                                  val discountedRate: Int,
-                                  val shippingRate: Int,
-                                  val benefitAmount: Int,
-                                  val disabled: Boolean,
-                                  val hideShipperName: Boolean) : RatesViewModelType, Parcelable{
+data class LogisticPromoUiModel(val promoCode: String,
+                                val title: String,
+                                val description: String,
+                                val shipperName: String,
+                                val serviceId: Int,
+                                val shipperId: Int,
+                                val shipperProductId: Int,
+                                val shipperDesc: String,
+                                val disableText: String,
+                                val dialogMsg: String,
+                                val isApplied: Boolean,
+                                val imageUrl: String,
+                                val discountedRate: Int,
+                                val shippingRate: Int,
+                                val benefitAmount: Int,
+                                val disabled: Boolean,
+                                val hideShipperName: Boolean) : RatesViewModelType, Parcelable{
     constructor(source: Parcel) : this(
             source.readString(),
             source.readString(),
@@ -67,9 +67,9 @@ data class LogisticPromoViewModel(val promoCode: String,
 
     companion object {
         @JvmField
-        val CREATOR: Parcelable.Creator<LogisticPromoViewModel> = object : Parcelable.Creator<LogisticPromoViewModel> {
-            override fun createFromParcel(source: Parcel): LogisticPromoViewModel = LogisticPromoViewModel(source)
-            override fun newArray(size: Int): Array<LogisticPromoViewModel?> = arrayOfNulls(size)
+        val CREATOR: Parcelable.Creator<LogisticPromoUiModel> = object : Parcelable.Creator<LogisticPromoUiModel> {
+            override fun createFromParcel(source: Parcel): LogisticPromoUiModel = LogisticPromoUiModel(source)
+            override fun newArray(size: Int): Array<LogisticPromoUiModel?> = arrayOfNulls(size)
         }
     }
 }
