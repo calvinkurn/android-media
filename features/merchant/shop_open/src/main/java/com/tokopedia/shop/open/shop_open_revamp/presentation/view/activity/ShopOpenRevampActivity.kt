@@ -7,6 +7,8 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.shop.open.R
@@ -44,7 +46,7 @@ class ShopOpenRevampActivity : AppCompatActivity(), FragmentNavigationInterface 
             fragmentQuisionerPage.arguments = bundle
             navigateToOtherFragment(fragmentQuisionerPage, FIRST_FRAGMENT_TAG)
         } else if (shopId.isNotEmpty() && !isNeedLocation) {
-            finish()
+            RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }
 
