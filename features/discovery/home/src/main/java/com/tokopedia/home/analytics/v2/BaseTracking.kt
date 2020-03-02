@@ -43,6 +43,10 @@ abstract class BaseTracking {
         const val FORMAT_2_ITEMS = "%s - %s"
     }
 
+    protected object ChannelId{
+        const val KEY = "channelId"
+    }
+
     protected object Value{
         const val NONE_OTHER = "none / other"
         const val LIST_WITH_HEADER = "/ - p%s - %s - %s"

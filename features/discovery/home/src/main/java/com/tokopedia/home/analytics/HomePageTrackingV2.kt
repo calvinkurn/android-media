@@ -263,7 +263,8 @@ object HomePageTrackingV2 : BaseTracking() {
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
                     Action.KEY, EVENT_ACTION_SPRINT_SALE_CLICK_VIEW_ALL,
-                    Label.KEY, Value.EMPTY
+                    Label.KEY, Value.EMPTY,
+                    ChannelId.KEY, channel.id
             ) as HashMap<String, Any>
         }
 
