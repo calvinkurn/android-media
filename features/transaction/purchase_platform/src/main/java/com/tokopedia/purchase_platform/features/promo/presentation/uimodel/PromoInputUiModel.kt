@@ -31,11 +31,13 @@ data class PromoInputUiModel(
     }
 
     data class UiData(
-            var promoCode: String = ""
+            var promoCode: String = "",
+            var errorMessage: String = ""
     )
 
     data class UiState(
-            var isButtonSelectEnabled: Boolean = false
+            var isButtonSelectEnabled: Boolean = false,
+            var isError: Boolean = false
     )
 
 }

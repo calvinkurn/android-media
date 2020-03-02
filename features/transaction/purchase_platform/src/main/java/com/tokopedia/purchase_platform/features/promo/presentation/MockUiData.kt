@@ -22,6 +22,7 @@ fun mockPromoInput(): PromoInputUiModel {
             },
             uiState = PromoInputUiModel.UiState().apply {
                 isButtonSelectEnabled = false
+                isError = false
             }
     )
 }

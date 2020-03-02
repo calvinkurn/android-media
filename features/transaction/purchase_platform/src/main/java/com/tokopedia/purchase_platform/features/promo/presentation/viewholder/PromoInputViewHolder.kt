@@ -18,6 +18,7 @@ class PromoInputViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoInputUiModel) {
+        renderPromoInputNotError(element)
         itemView.text_field_input_promo.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
@@ -36,8 +37,6 @@ class PromoInputViewHolder(private val view: View,
             }
         })
 
-        itemView.text_field_input_promo.setMessage("Ini error message")
-
         itemView.text_field_input_promo.getFirstIcon().setOnClickListener {
             itemView.text_field_input_promo.textFieldInput.text.clear()
         }
@@ -53,5 +52,26 @@ class PromoInputViewHolder(private val view: View,
         listener.updateHeightPromoInputView(height)
     }
 
+    private fun renderPromoInputError(element: PromoInputUiModel) {
+        itemView.text_field_input_promo.setError(true)
+        itemView.text_field_input_promo.setMessage(element.uiData.errorMessage)
+        view.setPadding(
+                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0
+        )
+    }
+
+    private fun renderPromoInputNotError(element: PromoInputUiModel) {
+        itemView.text_field_input_promo.setError(false)
+        itemView.text_field_input_promo.setMessage("")
+        view.setPadding(
+                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(R.dimen.dp_16)?.toInt() ?: 0,
+                itemView.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
+        )
+    }
 
 }
