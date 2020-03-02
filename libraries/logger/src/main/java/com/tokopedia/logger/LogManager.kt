@@ -61,7 +61,7 @@ class LogManager(val application: Application) : CoroutineScope {
         var scalyrEnabled: Boolean = false
         var logentriesEnabled: Boolean = true
         var isPrimaryLogentries: Boolean = true
-        var isPrimaryScalyr: Boolean = true
+        var isPrimaryScalyr: Boolean = false
 
         @JvmField
         var instance: LogManager? = null
