@@ -45,11 +45,13 @@ dependencies {
     implementation rootProject.ext.firebase.appIndexing
 
     // Slice
-    implementation "androidx.slice:slice-builders-ktx:1.0.0-alpha6"
+    implementation rootProject.ext.miscDependencies.slice
 
     // Glide
-    implementation 'com.github.bumptech.glide:glide:4.10.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.10.0'
+    implementation rootProject.ext.firebase.appIndexing
+
+    implementation rootProject.ext.networkDependencies.glide
+    annotationProcessor rootProject.ext.networkDependencies.glideProcessor
 
 }
 
