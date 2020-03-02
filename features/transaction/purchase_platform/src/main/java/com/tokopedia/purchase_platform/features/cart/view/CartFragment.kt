@@ -395,6 +395,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         llPromoCheckout = view.findViewById(R.id.ll_promo_checkout)
         promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
 
+        // Todo : Adjust this
+        promoCheckoutBtn.setOnClickListener {
+            RouteManager.route(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+        }
+
         activity?.let {
             refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
             progressDialog = AlertDialog.Builder(it)
