@@ -480,4 +480,13 @@ public interface ApplinkConst {
 
         String ORDER_LIST = "tokopedia-android-internal://transaction/order-list";
     }
+
+    interface Liveness {
+        String EXTRA_IS_SUCCESS_REGISTER = "isSuccessRegister";
+        String EXTRA_LIST_RETAKE = "listRetake";
+        String EXTRA_LIST_MESSAGE = "listMessage";
+        String EXTRA_TITLE = "title";
+        String EXTRA_SUBTITLE = "subtitle";
+        String EXTRA_BUTTON = "button";
+    }
 }
