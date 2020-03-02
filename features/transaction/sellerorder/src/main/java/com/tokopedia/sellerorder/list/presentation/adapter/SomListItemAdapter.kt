@@ -27,11 +27,7 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
 
     private var actionListener: ActionListener? = null
 
-    interface ActionListener {
-        fun onListItemClicked(orderId: String)
-    }
-
-    var somItemList = mutableListOf<SomListOrder.Data.OrderList.Order>()
+    private var somItemList = mutableListOf<SomListOrder.Data.OrderList.Order>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.som_list_item, parent, false))
@@ -39,14 +35,6 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
 
     override fun getItemCount(): Int {
         return somItemList.size
-    }
-
-    fun addItems(list: List<SomListOrder.Data.OrderList.Order>) {
-        somItemList.addAll(list)
-    }
-
-    fun removeAll() {
-        somItemList.clear()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -107,10 +95,26 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
                 holder.itemView.ll_label_order?.visibility = View.GONE
             }
 
+            val orderId = somItemList[position].orderId
             holder.itemView.setOnClickListener {
-                actionListener?.onListItemClicked(somItemList[position].orderId)
+                actionListener?.onListItemClicked(orderId)
             }
         }
+    }
+
+    fun setActionListener(fragment: SomListFragment) {
+        this.actionListener = fragment
+    }
+
+    fun addList(list: List<SomListOrder.Data.OrderList.Order>) {
+        somItemList.clear()
+        somItemList.addAll(list)
+        notifyDataSetChanged()
+    }
+
+    fun appendList(list: List<SomListOrder.Data.OrderList.Order>) {
+        somItemList.addAll(list)
+        notifyDataSetChanged()
     }
 
     private fun createOrderLabelList(holder: ViewHolder, position: Int) {
@@ -144,9 +148,10 @@ class SomListItemAdapter : RecyclerView.Adapter<SomListItemAdapter.ViewHolder>()
         }
     }
 
+    interface ActionListener {
+        fun onListItemClicked(orderId: String)
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    fun setActionListener(fragment: SomListFragment) {
-        this.actionListener = fragment
-    }
 }

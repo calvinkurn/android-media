@@ -34,11 +34,5 @@ class OnboardingModule {
 
     @OnboardingScope
     @Provides
-    fun provideRemoteConfigInstance(): RemoteConfigInstance {
-        return RemoteConfigInstance.getInstance()
-    }
-
-    @OnboardingScope
-    @Provides
     fun provideOnboardingAnalytics(): OnboardingAnalytics = OnboardingAnalytics()
 }
