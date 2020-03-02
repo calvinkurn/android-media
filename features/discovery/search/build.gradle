@@ -114,6 +114,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation "org.json:json:20140107"
+    implementation project(rootProject.ext.libraries.iris)
 }
 
 project.ext {
