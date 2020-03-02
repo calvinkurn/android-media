@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -205,6 +206,14 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                     )
                     if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                 }
+                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL-> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel),
+                            isCombined = false
+                    )
+                }
+                DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
@@ -378,6 +387,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
             playCardViewModel.setTrackingData(trackingData)
         }
         return playCardViewModel
+    }
+
+    private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
+        visitableList.add(PopularKeywordListViewModel(popularKeywordList = mutableListOf(), channel = channel))
     }
 
     override fun build(): List<Visitable<*>> = visitableList

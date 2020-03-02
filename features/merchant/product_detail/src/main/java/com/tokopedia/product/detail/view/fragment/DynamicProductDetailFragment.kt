@@ -61,6 +61,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
@@ -80,7 +81,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.ValidateTradeInPDP
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -136,7 +137,7 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
-import tradein_common.TradeInUtils
+import com.tokopedia.common_tradein.utils.TradeInUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -223,6 +224,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
+    private val irisSessionId by lazy {
+        context?.let{ IrisSession(it).getSessionId() } ?: ""
+    }
 
     //Performance Monitoring
     lateinit var performanceMonitoringP1: PerformanceMonitoring
@@ -1187,6 +1191,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun onSuccessGetDataP1(data: List<DynamicPdpDataModel>) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
+            et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             pdpHashMapUtil?.updateDataP1(productInfo, viewModel.imageHeight)
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.isLeasing = productInfo.basic.isLeasing
@@ -1211,6 +1216,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
+
     private fun onSuccessGetDataP2Shop(it: ProductInfoP2ShopData) {
         viewModel.getDynamicProductInfoP1?.let { p1 ->
             actionButtonView.renderData(!p1.basic.isActive(),
@@ -1224,6 +1230,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.Moengage.eventAppsFylerOpenProduct(p1)
 
                 DynamicProductDetailTracking.sendScreen(
+                        irisSessionId,
                         shopInfo.shopCore.shopID,
                         shopInfo.goldOS.shopTypeString,
                         productId ?: "")
@@ -1234,7 +1241,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.removeGeneralInfo(pdpHashMapUtil?.productFullfilmentMap)
         }
 
-        val tradeinResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+        val tradeinResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInResponse()
 
         if (!tradeinResponse.isEligible) {
             dynamicAdapter.removeGeneralInfo(pdpHashMapUtil?.productTradeinMap)
@@ -1730,7 +1737,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
-                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(trackerListName, productInfo, shopInfo, trackerAttribution,
+                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListName, productInfo, shopInfo, trackerAttribution,
                         isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
                 return
             }
@@ -2028,7 +2035,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         actionButtonView.addToCartClick = {
             viewModel.getDynamicProductInfoP1?.let {
                 if (viewModel.isUserSessionActive) {
-                    DynamicProductDetailTracking.Click.eventAddToCart(viewModel.getDynamicProductInfoP1,
+                    DynamicProductDetailTracking.Click.eventAddToCart(irisSessionId, viewModel.getDynamicProductInfoP1,
                             it.data.variant.isVariant)
                 } else {
                     DynamicProductDetailTracking.Click.eventAddToCartBeforeLogin(viewModel.getDynamicProductInfoP1)
