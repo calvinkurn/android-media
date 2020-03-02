@@ -273,4 +273,8 @@ open class ProductAttachmentViewModel : SendableViewModel, Visitable<BaseChatTyp
         return productId.toString()
     }
 
+    fun getIdString(): String {
+        return productId.toString()
+    }
+
 }
