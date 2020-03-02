@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
-import com.tokopedia.travelhomepage.homepage.data.ProductGridCardItemModel
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.ProductGridCardItemModel
 import kotlinx.android.synthetic.main.item_travel_homepage_product_widget_card.view.*
 
 /**

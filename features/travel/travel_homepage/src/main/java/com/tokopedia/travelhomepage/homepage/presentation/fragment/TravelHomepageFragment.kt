@@ -37,6 +37,9 @@ import javax.inject.Inject
  * @author by furqan on 06/08/2019
  */
 class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, OnItemClickListener {
+    override fun onItemBindViewHolder(isFromCloud: Boolean?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

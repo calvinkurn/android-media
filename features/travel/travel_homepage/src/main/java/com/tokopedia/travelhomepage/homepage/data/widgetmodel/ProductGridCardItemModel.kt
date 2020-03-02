@@ -1,4 +1,4 @@
-package com.tokopedia.travelhomepage.homepage.data
+package com.tokopedia.travelhomepage.homepage.data.widgetmodel
 
 /**
  * @author by jessica on 2020-02-28

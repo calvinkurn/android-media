@@ -4,14 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageBannerModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder.TravelHomepageBannerViewHolder
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder.TravelHomepageCategoryViewHolder
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder.TravelHomepageDestinationViewHolder
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder.TravelHomepageSectionViewHolder
+import com.tokopedia.travelhomepage.homepage.data.*
+import com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder.*
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
 
@@ -26,6 +20,7 @@ open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemB
             TravelHomepageCategoryViewHolder.LAYOUT -> return TravelHomepageCategoryViewHolder(parent, onBindListener, onItemClickListener)
             TravelHomepageSectionViewHolder.LAYOUT -> return TravelHomepageSectionViewHolder(parent, onBindListener, onItemClickListener)
             TravelHomepageDestinationViewHolder.LAYOUT -> return TravelHomepageDestinationViewHolder(parent, onBindListener, onItemClickListener)
+            TravelHomepageProductCardViewHolder.LAYOUT -> return TravelHomepageProductCardViewHolder(parent, onBindListener, onItemClickListener)
         }
         return super.createViewHolder(parent, type)
     }
@@ -37,4 +32,6 @@ open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemB
     override fun type(viewModel: TravelHomepageDestinationModel): Int = TravelHomepageDestinationViewHolder.LAYOUT
 
     override fun type(model: TravelHomepageSectionModel): Int = TravelHomepageSectionViewHolder.LAYOUT
+
+    override fun type(model: TravelHomepageProductCardModel): Int = TravelHomepageProductCardViewHolder.LAYOUT
 }

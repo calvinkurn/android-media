@@ -11,4 +11,6 @@ interface OnItemBindListener {
     fun onOrderListVHBind(isFromCloud: Boolean?)
     fun onRecentSearchVHBind(isFromCloud: Boolean?)
     fun onRecommendationVHBind(isFromCloud: Boolean?)
+
+    fun onItemBindViewHolder(isFromCloud: Boolean?)
 }
