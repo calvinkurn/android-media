@@ -20,12 +20,16 @@ class ProductManageAdapterFactory(
     override fun type(viewModel: EmptyModel?): Int =  ProductManageEmptyList.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
-        return if (type == ProductViewHolder.LAYOUT) {
-            ProductViewHolder(view, listener, viewHolderListener)
-        } else if (type == ProductManageEmptyList.LAYOUT) {
-            ProductManageEmptyList(view)
-        } else {
-            super.createViewHolder(view, type)
+        return when (type) {
+            ProductViewHolder.LAYOUT -> {
+                ProductViewHolder(view, listener, viewHolderListener)
+            }
+            ProductManageEmptyList.LAYOUT -> {
+                ProductManageEmptyList(view)
+            }
+            else -> {
+                super.createViewHolder(view, type)
+            }
         }
     }
 }
