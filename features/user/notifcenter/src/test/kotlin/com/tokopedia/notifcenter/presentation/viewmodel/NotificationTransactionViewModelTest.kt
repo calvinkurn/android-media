@@ -21,20 +21,20 @@ class NotificationTransactionViewModelTest: Spek({
     InstantTaskExecutorRule(this)
 
     val notificationInfoTransactionUseCase = mockk<NotificationInfoTransactionUseCase>(relaxed = true)
-    val getNotificationTotalUnreadUseCase = mockk<GetNotificationTotalUnreadUseCase>(relaxed = true)
     val markAllNotificationUseCase = mockk<MarkAllReadNotificationUpdateUseCase>(relaxed = true)
     val markNotificationUseCase = mockk<MarkReadNotificationUpdateItemUseCase>(relaxed = true)
-    val notificationTransactionUseCase = mockk<NotificationTransactionUseCase>(relaxed = true)
+    val notificationTotalUnreadUseCase = mockk<GetNotificationTotalUnreadUseCase>(relaxed = true)
     val notificationFilterMapper  = mockk<GetNotificationUpdateFilterMapper>(relaxed = true)
+    val notificationTransactionUseCase = mockk<NotificationTransactionUseCase>(relaxed = true)
     val notificationFilterUseCase = mockk<NotificationFilterUseCase>(relaxed = true)
     val notificationMapper = mockk<GetNotificationUpdateMapper>(relaxed = true)
 
     val dispatcher = TestDispatcherProvider()
 
     val viewModel = NotificationTransactionViewModel(
-            getNotificationTotalUnreadUseCase = getNotificationTotalUnreadUseCase,
             notificationInfoTransactionUseCase = notificationInfoTransactionUseCase,
             notificationTransactionUseCase = notificationTransactionUseCase,
+            getNotificationTotalUnreadUseCase = notificationTotalUnreadUseCase,
             markAllReadNotificationUseCase = markAllNotificationUseCase,
             markNotificationUseCase = markNotificationUseCase,
             notificationFilterUseCase = notificationFilterUseCase,

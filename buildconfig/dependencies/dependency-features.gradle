@@ -209,6 +209,7 @@ ext {
             userIdentificationCommon        : ":features:user:user_identification_common",
             kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
+            liveness                        : ":features:user:liveness",
 
             fcm_common                            : ":features:fcm_common",
 
