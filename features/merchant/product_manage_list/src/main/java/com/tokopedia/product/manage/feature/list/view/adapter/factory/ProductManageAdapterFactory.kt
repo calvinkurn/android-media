@@ -15,7 +15,7 @@ class ProductManageAdapterFactory(
     private val viewHolderListener: ProductViewHolder.ProductViewHolderView
 ) : BaseAdapterTypeFactory(), BaseListCheckableTypeFactory<ProductViewModel> {
 
-    override fun type(postalCodeViewModel: ProductViewModel): Int = ProductViewHolder.LAYOUT
+    override fun type(productViewModel: ProductViewModel): Int = ProductViewHolder.LAYOUT
 
     override fun type(viewModel: EmptyModel?): Int =  ProductManageEmptyList.LAYOUT
 
