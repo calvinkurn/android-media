@@ -11,8 +11,9 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder.QuantityViewHolder
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.MAX_QUANTITY
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProductChild
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.adapter.OrderProductVariantAdapter
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.listener.CheckoutVariantActionListener
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import kotlinx.android.synthetic.main.card_order_product.view.*
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener) {

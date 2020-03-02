@@ -1,12 +1,15 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
+package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OptionVariantUiModel.Companion.STATE_NOT_SELECTED
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OptionVariantUiModel.Companion.STATE_SELECTED
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.adapter.VariantOptionAdapter
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.listener.CheckoutVariantActionListener
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OptionVariantUiModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OptionVariantUiModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OptionVariantUiModel.Companion.STATE_SELECTED
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.TypeVariantUiModel
 import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
 
 /**

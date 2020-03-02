@@ -1,8 +1,14 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
+package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.viewholder.SelectedTypeVariantViewHolder
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.viewholder.TypeVariantViewHolder
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.listener.CheckoutVariantActionListener
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.SelectedTypeVariantUiModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.TypeVariantUiModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.VariantUiModel
 
 class OrderProductVariantAdapter(val listener: CheckoutVariantActionListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 

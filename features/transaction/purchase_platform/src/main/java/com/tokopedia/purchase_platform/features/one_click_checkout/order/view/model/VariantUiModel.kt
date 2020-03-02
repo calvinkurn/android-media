@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
+package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -82,13 +82,13 @@ data class OptionVariantUiModel(
         val STATE_NOT_AVAILABLE = -1
 
         @JvmField
-        val CREATOR = object : Parcelable.Creator<com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OptionVariantUiModel> {
+        val CREATOR = object : Parcelable.Creator<OptionVariantUiModel> {
 
-            override fun createFromParcel(parcel: Parcel): com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OptionVariantUiModel {
+            override fun createFromParcel(parcel: Parcel): OptionVariantUiModel {
                 return OptionVariantUiModel(parcel)
             }
 
-            override fun newArray(size: Int): Array<com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OptionVariantUiModel?> {
+            override fun newArray(size: Int): Array<OptionVariantUiModel?> {
                 return arrayOfNulls(size)
             }
         }

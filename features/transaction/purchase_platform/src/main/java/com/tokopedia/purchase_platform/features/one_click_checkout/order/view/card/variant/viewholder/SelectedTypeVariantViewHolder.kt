@@ -1,9 +1,11 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
+package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.viewholder
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.adapter.SelectedVariantOptionAdapter
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.SelectedTypeVariantUiModel
 import kotlinx.android.synthetic.main.item_variant_detail_product_page.view.*
 
 class SelectedTypeVariantViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -17,9 +17,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.Orde
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.PreferenceListBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.*
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProductChild
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.QuantityUiModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
 import kotlinx.coroutines.Dispatchers

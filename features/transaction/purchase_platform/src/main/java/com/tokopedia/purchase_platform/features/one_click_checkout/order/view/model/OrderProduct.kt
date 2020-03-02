@@ -1,7 +1,5 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model
 
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.VariantUiModel
-
 data class OrderProduct(
         var parentId: Int = 0,
         var productName: String = "",

@@ -1,11 +1,15 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
+package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OptionVariantUiModel.Companion.STATE_NOT_AVAILABLE
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OptionVariantUiModel.Companion.STATE_NOT_SELECTED
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OptionVariantUiModel.Companion.STATE_SELECTED
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.listener.CheckoutVariantActionListener
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.listener.VariantChangeListener
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.viewholder.OptionVariantViewHolder
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OptionVariantUiModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OptionVariantUiModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OptionVariantUiModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OptionVariantUiModel.Companion.STATE_SELECTED
 
 class VariantOptionAdapter(var dataList: ArrayList<OptionVariantUiModel>, val listener: CheckoutVariantActionListener) : RecyclerView.Adapter<OptionVariantViewHolder>(), VariantChangeListener {
 

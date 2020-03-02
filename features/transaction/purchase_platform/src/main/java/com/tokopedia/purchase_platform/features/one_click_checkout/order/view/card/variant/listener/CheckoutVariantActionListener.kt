@@ -1,5 +1,6 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
+package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.listener
 
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OptionVariantUiModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 
 /**
