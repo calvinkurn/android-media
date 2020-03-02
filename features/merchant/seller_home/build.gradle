@@ -46,6 +46,7 @@ dependencies {
     //features
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.sellerHomeDrawer)
+    implementation project(rootProject.ext.features.sellerorder)
 
     //libs
     implementation project(rootProject.ext.libraries.tkpddesign)
