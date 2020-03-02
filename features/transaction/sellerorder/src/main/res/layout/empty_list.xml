@@ -8,11 +8,11 @@
     android:layout_marginStart="@dimen/dp_24"
     android:layout_marginEnd="@dimen/dp_24">
 
-    <com.tkpd.remoteresourcerequest.view.DeferredImageView
+    <ImageView
         android:id="@+id/ic_empty"
         android:layout_width="@dimen/dp_160"
         android:layout_height="@dimen/dp_160"
-        app:remoteFileName="ic_som_empty.png"
+        app:srcCompat="@drawable/ic_som_empty"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
