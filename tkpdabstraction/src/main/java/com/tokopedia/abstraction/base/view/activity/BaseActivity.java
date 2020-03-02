@@ -27,8 +27,6 @@ import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.track.TrackApp;
 
-import timber.log.Timber;
-
 
 /**
  * Created by nisie on 2/7/17.
