@@ -52,7 +52,7 @@ class QuickReplyViewHolder(itemView: View,
 
                 } else {
                     mesageBottom.visibility = View.GONE
-                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,R.drawable.left_bubble))
+                    MethodChecker.setBackground(mesageLayout, ContextCompat.getDrawable(itemView.context,com.tokopedia.chat_common.R.drawable.left_bubble))
                 }
             }
 
