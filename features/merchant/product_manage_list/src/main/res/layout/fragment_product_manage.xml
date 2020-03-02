@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/app_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        app:elevation="0dp">
+
+        <com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
+            android:id="@+id/topAdsWidgetFreeClaim"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="14dp"
+            android:visibility="gone"
+            app:layout_scrollFlags="scroll"
+            tools:visibility="visible" />
+
+        <com.tokopedia.design.text.SearchInputView
+            android:id="@+id/search_input_view_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_14"
+            app:layout_scrollFlags="scroll|snap|enterAlways"/>
+
+        <LinearLayout
+            android:paddingRight="17dp"
+            android:paddingEnd="17dp"
+            android:paddingLeft="17dp"
+            android:paddingStart="17dp"
+            android:layout_marginBottom="17dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textProductCount"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                app:typographyType="body_3"
+                app:typographyWeight="reguler"
+                android:text="@string/product_manage_bulk_count" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/textMultipleSelect"
+                android:textColor="@color/g_500"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:typographyType="heading_6"
+                app:typographyWeight="bold"
+                android:text="@string/product_manage_multiple_select" />
+        </LinearLayout>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:id="@+id/swipe_refresh_layout"
+        android:paddingRight="17dp"
+        android:paddingEnd="17dp"
+        android:paddingLeft="17dp"
+        android:paddingStart="17dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="gone">
+
+        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
+    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
