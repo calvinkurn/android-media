@@ -7,17 +7,16 @@ import android.net.Uri;
 
 import com.appsflyer.SingleInstallBroadcastReceiver;
 import com.google.android.gms.analytics.CampaignTrackingReceiver;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core.analytics.CampaignUtil;
-import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.analytics.deeplink.DeeplinkUTMUtils;
 import com.tokopedia.core.analytics.nishikino.model.Campaign;
+import com.tokopedia.core.router.CustomerRouter;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 public class InstallReceiver extends BroadcastReceiver {
     private static final String REFERRER = "referrer";
@@ -34,13 +33,16 @@ public class InstallReceiver extends BroadcastReceiver {
                 .map(new Func1<ReceiverData, Boolean>() {
                     @Override
                     public Boolean call(ReceiverData receiverData) {
-                        CommonUtils.dumper("RECEIVED BROADCAST");
+                        Timber.d("RECEIVED BROADCAST");
 
                         SingleInstallBroadcastReceiver appsflyerInstall = new SingleInstallBroadcastReceiver();
                         appsflyerInstall.onReceive(receiverData.contextData, receiverData.intentData);
                         new CampaignTrackingReceiver().onReceive(receiverData.contextData, receiverData.intentData);
 
                         trackIfFromCampaignUrl(data.contextData, receiverData.intentData.getStringExtra(REFERRER));
+
+                        if (receiverData.contextData != null && receiverData.contextData.getApplicationContext() instanceof CustomerRouter.IrisInstallRouter)
+                            ((CustomerRouter.IrisInstallRouter) receiverData.contextData.getApplicationContext()).sendIrisInstallEvent();
                         return true;
                     }
                 })

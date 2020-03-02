@@ -1,11 +1,27 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon
 
+import android.os.Bundle
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
 
 import java.util.ArrayList
 
-class DynamicIconSectionViewModel : HomeVisitable<HomeTypeFactory> {
+class DynamicIconSectionViewModel : HomeVisitable {
+    override fun equalsWith(b: Any?): Boolean {
+        if (b is DynamicIconSectionViewModel) {
+            return itemList == b.itemList
+        }
+        return false
+    }
+
+    override fun visitableId(): String {
+        return "dynamicIcon"
+    }
+
+    override fun getChangePayloadFrom(b: Any?): Bundle? {
+        return null
+    }
+
     private var trackingData: Map<String, Any>? = null
     private var isCombined: Boolean = false
     private var trackingDataForCombination: List<Any> = emptyList()

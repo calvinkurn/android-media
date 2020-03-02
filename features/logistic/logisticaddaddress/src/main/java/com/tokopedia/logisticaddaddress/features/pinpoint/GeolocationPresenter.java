@@ -22,13 +22,10 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
 import com.tokopedia.authentication.AuthHelper;
-import com.tokopedia.logisticaddaddress.R;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractor;
 import com.tokopedia.logisticaddaddress.data.RetrofitInteractorImpl;
 import com.tokopedia.logisticaddaddress.di.ActivityContext;
@@ -48,6 +45,7 @@ import com.tokopedia.user.session.UserSession;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 @GeolocationScope
 public class GeolocationPresenter implements GeolocationContract.GeolocationPresenter, LocationListener {
@@ -189,10 +187,10 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         int resultCode = availability.isGooglePlayServicesAvailable(context);
 
         if (ConnectionResult.SUCCESS == resultCode) {
-            CommonUtils.dumper("Google play services available");
+            Timber.d("Google play services available");
             return true;
         } else {
-            CommonUtils.dumper("Google play services unavailable");
+            Timber.d("Google play services unavailable");
             return false;
         }
     }

@@ -52,7 +52,7 @@ import com.tokopedia.payment.presenter.TopPayContract;
 import com.tokopedia.payment.presenter.TopPayPresenter;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.payment.utils.Constant;
-import com.tokopedia.payment.utils.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
@@ -427,7 +427,7 @@ public class TopPayActivity extends AppCompatActivity implements TopPayContract.
                 return true;
             } else if (url.contains(LOGIN_URL)) {
                 view.stopLoading();
-                showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TOPPAY);
+                showToastMessageWithForceCloseView(getString(R.string.toppay_error_login));
                 return true;
             } else if (url.contains(HCI_CAMERA_KTP)) {
                 view.stopLoading();

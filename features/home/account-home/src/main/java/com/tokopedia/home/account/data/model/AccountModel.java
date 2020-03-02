@@ -2,6 +2,7 @@ package com.tokopedia.home.account.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.home.account.data.pojo.UserProfileCompletion;
 import com.tokopedia.navigation_common.model.DebitInstantModel;
 import com.tokopedia.navigation_common.model.LePreapproveModel;
 import com.tokopedia.navigation_common.model.MembershipSumUserCard;
@@ -33,6 +34,9 @@ public class AccountModel {
     @SerializedName("profile")
     @Expose
     private ProfileModel profile = new ProfileModel();
+    @SerializedName("userProfileCompletion")
+    @Expose
+    private UserProfileCompletion userProfileCompletion = new UserProfileCompletion();
     @SerializedName("userShopInfo")
     @Expose
     private UserShopInfoModel shopInfo = new UserShopInfoModel();
@@ -97,6 +101,14 @@ public class AccountModel {
 
     public void setProfile(ProfileModel profile) {
         this.profile = profile;
+    }
+
+    public UserProfileCompletion getUserProfileCompletion() {
+        return userProfileCompletion;
+    }
+
+    public void setUserProfileCompletion(UserProfileCompletion userProfileCompletion) {
+        this.userProfileCompletion = userProfileCompletion;
     }
 
     public UserShopInfoModel getShopInfo() {

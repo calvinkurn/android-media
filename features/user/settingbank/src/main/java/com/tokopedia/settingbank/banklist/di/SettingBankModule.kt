@@ -27,12 +27,17 @@ import retrofit2.Retrofit
 
 @SettingBankScope
 @Module
-class SettingBankModule{
+open class SettingBankModule{
 
     @SettingBankScope
     @Provides
     fun provideSettingBankRetrofit(retrofitBuilder: Retrofit.Builder,
                                    okHttpClient: OkHttpClient): Retrofit{
+        return realprovideSettingBankRetrofit(retrofitBuilder, okHttpClient)
+    }
+
+    open fun realprovideSettingBankRetrofit(retrofitBuilder: Retrofit.Builder,
+                                            okHttpClient: OkHttpClient): Retrofit{
         return retrofitBuilder.baseUrl(SettingBankUrl.BASE_URL).client(okHttpClient).build()
     }
 
@@ -64,8 +69,10 @@ class SettingBankModule{
     @SettingBankScope
     @Provides
     fun provideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface)
-            : FingerprintInterceptor =  FingerprintInterceptor(networkRouter, userSession)
+            : FingerprintInterceptor =  realProvideFingerprintInterceptor(networkRouter, userSession)
 
+    open fun realProvideFingerprintInterceptor(networkRouter: NetworkRouter, userSession: UserSessionInterface)
+            : FingerprintInterceptor =  FingerprintInterceptor(networkRouter, userSession)
 
     @SettingBankScope
     @Provides

@@ -146,7 +146,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
                             if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_TEXT, ignoreCase = true) ||
                                     insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_NUMBER, ignoreCase = true)) {
 
-                                val view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.application_detail_text, null, false)
+                                val view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.pp_detail_text, null, false)
 
                                 val subtitle = view.findViewById<TextView>(R.id.sub_title)
                                 val errorMessageView = view.findViewById<TextView>(R.id.error_message)
@@ -179,7 +179,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
 
                             } else if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DATE, ignoreCase = true)) {
 
-                                val view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.application_detail_date, null, false)
+                                val view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.pp_detail_date, null, false)
 
                                 (view.findViewById<View>(R.id.title) as TextView).text = insuranceProductApplicationDetails.label
                                 val subTitleTextView = view.findViewById<TextView>(R.id.sub_title)
@@ -218,7 +218,7 @@ class InsuranceCartShopViewHolder(itemView: View, private val insuranceItemActio
 
                             } else if (insuranceProductApplicationDetails.type.equals(INSURANCE_APPLICATION_TYPE_DROPDOWN, ignoreCase = true)) {
 
-                                val view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.application_detail_date, null, false)
+                                val view = LayoutInflater.from(tvChangeInsuranceApplicationDetails.context).inflate(R.layout.pp_detail_date, null, false)
 
                                 (view.findViewById<View>(R.id.title) as TextView).text = insuranceProductApplicationDetails.label
                                 val subTitleTextView = view.findViewById<TextView>(R.id.sub_title)

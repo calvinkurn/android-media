@@ -90,7 +90,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
         arguments?.let {
             mediaType = it.getString(ARG_MEDIA_TYPE, TYPE_IMAGE)
             mediaSource = it.getString(ARG_MEDIA_SRC, "")
-            mediaPosition = it.getInt(ARG_MEDIA_POSITION)
+                mediaPosition = it.getInt(ARG_MEDIA_POSITION)
         }
     }
 

@@ -1,5 +1,8 @@
 package com.tokopedia.shop.common.di.module
 
+import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor.Companion.getInstance
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -10,6 +13,8 @@ import com.tokopedia.shop.common.di.ShopQualifier
 import com.tokopedia.shop.common.di.scope.ShopScope
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopbasicdata.GetShopReputationUseCase
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -38,14 +43,13 @@ class ShopModule {
     }
 
     @Provides
-    fun provideGqlGetShopInfoUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
-                                     @Named(GQLQueryNamedConstant.SHOP_INFO) gqlQuery: String?): GQLGetShopInfoUseCase {
-        return GQLGetShopInfoUseCase(gqlQuery!!, graphqlUseCase!!)
-    }
-
-    @Provides
     fun provideGetShopReputationUseCase(graphqlUseCase: MultiRequestGraphqlUseCase?,
                                         @Named(GQLQueryNamedConstant.SHOP_REPUTATION) gqlQuery: String?): GetShopReputationUseCase {
         return GetShopReputationUseCase(gqlQuery!!, graphqlUseCase!!)
+    }
+
+    @Provides
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+        return UserSession(context)
     }
 }

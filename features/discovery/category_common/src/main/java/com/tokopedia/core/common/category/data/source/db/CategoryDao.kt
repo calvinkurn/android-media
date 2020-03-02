@@ -12,7 +12,7 @@ interface CategoryDao{
     @Query("DELETE FROM ${DBMetaData.DB_TABLE}")
     fun clearTables()
 
-    @Query("SELECT * FROM ${DBMetaData.DB_TABLE} WHERE parentId = :parentId ORDER BY weight ASC")
+    @Query("SELECT * FROM ${DBMetaData.DB_TABLE} WHERE parentId = :parentId")
     fun getCategoryListByParent(parentId: Long): List<CategoryDataBase>
 
     @Query("SELECT * FROM ${DBMetaData.DB_TABLE}")

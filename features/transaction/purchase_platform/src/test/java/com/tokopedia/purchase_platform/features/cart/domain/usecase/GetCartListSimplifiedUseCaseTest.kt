@@ -17,7 +17,7 @@ import org.spekframework.spek2.style.gherkin.Feature
 import rx.Observable
 import rx.observers.AssertableSubscriber
 
-class GetCartListSimplifiedUseCaseTest : Spek({
+object GetCartListSimplifiedUseCaseTest : Spek({
 
     val graphqlUseCase = mockk<GraphqlUseCase>(relaxed = true)
     val cartMapperV3 = mockk<CartSimplifiedMapper>()

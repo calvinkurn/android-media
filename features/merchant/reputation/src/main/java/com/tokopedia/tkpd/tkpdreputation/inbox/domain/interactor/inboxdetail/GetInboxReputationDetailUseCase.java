@@ -1,16 +1,13 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
-import com.tokopedia.tkpd.tkpdreputation.domain.interactor.GetLikeDislikeReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inbox.GetInboxReputationUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.InboxReputationDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.CheckShopFavoriteDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.InboxReputationDetailDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.ReviewDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.InboxReputationItemViewModel;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -25,12 +22,10 @@ public class GetInboxReputationDetailUseCase extends UseCase<InboxReputationDeta
     private final GetReviewUseCase getReviewUseCase;
     private final CheckShopFavoritedUseCase checkShopFavoritedUseCase;
 
-    public GetInboxReputationDetailUseCase(ThreadExecutor threadExecutor,
-                                           PostExecutionThread postExecutionThread,
-                                           GetInboxReputationUseCase getInboxReputationUseCase,
+    public GetInboxReputationDetailUseCase(GetInboxReputationUseCase getInboxReputationUseCase,
                                            GetReviewUseCase getReviewUseCase,
                                            CheckShopFavoritedUseCase checkShopFavoritedUseCase) {
-        super(threadExecutor, postExecutionThread);
+        super();
         this.getInboxReputationUseCase = getInboxReputationUseCase;
         this.getReviewUseCase = getReviewUseCase;
         this.checkShopFavoritedUseCase = checkShopFavoritedUseCase;

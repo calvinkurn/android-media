@@ -1,12 +1,12 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
+import com.tokopedia.discovery.common.EventObserver
+import com.tokopedia.discovery.common.State
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.InstantTaskExecutorRuleSpek
 import com.tokopedia.search.TestException
-import com.tokopedia.search.result.common.EventObserver
-import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.isNeverExecuted
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler
@@ -211,6 +211,17 @@ internal class HandleViewVisibilityChangedTest: Spek({
 
                 hasNextPage shouldBe true
             }
+
+            Then("assert get dynamic filter API called once") {
+                getDynamicFilterUseCase.isExecuted()
+            }
+
+            Then("assert bottom navigation visibility event is true (visible)") {
+                val bottomNavigationVisibilityEventLiveData = searchShopViewModel.getBottomNavigationVisibilityEventLiveData().value
+
+                val bottomNavigationVisibilityEvent = bottomNavigationVisibilityEventLiveData?.getContentIfNotHandled()
+                bottomNavigationVisibilityEvent shouldBe true
+            }
         }
 
         Scenario("Search Shop First Page Successful Without Next Page") {
@@ -265,6 +276,13 @@ internal class HandleViewVisibilityChangedTest: Spek({
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
                 hasNextPage shouldBe false
+            }
+
+            Then("assert bottom navigation visibility event is true (visible)") {
+                val bottomNavigationVisibilityEventLiveData = searchShopViewModel.getBottomNavigationVisibilityEventLiveData().value
+
+                val bottomNavigationVisibilityEvent = bottomNavigationVisibilityEventLiveData?.getContentIfNotHandled()
+                bottomNavigationVisibilityEvent shouldBe true
             }
         }
 
@@ -321,6 +339,13 @@ internal class HandleViewVisibilityChangedTest: Spek({
 
                 hasNextPage shouldBe true
             }
+
+            Then("assert bottom navigation visibility event is true (visible)") {
+                val bottomNavigationVisibilityEventLiveData = searchShopViewModel.getBottomNavigationVisibilityEventLiveData().value
+
+                val bottomNavigationVisibilityEvent = bottomNavigationVisibilityEventLiveData?.getContentIfNotHandled()
+                bottomNavigationVisibilityEvent shouldBe true
+            }
         }
 
         Scenario("Search Shop First Page Successful Without Valid CPM Shop") {
@@ -376,11 +401,19 @@ internal class HandleViewVisibilityChangedTest: Spek({
 
                 hasNextPage shouldBe true
             }
+
+            Then("assert bottom navigation visibility event is true (visible)") {
+                val bottomNavigationVisibilityEventLiveData = searchShopViewModel.getBottomNavigationVisibilityEventLiveData().value
+
+                val bottomNavigationVisibilityEvent = bottomNavigationVisibilityEventLiveData?.getContentIfNotHandled()
+                bottomNavigationVisibilityEvent shouldBe true
+            }
         }
 
         Scenario("Search Shop First Page Error") {
             val exception = TestException()
             val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
 
             lateinit var searchShopViewModel: SearchShopViewModel
 
@@ -411,97 +444,6 @@ internal class HandleViewVisibilityChangedTest: Spek({
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
                 hasNextPage shouldBe false
-            }
-        }
-
-        Scenario("Search Shop with Empty Result") {
-            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
-            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
-
-            lateinit var searchShopViewModel: SearchShopViewModel
-
-            Given("search shop view model") {
-                searchShopViewModel = createSearchShopViewModel()
-            }
-
-            Given("search shop API will be successful and return empty search shop list") {
-                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyList)
-                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
-            }
-
-            When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
-            }
-
-            Then("assert search shop state is success and only contains empty search data") {
-                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
-
-                searchShopState.shouldBeInstanceOf<State.Success<*>>()
-                searchShopState.shouldOnlyHaveEmptySearchModel()
-            }
-
-            Then("should post empty search tracking event") {
-                val emptySearchTrackingEvent = searchShopViewModel.getEmptySearchTrackingEventLiveData().value
-
-                emptySearchTrackingEvent?.getContentIfNotHandled() shouldBe true
-            }
-
-            Then("assert has next page is false") {
-                val hasNextPage = searchShopViewModel.getHasNextPage()
-
-                hasNextPage shouldBe false
-            }
-        }
-    }
-
-    Feature("Get Dynamic Filter After Search Shop First Page Successful") {
-        createTestInstance()
-
-        Scenario("Search Shop First Page Successful") {
-            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
-            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
-
-            lateinit var searchShopViewModel: SearchShopViewModel
-
-            Given("search shop view model") {
-                searchShopViewModel = createSearchShopViewModel()
-            }
-
-            Given("search shop API will be successful and return search shop data") {
-                searchShopFirstPageUseCase.stubExecute().returns(searchShopModel)
-                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
-            }
-
-            When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
-            }
-
-            Then("assert get dynamic filter API called once") {
-                getDynamicFilterUseCase.isExecuted()
-            }
-        }
-
-        Scenario("Search Shop First Page Error") {
-            val exception = TestException()
-            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
-            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
-
-            lateinit var searchShopViewModel: SearchShopViewModel
-
-            Given("search shop view model") {
-                searchShopViewModel = createSearchShopViewModel()
-            }
-
-            Given("search shop API will be successful and return search shop data") {
-                searchShopFirstPageUseCase.stubExecute().throws(exception)
-            }
-
-            When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
-            }
-
-            Then("assert exception print stack trace is called") {
-                exception.isStackTracePrinted shouldBe true
             }
 
             Then("assert get dynamic filter API never called") {
@@ -582,51 +524,6 @@ internal class HandleViewVisibilityChangedTest: Spek({
                 val getDynamicFilterResponseEvent = searchShopViewModel.getDynamicFilterEventLiveData().value
 
                 getDynamicFilterResponseEvent?.getContentIfNotHandled() shouldBe false
-            }
-        }
-
-        Scenario("Get Dynamic Filter Successful and Search Shop Has Empty Result") {
-            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
-            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
-            val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
-
-            lateinit var searchShopViewModel: SearchShopViewModel
-
-            Given("search shop view model") {
-                searchShopViewModel = createSearchShopViewModel()
-            }
-
-            Given("search shop API will be successful and return empty search shop list") {
-                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyList)
-            }
-
-            Given("dynamic filter API will be successful") {
-                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
-            }
-
-            When("handle view is visible and added") {
-                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
-            }
-
-            Then("assert save dynamic filter is executed") {
-                verify(exactly = 1) {
-                    searchLocalCacheHandler.saveDynamicFilterModelLocally(
-                            SearchShopViewModel.SCREEN_SEARCH_PAGE_SHOP_TAB, dynamicFilterModel)
-                }
-            }
-
-            Then("assert dynamic filter response event is success (true)") {
-                val getDynamicFilterResponseEvent = searchShopViewModel.getDynamicFilterEventLiveData().value
-
-                getDynamicFilterResponseEvent?.getContentIfNotHandled() shouldBe true
-            }
-
-            Then("assert search shop state is success and have updated Empty Search Model with Filter Data") {
-                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
-
-                searchShopState.shouldBeInstanceOf<State.Success<*>>()
-                searchShopState.shouldOnlyHaveEmptySearchModel()
-                searchShopState.shouldHaveEmptySearchModelWithExpectedIsFilter(true)
             }
         }
     }

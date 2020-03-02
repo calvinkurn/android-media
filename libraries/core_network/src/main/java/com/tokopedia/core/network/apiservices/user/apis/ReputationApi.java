@@ -1,5 +1,6 @@
 package com.tokopedia.core.network.apiservices.user.apis;
 
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.core.network.constants.TkpdBaseURL;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 
@@ -18,49 +19,50 @@ import rx.Observable;
  */
 
 @Deprecated
+
 public interface ReputationApi {
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_INBOX_REPUTATION)
-    Observable<Response<TkpdResponse>> getInbox(@QueryMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> getInbox(@QueryMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_DETAIL_INBOX_REPUTATION)
-    Observable<Response<TkpdResponse>> getInboxDetail(@QueryMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> getInboxDetail(@QueryMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_SEND_REPUTATION_SMILEY)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> sendSmiley(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> sendSmiley(@FieldMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_SEND_REVIEW_VALIDATE)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> sendReviewValidate(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> sendReviewValidate(@FieldMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_SEND_REVIEW_SUBMIT)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> sendReviewSubmit(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> sendReviewSubmit(@FieldMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_SKIP_REVIEW)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> skipReview(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> skipReview(@FieldMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_EDIT_REVIEW_VALIDATE)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> editReviewValidate(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> editReviewValidate(@FieldMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_EDIT_REVIEW_SUBMIT)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> editReviewSubmit(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> editReviewSubmit(@FieldMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_REPORT_REVIEW)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> reportReview(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> reportReview(@FieldMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_DELETE_REVIEW_RESPONSE)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> deleteReviewResponse(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> deleteReviewResponse(@FieldMap Map<String, String> params);
 
     @POST(TkpdBaseURL.Reputation.PATH_INSERT_REVIEW_RESPONSE)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> insertReviewResponse(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> insertReviewResponse(@FieldMap Map<String, String> params);
 
     @GET(TkpdBaseURL.Reputation.PATH_GET_LIKE_DISLIKE_REVIEW)
     Observable<Response<TkpdResponse>> getLikeDislikeReview(@QueryMap Map<String, Object>
@@ -68,6 +70,6 @@ public interface ReputationApi {
 
     @POST(TkpdBaseURL.Reputation.PATH_LIKE_DISLIKE_REVIEW)
     @FormUrlEncoded
-    Observable<Response<TkpdResponse>> likeDislikeReview(@FieldMap Map<String, Object> params);
+    Observable<Response<TokopediaWsV4Response>> likeDislikeReview(@FieldMap Map<String, String> params);
 
 }

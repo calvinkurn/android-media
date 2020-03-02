@@ -6,13 +6,14 @@ import android.view.View;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.home.R;
 import com.tokopedia.home.beranda.listener.HomeFeedsListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeRetryModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel;
 
 /**
  * Created by henrypriyono on 1/12/18.
  */
 
-public class RetryViewHolder extends AbstractViewHolder<RetryModel> {
+public class RetryViewHolder extends AbstractViewHolder<HomeRetryModel> {
     @LayoutRes
     public final static int LAYOUT = R.layout.home_feeds_retry_layout;
     private final View button;
@@ -25,7 +26,7 @@ public class RetryViewHolder extends AbstractViewHolder<RetryModel> {
     }
 
     @Override
-    public void bind(RetryModel element) {
+    public void bind(HomeRetryModel element) {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

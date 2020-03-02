@@ -16,8 +16,8 @@ import com.tokopedia.shop.R;
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo;
 import com.tokopedia.shop.common.di.component.ShopComponent;
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
 import com.tokopedia.shop.favourite.di.component.DaggerShopFavouriteComponent;
 import com.tokopedia.shop.favourite.di.module.ShopFavouriteModule;
 import com.tokopedia.shop.favourite.view.adapter.ShopFavouriteAdapterTypeFactory;
@@ -135,7 +135,7 @@ public class ShopFavouriteListFragment extends BaseListFragment<ShopFollowerUiMo
             emptyModel.setButtonTitle("");
         } else {
             emptyModel.setTitle(getString(R.string.shop_product_empty_follower_title));
-            emptyModel.setContent(getString(R.string.shop_product_empty_product_title_desc, shopInfo.getInfo().getShopName()));
+            emptyModel.setContent(getString(R.string.shop_product_empty_product_title_desc, shopInfo.getShopCore().getName()));
             emptyModel.setButtonTitle(getString(R.string.shop_page_label_follow));
             if (shopInfo != null) {
                 shopPageTracking.impressionFollowFromZeroFollower(CustomDimensionShopPage.create(shopInfo));

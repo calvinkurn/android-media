@@ -1,7 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.FavoriteShopDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
@@ -27,7 +26,7 @@ public class FavoriteShopSubscriber extends Subscriber<FavoriteShopDomain> {
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingDialog();
-        viewListener.onErrorFavoriteShop(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorFavoriteShop(ErrorHandler.getErrorMessage(viewListener.getContext().getApplicationContext(), e));
     }
 
     @Override
@@ -37,7 +36,7 @@ public class FavoriteShopSubscriber extends Subscriber<FavoriteShopDomain> {
         if (favoriteShopDomain.getIsSuccess() == 1)
             viewListener.onSuccessFavoriteShop();
         else
-            viewListener.onErrorFavoriteShop(MainApplication.getAppContext().getString(R.string
+            viewListener.onErrorFavoriteShop(viewListener.getContext().getApplicationContext().getString(R.string
                     .default_request_error_unknown));
 
     }

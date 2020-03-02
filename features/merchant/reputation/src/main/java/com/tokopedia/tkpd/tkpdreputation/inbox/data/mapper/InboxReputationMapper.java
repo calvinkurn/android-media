@@ -1,13 +1,10 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.data.mapper;
 
-import androidx.annotation.Nullable;
 import android.text.TextUtils;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.ErrorMessageException;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
-import com.tokopedia.core.network.retrofit.response.TkpdResponse;
-import com.tokopedia.tkpd.tkpdreputation.R;
+import androidx.annotation.Nullable;
+
+import com.tokopedia.abstraction.common.network.response.TokopediaWsV4Response;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.InboxReputation;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.InboxReputationPojo;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.pojo.inbox.OrderData;
@@ -26,6 +23,7 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.ReputationDataDomain
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeBadgeCustomerDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeBadgeSellerDomain;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.RevieweeDataDomain;
+import com.tokopedia.tkpd.tkpdreputation.network.ErrorMessageException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,9 +35,9 @@ import rx.functions.Func1;
  * @author by nisie on 8/14/17.
  */
 
-public class InboxReputationMapper implements Func1<Response<TkpdResponse>, InboxReputationDomain> {
+public class InboxReputationMapper implements Func1<Response<TokopediaWsV4Response>, InboxReputationDomain> {
     @Override
-    public InboxReputationDomain call(Response<TkpdResponse> response) {
+    public InboxReputationDomain call(Response<TokopediaWsV4Response> response) {
 
         if (response.isSuccessful()) {
             if ((!response.body().isNullData()
@@ -56,7 +54,10 @@ public class InboxReputationMapper implements Func1<Response<TkpdResponse>, Inbo
                 }
             }
         } else {
-            String messageError = ErrorHandler.getErrorMessage(response);
+            String messageError = "";
+            if (response.body() != null) {
+                messageError = response.body().getErrorMessageJoined();
+            }
             if (!TextUtils.isEmpty(messageError)) {
                 throw new ErrorMessageException(messageError);
             } else {

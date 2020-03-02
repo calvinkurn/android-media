@@ -1,7 +1,7 @@
 package com.tokopedia.abstraction.common.network.exception;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
-import com.tokopedia.abstraction.common.network.constant.ResponseStatus;
+import com.tokopedia.network.constant.ErrorNetMessage;
+import com.tokopedia.network.constant.ResponseStatus;
 
 import java.io.IOException;
 

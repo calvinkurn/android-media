@@ -9,6 +9,7 @@ import com.tokopedia.applink.DeepLinkChecker.CONTENT
 import com.tokopedia.applink.DeepLinkChecker.DEALS
 import com.tokopedia.applink.DeepLinkChecker.DISCOVERY_PAGE
 import com.tokopedia.applink.DeepLinkChecker.ETALASE
+import com.tokopedia.applink.DeepLinkChecker.FIND
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
 import com.tokopedia.applink.DeepLinkChecker.GROUPCHAT
 import com.tokopedia.applink.DeepLinkChecker.HOT
@@ -32,6 +33,7 @@ import com.tokopedia.applink.DeepLinkChecker.SHOP
 import com.tokopedia.applink.DeepLinkChecker.SMCREFERRAL
 import com.tokopedia.applink.DeepLinkChecker.TOKOPOINT
 import com.tokopedia.applink.DeepLinkChecker.TOPPICKS
+import com.tokopedia.applink.DeepLinkChecker.TRAVEL_HOMEPAGE
 import com.tokopedia.applink.DeepLinkChecker.WALLET_OVO
 
 class DeeplinkMatcher() {
@@ -56,6 +58,7 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 0, mapOf(0 to "search")) to BROWSE)
             add(Pattern(EQ, 1, mapOf(0 to "hot")) to HOT_LIST)
             add(Pattern(GT, 1, mapOf(0 to "hot")) to HOT)
+            add(Pattern(GT, 0, mapOf(0 to "find")) to FIND)
             add(Pattern(GT, 0, mapOf(0 to "catalog")) to CATALOG)
             add(Pattern(EQ, 2, mapOf(0 to "b")) to DISCOVERY_PAGE)
             add(Pattern(EQ, 2, mapOf(0 to "discovery")) to DISCOVERY_PAGE)
@@ -82,6 +85,8 @@ class DeeplinkMatcher() {
             add(Pattern(GT, 1, mapOf(0 to "kredit-motor")) to OTHER)
             add(Pattern(EQ, 2, mapOf(0 to "fm", 1 to "modal-toko")) to OTHER)
             add(Pattern(EQ, 1, mapOf(0 to "hotel")) to HOTEL)
+            add(Pattern(EQ, 1, mapOf(0 to "travel-entertainment")) to TRAVEL_HOMEPAGE)
+            add(Pattern(EQ, 2, mapOf(0 to "travel-entertainment")) to TRAVEL_HOMEPAGE)
             add(Pattern(EQ, 2, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 1, mapOf(0 to "rekomendasi")) to RECOMMENDATION)
             add(Pattern(EQ, 4, mapOf(0 to "product-review")) to PRODUCT_REVIEW)

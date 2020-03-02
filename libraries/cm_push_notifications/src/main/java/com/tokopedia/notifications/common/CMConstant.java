@@ -26,6 +26,8 @@ public interface CMConstant {
     String APP_VERSION_CACHE_KEY = "app_version_cache_key";
     String EXTRA_CAMPAIGN_ID = "extra_campaign_id";
     String EXTRA_PRE_DEF_ACTION = "extra_pre_def_action";
+    String HTTP = "http";
+    String WWW = "www";
 
 
     interface NotificationType {
@@ -36,6 +38,7 @@ public interface CMConstant {
         String PERSISTENT = "Persist";
         String ACTION_BUTTONS = "Action";
         String DELETE_NOTIFICATION = "Delete";
+        String DROP_NOTIFICATION = "Drop";
         String CAROUSEL_NOTIFICATION = "Carousel";
         String SILENT_PUSH = "Silent";
         String VISUAL_NOTIIFICATION = "Visual";

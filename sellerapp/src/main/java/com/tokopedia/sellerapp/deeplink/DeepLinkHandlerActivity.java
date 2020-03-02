@@ -21,6 +21,8 @@ import com.tokopedia.core.deeplink.CoreDeeplinkModule;
 import com.tokopedia.core.deeplink.CoreDeeplinkModuleLoader;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.createpost.view.applink.CreatePostModule;
+import com.tokopedia.createpost.view.applink.CreatePostModuleLoader;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModule;
 import com.tokopedia.developer_options.presentation.applink.RNDevOptionsApplinkModuleLoader;
 import com.tokopedia.flashsale.management.applink.FlashsaleDeeplinkModule;
@@ -85,6 +87,7 @@ import static com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.OPE
         ChangePasswordDeeplinkModule.class,
         UserIdentificationApplinkModule.class,
         FlashsaleDeeplinkModule.class,
+        CreatePostModule.class,
         RNDevOptionsApplinkModule.class
 })
 /* **
@@ -116,6 +119,7 @@ public class DeepLinkHandlerActivity extends AppCompatActivity {
                 new ChangePasswordDeeplinkModuleLoader(),
                 new UserIdentificationApplinkModuleLoader(),
                 new FlashsaleDeeplinkModuleLoader(),
+                new CreatePostModuleLoader(),
                 new RNDevOptionsApplinkModuleLoader()
         );
     }
