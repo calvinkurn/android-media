@@ -6,4 +6,8 @@
 
     <dimen name="play_view_stats_info_badge_radius">4dp</dimen>
     <dimen name="play_view_stats_info_view_padding">4dp</dimen>
+
+    <dimen name="play_product_sheet_radius">10dp</dimen>
+    <dimen name="play_product_sheet_title_margin_start">12dp</dimen>
+    <dimen name="play_product_sheet_title_content_margin">20dp</dimen>
 </resources>
