@@ -54,7 +54,7 @@ class UmrahHomepageViewModelTest {
     }
 
     @Test
-    fun `should return empty first data home page`(){
+    fun `responseUmrahData_EmptyHomepageData_ShowEmptyHomepage`(){
         //given
         coEvery {
             umrahHomepageEmptyDataUseCase.requestEmptyViewModels(true)
@@ -68,25 +68,4 @@ class UmrahHomepageViewModelTest {
         assert(isError==false)
 
     }
-
-    @Test
-    fun `should return success first search param data home page`(){
-//        val SEARCH_PARAM_ORDER = 0
-//        //given
-//        coEvery {
-//            umrahSearchParamUseCase.executeUseCase(any(), any())
-//        } returns Success(UmrahSearchParameterEntity())
-//
-//        //when
-//        umrahHomepageViewModel.getSearchParamData("",true)
-//
-//        //then
-//        val homePageData = umrahHomepageViewModel.homePageModel.value
-//        val searchParamData = homePageData?.get(SEARCH_PARAM_ORDER)
-//        val isSuccess = homePageData?.get(SEARCH_PARAM_ORDER)?.isSuccess
-//        val isLoaded = homePageData?.get(SEARCH_PARAM_ORDER)?.isLoaded
-//
-//        assert(isSuccess!!)
-    }
-
 }
