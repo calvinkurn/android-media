@@ -30,7 +30,8 @@ class Constants {
         const val CLIENT_LOGENTRIES = "logentries"
         const val CLIENT_SCALYR = "scalyr"
 
-        const val LOGENTRIES_ERROR_CODE = 204
+        const val LOGENTRIES_SUCCESS_CODE = 204
+        const val SCALYR_SUCCESS_CODE = 200
         const val LOG_DEFAULT_ERROR_CODE = 404
 
         val SCALYR_TOKEN = intArrayOf(48, 100, 49, 101, 104, 72, 98, 119, 110, 73, 101, 48, 83, 108, 57, 87, 71, 89, 115, 77, 105, 106, 89, 79, 47, 48, 87, 112, 88, 121, 49, 77, 79, 110, 107, 99, 95, 79, 85, 52, 56, 110, 54, 52, 45)

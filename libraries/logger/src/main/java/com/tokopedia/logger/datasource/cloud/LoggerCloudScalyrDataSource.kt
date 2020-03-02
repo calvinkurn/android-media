@@ -9,7 +9,6 @@ import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.LogSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
@@ -36,6 +35,8 @@ class LoggerCloudScalyrDataSource(val context: Context) {
         var urlConnection: HttpURLConnection? = null
         val url: URL
 
+        var responseCode = Constants.LOG_DEFAULT_ERROR_CODE
+
         try {
             val scalyrBody = ScalyrBody(decodedToken, LogSession.getLogSession(context), ScalyrSessionInfo(Constants.ANDROID_APP_VALUE),
                 scalyrEventList)
@@ -48,13 +49,12 @@ class LoggerCloudScalyrDataSource(val context: Context) {
             wr.flush()
             wr.close()
 
-            urlConnection.responseCode
-
+            responseCode = urlConnection.responseCode
         } catch (e: Throwable) {
             e.printStackTrace()
         } finally {
             urlConnection?.disconnect()
-            return urlConnection!!.responseCode
+            return responseCode
         }
     }
 

@@ -30,6 +30,8 @@ class LoggerCloudDatasource {
         var urlConnection: HttpURLConnection? = null
         val url: URL
 
+        var responseCode = Constants.LOG_DEFAULT_ERROR_CODE
+
         try {
             url = URL(Constants.SERVER_URL + token)
             urlConnection = url.openConnection() as HttpURLConnection
@@ -40,13 +42,12 @@ class LoggerCloudDatasource {
             wr.flush()
             wr.close()
 
-            urlConnection.responseCode
-
+            responseCode = urlConnection.responseCode
         } catch (e: Throwable) {
             e.printStackTrace()
         } finally {
             urlConnection?.disconnect()
-            return urlConnection!!.responseCode
+            return responseCode
         }
     }
 }

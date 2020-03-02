@@ -16,7 +16,6 @@ import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
 import com.tokopedia.logger.utils.*
 import kotlinx.coroutines.*
-import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -141,7 +140,10 @@ class LogManager(val application: Application) : CoroutineScope {
                 if (scalyrEnabled) {
                     launch {
                         try {
-                            logger.sendScalyrLogToServer(logs, secretKey)
+                            val errorCode = logger.sendScalyrLogToServer(logs, secretKey)
+                            if (errorCode == Constants.SCALYR_SUCCESS_CODE) {
+                                // no op
+                            }
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
@@ -154,7 +156,7 @@ class LogManager(val application: Application) : CoroutineScope {
                         val severity = getSeverity(log.serverChannel)
                         if (severity != Constants.SEVERITY_NONE) {
                             val errorCode = logger.sendLogToServer(severity, TOKEN, log, secretKey)
-                            if (errorCode == Constants.LOGENTRIES_ERROR_CODE) {
+                            if (errorCode == Constants.LOGENTRIES_SUCCESS_CODE) {
                                 logger.deleteEntry(ts)
                             }
                             delay(200)
