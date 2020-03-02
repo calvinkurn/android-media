@@ -165,10 +165,10 @@ class SomFilterFragment : BaseDaggerFragment() {
 
                     if (flag.equals(START_DATE, true)) {
                         currentFilterParams?.startDate = "$dateStr/$monthStr/${resultDate[2]}"
-                        et_start_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                        et_start_date?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
                     } else {
                         currentFilterParams?.endDate = "$dateStr/$monthStr/${resultDate[2]}"
-                        et_end_date.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
+                        et_end_date?.setText("$dateStr ${convertMonth(resultDate[1])} ${resultDate[2]}")
                     }
                     datePicker.dismiss()
                 }
@@ -184,11 +184,11 @@ class SomFilterFragment : BaseDaggerFragment() {
 
     private fun setupDatePickers() {
         currentFilterParams?.startDate?.let {
-            et_start_date.setText(convertFormatDate(it, "dd/MM/yyyy", "dd MMM yyyy"))
+            et_start_date?.setText(convertFormatDate(it, "dd/MM/yyyy", "dd MMM yyyy"))
         }
 
         currentFilterParams?.endDate?.let {
-            et_end_date.setText(convertFormatDate(it, "dd/MM/yyyy", "dd MMM yyyy"))
+            et_end_date?.setText(convertFormatDate(it, "dd/MM/yyyy", "dd MMM yyyy"))
         }
 
         et_start_date?.setOnClickListener { showDatePicker(START_DATE) }
@@ -307,12 +307,12 @@ class SomFilterFragment : BaseDaggerFragment() {
         statusList.forEach { status ->
             listStatusRadioBtn.add(SomSubFilter(status.id, status.text, status.key, status.type, FILTER_TYPE_RADIO, status.orderStatusIdList))
             if (status.orderStatusIdList == currentFilterParams?.statusList && !status.type.equals(FILTER_TYPE_SEPARATOR, true)) {
-                label_substatus.text = status.text
+                label_substatus?.text = status.text
                 statusTextFilled = true
             }
         }
         if (!statusTextFilled) {
-            label_substatus.setText(R.string.subtitle_status)
+            label_substatus?.setText(R.string.subtitle_status)
         }
 
         rl_status?.isClickable = true
@@ -358,14 +358,14 @@ class SomFilterFragment : BaseDaggerFragment() {
         var startDateStr = splitStartDate[0]
         if (startDateStr.length == 1) startDateStr = "0$startDateStr"
 
-        et_start_date.setText("$startDateStr ${convertMonth((splitStartDate[1].toInt()-1))} ${splitStartDate[2]}")
+        et_start_date?.setText("$startDateStr ${convertMonth((splitStartDate[1].toInt()-1))} ${splitStartDate[2]}")
 
         // end date
         val splitEndDate = resetEndDate.split('/')
         var endDateStr = splitEndDate[0]
         if (endDateStr.length == 1) endDateStr = "0$endDateStr"
 
-        et_end_date.setText("$endDateStr ${convertMonth((splitEndDate[1].toInt()-1))} ${splitEndDate[2]}")
-        label_substatus.text = statusList.first().text
+        et_end_date?.setText("$endDateStr ${convertMonth((splitEndDate[1].toInt()-1))} ${splitEndDate[2]}")
+        label_substatus?.text = statusList.first().text
     }
 }

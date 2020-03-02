@@ -22,7 +22,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -41,13 +41,12 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
 import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.constant.ShopStatusDef
 import com.tokopedia.shop.common.constant.ShopUrl
@@ -62,7 +61,6 @@ import com.tokopedia.shop.oldpage.di.module.OldShopPageModule
 import com.tokopedia.shop.oldpage.view.ShopPageViewModel
 import com.tokopedia.shop.oldpage.view.adapter.ShopPageViewPagerAdapter
 import com.tokopedia.shop.oldpage.view.holder.ShopPageHeaderViewHolder
-import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.product.view.fragment.ShopProductListLimitedFragment
 import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
@@ -83,6 +81,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopPageHeaderViewHolder.ShopPageHeaderListener, OnShopProductListFragmentListener {
 
     var shopId: String? = null
+    var shopRef: String = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
     var isShowFeed: Boolean = false
@@ -94,7 +93,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
     lateinit var viewModelFactory: ViewModelProvider.Factory
     lateinit var shopViewModel: ShopPageViewModel
 
-    lateinit var shopPageTracking: ShopPageTrackingBuyer
+    lateinit var shopPageTracking: OldShopPageTrackingBuyer
     lateinit var shopPageViewHolder: ShopPageHeaderViewHolder
 
     lateinit var shopPageViewPagerAdapter: ShopPageViewPagerAdapter
@@ -118,6 +117,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
     companion object {
         const val SHOP_ID = "EXTRA_SHOP_ID"
+        const val SHOP_REF = "EXTRA_SHOP_REF"
         const val SHOP_DOMAIN = "domain"
         const val SHOP_ATTRIBUTION = "EXTRA_SHOP_ATTRIBUTION"
         const val APP_LINK_EXTRA_SHOP_ID = "shop_id"
@@ -149,8 +149,11 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         private const val TOTAL_CART_CACHE_KEY = "CACHE_TOTAL_CART"
 
         @JvmStatic
-        fun createIntent(context: Context, shopId: String) = Intent(context, ShopPageActivity::class.java)
-                .apply { putExtra(SHOP_ID, shopId) }
+        fun createIntent(context: Context, shopId: String, shopRef: String) = Intent(context, ShopPageActivity::class.java)
+                .apply {
+                    putExtra(SHOP_ID, shopId)
+                    putExtra(SHOP_REF, shopRef)
+                }
     }
 
     override fun updateUIByShopName(shopName: String) {
@@ -169,7 +172,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         remoteConfig = FirebaseRemoteConfigImpl(this)
         cartLocalCacheHandler = LocalCacheHandler(this, CART_LOCAL_CACHE_NAME)
         performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
-        shopPageTracking = ShopPageTrackingBuyer(
+        shopPageTracking = OldShopPageTrackingBuyer(
                 TrackingQueue(this))
 
         titles = arrayOf(getString(R.string.shop_info_title_tab_product),
@@ -177,6 +180,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
 
         intent.run {
             shopId = getStringExtra(SHOP_ID)
+            shopRef = getStringExtra(SHOP_REF)
             shopDomain = getStringExtra(SHOP_DOMAIN)
             shopAttribution = getStringExtra(SHOP_ATTRIBUTION)
             tabPosition = getIntExtra(EXTRA_STATE_TAB_POSITION, TAB_POSITION_HOME)
@@ -191,6 +195,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             if (shopAttribution.isNullOrEmpty()) {
                 shopAttribution = getQueryParameter(SHOP_ATTRIBUTION)
             }
+            shopRef = getQueryParameter(SHOP_REF)
         }
         super.onCreate(savedInstanceState)
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
@@ -308,7 +313,8 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 this,
                 "",
                 cacheManagerId,
-                shopAttribution
+                shopAttribution,
+                shopRef
         ))
     }
 
@@ -360,6 +366,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager,
                 titles,
                 shopId,
+                shopRef,
                 shopAttribution,
                 this)
     }
@@ -634,7 +641,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         }
 
         val intent = RouteManager.getIntent(this,
-                if (GlobalConfig.isCustomerApp()) ApplinkConstInternalMarketplace.STORE_SETTING
+                if (!GlobalConfig.isSellerApp()) ApplinkConstInternalMarketplace.STORE_SETTING
                 else ApplinkConsInternalHome.MANAGE_SHOP_SELLERAPP_TEMP) ?: return
         startActivity(intent)
     }

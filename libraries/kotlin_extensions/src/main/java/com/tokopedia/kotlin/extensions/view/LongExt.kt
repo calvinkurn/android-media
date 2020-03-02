@@ -20,13 +20,14 @@ fun Long.pow(exponent: Int) = toDouble().pow(exponent).toLong()
 fun Long.toAmountString(
         ascendingSuffix: Array<String> = arrayOf("rb", "jt"),
         decimalPlaces: Int = 1,
-        divider: String = ""
+        separator: String = ",",
+        withSpacing: Boolean = false
 ): String {
     val exponent = 3
     val multiplier: Long = 10L.pow(exponent)
     for ((index, suffix) in ascendingSuffix.withIndex()) {
         val nextPowerOfTen = 10.pow(index * exponent) * multiplier
-        if (this >= nextPowerOfTen && this < nextPowerOfTen * multiplier) { return toAmountStringByDivider(nextPowerOfTen, suffix, decimalPlaces, divider) }
+        if (this >= nextPowerOfTen && this < nextPowerOfTen * multiplier) { return toAmountStringByDivider(nextPowerOfTen, suffix, decimalPlaces, separator, withSpacing) }
     }
     return this.toString()
 }
@@ -37,8 +38,9 @@ fun Long.toAmountString(
 fun Long.toAmountStringByDivider(
         denominator: Long,
         suffix: String,
-        decimalPlaces: Int = 1,
-        divider: String = ""
+        decimalPlaces: Int,
+        separator: String,
+        withSpacing: Boolean
 ): String {
     val wholeNum = this/denominator
     val fractionNum = this%denominator
@@ -46,12 +48,12 @@ fun Long.toAmountStringByDivider(
         append(wholeNum)
         if (fractionNum > 0) {
             val fractionString = fractionNum.toString()
-            append(",")
+            append(separator)
             for (num in 0 until decimalPlaces) {
                 if (num < fractionString.length) append("${fractionNum.toString()[num]}")
             }
         }
-        append(divider)
+        if (withSpacing) append(" ")
         append(suffix)
     }
 }

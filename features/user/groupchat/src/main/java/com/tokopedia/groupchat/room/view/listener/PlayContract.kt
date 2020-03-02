@@ -8,6 +8,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.channelinfo.SettingGroupChat
 import com.tokopedia.groupchat.chatroom.view.viewmodel.ChannelInfoViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
 import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
 import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
@@ -46,7 +47,9 @@ interface PlayContract {
         fun onSprintSaleReceived(it: SprintSaleAnnouncementViewModel)
         fun onStickyComponentReceived(it: StickyComponentsViewModel)
         fun onVideoStreamUpdated(it: VideoStreamViewModel)
+        fun onChatDisabled(it: ChatPermitViewModel)
         fun hasVideoVertical(): Boolean
+        fun showChatDisabledError()
     }
 
     interface Presenter: CustomerPresenter<View> {

@@ -1,7 +1,7 @@
 package com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder
 
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
 import com.tokopedia.travelhomepage.destination.presentation.adapter.TravelDestinationSectionAdapter
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_DEALS_ORDER
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_EVENT_ORDER
@@ -21,11 +21,11 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_destination_list.vi
  */
 class TravelDestinationSectionViewHolder(itemView: View, private val onViewHolderBindListener: OnViewHolderBindListener,
                                          private val actionListener: ActionListener)
-    : AbstractViewHolder<TravelDestinationSectionViewModel>(itemView) {
+    : AbstractViewHolder<TravelDestinationSectionModel>(itemView) {
 
     lateinit var sectionAdapter: TravelDestinationSectionAdapter
 
-    override fun bind(element: TravelDestinationSectionViewModel) {
+    override fun bind(element: TravelDestinationSectionModel) {
         if (element.isLoaded) {
             if (element.isSuccess && element.list.isNotEmpty()) {
 

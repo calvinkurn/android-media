@@ -14,9 +14,9 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import org.json.JSONObject
 import rx.Subscriber
 import rx.schedulers.Schedulers
-import java.lang.RuntimeException
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -158,7 +158,12 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                 "event" to "abtesting",
                 "eventCategory" to "abtesting",
                 "user_id" to if (userSession.isLoggedIn) userSession.userId else null,
-                "feature" to featureVariants.featureVariants
+                "feature" to featureVariants.featureVariants?.map {
+                    val jsonObject = JSONObject()
+                    jsonObject.put("name", it.feature)
+                    jsonObject.put("variant", it.variant)
+                    jsonObject
+                }
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
     }

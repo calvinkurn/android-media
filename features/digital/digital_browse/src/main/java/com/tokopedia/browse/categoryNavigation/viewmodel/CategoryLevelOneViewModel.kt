@@ -11,7 +11,7 @@ import rx.Subscriber
 import javax.inject.Inject
 
 
-class CategoryLevelOneViewModel @Inject constructor(var getCategoryListUseCase: GetCategoryLevelOneUseCase) : ViewModel() {
+class CategoryLevelOneViewModel @Inject constructor(private var getCategoryListUseCase: GetCategoryLevelOneUseCase) : ViewModel() {
 
 
     val categoryAllList = MutableLiveData<Result<CategoryAllList>>()

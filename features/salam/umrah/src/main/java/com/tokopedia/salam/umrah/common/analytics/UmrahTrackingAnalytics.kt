@@ -1,6 +1,6 @@
 package com.tokopedia.salam.umrah.common.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahProductModel

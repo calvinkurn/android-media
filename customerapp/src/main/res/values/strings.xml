@@ -177,4 +177,6 @@
     <string name="text_button_sort" translatable="false">Sort</string>
 
     <string name="saldo_webview_title">Tokopedia</string>
+  
+    <string name="title_logout" translatable="false">logout</string>
 </resources>

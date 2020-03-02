@@ -20,7 +20,9 @@ import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.state.TokopediaPlayPrepareState
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.TokopediaPlayVideoType
+import com.tokopedia.play_common.util.ExoPlaybackExceptionHelper
 import java.io.FileNotFoundException
 import java.io.IOException
 import kotlin.properties.Delegates
@@ -31,10 +33,8 @@ import kotlin.properties.Delegates
 class TokopediaPlayManager private constructor(private val applicationContext: Context) {
 
     companion object {
-        private const val EXOPLAYER_AGENT = "com.tkpd.exoplayer"
-
         private const val RETRY_COUNT_LIVE = 1
-        private const val RETRY_COUNT_DEFAULT = 3
+        private const val RETRY_COUNT_DEFAULT = 2
         private const val RETRY_DELAY = 1000L
 
         private const val VIDEO_MAX_SOUND = 1f
@@ -77,15 +77,17 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         }
 
         override fun onPlayerError(error: ExoPlaybackException) {
-            //TODO("Maybe return error based on corresponding cause?")
-            if (isBehindLiveWindow(error) || isInvalidResponseCode(error)) {
+            if (ExoPlaybackExceptionHelper.isBehindLiveWindow(error) ||
+                    ExoPlaybackExceptionHelper.isInvalidResponseCode(error) ||
+                    ExoPlaybackExceptionHelper.isConnectException(error)) {
+
                 val prepareState = currentPrepareState
                 if (prepareState is TokopediaPlayPrepareState.Prepared) {
                     stopPlayer()
                     safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady, true)
                 }
             } else {
-                //For now it's the same as BehindLiveWindow
+                //For now it's the same as the defined exception above
                 val prepareState = currentPrepareState
                 if (prepareState is TokopediaPlayPrepareState.Prepared) {
                     stopPlayer()
@@ -93,6 +95,19 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                 }
             }
             _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException(error.cause))
+        }
+
+        override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
+            try {
+                if (!timeline.isEmpty) {
+                    val currentWindow = timeline.getWindow(0, Timeline.Window())
+                    val prepareState = currentPrepareState
+                    if (!currentWindow.isLive && !currentWindow.isDynamic && prepareState is TokopediaPlayPrepareState.Prepared && prepareState.positionHandle is VideoPositionHandle.NotHandled) {
+                        currentPrepareState = prepareState.copy(positionHandle = VideoPositionHandle.Handled)
+                        if (prepareState.positionHandle.lastPosition != null) videoPlayer.seekTo(prepareState.positionHandle.lastPosition)
+                    }
+                }
+            } catch (e: Exception) {}
         }
     }
 
@@ -114,10 +129,9 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         }
         if (currentUri == null) videoPlayer = initVideoPlayer(videoPlayer)
         if (prepareState is TokopediaPlayPrepareState.Unprepared || currentUri != uri) {
-            val shouldResetPosition = (currentUri == null || currentUri != uri || forceReset) || (prepareState is TokopediaPlayPrepareState.Unprepared && prepareState.previousType.isLive)
             val lastPosition = if (prepareState is TokopediaPlayPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
-            playVideoWithUri(uri, autoPlay, shouldResetPosition, lastPosition)
-            currentPrepareState = TokopediaPlayPrepareState.Prepared(uri)
+            playVideoWithUri(uri, autoPlay, lastPosition)
+            currentPrepareState = TokopediaPlayPrepareState.Prepared(uri, if (prepareState is TokopediaPlayPrepareState.Unprepared) VideoPositionHandle.NotHandled(lastPosition) else VideoPositionHandle.Handled)
         }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
@@ -131,12 +145,11 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         safePlayVideoWithUri(Uri.parse(uriString), autoPlay, forceReset)
     }
 
-    private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, shouldReset: Boolean, lastPosition: Long?) {
+    private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, lastPosition: Long?) {
         val mediaSource = getMediaSourceBySource(applicationContext, uri)
         videoPlayer.playWhenReady = autoPlay
-        videoPlayer.prepare(mediaSource, shouldReset, true)
-        if (lastPosition != null) videoPlayer.seekTo(lastPosition)
-        else videoPlayer.seekToDefaultPosition()
+        videoPlayer.prepare(mediaSource, true, true)
+        if (lastPosition == null) videoPlayer.seekToDefaultPosition()
     }
 
     //endregion
@@ -169,7 +182,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                     getCurrentPosition()
             )
 
-        videoPlayer.stop(false)
+        videoPlayer.stop()
     }
     //endregion
 
@@ -218,28 +231,6 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         return mediaSource.createMediaSource(uri)
     }
     //endregion
-
-    private fun isBehindLiveWindow(e: ExoPlaybackException): Boolean {
-        if (e.type != ExoPlaybackException.TYPE_SOURCE) return false
-
-        var cause: Throwable? = e.sourceException
-        while (cause != null) {
-            if (cause is BehindLiveWindowException) return true
-            cause = cause.cause
-        }
-        return false
-    }
-
-    private fun isInvalidResponseCode(e: ExoPlaybackException): Boolean {
-        if (e.type != ExoPlaybackException.TYPE_SOURCE) return false
-
-        var cause: Throwable? = e.sourceException
-        while (cause != null) {
-            if (cause is HttpDataSource.InvalidResponseCodeException) return true
-            cause = cause.cause
-        }
-        return false
-    }
 
     private fun getErrorHandlingPolicy(): LoadErrorHandlingPolicy {
         return object : DefaultLoadErrorHandlingPolicy() {

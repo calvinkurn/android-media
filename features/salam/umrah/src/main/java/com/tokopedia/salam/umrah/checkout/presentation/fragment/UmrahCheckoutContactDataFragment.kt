@@ -58,7 +58,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
         initView()
 
-        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -100,7 +100,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
 
     fun initView() {
-        til_umrah_checkout_contact_name.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_title))
+        til_umrah_checkout_contact_name.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
 
         context?.let {
             travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
@@ -134,7 +134,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         til_umrah_checkout_contact_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
 
-        til_umrah_checkout_contact_email.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_email_title))
+        til_umrah_checkout_contact_email.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_title))
         til_umrah_checkout_contact_email.editText.apply {
             setText(contactData.email)
             addTextChangedListener(object : TextWatcher {

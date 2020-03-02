@@ -271,30 +271,6 @@ class ProductCardViewSmallGrid: ProductCardView {
         }
     }
 
-    fun setItemWithWrapBlankSpaceConfig(productCardModel: ProductCardModel,
-                                        blankSpaceConfig: BlankSpaceConfig) {
-        this.blankSpaceConfig = blankSpaceConfig
-
-        initProductImage(productCardModel.productImageUrl)
-        initWishlist(productCardModel.isWishlistVisible, productCardModel.isWishlisted)
-        initShopName(productCardModel.shopName)
-        initLabelPromo(productCardModel.labelPromo)
-        initProductName(productCardModel.productName)
-        initLabelDiscount(productCardModel.discountPercentage)
-        initSlashedPrice(productCardModel.slashedPrice)
-        initProductPrice(productCardModel.formattedPrice)
-        initShopBadgeList(productCardModel.shopBadgeList)
-        initShopLocation(productCardModel.shopLocation)
-        initRating(productCardModel.ratingCount)
-        initReview(productCardModel.reviewCount)
-        initLabelCredibility(productCardModel.ratingCount, productCardModel.reviewCount, productCardModel.labelCredibility)
-        initLabelOffers(productCardModel.labelOffers)
-        initFreeOngkir(productCardModel.freeOngkir)
-        initTopAdsIcon(productCardModel.isTopAds)
-
-        realignLayout()
-    }
-
     internal fun getViewNotVisibleWithBlankSpaceConfig(blankSpaceConfigValue: Boolean): Int {
         return if (blankSpaceConfigValue) {
             View.INVISIBLE

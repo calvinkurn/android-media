@@ -17,10 +17,10 @@ import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.TimberReportingTree
 import com.tokopedia.logger.utils.encrypt
 import com.tokopedia.logger.utils.generateKey
+import com.tokopedia.logger.utils.*
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import javax.crypto.SecretKey
 import kotlin.coroutines.CoroutineContext
 
@@ -65,11 +65,10 @@ class LogManager(val application: Application) : CoroutineScope {
         @JvmField
         var instance: LogManager? = null
         lateinit var loggerRepository: LoggerRepository
-        private lateinit var intent: Intent
         private lateinit var pi: PendingIntent
         private lateinit var jobScheduler: JobScheduler
         private lateinit var jobInfo: JobInfo
-        private lateinit var secretKey: SecretKey
+        private var secretKey = generateKey(Constants.ENCRYPTION_KEY)
 
         @JvmStatic
         fun init(application: Application) {
@@ -77,7 +76,6 @@ class LogManager(val application: Application) : CoroutineScope {
             val logsDao = LoggerRoomDatabase.getDatabase(application).logDao()
             val server = LoggerCloudDatasource()
             loggerRepository = LoggerRepository(logsDao, server)
-            secretKey = generateKey(Constants.ENCRYPTION_KEY)
             // Because JobService requires a minimum SDK version of 21, this if else block will allow devices with
             // SDK version lower than 21 to run a Service instead
             if (android.os.Build.VERSION.SDK_INT > 21) {
@@ -87,7 +85,7 @@ class LogManager(val application: Application) : CoroutineScope {
                         .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                         .build()
             } else {
-                intent = Intent(application, ServerService::class.java)
+                val intent = Intent(application, ServerService::class.java)
                 pi = PendingIntent.getService(application, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT)
             }
         }
@@ -100,14 +98,20 @@ class LogManager(val application: Application) : CoroutineScope {
         @JvmStatic
         fun log(message: String, timeStamp: Long, priority: Int, serverChannel: String) {
             instance?.run {
-                runBlocking {
+                globalScopeLaunch({
                     sendLogToDB(message, timeStamp, priority, serverChannel)
                     if (android.os.Build.VERSION.SDK_INT > 21) {
                         jobScheduler.schedule(jobInfo)
                     } else {
-                        pi.send()
+                        if(::loggerRepository.isInitialized) {
+                            pi.send()
+                        }
                     }
-                }
+                }, {
+                    it.printStackTrace()
+                }, {
+                    return@globalScopeLaunch
+                })
             }
         }
 
@@ -139,6 +143,9 @@ class LogManager(val application: Application) : CoroutineScope {
         }
 
         suspend fun getCount(): Int {
+            if(!::loggerRepository.isInitialized) {
+                return 0
+            }
             return loggerRepository.getCount()
         }
 

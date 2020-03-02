@@ -5,13 +5,14 @@ import androidx.collection.ArrayMap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.common_tradein.model.TradeInParams
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -27,7 +28,7 @@ import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
-import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
@@ -111,6 +112,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _toggleFavoriteResult = MutableLiveData<Result<Boolean>>()
     val toggleFavoriteResult: LiveData<Result<Boolean>>
         get() = _toggleFavoriteResult
+
+    var imageHeight : Int = 0
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -237,11 +240,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
             _p2ShopDataResp.value = p2ShopDeferred.await().also {
                 shopInfo = it.shopInfo
-                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInResponse()
                 tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
                 tradeInParams.usedPrice = tradeInResponse.usedPrice
                 tradeInParams.remainingPrice = tradeInResponse.remainingPrice
-                tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
+                tradeInParams.isUseKyc = if (tradeInResponse.isUseKyc) 1 else 0
+                tradeInParams.widgetString = tradeInResponse.widgetString
             }
 
             _p2General.value = p2GeneralAsync.await()
@@ -387,7 +391,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun loadRecommendation() {
         launch {
-            if (GlobalConfig.isCustomerApp()) {
+            if (!GlobalConfig.isSellerApp()) {
                 try {
                     withContext(dispatcher.io()) {
                         val recomData = getRecommendationUseCase.createObservable(getRecommendationUseCase.getRecomParams(
