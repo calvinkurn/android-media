@@ -20,14 +20,14 @@ class PromoEmptyStateViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoEmptyStateUiModel) {
-        ImageHandler.loadImageRounded2(itemView.context, itemView.image_empty_state, element.uiData.imageUrl)
-        itemView.label_empty_state_title.text = element.uiData.title
-        itemView.label_empty_state_sub_title.text = element.uiData.subTitle
+        itemView.empty_state_promo.setTitle(element.uiData.title)
+        itemView.empty_state_promo.setDescription(element.uiData.subTitle)
+        itemView.empty_state_promo.setImageUrl(element.uiData.imageUrl)
 
         if (element.uiState.isShowButton) {
-            itemView.button_action.show()
+            itemView.empty_state_promo.setPrimaryCTAText(element.uiData.buttonText)
         } else {
-            itemView.button_action.gone()
+            itemView.empty_state_promo.setPrimaryCTAText("")
         }
 
         val viewHeight = listener.getEmptyStateHeight()

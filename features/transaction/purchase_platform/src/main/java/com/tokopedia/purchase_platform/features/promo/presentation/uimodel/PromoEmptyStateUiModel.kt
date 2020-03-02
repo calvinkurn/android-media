@@ -15,7 +15,8 @@ data class PromoEmptyStateUiModel(
     data class UiData(
             var title: String = "",
             var subTitle: String = "",
-            var imageUrl: String= ""
+            var imageUrl: String= "",
+            var buttonText: String = ""
     )
 
     data class UiState(

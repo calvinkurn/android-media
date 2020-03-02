@@ -174,20 +174,20 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun loadData(page: Int) {
         hideLoading()
-        adapter.addVisitable(mockPromoRecommendation())
+//        adapter.addVisitable(mockPromoRecommendation())
         adapter.addVisitable(mockPromoInput())
 
-        adapter.addVisitable(mockEligibleHeader())
-        adapter.addVisitableList(mockEligiblePromoGlobalSection())
-        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
-        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
+//        adapter.addVisitable(mockEligibleHeader())
+//        adapter.addVisitableList(mockEligiblePromoGlobalSection())
+//        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
+//        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
 
-        adapter.addVisitable(mockIneligibleHeader())
-        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
-        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
-        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
+//        adapter.addVisitable(mockIneligibleHeader())
+//        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
+//        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
+//        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
 
-//        adapter.addVisitable(mockEmptyState())
+        adapter.addVisitable(mockEmptyState())
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {

@@ -310,10 +310,12 @@ fun mockEmptyState(): Visitable<*> {
     return PromoEmptyStateUiModel(
             uiData = PromoEmptyStateUiModel.UiData().apply {
                 title = "Yaah, kamu belum punya kupon belanja"
+                subTitle = "Ini Sub Title"
                 imageUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/06/newpm-cta-bottom-bg.jpg"
+                buttonText = "Click Me"
             },
             uiState = PromoEmptyStateUiModel.UiState().apply {
-                isShowButton = false
+                isShowButton = true
             }
     )
 }
