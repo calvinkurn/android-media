@@ -24,6 +24,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -144,7 +145,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(BottomInsetsType.Keyboard, it.isShown))
             }
         })
     }

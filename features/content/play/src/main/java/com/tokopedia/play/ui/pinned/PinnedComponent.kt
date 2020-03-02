@@ -46,7 +46,7 @@ open class PinnedComponent(
                                     true
                                 }
                             }
-                            is ScreenStateEvent.KeyboardStateChanged -> {
+                            is ScreenStateEvent.BottomInsetsView -> {
                                 if (!it.isShown && shouldShow) uiView.show() else uiView.hide()
                                 isKeyboardShown = it.isShown
                             }

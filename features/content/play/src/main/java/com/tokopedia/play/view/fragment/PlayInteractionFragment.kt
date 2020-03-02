@@ -53,6 +53,7 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.KeyboardState
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.*
@@ -315,7 +316,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(BottomInsetsType.Keyboard, it.isShown))
 
                 if (it is KeyboardState.Shown && !it.isPreviousStateSame) calculateInteractionHeightOnKeyboardShown(it.estimatedKeyboardHeight)
             }
