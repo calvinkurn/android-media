@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.ShopStatus
+import com.tokopedia.sellerhome.common.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
@@ -55,7 +56,7 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.PageRefreshListene
         initInjector()
         setupView()
         setupFragments()
-        checkAppUpdate()
+        UpdateCheckerHelper.checkAppUpdate(this)
         observeShopStatusLiveData()
     }
 
@@ -103,36 +104,6 @@ class SellerHomeActivity : BaseActivity(), SellerHomeFragment.PageRefreshListene
 
     override fun onRefreshPage() {
         //update notif counter
-    }
-
-    private fun checkAppUpdate() {
-        val appUpdate: ApplicationUpdate = SellerFirebaseRemoteAppUpdate(this)
-        appUpdate.checkApplicationUpdate(object : ApplicationUpdate.OnUpdateListener {
-            override fun onNeedUpdate(detail: DetailUpdate?) {
-                if (detail != null && !isFinishing) {
-                    AppUpdateDialogBuilder(
-                            this@SellerHomeActivity,
-                            detail,
-                            object : AppUpdateDialogBuilder.Listener {
-                                override fun onPositiveButtonClicked(detail: DetailUpdate?) {
-
-                                }
-
-                                override fun onNegativeButtonClicked(detail: DetailUpdate?) {
-
-                                }
-                            }).alertDialog.show()
-                }
-            }
-
-            override fun onError(e: Exception?) {
-                e?.printStackTrace()
-            }
-
-            override fun onNotNeedUpdate() {
-
-            }
-        })
     }
 
     private fun setToolbarTitle(title: String) {

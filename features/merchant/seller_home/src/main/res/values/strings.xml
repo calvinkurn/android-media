@@ -17,5 +17,8 @@
     <string name="sah_order">Order</string>
     <string name="sah_others">Lainnya</string>
 
+    <!--toolbar menu-->
+    <string name="sah_notification">Notifikasi</string>
+
     <string name="sah_ticker_warning">#ecdb77</string>
 </resources>
