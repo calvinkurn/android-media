@@ -52,7 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Timber.e("P1#REQUEST_ERROR_GQL#Hendry Test " + System.currentTimeMillis());
+        Timber.e("P1#IRIS#Hendry Test " + System.currentTimeMillis());
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         inappReceiver = new BroadcastReceiver() {
             @Override

@@ -115,8 +115,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             }
             tagSplit[2].toDoubleOrNull()?.let {
                 val randomNumber = Random().nextDouble() * MAX_RANDOM_NUMBER
-                Timber.d("${tagSplit[0]}#${tagSplit[1]} randomNumber = $randomNumber")
-                if (randomNumber < it) {
+                if (randomNumber <= it) {
                     val tagKey = StringBuilder()
                             .append(tagSplit[0])
                             .append("#")
