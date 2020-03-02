@@ -37,6 +37,8 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.data.model.HotelRoomDetailModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -342,9 +344,9 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
 
     private fun setupRoomPrice() {
         if (hotelRoom.roomPrice.deals.tagging.isNotEmpty()) {
-            room_detail_tagging.visibility = View.VISIBLE
+            room_detail_tagging.show()
             room_detail_tagging.text = hotelRoom.roomPrice.deals.tagging
-        } else room_detail_tagging.visibility = View.INVISIBLE
+        } else room_detail_tagging.hide()
 
         tv_room_detail_price.text = hotelRoom.roomPrice.roomPrice
         room_detail_button.text = getString(R.string.hotel_room_list_choose_room_button)
