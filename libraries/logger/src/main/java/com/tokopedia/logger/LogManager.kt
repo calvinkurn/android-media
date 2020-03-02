@@ -70,7 +70,6 @@ class LogManager(val application: Application) : CoroutineScope {
         private lateinit var jobScheduler: JobScheduler
         private lateinit var jobInfo: JobInfo
         private var secretKey = generateKey(Constants.ENCRYPTION_KEY)
-        private const val SCALYR_ENABLED = "android_scalyr_log_enabled"
         private var remoteConfig: RemoteConfig? = null
 
         @JvmStatic
@@ -96,7 +95,7 @@ class LogManager(val application: Application) : CoroutineScope {
 
         @JvmStatic
         fun isScalyrEnabled(): Boolean {
-            return getRemoteConfig()?.getBoolean(SCALYR_ENABLED, false) ?: false
+            return getRemoteConfig()?.getBoolean(Constants.SCALYR_ENABLED, false) ?: false
         }
 
         @JvmStatic
@@ -109,7 +108,7 @@ class LogManager(val application: Application) : CoroutineScope {
                 jobScheduler = application.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
                 jobInfo = JobInfo.Builder(1000, serviceComponent)
                     .setMinimumLatency(TimeUnit.SECONDS.toMillis(5))
-                    .setOverrideDeadline(TimeUnit.MINUTES.toMillis(1))
+                    .setOverrideDeadline(TimeUnit.SECONDS.toMillis(30))
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .build()
             } else {
@@ -158,7 +157,6 @@ class LogManager(val application: Application) : CoroutineScope {
                 if (isScalyrEnabled()) {
                     launch {
                         try {
-
                             logger.sendScalyrLogToServer(logs, secretKey)
                         } catch (ignored: Exception) {
 
@@ -174,7 +172,7 @@ class LogManager(val application: Application) : CoroutineScope {
                         if (errorCode == 204) {
                             logger.deleteEntry(ts)
                         }
-                        delay(500)
+                        delay(300)
                     }
                 }
             }
