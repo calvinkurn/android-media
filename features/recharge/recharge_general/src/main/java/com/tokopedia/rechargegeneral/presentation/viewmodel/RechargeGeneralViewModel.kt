@@ -24,13 +24,13 @@ class RechargeGeneralViewModel  @Inject constructor(
         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    private val _operatorCluster = MutableLiveData<Result<RechargeGeneralOperatorCluster>>()
+    private val mutableOperatorCluster = MutableLiveData<Result<RechargeGeneralOperatorCluster>>()
     val operatorCluster : LiveData<Result<RechargeGeneralOperatorCluster>>
-        get() = _operatorCluster
+        get() = mutableOperatorCluster
 
-    private val _productList = MutableLiveData<Result<RechargeGeneralProductData>>()
+    private val mutableProductList = MutableLiveData<Result<RechargeGeneralProductData>>()
     val productList : LiveData<Result<RechargeGeneralProductData>>
-        get() = _productList
+        get() = mutableProductList
 
     fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
@@ -40,9 +40,9 @@ class RechargeGeneralViewModel  @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
-            _operatorCluster.postValue(Success(data.response))
+            mutableOperatorCluster.postValue(Success(data.response))
         }) {
-            _operatorCluster.postValue(Fail(it))
+            mutableOperatorCluster.postValue(Fail(it))
         }
     }
 
@@ -54,9 +54,9 @@ class RechargeGeneralViewModel  @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralProductData.Response>()
 
-            _productList.postValue(Success(data.response))
+            mutableProductList.postValue(Success(data.response))
         }) {
-            _productList.postValue(Fail(it))
+            mutableProductList.postValue(Fail(it))
         }
     }
 
