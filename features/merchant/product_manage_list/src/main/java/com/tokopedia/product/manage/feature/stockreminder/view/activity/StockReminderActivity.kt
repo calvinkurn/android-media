@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.activity
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -28,7 +29,15 @@ class StockReminderActivity : BaseSimpleActivity() {
                 .inject(this)
     }
 
-    override fun getNewFragment(): Fragment? = StockReminderFragment()
+    override fun getNewFragment(): Fragment? {
+        var productId = 0L
+        val uri = intent.data
+        if (uri != null) {
+            val segments = uri.pathSegments
+            productId = segments[segments.size - 1].toLong()
+        }
+        return StockReminderFragment.createInstance(productId)
+    }
 
     override fun getScreenName(): String = AppScreen.SCREEN_STOCK_REMINDER
 
@@ -37,13 +46,8 @@ class StockReminderActivity : BaseSimpleActivity() {
         checkLogin()
     }
 
-    override fun onBackPressed() {
-        //gotomanageproducthome
-        super.onBackPressed()
-    }
-
     private fun checkLogin() {
-        userSession?.let {
+        userSession.let {
             if(!it.isLoggedIn) {
                 RouteManager.route(this, ApplinkConst.LOGIN)
                 finish()
@@ -53,8 +57,5 @@ class StockReminderActivity : BaseSimpleActivity() {
             }
         }
     }
-
-    private fun goToManageProductHome() {}
-
 
 }
