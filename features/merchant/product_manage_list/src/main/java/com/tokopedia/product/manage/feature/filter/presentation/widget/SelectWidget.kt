@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import kotlinx.android.synthetic.main.widget_select.view.*
 
 class SelectWidget : BaseCustomView {

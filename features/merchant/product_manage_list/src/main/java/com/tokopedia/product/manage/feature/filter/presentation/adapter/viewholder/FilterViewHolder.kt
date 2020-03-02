@@ -49,7 +49,7 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, c
         headerWidget.arrow.setOnClickListener {
             toggleChipsVisibility()
         }
-        adapter.setData(element.names, element.selectData)
+        adapter.setData(element)
         seeAllWidget.setOnClickListener {
             seeAllListener.onSeeAll(element)
         }

@@ -17,7 +17,9 @@ import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.activity.ProductManageFilterExpandActivity
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.FilterAdapterTypeFactory
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
@@ -40,6 +42,16 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         const val CATEGORIES_CACHE_MANAGER_KEY = "categories"
         const val OTHER_FILTER_CACHE_MANAGER_KEY = "filter"
         const val BOTTOMSHEET_TITLE = "Filter"
+        const val EXPAND_FILTER_REQUEST = 1
+        const val UPDATE_SORT_SUCCESS_RESPONSE = 200
+        const val UPDATE_ETALASE_SUCCESS_RESPONSE = 300
+        const val UPDATE_CATEGORIES_SUCCESS_RESPONSE = 400
+        const val UPDATE_OTHER_FILTER_SUCCESS_RESPONSE = 500
+        const val ITEM_SORT_INDEX = 0
+        const val ITEM_ETALASE_INDEX = 1
+        const val ITEM_CATEGORIES_INDEX = 2
+        const val ITEM_OTHER_FILTER_INDEX = 3
+        const val FIRST_INDEX = 0
 
         fun createInstance(context: Context) : ProductManageFilterFragment {
             return ProductManageFilterFragment().apply{
@@ -61,6 +73,10 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     private var layoutManager: LinearLayoutManager? = null
     private var recyclerView: RecyclerView? = null
     private var savedInstanceManager: SaveInstanceCacheManager? = null
+    private var sortData: FilterViewModel? = null
+    private var etalaseData: FilterViewModel? = null
+    private var categoriesData: FilterViewModel? = null
+    private var otherFilterData: FilterViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,7 +137,35 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             }
         }
         intent.putExtra(CACHE_MANAGER_KEY, savedInstanceManager?.id)
-        this.activity?.startActivity(intent)
+        startActivityForResult(intent, EXPAND_FILTER_REQUEST)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == EXPAND_FILTER_REQUEST) {
+            when(resultCode) {
+                UPDATE_SORT_SUCCESS_RESPONSE -> {
+                    val dataToUpdate: FilterViewModel? = savedInstanceManager?.get(SORT_CACHE_MANAGER_KEY, FilterViewModel::class.java)
+                    sortData = dataToUpdate
+                    filterAdapter?.updateSpecificData(dataToUpdate, ITEM_SORT_INDEX)
+                }
+                UPDATE_ETALASE_SUCCESS_RESPONSE -> {
+                    val dataToUpdate: FilterViewModel? = savedInstanceManager?.get(ETALASE_CACHE_MANAGER_KEY, FilterViewModel::class.java)
+                    etalaseData = dataToUpdate
+                    filterAdapter?.updateSpecificData(dataToUpdate, ITEM_ETALASE_INDEX)
+                }
+                UPDATE_CATEGORIES_SUCCESS_RESPONSE -> {
+                    val dataToUpdate: FilterViewModel? = savedInstanceManager?.get(CATEGORIES_CACHE_MANAGER_KEY, FilterViewModel::class.java)
+                    categoriesData = dataToUpdate
+                    filterAdapter?.updateSpecificData(dataToUpdate, ITEM_CATEGORIES_INDEX)
+                }
+                UPDATE_OTHER_FILTER_SUCCESS_RESPONSE -> {
+                    val dataToUpdate: FilterViewModel? = savedInstanceManager?.get(OTHER_FILTER_CACHE_MANAGER_KEY, FilterViewModel::class.java)
+                    otherFilterData = dataToUpdate
+                    filterAdapter?.updateSpecificData(dataToUpdate, ITEM_OTHER_FILTER_INDEX)
+                }
+            }
+        }
     }
 
     override fun onChipClicked() {
@@ -136,7 +180,12 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         productManageFilterViewModel.combinedResponse.observe(this, Observer {
             when(it) {
                 is Success -> {
-                    filterAdapter?.updateData(ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data))
+                    val mappedResult = ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data)
+                    filterAdapter?.updateData(mappedResult)
+                    sortData = mappedResult[ITEM_SORT_INDEX]
+                    etalaseData = mappedResult[ITEM_ETALASE_INDEX]
+                    categoriesData = mappedResult[ITEM_CATEGORIES_INDEX]
+                    otherFilterData = mappedResult[ITEM_OTHER_FILTER_INDEX]
                 }
                 is Fail -> {
                     this.dismiss()

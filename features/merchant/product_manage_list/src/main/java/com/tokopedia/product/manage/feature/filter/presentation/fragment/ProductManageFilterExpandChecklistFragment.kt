@@ -30,6 +30,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.widget.Checklist
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -64,7 +65,6 @@ class ProductManageFilterExpandChecklistFragment :
     private var searchView: SearchInputView? = null
     private var reset: Typography? = null
     private var submitButton: UnifyButton? = null
-    private var dataToSave: MutableList<ChecklistViewModel> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,9 +73,9 @@ class ProductManageFilterExpandChecklistFragment :
             flag = it.getString(ProductManageFilterFragment.ACTIVITY_EXPAND_FLAG) ?: ""
             cacheManagerId = it.getString(ProductManageFilterFragment.CACHE_MANAGER_KEY) ?: ""
         }
-        cacheManager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
-        val manager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else cacheManager
-        filterViewModel = flag.let { manager?.get(it, FilterViewModel::class.java) }
+        val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
+        cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
+        filterViewModel = flag.let { cacheManager?.get(it, FilterViewModel::class.java) }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -86,6 +86,8 @@ class ProductManageFilterExpandChecklistFragment :
         toolbar = view.findViewById(com.tokopedia.product.manage.R.id.checklist_toolbar)
         title = view.findViewById(com.tokopedia.product.manage.R.id.page_title)
         reset = view.findViewById(com.tokopedia.product.manage.R.id.reset_checklist)
+        submitButton = view.findViewById(com.tokopedia.product.manage.R.id.btn_submit)
+        searchView = view.findViewById(com.tokopedia.product.manage.R.id.filter_category_search)
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(this.context)
         return view
@@ -97,6 +99,7 @@ class ProductManageFilterExpandChecklistFragment :
             initView(it)
         }
         observeDataLength()
+        observeChecklistData()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -106,15 +109,7 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     override fun onChecklistClick(element: ChecklistViewModel) {
-        if(element.isSelected) {
-            element.isSelected = false
-            dataToSave.remove(element)
-            productManageFilterExpandChecklistViewModel.updateDataSize(dataToSave.size)
-        } else {
-            element.isSelected = true
-            dataToSave.add(element)
-            productManageFilterExpandChecklistViewModel.updateDataSize(dataToSave.size)
-        }
+        productManageFilterExpandChecklistViewModel.updateSelectedItem(element)
     }
 
     override fun onSelectClick(element: SelectViewModel) {
@@ -139,7 +134,12 @@ class ProductManageFilterExpandChecklistFragment :
         initTitle()
         initButtons(filterViewModel)
         configToolbar()
-        adapter?.updateChecklistData(ProductManageFilterMapper.mapFilterViewModelsToChecklistViewModels(filterViewModel))
+        recyclerView?.setOnTouchListener { _, _ ->
+            searchView?.hideKeyboard()
+            submitButton?.visibility = View.VISIBLE
+            false
+        }
+        productManageFilterExpandChecklistViewModel.initData(ProductManageFilterMapper.mapFilterViewModelsToChecklistViewModels(filterViewModel))
     }
 
     private fun configToolbar() {
@@ -159,18 +159,32 @@ class ProductManageFilterExpandChecklistFragment :
             override fun onSearchSubmitted(text: String?) {
                 searchView?.hideKeyboard()
             }
-
             override fun onSearchTextChanged(text: String?) {
                 text?.let {
-                    if (it.isNotEmpty()) {
-
+                    val filteredData = filterViewModel?.data?.filter { data ->
+                        data.name.toLowerCase(Locale.getDefault()) == it.toLowerCase(Locale.getDefault())
+                    }
+                    if (it.isNotEmpty() && filteredData?.isNotEmpty() == true) {
+                        adapter?.updateChecklistData(listOf(ChecklistViewModel(
+                                filteredData.first().id,
+                                filteredData.first().name,
+                                filteredData.first().values,
+                                filteredData.first().select
+                        )))
                     } else {
-
+                        //SHOW SEARCH NOT FOUND
                     }
                 }
             }
-
         })
+        searchView?.visibility = View.VISIBLE
+        searchView?.setFocusChangeListener {
+            if(submitButton?.visibility == View.VISIBLE) {
+                submitButton?.visibility = View.GONE
+            } else {
+                submitButton?.visibility = View.VISIBLE
+            }
+        }
     }
 
     private fun observeDataLength() {
@@ -180,6 +194,12 @@ class ProductManageFilterExpandChecklistFragment :
             } else {
                 hideButtons()
             }
+        })
+    }
+
+    private fun observeChecklistData() {
+        productManageFilterExpandChecklistViewModel.checklistData.observe(this, Observer {
+            adapter?.updateChecklistData(it)
         })
     }
 
@@ -195,24 +215,31 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun initButtons(filterViewModel: FilterViewModel) {
         submitButton?.setOnClickListener {
-            this.activity?.finish()
             if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
-                cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY, dataToSave)
+                cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY,
+                        ProductManageFilterMapper.mapChecklistViewModelsTpFilterViewModel(
+                                CATEGORIES_CACHE_MANAGER_KEY,
+                                productManageFilterExpandChecklistViewModel.checklistData.value ?: listOf()
+                        ))
+                this.activity?.setResult(ProductManageFilterFragment.UPDATE_CATEGORIES_SUCCESS_RESPONSE)
             } else {
-                cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY, dataToSave)
+                cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY,
+                        ProductManageFilterMapper.mapChecklistViewModelsTpFilterViewModel(
+                                OTHER_FILTER_CACHE_MANAGER_KEY,
+                                productManageFilterExpandChecklistViewModel.checklistData.value ?: listOf()
+                        ))
+                this.activity?.setResult(ProductManageFilterFragment.UPDATE_OTHER_FILTER_SUCCESS_RESPONSE)
             }
+            this.activity?.finish()
         }
-        if(filterViewModel.selectData.contains(true)) {
-            reset?.visibility = View.VISIBLE
-            submitButton?.isEnabled = true
+        if(checkSelectData(filterViewModel)) {
+            showButtons()
         } else {
-            reset?.visibility = View.GONE
-            submitButton?.isEnabled = false
+            hideButtons()
         }
         reset?.setOnClickListener {
             adapter?.clearAllChecklists()
-            dataToSave.clear()
-            productManageFilterExpandChecklistViewModel.updateDataSize(dataToSave.size)
+            productManageFilterExpandChecklistViewModel.clearAllChecklist()
         }
     }
 
@@ -225,6 +252,11 @@ class ProductManageFilterExpandChecklistFragment :
         }
     }
 
+    private fun checkSelectData(filterViewModel: FilterViewModel): Boolean {
+        return filterViewModel.data.any {
+            it.select
+        }
+    }
 
 
 }

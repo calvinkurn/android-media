@@ -5,10 +5,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.
 
 class FilterViewModel (
         val title: String,
-        val names: List<String>,
-        val id: List<String>,
-        val values: List<String> = listOf(),
-        val selectData: List<Boolean>,
+        val data: MutableList<FilterDataViewModel>,
         val isChipsShown: Boolean
 ) : Visitable <FilterAdapterTypeFactory> {
 

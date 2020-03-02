@@ -4,6 +4,7 @@ import com.tokopedia.core.common.category.domain.model.CategoriesResponse
 import com.tokopedia.product.manage.feature.filter.data.model.CombinedResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.*
+import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 class ProductManageFilterMapper {
@@ -27,12 +28,13 @@ class ProductManageFilterMapper {
 
         fun mapFilterViewModelsToSelectViewModels(filterViewModel: FilterViewModel): List<SelectViewModel> {
             val selectViewModels = mutableListOf<SelectViewModel>()
-            for(i in filterViewModel.names.indices) {
+            for(i in filterViewModel.data.indices) {
                 selectViewModels.add(
                         SelectViewModel(
-                                filterViewModel.names[i],
-                                filterViewModel.id[i],
-                                filterViewModel.selectData[i]
+                                filterViewModel.data[i].id,
+                                filterViewModel.data[i].name,
+                                filterViewModel.data[i].values,
+                                filterViewModel.data[i].select
                         )
                 )
             }
@@ -41,76 +43,119 @@ class ProductManageFilterMapper {
 
         fun mapFilterViewModelsToChecklistViewModels(filterViewModel: FilterViewModel): List<ChecklistViewModel> {
             val checklistViewModels = mutableListOf<ChecklistViewModel>()
-            for(i in filterViewModel.names.indices) {
+            for(i in filterViewModel.data.indices) {
                 checklistViewModels.add(
                         ChecklistViewModel(
-                                filterViewModel.names[i],
-                                filterViewModel.id[i],
-                                filterViewModel.selectData[i]
+                                filterViewModel.data[i].id,
+                                filterViewModel.data[i].name,
+                                filterViewModel.data[i].values,
+                                filterViewModel.data[i].select
                         )
                 )
             }
             return checklistViewModels
         }
 
+        fun mapSelectViewModelsToFilterViewModel(key: String, selectViewModels: List<SelectViewModel>): FilterViewModel {
+            val data = mutableListOf<FilterDataViewModel>()
+            for(selectViewModel in selectViewModels) {
+                data.add(
+                        FilterDataViewModel(
+                                selectViewModel.id,
+                                selectViewModel.name,
+                                selectViewModel.value,
+                                selectViewModel.isSelected
+                        )
+                )
+            }
+            return if(key == ProductManageFilterFragment.SORT_CACHE_MANAGER_KEY) {
+                FilterViewModel(SORT_HEADER, data, SHOW_CHIPS)
+            } else {
+                FilterViewModel(ETALASE_HEADER, data, SHOW_CHIPS)
+            }
+        }
+
+        fun mapChecklistViewModelsTpFilterViewModel(key: String, checklistViewModels: List<ChecklistViewModel>): FilterViewModel {
+            val data = mutableListOf<FilterDataViewModel>()
+            for(checklistViewModel in checklistViewModels) {
+                data.add(
+                        FilterDataViewModel(
+                                checklistViewModel.id,
+                                checklistViewModel.name,
+                                checklistViewModel.value,
+                                checklistViewModel.isSelected
+                        )
+                )
+            }
+            return if(key == ProductManageFilterFragment.CATEGORIES_CACHE_MANAGER_KEY) {
+                FilterViewModel(CATEGORY_HEADER, data, HIDE_CHIPS)
+            } else {
+                FilterViewModel(OTHER_FILTER_HEADER, data, HIDE_CHIPS)
+            }
+        }
+
         private fun mapMetaResponseToSortOptions(productListMetaData: ProductListMetaData): FilterViewModel {
-            val names = mutableListOf<String>()
-            val ids = mutableListOf<String>()
-            val values = mutableListOf<String>()
-            val selectData = mutableListOf<Boolean>()
+            val data = mutableListOf<FilterDataViewModel>()
             for (sort in productListMetaData.sorts) {
                 if(sort.name.isNotEmpty()) {
-                    names.add(sort.name)
-                    ids.add(sort.id)
-                    values.add(sort.value)
-                    selectData.add(false)
+                    data.add(
+                            FilterDataViewModel(
+                                    sort.id,
+                                    sort.name,
+                                    sort.value,
+                                    false
+                            )
+                    )
                 }
             }
-            return FilterViewModel(SORT_HEADER, names, ids, values, selectData, isChipsShown = SHOW_CHIPS)
+            return FilterViewModel(SORT_HEADER, data, SHOW_CHIPS)
         }
 
         private fun mapEtalaseResponseToEtalaseOptions(etalaseResponse: ArrayList<ShopEtalaseModel>): FilterViewModel {
-            val names = mutableListOf<String>()
-            val ids = mutableListOf<String>()
-            val selectData = mutableListOf<Boolean>()
+            val data = mutableListOf<FilterDataViewModel>()
             for (etalase in etalaseResponse) {
                 if(etalase.name.isNotEmpty()) {
-                    names.add(etalase.name)
-                    ids.add(etalase.id)
-                    selectData.add(false)
+                    data.add(
+                            FilterDataViewModel(
+                                    etalase.id,
+                                    etalase.name
+                            )
+                    )
                 }
             }
-            return FilterViewModel(ETALASE_HEADER, names, ids, selectData = selectData, isChipsShown = SHOW_CHIPS)
+            return FilterViewModel(ETALASE_HEADER, data, SHOW_CHIPS)
         }
 
         private fun mapCategoryResponseToCategoryOptions(categoriesResponse: CategoriesResponse): FilterViewModel {
-            val categories = mutableListOf<String>()
-            val ids = mutableListOf<String>()
-            val selectData = mutableListOf<Boolean>()
+            val data = mutableListOf<FilterDataViewModel>()
             for (category in categoriesResponse.categories.categories) {
                 if(category.name.isNotEmpty()) {
-                    categories.add(category.name)
-                    ids.add(category.id)
-                    selectData.add(false)
+                    data.add(
+                            FilterDataViewModel(
+                                    category.id,
+                                    category.name
+                            )
+                    )
                 }
             }
-            return FilterViewModel(CATEGORY_HEADER, categories, ids, selectData = selectData, isChipsShown = HIDE_CHIPS)
+            return FilterViewModel(CATEGORY_HEADER, data, HIDE_CHIPS)
         }
 
         private fun mapMetaResponseToFilterOptions(productListMetaData: ProductListMetaData): FilterViewModel {
-            val filters = mutableListOf<String>()
-            val ids = mutableListOf<String>()
-            val values = mutableListOf<String>()
-            val selectData = mutableListOf<Boolean>()
+            val data = mutableListOf<FilterDataViewModel>()
             for (filter in productListMetaData.filters) {
                 if(filter.name.isNotEmpty()) {
-                    filters.add(filter.name)
-                    ids.add(filter.id)
-                    values.add(filter.value.toString())
-                    selectData.add(false)
+                    data.add(
+                            FilterDataViewModel(
+                                    filter.id,
+                                    filter.name,
+                                    filter.value.toString(),
+                                    false
+                            )
+                    )
                 }
             }
-            return FilterViewModel(OTHER_FILTER_HEADER, filters, ids, values, selectData, HIDE_CHIPS)
+            return FilterViewModel(OTHER_FILTER_HEADER, data, HIDE_CHIPS)
         }
     }
 }
