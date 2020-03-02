@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.productcard.utils.getDimensionPixelSize
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImageRounded
@@ -66,10 +67,22 @@ class ProductCardListView: BaseCustomView {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
     }
 
-    fun setCardHeightMatchParent() {
+    fun applyCarousel() {
+        setCardHeightMatchParent()
+        resizeImageProductSize()
+    }
+
+    private fun setCardHeightMatchParent() {
         val layoutParams = cardViewProductCard?.layoutParams
         layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
         cardViewProductCard?.layoutParams = layoutParams
+    }
+
+    private fun resizeImageProductSize() {
+        val layoutParams = imageProduct?.layoutParams
+        layoutParams?.width = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
+        layoutParams?.height = getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
+        imageProduct?.layoutParams = layoutParams
     }
 
     fun recycle() {

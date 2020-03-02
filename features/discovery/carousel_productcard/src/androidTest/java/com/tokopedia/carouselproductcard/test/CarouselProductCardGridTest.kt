@@ -11,5 +11,7 @@ internal class CarouselProductCardGridTest {
     val activityTestRule = ActivityTestRule<CarouselProductCardGridActivityTest>(CarouselProductCardGridActivityTest::class.java)
 
     @Test
-    fun test() { }
+    fun test() {
+        Thread.sleep(1000000)
+    }
 }

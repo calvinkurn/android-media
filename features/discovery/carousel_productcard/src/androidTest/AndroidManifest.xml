@@ -12,9 +12,9 @@
             android:name=".CarouselProductCardGridActivityTest"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
-<!--        <activity-->
-<!--            android:name=".list.ProductCardListActivityTest"-->
-<!--            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>-->
+        <activity
+            android:name=".CarouselProductCardListActivityTest"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
     </application>
 </manifest>

@@ -2,6 +2,7 @@
 package com.tokopedia.productcard.utils
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import kotlinx.coroutines.CoroutineDispatcher
@@ -14,12 +15,56 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
     return withContext(coroutineDispatcher) {
         val productCardHeightList = mutableListOf<Int>()
 
+        var i = 0
         forEach { productCardModel ->
+            i++
             val imageHeight = productImageWidth
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
+            val contentMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
             val contentHeight = productCardModel.getContentHeight(context)
+            val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
 
-            productCardHeightList.add(imageHeight + cardPaddingBottom + contentHeight)
+            Log.d("ProductCardHeightCalc", "grid position $i," +
+                    " imageHeight $imageHeight " +
+                    "cardpaddingbottom $cardPaddingBottom " +
+                    "contentmargintop $contentMarginTop " +
+                    "contentHeight $contentHeight" +
+                    "button atc $buttonAddToCartSectionHeight")
+
+            productCardHeightList.add(imageHeight + cardPaddingBottom + contentMarginTop + contentHeight + buttonAddToCartSectionHeight)
+        }
+
+        productCardHeightList.max()?.toInt() ?: 0
+    }
+}
+
+suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, coroutineDispatcher: CoroutineDispatcher): Int {
+    if (this == null || context == null) return 0
+
+    return withContext(coroutineDispatcher) {
+        val productCardHeightList = mutableListOf<Int>()
+
+        var i = 0
+        forEach { productCardModel ->
+            i++
+            val cardPaddingTop = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_top)
+            val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
+
+            val imageSize = context.resources.getDimensionPixelSize(R.dimen.product_card_carousel_list_image_size)
+            val contentHeight = productCardModel.getContentHeight(context)
+            val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
+
+            val totalHeight = cardPaddingTop + cardPaddingBottom + max(imageSize, contentHeight) + buttonAddToCartSectionHeight
+
+            Log.d("ProductCardHeightCalc", "list position $i," +
+                    " imageSize $imageSize " +
+                    "cardPaddingTop $cardPaddingTop" +
+                    "cardpaddingbottom $cardPaddingBottom " +
+                    "contentHeight $contentHeight" +
+                    "button atc $buttonAddToCartSectionHeight" +
+                    "total height $totalHeight")
+
+            productCardHeightList.add(totalHeight)
         }
 
         productCardHeightList.max()?.toInt() ?: 0
@@ -27,7 +72,6 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
 }
 
 private fun ProductCardModel.getContentHeight(context: Context): Int {
-    val contentMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
     val gimmickSectionHeight = getGimmickSectionHeight(context)
     val productNameSectionHeight = getProductNameSectionHeight(context)
     val promoSectionHeight = getPromoSectionHeight(context)
@@ -35,17 +79,14 @@ private fun ProductCardModel.getContentHeight(context: Context): Int {
     val shopInfoSectionHeight = getShopInfoSectionHeight(context)
     val credibilitySectionHeight = getCredibilitySectionHeight(context)
     val shippingInfoSectionHeight = getShippingInfoSectionHeight(context)
-    val buttonAddToCartSectionHeight = getButtonAddToCartSectionHeight(context)
 
-    return contentMarginTop +
-            gimmickSectionHeight +
+    return gimmickSectionHeight +
             productNameSectionHeight +
             promoSectionHeight +
             priceSectionHeight +
             shopInfoSectionHeight +
             credibilitySectionHeight +
-            shippingInfoSectionHeight +
-            buttonAddToCartSectionHeight
+            shippingInfoSectionHeight
 }
 
 private fun ProductCardModel.getGimmickSectionHeight(context: Context): Int {

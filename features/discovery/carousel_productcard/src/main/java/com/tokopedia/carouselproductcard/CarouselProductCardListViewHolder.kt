@@ -4,15 +4,15 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import kotlinx.android.synthetic.main.carousel_product_card_item_grid_layout.view.*
+import kotlinx.android.synthetic.main.carousel_product_card_item_list_layout.view.*
 
-internal class CarouselProductCardViewHolder(
+internal class CarouselProductCardListViewHolder(
         itemView: View
 ): RecyclerView.ViewHolder(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.carousel_product_card_item_grid_layout
+        val LAYOUT = R.layout.carousel_product_card_item_list_layout
     }
 
     fun bind(carouselProductCardModel: CarouselProductCardModel) {
@@ -21,7 +21,7 @@ internal class CarouselProductCardViewHolder(
         val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
         val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
 
-        itemView.carouselProductCardItem?.setCardHeightMatchParent()
+        itemView.carouselProductCardItem?.applyCarousel()
 
         itemView.carouselProductCardItem?.setProductModel(productCardModel)
 

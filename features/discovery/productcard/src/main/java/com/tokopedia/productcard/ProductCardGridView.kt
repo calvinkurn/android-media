@@ -59,7 +59,11 @@ class ProductCardGridView: BaseCustomView {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
     }
 
-    fun setCardHeightMatchParent() {
+    fun applyCarousel() {
+        setCardHeightMatchParent()
+    }
+
+    private fun setCardHeightMatchParent() {
         val layoutParams = cardViewProductCard?.layoutParams
         layoutParams?.height = MATCH_PARENT
         cardViewProductCard?.layoutParams = layoutParams

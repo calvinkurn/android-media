@@ -11,7 +11,7 @@ import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.productcard.ProductCardModel
 
 
-internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
+internal class CarouselProductCardListActivityTest: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,7 +56,7 @@ internal class CarouselProductCardGridActivityTest: AppCompatActivity() {
         }
 
         fun bind(productCardModelList: List<ProductCardModel>) {
-            item?.bindCarouselProductCardViewGrid(
+            item?.bindCarouselProductCardViewList(
                     productCardModelList = productCardModelList,
                     recyclerViewPool = recycledViewPool
             )
