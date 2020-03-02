@@ -38,7 +38,6 @@ class PlayCardViewHolder(
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
-    private val description = view.findViewById<TextView>(R.id.description)
     private var isClickable = false
     private val masterJob = Job()
     private var playCardViewModel: PlayCardViewModel? = null
@@ -87,7 +86,6 @@ class PlayCardViewHolder(
         model.playCardHome?.let{ playChannel ->
             handlingTracker(model)
             title.setValue(model.channel.name)
-            description.setValue(model.channel.header.name)
 
             thumbnailView.show()
             thumbnailView.loadImageNoRounded(playChannel.coverUrl)
