@@ -30,8 +30,8 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         if (!message.startsWith(PREFIX) || tags.isEmpty()) {
             return
         }
-        val messageSplit = listOf(*message.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
-        if (messageSplit.size != SIZE_MESSAGE) {
+        val messageSplit = message.split("#".toRegex()).dropLastWhile { it.isEmpty() }
+        if (messageSplit.size < SIZE_MESSAGE) {
             return
         }
         val messageKey = StringBuilder().append(messageSplit[0])
@@ -109,7 +109,7 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
             return
         }
         for (tag in tags) {
-            val tagSplit = listOf(*tag.split("#".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+            val tagSplit = tag.split("#".toRegex()).dropLastWhile { it.isEmpty() }
             if (tagSplit.size != SIZE_REMOTE_CONFIG_TAG) {
                 continue
             }

@@ -35,11 +35,12 @@ public class TimberWrapper {
 
     public static void initByConfig(@NonNull Application application, @NonNull RemoteConfig remoteConfig){
         Timber.uprootAll();
-        boolean isDebug = GlobalConfig.DEBUG;
-        if (isDebug) {
-            Timber.plant(new TimberDebugTree());
-        } else {
-            String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
+//        boolean isDebug = GlobalConfig.DEBUG;
+//        if (isDebug) {
+//            Timber.plant(new TimberDebugTree());
+//        } else {
+//            String logConfigString = remoteConfig.getString(ANDROID_CUSTOMER_APP_LOG_CONFIG);
+            String logConfigString = "{\"enabled\":true,\"appVersionMin\":0,\"tags\":[\"P1#DFM#100#offline\",\"P1#DFM_DEFERRED#10#online\",\"P1#NULL_CHECKER#1#online\",\"P1#REQUEST_ERROR_GQL#1#online\",\"P1#IMAGE_UPLOADER#100#online\",\"P1#IRIS#100#offline\",\"P1#IRIS_COLLECT#0#online\",\"P1#CACHE_API#1#online\",\"P2#FINGERPRINT#1#online\",\"P2#TOKEN_REFRESH#1#online\",\"P2#PLAY_SERVICE_ERROR#1#offline\",\"P2#IMAGE_TRACEROUTE#10#offline\",\"P2#PRODUCT_UPLOAD#1#online\",\"P2#PDP_CACHE#1#online\",\"P2#PDP_OPEN_DEEPLINK_ERROR#10#online\",\"P2#ACTION_SLICE_RECHARGE_IMPRESSION#100#online\",\"P2#ACTION_SLICE_CLICK_RECHARGE#100#online\"],\"priority\":[false,false,false]}";
             if (!TextUtils.isEmpty(logConfigString)) {
                 DataLogConfig dataLogConfig = new Gson().fromJson(logConfigString, DataLogConfig.class);
                 if(dataLogConfig != null && dataLogConfig.isEnabled() && GlobalConfig.VERSION_CODE >= dataLogConfig.getAppVersionMin() && dataLogConfig.getTags() != null) {
@@ -51,6 +52,6 @@ public class TimberWrapper {
                     Timber.plant(timberReportingTree);
                 }
             }
-        }
+//        }
     }
 }

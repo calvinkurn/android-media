@@ -11,6 +11,7 @@ interface LoggerRepositoryContract {
     suspend fun deleteEntry(timeStamp: Long)
     suspend fun deleteExpiredData(timeStamp: Long)
     suspend fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>, logger: Logger, secretKey: SecretKey): Int
+    suspend fun sendScalyrLogToServer(logs: List<Logger>, secretKey: SecretKey): Int
     suspend fun deleteExpiredHighPrio(timeStamp: Long)
     suspend fun deleteExpiredLowPrio(timeStamp: Long)
 }

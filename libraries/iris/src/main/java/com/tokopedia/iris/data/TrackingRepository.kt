@@ -3,6 +3,9 @@ package com.tokopedia.iris.data
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
+import com.google.gson.GsonBuilder
+import com.google.gson.JsonObject
+import com.google.gson.JsonParser
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.data.db.IrisDb

@@ -27,6 +27,8 @@ import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.track.TrackApp;
 
+import timber.log.Timber;
+
 
 /**
  * Created by nisie on 2/7/17.
@@ -50,6 +52,7 @@ public abstract class BaseActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Timber.e("P1#REQUEST_ERROR_GQL#Hendry Test " + System.currentTimeMillis());
         logoutNetworkReceiver = new ErrorNetworkReceiver();
         inappReceiver = new BroadcastReceiver() {
             @Override

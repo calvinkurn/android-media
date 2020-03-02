@@ -1,24 +1,30 @@
 package com.tokopedia.logger.datasource.cloud
 
-import com.tokopedia.logger.datasource.db.Logger
+import android.content.Context
+import com.google.gson.Gson
+import com.tokopedia.logger.model.ScalyrBody
+import com.tokopedia.logger.model.ScalyrEvent
+import com.tokopedia.logger.model.ScalyrSessionInfo
 import com.tokopedia.logger.utils.Constants
-import com.tokopedia.logger.utils.decrypt
+import com.tokopedia.logger.utils.LogSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import java.io.DataOutputStream
 import java.net.HttpURLConnection
 import java.net.URL
-import javax.crypto.SecretKey
 
-class LoggerCloudDatasource {
-    suspend fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>,
-                                message:String): Int{
+class LoggerCloudScalyrDataSource(val context: Context) {
+    companion object {
+        private val decodedToken = Constants.SCALYR_TOKEN.joinToString(separator = "") { it.toChar().toString() }
+        private val gson = Gson()
+    }
+
+    suspend fun sendLogToServer(scalyrEventList: List<ScalyrEvent>): Int {
         var errCode = 404
-        val token = TOKEN[serverSeverity - 1]
         withContext(Dispatchers.IO) {
             try {
-                errCode = openURL(token, message)
+                errCode = openURL(scalyrEventList)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -26,18 +32,20 @@ class LoggerCloudDatasource {
         return errCode
     }
 
-    private fun openURL(token: String, message: String): Int{
+    private fun openURL(scalyrEventList: List<ScalyrEvent>): Int {
         var urlConnection: HttpURLConnection? = null
         val url: URL
 
         try {
+            val scalyrBody = ScalyrBody(decodedToken, LogSession.getLogSession(context), ScalyrSessionInfo(Constants.ANDROID_APP_VALUE),
+                scalyrEventList)
             Timber.d("SENDING")
-            url = URL(Constants.SERVER_URL + token)
+            url = URL(Constants.SCALYR_SERVER_URL)
             urlConnection = url.openConnection() as HttpURLConnection
             urlConnection.requestMethod = "POST"
             urlConnection.doOutput = true
             val wr = DataOutputStream(urlConnection.outputStream)
-            wr.writeBytes(message)
+            wr.writeBytes(gson.toJson(scalyrBody))
             wr.flush()
             wr.close()
 
@@ -52,4 +60,5 @@ class LoggerCloudDatasource {
             return urlConnection!!.responseCode
         }
     }
+
 }

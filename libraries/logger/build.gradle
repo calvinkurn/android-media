@@ -21,6 +21,9 @@ dependencies {
     implementation rootProject.ext.dbDependencies.dbRoomKtx
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
 
+    implementation project(rootProject.ext.libraries.deviceInfo)
+    implementation project(rootProject.ext.libraries.remoteConfig)
+
     androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
