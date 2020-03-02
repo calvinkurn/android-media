@@ -78,12 +78,6 @@ project.ext {
     groupId = 'com.tokopedia.user'
     versionName = "0.0.1"
     artifactName = "attachvoucher-release"
-    unitTestJavaIncludes = [
-            '**/UrlParamUtils.*'
-    ]
-    unitTestKotlinIncludes = [
-            '**/*ViewModel.*',
-    ]
 }
 
 apply from: '../../../publish_local.gradle'
