@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
+import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 
 class ProductManageListAdapter(
