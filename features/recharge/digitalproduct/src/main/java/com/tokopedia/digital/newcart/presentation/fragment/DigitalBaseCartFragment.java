@@ -524,8 +524,8 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
 
     @Override
     public void startPerfomanceMonitoringTrace() {
-        performanceMonitoring = PerformanceMonitoring.start(getContext(), DIGITAL_CHECKOUT_TRACE);
-        performanceMonitoring.startTrace(getContext(), DIGITAL_CHECKOUT_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(DIGITAL_CHECKOUT_TRACE);
+        performanceMonitoring.startTrace(DIGITAL_CHECKOUT_TRACE);
     }
 
     @Override

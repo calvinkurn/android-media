@@ -1303,7 +1303,7 @@ public class ProductListFragment
         adapter.clearData();
         initTopAdsParams();
         generateLoadMoreParameter(0);
-        performanceMonitoring = PerformanceMonitoring.start(getContext(), SEARCH_PRODUCT_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(SEARCH_PRODUCT_TRACE);
         presenter.loadData(getSearchParameter().getSearchParameterMap());
         TopAdsGtmTracker.getInstance().clearDataLayerList();
     }

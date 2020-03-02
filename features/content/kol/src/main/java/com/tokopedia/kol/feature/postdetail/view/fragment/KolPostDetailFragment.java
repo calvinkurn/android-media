@@ -181,7 +181,7 @@ public class KolPostDetailFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        performanceMonitoring = PerformanceMonitoring.start(getContext(), PERFORMANCE_POST_DETAIL);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_POST_DETAIL);
 
     }
 

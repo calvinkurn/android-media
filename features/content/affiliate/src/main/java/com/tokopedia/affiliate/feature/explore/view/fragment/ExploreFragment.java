@@ -149,7 +149,7 @@ public class ExploreFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        performanceMonitoring = PerformanceMonitoring.start(getContext(), PERFORMANCE_AFFILIATE);
+        performanceMonitoring = PerformanceMonitoring.start(PERFORMANCE_AFFILIATE);
     }
 
     @Nullable

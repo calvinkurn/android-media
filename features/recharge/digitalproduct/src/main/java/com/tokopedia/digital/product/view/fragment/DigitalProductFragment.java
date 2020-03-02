@@ -253,7 +253,7 @@ public class DigitalProductFragment extends BaseDaggerFragment
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        performanceMonitoring = PerformanceMonitoring.start(getContext(), DIGITAL_DETAIL_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(DIGITAL_DETAIL_TRACE);
         saveInstanceCacheManager = new SaveInstanceCacheManager(getActivity(), savedInstanceState);
         permissionCheckerHelper = new PermissionCheckerHelper();
     }

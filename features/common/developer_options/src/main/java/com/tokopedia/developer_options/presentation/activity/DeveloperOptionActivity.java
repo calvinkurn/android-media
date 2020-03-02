@@ -285,11 +285,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             notificationManagerCompat.notify(777,notifReview);
                 });
 
-        toggleFpm.setChecked(FpmLogger.getInstance(this).isNotificationEnabled());
+        toggleFpm.setChecked(FpmLogger.getInstance().isNotificationEnabled());
 
-        toggleFpm.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance(this).enableNotification(state));
+        toggleFpm.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableNotification(state));
 
-        vGoToFpm.setOnClickListener(v -> FpmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
+        vGoToFpm.setOnClickListener(v -> FpmLogger.getInstance().openActivity());
 
         toggleAnalytics.setChecked(GtmLogger.getInstance(this).isNotificationEnabled());
 

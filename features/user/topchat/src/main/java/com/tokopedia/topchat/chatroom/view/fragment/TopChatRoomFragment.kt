@@ -180,7 +180,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     private fun initFireBase() {
-        fpm = PerformanceMonitoring.start(context, TopChatAnalytics.FPM_DETAIL_CHAT)
+        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
         remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 

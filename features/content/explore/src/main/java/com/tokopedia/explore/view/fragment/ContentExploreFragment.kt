@@ -196,7 +196,7 @@ class ContentExploreFragment :
     private fun loadData() {
         if (userVisibleHint && isAdded && activity != null && ::presenter.isInitialized) {
             if (!hasLoadedOnce) {
-                performanceMonitoring = PerformanceMonitoring.start(context, PEFORMANCE_EXPLORE)
+                performanceMonitoring = PerformanceMonitoring.start(PEFORMANCE_EXPLORE)
                 presenter.getExploreData(true)
                 hasLoadedOnce = !hasLoadedOnce
             }

@@ -129,7 +129,7 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     fun getInitialStateData(searchParameter: SearchParameter) {
-        performanceMonitoring = PerformanceMonitoring.start(context, MP_SEARCH_AUTOCOMPLETE)
+        performanceMonitoring = PerformanceMonitoring.start(MP_SEARCH_AUTOCOMPLETE)
         presenter.getInitialStateData(searchParameter)
     }
 

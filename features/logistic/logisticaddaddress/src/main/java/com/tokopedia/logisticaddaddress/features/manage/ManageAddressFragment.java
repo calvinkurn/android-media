@@ -105,7 +105,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mActivityListener = (MPAddressActivityListener) getActivity();
-        performanceMonitoring.startTrace(getContext(), FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST);
+        performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_ADDRESS_LIST);
     }
 
     @Override

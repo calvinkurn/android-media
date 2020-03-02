@@ -114,7 +114,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        performanceMonitoring = PerformanceMonitoring.start(context, TALK_SHOP_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(TALK_SHOP_TRACE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

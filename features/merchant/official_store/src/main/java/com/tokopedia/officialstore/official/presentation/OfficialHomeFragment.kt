@@ -99,7 +99,7 @@ class OfficialHomeFragment :
                     val CATEGORY_CONST: String = category?.slug.orEmpty()
                     val recomConstant = (FirebasePerformanceMonitoringConstant.PRODUCT_RECOM).replace(SLUG_CONST, CATEGORY_CONST)
                     counterTitleShouldBeRendered += 1
-                    productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(context, recomConstant)
+                    productRecommendationPerformanceMonitoring = PerformanceMonitoring.start(recomConstant)
                     viewModel.loadMore(category, page)
 
                     if (adapter?.getVisitables()?.lastOrNull() is ProductRecommendationViewModel) {
@@ -619,12 +619,12 @@ class OfficialHomeFragment :
         val CATEGORY_CONST: String = category?.slug.orEmpty()
 
         val bannerConstant = (FirebasePerformanceMonitoringConstant.BANNER).replace(SLUG_CONST, CATEGORY_CONST)
-        bannerPerformanceMonitoring = PerformanceMonitoring.start(context, bannerConstant)
+        bannerPerformanceMonitoring = PerformanceMonitoring.start(bannerConstant)
 
         val brandConstant = (FirebasePerformanceMonitoringConstant.BRAND).replace(SLUG_CONST, CATEGORY_CONST)
-        shopPerformanceMonitoring = PerformanceMonitoring.start(context, brandConstant)
+        shopPerformanceMonitoring = PerformanceMonitoring.start(brandConstant)
 
         val dynamicChannelConstant = (FirebasePerformanceMonitoringConstant.DYNAMIC_CHANNEL).replace(SLUG_CONST, CATEGORY_CONST)
-        dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(context, dynamicChannelConstant)
+        dynamicChannelPerformanceMonitoring = PerformanceMonitoring.start(dynamicChannelConstant)
     }
 }

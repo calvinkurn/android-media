@@ -123,7 +123,7 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     private var tvNonLoginCta: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        performanceMonitoring = PerformanceMonitoring.start(context, FPM_TOKOPOINT)
+        performanceMonitoring = PerformanceMonitoring.start(FPM_TOKOPOINT)
         super.onCreate(savedInstanceState)
     }
 

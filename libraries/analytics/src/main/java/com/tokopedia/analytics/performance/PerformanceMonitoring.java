@@ -1,7 +1,5 @@
 package com.tokopedia.analytics.performance;
 
-import android.content.Context;
-
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
@@ -23,19 +21,16 @@ public class PerformanceMonitoring {
     private Map<String, String> attributes = new HashMap<>();
     private Map<String, Long> metrics = new HashMap<>();
 
-    private Context context;
-
-    public static PerformanceMonitoring start(Context context, String traceName) {
+    public static PerformanceMonitoring start(String traceName) {
         PerformanceMonitoring performanceMonitoring = new PerformanceMonitoring();
-        performanceMonitoring.startTrace(context, traceName);
+        performanceMonitoring.startTrace(traceName);
         return performanceMonitoring;
     }
 
-    public void startTrace(Context context, String traceName) {
+    public void startTrace(String traceName) {
         try {
             FirebasePerformance fp = FirebasePerformance.getInstance();
             if (fp != null) {
-                this.context = context.getApplicationContext();
                 trace = fp.newTrace(traceName);
                 this.traceName = traceName;
                 if (trace != null) {
@@ -54,9 +49,7 @@ public class PerformanceMonitoring {
         if(trace != null){
             trace.stop();
             this.endTime = System.currentTimeMillis();
-            if (context != null) {
-                FpmLogger.getInstance(context).save(traceName, startTime, endTime, attributes, metrics);
-            }
+            FpmLogger.getInstance().save(traceName, startTime, endTime, attributes, metrics);
         }
     }
 

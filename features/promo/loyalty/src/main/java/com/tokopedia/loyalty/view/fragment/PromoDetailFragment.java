@@ -139,7 +139,7 @@ public class PromoDetailFragment extends BaseDaggerFragment implements
                 this.promoSlug = getArguments().getString(ARG_EXTRA_PROMO_SLUG);
             }
         }
-        performanceMonitoring.startTrace(getContext(), FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_PROMO_DETAIL);
+        performanceMonitoring.startTrace(FIREBASE_PERFORMANCE_MONITORING_TRACE_MP_PROMO_DETAIL);
     }
 
     @Override

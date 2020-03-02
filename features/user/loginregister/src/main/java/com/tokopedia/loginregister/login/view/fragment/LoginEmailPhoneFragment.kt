@@ -224,7 +224,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
             mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
         }
 
-        performanceMonitoring = PerformanceMonitoring.start(context, LOGIN_LOAD_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(LOGIN_LOAD_TRACE)
 
         context?.run {
             mIris = IrisAnalytics.getInstance(this)
@@ -385,7 +385,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContract.Vi
                     analytics.eventClickLoginEmailButton(it.applicationContext)
                     KeyboardHandler.hideSoftKeyboard(it)
                 }
-                performanceMonitoring = PerformanceMonitoring.start(context, LOGIN_SUBMIT_TRACE)
+                performanceMonitoring = PerformanceMonitoring.start(LOGIN_SUBMIT_TRACE)
                 true
             } else {
                 false

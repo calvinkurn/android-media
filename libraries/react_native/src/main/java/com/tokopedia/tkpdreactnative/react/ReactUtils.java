@@ -1,6 +1,5 @@
 package com.tokopedia.tkpdreactnative.react;
 
-import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 
@@ -35,9 +34,9 @@ public class ReactUtils {
         return null;
     }
 
-    public static void startTracing(Context context, String tracerName) {
+    public static void startTracing(String tracerName) {
         if (perfMonitor == null) {
-            perfMonitor = PerformanceMonitoring.start(context, tracerName);
+            perfMonitor = PerformanceMonitoring.start(tracerName);
         }
     }
 

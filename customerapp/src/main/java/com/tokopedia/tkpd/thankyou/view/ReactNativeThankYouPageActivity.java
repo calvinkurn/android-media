@@ -64,7 +64,7 @@ public class ReactNativeThankYouPageActivity extends ReactFragmentActivity<React
 
     @DeepLink("tokopedia://thankyou/{platform}/{template}")
     public static Intent getThankYouPageApplinkIntent(Context context, Bundle bundle) {
-        ReactUtils.startTracing(context, GL_THANK_YOU_PAGE);
+        ReactUtils.startTracing(GL_THANK_YOU_PAGE);
         return ReactNativeThankYouPageActivity.createReactNativeActivity(
                 context, PAGE_TITLE
         ).putExtras(bundle);

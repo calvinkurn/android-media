@@ -129,7 +129,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        fpmRender = PerformanceMonitoring.start(getContext(), FPM_RENDER);
+        fpmRender = PerformanceMonitoring.start(FPM_RENDER);
         super.onCreate(savedInstanceState);
     }
 
@@ -270,7 +270,7 @@ public class TapTapTokenFragment extends BaseDaggerFragment implements TapTapTok
                 public void onClick() {
                     if (getContext() == null)
                         return;
-                    fpmCrack = PerformanceMonitoring.start(getContext(), FPM_CRACKING);
+                    fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
                     hideInfoTitle();
                     vibrate();
                     TokensUser tokenUser = tokenData.getTokensUser();

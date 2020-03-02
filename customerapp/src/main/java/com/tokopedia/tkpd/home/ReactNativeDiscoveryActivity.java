@@ -51,7 +51,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
                 mAllowShake = Boolean.parseBoolean(key);
             }
         }
-        ReactUtils.startTracing(context, MP_FLASHSALE);
+        ReactUtils.startTracing(MP_FLASHSALE);
         return ReactNativeDiscoveryActivity.createApplinkCallingIntent(
                 context, ReactConst.Screen.DISCOVERY_PAGE,
                 "",
@@ -101,7 +101,7 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
                                              String reactScreenName,
                                              String pageTitle,
                                              String pageId) {
-        ReactUtils.startTracing(context, MP_FLASHSALE);
+        ReactUtils.startTracing(MP_FLASHSALE);
         Intent intent = new Intent(context, ReactNativeDiscoveryActivity.class);
         Bundle extras = new Bundle();
         extras.putString(ReactConst.KEY_SCREEN, reactScreenName);

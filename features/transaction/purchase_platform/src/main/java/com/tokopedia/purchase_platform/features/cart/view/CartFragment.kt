@@ -278,8 +278,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             if (savedInstanceState != null) {
                 loadCachedData()
             } else {
-                cartPerformanceMonitoring = PerformanceMonitoring.start(context, CART_TRACE)
-                cartAllPerformanceMonitoring = PerformanceMonitoring.start(context, CART_ALL_TRACE)
+                cartPerformanceMonitoring = PerformanceMonitoring.start(CART_TRACE)
+                cartAllPerformanceMonitoring = PerformanceMonitoring.start(CART_ALL_TRACE)
             }
         }
 

@@ -30,15 +30,15 @@ public class FpmLogger implements PerformanceLogger {
         this.cache = new LocalCacheHandler(context, FPM_DEBUGGER);
     }
 
-    public static PerformanceLogger getInstance(Context context) {
-        if (instance == null) {
-            if(GlobalConfig.isAllowDebuggingTools()) {
-                instance = new FpmLogger(context);
-            } else {
-                instance = emptyInstance();
-            }
+    public static void init(Context context) {
+        if(GlobalConfig.isAllowDebuggingTools()) {
+            instance = new FpmLogger(context);
+        } else {
+            instance = emptyInstance();
         }
+    }
 
+    public static PerformanceLogger getInstance() {
         return instance;
     }
 

@@ -162,7 +162,7 @@ public class ShippingDurationBottomsheet extends BottomSheets
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        chooseCourierTracePerformance = PerformanceMonitoring.start(getContext(), CHOOSE_COURIER_TRACE);
+        chooseCourierTracePerformance = PerformanceMonitoring.start(CHOOSE_COURIER_TRACE);
     }
 
     @Override

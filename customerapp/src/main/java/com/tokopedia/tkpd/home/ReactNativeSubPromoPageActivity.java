@@ -25,7 +25,7 @@ public class ReactNativeSubPromoPageActivity extends ReactFragmentActivity<Gener
     
     @DeepLink({ApplinkConst.SUB_PROMO, ApplinkConst.SUB_PROMO_WITH_SLASH})
     public static Intent getSubPromoApplinkCallingIntent(Context context, Bundle bundle){
-        ReactUtils.startTracing(context, MP_OS_SUB_PROMO);
+        ReactUtils.startTracing(MP_OS_SUB_PROMO);
         return ReactNativeSubPromoPageActivity.createApplinkCallingIntent(
                 context,
                 ReactConst.Screen.SUB_PROMO,

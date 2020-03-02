@@ -170,7 +170,7 @@ public class FlightBookingReviewFragment extends BaseDaggerFragment implements
             flightBookingReviewModel = getArguments().getParcelable(EXTRA_DATA_REVIEW);
         }
 
-        performanceMonitoring = PerformanceMonitoring.start(getContext(), FLIGHT_CHECKOUT_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(FLIGHT_CHECKOUT_TRACE);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.tokopedia.home.beranda.helper.glide
 
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -25,7 +24,7 @@ const val TRUNCATED_URL_PREFIX = "https://ecs7.tokopedia.net/img/cache/"
 
 
 fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(context, url, fpmItemLabel)
+    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     Glide.with(context)
             .load(url)
             .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -45,7 +44,7 @@ fun ImageView.loadImage(url: String, fpmItemLabel: String = ""){
 }
 
 fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(context, url, fpmItemLabel)
+    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     Glide.with(context)
             .load(url)
             .fitCenter()
@@ -67,7 +66,7 @@ fun ImageView.loadImageFitCenter(url: String, fpmItemLabel: String = ""){
 }
 
 fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(context, url, fpmItemLabel)
+    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     Glide.with(context)
             .load(url)
             .format(DecodeFormat.PREFER_ARGB_8888)
@@ -89,7 +88,7 @@ fun ImageView.loadImageRounded(url: String, roundedRadius: Int, fpmItemLabel: St
 }
 
 fun ImageView.loadMiniImage(url: String, width: Int, height: Int, fpmItemLabel: String = ""){
-    val performanceMonitoring = getPerformanceMonitoring(context, url, fpmItemLabel)
+    val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
     Glide.with(context)
             .load(url)
             .fitCenter()
@@ -149,14 +148,14 @@ fun ImageView.loadGif(url: String){
             .into(this)
 }
 
-fun getPerformanceMonitoring(context: Context, url: String, fpmItemLabel: String = "") : PerformanceMonitoring? {
+fun getPerformanceMonitoring(url: String, fpmItemLabel: String = "") : PerformanceMonitoring? {
     var performanceMonitoring : PerformanceMonitoring? = null
 
     //FPM only allow max 100 chars, so the url needs to be truncated
     val truncatedUrl = url.removePrefix(TRUNCATED_URL_PREFIX)
 
     if (fpmItemLabel.isNotEmpty()) {
-        performanceMonitoring = PerformanceMonitoring.start(context, fpmItemLabel)
+        performanceMonitoring = PerformanceMonitoring.start(fpmItemLabel)
         performanceMonitoring.putCustomAttribute(FPM_ATTRIBUTE_IMAGE_URL, truncatedUrl)
     }
     return performanceMonitoring

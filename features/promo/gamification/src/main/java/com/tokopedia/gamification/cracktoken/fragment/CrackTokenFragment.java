@@ -138,7 +138,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        fpmRender = PerformanceMonitoring.start(getContext(), FPM_RENDER);
+        fpmRender = PerformanceMonitoring.start(FPM_RENDER);
         super.onCreate(savedInstanceState);
     }
 
@@ -414,7 +414,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
             public void onClick() {
                 if (getContext() == null)
                     return;
-                fpmCrack = PerformanceMonitoring.start(getContext(), FPM_CRACKING);
+                fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
                 widgetTokenOnBoarding.hideHandOnBoarding(true);
                 TokenUserEntity tokenUser = tokenData.getHome().getTokensUser();
                 crackTokenPresenter.crackToken(tokenUser.getTokenUserID(), tokenUser.getCampaignID());
@@ -648,7 +648,7 @@ public class CrackTokenFragment extends BaseDaggerFragment implements CrackToken
         crackLayoutTooltip.setVisibility(View.GONE);
         stopTimer();
         vibrate();
-        fpmCrack = PerformanceMonitoring.start(getContext(), FPM_CRACKING);
+        fpmCrack = PerformanceMonitoring.start(FPM_CRACKING);
         if ((crackResult.getImageBitmap() == null || crackResult.getImageBitmap().isRecycled()) &&
                 !TextUtils.isEmpty(crackResult.getImageUrl())) {
             Glide.with(getContext())

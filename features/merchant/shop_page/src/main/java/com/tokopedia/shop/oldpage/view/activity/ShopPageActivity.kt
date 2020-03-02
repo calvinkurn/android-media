@@ -171,7 +171,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         initInjector()
         remoteConfig = FirebaseRemoteConfigImpl(this)
         cartLocalCacheHandler = LocalCacheHandler(this, CART_LOCAL_CACHE_NAME)
-        performanceMonitoring = PerformanceMonitoring.start(this, SHOP_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(SHOP_TRACE)
         shopPageTracking = OldShopPageTrackingBuyer(
                 TrackingQueue(this))
 

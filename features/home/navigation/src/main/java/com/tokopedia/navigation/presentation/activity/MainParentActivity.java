@@ -1158,11 +1158,11 @@ public class MainParentActivity extends BaseActivity implements
 
     @Override
     public void startHomePerformanceMonitoring() {
-        homePerformanceMonitoring = PerformanceMonitoring.start(this, HOME_PERFORMANCE_MONITORING_KEY);
+        homePerformanceMonitoring = PerformanceMonitoring.start(HOME_PERFORMANCE_MONITORING_KEY);
     }
 
     private void startMainParentPerformanceMonitoring() {
-        mainParentPerformanceMonitoring = PerformanceMonitoring.start(this, MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
+        mainParentPerformanceMonitoring = PerformanceMonitoring.start(MAIN_PARENT_PERFORMANCE_MONITORING_KEY);
     }
 
     @Override

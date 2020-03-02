@@ -60,7 +60,7 @@ class BuyerAccountFragment : BaseAccountFragment(), BuyerAccount.View, FragmentL
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        fpmBuyer = PerformanceMonitoring.start(context, FPM_BUYER)
+        fpmBuyer = PerformanceMonitoring.start(FPM_BUYER)
         initInjector()
     }
 

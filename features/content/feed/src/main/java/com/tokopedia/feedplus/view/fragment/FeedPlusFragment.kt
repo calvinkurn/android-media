@@ -274,7 +274,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (activity != null) GraphqlClient.init(activity!!)
-        performanceMonitoring = PerformanceMonitoring.start(context, FEED_TRACE)
+        performanceMonitoring = PerformanceMonitoring.start(FEED_TRACE)
         super.onCreate(savedInstanceState)
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)

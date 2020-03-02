@@ -45,7 +45,7 @@ public abstract class ReactFragmentActivity<T extends ReactNativeFragment> exten
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         startTime = new Date().getTime();
-        performanceMonitoring = PerformanceMonitoring.start(this, REACT_NATIVE_FIREBASE_TRACE);
+        performanceMonitoring = PerformanceMonitoring.start(REACT_NATIVE_FIREBASE_TRACE);
         setContentView(R.layout.activity_react_native);
         initView();
     }

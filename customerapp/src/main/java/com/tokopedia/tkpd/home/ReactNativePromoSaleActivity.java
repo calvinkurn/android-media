@@ -30,7 +30,7 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
     @DeepLink({ApplinkConst.PROMO_SALE, ApplinkConst.PROMO_SALE_NO_SLASH})
     public static Intent getPromoSaleApplinkCallingIntent(Context context, Bundle bundle) {
         ScreenTracking.screen(context, SALE_PROMO);
-        ReactUtils.startTracing(context, MP_OS_PROMO);
+        ReactUtils.startTracing(MP_OS_PROMO);
         return ReactNativePromoSaleActivity.createBannerReactNativeActivity(
                 context,
                 ReactConst.Screen.PROMO,
@@ -47,7 +47,7 @@ public class ReactNativePromoSaleActivity extends ReactFragmentActivity<ReactNat
 
     @DeepLink({Constants.Applinks.PROMO_SALE_TERMS})
     public static Intent getPromoSaleTermsIntent(Context context, Bundle bundle) {
-        ReactUtils.startTracing(context, MP_OS_PROMO);
+        ReactUtils.startTracing(MP_OS_PROMO);
         return ReactNativePromoSaleActivity.createPromoSaleTerms(
                 context,
                 ReactConst.Screen.PROMO,
