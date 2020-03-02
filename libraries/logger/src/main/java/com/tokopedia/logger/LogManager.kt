@@ -71,10 +71,10 @@ class LogManager(val application: Application) : CoroutineScope {
         private lateinit var jobInfo: JobInfo
         private var secretKey = generateKey(Constants.ENCRYPTION_KEY)
         private const val SCALYR_ENABLED = "android_scalyr_log_enabled"
-        private var remoteConfig:RemoteConfig? = null
+        private var remoteConfig: RemoteConfig? = null
 
         @JvmStatic
-        fun getLogger():LoggerRepository? {
+        fun getLogger(): LoggerRepository? {
             if (!::loggerRepository.isInitialized) {
                 val instance = instance ?: return null
                 val context = instance.application.applicationContext
@@ -86,7 +86,7 @@ class LogManager(val application: Application) : CoroutineScope {
             return loggerRepository
         }
 
-        fun getRemoteConfig():RemoteConfig?{
+        fun getRemoteConfig(): RemoteConfig? {
             val instance = instance ?: return null
             if (remoteConfig == null) {
                 remoteConfig = FirebaseRemoteConfigImpl(instance.application.applicationContext)
@@ -95,9 +95,8 @@ class LogManager(val application: Application) : CoroutineScope {
         }
 
         @JvmStatic
-        fun isScalyrEnabled():Boolean{
-            return true
-            //return getRemoteConfig()?.getBoolean(SCALYR_ENABLED, false) ?: false
+        fun isScalyrEnabled(): Boolean {
+            return getRemoteConfig()?.getBoolean(SCALYR_ENABLED, false) ?: false
         }
 
         @JvmStatic
@@ -138,7 +137,7 @@ class LogManager(val application: Application) : CoroutineScope {
             }
         }
 
-        private fun runService(){
+        private fun runService() {
             if (android.os.Build.VERSION.SDK_INT > 21) {
                 jobScheduler.schedule(jobInfo)
             } else {
@@ -156,13 +155,14 @@ class LogManager(val application: Application) : CoroutineScope {
                     logs.add(lowPriorityLogger)
                 }
 
-                launch {
-                    try {
-                        if (isScalyrEnabled()) {
-                            logger.sendScalyrLogToServer(logs, secretKey)
-                        }
-                    } catch (ignored: Exception) {
+                if (isScalyrEnabled()) {
+                    launch {
+                        try {
 
+                            logger.sendScalyrLogToServer(logs, secretKey)
+                        } catch (ignored: Exception) {
+
+                        }
                     }
                 }
 
