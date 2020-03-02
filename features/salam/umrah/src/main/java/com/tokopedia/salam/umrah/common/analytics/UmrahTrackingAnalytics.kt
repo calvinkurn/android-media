@@ -843,4 +843,14 @@ class UmrahTrackingAnalytics {
     }
 
 
+    fun umrahTravelAgentClickPDP(){
+        val map = mutableMapOf<String, Any?>()
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_CLICK_UMROH
+        map[TrackAppUtils.EVENT_CATEGORY] = PRODUCT_DETAIL_PAGE_UMROH
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_TRAVEL_CLICK_ACTION_THREE_DOTS
+        map[TrackAppUtils.EVENT_LABEL] = ""
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
+    }
+
 }
