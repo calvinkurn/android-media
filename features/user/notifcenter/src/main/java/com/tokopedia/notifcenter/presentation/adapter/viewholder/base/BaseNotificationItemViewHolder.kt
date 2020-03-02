@@ -23,6 +23,7 @@ import com.tokopedia.notifcenter.data.consts.Resources.Green_G200
 import com.tokopedia.notifcenter.data.consts.Resources.Green_G500
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N200
 import com.tokopedia.notifcenter.data.consts.Resources.Neutral_N50
+import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean.Companion.BUYER_TYPE
@@ -113,12 +114,16 @@ abstract class BaseNotificationItemViewHolder(
 
     abstract fun bindNotificationPayload(element: NotificationItemViewBean)
 
+    protected open fun baseItemMarkedClick(element: NotificationItemViewBean) {
+        listener.itemClicked(element, adapterPosition)
+        element.isRead = true
+    }
+
     protected open fun bindOnNotificationClick(element: NotificationItemViewBean) {
         container.setOnClickListener {
-            listener.itemClicked(element, adapterPosition)
-            element.isRead = true
+            baseItemMarkedClick(element)
             if (element.isLongerContent) {
-                listener.showTextLonger(element)
+                listener.showNotificationDetail(BottomSheetType.LongerContent, element)
             } else {
                 RouteManager.route(itemView.context, element.appLink)
             }
