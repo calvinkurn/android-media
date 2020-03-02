@@ -129,6 +129,10 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         super.onViewCreated(view, savedInstanceState)
         initView()
         initProgressDialog()
+    }
+
+    override fun onResume() {
+        super.onResume()
         trackingHotelUtil.hotelViewRoomDetail(hotelRoom, addToCartParam, roomIndex)
     }
 
