@@ -87,6 +87,12 @@ project.ext {
     groupId = 'com.tokopedia.travelhomepage'
     versionName = "0.0.1"
     artifactName = "travel_homepage-release"
+    unitTestJavaIncludes = [
+            '**/UrlParamUtils.*'
+    ]
+    unitTestKotlinIncludes = [
+            '**/*ViewModel.*',
+    ]
 }
 
 apply from: '../../../publish_local.gradle'

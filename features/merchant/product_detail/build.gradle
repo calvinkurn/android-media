@@ -143,9 +143,7 @@ project.ext {
             '**/UrlParamUtils.*'
     ]
     unitTestKotlinIncludes = [
-            '**/SearchShopViewModel.*',
-            '**/SearchViewModel.*',
-            '**/SearchKotlinExtKt.*',
+            '**/*ViewModel.*',
     ]
 }
 

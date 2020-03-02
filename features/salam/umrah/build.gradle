@@ -60,6 +60,12 @@ project.ext {
     groupId = 'com.tokopedia.salam'
     versionName = "1.0.0"
     artifactName = "salam_umrah-release"
+    unitTestJavaIncludes = [
+            '**/UrlParamUtils.*'
+    ]
+    unitTestKotlinIncludes = [
+            '**/*ViewModel.*',
+    ]
 }
 
 apply from: '../../../publish_local.gradle'
