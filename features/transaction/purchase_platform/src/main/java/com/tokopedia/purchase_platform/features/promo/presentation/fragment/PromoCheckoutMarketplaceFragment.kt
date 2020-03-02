@@ -171,24 +171,20 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         return ""
     }
 
-    override fun loadInitialData() {
-        super.loadInitialData()
-    }
-
     override fun loadData(page: Int) {
-//        hideLoading()
-//        adapter.addVisitable(mockPromoRecommendation())
-//        adapter.addVisitable(mockPromoInput())
-//
-//        adapter.addVisitable(mockEligibleHeader())
-//        adapter.addVisitableList(mockEligiblePromoGlobalSection())
-//        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
-//        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
-//
-//        adapter.addVisitable(mockIneligibleHeader())
-//        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
-//        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
-//        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
+        hideLoading()
+        adapter.addVisitable(mockPromoRecommendation())
+        adapter.addVisitable(mockPromoInput())
+
+        adapter.addVisitable(mockEligibleHeader())
+        adapter.addVisitableList(mockEligiblePromoGlobalSection())
+        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
+        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
+
+        adapter.addVisitable(mockIneligibleHeader())
+        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
+        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
+        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
 
 //        adapter.addVisitable(mockEmptyState())
     }
@@ -391,7 +387,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
         Toast.makeText(context, "Go to detail promo", Toast.LENGTH_SHORT).show()
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
-            putExtra(EXTRA_KUPON_CODE, "12345")
+            putExtra(EXTRA_KUPON_CODE, "FONSBBLIF29DDV9L51M")
             putExtra(EXTRA_IS_USE, true)
             putExtra(ONE_CLICK_SHIPMENT, false)
             putExtra(PAGE_TRACKING, FROM_CART)
