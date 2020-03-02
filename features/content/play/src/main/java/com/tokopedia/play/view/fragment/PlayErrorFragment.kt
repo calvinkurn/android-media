@@ -17,6 +17,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -148,6 +149,7 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                     }
                 }
             }
+            PlayAnalytics.errorState(channelId, globalError.errorDescription.text.toString(), playViewModel.isLive)
             container.visible()
         }
     }

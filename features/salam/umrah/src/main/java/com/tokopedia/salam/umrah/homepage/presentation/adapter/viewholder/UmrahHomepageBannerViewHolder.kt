@@ -72,7 +72,7 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
     }
 
     private fun getHeightPx(resources: Resources):Int{
-        return (getWidthPx(resources)/3).toInt()
+        return (getWidthPx(resources)/3.2).toInt()
     }
     companion object {
         val LAYOUT = R.layout.partial_umrah_home_page_banner

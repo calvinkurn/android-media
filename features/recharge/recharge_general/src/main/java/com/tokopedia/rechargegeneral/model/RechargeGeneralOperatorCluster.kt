@@ -17,7 +17,7 @@ data class RechargeGeneralOperatorCluster(
         val style: String = "",
         @SerializedName("operatorGroup")
         @Expose
-        var operatorGroups: List<CatalogOperatorGroup> = listOf()
+        var operatorGroups: List<CatalogOperatorGroup>? = listOf()
 
 ) {
 

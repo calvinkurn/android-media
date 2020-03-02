@@ -188,8 +188,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO, DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
                     createDynamicChannel(
                             channel = channel,
-                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage,
-                            isCombined = true
+                            trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC, DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
