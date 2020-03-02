@@ -1,4 +1,4 @@
-package com.tokopedia.play.ui.stats
+package com.tokopedia.play.ui.statsinfo
 
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
@@ -7,16 +7,15 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
- * Created by jegul on 03/12/19
+ * Created by jegul on 26/02/20
  */
-open class StatsComponent(
+open class StatsInfoComponent(
         container: ViewGroup,
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope,
@@ -31,11 +30,14 @@ open class StatsComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.show()
+                            is ScreenStateEvent.VideoPropertyChanged -> uiView.setLiveBadgeVisibility(it.videoProp.type.isLive)
+                            is ScreenStateEvent.VideoStreamChanged ->
+                                uiView.setLiveBadgeVisibility(it.videoStream.channelType.isLive)
                             is ScreenStateEvent.SetTotalViews -> uiView.setTotalViews(it.totalView)
-                            is ScreenStateEvent.SetTotalLikes -> uiView.setTotalLikes(it.totalLikes)
+                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) {
+                                uiView.hide()
+                            }
                             is ScreenStateEvent.KeyboardStateChanged -> if (it.isShown) uiView.hide() else uiView.show()
-                            is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }
         }
@@ -49,6 +51,6 @@ open class StatsComponent(
         return emptyFlow()
     }
 
-    protected open fun initView(container: ViewGroup): StatsView =
-            StatsView(container)
+    protected open fun initView(container: ViewGroup) =
+            StatsInfoView(container)
 }

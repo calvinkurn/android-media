@@ -42,7 +42,7 @@ import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
 import com.tokopedia.play.ui.sendchat.interaction.SendChatInteractionEvent
 import com.tokopedia.play.ui.sizecontainer.SizeContainerComponent
-import com.tokopedia.play.ui.stats.StatsComponent
+import com.tokopedia.play.ui.statsinfo.StatsInfoComponent
 import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
@@ -64,7 +64,6 @@ import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -105,13 +104,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private val offset24 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
     private val offset8 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl3) }
+    private val offset4 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl2) }
 
     private lateinit var playViewModel: PlayViewModel
     private lateinit var viewModel: PlayInteractionViewModel
 
     private lateinit var sendChatComponent: UIComponent<*>
     private lateinit var likeComponent: UIComponent<*>
-    private lateinit var statsComponent: UIComponent<*>
     private lateinit var pinnedComponent: UIComponent<*>
     private lateinit var chatListComponent: UIComponent<*>
     private lateinit var immersiveBoxComponent: UIComponent<*>
@@ -119,6 +118,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var gradientBackgroundComponent: UIComponent<*>
     private lateinit var sizeContainerComponent: UIComponent<*>
     private lateinit var toolbarComponent: UIComponent<*>
+    private lateinit var statsInfoComponent: UIComponent<*>
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
@@ -370,13 +370,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         gradientBackgroundComponent = initGradientBackgroundComponent(container)
         sendChatComponent = initSendChatComponent(container)
         likeComponent = initLikeComponent(container)
-        statsComponent = initStatsComponent(container)
         pinnedComponent = initPinnedComponent(container)
         chatListComponent = initChatListComponent(container)
         immersiveBoxComponent = initImmersiveBoxComponent(container)
         videoControlComponent = initVideoControlComponent(container)
         endLiveInfoComponent = initEndLiveInfoComponent(container)
         toolbarComponent = initToolbarComponent(container)
+        statsInfoComponent = initStatsInfoComponent(container)
         quickReplyComponent = initQuickReplyComponent(container)
         //play button should be on top of other component so it can be clicked
         playButtonComponent = initPlayButtonComponent(container)
@@ -388,12 +388,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 sizeContainerComponentId = sizeContainerComponent.getContainerId(),
                 sendChatComponentId = sendChatComponent.getContainerId(),
                 likeComponentId = likeComponent.getContainerId(),
-                statsComponentId = statsComponent.getContainerId(),
                 pinnedComponentId = pinnedComponent.getContainerId(),
                 chatListComponentId = chatListComponent.getContainerId(),
                 videoControlComponentId = videoControlComponent.getContainerId(),
                 gradientBackgroundComponentId = gradientBackgroundComponent.getContainerId(),
                 toolbarComponentId = toolbarComponent.getContainerId(),
+                statsInfoComponentId = statsInfoComponent.getContainerId(),
                 playButtonComponentId = playButtonComponent.getContainerId(),
                 immersiveBoxComponentId = immersiveBoxComponent.getContainerId(),
                 quickReplyComponentId = quickReplyComponent.getContainerId(),
@@ -434,10 +434,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
 
         return likeComponent
-    }
-
-    private fun initStatsComponent(container: ViewGroup): UIComponent<Unit> {
-        return StatsComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initPinnedComponent(container: ViewGroup): UIComponent<PinnedInteractionEvent> {
@@ -492,6 +488,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
 
         return toolbarComponent
+    }
+
+    private fun initStatsInfoComponent(container: ViewGroup): UIComponent<Unit> {
+        return StatsInfoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initPlayButtonComponent(container: ViewGroup): UIComponent<PlayButtonInteractionEvent> {
@@ -581,12 +581,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             @IdRes sizeContainerComponentId: Int,
             @IdRes sendChatComponentId: Int,
             @IdRes likeComponentId: Int,
-            @IdRes statsComponentId: Int,
             @IdRes pinnedComponentId: Int,
             @IdRes chatListComponentId: Int,
             @IdRes videoControlComponentId: Int,
             @IdRes gradientBackgroundComponentId: Int,
             @IdRes toolbarComponentId: Int,
+            @IdRes statsInfoComponentId: Int,
             @IdRes playButtonComponentId: Int,
             @IdRes immersiveBoxComponentId: Int,
             @IdRes quickReplyComponentId: Int,
@@ -608,7 +608,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int, @IdRes toolbarComponentId: Int) {
+        fun layoutChat(container: ViewGroup, @IdRes id: Int, @IdRes likeComponentId: Int, @IdRes toolbarComponentId: Int, @IdRes videoControlComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
@@ -616,7 +616,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.apply {
                 connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
                 connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
-                connect(id, ConstraintSet.BOTTOM, likeComponentId, ConstraintSet.BOTTOM)
+                connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.TOP)
             }
 
             constraintSet.applyTo(container)
@@ -629,7 +629,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
             constraintSet.apply {
                 connect(id, ConstraintSet.END, toolbarComponentId, ConstraintSet.END)
-                connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.TOP, offset8)
+                connect(id, ConstraintSet.BOTTOM, videoControlComponentId, ConstraintSet.BOTTOM)
             }
 
             constraintSet.applyTo(container)
@@ -663,27 +663,14 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutStats(container: ViewGroup, @IdRes id: Int, @IdRes pinnedComponentId: Int, @IdRes toolbarComponentId: Int) {
+        fun layoutVideoControl(container: ViewGroup, @IdRes id: Int, @IdRes toolbarComponentId: Int, @IdRes sizeContainerComponentId: Int, @IdRes likeComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
 
             constraintSet.apply {
                 connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
-                connect(id, ConstraintSet.BOTTOM, pinnedComponentId, ConstraintSet.TOP, offset8)
-            }
-
-            constraintSet.applyTo(container)
-        }
-
-        fun layoutVideoControl(container: ViewGroup, @IdRes id: Int, @IdRes toolbarComponentId: Int, @IdRes sizeContainerComponentId: Int) {
-            val constraintSet = ConstraintSet()
-
-            constraintSet.clone(container as ConstraintLayout)
-
-            constraintSet.apply {
-                connect(id, ConstraintSet.START, toolbarComponentId, ConstraintSet.START)
-                connect(id, ConstraintSet.END, toolbarComponentId, ConstraintSet.END)
+                connect(id, ConstraintSet.END, likeComponentId, ConstraintSet.START, offset8)
                 connect(id, ConstraintSet.BOTTOM, sizeContainerComponentId, ConstraintSet.BOTTOM)
             }
 
@@ -719,6 +706,19 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
+        fun layoutStatsInfo(container: ViewGroup, @IdRes id: Int, @IdRes sizeContainerComponentId: Int, @IdRes toolbarComponentId: Int) {
+            val constraintSet = ConstraintSet()
+
+            constraintSet.clone(container as ConstraintLayout)
+
+            constraintSet.apply {
+                connect(id, ConstraintSet.START, sizeContainerComponentId, ConstraintSet.START, offset16)
+                connect(id, ConstraintSet.TOP, toolbarComponentId, ConstraintSet.BOTTOM, offset16)
+            }
+
+            constraintSet.applyTo(container)
+        }
+
         fun layoutPlayButton(container: ViewGroup, @IdRes id: Int) {
             val constraintSet = ConstraintSet()
 
@@ -734,7 +734,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             constraintSet.applyTo(container)
         }
 
-        fun layoutImmersiveBox(container: ViewGroup, @IdRes id: Int, toolbarComponentId: Int, statsComponentId: Int) {
+        fun layoutImmersiveBox(container: ViewGroup, @IdRes id: Int, toolbarComponentId: Int, @IdRes pinnedComponentId: Int) {
             val constraintSet = ConstraintSet()
 
             constraintSet.clone(container as ConstraintLayout)
@@ -743,7 +743,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                 connect(id, ConstraintSet.START, ConstraintSet.PARENT_ID, ConstraintSet.START)
                 connect(id, ConstraintSet.END, ConstraintSet.PARENT_ID, ConstraintSet.END)
                 connect(id, ConstraintSet.TOP, toolbarComponentId, ConstraintSet.BOTTOM)
-                connect(id, ConstraintSet.BOTTOM, statsComponentId, ConstraintSet.TOP, offset16)
+                connect(id, ConstraintSet.BOTTOM, pinnedComponentId, ConstraintSet.TOP, offset16)
             }
 
             constraintSet.applyTo(container)
@@ -780,17 +780,17 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         layoutSizeContainer(container, sizeContainerComponentId)
         layoutToolbar(container, toolbarComponentId, sizeContainerComponentId)
-        layoutVideoControl(container, videoControlComponentId, toolbarComponentId, sizeContainerComponentId)
+        layoutVideoControl(container, videoControlComponentId, toolbarComponentId, sizeContainerComponentId, likeComponentId)
         layoutLike(container, likeComponentId, videoControlComponentId, toolbarComponentId)
-        layoutChat(container, sendChatComponentId, likeComponentId, toolbarComponentId)
+        layoutChat(container, sendChatComponentId, likeComponentId, toolbarComponentId, videoControlComponentId)
         layoutChatList(container, chatListComponentId, quickReplyComponentId, likeComponentId, toolbarComponentId)
         layoutPinned(container, pinnedComponentId, chatListComponentId, likeComponentId, toolbarComponentId)
-        layoutStats(container, statsComponentId, pinnedComponentId, toolbarComponentId)
         layoutPlayButton(container, playButtonComponentId)
-        layoutImmersiveBox(container, immersiveBoxComponentId, toolbarComponentId, statsComponentId)
+        layoutImmersiveBox(container, immersiveBoxComponentId, toolbarComponentId, pinnedComponentId)
         layoutQuickReply(container, quickReplyComponentId, sendChatComponentId, toolbarComponentId)
         layoutGradientBackground(container, gradientBackgroundComponentId)
         layoutEndLiveComponent(container, endLiveInfoComponentId)
+        layoutStatsInfo(container, statsInfoComponentId, sizeContainerComponentId, toolbarComponentId)
     }
     //endregion
 
@@ -999,7 +999,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         val quickReplyView = view?.findViewById<View>(quickReplyComponent.getContainerId())
         val quickReplyViewTotalHeight = if (quickReplyView != null && !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
-            val height = if (quickReplyView.height <= 0) 2 * view?.findViewById<View>(statsComponent.getContainerId())?.height.orZero() else quickReplyView.height
+            val height = if (quickReplyView.height <= 0) 2 * view?.findViewById<View>(statsInfoComponent.getContainerId())?.height.orZero() else quickReplyView.height
             val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
             height + marginLp.bottomMargin + marginLp.topMargin
         } else 0

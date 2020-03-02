@@ -28,10 +28,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -157,6 +154,7 @@ class PlayViewModel @Inject constructor(
 
     init {
         stateHandler.observeForever(stateHandlerObserver)
+//        startMockFreeze()
     }
 
     override fun onCleared() {
@@ -448,5 +446,16 @@ class PlayViewModel @Inject constructor(
 
     companion object {
         private const val MAX_RETRY_CHANNEL_INFO = 3
+    }
+
+    private fun startMockFreeze() {
+        launch(dispatchers.io) {
+            delay(10000)
+            withContext(dispatchers.main) {
+                _observableEvent.value = _observableEvent.value?.copy(
+                        isFreeze = true
+                )
+            }
+        }
     }
 }
