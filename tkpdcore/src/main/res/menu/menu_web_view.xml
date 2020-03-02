@@ -14,7 +14,7 @@
                 android:icon="@drawable/ic_nav_home_webview"/>
             <item android:id="@+id/menu_help"
                 android:title="@string/webview_help_menu_text"
-                android:icon="@drawable/ic_webview_help_button"/>
+                android:icon="@drawable/ic_icon_tokopedia_care"/>
         </menu>
 
     </item>
