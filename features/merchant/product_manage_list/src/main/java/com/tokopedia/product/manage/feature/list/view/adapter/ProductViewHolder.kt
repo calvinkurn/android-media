@@ -29,6 +29,7 @@ class ProductViewHolder(
         showProductStock(product)
 
         showProductLabel(product)
+        showVariantLabel(product)
         showProductButton(product)
 
         showProductImage(product)
@@ -61,6 +62,10 @@ class ProductViewHolder(
             product.isInactive() -> itemView.labelInactive.show()
             product.isActive() -> itemView.labelActive.show()
         }
+    }
+
+    private fun showVariantLabel(product: ProductViewModel) {
+        if(product.isVariant()) itemView.labelVariant.show()
     }
 
     private fun showProductButton(product: ProductViewModel) {
