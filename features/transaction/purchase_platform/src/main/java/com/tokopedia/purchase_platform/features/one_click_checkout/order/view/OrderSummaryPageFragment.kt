@@ -11,13 +11,21 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.PreferenceListBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.*
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProductChild
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.QuantityUiModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderProductCardListener {
@@ -148,12 +156,40 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         orderPreferenceCard = OrderPreferenceCard(view, this, getOrderPreferenceCardListener())
         orderPreferenceCard.initView()
+
+//        btn_pay.isEnabled = true
+//        btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
+//        btn_pay.setPadding(convertDpToPixel(32f, context!!), btn_pay.paddingTop, convertDpToPixel(32f, context!!), btn_pay.paddingBottom)
+
+        triggerLoading()
+    }
+
+    private fun triggerLoading() {
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(4000)
+            btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
+            btn_pay.setText(R.string.label_choose_payment)
+            btn_pay.isLoading = false
+            btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+////            btn_pay.width = convertDpToPixel(140f, context!!)
+//            delay(3000)
+//            btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
+//            btn_pay.setText(R.string.pay)
+//            btn_pay.isLoading = true
+//            btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
+//            delay(3000)
+//            btn_pay.isEnabled = false
+        }
     }
 
     private fun getOrderPreferenceCardListener() = object : OrderPreferenceCard.OrderPreferenceCardListener {
 
         override fun onChangePreferenceClicked() {
             showPreferenceListBottomSheet()
+        }
+
+        override fun onCourierChange() {
+            viewModel.updateCourier()
         }
     }
 
@@ -180,8 +216,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }).show(this@OrderSummaryPageFragment)
     }
 
-    override fun onProductChange(product: OrderProduct) {
-        viewModel.updateProduct(product)
+    override fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean) {
+        viewModel.updateProduct(product, shouldReloadRates)
     }
 
     companion object {

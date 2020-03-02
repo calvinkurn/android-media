@@ -1,31 +1,32 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
 
 import android.view.View
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener
+import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
+import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import kotlinx.android.synthetic.main.card_order_preference.view.*
 
 class OrderPreferenceCard(private val view: View, private val fragment: OrderSummaryPageFragment, private val listener: OrderPreferenceCardListener) {
 
+    private lateinit var preference: Preference
+
+    fun setPreference(preference: Preference) {
+        this.preference = preference
+    }
+
     fun initView() {
         view.tv_shipping_price.setOnClickListener {
-            val bottomsheet = ShippingCourierBottomsheet.newInstance(listOf(), RecipientAddressModel(), 0, true)
-            bottomsheet.setShippingCourierBottomsheetListener(object : ShippingCourierBottomsheetListener {
-                override fun onCourierChoosen(shippingCourierViewModel: ShippingCourierViewModel, courierItemData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, isCod: Boolean, isPromoCourier: Boolean, isNeedPinpoint: Boolean) {
+            ShippingCourierOccBottomSheet().showBottomSheet(fragment, listOf(), object : ShippingCourierOccBottomSheetListener {
+                override fun onCourierChosen(shippingCourierViewModel: ShippingCourierViewModel) {
 
                 }
 
-                override fun onCourierShipmentRecpmmendationCloseClicked() {
-
-                }
-
-                override fun onRetryReloadCourier(shipmentCartItemModel: ShipmentCartItemModel?, cartPosition: Int, shopShipmentList: MutableList<ShopShipment>?) {
+                override fun onLogisticPromoClicked(data: LogisticPromoViewModel) {
 
                 }
             })
-            bottomsheet.show(fragment.fragmentManager!!, null)
         }
         view.tv_choose_preference.setOnClickListener {
             listener.onChangePreferenceClicked()
@@ -35,5 +36,7 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
     interface OrderPreferenceCardListener {
 
         fun onChangePreferenceClicked()
+
+        fun onCourierChange()
     }
 }

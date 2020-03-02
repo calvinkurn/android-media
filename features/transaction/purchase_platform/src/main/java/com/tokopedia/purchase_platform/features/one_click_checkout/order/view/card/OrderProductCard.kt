@@ -11,8 +11,8 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder.QuantityViewHolder
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.MAX_QUANTITY
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderProduct
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderProductChild
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProductChild
 import kotlinx.android.synthetic.main.card_order_product.view.*
 
 class OrderProductCard(private val view: View, private val listener: OrderProductCardListener) {
@@ -221,6 +221,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 //                        reloadRatesDebounceListener.onNeedToRecalculateRates(false)
 //                        fragmentUiModel.isStateChanged = true
                     adapter.setList(product.typeVariantList!!)
+                    listener.onProductChange(product, false)
 //                        adapter.notifyDataSetChanged()
                 }
             }
@@ -292,6 +293,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     interface OrderProductCardListener {
 
-        fun onProductChange(product: OrderProduct)
+        fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean = true)
     }
 }

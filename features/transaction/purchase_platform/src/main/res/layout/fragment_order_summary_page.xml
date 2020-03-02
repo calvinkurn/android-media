@@ -64,8 +64,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_header_2"
                 app:typographyType="body_3"
                 app:typographyWeight="reguler"
-                tools:text="ini balbalablasdfj lasdjf lasjdf asjdf"
-                tools:visibility="gone" />
+                tools:text="ini balbalablasdfj lasdjf lasjdf asjdf" />
 
             <include
                 android:id="@+id/preference_card"
@@ -77,6 +76,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_subheader" />
 
+            <include
+                android:id="@+id/empty_preference_card"
+                layout="@layout/card_order_empty_preference"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp_16"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/preference_card" />
+
             <View
                 android:id="@+id/divider"
                 android:layout_width="0dp"
@@ -87,7 +97,7 @@
                 android:background="@color/Neutral_N75"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/preference_card" />
+                app:layout_constraintTop_toBottomOf="@+id/empty_preference_card" />
 
             <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
                 android:id="@+id/cb_insurance"
@@ -96,6 +106,8 @@
                 android:layout_marginStart="@dimen/dp_16"
                 android:layout_marginLeft="@dimen/dp_16"
                 android:layout_marginTop="@dimen/dp_16"
+                android:checked="true"
+                app:indeterminate="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider" />
 
@@ -179,7 +191,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_total_payment_label"
                 app:typographyType="heading_4"
                 app:typographyWeight="bold"
-                tools:text="Rp600.000" />
+                tools:text="Rp600.000.000" />
 
             <ImageView
                 android:id="@+id/btn_order_detail"
@@ -202,12 +214,15 @@
                 android:layout_width="@dimen/dp_140"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
+                android:drawableStart="@drawable/ic_btn_pay_shield"
+                android:drawableLeft="@drawable/ic_btn_pay_shield"
+                android:drawablePadding="@dimen/dp_neg_16"
+                android:text="@string/pay"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider2"
                 app:unifyButtonSize="large"
-                app:unifyButtonType="transaction"
-                tools:text="Bayar" />
+                app:unifyButtonType="transaction" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_insurance"

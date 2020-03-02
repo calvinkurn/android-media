@@ -3,12 +3,11 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.RatesParam
-import com.tokopedia.logisticcart.shipping.model.ShippingParam
-import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderTotal
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import kotlinx.coroutines.*
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
@@ -26,7 +25,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private var debounceJob: Job? = null
 
-    fun updateProduct(product: OrderProduct) {
+    fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
         orderProduct = product
         orderTotal.value = orderTotal.value?.copy(btnState = 1)
     }
@@ -85,7 +84,23 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val ratesParamBuilder = RatesParam.Builder(listOf(), shippingParam)
         ratesUseCase.execute(ratesParamBuilder.build())
                 .map {
-                    ratesResponseStateConverter.fillState(it, listOf(), 1, 0)
+                    val data = ratesResponseStateConverter.fillState(it, listOf(), 1, 0)
+                    if (data.shippingDurationViewModels != null) {
+                        val logisticPromo = data.logisticPromo
+                        if (logisticPromo != null) {
+                            // validate army courier
+                            val serviceData: ShippingDurationViewModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
+                            if (serviceData == null) {
+                                data.logisticPromo = null
+                            } else {
+                                val courierData: ShippingCourierViewModel? = getCourierDatabySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList)
+                                if (courierData == null) {
+                                    data.logisticPromo = null
+                                }
+                            }
+                        }
+                    }
+                    return@map data
                 }.subscribe(object : Observer<ShippingRecommendationData> {
                     override fun onError(e: Throwable) {
 
@@ -100,6 +115,24 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
                     }
                 })
+    }
+
+    private fun getCourierDatabySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierViewModel>): ShippingCourierViewModel? {
+        return shippingCourierViewModels.firstOrNull { it.productData.shipperProductId == spId }
+//        for (shippingCourierViewModel in shippingCourierViewModels) {
+//            if (shippingCourierViewModel.productData.shipperProductId == spId) {
+//                return ShippingCourierConverter().convertToCourierItemData(shippingCourierViewModel)
+//            }
+//        }
+//        return null
+    }
+
+    private fun getRatesDataFromLogisticPromo(serviceId: Int, list: List<ShippingDurationViewModel>): ShippingDurationViewModel? {
+        list.firstOrNull { it.serviceData.serviceId == serviceId }
+                ?.let {
+                    return it
+                }
+        return null
     }
 
     fun calculateTotal() {

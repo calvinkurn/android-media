@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.DaggerPreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
 import kotlinx.android.synthetic.main.activity_preference_edit.*
@@ -43,7 +44,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         paymentId = intent.getIntExtra(EXTRA_PAYMENT_ID, -1)
 
         if (addressId == -1 || shippingId == -1 || paymentId == -1) {
-            supportFragmentManager.beginTransaction().replace(R.id.container, PaymentMethodFragment()).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment()).commit()
         } else {
             supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment())
         }
@@ -83,6 +84,14 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         stepper.gone()
     }
 
+    fun showAddButton() {
+        btn_add.visible()
+    }
+
+    fun hideAddButton() {
+        btn_add.gone()
+    }
+
     fun showDeleteButton() {
         btn_delete.visible()
     }
@@ -93,6 +102,12 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
     fun setDeleteButtonOnClickListener(onClick: () -> Unit) {
         btn_delete.setOnClickListener {
+            onClick()
+        }
+    }
+
+    fun setAddButtonOnClickListener(onClick: () -> Unit) {
+        btn_add.setOnClickListener {
             onClick()
         }
     }

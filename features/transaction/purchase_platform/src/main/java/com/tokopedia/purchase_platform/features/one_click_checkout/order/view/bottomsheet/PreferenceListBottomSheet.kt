@@ -17,6 +17,7 @@ import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
 class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main.immediate, private val listener: PreferenceListBottomsheetListener) : CoroutineScope {
+    // need get all preference list usecase, update selected preference usecase
 
     private var bottomSheet: BottomSheetUnify? = null
 
@@ -68,6 +69,7 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
 
     private fun getListener(): PreferenceListAdapter.PreferenceListAdapterListener = object : PreferenceListAdapter.PreferenceListAdapterListener {
         override fun onPreferenceSelected(preference: Preference) {
+            //Todo: update selected preference api
             dismiss()
             listener.onChangePreference(preference)
         }

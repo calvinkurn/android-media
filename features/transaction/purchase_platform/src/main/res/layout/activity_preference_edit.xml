@@ -71,6 +71,19 @@
                 tools:visibility="visible" />
 
             <ImageView
+                android:id="@+id/btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/stepper"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_add_grey"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
                 android:id="@+id/btn_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"

@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
 
 import android.view.View
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.purchase_platform.R
@@ -40,10 +41,11 @@ class TypeVariantViewHolder(view: View, val listener: CheckoutVariantActionListe
 //            val variantName = "${element.variantName} : "
 //            itemView.tv_variant_name.text = variantName
 //            itemView.tv_variant_value.text = element.variantSelectedValue
-            val chipsLayoutManager = ChipsLayoutManager.newBuilder(itemView.context)
-                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
-                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-                    .build()
+//            val chipsLayoutManager = ChipsLayoutManager.newBuilder(itemView.context)
+//                    .setOrientation(ChipsLayoutManager.HORIZONTAL)
+//                    .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+//                    .build()
+            val chipsLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
             val variantOptionAdapter = VariantOptionAdapter(element.variantOptions, listener)
             itemView.rv_variant_options.isNestedScrollingEnabled = false
             itemView.rv_variant_options.layoutManager = chipsLayoutManager

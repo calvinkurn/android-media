@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
 
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderProduct
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 
 /**
  * Created by Irfan Khoirul on 03/12/18.
