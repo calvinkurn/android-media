@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.list.view.adapter
+package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
 import android.view.View
 import android.widget.CompoundButton
