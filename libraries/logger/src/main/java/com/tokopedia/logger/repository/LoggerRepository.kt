@@ -36,6 +36,10 @@ class LoggerRepository(private val logDao: LoggerDao,
         logDao.deleteEntry(timeStamp)
     }
 
+    override suspend fun deleteEntries(loggers: List<Logger>) {
+        logDao.deleteEntries(loggers)
+    }
+
     override suspend fun deleteExpiredData(timeStamp: Long) {
         logDao.deleteExpiredData(timeStamp)
     }

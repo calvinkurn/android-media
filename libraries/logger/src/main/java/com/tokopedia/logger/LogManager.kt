@@ -16,6 +16,7 @@ import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
 import com.tokopedia.logger.utils.*
 import kotlinx.coroutines.*
+import java.lang.Exception
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -59,6 +60,8 @@ class LogManager(val application: Application) : CoroutineScope {
         var TOKEN: Array<String> = arrayOf()
         var scalyrEnabled: Boolean = false
         var logentriesEnabled: Boolean = true
+        var isPrimaryLogentries: Boolean = true
+        var isPrimaryScalyr: Boolean = true
 
         @JvmField
         var instance: LogManager? = null
@@ -137,16 +140,12 @@ class LogManager(val application: Application) : CoroutineScope {
                     logs.add(lowPriorityLogger)
                 }
 
+                var scalyrSuccessCode = Constants.LOG_DEFAULT_ERROR_CODE
                 if (scalyrEnabled) {
-                    launch {
-                        try {
-                            val errorCode = logger.sendScalyrLogToServer(logs, secretKey)
-                            if (errorCode == Constants.SCALYR_SUCCESS_CODE) {
-                                // no op
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                    try {
+                        scalyrSuccessCode = logger.sendScalyrLogToServer(logs, secretKey)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
 
@@ -156,11 +155,19 @@ class LogManager(val application: Application) : CoroutineScope {
                         val severity = getSeverity(log.serverChannel)
                         if (severity != Constants.SEVERITY_NONE) {
                             val errorCode = logger.sendLogToServer(severity, TOKEN, log, secretKey)
-                            if (errorCode == Constants.LOGENTRIES_SUCCESS_CODE) {
-                                logger.deleteEntry(ts)
+                            if (isPrimaryLogentries) {
+                                if (errorCode == Constants.LOGENTRIES_SUCCESS_CODE) {
+                                    logger.deleteEntry(ts)
+                                }
                             }
-                            delay(200)
+                            delay(100)
                         }
+                    }
+                }
+
+                if (isPrimaryScalyr) {
+                    if (scalyrSuccessCode == Constants.SCALYR_SUCCESS_CODE) {
+                        logger.deleteEntries(logs)
                     }
                 }
             }
