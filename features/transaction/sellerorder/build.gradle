@@ -33,6 +33,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.webview)
+    implementation project(rootProject.ext.libraries.remoteResourceRequest)
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.dialog
@@ -63,3 +64,4 @@ project.ext {
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"
+//apply from: '../../../jacoco_task.gradle'

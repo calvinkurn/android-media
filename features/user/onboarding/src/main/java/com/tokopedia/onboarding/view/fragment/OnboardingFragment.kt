@@ -53,8 +53,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     lateinit var onboardingAnalytics: OnboardingAnalytics
     @Inject
     lateinit var remoteConfig: RemoteConfig
-    @Inject
-    lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
 
@@ -80,7 +78,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     private fun getAbTestVariant(): String =
-            remoteConfigInstance.abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
 
     private fun setViewByAbTestVariant() {
         when (abTestVariant) {
@@ -193,12 +191,16 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         return View.OnClickListener {
             context?.let {
                 onboardingAnalytics.eventOnboardingSkip(screenViewpager.currentItem)
-                finishOnBoarding()
-                if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
-                    RouteManager.route(it, ApplinkConst.HOME)
+                val intent = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
+                    when(abTestVariant) {
+                        ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.OFFICIAL_STORE)
+                        else -> RouteManager.getIntent(it, ApplinkConst.HOME)
+                    }
                 } else {
-                    RouteManager.route(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+                    RouteManager.getIntent(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
                 }
+                startActivity(intent)
+                finishOnBoarding()
             }
         }
     }

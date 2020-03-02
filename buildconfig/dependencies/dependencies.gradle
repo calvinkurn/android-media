@@ -158,7 +158,6 @@ ext {
 
     viewDependencies = [
             ahBottomNavigation : "com.aurelhubert:ahbottomnavigation:1.4.0",
-            appIntro           : "com.github.apl-devs:appintro:v4.2.2",
             expandableTextview : "at.blogc:expandabletextview:1.0.5",
     ]
 
@@ -168,8 +167,8 @@ ext {
     ]
 
     analyticsDependencies = [
-            appsflyer  : "com.appsflyer:af-android-sdk:4.8.11@aar",
-            installRef : "com.android.installreferrer:installreferrer:1.0",
+            appsflyer  : "com.appsflyer:af-android-sdk:5.1.1@aar",
+            installRef : "com.android.installreferrer:installreferrer:1.1",
             moengage   : "com.moengage:moe-android-sdk:9.7.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
             branch     : "io.branch.sdk.android:library:4.1.1",

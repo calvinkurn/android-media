@@ -126,6 +126,11 @@ class HotelRoomDetailFragment : HotelBaseFragment() {
         initProgressDialog()
     }
 
+    override fun onResume() {
+        super.onResume()
+        trackingHotelUtil.hotelViewRoomDetail(hotelRoom, addToCartParam, roomIndex)
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         saveInstanceCacheManager.onSave(outState)

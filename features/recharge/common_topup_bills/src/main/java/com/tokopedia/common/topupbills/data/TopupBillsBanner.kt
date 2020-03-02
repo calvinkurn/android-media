@@ -11,22 +11,22 @@ import com.google.gson.annotations.SerializedName
 class TopupBillsBanner(
         @SerializedName("id")
         @Expose
-        val id: Int,
+        val id: Int = 0,
         @SerializedName("img_url")
         @Expose
-        val imageUrl: String,
+        val imageUrl: String = "",
         @SerializedName("link_url")
         @Expose
-        val linkUrl: String,
+        val linkUrl: String = "",
         @SerializedName("title")
         @Expose
-        val title: String,
+        val title: String = "",
         @SerializedName("promo_code")
         @Expose
-        val promoCode: String,
+        val promoCode: String = "",
         @SerializedName("app_link")
         @Expose
-        val applinkUrl: String
+        val applinkUrl: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
