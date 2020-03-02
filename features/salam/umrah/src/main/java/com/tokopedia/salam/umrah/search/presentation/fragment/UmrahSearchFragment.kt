@@ -299,7 +299,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                 if (data[i] is UmrahSearchProduct) {
                     val product = data[i] as UmrahSearchProduct
                     if (!product.isViewed) {
-                        umrahTrackingAnalytics.umrahSearchNCategoryProductListImpression(product, i, umrahSearchViewModel.getSortValue(), selectedFilter, searchOrCategory)
+                        umrahTrackingAnalytics.umrahSearchNCategoryProductListImpression(product, getIndexScrolled(isPassingEmpty,i), umrahSearchViewModel.getSortValue(), selectedFilter, searchOrCategory)
                         product.isViewed = true
                     }
                 }
@@ -431,5 +431,10 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun umrahSearchEmptyOnClickListener() {
         openFilterFragment()
+    }
+
+    private fun getIndexScrolled(isPassingEmpty: Boolean,index:Int):Int{
+        return if(isPassingEmpty) index-1
+        else index
     }
 }
