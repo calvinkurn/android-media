@@ -17,6 +17,5 @@ object AdapterDiffCallback {
         override fun areContentsTheSame(oldItem: WidgetDataModel, newItem: WidgetDataModel): Boolean {
             return oldItem == newItem
         }
-
     }
 }

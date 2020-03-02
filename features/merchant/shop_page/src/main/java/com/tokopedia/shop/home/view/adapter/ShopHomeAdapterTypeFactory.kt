@@ -6,18 +6,20 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.home.WidgetMultipleImageColumn
 import com.tokopedia.shop.home.WidgetSliderBanner
 import com.tokopedia.shop.home.WidgetSliderSquareBanner
+import com.tokopedia.shop.home.WidgetYoutubeVideo
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.model.WidgetModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
 
-class ShopHomeAdapterTypeFactory: BaseAdapterTypeFactory(), TypeFactoryShopHome{
+class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome{
 
     override fun type(widgetModel: WidgetModel): Int {
         when(widgetModel.name) {
             WidgetMultipleImageColumn -> return ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
             WidgetSliderSquareBanner -> return ShopHomeSliderSquareViewHolder.LAYOUT_RES
             WidgetSliderBanner -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
+            WidgetYoutubeVideo -> return ShopHomeVideoViewHolder.LAYOUT_RES
         }
         return -1
     }
@@ -39,6 +41,9 @@ class ShopHomeAdapterTypeFactory: BaseAdapterTypeFactory(), TypeFactoryShopHome{
                     parent
             )
             ShopHomeSliderBannerViewHolder.LAYOUT_RES -> ShopHomeSliderBannerViewHolder(
+                    parent
+            )
+            ShopHomeVideoViewHolder.LAYOUT_RES -> ShopHomeVideoViewHolder(
                     parent
             )
             else -> return super.createViewHolder(parent, type)

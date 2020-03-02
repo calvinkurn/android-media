@@ -52,7 +52,7 @@ class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<WidgetMode
     private fun dataWidgetToString(element: WidgetModel?): List<String>? {
         val mutableString: MutableList<String>? = mutableListOf()
         val listSliderBanner = element?.takeIf { it -> it.name == WidgetSliderBanner }
-        listSliderBanner?.data?.forEach {
+        listSliderBanner?.data?.map {
             it.imageUrl?.let { img ->
                 mutableString?.add(img)
             }

@@ -16,6 +16,9 @@ data class WidgetModel(
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    @Transient
+    var binder = VideoBinder(this)
 }
 
 data class HeaderWidgetModel(
