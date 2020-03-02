@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 
 import android.view.View
-import android.view.ViewGroup
+import android.widget.LinearLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
@@ -31,7 +31,7 @@ class PromoEmptyStateViewHolder(private val view: View,
         }
 
         val viewHeight = listener.getEmptyStateHeight()
-//        itemView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, viewHeight - 150)
+        itemView.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, viewHeight)
     }
 
 }

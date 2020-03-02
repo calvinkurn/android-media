@@ -29,14 +29,12 @@ import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
-import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
+import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
-import com.tokopedia.purchase_platform.features.promo.presentation.mockEmptyState
-import com.tokopedia.purchase_platform.features.promo.presentation.mockPromoInput
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
@@ -173,22 +171,26 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         return ""
     }
 
-    override fun loadData(page: Int) {
-        hideLoading()
-//        adapter.addVisitable(mockPromoRecommendation())
-        adapter.addVisitable(mockPromoInput())
+    override fun loadInitialData() {
+        super.loadInitialData()
+    }
 
+    override fun loadData(page: Int) {
+//        hideLoading()
+//        adapter.addVisitable(mockPromoRecommendation())
+//        adapter.addVisitable(mockPromoInput())
+//
 //        adapter.addVisitable(mockEligibleHeader())
 //        adapter.addVisitableList(mockEligiblePromoGlobalSection())
 //        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
 //        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
-
+//
 //        adapter.addVisitable(mockIneligibleHeader())
 //        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
 //        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
 //        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
 
-        adapter.addVisitable(mockEmptyState())
+//        adapter.addVisitable(mockEmptyState())
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
