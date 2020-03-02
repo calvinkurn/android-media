@@ -81,7 +81,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         ShopPageHeaderViewHolder.ShopPageHeaderListener, OnShopProductListFragmentListener {
 
     var shopId: String? = null
-    var shopRef: String = ""
+    var shopRef: String? = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
     var isShowFeed: Boolean = false
@@ -195,7 +195,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
             if (shopAttribution.isNullOrEmpty()) {
                 shopAttribution = getQueryParameter(SHOP_ATTRIBUTION)
             }
-            shopRef = getQueryParameter(SHOP_REF)
+            shopRef = getQueryParameter(SHOP_REF).orEmpty()
         }
         super.onCreate(savedInstanceState)
         shopViewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageViewModel::class.java)
@@ -314,7 +314,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
                 "",
                 cacheManagerId,
                 shopAttribution,
-                shopRef
+                shopRef.orEmpty()
         ))
     }
 
@@ -366,7 +366,7 @@ class ShopPageActivity : BaseSimpleActivity(), HasComponent<ShopComponent>,
         shopPageViewPagerAdapter = ShopPageViewPagerAdapter(supportFragmentManager,
                 titles,
                 shopId,
-                shopRef,
+                shopRef.orEmpty(),
                 shopAttribution,
                 this)
     }
