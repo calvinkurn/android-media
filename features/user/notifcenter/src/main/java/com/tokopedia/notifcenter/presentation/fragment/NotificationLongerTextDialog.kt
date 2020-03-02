@@ -30,7 +30,7 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * @author by nisie on 18/02/19.
  */
-class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
+class NotificationLongerTextDialog : BottomSheetDialogFragment() {
 
     lateinit var contentImageView: ImageView
     lateinit var contentTextView: Typography
@@ -171,8 +171,8 @@ class NotificationUpdateLongerTextFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        fun createInstance(bundle: Bundle): NotificationUpdateLongerTextFragment {
-            val fragment = NotificationUpdateLongerTextFragment()
+        fun createInstance(bundle: Bundle): NotificationLongerTextDialog {
+            val fragment = NotificationLongerTextDialog()
             fragment.arguments = bundle
             return fragment
         }

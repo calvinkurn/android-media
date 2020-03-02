@@ -291,7 +291,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
 
         if (!::longerTextDialog.isInitialized) {
-            longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
+            longerTextDialog = NotificationLongerTextDialog.createInstance(bundle)
         } else {
             longerTextDialog.arguments = bundle
         }

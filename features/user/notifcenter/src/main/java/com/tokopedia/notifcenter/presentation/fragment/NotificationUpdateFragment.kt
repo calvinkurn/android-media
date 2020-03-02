@@ -62,7 +62,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         NotificationUpdateContract.View,
         NotificationItemListener,
         NotificationFilterListener,
-        NotificationUpdateLongerTextFragment.LongerContentListener {
+        NotificationLongerTextDialog.LongerContentListener {
 
     private var cursor = ""
     private var lastItem = 0
@@ -402,7 +402,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
 
         if (!::longerTextDialog.isInitialized) {
-            longerTextDialog = NotificationUpdateLongerTextFragment.createInstance(bundle)
+            longerTextDialog = NotificationLongerTextDialog.createInstance(bundle)
         } else {
             longerTextDialog.arguments = bundle
         }
