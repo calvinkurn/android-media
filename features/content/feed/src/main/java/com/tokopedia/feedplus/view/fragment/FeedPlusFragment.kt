@@ -1962,7 +1962,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun trackCardPostElementClick(positionInFeed: Int, element: String) {
-        if (adapter.getlist().size > positionInFeed && adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
+        if (adapter.getlist().size > positionInFeed && positionInFeed >= 0 && adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
             val trackingPostModel = (adapter.getlist()[positionInFeed] as DynamicPostViewModel).trackingPostModel
 
             analytics.eventCardPostElementClick(
