@@ -24,6 +24,12 @@ class Constants {
         const val SEVERITY_MEDIUM = 2
         const val SEVERITY_NONE = 0
 
+        val LOG_SERVICE_MIN_LATENCY = TimeUnit.SECONDS.toMillis(5)
+        val LOG_SERVICE_MAX_LATENCY = TimeUnit.SECONDS.toMillis(30)
+
+        const val LOGENTRIES_ERROR_CODE = 204
+        const val LOG_DEFAULT_ERROR_CODE = 404
+
         val SCALYR_TOKEN = intArrayOf(48, 100, 49, 101, 104, 72, 98, 119, 110, 73, 101, 48, 83, 108, 57, 87, 71, 89, 115, 77, 105, 106, 89, 79, 47, 48, 87, 112, 88, 121, 49, 77, 79, 110, 107, 99, 95, 79, 85, 52, 56, 110, 54, 52, 45)
         const val SCALYR_ENABLED = "android_scalyr_log_enabled"
         const val SCALYR_PREF_NAME = "scalyr_sp"

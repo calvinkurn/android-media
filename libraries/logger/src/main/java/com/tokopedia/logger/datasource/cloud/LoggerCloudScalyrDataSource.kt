@@ -21,7 +21,7 @@ class LoggerCloudScalyrDataSource(val context: Context) {
     }
 
     suspend fun sendLogToServer(scalyrEventList: List<ScalyrEvent>): Int {
-        var errCode = 404
+        var errCode = Constants.LOG_DEFAULT_ERROR_CODE
         withContext(Dispatchers.IO) {
             try {
                 errCode = openURL(scalyrEventList)
@@ -39,7 +39,6 @@ class LoggerCloudScalyrDataSource(val context: Context) {
         try {
             val scalyrBody = ScalyrBody(decodedToken, LogSession.getLogSession(context), ScalyrSessionInfo(Constants.ANDROID_APP_VALUE),
                 scalyrEventList)
-            Timber.d("SENDING")
             url = URL(Constants.SCALYR_SERVER_URL)
             urlConnection = url.openConnection() as HttpURLConnection
             urlConnection.requestMethod = "POST"
@@ -50,8 +49,6 @@ class LoggerCloudScalyrDataSource(val context: Context) {
             wr.close()
 
             urlConnection.responseCode
-            Timber.d(urlConnection.responseCode.toString())
-            Timber.d("SUCCESS")
 
         } catch (e: Throwable) {
             e.printStackTrace()

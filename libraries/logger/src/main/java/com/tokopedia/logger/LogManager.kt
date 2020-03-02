@@ -107,8 +107,8 @@ class LogManager(val application: Application) : CoroutineScope {
                 val serviceComponent = ComponentName(application, ServerJobService::class.java)
                 jobScheduler = application.getSystemService(Context.JOB_SCHEDULER_SERVICE) as JobScheduler
                 jobInfo = JobInfo.Builder(1000, serviceComponent)
-                    .setMinimumLatency(TimeUnit.SECONDS.toMillis(5))
-                    .setOverrideDeadline(TimeUnit.SECONDS.toMillis(30))
+                    .setMinimumLatency(Constants.LOG_SERVICE_MIN_LATENCY)
+                    .setOverrideDeadline(Constants.LOG_SERVICE_MAX_LATENCY)
                     .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                     .build()
             } else {
@@ -169,7 +169,7 @@ class LogManager(val application: Application) : CoroutineScope {
                     val severity = getSeverity(log.serverChannel)
                     if (severity != Constants.SEVERITY_NONE) {
                         val errorCode = logger.sendLogToServer(severity, TOKEN, log, secretKey)
-                        if (errorCode == 204) {
+                        if (errorCode == Constants.LOGENTRIES_ERROR_CODE) {
                             logger.deleteEntry(ts)
                         }
                         delay(300)

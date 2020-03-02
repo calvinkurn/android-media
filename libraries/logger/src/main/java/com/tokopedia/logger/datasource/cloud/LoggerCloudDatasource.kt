@@ -14,7 +14,7 @@ import javax.crypto.SecretKey
 class LoggerCloudDatasource {
     suspend fun sendLogToServer(serverSeverity: Int, TOKEN: Array<String>,
                                 message:String): Int{
-        var errCode = 404
+        var errCode = Constants.LOG_DEFAULT_ERROR_CODE
         val token = TOKEN[serverSeverity - 1]
         withContext(Dispatchers.IO) {
             try {
@@ -31,7 +31,6 @@ class LoggerCloudDatasource {
         val url: URL
 
         try {
-            Timber.d("SENDING")
             url = URL(Constants.SERVER_URL + token)
             urlConnection = url.openConnection() as HttpURLConnection
             urlConnection.requestMethod = "POST"
@@ -42,8 +41,6 @@ class LoggerCloudDatasource {
             wr.close()
 
             urlConnection.responseCode
-            Timber.d(urlConnection.responseCode.toString())
-            Timber.d("SUCCESS")
 
         } catch (e: Throwable) {
             e.printStackTrace()
