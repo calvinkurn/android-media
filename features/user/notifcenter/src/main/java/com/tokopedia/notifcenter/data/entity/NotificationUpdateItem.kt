@@ -51,9 +51,9 @@ data class ProductData(
         @Expose @SerializedName("rating") val rating: String = "0",
         @Expose @SerializedName("count_review") val countReview: String = "0",
         @Expose @SerializedName("labels") val labels: List<Label> = emptyList(),
-        @Expose @SerializedName("campaign") val campaign: Campaign?,
+        @Expose @SerializedName("campaign") val campaign: Campaign? = null,
         @Expose @SerializedName("variant") val variant: List<Variant> = emptyList(),
-        @Expose @SerializedName("shop") val shop: Shop?
+        @Expose @SerializedName("shop") val shop: Shop? = null
 )
 
 data class Label (
