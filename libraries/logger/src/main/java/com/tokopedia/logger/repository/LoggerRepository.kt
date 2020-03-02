@@ -9,6 +9,7 @@ import com.tokopedia.logger.model.ScalyrEventAttrs
 import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.decrypt
 import kotlinx.coroutines.coroutineScope
+import java.lang.Exception
 import javax.crypto.SecretKey
 
 class LoggerRepository(private val logDao: LoggerDao,
@@ -53,7 +54,7 @@ class LoggerRepository(private val logDao: LoggerDao,
     }
 
     override suspend fun sendScalyrLogToServer(logs: List<Logger>,
-                                               secretKey: SecretKey): Int = coroutineScope {
+                                               secretKey: SecretKey) = coroutineScope {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         for (log in logs) {
             val ts = log.timeStamp

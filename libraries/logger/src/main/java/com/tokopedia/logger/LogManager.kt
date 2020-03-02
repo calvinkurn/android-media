@@ -7,7 +7,6 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import com.tokopedia.logger.datasource.cloud.LoggerCloudDatasource
 import com.tokopedia.logger.datasource.cloud.LoggerCloudScalyrDataSource
 import com.tokopedia.logger.datasource.db.Logger
@@ -16,11 +15,8 @@ import com.tokopedia.logger.repository.LoggerRepository
 import com.tokopedia.logger.service.ServerJobService
 import com.tokopedia.logger.service.ServerService
 import com.tokopedia.logger.utils.*
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import kotlinx.coroutines.*
 import java.lang.Exception
-import java.util.concurrent.TimeUnit
 import kotlin.coroutines.CoroutineContext
 
 /**
@@ -62,6 +58,8 @@ class LogManager(val application: Application) : CoroutineScope {
     companion object {
         @JvmStatic
         var TOKEN: Array<String> = arrayOf()
+        var scalyrEnabled: Boolean = false
+        var logentriesEnabled: Boolean = true
 
         @JvmField
         var instance: LogManager? = null
@@ -70,7 +68,6 @@ class LogManager(val application: Application) : CoroutineScope {
         private lateinit var jobScheduler: JobScheduler
         private lateinit var jobInfo: JobInfo
         private var secretKey = generateKey(Constants.ENCRYPTION_KEY)
-        private var remoteConfig: RemoteConfig? = null
 
         @JvmStatic
         fun getLogger(): LoggerRepository? {
@@ -83,19 +80,6 @@ class LogManager(val application: Application) : CoroutineScope {
                 loggerRepository = LoggerRepository(logsDao, server, scalyrLogger)
             }
             return loggerRepository
-        }
-
-        fun getRemoteConfig(): RemoteConfig? {
-            val instance = instance ?: return null
-            if (remoteConfig == null) {
-                remoteConfig = FirebaseRemoteConfigImpl(instance.application.applicationContext)
-            }
-            return remoteConfig
-        }
-
-        @JvmStatic
-        fun isScalyrEnabled(): Boolean {
-            return getRemoteConfig()?.getBoolean(Constants.SCALYR_ENABLED, false) ?: false
         }
 
         @JvmStatic
@@ -154,25 +138,27 @@ class LogManager(val application: Application) : CoroutineScope {
                     logs.add(lowPriorityLogger)
                 }
 
-                if (isScalyrEnabled()) {
+                if (scalyrEnabled) {
                     launch {
                         try {
                             logger.sendScalyrLogToServer(logs, secretKey)
-                        } catch (ignored: Exception) {
-
+                        } catch (e: Exception) {
+                            e.printStackTrace()
                         }
                     }
                 }
 
-                for (log in logs) {
-                    val ts = log.timeStamp
-                    val severity = getSeverity(log.serverChannel)
-                    if (severity != Constants.SEVERITY_NONE) {
-                        val errorCode = logger.sendLogToServer(severity, TOKEN, log, secretKey)
-                        if (errorCode == Constants.LOGENTRIES_ERROR_CODE) {
-                            logger.deleteEntry(ts)
+                if (logentriesEnabled) {
+                    for (log in logs) {
+                        val ts = log.timeStamp
+                        val severity = getSeverity(log.serverChannel)
+                        if (severity != Constants.SEVERITY_NONE) {
+                            val errorCode = logger.sendLogToServer(severity, TOKEN, log, secretKey)
+                            if (errorCode == Constants.LOGENTRIES_ERROR_CODE) {
+                                logger.deleteEntry(ts)
+                            }
+                            delay(200)
                         }
-                        delay(300)
                     }
                 }
             }

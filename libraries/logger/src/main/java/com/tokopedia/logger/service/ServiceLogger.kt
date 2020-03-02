@@ -1,8 +1,8 @@
 package com.tokopedia.logger.service
 
 import android.content.Context
-import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.logger.LogManager
+import com.tokopedia.logger.utils.ConnectionUtil
 import com.tokopedia.logger.utils.globalScopeLaunch
 
 class ServiceLogger {
@@ -16,7 +16,7 @@ class ServiceLogger {
             }
             isRunning = true
             globalScopeLaunch({
-                if (DeviceConnectionInfo.isInternetAvailable(context.applicationContext)) {
+                if (ConnectionUtil.isInternetAvailable(context.applicationContext)) {
                     LogManager.sendLogToServer()
                 }
                 LogManager.deleteExpiredLogs()

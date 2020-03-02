@@ -22,6 +22,16 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         populateTagMaps(tags)
     }
 
+    fun setClientLogs(clientLogs:List<String>?){
+        if (clientLogs == null || clientLogs.isEmpty()) {
+            LogManager.logentriesEnabled = true
+        } else {
+            // curently logentries are always enabled.
+            // LogManager.logentriesEnabled = clientLogs.contains(Constants.CLIENT_LOGENTRIES)
+            LogManager.scalyrEnabled = clientLogs.contains(Constants.CLIENT_SCALYR)
+        }
+    }
+
     override fun log(logPriority: Int, tag: String?, message: String, t: Throwable?) {
         val timeStamp = System.currentTimeMillis()
         if (logPriority == Log.VERBOSE || logPriority == Log.DEBUG || LogManager.instance == null) {
