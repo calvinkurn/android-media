@@ -36,6 +36,12 @@
                 app:tckv_indicator_on_color="@color/tkpd_main_green"
                 tools:visibility="visible" />
 
+            <com.tokopedia.sortfilter.SortFilter
+                android:id="@+id/flight_sort_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:sort_filter_type="advanced" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
