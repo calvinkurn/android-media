@@ -51,6 +51,7 @@ class MainSliceProvider : SliceProvider() {
     var recommendationModel: List<Recommendation>? = null
 
     var loadString : String ? = "Loading..."
+    var alreadyGetData = false
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         return createGetInvoiceV3Slice(sliceUri)
@@ -87,7 +88,9 @@ class MainSliceProvider : SliceProvider() {
                 0
         )
             if (recommendationModel == null) {
+                    if(!alreadyGetData)
                     getData(sliceUri)
+
                     return list(contextNonNull, sliceUri, INFINITY) {
                         setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                         header {
@@ -98,13 +101,13 @@ class MainSliceProvider : SliceProvider() {
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
-                        title = "Daftar Rekomendasi"
+                        title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
                         subtitle = "Pembelian Terakhir : ${recommendationModel?.get(0)?.productName}".capitalizeWords()
                         primaryAction = SliceAction.create(
                                 mainPendingIntent,
                                 createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
                                 ICON_IMAGE,
-                                "SEARCH"
+                                contextNonNull.resources.getString(R.string.slice_search_title)
                         )
                     }
                     addAction(
@@ -156,21 +159,21 @@ class MainSliceProvider : SliceProvider() {
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
-                        title = "Loading..."
+                        title = contextNonNull.resources.getString(R.string.slice_loading)
                     }
                 }
             } else {
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
-                        title = "Daftar Rekomendasi"
+                        title =  contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
                         subtitle = "Pembelian Terakhir : ${recommendationModel?.get(0)?.productName}".capitalizeWords()
                         primaryAction = createPendingIntent(recommendationModel?.get(0)?.position, recommendationModel?.get(0)?.productName)?.let {
                             SliceAction.create(
                                     it,
                                     createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
                                     ICON_IMAGE,
-                                    "SEARCH"
+                                    contextNonNull.resources.getString(R.string.slice_search_title)
                             )
                         }
                     }
@@ -221,21 +224,21 @@ class MainSliceProvider : SliceProvider() {
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
-                        title = "Loading..."
+                        title = contextNonNull.resources.getString(R.string.slice_loading)
                     }
                 }
             } else {
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
-                        title = "Daftar Rekomendasi"
+                        title =  contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
                         subtitle = "Pembelian Terakhir : ${recommendationModel?.get(0)?.productName}".capitalizeWords()
                         primaryAction = createPendingIntent(recommendationModel?.get(0)?.position, recommendationModel?.get(0)?.productName)?.let {
                             SliceAction.create(
                                     it,
                                     createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
                                     ICON_IMAGE,
-                                    "SEARCH"
+                                    contextNonNull.resources.getString(R.string.slice_search_title)
                             )
                         }
                     }
@@ -285,7 +288,7 @@ class MainSliceProvider : SliceProvider() {
         val deviceId = 0
         val params = mapOf(RECHARGE_SLICE_DEVICE_ID to deviceId)
         val graphqlRequest = GraphqlRequest(gqlQuery, Data::class.java, params)
-
+        alreadyGetData = true
         GraphqlClient.init(contextNonNull)
         DaggerRechargeSliceComponent.builder().build().inject(this)
         GlobalScope.launch(Dispatchers.IO) {
@@ -294,8 +297,8 @@ class MainSliceProvider : SliceProvider() {
                 recommendationModel = data.rechargeFavoriteRecommendationList.recommendations
                 updateSlice(sliceUri)
             } catch (e: Exception) {
-                if(e.message=="401 - UNAUTHORIZED")
-                loadString = "Anda Belum Login"
+                if(e.message==NOT_LOGIN)
+                loadString = contextNonNull.resources.getString(R.string.slice_not_login)
                 updateSlice(sliceUri)
             }
         }
@@ -325,7 +328,7 @@ class MainSliceProvider : SliceProvider() {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_USER_EXTRA = "RECHARGE_USER_EXTRA"
-
+        const val NOT_LOGIN = "401 - UNAUTHORIZED"
     }
 
 
