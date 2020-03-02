@@ -33,12 +33,6 @@ public class GeneralUtils {
         }
     }
 
-    public static void dumper(String str) {
-        if (GlobalConfig.isAllowDebuggingTools()) {
-            Log.i("Dumper", str);
-        }
-    }
-
     public static Spanned fromHtml(String text) {
         if (text == null) {
             text = "";

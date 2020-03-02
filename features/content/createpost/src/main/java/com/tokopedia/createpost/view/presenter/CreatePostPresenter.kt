@@ -17,6 +17,7 @@ import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.shop.common.domain.interactor.GQLGetShopFavoriteStatusUseCase
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +38,8 @@ class CreatePostPresenter @Inject constructor(
         private val getFeedUseCase: GetFeedForEditUseCase,
         private val getProfileHeaderUseCase: GetProfileHeaderUseCase,
         private val twitterManager: TwitterManager,
-        private val getProductSuggestionUseCase: GetProductSuggestionUseCase
+        private val getProductSuggestionUseCase: GetProductSuggestionUseCase,
+        private val getShopFavoriteStatusUseCase: GQLGetShopFavoriteStatusUseCase
 ) : BaseDaggerPresenter<CreatePostContract.View>(), CreatePostContract.Presenter, TwitterManager.TwitterManagerListener, CoroutineScope {
 
     private var followersCount: Int? = null
@@ -53,8 +55,6 @@ class CreatePostPresenter @Inject constructor(
     override fun attachView(view: CreatePostContract.View?) {
         super.attachView(view)
         twitterManager.setListener(this)
-        getFollowersCount()
-        invalidateShareOptions()
     }
 
     override fun detachView() {
@@ -102,24 +102,36 @@ class CreatePostPresenter @Inject constructor(
         view?.changeShareHeaderText(getShareHeaderText())
     }
 
-    private fun getFollowersCount() {
-        getProfileHeaderUseCase.execute(
-                GetProfileHeaderUseCase.createRequestParams(userSession.userId.toInt()),
-                object : Subscriber<GraphqlResponse>() {
-                    override fun onNext(t: GraphqlResponse?) {
-                        followersCount = t?.let(::getFollowersCount)
-                        invalidateShareOptions()
-                    }
+    override fun getFollowersCount(isAffiliateType: Boolean) {
+        if (isAffiliateType) {
+            getProfileHeaderUseCase.execute(
+                    GetProfileHeaderUseCase.createRequestParams(userSession.userId.toInt()),
+                    object : Subscriber<GraphqlResponse>() {
+                        override fun onNext(t: GraphqlResponse?) {
+                            followersCount = t?.let(::getFollowersCount)
+                            invalidateShareOptions()
+                        }
 
-                    override fun onCompleted() {
+                        override fun onCompleted() {
 
-                    }
+                        }
 
-                    override fun onError(e: Throwable?) {
-                        Timber.d(e)
+                        override fun onError(e: Throwable?) {
+                            Timber.d(e)
+                        }
                     }
-                }
-        )
+            )
+        } else {
+            getShopFavoriteStatusUseCase.params = GQLGetShopFavoriteStatusUseCase.createParams(listOf(userSession.shopId.toIntOrZero()), "")
+            getShopFavoriteStatusUseCase.execute(
+                    {
+                        followersCount = it.favoriteData.totalFavorite
+                    },{
+                         Timber.d(it)
+                    }
+            )
+
+        }
     }
 
     override fun onShareButtonClicked(type: ShareType, isChecked: Boolean) {

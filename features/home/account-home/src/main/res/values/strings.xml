@@ -26,7 +26,7 @@
     <string name="account_home_button_logout">Keluar</string>
     <string name="title_personal_data_setting">Data Diri</string>
     <string name="title_password_setting">Kata Sandi</string>
-    <string name="title_kyc_setting">Dokumen Data Diri</string>
+    <string name="title_kyc_setting">Verifikasi Data Diri</string>
     <string name="title_setting_pin">PIN Tokopedia</string>
     <string name="title_address_setting">Daftar Alamat</string>
     <string name="title_sampai_project">Tokopedia Corner</string>
@@ -137,6 +137,7 @@
     <string name="title_menu_gold">Emas</string>
     <string name="title_menu_gift_card">Gift Card</string>
     <string name="title_menu_insurance">Asuransi</string>
+    <string name="title_menu_localservice">Print</string>
     <string name="title_menu_modal_toko">Modal Toko</string>
     <string name="title_menu_zakat">Zakat</string>
     <string name="title_menu_donation">Donasi</string>

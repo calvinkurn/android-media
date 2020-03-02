@@ -1,6 +1,6 @@
 mutation user_profile_completion_validate($phone: String!){
-  userProfileCompletionValidate(msisdn: $phone){
+  userProfileValidate(phone: $phone){
     isValid
-    msisdnMessage
+    message
   }
 }

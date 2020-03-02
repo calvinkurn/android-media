@@ -17,6 +17,15 @@ class DigitalBrowseCategoryGroupEntity(
         @SerializedName("desc")
         @Expose
         val desc: String = "",
+        @SerializedName("galaxy_attribution")
+        @Expose
+        val galaxyAttribution: String = "",
+        @SerializedName("persona")
+        @Expose
+        val persona: String = "",
+        @SerializedName("brand_id")
+        @Expose
+        val brandId: String = "",
         @SerializedName("categoryRows")
         @Expose
         val categoryRow: List<DigitalBrowseCategoryRowEntity> = arrayListOf())

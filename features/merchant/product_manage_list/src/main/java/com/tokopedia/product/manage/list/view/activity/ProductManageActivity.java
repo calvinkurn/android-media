@@ -7,8 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
-import com.tokopedia.abstraction.constant.TkpdState;
+import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
@@ -24,6 +23,10 @@ import com.tokopedia.user.session.UserSessionInterface;
  * Created by zulfikarrahman on 9/25/17.
  */
 public class ProductManageActivity extends BaseSellerReceiverDrawerActivity {
+
+    public static final String TAG = ProductManageActivity.class.getSimpleName();
+
+    private static final int MANAGE_PRODUCT = 8;
 
     public UserSessionInterface userSession;
 
@@ -71,7 +74,7 @@ public class ProductManageActivity extends BaseSellerReceiverDrawerActivity {
 
     @Override
     protected int setDrawerPosition() {
-        return TkpdState.DrawerPosition.MANAGE_PRODUCT;
+        return MANAGE_PRODUCT;
     }
 
     @Override

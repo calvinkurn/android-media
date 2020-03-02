@@ -124,6 +124,7 @@ android {
 
     buildTypes {
         debug {
+            defaultConfig.minSdkVersion project.property("minSdkVersionDebug")
             signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
@@ -257,6 +258,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.deviceInfo)
     implementation project(rootProject.ext.features.createpost)
     implementation project(rootProject.ext.features.developerOptions)
     implementation project(rootProject.ext.features.commonDigital)

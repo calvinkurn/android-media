@@ -92,6 +92,10 @@ project.ext {
     groupId = 'com.tokopedia.discovery'
     versionName = "1.0.0"
     artifactName ="home_wishlist-release"
+    unitTestKotlinIncludes = [
+            '**/WishlistViewModel.*'
+    ]
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

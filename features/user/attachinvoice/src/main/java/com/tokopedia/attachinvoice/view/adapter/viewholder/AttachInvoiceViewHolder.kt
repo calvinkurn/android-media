@@ -110,7 +110,6 @@ class AttachInvoiceViewHolder(itemView: View?, val listener: Listener) : Abstrac
     private fun stateUnchecked() {
         itemView.clContainer?.setBackgroundColor(Color.TRANSPARENT)
         itemView.rbSelect?.isChecked = false
-
     }
 
     private fun getLabelType(statusId: Int?): Int {

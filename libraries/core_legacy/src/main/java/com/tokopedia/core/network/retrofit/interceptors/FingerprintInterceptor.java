@@ -7,7 +7,6 @@ import android.util.Base64;
 import com.google.android.gms.ads.identifier.AdvertisingIdClient;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.common.utils.network.AuthUtil;
 import com.tokopedia.core.analytics.fingerprint.Utilities;
@@ -32,6 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * Created by ricoharisin on 3/10/17.
@@ -82,7 +82,7 @@ public class FingerprintInterceptor implements Interceptor {
 
     private String getFingerPrintJson() {
         String json = "";
-        CommonUtils.dumper("Fingerpint is running");
+        Timber.d("Fingerpint is running");
         try {
             GetFingerprintUseCase getFingerprintUseCase;
             FingerprintRepository fpRepo = new FingerprintDataRepository(context);

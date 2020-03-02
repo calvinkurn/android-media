@@ -45,6 +45,46 @@
                     android:host="@string/host_seller"
                     android:path="@string/path_history"/>
 
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_cancelled"/>
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_waiting_pickup"/>
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_waiting_awb"/>
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_awb_invalid"/>
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_awb_change"/>
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_retur"/>
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_complaint"/>
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_finished"/>
+
             </intent-filter>
         </activity>
 
@@ -66,7 +106,26 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_seller"
+                    android:path="@string/path_order"/>
+
+            </intent-filter>
+
         </activity>
+
+        <activity
+            android:name=".detail.presentation.activity.SomSeeInvoiceActivity"
+            android:screenOrientation="portrait"
+            android:configChanges="uiMode"
+            android:theme="@style/Theme.White"/>
 
         <activity
             android:name=".requestpickup.presentation.activity.SomConfirmReqPickupActivity"

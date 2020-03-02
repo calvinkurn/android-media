@@ -88,9 +88,6 @@ class WVMGetWishlistData : Spek({
             Then("Expect isWishlistErrorInFirstPageState is true") {
                 Assert.assertEquals(true, wishlistViewmodel.isWishlistErrorInFirstPageState.value)
             }
-            Then("Expect isWishlistEmptyState is false") {
-                Assert.assertEquals(false, wishlistViewmodel.isWishlistState.value)
-            }
             Then("Expect wishlistLiveData has only 1 error viewmodel") {
                 Assert.assertEquals(1, wishlistViewmodel.wishlistLiveData.value!!.size)
                 Assert.assertEquals(ErrorWishlistDataModel::class.java,
@@ -124,9 +121,6 @@ class WVMGetWishlistData : Spek({
 
             Then("Expect isWishlistErrorInFirstPageState is true") {
                 Assert.assertEquals(false, wishlistViewmodel.isWishlistErrorInFirstPageState.value)
-            }
-            Then("Expect isWishlistEmptyState is false") {
-                Assert.assertEquals(true, wishlistViewmodel.isWishlistState.value)
             }
             Then("Expect wishlistLiveData has 6 data, 1 empty wishlist, 1 recom title model and 4 recommendation") {
                 Assert.assertEquals(6, wishlistViewmodel.wishlistLiveData.value!!.size)
@@ -209,10 +203,6 @@ class WVMGetWishlistData : Spek({
 
             When("Viewmodel get wishlist data") {
                 wishlistViewmodel.getWishlistData()
-            }
-
-            Then("Expect isWishlistEmptyState is false") {
-                Assert.assertEquals(true, wishlistViewmodel.isWishlistState.value)
             }
             Then("Expect wishlistLiveData has 6 data, 1 empty wishlist, 1 recom title model and 4 recommendation") {
                 Assert.assertEquals(6, wishlistViewmodel.wishlistLiveData.value!!.size)
