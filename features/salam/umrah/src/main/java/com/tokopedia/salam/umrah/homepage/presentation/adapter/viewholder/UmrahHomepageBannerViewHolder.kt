@@ -2,7 +2,6 @@ package com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder
 
 import android.content.res.Resources
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -44,8 +43,8 @@ class UmrahHomepageBannerViewHolder(view: View, private val onBindListener: onIt
                         }
                     }
                     buildView()
-
                 }
+                onBindListener.onPerformanceHomepageListener()
 
             } else if (element.isLoaded && element.umrahBanners.isEmpty()) {
                 umrah_banner_shimmering.gone()

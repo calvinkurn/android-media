@@ -14,6 +14,7 @@ class NormalCheckoutTracking {
     companion object {
         private const val KEY_PRODUCT_ID = "productId"
         private const val KEY_DIMENSION_81 = "dimension81"
+        private const val KEY_DIMENSION_40 = "dimension40"
         const val VIEW_PDP = "viewPDP"
         const val CLICK_PDP = "clickPDP"
         const val PRODUCT_DETAIL_PAGE = "product detail page"
@@ -223,6 +224,11 @@ class NormalCheckoutTracking {
             else -> actionLabel
         }
 
+        val dimension40 = when {
+            reference == ApplinkConst.TOPCHAT -> "/chat"
+            else -> ""
+        }
+
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 mutableMapOf<String, Any>(
                         "event" to "addToCart",
@@ -255,8 +261,8 @@ class NormalCheckoutTracking {
                                                 "dimension38" to (trackerAttribution ?: NONE_OTHER),
                                                 "dimension54" to getMultiOriginAttribution(multiOrigin),
                                                 "dimension83" to dimension83,
-                                                KEY_DIMENSION_81 to shopType
-
+                                                KEY_DIMENSION_81 to shopType,
+                                                KEY_DIMENSION_40 to dimension40
                                         )),
                                         "actionField" to mutableMapOf("list" to (trackerListName
                                                 ?: ""))

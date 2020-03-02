@@ -32,7 +32,7 @@ class SendableVoucherPreview(
         return attachmentPreviewFactory.type(this)
     }
 
-    override fun sendTo(messageId: String, opponentId: String, listInterceptor: List<Interceptor>) {
+    override fun sendTo(messageId: String, opponentId: String, message: String, listInterceptor: List<Interceptor>) {
         val voucherPayload = generatePayload(messageId, opponentId)
         val stringJsonPayload = CommonUtil.toJson(voucherPayload)
         RxWebSocket.send(stringJsonPayload, listInterceptor)

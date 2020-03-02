@@ -12,7 +12,7 @@ import com.tokopedia.logisticcart.shipping.model.Product;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass;
@@ -113,7 +113,7 @@ public interface ShipmentContract {
 
         void cancelAllCourierPromo();
 
-        void updateCourierBottomssheetHasData(List<ShippingCourierViewModel> shippingCourierViewModels, int cartPosition,
+        void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition,
                                               ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
 
         void updateCourierBottomsheetHasNoData(int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList);
@@ -340,10 +340,10 @@ public interface ShipmentContract {
 
         ShipmentButtonPaymentModel getShipmentButtonPaymentModel();
 
-        void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
+        void setShippingCourierViewModelsState(List<ShippingCourierUiModel> shippingCourierUiModelsState,
                                                int itemPosition);
 
-        List<ShippingCourierViewModel> getShippingCourierViewModelsState(int itemPosition);
+        List<ShippingCourierUiModel> getShippingCourierViewModelsState(int itemPosition);
 
         void setCouponStateChanged(boolean appliedCoupon);
 
