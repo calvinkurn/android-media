@@ -68,7 +68,17 @@ class PlayCardViewHolder(
             playCardViewModel?.let{ playCardViewModel ->
                 if (container.visibility == View.GONE) container.show()
                 initView(playCardViewModel)
-                playCardViewModel.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
+                initAutoPlayVideo(playCardViewModel)
+            }
+        }
+    }
+
+    private fun initAutoPlayVideo(playCardViewModel: PlayCardViewModel) {
+        val videoStream = playCardViewModel.playCardHome?.videoStream
+        if (videoStream != null) {
+            helper?.isAutoPlay = videoStream.config.isAutoPlay
+            if (helper?.isAutoPlay == true && videoStream.config.streamUrl.isNotEmpty()) {
+                playChannel(videoStream.config.streamUrl)
             }
         }
     }
