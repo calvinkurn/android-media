@@ -211,6 +211,7 @@ open class HomeViewModel @Inject constructor(
         if (!compositeSubscription.isUnsubscribed) {
             compositeSubscription.unsubscribe()
         }
+        channel.close()
         jobChannel?.cancelChildren()
         super.onCleared()
     }
@@ -809,28 +810,28 @@ open class HomeViewModel @Inject constructor(
     private suspend fun updateChannel(channel: Channel<Triple<Int, Int, HomeVisitable?>>){
         for(data in channel){
             val newList = _homeLiveData.value?.list?.toMutableList()
-            if(newList != null && newList.size >  data.first) {
-                when (data.first) {
-                    ACTION_ADD -> {
-                        data.third?.let { newList.add(it) }
-                    }
-                    ACTION_UPDATE -> {
-                        if (newList.size > data.first && data.third != null) {
-                            newList[data.second] = data.third!!
+            data.third?.let {homeVisitable ->
+                if(newList != null && newList.size >  data.first) {
+                    when (data.first) {
+                        ACTION_ADD -> newList.add(homeVisitable)
+                        ACTION_UPDATE -> {
+                            if (newList.size > data.first && newList[data.second]::class.java == homeVisitable::class.java) {
+                                newList[data.second] = homeVisitable
+                            } else {
+                                newList.withIndex().find { it::class.java == homeVisitable::class.java }?.let {
+                                    newList[it.index] = homeVisitable
+                                }
+                            }
                         }
+                        ACTION_DELETE -> newList.remove(homeVisitable)
                     }
-                    ACTION_DELETE -> {
-                        data.third?.let { newList.remove(it) }
+                    withContext(homeDispatcher.ui()) {
+                        _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
                     }
-                }
-                withContext(homeDispatcher.ui()) {
-                    _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
                 }
             }
         }
     }
-
-
 
     private fun mapToHomeHeaderWalletAction(walletBalanceModel: WalletBalanceModel): HomeHeaderWalletAction? {
         val data = HomeHeaderWalletAction()
@@ -850,6 +851,7 @@ open class HomeViewModel @Inject constructor(
         data.isShowAnnouncement = walletBalanceModel.isShowAnnouncement
         return data
     }
+
     private fun getPopularKeyword() {
         val data = _homeLiveData.value?.list?.find { it is PopularKeywordListViewModel }
         if(data != null && data is PopularKeywordListViewModel) {
@@ -864,17 +866,10 @@ open class HomeViewModel @Inject constructor(
             val results = popularKeywordUseCase.executeOnBackground()
             if (results.data.keywords.size != 0) {
                 val resultList = convertPopularKeywordDataList(results.data.keywords)
-                val currentList = _homeLiveData.value?.list?.copy()?.toMutableList()
-                currentList?.let {
-                    val oldData = currentList.find { it is PopularKeywordListViewModel }
+                _homeLiveData.value?.list?.withIndex()?.find { it.value is PopularKeywordListViewModel }?.let { indexedData ->
+                    val oldData = indexedData.value
                     if (oldData != null && oldData is PopularKeywordListViewModel) {
-                        oldData.popularKeywordList = resultList
-                    }
-                    val newHomeViewModel = _homeLiveData.value?.copy(
-                            list = currentList
-                    )
-                    withContext(homeDispatcher.ui()) {
-                        _homeLiveData.value = newHomeViewModel
+                        channel.send(Triple(ACTION_UPDATE, indexedData.index, oldData.copy(popularKeywordList = resultList)))
                     }
                 }
             }
