@@ -77,7 +77,7 @@ produk kurang dari"
 
             <com.tokopedia.unifycomponents.QuantityEditorUnify
                 android:id="@+id/qeStock"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="18dp"
                 android:layout_marginRight="18dp"
