@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.design.base.BaseCustomView
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import kotlinx.android.synthetic.main.widget_chip.view.*
 
 class ChipWidget : BaseCustomView {
@@ -25,8 +26,8 @@ class ChipWidget : BaseCustomView {
         View.inflate(context, com.tokopedia.product.manage.R.layout.widget_chip, this)
     }
 
-    fun bind(name: String, chipClickListener: ChipClickListener, isSelected: Boolean) {
-        item_name.text = name
+    fun bind(data: FilterDataViewModel, chipClickListener: ChipClickListener) {
+        item_name.text = data.name
         val originalColor = item_name.currentTextColor
         if(isSelected) {
             this.isSelected = true
@@ -34,7 +35,7 @@ class ChipWidget : BaseCustomView {
         }
         this.setOnClickListener {
             toggleSelected(originalColor)
-            chipClickListener.onChipClicked()
+            chipClickListener.onChipClicked(data.id)
         }
     }
 
@@ -49,5 +50,5 @@ class ChipWidget : BaseCustomView {
 }
 
 interface ChipClickListener {
-    fun onChipClicked()
+    fun onChipClicked(id: String)
 }

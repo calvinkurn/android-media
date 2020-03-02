@@ -8,25 +8,25 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmode
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 
 class ChipsAdapter(private val listener: ChipClickListener) : RecyclerView.Adapter<ChipsAdapter.ItemViewHolder>() {
-    private var namesData: MutableList<String> = mutableListOf()
-    private var selectionData: MutableList<Boolean> = mutableListOf()
+    private var data: MutableList<FilterDataViewModel> = mutableListOf()
 
     companion object {
         const val MAXIMUM_CHIPS = 5
     }
 
     fun setData(element: FilterViewModel) {
-        this.namesData.clear()
-        this.selectionData.clear()
-        val dataToDisplay: List<FilterDataViewModel> = if(element.data.size > MAXIMUM_CHIPS) {
-            element.data.subList(0, MAXIMUM_CHIPS)
-        } else {
-            element.data
+        this.data.clear()
+        var numSelected = 0
+        element.data.forEach {
+            if(it.select) numSelected++
         }
-        for(data in dataToDisplay) {
-            this.namesData.add(data.name)
-            this.selectionData.add(data.select)
+        var dataToDisplay = element.data
+        if(numSelected < MAXIMUM_CHIPS) {
+            if(element.data.size > MAXIMUM_CHIPS) {
+                dataToDisplay = element.data.subList(0, MAXIMUM_CHIPS)
+            }
         }
+        data = dataToDisplay
         notifyDataSetChanged()
     }
 
@@ -37,19 +37,19 @@ class ChipsAdapter(private val listener: ChipClickListener) : RecyclerView.Adapt
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        holder.bind(namesData[position], selectionData[position])
+        holder.bind(data[position])
     }
 
     override fun getItemCount(): Int {
-        return namesData.size
+        return data.size
     }
 
     inner class ItemViewHolder(itemView: View,
                                private val clickListener: ChipClickListener) : RecyclerView.ViewHolder(itemView) {
         private var chips: ChipWidget =  itemView.findViewById(com.tokopedia.product.manage.R.id.chips_item)
 
-        fun bind(name: String, isSelected: Boolean) {
-            chips.bind(name, clickListener, isSelected)
+        fun bind(element: FilterDataViewModel) {
+            chips.bind(element, clickListener)
         }
     }
 }

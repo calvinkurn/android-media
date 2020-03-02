@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -60,11 +61,12 @@ class ProductManageFilterExpandChecklistFragment :
     private var recyclerView: RecyclerView? = null
     private var adapter: SelectAdapter? = null
     private var flag: String = ""
-    private var filterViewModel: FilterViewModel? = null
     private var cacheManagerId: String = ""
     private var searchView: SearchInputView? = null
     private var reset: Typography? = null
     private var submitButton: UnifyButton? = null
+    private var errorImage: ImageView? = null
+    private var errorMessage: Typography? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,7 +77,10 @@ class ProductManageFilterExpandChecklistFragment :
         }
         val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
         cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
-        filterViewModel = flag.let { cacheManager?.get(it, FilterViewModel::class.java) }
+        val filterViewModel: FilterViewModel? = flag.let { cacheManager?.get(it, FilterViewModel::class.java) }
+        filterViewModel?.let {
+            productManageFilterExpandChecklistViewModel.initData(ProductManageFilterMapper.mapFilterViewModelsToChecklistViewModels(it))
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -88,6 +93,8 @@ class ProductManageFilterExpandChecklistFragment :
         reset = view.findViewById(com.tokopedia.product.manage.R.id.reset_checklist)
         submitButton = view.findViewById(com.tokopedia.product.manage.R.id.btn_submit)
         searchView = view.findViewById(com.tokopedia.product.manage.R.id.filter_category_search)
+        errorImage = view.findViewById(com.tokopedia.product.manage.R.id.filter_search_error_img)
+        errorMessage = view.findViewById(com.tokopedia.product.manage.R.id.filter_search_error_text)
         recyclerView?.adapter = adapter
         recyclerView?.layoutManager = LinearLayoutManager(this.context)
         return view
@@ -95,9 +102,7 @@ class ProductManageFilterExpandChecklistFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        filterViewModel?.let {
-            initView(it)
-        }
+        initView()
         observeDataLength()
         observeChecklistData()
     }
@@ -105,7 +110,7 @@ class ProductManageFilterExpandChecklistFragment :
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         cacheManager?.onSave(outState)
-        flag.let { cacheManager?.put(it, filterViewModel, TimeUnit.DAYS.toMillis(1)) }
+        flag.let { cacheManager?.put(it, productManageFilterExpandChecklistViewModel.checklistData.value, TimeUnit.DAYS.toMillis(1)) }
     }
 
     override fun onChecklistClick(element: ChecklistViewModel) {
@@ -130,16 +135,15 @@ class ProductManageFilterExpandChecklistFragment :
         component?.inject(this)
     }
 
-    private fun initView(filterViewModel: FilterViewModel) {
+    private fun initView() {
         initTitle()
-        initButtons(filterViewModel)
+        initButtons()
         configToolbar()
         recyclerView?.setOnTouchListener { _, _ ->
             searchView?.hideKeyboard()
             submitButton?.visibility = View.VISIBLE
             false
         }
-        productManageFilterExpandChecklistViewModel.initData(ProductManageFilterMapper.mapFilterViewModelsToChecklistViewModels(filterViewModel))
     }
 
     private fun configToolbar() {
@@ -160,19 +164,21 @@ class ProductManageFilterExpandChecklistFragment :
                 searchView?.hideKeyboard()
             }
             override fun onSearchTextChanged(text: String?) {
+                hideError()
                 text?.let {
-                    val filteredData = filterViewModel?.data?.filter { data ->
-                        data.name.toLowerCase(Locale.getDefault()) == it.toLowerCase(Locale.getDefault())
-                    }
-                    if (it.isNotEmpty() && filteredData?.isNotEmpty() == true) {
-                        adapter?.updateChecklistData(listOf(ChecklistViewModel(
-                                filteredData.first().id,
-                                filteredData.first().name,
-                                filteredData.first().values,
-                                filteredData.first().select
-                        )))
+                    if(it.isNotEmpty()) {
+                        search(it).let { result ->
+                            if(result.isNotEmpty()) {
+                                adapter?.updateChecklistData(result)
+                            } else {
+                                showError()
+                            }
+                        }
                     } else {
-                        //SHOW SEARCH NOT FOUND
+                        productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
+                            adapter?.updateChecklistData(data)
+                        }
+
                     }
                 }
             }
@@ -213,7 +219,7 @@ class ProductManageFilterExpandChecklistFragment :
         reset?.visibility = View.GONE
     }
 
-    private fun initButtons(filterViewModel: FilterViewModel) {
+    private fun initButtons() {
         submitButton?.setOnClickListener {
             if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
                 cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY,
@@ -232,7 +238,7 @@ class ProductManageFilterExpandChecklistFragment :
             }
             this.activity?.finish()
         }
-        if(checkSelectData(filterViewModel)) {
+        if(checkSelectData()) {
             showButtons()
         } else {
             hideButtons()
@@ -252,10 +258,35 @@ class ProductManageFilterExpandChecklistFragment :
         }
     }
 
-    private fun checkSelectData(filterViewModel: FilterViewModel): Boolean {
-        return filterViewModel.data.any {
-            it.select
+    private fun checkSelectData(): Boolean {
+        productManageFilterExpandChecklistViewModel.checklistData.value?.forEach {
+            if(it.isSelected) {
+                return true
+            }
         }
+        return false
+    }
+
+    private fun search(searchQuery: String): List<ChecklistViewModel> {
+        val result = productManageFilterExpandChecklistViewModel.checklistData.value?.filter { data ->
+            data.name.toLowerCase(Locale.getDefault()) == searchQuery.toLowerCase(Locale.getDefault())
+        }
+        if(result.isNullOrEmpty()) {
+            return emptyList()
+        }
+        return result
+    }
+
+    private fun showError() {
+        recyclerView?.visibility = View.GONE
+        errorImage?.visibility = View.VISIBLE
+        errorMessage?.visibility = View.VISIBLE
+    }
+
+    private fun hideError() {
+        recyclerView?.visibility = View.VISIBLE
+        errorImage?.visibility = View.GONE
+        errorMessage?.visibility = View.GONE
     }
 
 

@@ -69,6 +69,30 @@
         app:siv_search_icon="@drawable/ic_search_bar"
         app:layout_constraintTop_toBottomOf="@id/filter_search_app_bar"/>
 
+    <ImageView
+        android:id="@+id/filter_search_error_img"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/unify_globalerrors_404"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/filter_category_search"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/filter_search_error_text"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginLeft="@dimen/layout_lvl7"
+        android:layout_marginRight="@dimen/layout_lvl7"
+        android:text="@string/filter_expand_category_not_found"
+        android:gravity="center"
+        android:visibility="gone"
+        app:typographyWeight="bold"
+        app:typographyType="heading_2"
+        app:layout_constraintTop_toBottomOf="@id/filter_search_error_img" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/filter_search_recycler_view"
         android:layout_width="match_parent"
