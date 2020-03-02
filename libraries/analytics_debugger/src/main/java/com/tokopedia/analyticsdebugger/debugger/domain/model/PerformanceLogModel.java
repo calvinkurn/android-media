@@ -38,12 +38,14 @@ public class PerformanceLogModel {
         this.endTime = endTime;
     }
 
-    public void putAtrribute(String attribute, String value) {
-        attributes.put(attribute, value);
+    public void setAttributes(Map<String, String> attributes) {
+        this.attributes.clear();
+        this.attributes.putAll(attributes);
     }
 
-    public void putMetric(String parameter, long value) {
-        metrics.put(parameter, value);
+    public void setMetrics(Map<String, Long> metrics) {
+        this.metrics.clear();
+        this.metrics.putAll(metrics);
     }
 
     public Map<String, String> getAttributes() {

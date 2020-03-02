@@ -6,6 +6,9 @@ import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
 import com.tokopedia.analytics.debugger.FpmLogger;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import timber.log.Timber;
 
 /**
@@ -14,7 +17,12 @@ import timber.log.Timber;
 public class PerformanceMonitoring {
 
     private Trace trace;
-    private PerformanceLogModel performanceLogModel;
+    private String traceName;
+    private long startTime;
+    private long endTime;
+    private Map<String, String> attributes = new HashMap<>();
+    private Map<String, Long> metrics = new HashMap<>();
+
     private Context context;
 
     public static PerformanceMonitoring start(Context context, String traceName) {
@@ -29,9 +37,9 @@ public class PerformanceMonitoring {
             if (fp != null) {
                 this.context = context;
                 trace = fp.newTrace(traceName);
-                performanceLogModel = new PerformanceLogModel(traceName);
+                this.traceName = traceName;
                 if (trace != null) {
-                    performanceLogModel.setStartTime(System.currentTimeMillis());
+                    this.startTime = System.currentTimeMillis();
                     trace.start();
                 }
             } else {
@@ -45,9 +53,9 @@ public class PerformanceMonitoring {
     public void stopTrace() {
         if(trace != null){
             trace.stop();
-            performanceLogModel.setEndTime(System.currentTimeMillis());
+            this.endTime = System.currentTimeMillis();
             if (context != null) {
-                FpmLogger.getInstance(context).save(performanceLogModel);
+                FpmLogger.getInstance(context).save(traceName, startTime, endTime, attributes, metrics);
             }
         }
     }
@@ -55,14 +63,14 @@ public class PerformanceMonitoring {
     public void putMetric(String parameter, long value) {
         if (trace != null) {
             trace.putMetric(parameter, value);
-            performanceLogModel.putMetric(parameter, value);
+            metrics.put(parameter, value);
         }
     }
 
     public void putCustomAttribute(String attribute, String value) {
         if (trace != null) {
             trace.putAttribute(attribute, value);
-            performanceLogModel.putAtrribute(attribute, value);
+            attributes.put(attribute, value);
         }
     }
 }

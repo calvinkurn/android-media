@@ -8,6 +8,8 @@ import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity;
 import com.tokopedia.config.GlobalConfig;
 
+import java.util.Map;
+
 import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
@@ -41,8 +43,17 @@ public class FpmLogger implements PerformanceLogger {
     }
 
     @Override
-    public void save(PerformanceLogModel performanceLogModel) {
+    public void save(String traceName,
+                     long startTime,
+                     long endTime,
+                     Map<String, String> attributes,
+                     Map<String, Long> metrics) {
         try {
+            PerformanceLogModel performanceLogModel = new PerformanceLogModel(traceName);
+            performanceLogModel.setStartTime(startTime);
+            performanceLogModel.setEndTime(endTime);
+            performanceLogModel.setAttributes(attributes);
+            performanceLogModel.setMetrics(metrics);
 
             dbSource.insertAll(performanceLogModel).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
 
@@ -97,7 +108,11 @@ public class FpmLogger implements PerformanceLogger {
     private static PerformanceLogger emptyInstance() {
         return new PerformanceLogger() {
             @Override
-            public void save(PerformanceLogModel model) {
+            public void save(String traceName,
+                             long startTime,
+                             long endTime,
+                             Map<String, String> attributes,
+                             Map<String, Long> metrics) {
 
             }
 
