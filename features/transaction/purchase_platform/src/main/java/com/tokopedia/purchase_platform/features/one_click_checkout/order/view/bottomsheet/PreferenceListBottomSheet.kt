@@ -12,11 +12,11 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.Or
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
-import kotlinx.android.synthetic.main.bottomsheet_preference_list.view.*
+import kotlinx.android.synthetic.main.bottom_sheet_preference_list.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main.immediate, private val listener: PreferenceListBottomsheetListener) : CoroutineScope {
+class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main.immediate, private val listener: PreferenceListBottomSheetListener) : CoroutineScope {
     // need get all preference list usecase, update selected preference usecase
 
     private var bottomSheet: BottomSheetUnify? = null
@@ -42,13 +42,16 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
                 isDragable = true
                 isHideable = true
                 setTitle("Pengiriman dan pembayaran")
-                val child = View.inflate(fragment.context, R.layout.bottomsheet_preference_list, null)
+                val child = View.inflate(fragment.context, R.layout.bottom_sheet_preference_list, null)
                 setupChild(child)
                 fragment.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }
                 setChild(child)
                 show(it, null)
+                setOnDismissListener {
+                    onCleared()
+                }
             }
         }
     }
@@ -62,7 +65,7 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
         adapter = PreferenceListAdapter(getListener())
         rvPreferenceList?.adapter = adapter
         btnAddPreference?.setOnClickListener {
-            dismiss()
+            bottomSheet?.dismiss()
             listener.onAddPreference()
         }
     }
@@ -70,12 +73,12 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
     private fun getListener(): PreferenceListAdapter.PreferenceListAdapterListener = object : PreferenceListAdapter.PreferenceListAdapterListener {
         override fun onPreferenceSelected(preference: Preference) {
             //Todo: update selected preference api
-            dismiss()
+            bottomSheet?.dismiss()
             listener.onChangePreference(preference)
         }
 
         override fun onPreferenceEditClicked(preference: Preference) {
-            dismiss()
+            bottomSheet?.dismiss()
             listener.onEditPreference(preference)
         }
     }
@@ -102,7 +105,7 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
         cancel()
     }
 
-    interface PreferenceListBottomsheetListener {
+    interface PreferenceListBottomSheetListener {
 
         fun onChangePreference(preference: Preference)
 

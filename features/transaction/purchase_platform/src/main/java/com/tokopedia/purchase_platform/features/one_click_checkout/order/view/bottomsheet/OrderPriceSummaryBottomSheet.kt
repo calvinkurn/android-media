@@ -15,7 +15,7 @@ class OrderPriceSummaryBottomSheet {
                 showKnob = true
                 showHeader = false
                 showCloseIcon = false
-                val child = View.inflate(view.context, R.layout.bottomsheet_order_price_summary, null)
+                val child = View.inflate(view.context, R.layout.bottom_sheet_order_price_summary, null)
                 view.view?.height?.div(2)?.let { height ->
                     customPeekHeight = height
                 }

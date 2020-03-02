@@ -16,6 +16,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.P
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.PreferenceListBottomSheet
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.SpecificErrorBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
@@ -159,7 +160,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 //        btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
 //        btn_pay.setPadding(convertDpToPixel(32f, context!!), btn_pay.paddingTop, convertDpToPixel(32f, context!!), btn_pay.paddingBottom)
 
-        triggerLoading()
+//        triggerLoading()
     }
 
     private fun triggerLoading() {
@@ -170,7 +171,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             btn_pay.isLoading = false
             btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
 ////            btn_pay.width = convertDpToPixel(140f, context!!)
-//            delay(3000)
+            delay(3000)
+            SpecificErrorBottomSheet().create(context!!).show(fragmentManager!!, null)
 //            btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
 //            btn_pay.setText(R.string.pay)
 //            btn_pay.isLoading = true
@@ -192,7 +194,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     fun showPreferenceListBottomSheet() {
-        PreferenceListBottomSheet(listener = object : PreferenceListBottomSheet.PreferenceListBottomsheetListener {
+        PreferenceListBottomSheet(listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
             override fun onChangePreference(preference: Preference) {
                 viewModel.updatePreference(preference)
             }
@@ -203,6 +205,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, 1)
                     putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, 1)
                     putExtra(PreferenceEditActivity.EXTRA_PAYMENT_ID, 1)
+                    putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
+                    putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, viewModel.generateListShopShipment())
                 }
                 startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
             }

@@ -28,6 +28,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
         orderProduct = product
         orderTotal.value = orderTotal.value?.copy(btnState = 1)
+        if (shouldReloadRates) {
+            debounce()
+        }
     }
 
     fun updatePreference(preference: Preference) {
@@ -63,6 +66,48 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private fun getRates() {
         // get rates
+        val shippingParam = generateShippingParam()
+        val ratesParamBuilder = RatesParam.Builder(generateListShopShipment(), shippingParam)
+        val ratesParam = ratesParamBuilder.build()
+        ratesParam.occ = 1
+        compositeSubscription.add(
+                ratesUseCase.execute(ratesParam)
+                        .map {
+                            val data = ratesResponseStateConverter.fillState(it, listOf(), 1, 0)
+                            if (data.shippingDurationViewModels != null) {
+                                val logisticPromo = data.logisticPromo
+                                if (logisticPromo != null) {
+                                    // validate army courier
+                                    val serviceData: ShippingDurationViewModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
+                                    if (serviceData == null) {
+                                        data.logisticPromo = null
+                                    } else {
+                                        val courierData: ShippingCourierViewModel? = getCourierDatabySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList)
+                                        if (courierData == null) {
+                                            data.logisticPromo = null
+                                        }
+                                    }
+                                }
+                            }
+                            return@map data
+                        }.subscribe(object : Observer<ShippingRecommendationData> {
+                            override fun onError(e: Throwable) {
+
+                            }
+
+                            override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
+                                orderPreference.value = orderPreference.value?.copy(shipping = OrderShipping())
+                                orderTotal.value = OrderTotal(subtotal = 0.0, btnState = 0)
+                            }
+
+                            override fun onCompleted() {
+
+                            }
+                        })
+        )
+    }
+
+    fun generateShippingParam(): ShippingParam {
         val shippingParam = ShippingParam()
         shippingParam.originDistrictId = ""
         shippingParam.originPostalCode = ""
@@ -81,40 +126,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.weightInKilograms = 1 * 0 / 1000.0
         shippingParam.productInsurance = 0
         shippingParam.orderValue = 5000 * 1
-        val ratesParamBuilder = RatesParam.Builder(listOf(), shippingParam)
-        ratesUseCase.execute(ratesParamBuilder.build())
-                .map {
-                    val data = ratesResponseStateConverter.fillState(it, listOf(), 1, 0)
-                    if (data.shippingDurationViewModels != null) {
-                        val logisticPromo = data.logisticPromo
-                        if (logisticPromo != null) {
-                            // validate army courier
-                            val serviceData: ShippingDurationViewModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
-                            if (serviceData == null) {
-                                data.logisticPromo = null
-                            } else {
-                                val courierData: ShippingCourierViewModel? = getCourierDatabySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList)
-                                if (courierData == null) {
-                                    data.logisticPromo = null
-                                }
-                            }
-                        }
-                    }
-                    return@map data
-                }.subscribe(object : Observer<ShippingRecommendationData> {
-                    override fun onError(e: Throwable) {
+        return shippingParam
+    }
 
-                    }
-
-                    override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
-                        orderPreference.value = orderPreference.value?.copy(shipping = OrderShipping())
-                        orderTotal.value = OrderTotal(subtotal = 0.0, btnState = 0)
-                    }
-
-                    override fun onCompleted() {
-
-                    }
-                })
+    fun generateListShopShipment(): ArrayList<ShopShipment> {
+        return arrayListOf()
     }
 
     private fun getCourierDatabySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierViewModel>): ShippingCourierViewModel? {
@@ -142,5 +158,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     override fun onCleared() {
         super.onCleared()
         compositeSubscription.clear()
+        debounceJob?.cancel()
     }
 }

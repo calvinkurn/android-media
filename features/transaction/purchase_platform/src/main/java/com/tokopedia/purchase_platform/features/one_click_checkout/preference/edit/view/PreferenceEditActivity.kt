@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticcart.shipping.model.ShippingParam
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.DaggerPreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
@@ -18,9 +20,12 @@ import kotlinx.android.synthetic.main.activity_preference_edit.*
 
 class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent> {
 
-    private var addressId = -1
-    private var shippingId = -1
-    private var paymentId = -1
+    var addressId = -1
+    var shippingId = -1
+    var paymentId = -1
+    var paymentQuery = ""
+    var shippingParam: ShippingParam? = null
+    var listShopShipment: ArrayList<ShopShipment>? = null
 
     override fun getComponent(): PreferenceEditComponent {
         return DaggerPreferenceEditComponent.builder()
@@ -42,6 +47,8 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         addressId = intent.getIntExtra(EXTRA_ADDRESS_ID, -1)
         shippingId = intent.getIntExtra(EXTRA_SHIPPING_ID, -1)
         paymentId = intent.getIntExtra(EXTRA_PAYMENT_ID, -1)
+        shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
+        listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
 
         if (addressId == -1 || shippingId == -1 || paymentId == -1) {
             supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment()).commit()
@@ -50,11 +57,11 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         }
     }
 
-    fun setTitles(title: String) {
+    fun setHeaderTitle(title: String) {
         tv_title.text = title
     }
 
-    fun setSubtitle(subtitle: String) {
+    fun setHeaderSubtitle(subtitle: String) {
         tv_subtitle.text = subtitle
     }
 
@@ -85,6 +92,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     }
 
     fun showAddButton() {
+        hideDeleteButton()
         btn_add.visible()
     }
 
@@ -93,6 +101,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
     }
 
     fun showDeleteButton() {
+        hideAddButton()
         btn_delete.visible()
     }
 
@@ -117,5 +126,8 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         const val EXTRA_ADDRESS_ID = "address_id"
         const val EXTRA_SHIPPING_ID = "shipping_id"
         const val EXTRA_PAYMENT_ID = "payment_id"
+
+        const val EXTRA_SHIPPING_PARAM = "shipping_param"
+        const val EXTRA_LIST_SHOP_SHIPMENT = "list_shop_shipment"
     }
 }

@@ -88,8 +88,8 @@ class AddressListFragment : BaseDaggerFragment() {
         if (parent is PreferenceEditActivity) {
             parent.showStepper()
             parent.setStepperValue(25, true)
-            parent.setTitles(getString(R.string.activity_title_choose_address))
-            parent.setSubtitle(getString(R.string.activity_subtitle_choose_address))
+            parent.setHeaderTitle(getString(R.string.activity_title_choose_address))
+            parent.setHeaderSubtitle(getString(R.string.activity_subtitle_choose_address))
         }
     }
 

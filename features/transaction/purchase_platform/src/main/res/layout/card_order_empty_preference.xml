@@ -56,7 +56,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_address_detail" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_shipping_name"
+            android:id="@+id/tv_payment_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
@@ -72,21 +72,21 @@
             app:layout_constraintTop_toBottomOf="@+id/divider"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="Jenis Pengiriman" />
+            tools:text="Metode Pembayaran" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_shipping_duration"
+            android:id="@+id/tv_payment_detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
-            app:layout_constraintEnd_toEndOf="@+id/tv_shipping_name"
-            app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Pilih pengiriman yang pas dengan kebutuhanmu" />
+            tools:text="Pilih metode bayar yang paling sering kamu pakai" />
 
         <View
             android:id="@+id/divider2"
@@ -98,10 +98,10 @@
             android:background="@color/Neutral_N75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_payment_name"
+            android:id="@+id/tv_shipping_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_16"
@@ -117,20 +117,20 @@
             app:layout_constraintTop_toBottomOf="@+id/divider2"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            tools:text="Metode Pembayaran" />
+            tools:text="Jenis Pengiriman" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_payment_detail"
+            android:id="@+id/tv_shipping_duration"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
-            app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
-            app:layout_constraintStart_toStartOf="@+id/tv_payment_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_payment_name"
+            app:layout_constraintEnd_toEndOf="@+id/tv_shipping_name"
+            app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            tools:text="Pilih metode bayar yang paling sering kamu pakai" />
+            tools:text="Pilih pengiriman yang pas dengan kebutuhanmu" />
 
         <View
             android:id="@+id/divider3"
@@ -142,7 +142,7 @@
             android:background="@color/Neutral_N75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_choose_preference"

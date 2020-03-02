@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+    android:enabled="false"
     tools:context=".features.one_click_checkout.order.view.OrderSummaryPageFragment">
 
     <androidx.core.widget.NestedScrollView
@@ -66,6 +67,24 @@
                 app:typographyWeight="reguler"
                 tools:text="ini balbalablasdfj lasdjf lasjdf asjdf" />
 
+            <com.tokopedia.unifycomponents.ticker.Ticker
+                android:id="@+id/ticker_preference_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:visibility="gone"
+                app:closeButtonVisibility="gone"
+                app:descriptionText="Pilihan Utamamu berubah, cek lagi ya"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_subheader"
+                app:tickerShapeType="loose"
+                app:tickerType="announcement" />
+
             <include
                 android:id="@+id/preference_card"
                 layout="@layout/card_order_preference"
@@ -74,7 +93,7 @@
                 android:layout_margin="@dimen/dp_16"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_subheader" />
+                app:layout_constraintTop_toBottomOf="@+id/ticker_preference_info" />
 
             <include
                 android:id="@+id/empty_preference_card"

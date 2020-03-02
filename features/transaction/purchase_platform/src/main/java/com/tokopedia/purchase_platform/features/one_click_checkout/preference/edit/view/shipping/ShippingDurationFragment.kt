@@ -57,8 +57,8 @@ class ShippingDurationFragment : BaseDaggerFragment(){
         val parent = activity
         if(parent is PreferenceEditActivity) {
             parent.setStepperValue(50, true)
-            parent.setTitles(getString(R.string.activity_title_shipping_duration))
-            parent.setSubtitle(getString(R.string.activity_subtitle_shipping_address))
+            parent.setHeaderTitle(getString(R.string.activity_title_shipping_duration))
+            parent.setHeaderSubtitle(getString(R.string.activity_subtitle_shipping_address))
         }
     }
 
