@@ -34,7 +34,7 @@ object VariantMapper {
 
         //Check wether selected product is buyable , if not get another  siblings that buyable
         var selectedProductData = getSelectedProductData(selectedOptionIds, variantData)
-        if (selectedProductData?.isBuyable != true) {
+        if (selectedProductData != null && !selectedProductData.isBuyable) {
             selectedProductData = getOtherSiblingProduct(variantData, selectedOptionIds)
         }
 
