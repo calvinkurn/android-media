@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view.mapper
 
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartWishlistItemHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistItemHolderData
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import java.util.*
 import javax.inject.Inject

@@ -1,6 +1,6 @@
 package com.tokopedia.otp.cotp.domain.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.otp.cotp.domain.pojo.ListMethodItemPojo;
 import com.tokopedia.otp.cotp.domain.pojo.ModeList;
 import com.tokopedia.otp.cotp.view.viewmodel.ListVerificationMethod;

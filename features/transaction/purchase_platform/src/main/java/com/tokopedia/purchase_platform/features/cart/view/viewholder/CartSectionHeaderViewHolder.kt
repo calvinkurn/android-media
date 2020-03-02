@@ -5,7 +5,7 @@ import android.text.TextUtils
 import android.view.View
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.CartSectionHeaderHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartSectionHeaderHolderData
 import kotlinx.android.synthetic.main.item_cart_section_header.view.*
 
 /**

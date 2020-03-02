@@ -32,10 +32,11 @@ import com.tokopedia.core.customView.LoginTextView;
 import com.tokopedia.core.router.SellerAppRouter;
 import com.tokopedia.core.router.home.HomeRouter;
 import com.tokopedia.core.session.model.LoginProviderModel;
-import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenter;
 import com.tokopedia.sellerapp.welcome.presenter.WelcomeFragmentPresenterImpl;
+import com.tokopedia.user.session.UserSession;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.List;
 
@@ -65,6 +66,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     Snackbar snackbar;
     WelcomeFragmentPresenter presenter;
 
+    private UserSessionInterface userSession;
     LocalCacheHandler isNotFirstRun;
     Spannable spannable;
 
@@ -78,7 +80,6 @@ public class WelcomeFragment extends BaseDaggerFragment implements
         fragment.setArguments(bundle);
         return fragment;
     }
-
 
     @Override
     protected String getScreenName() {
@@ -374,9 +375,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if ((requestCode == REQUEST_LOGIN
-                || requestCode == REQUEST_REGISTER)
-                && resultCode == Activity.RESULT_OK) {
+        if (getUserSession().isLoggedIn()) {
             onSuccessLogin();
         }
     }
@@ -384,7 +383,7 @@ public class WelcomeFragment extends BaseDaggerFragment implements
     private void onSuccessLogin() {
         if (MainApplication.getAppContext() instanceof TkpdCoreRouter) {
             Intent intent;
-            if (SessionHandler.isUserHasShop(getActivity())) {
+            if (getUserSession().hasShop()) {
                 intent = SellerAppRouter.getSellerHomeActivity(getActivity());
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
                         .FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -397,5 +396,12 @@ public class WelcomeFragment extends BaseDaggerFragment implements
                     HomeRouter.INIT_STATE_FRAGMENT_FEED);
             startActivity(intent);
         }
+    }
+
+    private UserSessionInterface getUserSession() {
+        if (userSession == null) {
+            userSession = new UserSession(getActivity());
+        }
+        return userSession;
     }
 }

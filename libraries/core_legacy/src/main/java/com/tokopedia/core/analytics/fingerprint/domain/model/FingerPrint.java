@@ -24,6 +24,9 @@ public class FingerPrint {
     private String location_longitude;
     private String is_nakama;
     private String unique_id;
+    private String deviceMemoryClassCapacity;
+    private String availableProcessor;
+    private String deviceDpi;
 
     private FingerPrint(FingerPrintBuilder fingerPrintBuilder) {
         device_model = fingerPrintBuilder.deviceModel;
@@ -44,6 +47,9 @@ public class FingerPrint {
         carrier = fingerPrintBuilder.carrier;
         is_nakama = fingerPrintBuilder.is_nakama;
         unique_id = fingerPrintBuilder.unique_id;
+        deviceMemoryClassCapacity = fingerPrintBuilder.deviceMemoryClassCapacity;
+        availableProcessor = fingerPrintBuilder.availableProcessor;
+        deviceDpi = fingerPrintBuilder.deviceDpi;
     }
 
     public String getUnique_id() {
@@ -182,6 +188,30 @@ public class FingerPrint {
         this.user_agent = user_agent;
     }
 
+    public void setDeviceMemoryClassCapacity(String deviceMemoryClassCapacity) {
+        this.deviceMemoryClassCapacity = deviceMemoryClassCapacity;
+    }
+
+    public void setAvailableProcessor(String availableProcessor) {
+        this.availableProcessor = availableProcessor;
+    }
+
+    public void setDeviceDpi(String deviceDpi) {
+        this.deviceDpi = deviceDpi;
+    }
+
+    public String getDeviceMemoryClassCapacity() {
+        return deviceMemoryClassCapacity;
+    }
+
+    public String getAvailableProcessor() {
+        return availableProcessor;
+    }
+
+    public String getDeviceDpi() {
+        return deviceDpi;
+    }
+
     public static class FingerPrintBuilder {
         private String deviceName;
         private String deviceModel;
@@ -201,6 +231,9 @@ public class FingerPrint {
         private String carrier;
         private String is_nakama;
         private String unique_id;
+        private String deviceMemoryClassCapacity;
+        private String availableProcessor;
+        private String deviceDpi;
 
         public FingerPrintBuilder() {
 
@@ -293,6 +326,21 @@ public class FingerPrint {
 
         public FingerPrintBuilder jailbreak(boolean isJailBreak) {
             this.isJailBreak = isJailBreak;
+            return this;
+        }
+
+        public FingerPrintBuilder deviceMemoryClassCapacity(String deviceMemoryClassCapacity) {
+            this.deviceMemoryClassCapacity = deviceMemoryClassCapacity;
+            return this;
+        }
+
+        public FingerPrintBuilder availableProcessor(String availableProcessor) {
+            this.availableProcessor = availableProcessor;
+            return this;
+        }
+
+        public FingerPrintBuilder deviceDpi(String deviceDpi) {
+            this.deviceDpi = deviceDpi;
             return this;
         }
 

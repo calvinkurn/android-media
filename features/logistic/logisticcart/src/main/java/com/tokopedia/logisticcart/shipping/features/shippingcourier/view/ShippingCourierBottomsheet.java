@@ -46,12 +46,13 @@ public class ShippingCourierBottomsheet extends BottomSheets
     private ProgressBar pbLoading;
 
     private ShippingCourierBottomsheetListener shippingCourierBottomsheetListener;
+    private List<ShippingCourierViewModel> mCourierModelList = new ArrayList<>();
     private RecipientAddressModel mRecipientAddress;
 
     @Inject
-    ShippingCourierContract.Presenter presenter;
-    @Inject
     ShippingCourierAdapter shippingCourierAdapter;
+    @Inject
+    ShippingCourierConverter courierConverter;
 
     public static ShippingCourierBottomsheet newInstance(List<ShippingCourierViewModel> shippingCourierViewModels,
                                                          RecipientAddressModel recipientAddressModel,
@@ -94,7 +95,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
                                              List<ShopShipment> shopShipmentList) {
         hideLoading();
         if (shippingCourierViewModels != null && shippingCourierViewModels.size() > 0) {
-            presenter.setData(shippingCourierViewModels);
+            mCourierModelList = shippingCourierViewModels;
             setupRecyclerView(cartPosition);
             updateHeight();
         } else {
@@ -129,14 +130,13 @@ public class ShippingCourierBottomsheet extends BottomSheets
         pbLoading = view.findViewById(R.id.pb_loading);
 
         initializeInjector();
-        presenter.attachView(this);
         if (getArguments() != null) {
             mRecipientAddress = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
             List<ShippingCourierViewModel> shippingCourierViewModels =
                     getArguments().getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
             if (shippingCourierViewModels != null) {
-                presenter.setData(shippingCourierViewModels);
+                mCourierModelList = shippingCourierViewModels;
                 setupRecyclerView(cartPosition);
             } else {
                 showLoading();
@@ -146,7 +146,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
 
     private void setupRecyclerView(int cartPosition) {
         shippingCourierAdapter.setShippingCourierAdapterListener(this);
-        shippingCourierAdapter.setShippingCourierViewModels(presenter.getShippingCourierViewModels());
+        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList);
         shippingCourierAdapter.setCartPosition(cartPosition);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 getContext(), LinearLayoutManager.VERTICAL, false);
@@ -165,14 +165,16 @@ public class ShippingCourierBottomsheet extends BottomSheets
     @Override
     public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean isNeedPinpoint) {
         ProductData productData = shippingCourierViewModel.getProductData();
+        int spId = shippingCourierViewModel.getProductData().getShipperProductId();
         if (shippingCourierViewModel.getProductData().getError() != null) {
+            // Not updating when it has Error Pinpoint Needed
             if (!shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
-                presenter.updateSelectedCourier(shippingCourierViewModel);
+                courierConverter.updateSelectedCourier(mCourierModelList, spId);
             }
         } else {
-            presenter.updateSelectedCourier(shippingCourierViewModel);
+            courierConverter.updateSelectedCourier(mCourierModelList, spId);
         }
-        CourierItemData courierItemData = presenter.getCourierItemData(shippingCourierViewModel);
+        CourierItemData courierItemData = courierConverter.convertToCourierItemData(shippingCourierViewModel);
         boolean isCod = productData.getCodProductData() != null && (productData.getCodProductData().getIsCodAvailable() == 1);
         if (shippingCourierBottomsheetListener != null) {
             shippingCourierBottomsheetListener.onCourierChoosen(

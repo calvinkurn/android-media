@@ -47,6 +47,7 @@ internal class SearchShopFirstPageUseCase(
         headlineParams[TopAdsParams.KEY_TEMPLATE_ID] = SearchConstant.SearchShop.HEADLINE_TEMPLATE_VALUE
         headlineParams[TopAdsParams.KEY_ITEM] = SearchConstant.SearchShop.HEADLINE_ITEM_VALUE
         headlineParams[TopAdsParams.KEY_SRC] = SearchConstant.SearchShop.ADS_SOURCE
+        headlineParams[TopAdsParams.KEY_HEADLINE_PRODUCT_COUNT] = SearchConstant.SearchShop.HEADLINE_PRODUCT_COUNT
 
         return UrlParamUtils.generateUrlParamString(headlineParams)
     }

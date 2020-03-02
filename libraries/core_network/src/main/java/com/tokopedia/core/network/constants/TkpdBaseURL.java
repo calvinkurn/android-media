@@ -295,7 +295,7 @@ public class TkpdBaseURL {
         public static final String PATH_CATEGORIES = "/v2/categories/{catId}/detail";
         public static final String PATH_CATEGORIES_LAYOUT_ROOT = "/v1/category_layout/{catId}?type=root";
         public static final String PATH_CATEGORIES_LAYOUT = "/v1/category_layout/{catId}";
-        public static final String FETCH_CATEGORIES = "/v1/categories?filter=type==tree";
+        public static final String FETCH_CATEGORIES = "/v1/categorieslite?filter=seller";
     }
 
     public static class ResCenterV2 {

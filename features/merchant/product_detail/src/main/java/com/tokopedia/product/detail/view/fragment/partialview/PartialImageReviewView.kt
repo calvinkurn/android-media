@@ -63,7 +63,7 @@ class PartialImageReviewView private constructor(private val view: View,
         }
     }
 
-    fun setBackgroundAndKeepPadding(view: View, reviews: List<Review>) {
+    private fun setBackgroundAndKeepPadding(view: View, reviews: List<Review>) {
         val drawablePadding = Rect()
 
         view.background.getPadding(drawablePadding)

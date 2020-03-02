@@ -2,6 +2,7 @@ package com.tokopedia.salam.umrah.homepage.presentation.listener
 
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.homepage.data.Products
+import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
 import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
 
 /**
@@ -12,6 +13,8 @@ interface onItemBindListener{
     fun onBindMyUmrahVH(isLoadFromCloud: Boolean)
     fun onBindCategoryVH(isLoadFromCloud: Boolean)
     fun onBindCategoryFeaturedVH(isLoadFromCloud: Boolean)
+    fun onBindBannerVH(isLoadFromCloud: Boolean)
+    fun onBindPartnerVH(isLoadFromCloud: Boolean)
 
     fun onImpressionDanaImpian()
     fun onClickDanaImpian()
@@ -26,4 +29,7 @@ interface onItemBindListener{
 
     fun onImpressionFeaturedCategory(headerTitle: String,  products: Products, position: Int,positionDC: Int)
     fun onClickFeaturedCategory(headerTitle: String, positionDC: Int, products: Products, position: Int)
+
+    fun onImpressionBanner(banner: UmrahBanner, position: Int)
+    fun onClickBanner(banner: UmrahBanner, position: Int)
 }

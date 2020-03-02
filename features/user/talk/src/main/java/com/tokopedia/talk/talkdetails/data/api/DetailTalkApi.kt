@@ -1,6 +1,6 @@
 package com.tokopedia.talk.talkdetails.data.api
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.talk.talkdetails.data.SendCommentResponse
 import com.tokopedia.talk.talkdetails.domain.pojo.TalkDetailsPojo

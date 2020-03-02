@@ -18,6 +18,12 @@ import rx.schedulers.Schedulers
 
 class PmTermsPresenterTest : Spek({
 
+    RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
+        override fun getMainThreadScheduler(): Scheduler {
+            return Schedulers.immediate()
+        }
+    })
+
     Feature("PmTermsPresenter") {
         val graphqlUseCase: GraphqlUseCase = mockk(relaxed = true)
         val pmTermsView: PmTermsContract.View = mockk(relaxed = true)
@@ -27,12 +33,6 @@ class PmTermsPresenterTest : Spek({
 
         val pmTermsPresenter = PmTermsPresenter(activatePowerMerchantUseCase)
         pmTermsPresenter.attachView(pmTermsView)
-
-        RxAndroidPlugins.getInstance().registerSchedulersHook(object : RxAndroidSchedulersHook() {
-            override fun getMainThreadScheduler(): Scheduler {
-                return Schedulers.immediate()
-            }
-        })
 
         Scenario("Activate power merchant use case is successful") {
             Given("Mock use case return to success") {

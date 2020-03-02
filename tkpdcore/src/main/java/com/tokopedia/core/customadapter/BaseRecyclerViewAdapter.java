@@ -1,7 +1,6 @@
 package com.tokopedia.core.customadapter;
 
 import android.content.Context;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,13 +8,16 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tkpd.library.utils.CommonUtils;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.tkpd.library.utils.ImageHandler;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.var.RecyclerViewItem;
 import com.tokopedia.core.var.TkpdState;
+import com.tokopedia.core2.R;
 
 import java.util.List;
+
+import timber.log.Timber;
 
 
 /**
@@ -124,7 +126,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        CommonUtils.dumper("NISIETAGCONNECTION : BIND TYPE : " + getItemViewType(position));
+        Timber.d("NISIETAGCONNECTION : BIND TYPE : " + getItemViewType(position));
         switch (getItemViewType(position)) {
             case TkpdState.RecyclerView.VIEW_ERROR_NETWORK:
                 bindRetryErrorStateHolder((ViewHolderErrorNetworkState) viewHolder);
@@ -139,7 +141,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
     }
 
     private void bindRetryHolder(ViewHolderRetry viewHolder) {
-        CommonUtils.dumper("NISIETAGCONNECTION : BIND RETRY");
+        Timber.d("NISIETAGCONNECTION : BIND RETRY");
         viewHolder.retry.setOnClickListener(onRetryListener());
     }
 
@@ -151,7 +153,7 @@ public class BaseRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.V
         return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CommonUtils.dumper("NISIETAGCONNECTION : RETRY CLICKED");
+                Timber.d("NISIETAGCONNECTION : RETRY CLICKED");
                 setIsRetry(false);
                 setIsLoading(true);
                 notifyDataSetChanged();

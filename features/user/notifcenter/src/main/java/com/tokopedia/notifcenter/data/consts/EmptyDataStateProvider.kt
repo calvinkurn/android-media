@@ -8,7 +8,7 @@ object EmptyDataStateProvider {
 
     fun emptyData(source: EmptySource = EmptySource.Normal): NotificationEmptyStateViewBean {
         return NotificationEmptyStateViewBean(
-                R.drawable.bg_empty_state_notification,
+                R.drawable.bg_notif_empty_state,
                 R.string.notification_empty_message,
                 source)
     }

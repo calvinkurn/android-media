@@ -7,6 +7,9 @@ data class DataNotification(
         @SerializedName("app_link")
         @Expose
         val appLink: String = "",
+        @SerializedName("checkout_url")
+        @Expose
+        val checkoutUrl: String = "",
         @SerializedName("desktop_link")
         @Expose
         val desktopLink: String = "",

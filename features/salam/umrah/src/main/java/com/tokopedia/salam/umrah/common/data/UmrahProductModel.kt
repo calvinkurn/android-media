@@ -118,40 +118,6 @@ data class UmrahProductModel(
                 val availableSeat: String = ""
         )
 
-        data class TravelAgent(
-                @SerializedName("id")
-                @Expose
-                val id: String = "",
-                @SerializedName("name")
-                @Expose
-                val name: String = "",
-                @SerializedName("logoUrl")
-                @Expose
-                val imageUrl: String = "",
-                @SerializedName("permissionOfUmrah")
-                @Expose
-                val permissionOfUmrah: String = "",
-                @SerializedName("pilgrimsPerYear")
-                @Expose
-                val pilgrimsPerYear: Int = 0,
-                @SerializedName("establishedSince")
-                @Expose
-                val establishedSince: Int = 0,
-                @SerializedName("ui")
-                @Expose
-                val ui: UmrahTravelAgentUI = UmrahTravelAgentUI()
-
-        )
-
-        data class  UmrahTravelAgentUI(
-                @SerializedName("establishedSince")
-                @Expose
-                val establishedSince: String = "",
-                @SerializedName("pilgrimsPerYear")
-                @Expose
-                val pilgrimsPerYear: String = ""
-        )
-
         data class UmrahFAQ(
                 @SerializedName("allContentsLink")
                 val allContentsLink: String = "",

@@ -10,6 +10,9 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -43,9 +46,11 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
     private lateinit var manager: SplitInstallManager
 
-    private lateinit var progressBar: ImageView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var progressTextPercent: TextView
     private lateinit var buttonDownload: UnifyButton
     private lateinit var imageView: ImageView
+    private lateinit var progressGroup: View
     private var isAutoDownload = false
     private var sessionId: Int? = null
 
@@ -70,7 +75,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
         private const val ONE_KB = 1024
-        const val TAG_LOG= "DFM"
+        const val TAG_LOG= "Page"
         const val PLAY_SRV_OOD= "play_ood" //tag for play service ouf of date
     }
 
@@ -124,16 +129,22 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     }
 
     private fun initializeViews() {
-        progressBar = findViewById(R.id.iv_loading)
-        ImageHandler.loadGif(progressBar, R.drawable.ic_loading_indeterminate, -1)
-
+        progressBar = findViewById(R.id.progress_bar)
+        progressBar.getProgressDrawable().setColorFilter(
+                ContextCompat.getColor(this, R.color.tkpd_main_green),
+                android.graphics.PorterDuff.Mode.MULTIPLY)
+        progressTextPercent = findViewById(R.id.progress_text_percent)
         imageView = findViewById(R.id.image)
 
+        progressBar.getProgressDrawable().setColorFilter(
+                ContextCompat.getColor(this, R.color.tkpd_main_green),
+                android.graphics.PorterDuff.Mode.MULTIPLY);
         buttonDownload = findViewById(R.id.button_download)
 
         buttonDownload.setOnClickListener {
             downloadFeature()
         }
+        progressGroup = findViewById(R.id.progress_group)
         title_txt.setText(String.format(getString(R.string.feature_download_title), moduleNameTranslated))
         subtitle_txt.setText(String.format(getString(R.string.feature_download_subtitle), moduleNameTranslated))
     }
@@ -182,7 +193,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
             SplitInstallHelper.updateAppInfo(this)
         }
         successInstall = manager.installedModules.contains(moduleName)
-        progressBar.visibility = View.INVISIBLE
+        progressGroup.visibility = View.INVISIBLE
         if (launch && successInstall) {
             launchAndForwardIntent(applink)
         }
@@ -248,7 +259,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
             image.setImageResource(R.drawable.ic_ill_insuficient_memory)
             title_txt.setText(getString(R.string.download_error_insuficient_memory_title))
-            subtitle_txt.setText(String.format(getString(R.string.download_error_insuficient_memory_subtitle), (moduleSize.toFloat() / ONE_KB)))
+            subtitle_txt.setText(String.format(getString(R.string.download_error_insuficient_memory_subtitle)))
             button_download.setText(getString(R.string.goto_seting))
             button_download.setOnClickListener {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
@@ -281,6 +292,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 image.setImageResource(R.drawable.ic_ill_general_error)
                 title_txt.setText(getString(R.string.download_error_playservice_title))
                 subtitle_txt.setText(getString(R.string.download_error_playservice_subtitle))
+                button_download.setText(getString(R.string.start_download))
                 button_download.setOnClickListener {
                     val hasBeenUpdated = checkPlayServiceUptoDate()
                     if (hasBeenUpdated) {
@@ -339,19 +351,22 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     private fun displayLoadingState(state: SplitInstallSessionState, message: String) {
         val totalBytesToDowload = state.totalBytesToDownload().toInt()
         val bytesDownloaded = state.bytesDownloaded().toInt()
+        progressBar.max = totalBytesToDowload
+        progressBar.progress = bytesDownloaded
         val progressText = String.format("%.2f KB / %.2f KB",
             (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
         Log.i(TAG_LOG, progressText)
+        progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
         button_download.visibility = View.INVISIBLE
     }
 
     private fun displayProgress() {
-        progressBar.visibility = View.VISIBLE
+        progressGroup.visibility = View.VISIBLE
         buttonDownload.visibility = View.INVISIBLE
     }
 
     private fun hideProgress() {
-        progressBar.visibility = View.INVISIBLE
+        progressGroup.visibility = View.INVISIBLE
         buttonDownload.visibility = View.VISIBLE
     }
 
