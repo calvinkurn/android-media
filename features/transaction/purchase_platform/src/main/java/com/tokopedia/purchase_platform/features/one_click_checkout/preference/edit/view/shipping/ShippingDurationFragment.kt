@@ -47,6 +47,7 @@ class ShippingDurationFragment : BaseDaggerFragment(){
         initViewModel()
         setStep()
 
+        ticker_info.setTextDescription(getString(R.string.ticker_label_text))
         shipping_duration_rv.adapter = adapter
         shipping_duration_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
