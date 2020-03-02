@@ -50,7 +50,7 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
         addressModel.fullAddress = address.addressStreet + ", " +
                 address.districtName + ", " +
                 address.cityName + ", " +
-                address.provinceName + ", " +
+                address.provinceName +
                 address.postalCode
 
 
