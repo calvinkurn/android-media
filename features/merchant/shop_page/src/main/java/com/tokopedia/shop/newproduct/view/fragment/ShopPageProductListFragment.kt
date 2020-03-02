@@ -483,6 +483,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
                 val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
                 val etalaseBadge = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_BADGE)
+                shopPageTracking?.clickMoreMenuChip(
+                        isOwner,
+                        etalaseName,
+                        customDimensionShopPage
+                )
                 if (shopPageTracking != null && shopInfo != null) {
                     shopPageTracking!!.clickMenuFromMoreMenu(
                             viewModel.isMyShop(shopInfo?.shopCore?.shopID ?: ""),
