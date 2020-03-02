@@ -727,12 +727,12 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
         ))
     }
 
-    fun eventViewBanner() {
+    fun eventViewBanner(label: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_VIEW_LOGIN_IRIS,
                 CATEGORY_LOGIN_PAGE,
                 ACTION_VIEW_BANNER,
-                LABEL_BEBAS_ONGKIR
+                label
         ))
     }
 
