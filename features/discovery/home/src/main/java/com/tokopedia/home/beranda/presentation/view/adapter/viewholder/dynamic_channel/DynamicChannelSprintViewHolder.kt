@@ -14,6 +14,7 @@ import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
+import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
@@ -67,7 +68,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
                 itemView.context,
                 defaultSpanCount,
                 GridLayoutManager.VERTICAL, false)
-        backgroundThematic.loadImageCenterCrop(channel.header.backImage)
+        backgroundThematic.loadImage(channel.header.backImage)
         mappingHeader(channel)
         mappingGrid(channel)
     }
