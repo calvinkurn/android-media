@@ -740,13 +740,8 @@ class CartAdapter @Inject constructor(private val actionListener: ActionListener
         checkForShipmentForm()
     }
 
-    fun addCartEmptyData() {
-        if (cartEmptyHolderData == null) {
-            cartEmptyHolderData = CartEmptyHolderData()
-        }
-        cartEmptyHolderData?.let {
-            cartDataList.add(it)
-        }
+    fun addCartEmptyData(cartEmptyHolderData: CartEmptyHolderData) {
+        cartDataList.add(cartEmptyHolderData)
     }
 
     fun addCartRecentViewData(cartSectionHeaderHolderData: CartSectionHeaderHolderData,
