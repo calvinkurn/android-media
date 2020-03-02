@@ -86,7 +86,7 @@ class ChatBannerTalkViewHolder(itemView: View?, private val listener: Listener) 
                         imageUrl = element.productImageUrl,
                         name = element.productName,
                         price = element.productPrice,
-                        url = element.productUrl
+                        url = ""
                 )
         )
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
