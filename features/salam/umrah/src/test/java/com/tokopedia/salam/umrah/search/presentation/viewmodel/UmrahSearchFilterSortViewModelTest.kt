@@ -35,7 +35,7 @@ class UmrahSearchFilterSortViewModelTest{
     }
 
     @Test
-    fun `should return a Response Filter Sort`(){
+    fun `responseSearchFilter_SuccessGetFilter_ShowActualResult`(){
         //given
         coEvery {
             umrahSearchParammeterUseCase.executeUseCase(any())
@@ -48,7 +48,7 @@ class UmrahSearchFilterSortViewModelTest{
     }
 
     @Test
-    fun `should return a Response Error Filter Sort`(){
+    fun `responseSearchFilter_FailureGetFilter_ShowFailureResult`(){
         //given
         coEvery {
             umrahSearchParammeterUseCase.executeUseCase(any())

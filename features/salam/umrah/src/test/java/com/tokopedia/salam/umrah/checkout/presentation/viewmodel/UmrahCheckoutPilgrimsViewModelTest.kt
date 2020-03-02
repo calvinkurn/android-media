@@ -33,7 +33,7 @@ class UmrahCheckoutPilgrimsViewModelTest{
     }
 
     @Test
-    fun `should return a response Contact List`(){
+    fun `responseContactList_SuccessGetContact_ShowActualResult`(){
         //given
         coEvery {
             umrahGetContactListUseCase.execute(any(),any(),any())
@@ -46,7 +46,7 @@ class UmrahCheckoutPilgrimsViewModelTest{
     }
 
     @Test
-    fun `should return a failure Contact List`(){
+    fun `responseContactList_FailureGetContact_ShowFailureResult`(){
         //given
         coEvery {
             umrahGetContactListUseCase.execute(any(),any(),any())

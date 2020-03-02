@@ -41,7 +41,7 @@ class UmrahCheckoutViewModelTest {
     }
 
     @Test
-    fun `should return a resposnse Checkout mapper`() {
+    fun `responseCheckoutMapper_SuccessCheckoutMapper_ShowActualResult`() {
         //given
         coEvery {
             umrahCheckoutGetDataUseCase.execute(any(),any(), any(), any(), any(),any(),any(), any(), any(), any(), any())
@@ -65,7 +65,7 @@ class UmrahCheckoutViewModelTest {
     }
 
     @Test
-    fun `should return error Checkout mapper`(){
+    fun `responseCheckoutMapper_FailureCheckoutMapper_ShowFailureResult`(){
         //given
         coEvery {
             umrahCheckoutGetDataUseCase.execute(any(),any(), any(), any(), any(),any(),any(), any(), any(), any(), any())
@@ -89,7 +89,7 @@ class UmrahCheckoutViewModelTest {
 
 
     @Test
-    fun `should return a resposnse Checkout Result`() {
+    fun `responseCheckoutResult_SuccessCheckoutResult_ShowActualResult`() {
         //given
         coEvery {
             umrahCheckoutResultUseCase.execute(any(),any<UmrahCheckoutResultParams>())
@@ -106,7 +106,7 @@ class UmrahCheckoutViewModelTest {
     }
 
     @Test
-    fun `should return error Checkout Result`(){
+    fun `responseCheckoutResult_FailureCheckoutResult_ShowFailureResult`(){
         //given
         coEvery {
             umrahCheckoutResultUseCase.execute(any(),any<UmrahCheckoutResultParams>())
