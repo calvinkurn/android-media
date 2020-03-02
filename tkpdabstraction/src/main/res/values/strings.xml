@@ -44,7 +44,7 @@
 
     <string name="webview_label_menu">Menu</string>
     <string name="webview_label_menu_home">Beranda</string>
-    <string name="webview_label_menu_help">Tokopedia care</string>
+    <string name="webview_label_menu_help">Bantuan</string>
 
     <!-- app update -->
     <string name="appupdate_update">Update</string>
