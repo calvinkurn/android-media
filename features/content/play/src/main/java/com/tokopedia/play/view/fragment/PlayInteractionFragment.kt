@@ -37,6 +37,7 @@ import com.tokopedia.play.ui.pinned.PinnedComponent
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
+import com.tokopedia.play.ui.productsheet.ProductSheetComponent
 import com.tokopedia.play.ui.quickreply.QuickReplyComponent
 import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
@@ -123,6 +124,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
+    private lateinit var productSheetComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
 
@@ -148,7 +150,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
-        initComponents(view as ViewGroup)
+        initCoordinatorComponent(view as ViewGroup)
+        initComponents(view.findViewById(R.id.cl_play_interaction) as ViewGroup)
         return view
     }
 
@@ -366,6 +369,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     //region Component Initialization
+    private fun initCoordinatorComponent(container: ViewGroup) {
+        productSheetComponent = initProductSheetComponent(container)
+    }
+
     private fun initComponents(container: ViewGroup) {
         sizeContainerComponent = initSizeContainerComponent(container)
         gradientBackgroundComponent = initGradientBackgroundComponent(container)
@@ -567,6 +574,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
 
         return endLiveInfoComponent
+    }
+
+    private fun initProductSheetComponent(container: ViewGroup): UIComponent<Unit> {
+        return ProductSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
     //endregion
 
@@ -1088,6 +1099,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openProductBottomSheet() {
-
+        launch {
+            EventBusFactory.get(viewLifecycleOwner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(BottomInsetsType.BottomSheet, true))
+        }
     }
 }
