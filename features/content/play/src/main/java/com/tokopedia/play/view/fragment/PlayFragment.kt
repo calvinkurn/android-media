@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
+import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
@@ -127,6 +128,7 @@ class PlayFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
 
         observeGetChannelInfo()
+        observeSocketInfo()
         observeEventUserInfo()
         observeVideoProperty()
     }
@@ -191,6 +193,17 @@ class PlayFragment : BaseDaggerFragment() {
             when (it) {
                 is Success ->
                     PlayAnalytics.sendScreen(channelId, playViewModel.isLive)
+            }
+        })
+    }
+
+    private fun observeSocketInfo() {
+        playViewModel.observableSocketInfo.observe(viewLifecycleOwner, Observer {
+            when(it) {
+                is PlaySocketInfo.Reconnect ->
+                    PlayAnalytics.errorState(channelId, getString(R.string.play_message_socket_reconnect), playViewModel.isLive)
+                is PlaySocketInfo.Error ->
+                    PlayAnalytics.errorState(channelId, String.format(getString(R.string.play_message_socket_error), it.throwable.localizedMessage), playViewModel.isLive)
             }
         })
     }
