@@ -166,25 +166,49 @@
             android:id="@+id/container_pay_at_hotel_shadow"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_16"
-            app:layout_constraintStart_toStartOf="@+id/container_pay_at_hotel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/rating_counter"
             android:layout_marginTop="@dimen/dp_16"
             android:visibility="gone"
-            />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/container_pay_at_hotel"
+            app:layout_constraintTop_toBottomOf="@+id/rating_counter" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/hotel_property_item_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:background="@drawable/bg_hotel_property_tag"
+            android:paddingLeft="@dimen/dp_4"
+            android:paddingTop="@dimen/dp_2"
+            android:paddingRight="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_2"
+            android:singleLine="true"
+            android:textColor="@color/Red_R400"
+            android:visibility="gone"
+            app:fontSize="micro"
+            app:layout_constraintEnd_toEndOf="@+id/title"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintLeft_toLeftOf="@+id/title"
+            app:layout_constraintRight_toRightOf="@+id/title"
+            app:layout_constraintStart_toStartOf="@+id/title"
+            app:layout_constraintTop_toBottomOf="@+id/container_pay_at_hotel_shadow"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Promo Login"
+            tools:visibility="visible" />
 
         <LinearLayout
             android:id="@+id/container_price_origin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_4"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="@+id/title"
             app:layout_constraintHorizontal_bias="1"
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintRight_toRightOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
-            app:layout_constraintTop_toBottomOf="@+id/container_pay_at_hotel_shadow">
+            app:layout_constraintTop_toBottomOf="@+id/hotel_property_item_tag">
 
 
             <com.tokopedia.design.component.TextViewCompat
@@ -199,19 +223,18 @@
                 tools:text="Sisa 2 kamar"
                 tools:visibility="visible" />
 
-            <com.tokopedia.design.component.TextViewCompat
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/price_origin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_4"
-
                 android:ellipsize="end"
                 android:singleLine="true"
                 android:visibility="gone"
-                app:fontSize="micro"
-                app:textViewTheme="lightSecondary"
+                app:typographyType="body_3"
+                android:textColor="@color/Neutral_N700_44"
                 tools:text="Rp20.800.0000"
-                tools:visibility="gone" />
+                tools:visibility="visible" />
 
         </LinearLayout>
 

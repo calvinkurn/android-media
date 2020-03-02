@@ -226,7 +226,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         }
     }
 
-    private fun showErrorView(e : Throwable) {
+    private fun showErrorView(e: Throwable) {
         if (!isHotelDetailSuccess && !isHotelReviewSuccess && !isRoomListSuccess) {
             container_content.visibility = View.GONE
             container_error.visibility = View.VISIBLE
@@ -501,6 +501,12 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
             roomPrice = data.first().roomPrice.roomPrice
             roomPriceAmount = round(data.first().roomPrice.priceAmount).toLong().toString()
             tv_hotel_price.text = roomPrice
+
+            var hotelDetailTag = data.first().additionalPropertyInfo.hotelTagging
+            if (hotelDetailTag.isNotEmpty()) {
+                hotel_detail_tag.visibility = View.VISIBLE
+                hotel_detail_tag.text = hotelDetailTag
+            } else hotel_detail_tag.visibility = View.INVISIBLE
 
             if (data[0].additionalPropertyInfo.isEnabled) {
                 isAvailable = true
