@@ -9,10 +9,6 @@ interface CarouselProductCardListener {
         fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
     }
 
-    interface OnItemLongClickListener {
-        fun onItemLongClick(productCardModel: ProductCardModel, adapterPosition: Int)
-    }
-
     interface OnItemImpressedListener {
         fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
         fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder?
@@ -20,9 +16,5 @@ interface CarouselProductCardListener {
 
     interface OnItemAddToCartListener {
         fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
-    }
-
-    interface OnWishlistItemClickListener {
-        fun onWishlistItemClick(productCardModel: ProductCardModel, adapterPosition: Int)
     }
 }

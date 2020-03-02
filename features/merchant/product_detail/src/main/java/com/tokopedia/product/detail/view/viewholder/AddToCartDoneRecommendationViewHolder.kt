@@ -92,11 +92,4 @@ class AddToCartDoneRecommendationViewHolder(
             visible()
         }
     }
-
-    fun updateWishlist(position: Int, isAddWishlist: Boolean) {
-        with(itemView) {
-            product_recom.updateWishlist(position, isAddWishlist)
-        }
-    }
-
 }

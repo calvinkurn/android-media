@@ -27,12 +27,6 @@ internal class CarouselProductCardAdapter: ListAdapter<CarouselProductCardModel,
         super.onViewRecycled(holder)
     }
 
-    @Deprecated("Cannot update wishlist anymore")
-    fun updateWishlist(index: Int, isWishlist: Boolean){
-        getItem(index).productCardModel.isWishlisted = isWishlist
-        notifyItemChanged(index)
-    }
-
     class ProductModelDiffUtil : DiffUtil.ItemCallback<CarouselProductCardModel>() {
         override fun areItemsTheSame(oldItem: CarouselProductCardModel, newItem: CarouselProductCardModel): Boolean {
             return oldItem.productCardModel.productName == newItem.productCardModel.productName

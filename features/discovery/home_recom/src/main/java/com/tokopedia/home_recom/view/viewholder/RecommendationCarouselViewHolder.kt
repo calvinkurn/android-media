@@ -93,8 +93,4 @@ class RecommendationCarouselViewHolder(val view: View) : AbstractViewHolder<Reco
 
         )
     }
-
-    fun updateWishlist(position: Int, isWishlist: Boolean){
-        recyclerView.updateWishlist(position, isWishlist)
-    }
 }

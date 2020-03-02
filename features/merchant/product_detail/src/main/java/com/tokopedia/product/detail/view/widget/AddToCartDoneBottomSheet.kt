@@ -206,30 +206,8 @@ class AddToCartDoneBottomSheet :
         dismiss()
     }
 
-    private fun updateWishlist(isWishlist: Boolean, position: Int) {
-        if (recyclerView.findViewHolderForAdapterPosition(lastAdapterPosition) is AddToCartDoneRecommendationViewHolder) {
-            (recyclerView.findViewHolderForAdapterPosition(lastAdapterPosition) as AddToCartDoneRecommendationViewHolder).updateWishlist(
-                    position,
-                    isWishlist
-            )
-        }
-    }
-
     override fun state(): BottomSheetsState {
         return BottomSheetsState.FLEXIBLE
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FROM_PDP) {
-            data?.let {
-                val wishlistStatusFromPdp = data.getBooleanExtra(WISHLIST_STATUS_IS_WISHLIST,
-                        false)
-                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                updateWishlist(wishlistStatusFromPdp, position)
-            }
-            lastAdapterPosition = -1
-        }
     }
 
     override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {
