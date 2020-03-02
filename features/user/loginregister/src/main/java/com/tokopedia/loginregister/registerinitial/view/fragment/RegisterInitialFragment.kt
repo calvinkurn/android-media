@@ -17,7 +17,6 @@ import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.*
 import com.facebook.CallbackManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -28,13 +27,13 @@ import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
@@ -63,7 +62,6 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
@@ -284,7 +282,8 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
             if (isShowBanner) {
                 context?.let {
                     registerAnalytics.eventViewBanner()
-                    ImageHandler.LoadImage(bannerRegister, BANNER_REGISTER_URL)
+                    ImageHandler.loadImage(it, bannerRegister, BANNER_REGISTER_URL,
+                            R.drawable.banner_login_register_placeholder)
                     bannerRegister.visibility = View.VISIBLE
                 }
             } else if (isFromAtc() && isShowTicker) {
@@ -491,18 +490,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onFailedGetProvider(throwable: Throwable) {
         dismissLoadingDiscover()
-
-        ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
-            override fun onForbidden() {
-                onGoToForbiddenPage()
-            }
-
-            override fun onError(errorMessage: String) {
-                NetworkErrorHelper.createSnackbarWithAction(activity,
-                        errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
-                loginButton.isEnabled = false
-            }
-        }, throwable, context)
+        val forbiddenMessage = context?.getString(
+                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        if (errorMessage == forbiddenMessage){
+            onGoToForbiddenPage()
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity,
+                    errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
+            loginButton.isEnabled = false
+        }
     }
 
     private fun onSuccessGetFacebookCredential(facebookCredentialData: FacebookCredentialData) {
@@ -652,7 +649,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterCheck(throwable: Throwable) {
-        val messageError = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+        val messageError = ErrorHandler.getErrorMessage(context, throwable)
         registerAnalytics.trackFailedClickSignUpButton(messageError)
         partialRegisterInputView.onErrorValidate(messageError)
         phoneNumber = ""
@@ -665,7 +662,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedActivateUser(throwable: Throwable) {
-        throwable.message?.let { onErrorRegister(com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)) }
+        throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
     }
 
     //Flow should not be possible

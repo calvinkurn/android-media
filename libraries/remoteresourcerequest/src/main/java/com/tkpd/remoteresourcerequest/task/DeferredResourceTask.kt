@@ -15,6 +15,7 @@ class DeferredResourceTask(
         private val resourceDB: ResourceDB
 ) :
         ImageDecodeRunnable.TaskDecodeProperties, ResourceDownloadRunnable.TaskDownloadProperties {
+    var isRequestedFromWorker: Boolean = false
     private var mDecodeRunnable: Runnable? = null
 
     var mDownloadRunnable: Runnable? = null

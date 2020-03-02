@@ -96,7 +96,8 @@ class NormalCheckoutTracking {
         addComponentTracker(mapEvent, productInfo, layoutName)
     }
 
-    fun eventClickAddToCartInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
+    fun eventClickAddToCartInVariant(irisSessionId: String,
+                                     originalProductInfoAndVariant: ProductInfoAndVariant?,
                                      selectedVariantId: String,
                                      selectedProductInfo: ProductInfo,
                                      qty: Int,
@@ -113,7 +114,9 @@ class NormalCheckoutTracking {
                                      customEventAction: String,
                                      layoutName: String
     ) {
-        eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
+        eventClickAddToCartOrBuyInVariant(
+                irisSessionId,
+                originalProductInfoAndVariant,
                 "click - tambah ke keranjang on variants page",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
@@ -121,7 +124,9 @@ class NormalCheckoutTracking {
                 customEventLabel, customEventAction)
     }
 
-    fun eventClickBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
+    fun eventClickBuyInVariant(
+                              irisSessionId: String,
+                               originalProductInfoAndVariant: ProductInfoAndVariant?,
                                selectedVariantId: String,
                                selectedProductInfo: ProductInfo,
                                qty: Int,
@@ -137,7 +142,8 @@ class NormalCheckoutTracking {
                                customEventLabel: String,
                                customEventAction: String,
                                layoutName: String?) {
-        eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
+        eventClickAddToCartOrBuyInVariant(irisSessionId,
+                originalProductInfoAndVariant,
                 "click - beli on variants page",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
@@ -145,7 +151,8 @@ class NormalCheckoutTracking {
                 customEventLabel, customEventAction, layoutName ?: "")
     }
 
-    fun eventClickBuyTradeIn(originalProductInfoAndVariant: ProductInfoAndVariant?,
+    fun eventClickBuyTradeIn(irisSessionId: String,
+                             originalProductInfoAndVariant: ProductInfoAndVariant?,
                              selectedVariantId: String,
                              selectedProductInfo: ProductInfo,
                              qty: Int,
@@ -158,7 +165,9 @@ class NormalCheckoutTracking {
                              customEventLabel: String,
                              layoutName: String) {
         isTrackTradeIn = true
-        eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant,
+        eventClickAddToCartOrBuyInVariant(
+                irisSessionId,
+                originalProductInfoAndVariant,
                 "click beli sekarang",
                 selectedVariantId, selectedProductInfo,
                 qty, shopId, shopType, shopName, cartId,
@@ -166,7 +175,8 @@ class NormalCheckoutTracking {
                 "", false, customEventLabel, "", layoutName)
     }
 
-    private fun eventClickAddToCartOrBuyInVariant(originalProductInfoAndVariant: ProductInfoAndVariant?,
+    private fun eventClickAddToCartOrBuyInVariant(irisSessionId:String,
+                                                  originalProductInfoAndVariant: ProductInfoAndVariant?,
                                                   actionLabel: String,
                                                   selectedVariantId: String,
                                                   selectedProductInfo: ProductInfo,
@@ -225,6 +235,7 @@ class NormalCheckoutTracking {
                         "eventCategory" to category,
                         "eventAction" to eventAction,
                         "eventLabel" to eventLabel,
+                        "sessionIris" to irisSessionId,
                         KEY_PRODUCT_ID to selectedProductInfo.basic.id,
                         "layout" to "layout:${layoutName};catName:${originalProductInfoAndVariant.productInfo.category.name};catId:${originalProductInfoAndVariant.productInfo.category.id};",
                         "component" to "",
