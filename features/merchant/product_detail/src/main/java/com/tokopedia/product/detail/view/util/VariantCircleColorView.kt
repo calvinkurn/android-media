@@ -85,7 +85,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun drawInnerCircle(canvas: Canvas?) {
-        if (innerCirclePaint.color == R.color.white) {
+        if (innerCirclePaint.color == Color.parseColor("#fffff")) {
             canvas?.drawCircle(
                     width.toFloat() / 2,
                     height.toFloat() / 2,
