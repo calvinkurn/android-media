@@ -1242,13 +1242,13 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private fun setDynamicBannerView(dynamicBannerDataModel: DynamicBannerDataModel) {
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.let {
-                registerAnalytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
                 ImageUtils.loadImage(
                         imageView = bannerRegister,
                         url = dynamicBannerDataModel.banner.imgUrl,
                         imageLoaded = {
                             if (it) {
                                 bannerRegister.show()
+                                registerAnalytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
                             } else {
                                 bannerRegister.hide()
                                 showTicker()
