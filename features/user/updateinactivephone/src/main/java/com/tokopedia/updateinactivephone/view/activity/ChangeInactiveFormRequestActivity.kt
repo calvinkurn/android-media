@@ -16,13 +16,13 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IS_DUPLICATE_REQUEST
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USER_EMAIL
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.USER_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.OLD_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.USER_ID
-import com.tokopedia.updateinactivephone.view.customview.UpdateInactivePhoneInfoBottomSheet
 import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
 import com.tokopedia.updateinactivephone.view.fragment.SelectImageNewPhoneFragment
 import com.tokopedia.updateinactivephone.view.fragment.UpdateNewPhoneEmailFragment
@@ -46,7 +46,7 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<App
     private var updateNewPhoneEmailFragment: UpdateNewPhoneEmailFragment? = null
     private var newEmail: String? = null
     private var newPhoneNumber: String? = null
-    private var updateInactivePhoneInfoBottomSheet: UpdateInactivePhoneInfoBottomSheet? = null
+    private var updateInactivePhoneInfoBottomSheet: BottomSheetUnify? = null
 
     override fun getNewFragment(): Fragment? {
         return SelectImageNewPhoneFragment.instance
@@ -66,7 +66,7 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<App
         super.onCreate(savedInstanceState)
         initInjector()
         presenter.attachView(this)
-        updateInactivePhoneInfoBottomSheet = UpdateInactivePhoneInfoBottomSheet(this)
+        updateInactivePhoneInfoBottomSheet = BottomSheetUnify()
     }
 
     private fun initInjector() {
@@ -114,7 +114,7 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<App
         val infoIcon = toolbar.findViewById<ImageView>(R.id.info_icon)
         infoIcon.setOnClickListener { view ->
             updateInactivePhoneInfoBottomSheet?.setTitle("Info")
-            updateInactivePhoneInfoBottomSheet?.show()
+            updateInactivePhoneInfoBottomSheet?.show(supportFragmentManager, SelectImageNewPhoneFragment::class.java.name)
         }
 
         toolbar.setNavigationOnClickListener { onBackPressed() }

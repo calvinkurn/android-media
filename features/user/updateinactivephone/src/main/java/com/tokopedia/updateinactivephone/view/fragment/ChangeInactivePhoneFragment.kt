@@ -23,7 +23,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.analytics.ScreenTracking
 import com.tokopedia.core.app.MainApplication
 import com.tokopedia.core.base.di.component.AppComponent
-import com.tokopedia.design.component.Dialog
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.view.activity.ChangeInactiveFormRequestActivity
 import com.tokopedia.updateinactivephone.view.activity.ChangeInactivePhoneRequestSubmittedActivity
@@ -164,23 +164,21 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     }
 
     override fun onPhoneRegisteredWithEmail() {
-        val dialog = Dialog(activity, Dialog.Type.PROMINANCE)
-        dialog.setTitle(getString(R.string.registered_email_dialog_title))
-        dialog.setDesc(getString(R.string.registered_email_dialog_message))
-        dialog.setBtnOk(getString(R.string.drawer_title_login))
-        dialog.setOnOkClickListener { v ->
-            UpdateInactivePhoneEventTracking.eventLoginDialogClick(v.context)
+        val dialog = context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(getString(R.string.registered_email_dialog_title))
+        dialog?.setDescription(getString(R.string.registered_email_dialog_message))
+        dialog?.setPrimaryCTAText(getString(R.string.drawer_title_login))
+        dialog?.setPrimaryCTAClickListener {
+            context?.let { UpdateInactivePhoneEventTracking.eventLoginDialogClick(it) }
             RouteManager.route(context, ApplinkConst.LOGIN)
+            Unit
         }
-        dialog.setBtnCancel(getString(R.string.title_cancel))
-        dialog.setOnCancelClickListener { v ->
-            UpdateInactivePhoneEventTracking.eventCancelDialogClick(v.context)
+        dialog?.setSecondaryCTAText(getString(R.string.title_cancel))
+        dialog?.setSecondaryCTAClickListener {
+            context?.let { UpdateInactivePhoneEventTracking.eventCancelDialogClick(it) }
             dialog.dismiss()
         }
-        dialog.show()
-
-        dialog.btnCancel.setTextColor(resources.getColor(R.color.black_54))
-        dialog.btnOk.setTextColor(resources.getColor(R.color.tkpd_main_green))
+        dialog?.show()
     }
 
     override fun onPhoneDuplicateRequest() {
