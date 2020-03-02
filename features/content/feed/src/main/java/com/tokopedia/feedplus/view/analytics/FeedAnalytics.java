@@ -45,6 +45,8 @@ public class FeedAnalytics {
     private static final String FORMAT_2_VALUE = "%s - %s";
     private static final String FORMAT_4_VALUE = "%s - %s - %s - %s";
 
+    private static final String POST_FORMAT_4_VALUE = "post - %s - %s - %s - %s";
+
     //region Content Feed
     private static final String CONTENT_FEED = "content feed";
     private static final String CONTENT_FEED_TIMELINE = "content feed timeline";
@@ -419,7 +421,7 @@ public class FeedAnalytics {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 getEventEcommerceClick(
                         "click",
-                        String.format(FORMAT_4_VALUE,activityName, mediaType, postId, recomId),
+                        String.format(POST_FORMAT_4_VALUE,activityName, mediaType, postId, recomId),
                         promotionList,
                         userId
                 )
