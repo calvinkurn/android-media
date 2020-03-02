@@ -37,7 +37,7 @@ class ProductCheckoutViewHolder(
         }
     }
 
-    override fun bindProductClickTrack(element: NotificationItemViewBean) {
+    override fun bindProductCardClick(element: NotificationItemViewBean) {
         listener.getAnalytic().trackProductCheckoutCardClick(element)
     }
 
