@@ -52,19 +52,21 @@ class PromoListHeaderUiModel(
     companion object {
 
         fun clone(oldData: PromoListHeaderUiModel): PromoListHeaderUiModel {
-            return PromoListHeaderUiModel(
-                    uiData = UiData().apply {
-                        title = oldData.uiData.title
-                        subTitle = oldData.uiData.subTitle
-                        promoType = oldData.uiData.promoType
-                        identifierId = oldData.uiData.identifierId
-                        tmpPromoItemList = oldData.uiData.tmpPromoItemList
-                    },
-                    uiState = UiState().apply {
-                        isEnabled = oldData.uiState.isEnabled
-                        isCollapsed = oldData.uiState.isCollapsed
-                    }
-            )
+//            return PromoListHeaderUiModel(
+//                    uiData = UiData().apply {
+//                        title = oldData.uiData.title
+//                        subTitle = oldData.uiData.subTitle
+//                        promoType = oldData.uiData.promoType
+//                        identifierId = oldData.uiData.identifierId
+//                        tmpPromoItemList = oldData.uiData.tmpPromoItemList
+//                    },
+//                    uiState = UiState().apply {
+//                        isEnabled = oldData.uiState.isEnabled
+//                        isCollapsed = oldData.uiState.isCollapsed
+//                    }
+//            )
+
+            return oldData
         }
 
     }
