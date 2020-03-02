@@ -53,12 +53,6 @@ class MainSliceProvider : SliceProvider() {
     var loadString : String ? = "Loading..."
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
-       // return when (sliceUri.path) {
-//            "/get_invoice_v1" -> createGetInvoiceSlice(sliceUri)
-//            "/get_invoice_v2" -> createGetInvoiceV2Slice(sliceUri)
-            //"/get_invoice/" -> createGetInvoiceV3Slice(sliceUri)
-           // else -> null
-        //}
         return createGetInvoiceV3Slice(sliceUri)
     }
 
@@ -92,9 +86,6 @@ class MainSliceProvider : SliceProvider() {
                 RouteManager.getIntent(contextNonNull,ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME),
                 0
         )
-//        if (sliceUri.getQueryParameter("serviceName") != null) {
-//            return null
-//        } else {
             if (recommendationModel == null) {
                     getData(sliceUri)
                     return list(contextNonNull, sliceUri, INFINITY) {
@@ -153,7 +144,6 @@ class MainSliceProvider : SliceProvider() {
                     Timber.d("P2#ACTION_SLICE_RECHARGE_IMPRESSION#$trackingImpression")
                     }
                 }
-            //}
         }
     }
 
