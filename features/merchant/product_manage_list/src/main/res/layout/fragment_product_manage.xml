@@ -18,7 +18,7 @@
             android:id="@+id/topAdsWidgetFreeClaim"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp"
+            android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
             android:visibility="gone"
             app:layout_scrollFlags="scroll"
             tools:visibility="visible" />
@@ -27,15 +27,15 @@
             android:id="@+id/search_input_view_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_14"
+            android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
             app:layout_scrollFlags="scroll|snap|enterAlways"/>
 
         <LinearLayout
-            android:paddingRight="17dp"
-            android:paddingEnd="17dp"
-            android:paddingLeft="17dp"
-            android:paddingStart="17dp"
-            android:layout_marginBottom="17dp"
+            android:paddingRight="@dimen/product_manage_container_spacing"
+            android:paddingEnd="@dimen/product_manage_container_spacing"
+            android:paddingLeft="@dimen/product_manage_container_spacing"
+            android:paddingStart="@dimen/product_manage_container_spacing"
+            android:layout_marginBottom="@dimen/product_manage_container_spacing"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -61,10 +61,10 @@
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
-        android:paddingRight="17dp"
-        android:paddingEnd="17dp"
-        android:paddingLeft="17dp"
-        android:paddingStart="17dp"
+        android:paddingRight="@dimen/product_manage_container_spacing"
+        android:paddingEnd="@dimen/product_manage_container_spacing"
+        android:paddingLeft="@dimen/product_manage_container_spacing"
+        android:paddingStart="@dimen/product_manage_container_spacing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
