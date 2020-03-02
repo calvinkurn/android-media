@@ -5,7 +5,8 @@ import android.view.View
 import com.db.williamchart.Tools
 import com.db.williamchart.base.BaseWilliamChartConfig
 import com.db.williamchart.base.BaseWilliamChartModel
-import com.db.williamchart.model.LineSet
+import com.tokopedia.sellerhome.view.widget.linegraph.SellerHomeDataSetConfig
+import com.tokopedia.sellerhome.view.widget.linegraph.SellerHomeLineGraphConfig
 import com.db.williamchart.renderer.StringFormatRenderer
 import com.db.williamchart.tooltip.Tooltip
 import com.db.williamchart.util.GMStatisticUtil
@@ -22,7 +23,6 @@ import com.tokopedia.sellerhome.view.model.LineGraphWidgetUiModel
 import kotlinx.android.synthetic.main.sah_line_graph_widget.view.*
 import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_line_graph_widget_loading.view.*
-import java.lang.NumberFormatException
 
 /**
  * Created By @ilhamsuaib on 2020-01-15
@@ -155,17 +155,19 @@ class LineGraphViewHolder(
         val lineGraphConfig: BaseWilliamChartConfig = getLineGraphConfig(lineGraphModel)
         with(lineGraphConfig) {
             setDotDrawable(itemView.context.getResDrawable(R.drawable.sah_oval_chart_dot))
-            setLineSet(LineSet().apply {
-                setDotsStrokeColor(itemView.context.getResColor(R.color.Green_G400))
-            })
+            setDotsStrokeColor(itemView.context.getResColor(R.color.Green_G400))
             buildChart(itemView.lineGraphView)
         }
     }
 
     private fun getLineGraphConfig(graphModel: BaseWilliamChartModel): BaseWilliamChartConfig {
-        return Tools.getSellerHomeLineGraphWidgetConfig(
-                itemView.lineGraphView, graphModel, getTooltip(), CustomTooltipConfiguration()
-        )
+        val chartMarginTop = (itemView.lineGraphView.layoutParams.height / 3) - 20
+        val lineGraphConfig = SellerHomeLineGraphConfig().apply {
+            setMarginRight(15)
+            setMarginTop(chartMarginTop)
+        }
+        return Tools.getCommonWilliamChartConfig(itemView.lineGraphView, graphModel,
+                SellerHomeDataSetConfig(), getTooltip(), CustomTooltipConfiguration(), lineGraphConfig)
     }
 
     private fun getTooltip(): Tooltip {
