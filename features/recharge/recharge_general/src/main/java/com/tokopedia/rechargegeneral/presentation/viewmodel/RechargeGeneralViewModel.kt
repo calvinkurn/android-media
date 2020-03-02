@@ -32,46 +32,40 @@ class RechargeGeneralViewModel  @Inject constructor(
     val productList : LiveData<Result<RechargeGeneralProductData>>
         get() = _productList
 
-    lateinit var operatorClusterQuery: String
-    lateinit var productListQuery: String
+    fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
+                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
-    fun getOperatorCluster(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
-        if (::operatorClusterQuery.isInitialized) {
-            launchCatchError(block = {
-                val data = withContext(Dispatchers.Default) {
-                    val graphqlRequest = GraphqlRequest(operatorClusterQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
-                    val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
-                    graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-                }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
-
-                _operatorCluster.postValue(Success(data.response))
-            }) {
-                _operatorCluster.postValue(Fail(it))
-            }
+            _operatorCluster.postValue(Success(data.response))
+        }) {
+            _operatorCluster.postValue(Fail(it))
         }
     }
 
-    fun getProductList(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
-        if (::productListQuery.isInitialized) {
-            launchCatchError(block = {
-                val data = withContext(Dispatchers.Default) {
-                    val graphqlRequest = GraphqlRequest(productListQuery, RechargeGeneralProductData.Response::class.java, mapParams)
-                    val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
-                    graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-                }.getSuccessData<RechargeGeneralProductData.Response>()
+    fun getProductList(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralProductData.Response::class.java, mapParams)
+                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<RechargeGeneralProductData.Response>()
 
-                _productList.postValue(Success(data.response))
-            }) {
-                _productList.postValue(Fail(it))
-            }
+            _productList.postValue(Success(data.response))
+        }) {
+            _productList.postValue(Fail(it))
         }
     }
 
-    fun createParams(menuID: Int, operator: Int? = null): Map<String, Any> {
-        val params: MutableMap<String, Any> = mutableMapOf()
-        params[PARAM_MENU_ID] = menuID
-        operator?.let { opr -> params[PARAM_OPERATOR] = opr.toString() }
-        return params
+    fun createOperatorClusterParams(menuID: Int): Map<String, Int> {
+        return mapOf(PARAM_MENU_ID to menuID)
+    }
+
+    fun createProductListParams(menuID: Int, operator: Int): Map<String, Any> {
+        return mapOf(PARAM_MENU_ID to menuID, PARAM_OPERATOR to operator.toString())
     }
 
     companion object {

@@ -128,10 +128,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             viewModel = viewModelProvider.get(RechargeGeneralViewModel::class.java)
             sharedViewModel = viewModelProvider.get(SharedRechargeGeneralViewModel::class.java)
 
-            // Setup viewmodel queries
-            viewModel.operatorClusterQuery = GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group)
-            viewModel.productListQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input)
-
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
             val savedEnquiryData: TopupBillsEnquiry? = saveInstanceManager!!.get(EXTRA_PARAM_ENQUIRY_DATA, TopupBillsEnquiry::class.java)
             if (savedEnquiryData != null) enquiryData = savedEnquiryData
@@ -629,7 +625,10 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private fun renderClientNumber(number: String) {
         inputData[PARAM_CLIENT_NUMBER] = number
         if (adapter.data.isNotEmpty()) {
-            val clientNumberInput: RechargeGeneralProductInput? = adapter.data.find { it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER } as? RechargeGeneralProductInput
+            val clientNumberInput: RechargeGeneralProductInput? =
+                adapter.data.find {
+                    it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER
+                } as? RechargeGeneralProductInput
             clientNumberInput?.apply {
                 value = number
                 style = INPUT_TYPE_FAVORITE_NUMBER
@@ -667,11 +666,17 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun getOperatorCluster(menuId: Int) {
-        viewModel.getOperatorCluster(viewModel.createParams(menuId))
+        viewModel.getOperatorCluster(
+                GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group),
+                viewModel.createOperatorClusterParams(menuId)
+        )
     }
 
     private fun getProductList(menuId: Int, operator: Int) {
-        viewModel.getProductList(viewModel.createParams(menuId, operator))
+        viewModel.getProductList(
+                GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                viewModel.createProductListParams(menuId, operator)
+        )
     }
 
     override fun onFinishInput(label: String, input: String, position: Int, isManual: Boolean) {
