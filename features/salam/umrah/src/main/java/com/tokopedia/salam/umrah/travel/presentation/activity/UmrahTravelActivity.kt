@@ -19,9 +19,26 @@ import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelFragmen
 class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelComponent>{
     private var slugName: String = ""
 
-    override fun getMenuButton() = R.menu.umrah_base_menu_white
-    override fun getShareLink(): String = getString(R.string.umrah_travel_link_share,slugName)
+    override fun getMenuButton(): Int = R.menu.umrah_base_menu
+    override fun onClickShare() {
+        if (fragment is TravelListener) {
+            (fragment as TravelListener).shareTravelLink()
+        }
+    }
 
+    override fun onClickSalam() {
+        if (fragment is TravelListener) {
+            (fragment as TravelListener).clickSalam()
+        }
+    }
+
+    override fun onClickHelp() {
+        if (fragment is TravelListener) {
+            (fragment as TravelListener).clickHelp()
+        }
+    }
+
+    override fun shouldShowMenuWhite(): Boolean = false
 
     override fun getNewFragment(): Fragment?= UmrahTravelFragment.getInstance(slugName)
 
@@ -50,5 +67,19 @@ class UmrahTravelActivity : UmrahBaseActivity(), HasComponent<UmrahTravelCompone
         fun createIntent(context: Context, slugName:String): Intent =
                 Intent(context, UmrahTravelActivity::class.java)
                         .putExtra(EXTRA_SLUG_NAME, slugName)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (fragment is TravelListener) {
+            (fragment as TravelListener).onBackPressed()
+        }
+    }
+
+    interface TravelListener {
+        fun onBackPressed()
+        fun shareTravelLink()
+        fun clickHelp()
+        fun clickSalam()
     }
 }

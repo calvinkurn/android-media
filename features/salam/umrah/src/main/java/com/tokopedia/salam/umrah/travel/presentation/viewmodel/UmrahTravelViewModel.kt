@@ -22,7 +22,7 @@ class UmrahTravelViewModel  @Inject constructor(private val umrahTravelUseCase: 
     val travelAgentData: LiveData<Result<UmrahTravelAgentBySlugNameEntity>>
         get() = mutableTravelAgentResult
 
-    fun requestPdpData(rawQuery: String, slugName: String) {
+    fun requestTravelData(rawQuery: String, slugName: String) {
         launch {
             val result = umrahTravelUseCase.executeUsecase(rawQuery, slugName)
             mutableTravelAgentResult.value = result

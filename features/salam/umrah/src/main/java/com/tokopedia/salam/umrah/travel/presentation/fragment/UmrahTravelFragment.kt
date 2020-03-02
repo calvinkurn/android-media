@@ -8,37 +8,43 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
-import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
+import com.tokopedia.salam.umrah.common.analytics.*
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahItemWidgetModel
-import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
-import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFragment
+import com.tokopedia.salam.umrah.common.util.UmrahShare
 import com.tokopedia.salam.umrah.travel.data.UmrahTravelAgentBySlugNameEntity
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
+import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelActivity
 import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelActivity.Companion.EXTRA_SLUG_NAME
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelAgentViewPagerAdapter
 import com.tokopedia.salam.umrah.travel.presentation.viewmodel.UmrahTravelViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.bottom_sheet_umrah_travel_agent_permission.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_travel_agent.*
-import java.util.*
+import kotlinx.android.synthetic.main.fragment_umrah_travel_agent.view.*
+import kotlinx.android.synthetic.main.widget_umrah_item.*
 import javax.inject.Inject
 
 /**
  * @author by Firman on 22/1/20
  */
 
-class UmrahTravelFragment: BaseDaggerFragment(){
+class UmrahTravelFragment : BaseDaggerFragment(), UmrahTravelActivity.TravelListener {
 
     @Inject
     lateinit var umrahTravelViewModel: UmrahTravelViewModel
@@ -49,10 +55,16 @@ class UmrahTravelFragment: BaseDaggerFragment(){
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    var travelAgent: TravelAgent = TravelAgent()
+    var positionBefore: Int = 0
+
     private lateinit var umrahTravelAgentViewPagerAdapter: UmrahTravelAgentViewPagerAdapter
 
+    lateinit var swipeToRefresh : SwipeRefreshLayout
+    lateinit var performanceMonitoring: PerformanceMonitoring
 
-    private var slugName : String ? = ""
+    private var slugName: String? = ""
+    private val OFF_SCREEN_LIMIT = 3
 
     override fun getScreenName(): String = getString(R.string.umrah_travel_agent_title)
 
@@ -60,14 +72,20 @@ class UmrahTravelFragment: BaseDaggerFragment(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         slugName = savedInstanceState?.getString(EXTRA_SLUG_NAME)
                 ?: arguments?.getString(EXTRA_SLUG_NAME) ?: ""
     }
-    private fun requestData(){
+
+    private fun requestData() {
         slugName?.let {
-            umrahTravelViewModel.requestPdpData(
+            umrahTravelViewModel.requestTravelData(
                     GraphqlHelper.loadRawString(resources, R.raw.gql_query_umrah_travel_by_slugname), it)
         }
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_TRAVEL_MAIN_PAGE_PERFORMANCE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -75,19 +93,23 @@ class UmrahTravelFragment: BaseDaggerFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupSwipeToRefresh(view)
         requestData()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        umrahTravelViewModel.travelAgentData.observe(this, Observer{
+        umrahTravelViewModel.travelAgentData.observe(this, Observer {
             when (it) {
-                is Success ->{
+                is Success -> {
+                    travelAgent = it.data.umrahTravelAgentBySlug
                     setupAll(it.data)
+                    performanceMonitoring.stopTrace()
                 }
-                is Fail ->{
-                    NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png){
+                is Fail -> {
+                    performanceMonitoring.stopTrace()
+                    NetworkErrorHelper.showEmptyState(context, view?.rootView, it.throwable.message, null, null, R.drawable.umrah_img_empty_search_png) {
                         requestData()
                     }
                 }
@@ -97,7 +119,7 @@ class UmrahTravelFragment: BaseDaggerFragment(){
         })
     }
 
-    companion object{
+    companion object {
         fun getInstance(slugName: String) =
                 UmrahTravelFragment().also {
                     it.arguments = Bundle().apply {
@@ -106,39 +128,102 @@ class UmrahTravelFragment: BaseDaggerFragment(){
                 }
 
         const val REQUEST_CODE_LOGIN = 400
+        const val EXTRA_SLUGNAME = "EXTRA_SLUGNAME"
+
+        const val POSITION_PRODUCT = 0
+        const val POSITION_GALLERY = 1
+        const val POSITION_INFO = 2
+
+        const val UMRAH_TRAVEL_MAIN_PAGE_PERFORMANCE = "sl_umrah_travel_agent_info"
     }
 
+    private fun setupSwipeToRefresh(view: View) {
+        swipeToRefresh = view.umrah_travel_swipe_to_refresh
+        swipeToRefresh.setColorSchemeColors(resources.getColor(com.tokopedia.unifyprinciples.R.color.Green_G600))
+        swipeToRefresh.setOnRefreshListener {
+            initializePerformance()
+            hideLayout()
+            swipeToRefresh.isRefreshing = true
+            requestData()
+        }
+    }
 
-    private fun showLayout(){
+    private fun enableSwipeToRefresh() {
+        swipeToRefresh.isRefreshing = false
+        swipeToRefresh.isEnabled = true
+    }
+
+    private fun showLayout() {
         container_umrah_travel_shimmering.gone()
         container_umrah_travel.show()
     }
 
-    private fun hideLayout(){
+    private fun hideLayout() {
         container_umrah_travel_shimmering.show()
         container_umrah_travel.gone()
     }
 
-    private fun setupAll(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
+    private fun setupAll(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity) {
         showLayout()
         setupTravelAgent(travelAgentBySlugName.umrahTravelAgentBySlug)
         setupViewPager(travelAgentBySlugName)
-        setupFAB()
+        setupChat()
+        enableSwipeToRefresh()
     }
 
-    private fun setupFAB(){
+    private fun setupChat() {
         btn_umrah_travel_contact.setOnClickListener {
+            umrahTrackingUtil.umrahTravelAgentClickHubungiTravel(getEventCategoryTracking(getCurrentPositionViewPager()))
             checkChatSession()
         }
     }
 
-    private fun setupViewPager(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity){
-        umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager,travelAgentBySlugName)
-        vp_umrah_travel_agent.adapter = umrahTravelAgentViewPagerAdapter
-        tl_umrah_travel_agent.setupWithViewPager(vp_umrah_travel_agent)
+    private fun setupViewPager(travelAgentBySlugName: UmrahTravelAgentBySlugNameEntity) {
+        slugName?.let {
+            umrahTravelAgentViewPagerAdapter = UmrahTravelAgentViewPagerAdapter(childFragmentManager, it, travelAgentBySlugName)
+            vp_umrah_travel_agent.adapter = umrahTravelAgentViewPagerAdapter
+            vp_umrah_travel_agent.offscreenPageLimit = OFF_SCREEN_LIMIT
+            tl_umrah_travel_agent.setupWithViewPager(vp_umrah_travel_agent)
+            vp_umrah_travel_agent.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageScrollStateChanged(state: Int) {
+
+                }
+
+                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+                }
+
+                override fun onPageSelected(position: Int) {
+                    when (position) {
+                        POSITION_PRODUCT -> {
+                            if (getPositionBeforeChange() == POSITION_GALLERY)
+                                umrahTrackingUtil.umrahTravelAgentClickPacketUmroh(getEventCategoryTracking(POSITION_GALLERY))
+                            else umrahTrackingUtil.umrahTravelAgentClickPacketUmroh(getEventCategoryTracking(POSITION_PRODUCT))
+
+                            setPositionBeforeChange(position)
+                        }
+                        POSITION_GALLERY -> {
+                            if (getPositionBeforeChange() == POSITION_PRODUCT)
+                                umrahTrackingUtil.umrahTravelAgentClickGaleri(getEventCategoryTracking(POSITION_PRODUCT))
+                            else if (positionBefore == POSITION_INFO)
+                                umrahTrackingUtil.umrahTravelAgentClickGaleri(getEventCategoryTracking(POSITION_GALLERY))
+
+                            setPositionBeforeChange(position)
+                        }
+                        POSITION_INFO -> {
+                            if (getPositionBeforeChange() == POSITION_GALLERY)
+                                umrahTrackingUtil.umrahTravelAgentClickInfo(getEventCategoryTracking(POSITION_GALLERY))
+                            else umrahTrackingUtil.umrahTravelAgentClickInfo(getEventCategoryTracking(POSITION_PRODUCT))
+
+                            setPositionBeforeChange(position)
+                        }
+                    }
+                }
+            })
+        }
     }
 
-    private fun setupTravelAgent(travelAgent: TravelAgent){
+    private fun setupTravelAgent(travelAgent: TravelAgent) {
         val umrahItemWidgetModelData: UmrahItemWidgetModel = UmrahItemWidgetModel().apply {
             title = travelAgent.name
             imageUri = travelAgent.imageUrl
@@ -148,22 +233,27 @@ class UmrahTravelFragment: BaseDaggerFragment(){
         iw_umrah_travel_agent.apply {
             umrahItemWidgetModel = umrahItemWidgetModelData
             buildView()
-            setPermissionPdp()
+            setPermissionTravel()
             setVerifiedTravel()
+        }
+
+        tg_widget_umrah_pdp_item_desc.setOnClickListener {
+            umrahTrackingUtil.umrahTravelAgentClickNumberRegistration(getEventCategoryTracking(getCurrentPositionViewPager()))
+            showPermissionUmrah(travelAgent.permissionOfUmrah)
         }
     }
 
-    private fun checkChatSession(){
-        if (userSessionInterface.isLoggedIn){
+    private fun checkChatSession() {
+        if (userSessionInterface.isLoggedIn) {
             context?.let {
                 startChatUmrah(it)
             }
-        }else{
+        } else {
             goToLoginPage()
         }
     }
 
-    private fun startChatUmrah(context: Context){
+    private fun startChatUmrah(context: Context) {
         val intent = RouteManager.getIntent(context,
                 ApplinkConst.TOPCHAT_ASKSELLER,
                 resources.getString(R.string.umrah_shop_id), "",
@@ -171,11 +261,27 @@ class UmrahTravelFragment: BaseDaggerFragment(){
         startActivity(intent)
     }
 
+    private fun showPermissionUmrah(permissionUmrah: String) {
+        val permissionBottomSheet = BottomSheetUnify()
+        permissionBottomSheet.clearClose(true)
+        val view = LayoutInflater.from(context).inflate(R.layout.bottom_sheet_umrah_travel_agent_permission, null)
+        view.apply {
+            tg_umrah_permission_desc.text = getString(R.string.umrah_travel_permission_desc, permissionUmrah)
+            btn_travel_permission_close.setOnClickListener {
+                umrahTrackingUtil.umrahTravelAgentCloseVerification()
+                permissionBottomSheet.dismiss()
+            }
+        }
+        permissionBottomSheet.setChild(view)
+        permissionBottomSheet.show(fragmentManager!!, "")
+
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
-               REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
+                REQUEST_CODE_LOGIN -> context?.let { checkChatSession() }
             }
         }
     }
@@ -185,5 +291,62 @@ class UmrahTravelFragment: BaseDaggerFragment(){
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
                     REQUEST_CODE_LOGIN)
         }
+    }
+
+    override fun onBackPressed() {
+        if (!isDetached) {
+            if (getCurrentPositionViewPager() == POSITION_GALLERY)
+                umrahTrackingUtil.umrahTravelAgentClickBack(UMRAH_TRAVEL_PAGE_GALERY_CATEGORY)
+            else umrahTrackingUtil.umrahTravelAgentClickBack(UMRAH_TRAVEL_PAGE_CATEGORY)
+        }
+    }
+
+    override fun shareTravelLink() {
+        umrahTrackingUtil.umrahTravelAgentThreeDots(getEventCategoryTracking(getCurrentPositionViewPager()),UMRAH_TRAVEL_THREE_DOT_SHARE)
+        activity?.run {
+            UmrahShare(this).shareTravelAgent(travelAgent, { showLoading() }, { hideLoading() },this.applicationContext)
+        }
+    }
+
+    override fun clickHelp() {
+        umrahTrackingUtil.umrahTravelAgentThreeDots(getEventCategoryTracking(getCurrentPositionViewPager()),UMRAH_TRAVEL_THREE_DOT_HELP)
+    }
+
+    override fun clickSalam() {
+        umrahTrackingUtil.umrahTravelAgentThreeDots(getEventCategoryTracking(getCurrentPositionViewPager()), UMRAH_TRAVEL_THREE_DOT_SALAM)
+    }
+
+    fun getCurrentPositionViewPager(): Int {
+        return vp_umrah_travel_agent.currentItem
+    }
+
+    fun setPositionBeforeChange(positionBefore: Int) {
+        this.positionBefore = positionBefore
+    }
+
+    fun getPositionBeforeChange(): Int {
+        return positionBefore
+    }
+
+    fun getEventCategoryTracking(position: Int): String {
+       return when(position){
+           POSITION_PRODUCT -> UMRAH_TRAVEL_PAGE_CATEGORY
+           POSITION_GALLERY -> UMRAH_TRAVEL_PAGE_GALERY_CATEGORY
+           POSITION_INFO -> UMRAH_TRAVEL_PAGE_INFO_CATEGORY
+           else -> ""
+        }
+    }
+
+    fun hideLoading() {
+        umrah_pb_travel_share.hide()
+    }
+
+    fun showLoading() {
+        umrah_pb_travel_share.show()
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 }

@@ -9,13 +9,14 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.TravelAgent
+import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import kotlinx.android.synthetic.main.item_umrah_home_page_partner_travel.view.*
 
 /**
  * @author by firman on 20/01/19
  */
 
-class UmrahHomepagePartnerTravelAdapter : RecyclerView.Adapter<UmrahHomepagePartnerTravelAdapter.UmrahHomepagePartnerTravelViewHolder>(){
+class UmrahHomepagePartnerTravelAdapter(val onBindItemBindListener: onItemBindListener) : RecyclerView.Adapter<UmrahHomepagePartnerTravelAdapter.UmrahHomepagePartnerTravelViewHolder>(){
     private var listCategories = emptyList<TravelAgent>()
 
     inner class UmrahHomepagePartnerTravelViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -24,6 +25,7 @@ class UmrahHomepagePartnerTravelAdapter : RecyclerView.Adapter<UmrahHomepagePart
             with(itemView) {
                 iv_umrah_partner_travel.loadImage(travel.imageUrl)
                 setOnClickListener {
+                    onBindItemBindListener.onClickPartnerTravel(resources.getString(R.string.umrah_home_page_partner_label), travel)
                     RouteManager.route(context, ApplinkConst.SALAM_UMRAH_AGEN, travel.slugName)
                 }
             }
