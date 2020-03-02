@@ -444,9 +444,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             pinnedComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            is PinnedInteractionEvent.PinnedActionClicked -> {
+                            is PinnedInteractionEvent.PinnedMessageClicked -> {
                                 PlayAnalytics.clickPinnedMessage(channelId, it.message, playViewModel.isLive)
                                 openPageByApplink(it.applink)
+                            }
+                            PinnedInteractionEvent.PinnedProductClicked -> {
+                                openProductBottomSheet()
                             }
                         }
                     }
@@ -1082,5 +1085,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) view.requestApplyInsets()
             else view.requestFitSystemWindows()
         } catch (e: Exception) {}
+    }
+
+    private fun openProductBottomSheet() {
+
     }
 }

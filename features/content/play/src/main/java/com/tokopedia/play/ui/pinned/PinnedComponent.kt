@@ -56,9 +56,15 @@ open class PinnedComponent(
         return bus.getSafeManagedFlow(PinnedInteractionEvent::class.java)
     }
 
-    override fun onPinnedActionClicked(view: PinnedView, applink: String, message: String) {
+    override fun onPinnedMessageActionClicked(view: PinnedView, applink: String, message: String) {
         launch {
-            bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedActionClicked(applink, message))
+            bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedMessageClicked(applink, message))
+        }
+    }
+
+    override fun onPinnedProductActionClicked(view: PinnedView) {
+        launch {
+            bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedProductClicked)
         }
     }
 

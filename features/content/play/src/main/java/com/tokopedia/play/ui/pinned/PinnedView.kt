@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.PinnedProductUiModel
 
 /**
  * Created by jegul on 03/12/19
@@ -68,12 +69,21 @@ class PinnedView(
         if (!pinnedMessage.applink.isNullOrEmpty()) {
             tvPinnedAction.visible()
             tvPinnedAction.setOnClickListener {
-                listener.onPinnedActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
+                listener.onPinnedMessageActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
             }
         } else tvPinnedAction.gone()
     }
+    
+    fun setPinnedProduct(pinnedProduct: PinnedProductUiModel) {
+        tvPinnedAction.visible()
+        tvPinnedAction.setOnClickListener { 
+            listener.onPinnedProductActionClicked(this)
+        }
+    }
 
     interface Listener {
-        fun onPinnedActionClicked(view: PinnedView, applink: String, message: String)
+
+        fun onPinnedMessageActionClicked(view: PinnedView, applink: String, message: String)
+        fun onPinnedProductActionClicked(view: PinnedView)
     }
 }
