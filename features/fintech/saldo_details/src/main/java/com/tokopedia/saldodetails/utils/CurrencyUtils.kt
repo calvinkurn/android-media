@@ -1,7 +1,7 @@
 package com.tokopedia.saldodetails.utils
 
 import java.text.NumberFormat
-import java.util.*
+import java.util.Locale
 
 object CurrencyUtils {
     var locale = Locale("in", "ID")
