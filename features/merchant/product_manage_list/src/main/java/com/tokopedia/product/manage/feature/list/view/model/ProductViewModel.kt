@@ -20,6 +20,7 @@ data class ProductViewModel(
     }
 
     fun isVariant(): Boolean = isVariant == true
+    fun isNotVariant(): Boolean = isVariant != true
     fun isStockEmpty(): Boolean = stock == 0
 
     fun isActive(): Boolean = status == ProductStatus.ACTIVE.name

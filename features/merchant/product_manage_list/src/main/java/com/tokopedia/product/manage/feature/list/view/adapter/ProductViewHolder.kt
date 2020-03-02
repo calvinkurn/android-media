@@ -50,10 +50,12 @@ class ProductViewHolder(
     }
 
     private fun showProductStock(product: ProductViewModel) {
-        val productStock = itemView.context
-            .getString(R.string.product_manage_stock_format, product.stock)
-        itemView.textStock.text = productStock
-        itemView.textStock.show()
+        if(product.isNotVariant()) {
+            val productStock = itemView.context
+                .getString(R.string.product_manage_stock_format, product.stock)
+            itemView.textStock.text = productStock
+            itemView.textStock.show()
+        }
     }
 
     private fun showProductLabel(product: ProductViewModel) {
