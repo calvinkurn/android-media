@@ -66,8 +66,8 @@ class ProductViewHolder(
     private fun showProductButton(product: ProductViewModel) {
         when {
             product.isBanned() -> itemView.btnContactCS.show()
-            product.isVariant() -> showEditPriceAndStockBtn()
-            else -> itemView.btnEditVariant.show()
+            product.isVariant() -> itemView.btnEditVariant.show()
+            else -> showEditPriceAndStockBtn()
         }
     }
 
