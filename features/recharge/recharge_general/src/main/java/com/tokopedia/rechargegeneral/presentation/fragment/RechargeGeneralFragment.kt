@@ -229,13 +229,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 favNumber?.run {
                     hasInputData = true
                     rechargeGeneralAnalytics.eventInputFavoriteNumber(categoryName, operatorName)
-                    // Change operator & product based on favorite number data
-//                    val favoriteNumberData = TopupBillsRecommendation(
-//                            title = label,
-//                            clientNumber = clientNumber,
-//                            productId = productId.toIntOrNull() ?: 0,
-//                            operatorId = operatorId.toIntOrNull() ?: 0)
-//                    setupAutoFillData(favoriteNumberData)
                     renderClientNumber(this)
                 }
             } else if (requestCode == REQUEST_CODE_LOGIN) {
@@ -695,7 +688,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         if (data != null) {
             showProductSelectDropdown(field, data, getString(R.string.product_select_label))
         } else {
-//            showFavoriteNumbersPage()
             getFavoriteNumbers(categoryId)
         }
     }

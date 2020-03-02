@@ -58,8 +58,6 @@ class RechargeGeneralInputViewHolder(val view: View, val listener: OnInputListen
         if (enquiryData.value.isNotEmpty()) {
             inputView.setInputText(enquiryData.value, false)
             listener.onFinishInput(enquiryData.name, enquiryData.value, adapterPosition)
-            // Hide dropdown icon
-//            inputView.toggleDropdownIcon(false)
         }
     }
 
