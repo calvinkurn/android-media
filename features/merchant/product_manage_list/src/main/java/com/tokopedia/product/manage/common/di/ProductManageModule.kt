@@ -2,7 +2,6 @@ package com.tokopedia.product.manage.common.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.usecase.Interactor
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
