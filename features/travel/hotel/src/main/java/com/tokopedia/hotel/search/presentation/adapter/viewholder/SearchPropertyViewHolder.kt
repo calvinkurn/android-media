@@ -60,10 +60,8 @@ class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) 
 
             if (!element.isDirectPayment) {
                 container_pay_at_hotel.show()
-                container_pay_at_hotel_shadow.hide()
             } else {
                 container_pay_at_hotel.hide()
-                container_pay_at_hotel_shadow.show()
             }
         }
     }
