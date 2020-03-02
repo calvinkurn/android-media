@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.firebase.perf.FirebasePerformance;
 import com.google.firebase.perf.metrics.Trace;
-import com.tokopedia.analytics.debugger.FpmLogger;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 
 import java.util.HashMap;
 import java.util.Map;
