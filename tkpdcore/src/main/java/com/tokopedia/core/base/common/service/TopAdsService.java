@@ -16,9 +16,6 @@ import rx.Observable;
 
 public interface TopAdsService {
 
-    @GET(TkpdBaseURL.TopAds.PATH_GET_PROMO_TOP_ADS)
-    Observable<Response<String>> getTopAds(@QueryMap Map<String, Object> params);
-
     @GET(TkpdBaseURL.TopAds.PATH_GET_SHOP_TOP_ADS)
     Observable<Response<String>> getShopTopAds(@QueryMap Map<String, Object> params);
 

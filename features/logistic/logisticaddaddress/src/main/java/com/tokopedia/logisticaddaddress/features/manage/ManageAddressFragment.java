@@ -6,12 +6,13 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+
+import androidx.annotation.Nullable;
 
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment;
@@ -21,21 +22,19 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
-import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressTypeFactory;
-import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressViewHolder;
-import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressViewModel;
-import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.R;
+import com.tokopedia.logisticaddaddress.di.AddressModule;
 import com.tokopedia.logisticaddaddress.di.DaggerManageAddressComponent;
 import com.tokopedia.logisticaddaddress.di.ManageAddressModule;
 import com.tokopedia.logisticaddaddress.domain.mapper.AddressViewModelMapper;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressActivity;
 import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
+import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressTypeFactory;
+import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressViewHolder;
+import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressViewModel;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
-import com.tokopedia.remoteconfig.RemoteConfig;
 
 import java.util.List;
 
@@ -45,7 +44,6 @@ import static com.tokopedia.logisticaddaddress.common.AddressConstants.KERO_TOKE
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.REQUEST_CODE_PARAM_CREATE;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.REQUEST_CODE_PARAM_EDIT;
 import static com.tokopedia.logisticaddaddress.common.AddressConstants.SCREEN_NAME_USER_NEW;
-import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_ADD_NEW_ADDRESS_KEY;
 
 /**
  * Created by Fajar Ulin Nuha on 13/11/18.
@@ -204,24 +202,15 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     public void openFormAddressView(AddressModel data) {
         Token token = mPresenter.getToken();
         if (data == null) {
-            if (isAddNewAddressEnabled()) {
-                AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_USER_NEW);
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
-                intent.putExtra(KERO_TOKEN, token);
-                startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE);
-
-            } else {
-                startActivityForResult(
-                    AddAddressActivity.createInstanceAddAddressFromManageAddressWhenDefaultAddressIsEmpty(
-                            getActivity(), token
-                    ), REQUEST_CODE_PARAM_CREATE);
-            }
-
+            AddNewAddressAnalytics.sendScreenName(getActivity(), SCREEN_NAME_USER_NEW);
+            Intent intent = RouteManager.getIntent(getContext(), ApplinkConstInternalLogistic.ADD_ADDRESS_V2);
+            intent.putExtra(KERO_TOKEN, token);
+            startActivityForResult(intent, REQUEST_CODE_PARAM_CREATE);
         } else {
             startActivityForResult(
-                AddAddressActivity.createInstanceEditAddressFromManageAddress(
-                        getActivity(), data, token
-                ), REQUEST_CODE_PARAM_EDIT);
+                    AddAddressActivity.createInstanceEditAddressFromManageAddress(
+                            getActivity(), data, token
+                    ), REQUEST_CODE_PARAM_EDIT);
         }
     }
 
@@ -272,11 +261,6 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     @Override
     public void stopPerformanceMonitoring() {
         performanceMonitoring.stopTrace();
-    }
-
-    public boolean isAddNewAddressEnabled() {
-        RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(getContext());
-        return remoteConfig.getBoolean(ENABLE_ADD_NEW_ADDRESS_KEY, false);
     }
 
 }

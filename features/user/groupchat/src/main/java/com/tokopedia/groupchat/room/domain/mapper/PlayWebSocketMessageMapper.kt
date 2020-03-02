@@ -3,7 +3,6 @@ package com.tokopedia.groupchat.room.domain.mapper
 import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.groupchat.chatroom.domain.mapper.StickyComponentMapper
 import com.tokopedia.groupchat.chatroom.domain.pojo.*
@@ -16,11 +15,7 @@ import com.tokopedia.groupchat.chatroom.domain.pojo.sprintsale.Product
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.*
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayCloseViewModel
 import com.tokopedia.groupchat.chatroom.view.viewmodel.interupt.OverlayViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.DynamicButton
-import com.tokopedia.groupchat.room.view.viewmodel.DynamicButtonsViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.InteractiveButton
-import com.tokopedia.groupchat.room.view.viewmodel.VideoStreamViewModel
-import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentViewModel
+import com.tokopedia.groupchat.room.view.viewmodel.*
 import com.tokopedia.groupchat.room.view.viewmodel.pinned.StickyComponentsViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel
@@ -38,18 +33,6 @@ class PlayWebSocketMessageMapper @Inject constructor() {
     companion object {
         const val DEFAULT_NO_POLL = 0
         const val FORMAT_DISCOUNT_LABEL = "%d%% OFF"
-    }
-
-    fun mapHideMessage(response: WebSocketResponse): Boolean {
-        return when (response.type.toLowerCase()) {
-            VoteAnnouncementViewModel.POLLING_CANCEL, VoteAnnouncementViewModel.POLLING_UPDATE,
-            VibrateViewModel.TYPE, SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING,
-            PinnedMessageViewModel.TYPE, AdsViewModel.TYPE, GroupChatQuickReplyViewModel.TYPE,
-            EventHandlerPojo.BANNED, EventHandlerPojo.FREEZE, ParticipantViewModel.TYPE,
-            OverlayViewModel.TYPE, OverlayCloseViewModel.TYPE, VideoViewModel.TYPE,
-            DynamicButtonsViewModel.TYPE, StickyComponentsViewModel.TYPE -> true
-            else -> false
-        }
     }
 
     fun map(response: WebSocketResponse): Visitable<*>? {
@@ -88,8 +71,13 @@ class PlayWebSocketMessageMapper @Inject constructor() {
             BackgroundViewModel.TYPE -> mapToBackground(data)
             StickyComponentsViewModel.TYPE -> mapToStickyComponent(data)
             VideoStreamViewModel.TYPE -> mapToVideoStream(data)
+            ChatPermitViewModel.TYPE -> mapToChatPermit(data)
             else -> null
         }
+    }
+
+    private fun mapToChatPermit(jsonObject: JsonObject?): Visitable<*>? {
+        return gson.fromJson(jsonObject, ChatPermitViewModel::class.java)
     }
 
     private fun mapToVideoStream(data: JsonObject?): Visitable<*>? {

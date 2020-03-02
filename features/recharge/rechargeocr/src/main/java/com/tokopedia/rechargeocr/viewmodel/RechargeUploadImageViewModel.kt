@@ -9,13 +9,12 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.rechargeocr.RechargeCameraUtil
 import com.tokopedia.rechargeocr.data.RechargeOcrResponse
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploadImageUseCase: RechargeUploadImageUseCase,
                                                        private val graphqlRepository: GraphqlRepository,
-                                                       private val dispatcher: CoroutineDispatcher = Dispatchers.IO)
+                                                       private val dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
     val resultDataOcr = MutableLiveData<String>()
@@ -28,6 +27,7 @@ class RechargeUploadImageViewModel @Inject constructor(private val rechargeUploa
             val dataUploadImage = withContext(dispatcher) {
                 rechargeUploadImageUseCase.execute(imageFileCropped)
             }
+
             var url = dataUploadImage.dataUploadImageData.picSrc
             if (url.contains(DEFAULT_RESOLUTION)) {
                 url = url.replaceFirst(DEFAULT_RESOLUTION, RESOLUTION_500)

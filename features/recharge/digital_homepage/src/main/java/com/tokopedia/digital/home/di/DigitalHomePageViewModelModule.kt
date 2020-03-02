@@ -9,7 +9,6 @@ import com.tokopedia.vouchergame.list.view.viewmodel.DigitalHomePageSearchViewMo
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import javax.inject.Scope
 
 @Module
 @DigitalHomePageScope
@@ -23,7 +22,7 @@ abstract class DigitalHomePageViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(DigitalHomePageViewModel::class)
-    internal abstract fun travelHomepageViewModel(viewModel: DigitalHomePageViewModel): ViewModel
+    internal abstract fun digitalHomepageViewModel(viewModel: DigitalHomePageViewModel): ViewModel
 
     @Binds
     @IntoMap

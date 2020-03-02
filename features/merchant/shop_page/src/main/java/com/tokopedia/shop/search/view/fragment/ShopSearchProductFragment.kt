@@ -11,11 +11,8 @@ import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -25,7 +22,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -39,21 +36,23 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
+import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.*
+import com.tokopedia.shop.analytic.ShopPageTrackingOldShopSearchProduct
+import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.config.ShopPageConfig
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_LOCATION_PLACEHOLDER
 import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity.Companion.SHOP_NAME_PLACEHOLDER
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
-import com.tokopedia.shop.product.view.fragment.ShopProductListFragment
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_KEYWORD
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_ATTRIBUTION
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_INFO_CACHE_MANAGER_ID
+import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SHOP_REF
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity.Companion.KEY_SORT_ID
 import com.tokopedia.shop.search.view.adapter.ShopSearchProductAdapterTypeFactory
 import com.tokopedia.shop.search.view.adapter.model.ShopSearchProductDataModel
@@ -86,13 +85,15 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
         fun createInstance(
                 keyword: String,
                 shopInfoCacheManagerId: String,
-                shopAttribution: String
+                shopAttribution: String,
+                shopRef: String
         ): Fragment {
             return ShopSearchProductFragment().apply {
                 val bundleData = Bundle()
                 bundleData.putString(KEY_SHOP_INFO_CACHE_MANAGER_ID, shopInfoCacheManagerId)
                 bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
                 bundleData.putString(KEY_KEYWORD, keyword)
+                bundleData.putString(KEY_SHOP_REF, shopRef)
                 arguments = bundleData
             }
         }
@@ -101,7 +102,8 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 keyword: String,
                 shopInfoCacheManagerId: String,
                 shopAttribution: String,
-                sortId: String
+                sortId: String,
+                shopRef: String
         ): Fragment {
             return ShopSearchProductFragment().apply {
                 val bundleData = Bundle()
@@ -109,6 +111,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 bundleData.putString(KEY_SHOP_ATTRIBUTION, shopAttribution)
                 bundleData.putString(KEY_KEYWORD, keyword)
                 bundleData.putString(KEY_SORT_ID, sortId)
+                bundleData.putString(KEY_SHOP_REF, shopRef)
                 arguments = bundleData
             }
         }
@@ -118,12 +121,30 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
+    lateinit var oldShopPageTrackingShopSearchProduct: ShopPageTrackingOldShopSearchProduct
+
+    @Inject
     lateinit var shopPageTrackingShopSearchProduct: ShopPageTrackingShopSearchProduct
 
     @Inject
-    lateinit var userSession : UserSessionInterface
+    lateinit var userSession: UserSessionInterface
+
+    private val shopId: String
+        get() = shopInfo?.shopCore?.shopID ?: ""
+    private val isOfficial: Boolean
+        get() = shopInfo?.goldOS?.isOfficial == 1
+    private val isGold: Boolean
+        get() = shopInfo?.goldOS?.isGold == 1
+    private val customDimensionShopPage: CustomDimensionShopPage by lazy {
+        CustomDimensionShopPage.create(shopId, isOfficial, isGold)
+    }
 
     private lateinit var viewModel: ShopSearchProductViewModel
+
+    private val isMyShop: Boolean
+        get() = if (::viewModel.isInitialized) {
+            shopInfo?.shopCore?.shopID?.let { viewModel.isMyShop(it) } ?: false
+        } else false
 
     private val remoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
@@ -140,6 +161,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private var searchQuery = ""
     private var sortValue: String? = ""
+    private var shopRef: String = ""
 
     private var viewFragment: View? = null
 
@@ -204,16 +226,20 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onItemClicked(dataModel: ShopSearchProductDataModel) {
         when (dataModel.type) {
             ShopSearchProductDataModel.Type.TYPE_SEARCH_SRP -> {
-                shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(
-                        SCREEN_SHOP_PAGE,
-                        searchQuery,
-                        String.format(SRP_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
-                )
+                if (!isNewShopPageEnabled()) {
+                    oldShopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(
+                            SCREEN_SHOP_PAGE,
+                            searchQuery,
+                            String.format(SRP_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
+                    )
+                } else {
+                    shopPageTrackingShopSearchProduct.clickAutocompleteExternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
+                }
                 redirectToSearchResultPage()
             }
             ShopSearchProductDataModel.Type.TYPE_PDP -> {
                 val model = dataModel as ShopSearchProductDynamicResultDataModel
-                shopPageTrackingShopSearchProduct.clickAutocompleteProducts(
+                oldShopPageTrackingShopSearchProduct.clickAutocompleteProducts(
                         SCREEN_SHOP_PAGE,
                         searchQuery,
                         model.url
@@ -221,18 +247,22 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 redirectToProductDetailPage(model.appLink)
             }
             ShopSearchProductDataModel.Type.TYPE_SEARCH_STORE -> {
-                shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(
-                        SCREEN_SHOP_PAGE,
-                        searchQuery,
-                        String.format(ETALASE_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
-                )
+                if (!isNewShopPageEnabled()) {
+                    oldShopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(
+                            SCREEN_SHOP_PAGE,
+                            searchQuery,
+                            String.format(ETALASE_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
+                    )
+                } else {
+                    shopPageTrackingShopSearchProduct.clickAutocompleteInternalShopPage(isMyShop, searchQuery, customDimensionShopPage)
+                }
                 redirectToShopProductListPage()
             }
         }
         activity?.finish()
     }
 
-    private fun isNewShopPageEnabled(): Boolean{
+    private fun isNewShopPageEnabled(): Boolean {
         val shopPageConfig = ShopPageConfig(context)
         return shopPageConfig.isNewShopPageEnabled()
     }
@@ -253,11 +283,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     override fun onSearchSubmitted(keyword: String) {
         searchQuery = keyword
         if (searchQuery.isNotEmpty()) {
-            shopPageTrackingShopSearchProduct.clickManualSearch(
-                    SCREEN_SHOP_PAGE,
-                    searchQuery,
-                    String.format(ETALASE_SHOPNAME, shopInfo?.shopCore?.name.orEmpty())
-            )
+            shopPageTrackingShopSearchProduct.typeSearch(isMyShop, keyword, customDimensionShopPage)
             redirectToShopProductListPage()
             activity?.finish()
         }
@@ -297,9 +323,11 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 goToCart()
             }
             REQUEST_CODE_SORT -> {
-                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME)
-                sortName?.let {
-                    sortValue = sortName
+                val sortValue = data?.getStringExtra(ShopProductSortActivity.SORT_VALUE)
+                val sortName = data?.getStringExtra(ShopProductSortActivity.SORT_NAME) ?: ""
+                sortValue?.let {
+                    shopPageTrackingShopSearchProduct.sortProduct(sortName, isMyShop, customDimensionShopPage)
+                    this.sortValue = sortValue
                     searchQuery = editTextSearchProduct.text.toString()
                     redirectToShopProductListPage()
                     activity?.finish()
@@ -336,7 +364,8 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                     searchQuery,
                     "",
                     shopAttribution,
-                    sortValue
+                    sortValue,
+                    shopRef
             )
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
@@ -535,6 +564,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
                 get(ShopInfo.TAG, ShopInfo::class.java)
             }
         }
+        customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
     }
 
     private fun saveShopInfoModelToCacheManager(shopInfo: ShopInfo): String? {
@@ -553,6 +583,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
             shopAttribution = getString(KEY_SHOP_ATTRIBUTION).orEmpty()
             searchQuery = getString(KEY_KEYWORD).orEmpty()
             sortValue = getString(KEY_SORT_ID).orEmpty()
+            shopRef = getString(KEY_SHOP_REF).orEmpty()
         }
     }
 
@@ -585,6 +616,11 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
     }
 
     private fun onClickSort() {
+        shopPageTrackingShopSearchProduct.clickSort(isMyShop, customDimensionShopPage)
+        redirectToShopProductSortPage()
+    }
+
+    private fun redirectToShopProductSortPage() {
         val intent = ShopProductSortActivity.createIntent(activity, sortValue)
         startActivityForResult(intent, REQUEST_CODE_SORT)
     }
@@ -595,7 +631,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private fun onShareShop() {
         shopInfo?.run {
-            shopPageTrackingShopSearchProduct.clickShareButton(SCREEN_SEARCH_BAR, searchQuery)
+            oldShopPageTrackingShopSearchProduct.clickShareButton(SCREEN_SEARCH_BAR, searchQuery)
             var shopShareMsg: String = remoteConfig.getString(RemoteConfigKey.SHOP_SHARE_MSG)
             shopShareMsg = if (shopShareMsg.isNotEmpty()) {
                 FindAndReplaceHelper.findAndReplacePlaceHolders(
@@ -623,7 +659,7 @@ class ShopSearchProductFragment : BaseSearchListFragment<ShopSearchProductDataMo
 
     private fun onClickCart() {
         shopInfo?.run {
-            shopPageTrackingShopSearchProduct.clickCartButton(SCREEN_SEARCH_BAR, searchQuery)
+            oldShopPageTrackingShopSearchProduct.clickCartButton(SCREEN_SEARCH_BAR, searchQuery)
             goToCart()
         }
     }

@@ -29,8 +29,10 @@ class RechargeGeneralCheckoutBottomSheet @JvmOverloads constructor(@NotNull cont
     }
 
     fun setPayload(enquiryData: TopupBillsEnquiry) {
-        enquiry_data_view.enquiryData = enquiryData
-        checkout_view.setTotalPrice(enquiryData.attributes.price)
+        enquiryData.attributes?.let { attributes ->
+            enquiry_data_view.enquiryData = enquiryData
+            checkout_view.setTotalPrice(attributes.price)
+        }
     }
 
     override fun onClickNextBuyButton() {

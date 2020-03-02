@@ -10,6 +10,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
+import javax.inject.Named
 
 @Module
 class TokopointsQueryModule {
@@ -21,8 +22,8 @@ class TokopointsQueryModule {
     fun getRepository() = Interactor.getInstance().graphqlRepository
 
     @Provides
-    @IntoMap
-    @StringKey(CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS)
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_CURRENT_POINTS)
     fun getGQLCurrentPoint(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_current_points)
     }
@@ -98,4 +99,92 @@ class TokopointsQueryModule {
                 R.raw.tp_gql_user_info)
     }
 
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_REDEEM_COUPON)
+    fun getGQLRedeemCoupon(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_tokopoint_redeem_coupon)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_CATLOG_STATUS)
+    fun getGQLCatalogStatus(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_catalog_status)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_VALIDATE_REDEEM)
+    fun getGQLTokopointValidateRedeem(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_tokopoint_validate_redeem)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_PRE_VALIDATE_REDEEM)
+    fun getGQLPreValidateREdeem(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_pre_validate_redeem)
+    }
+
+    @Provides
+    @IntoMap
+    @StringKey(CommonConstant.GQLQuery.TP_GQL_CATALOG_DETAIL)
+    fun getGQLCatalogDetail(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.getResources(),
+                R.raw.tp_gql_catalog_detail)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_CATALOG_BANNER)
+    fun getGQLCataloganner(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_catalog_banners)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_DETAIL)
+    fun getGQLTOkopointDetail(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_tokopoint_detail)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_CATALOG_FILTER)
+    fun getGQLCatalogFilter(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_catalog_filter)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_LUCKY_EGG_DETAILS)
+    fun getGQLLuckyEggDetail(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_lucky_egg_details)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_TOKOPOINT_DETAIL_NEW)
+    fun getGQLTOkopointNewDetail(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_tokopoint_detail_new)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_HOME_PAGE_SECTION)
+    fun getGQLHomePageSection(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_homepage_section)
+    }
+
+    @Provides
+    @TokoPointScope
+    @Named(CommonConstant.GQLQuery.TP_GQL_SUM_COUPON)
+    fun getGQLSumCoupon(context: Context) : String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.tp_gql_homepage_section)
+    }
 }

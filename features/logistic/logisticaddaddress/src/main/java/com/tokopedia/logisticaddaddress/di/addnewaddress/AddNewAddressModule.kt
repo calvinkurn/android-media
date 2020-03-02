@@ -10,6 +10,7 @@ import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.*
 import com.tokopedia.logisticaddaddress.features.addnewaddress.addedit.AddEditAddressPresenter
 import com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint.PinpointMapPresenter
+import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -26,10 +27,10 @@ class AddNewAddressModule {
     fun providePinpointMapPresenter(
             getDistrictUseCase: GetDistrictUseCase,
             getDistrictMapper: GetDistrictMapper,
-            autofillUseCase: AutofillUseCase,
+            revGeocodeUseCase: RevGeocodeUseCase,
             districtBoundaryUseCase: DistrictBoundaryUseCase,
             districtBoundaryMapper: DistrictBoundaryMapper): PinpointMapPresenter {
-        return PinpointMapPresenter(getDistrictUseCase, getDistrictMapper, autofillUseCase,
+        return PinpointMapPresenter(getDistrictUseCase, getDistrictMapper, revGeocodeUseCase,
                 districtBoundaryUseCase, districtBoundaryMapper)
     }
 

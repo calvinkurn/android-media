@@ -9,6 +9,8 @@ public class TradeInParams implements Parcelable {
     public static final String TRADE_IN_PARAMS = TradeInParams.class.getSimpleName();
     public static final String PARAM_NEW_PRICE = "NEW PRICE";
     public static final String PARAM_DEVICE_ID = "DEVICE ID";
+    public static final String PARAM_PHONE_TYPE = "PHONE TYPE";
+    public static final String PARAM_PHONE_PRICE = "PHONE PRICE";
     public static final String PARAM_USER_ID = "USER ID";
     public static final String PARAM_PRODUCT_ID = "PRODUCT ID";
     public static final String PARAM_NEW_DEVICE_NAME = "NEW DEVICE NAME";
@@ -36,6 +38,8 @@ public class TradeInParams implements Parcelable {
     private int tradeInType;
     @SerializedName("ModelId")
     private int modelID;
+    @SerializedName("WidgetString")
+    private String widgetString;
 
     private String productName;
 
@@ -164,6 +168,14 @@ public class TradeInParams implements Parcelable {
         this.tradeInType = tradeInType;
     }
 
+    public String getWidgetString() {
+        return widgetString;
+    }
+
+    public void setWidgetString(String widgetString) {
+        this.widgetString = widgetString;
+    }
+
     public TradeInParams() {
     }
 
@@ -187,6 +199,7 @@ public class TradeInParams implements Parcelable {
         dest.writeInt(this.remainingPrice);
         dest.writeInt(this.useKyc);
         dest.writeInt(this.isEligible);
+        dest.writeString(this.widgetString);
     }
 
     protected TradeInParams(Parcel in) {
@@ -203,6 +216,7 @@ public class TradeInParams implements Parcelable {
         this.remainingPrice = in.readInt();
         this.useKyc = in.readInt();
         this.isEligible = in.readInt();
+        this.widgetString = in.readString();
     }
 
     public static final Creator<TradeInParams> CREATOR = new Creator<TradeInParams>() {

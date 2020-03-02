@@ -37,11 +37,16 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
         gqlUseCase.addRequest(GraphqlRequest(rawQueries[QUERY_GET_PDP_LAYOUT], ProductDetailLayout::class.java, requestParams.parameters))
         gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh))
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
-        val cacheStrategyString = if (forceRefresh) "P1#PDP_CACHE#CACHE_FALSE;$productId" else "P1#PDP_CACHE#CACHE_TRUE;$productId"
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
         val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data ?: PdpGetLayout()
+
+        if (gqlResponse.isCached) {
+            Timber.w("P2#PDP_CACHE#cache=true;productId=$productId")
+        } else {
+            Timber.w("P2#PDP_CACHE#cache=false;productId=$productId")
+        }
         val blacklistMessage = data.basicInfo.blacklistMessage
 
         if (error != null && error.isNotEmpty()) {
@@ -50,8 +55,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
             gqlUseCase.clearCache()
             throw TobacoErrorException(blacklistMessage.description, blacklistMessage.title, blacklistMessage.button, blacklistMessage.url)
         }
-
-        Timber.d(cacheStrategyString)
         return mapIntoModel(data)
     }
 

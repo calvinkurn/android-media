@@ -1,7 +1,7 @@
 package com.tokopedia.interestpick.view.subscriber
 
 import android.text.TextUtils
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel

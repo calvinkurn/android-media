@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
@@ -207,8 +209,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ShipmentAdapter shipmentAdapter;
     @Inject
     ShipmentContract.Presenter shipmentPresenter;
-    @Inject
-    ShipmentDataConverter shipmentDataConverter;
     @Inject
     RatesDataConverter ratesDataConverter;
     @Inject
@@ -1221,8 +1221,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                                        String transactionId,
                                                        String eventAction,
                                                        String eventLabel) {
+        String sessionId = "";
+        Context context = getContext();
+        if(context != null){
+            IrisSession irisSession = new IrisSession(context);
+            sessionId = irisSession.getSessionId();
+
+        }
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-                stringObjectMap, transactionId, isTradeIn(), eventAction, eventLabel
+                stringObjectMap, transactionId, sessionId, isTradeIn(), eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
     }
@@ -1286,11 +1293,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                                                 boolean isAnalyticsPurpose) {
         ShipmentAdapter.RequestData requestData = shipmentAdapter.getRequestData(null, shipmentCartItemModelList, isAnalyticsPurpose);
         return requestData.getCheckoutRequestData();
-    }
-
-    @Override
-    public ShipmentDataConverter getShipmentDataConverter() {
-        return shipmentDataConverter;
     }
 
     private void updateAppliedPromoStack(PromoStackingData cartPromoStacking) {
@@ -2027,7 +2029,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             case REQUEST_CODE_NORMAL_CHECKOUT:
                 shipmentPresenter.processSaveShipmentState();
                 shipmentPresenter.processCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),
-                        isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCheckoutLeasingId());
+                        isTradeIn(), isTradeInByDropOff(), getDeviceId(), getCornerId(), getCheckoutLeasingId());
                 break;
             case REQUEST_CODE_COD:
                 shipmentPresenter.proceedCodCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),
