@@ -38,3 +38,5 @@ fun RecyclerView.endLess(
         }
     })
 }
+
+inline fun <reified T> List<T>.isSingleItem(): Boolean = this.size == 1
