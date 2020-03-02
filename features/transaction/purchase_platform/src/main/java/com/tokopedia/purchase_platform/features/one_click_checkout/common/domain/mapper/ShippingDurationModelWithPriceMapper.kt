@@ -36,8 +36,7 @@ class ShippingDurationModelWithPriceMapper @Inject constructor(): ShippingDurati
 
     fun getRangePriceModel(rangePrice: RangePrice): RangePriceModel{
         val rangePriceModel = RangePriceModel()
-        rangePriceModel.minPrice = rangePrice.minPrice
-        rangePriceModel.maxPrice = rangePrice.maxPrice
+        rangePriceModel.rangePrice = (rangePrice.minPrice.toString() + "-" + rangePrice.maxPrice.toString())
 
         return rangePriceModel
     }
