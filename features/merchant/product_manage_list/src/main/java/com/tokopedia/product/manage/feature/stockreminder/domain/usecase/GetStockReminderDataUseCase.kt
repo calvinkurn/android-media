@@ -2,19 +2,19 @@ package com.tokopedia.product.manage.feature.stockreminder.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.GetStockReminder
-import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.StockReminderResponse
+import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.StockReminderQuery
+import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
 import javax.inject.Inject
 
 class GetStockReminderDataUseCase @Inject constructor(
         repository: GraphqlRepository
-): GraphqlUseCase<StockReminderResponse>(repository) {
+): GraphqlUseCase<GetStockReminderResponse>(repository) {
 
     init {
-        val query = GetStockReminder.QUERY
+        val query = StockReminderQuery.GET_QUERY
         if(query.isNotEmpty()) {
             setGraphqlQuery(query)
-            setTypeClass(StockReminderResponse::class.java)
+            setTypeClass(GetStockReminderResponse::class.java)
         }
     }
 
