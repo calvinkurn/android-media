@@ -36,7 +36,6 @@ import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
@@ -94,7 +93,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private ToggleButton groupChatLogToggle;
 
     private UserSessionInterface userSession;
-    private static TkpdCoreRouter tkpdCoreRouter;
     private SharedPreferences groupChatSf;
 
     private boolean isUserEditEnvironment = true;
@@ -376,13 +374,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         SharedPreferences.Editor editor = groupChatSf.edit();
         editor.putBoolean(LOG_GROUPCHAT, check);
         editor.apply();
-    }
-
-    private static TkpdCoreRouter coreRouter(Context applicationContext) {
-        if (tkpdCoreRouter == null) {
-            tkpdCoreRouter = (TkpdCoreRouter) applicationContext;
-        }
-        return tkpdCoreRouter;
     }
 
     private SharedPreferences getSharedPreferences(String name) {
