@@ -60,7 +60,7 @@
         app:layout_constraintBottom_toTopOf="@+id/base_header"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/view_picture_search_bar"
-        app:srcCompat="@drawable/ic_wishlist_unchecked"
+        app:srcCompat="@drawable/ic_wishlist_unselected_pdp"
         tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

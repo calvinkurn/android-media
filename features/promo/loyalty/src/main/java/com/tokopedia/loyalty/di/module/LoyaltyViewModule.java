@@ -147,8 +147,8 @@ public class LoyaltyViewModule {
     }
 
     @Provides
-    CheckoutAnalyticsCart provideCheckoutAnalyticsCartPage() {
-        return new CheckoutAnalyticsCart();
+    CheckoutAnalyticsCart provideCheckoutAnalyticsCartPage(@ApplicationContext Context context) {
+        return new CheckoutAnalyticsCart(context);
     }
 
     @Provides

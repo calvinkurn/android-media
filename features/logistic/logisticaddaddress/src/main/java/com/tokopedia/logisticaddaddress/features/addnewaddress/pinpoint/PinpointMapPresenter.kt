@@ -66,9 +66,7 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
                             if (it.messageError.isNotEmpty() && it.messageError[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
                                 view.showOutOfReachDialog()
                             } else {
-                                var errMsg = ""
-                                if (it.messageError.isNotEmpty()) errMsg = it.messageError[0]
-                                view?.onSuccessAutofill(it.data, errMsg)
+                                view?.onSuccessAutofill(it.data)
                             }
                         },
                         {

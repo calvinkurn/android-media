@@ -11,7 +11,7 @@ import com.tokopedia.logisticdata.data.entity.response.Data
 interface PinpointMapListener : CustomerView {
     fun showLoading()
     fun onSuccessPlaceGetDistrict(getDistrictDataUiModel: GetDistrictDataUiModel)
-    fun onSuccessAutofill(autofillDataUiModel: Data, errMsg: String)
+    fun onSuccessAutofill(autofillDataUiModel: Data)
     fun showBoundaries(boundaries: List<LatLng>)
     fun showAutoComplete(lat: Double, long: Double)
     fun showOutOfReachDialog()

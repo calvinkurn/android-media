@@ -80,10 +80,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
@@ -100,6 +102,7 @@ import com.tokopedia.loyalty.view.activity.TokoPointWebviewActivity;
 import com.tokopedia.navigation_common.listener.AllNotificationListener;
 import com.tokopedia.navigation_common.listener.FragmentListener;
 import com.tokopedia.navigation_common.listener.HomePerformanceMonitoringListener;
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.permissionchecker.PermissionCheckerHelper;
@@ -112,6 +115,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -155,7 +159,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
         HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener,
-        HomeReviewListener {
+        HomeReviewListener, PopularKeywordViewHolder.PopularKeywordListener {
 
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int SCROLL_STATE_DRAG = 0;
@@ -224,6 +228,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private int[] positionSticky = new int[2];
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
+    private JankyFramesMonitoringListener jankyFramesMonitoringListener;
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
@@ -243,6 +248,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         super.onAttach(context);
         mainParentStatusBarListener = (MainParentStatusBarListener)context;
         homePerformanceMonitoringListener = castContextToHomePerformanceMonitoring(context);
+        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context);
         requestStatusBarDark();
     }
 
@@ -296,6 +302,13 @@ public class HomeFragment extends BaseDaggerFragment implements
     private HomePerformanceMonitoringListener castContextToHomePerformanceMonitoring(Context context) {
         if(context instanceof HomePerformanceMonitoringListener) {
             return (HomePerformanceMonitoringListener) context;
+        }
+        return null;
+    }
+
+    private JankyFramesMonitoringListener castContextToJankyFramesMonitoring(Context context) {
+        if(context instanceof JankyFramesMonitoringListener) {
+            return (JankyFramesMonitoringListener) context;
         }
         return null;
     }
@@ -636,6 +649,23 @@ public class HomeFragment extends BaseDaggerFragment implements
             }
 
             adapter.submitList(data);
+            if (jankyFramesMonitoringListener != null && !isCache && jankyFramesMonitoringListener.needToSubmitDynamicChannelCount()) {
+                Map<String, Integer> layoutCounter = new HashMap<>();
+                for (Visitable visitable: data) {
+                    if (visitable instanceof DynamicChannelViewModel) {
+                        DynamicChannelViewModel dynamicChannelViewModel = (((DynamicChannelViewModel) visitable));
+                        DynamicHomeChannel.Channels channel = dynamicChannelViewModel.getChannel();
+                        if (channel != null && layoutCounter.get(channel.getLayout()) != null) {
+                            int currentCount = layoutCounter.get(channel.getLayout());
+                            layoutCounter.put(channel.getLayout(), ++currentCount);
+                        } else if (layoutCounter.get(channel.getLayout()) == null) {
+                            layoutCounter.put(channel.getLayout(), 1);
+                        }
+                    }
+                }
+
+                jankyFramesMonitoringListener.submitDynamicChannelCount(layoutCounter);
+            }
 
             if (isDataValid(data)) {
                 removeNetworkError();
@@ -748,7 +778,8 @@ public class HomeFragment extends BaseDaggerFragment implements
                 this,
                 this,
                 this,
-                homeRecyclerView.getRecycledViewPool()
+                homeRecyclerView.getRecycledViewPool(),
+                this
         );
         AsyncDifferConfig<HomeVisitable> asyncDifferConfig =
                 new AsyncDifferConfig.Builder<HomeVisitable>(new HomeVisitableDiffUtil())
@@ -1331,6 +1362,22 @@ public class HomeFragment extends BaseDaggerFragment implements
         return isLightThemeStatusBar;
     }
 
+    @Override
+    public void onPopularKeywordSectionReloadClicked(int position, @NotNull DynamicHomeChannel.Channels channel) {
+        viewModel.getPopularKeywordData();
+        TrackApp.getInstance().getGTM().sendGeneralEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickReload(channel));
+    }
+
+    @Override
+    public void onPopularKeywordItemImpressed(@NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
+        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword));
+    }
+
+    @Override
+    public void onPopularKeywordItemClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
+        RouteManager.route(getContext(),applink);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickItem(channel, position, keyword));
+    }
 
     protected void registerBroadcastReceiverTokoCash() {
         if (getActivity() == null)
@@ -1781,4 +1828,5 @@ public class HomeFragment extends BaseDaggerFragment implements
             index++;
         }
     }
+
 }

@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.checkout.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -35,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
@@ -1218,8 +1220,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                                        String transactionId,
                                                        String eventAction,
                                                        String eventLabel) {
+        String sessionId = "";
+        Context context = getContext();
+        if(context != null){
+            IrisSession irisSession = new IrisSession(context);
+            sessionId = irisSession.getSessionId();
+
+        }
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-                stringObjectMap, transactionId, isTradeIn(), eventAction, eventLabel
+                stringObjectMap, transactionId, sessionId, isTradeIn(), eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
     }

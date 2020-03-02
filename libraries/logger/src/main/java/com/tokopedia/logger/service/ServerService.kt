@@ -12,6 +12,10 @@ import com.tokopedia.logger.utils.globalScopeLaunch
 class ServerService : Service() {
     private val binder = ServerServiceBinder()
 
+    companion object {
+        var isRunning = false
+    }
+
     class ServerServiceBinder : Binder() {
         fun getService(): ServerService {
             return ServerService()
@@ -23,14 +27,17 @@ class ServerService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if(isRunning) stopSelf()
         globalScopeLaunch({
             LogManager.deleteExpiredLogs()
             if(isNetworkAvailable(application) and (LogManager.getCount() > 0)) {
                 LogManager.sendLogToServer()
             }
-            stopSelf()
         }, {
             it.printStackTrace()
+        },{
+            isRunning = false
+            stopSelf()
         })
         return super.onStartCommand(intent, flags, startId)
     }

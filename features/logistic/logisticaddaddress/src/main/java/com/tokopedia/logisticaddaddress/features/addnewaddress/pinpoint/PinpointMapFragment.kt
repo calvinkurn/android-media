@@ -380,7 +380,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
                 currentLat = getDistrictDataUiModel.latitude.toDouble()
                 currentLong = getDistrictDataUiModel.longitude.toDouble()
                 moveMap(getLatLng(currentLat, currentLong))
-                showNotFoundLocation("")
+                showNotFoundLocation()
             } else {
                 doAfterSuccessPlaceGetDistrict(getDistrictDataUiModel)
             }
@@ -403,25 +403,23 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         updateGetDistrictBottomSheet(savedModel)
     }
 
-    override fun onSuccessAutofill(autofillDataUiModel: Data, errMsg: String) {
+    override fun onSuccessAutofill(autofillDataUiModel: Data) {
         if (!isFullFlow) {
-            if (errMsg.isNotEmpty() || autofillDataUiModel.postalCode.isEmpty() || autofillDataUiModel.districtId == 0) {
-                showNotFoundLocation(errMsg)
+            if (autofillDataUiModel.postalCode.isEmpty() || autofillDataUiModel.districtId == 0) {
+                showNotFoundLocation()
             } else {
                 doAfterSuccessAutofill(autofillDataUiModel)
             }
         } else doAfterSuccessAutofill(autofillDataUiModel)
     }
 
-    private fun showNotFoundLocation(errMsg: String) {
+    private fun showNotFoundLocation() {
         whole_loading_container?.visibility = View.GONE
         getdistrict_container?.visibility = View.GONE
         invalid_container?.visibility = View.VISIBLE
         tv_address_getdistrict?.visibility = View.GONE
 
-        var errorMessage = errMsg
-        if (errorMessage.isEmpty()) errorMessage = getString(R.string.not_found_location)
-        invalid_title?.text = errorMessage
+        invalid_title?.text = getString(R.string.not_found_location)
         invalid_desc?.text = getString(R.string.not_found_location_desc)
         invalid_img?.setImageResource(R.drawable.tokopedia_konslet)
         invalid_button?.visibility = View.GONE
