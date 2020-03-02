@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.text.TextUtils
 import android.view.View
@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
-import com.tokopedia.shop.newproduct.view.datamodel.ShopProductEtalaseTitleViewModel
 
 /**
  * Created by normansyahputa on 2/22/18.

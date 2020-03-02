@@ -1,12 +1,8 @@
-package com.tokopedia.shop.home.view.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
 
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatRatingBar
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -14,10 +10,8 @@ import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.shop.R
-import com.tokopedia.shop.analytic.model.ShopTrackProductTypeDef
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
-import com.tokopedia.shop.newproduct.view.listener.ShopProductClickedListener
 
 import java.text.NumberFormat
 import java.text.ParseException

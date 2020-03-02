@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.shop.R
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
 import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
@@ -23,7 +24,7 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
-    @Named(HomeConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT)
+    @Named(GQL_GET_SHOP_PAGE_HOME_LAYOUT)
     fun getShopFeaturedProductQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_page_home_layout)
     }

@@ -1,6 +1,6 @@
 package com.tokopedia.shop.home.util.mapper
 
-import com.tokopedia.shop.home.HomeConstant.FEATURED_PRODUCT_WIDGET
+import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
@@ -17,7 +17,7 @@ object ShopPageHomeMapper {
         return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
             shopLayoutWidgetResponse.listWidget.onEach {
                 when (it.name.toLowerCase()) {
-                    FEATURED_PRODUCT_WIDGET.toLowerCase() -> {
+                    PRODUCT.toLowerCase() -> {
                         add(mapToShopHomeCarouselProductUiModel(it, isMyOwnProduct))
                     }
                 }

@@ -15,12 +15,14 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
@@ -55,7 +57,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private val shopHomeAdapterTypeFactory by lazy {
         ShopHomeAdapterTypeFactory()
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -106,28 +107,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
-//        val selectedSeries = mutableListOf<ShopProductViewModel>()
-//
-//        selectedSeries.add(ShopProductViewModel())
-//        selectedSeries.add(ShopProductViewModel())
-//        selectedSeries.add(ShopProductViewModel())
-//        selectedSeries.add(ShopProductViewModel())
-//        selectedSeries.add(ShopProductViewModel())
-//        selectedSeries.add(ShopProductViewModel())
-//
-//        val carousellProductModel = ShopHomeCarousellProductUiModel(
-//                header = ShopHomeCarousellProductUiModel.Header(
-//                        title = "Title", ctaText = "Cta"
-//                ),
-//                productList = selectedSeries
-//        )
-        data.onEach {
-            when(it){
-                is ShopHomeCarousellProductUiModel -> {
-                    shopHomeAdapter.setFeaturedProductData(it)
-                }
-            }
-        }
+        shopHomeAdapter.setHomeLayoutData(data)
+//        adapter.addElement(HomeConstant.tripleItemImage)
+//        adapter.addElement(HomeConstant.sliderSquareWidget)
+//        adapter.addElement(HomeConstant.sliderBannerWidget)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory> {

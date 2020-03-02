@@ -1,6 +1,5 @@
-package com.tokopedia.shop.home.view.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder
 
-import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -10,14 +9,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapter
 import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapterTypeFactory
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 
 /**
  * Created by normansyahputa on 2/22/18.

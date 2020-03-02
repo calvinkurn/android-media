@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
-import com.tokopedia.shop.home.view.viewholder.ShopHomeProductItemCarouselViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductItemCarouselViewHolder
 
 class ShopPageHomeCarousellAdapterTypeFactory() : BaseAdapterTypeFactory() {
 
@@ -18,7 +18,7 @@ class ShopPageHomeCarousellAdapterTypeFactory() : BaseAdapterTypeFactory() {
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             ShopHomeProductItemCarouselViewHolder.LAYOUT -> {
-                ShopHomeProductItemCarouselViewHolder(parent, null,shopPageHomeCarAdapter?.uiModel)
+                ShopHomeProductItemCarouselViewHolder(parent, null, shopPageHomeCarAdapter?.uiModel)
             }
             else -> {
                 return super.createViewHolder(parent, type)

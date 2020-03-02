@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view.viewholder
+package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.content.res.Resources
 import android.view.View
