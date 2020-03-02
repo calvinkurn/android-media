@@ -64,6 +64,8 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_DEFAULT_IMG_URL
+import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_WITH_PROMO_IMG_URL
 import com.tokopedia.purchase_platform.common.data.api.CartApiInterceptor
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
@@ -1277,12 +1279,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderCartEmpty(cartListData: CartListData) {
         FLAG_IS_CART_EMPTY = true
 
-        val promoStackingData = getPromoGlobalData(cartListData)
-        if (promoStackingData.state !== TickerPromoStackingCheckoutView.State.EMPTY) {
-            renderPromoGlobal(promoStackingData)
-        }
-
-        renderEmptyCartPlaceholder()
+        // check here whether show default empty cart or empty cart with promo
+        renderCartEmptyWithPromo()
         enableSwipeRefresh()
         sendAnalyticsOnDataCartIsEmpty()
         showEmptyCartContainer()
@@ -1343,7 +1341,27 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderEmptyCartPlaceholder() {
-        cartAdapter.addCartEmptyData()
+        // cartAdapter.addCartEmptyData()
+    }
+
+    private fun renderCartEmptyDefault() {
+        val cartEmptyHolderData = CartEmptyHolderData(
+                title = getString(R.string.checkout_module_keranjang_belanja_kosong_new),
+                desc = getString(R.string.checkout_empty_cart_sub_message_new),
+                imgUrl = CART_EMPTY_DEFAULT_IMG_URL,
+                btnText = getString(R.string.checkout_module_mulai_belanja)
+        )
+        cartAdapter.addCartEmptyData(cartEmptyHolderData)
+    }
+
+    private fun renderCartEmptyWithPromo() {
+        val cartEmptyWithPromoHolderData = CartEmptyHolderData(
+                title = getString(R.string.cart_empty_with_promo_title),
+                desc = getString(R.string.cart_empty_with_promo_desc),
+                imgUrl = CART_EMPTY_WITH_PROMO_IMG_URL,
+                btnText = getString(R.string.cart_empty_with_promo_btn)
+        )
+        cartAdapter.addCartEmptyData(cartEmptyWithPromoHolderData)
     }
 
     private fun getPromoGlobalData(cartListData: CartListData): PromoStackingData {
