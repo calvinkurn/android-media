@@ -241,7 +241,7 @@ class OrderListViewHolder(itemView: View?, var orderListAnalytics: OrderListAnal
     private fun setClickListeners(order: Order) {
         orderListBtnOverflow?.setOnClickListener {
             val popup = PopupMenu(it.context, it)
-            popup.menu.add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Bantuan")
+            popup.menu.add(Menu.NONE, R.id.action_bantuan, Menu.NONE, "Hubungi Tokopedia Care")
             popup.menu.add(Menu.NONE, R.id.action_order_detail, Menu.NONE, "Lihat Order Detail")
             popup.setOnMenuItemClickListener(OnMenuPopupClicked(it.context, order))
             popup.show()

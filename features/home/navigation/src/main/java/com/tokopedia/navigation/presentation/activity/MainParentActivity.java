@@ -307,7 +307,7 @@ public class MainParentActivity extends BaseActivity implements
             Intent intent = RouteManager.getIntent(this,
                     ApplinkConstInternalMarketplace.ONBOARDING);
             startActivity(intent);
-            finish();
+           // finish();
         }
     }
 
@@ -645,7 +645,7 @@ public class MainParentActivity extends BaseActivity implements
     @NotNull
     private boolean checkAppSignature(){
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
-            finish();
+            //finish();
         }
         return true;
     }
@@ -708,7 +708,7 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void reloadPage() {
-        finish();
+       // finish();
         startActivity(getIntent());
     }
 
@@ -771,7 +771,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private void doubleTapExit() {
         if (doubleTapExit) {
-            this.finish();
+            //this.finish();
         } else {
             doubleTapExit = true;
             Toast.makeText(this, R.string.exit_message, Toast.LENGTH_SHORT).show();
