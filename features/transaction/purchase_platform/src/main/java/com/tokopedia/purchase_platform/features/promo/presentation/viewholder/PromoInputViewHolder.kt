@@ -18,7 +18,7 @@ class PromoInputViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoInputUiModel) {
-        renderPromoInputNotError(element)
+        itemView.text_field_input_promo.textFieldInput.setText(element.uiData.promoCode)
         itemView.text_field_input_promo.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(p0: Editable?) {
             }
@@ -27,6 +27,7 @@ class PromoInputViewHolder(private val view: View,
             }
 
             override fun onTextChanged(text: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                element.uiData.promoCode = text.toString()
                 if (text?.isNotEmpty() == true) {
                     itemView.button_apply_promo.isEnabled = true
                     itemView.text_field_input_promo.setFirstIcon(R.drawable.unify_chips_ic_close)

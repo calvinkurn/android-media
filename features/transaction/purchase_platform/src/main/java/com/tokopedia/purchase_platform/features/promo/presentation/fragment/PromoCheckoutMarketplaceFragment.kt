@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -232,6 +233,30 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     // --- FRAGMENT LEVEL ACTION
+
+    private fun showSavePromoDialog() {
+        activity?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle("Simpan promo sebelum keluar?")
+                setDescription("Kamu baru saja mengubah pilihan promo. Mau disimpan?")
+                setPrimaryCTAText("Simpan Promo Baru")
+                setSecondaryCTAText("Keluar Halaman")
+                setPrimaryCTAClickListener {
+                    // Todo : Hit validate use
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                    it.finish()
+                }
+            }.show()
+        }
+    }
+
+    override fun onBackPressed() {
+        // Todo : validate if has any changes but have not hit validate use
+        showSavePromoDialog()
+    }
 
     override fun onClickResetPromo() {
         val promoList = HashMap<Int, Visitable<*>>()

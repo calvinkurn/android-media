@@ -4,4 +4,6 @@ interface ToolbarPromoCheckoutListener {
 
     fun onClickResetPromo()
 
+    fun onBackPressed()
+
 }

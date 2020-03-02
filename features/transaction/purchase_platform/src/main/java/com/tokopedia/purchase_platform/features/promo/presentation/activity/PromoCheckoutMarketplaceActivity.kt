@@ -7,11 +7,18 @@ import com.tokopedia.purchase_platform.features.promo.presentation.fragment.Prom
 
 class PromoCheckoutMarketplaceActivity: BaseSimpleActivity() {
 
+    lateinit var fragment: PromoCheckoutMarketplaceFragment
+
     override fun getNewFragment(): Fragment {
-        return PromoCheckoutMarketplaceFragment()
+        fragment = PromoCheckoutMarketplaceFragment()
+        return fragment
     }
 
     override fun getLayoutRes(): Int {
         return R.layout.activity_promo_checkout
+    }
+
+    override fun onBackPressed() {
+        fragment.onBackPressed()
     }
 }

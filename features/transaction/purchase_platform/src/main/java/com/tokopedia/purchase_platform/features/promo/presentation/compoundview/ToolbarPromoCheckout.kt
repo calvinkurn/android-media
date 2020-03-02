@@ -44,7 +44,7 @@ class ToolbarPromoCheckout : Toolbar {
         buttonResetPromo = view.findViewById(R.id.button_reset_promo)
 
         buttonBack.setOnClickListener {
-            (context as Activity).finish()
+            listener.onBackPressed()
         }
 
         buttonResetPromo.setOnClickListener {
