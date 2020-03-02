@@ -10,12 +10,16 @@ import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.BalanceViewHolder
+import com.tokopedia.sellerhome.settings.view.viewholder.DividerViewHolder
+import com.tokopedia.sellerhome.settings.view.viewholder.SettingTitleViewHolder
 
 class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
             BalanceViewHolder.LAYOUT -> BalanceViewHolder(parent)
+            DividerViewHolder.LAYOUT -> DividerViewHolder(parent)
+            SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -25,11 +29,11 @@ class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTyp
     }
 
     override fun type(dividerUiModel: DividerUiModel): Int {
-        return BalanceViewHolder.LAYOUT
+        return DividerViewHolder.LAYOUT
     }
 
     override fun type(settingTitleUiModel: SettingTitleUiModel): Int {
-        return BalanceViewHolder.LAYOUT
+        return SettingTitleViewHolder.LAYOUT
     }
 
     override fun type(menuItemUiModel: MenuItemUiModel): Int {

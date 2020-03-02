@@ -4,20 +4,17 @@
     android:layout_height="70dp"
     android:paddingTop="10dp"
     android:paddingBottom="10dp"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <View
+    <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_divider_thin"
-        android:background="@color/setting_divider_color"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/balanceTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text = "Saldo"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/guidelineVertical"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +26,6 @@
         android:id="@+id/balanceValue"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Rp523.299.490"
         app:layout_constraintTop_toBottomOf="@id/balanceTitle"
         app:layout_constraintStart_toStartOf="@id/guidelineVertical"
         app:layout_constraintEnd_toEndOf="parent"

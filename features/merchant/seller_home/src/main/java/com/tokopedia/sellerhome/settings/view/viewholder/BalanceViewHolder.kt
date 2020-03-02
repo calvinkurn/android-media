@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.BalanceUiModel
+import kotlinx.android.synthetic.main.setting_balance.view.*
 
 class BalanceViewHolder(itemView: View): AbstractViewHolder<BalanceUiModel>(itemView){
 
@@ -13,7 +14,9 @@ class BalanceViewHolder(itemView: View): AbstractViewHolder<BalanceUiModel>(item
         val LAYOUT = R.layout.setting_balance
     }
 
-    override fun bind(element: BalanceUiModel?) {
-
+    override fun bind(element: BalanceUiModel) {
+        with(itemView) {
+            balanceTitle.text = element.balanceTitle
+        }
     }
 }
