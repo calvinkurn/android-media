@@ -144,14 +144,14 @@ class RechargeGeneralViewModelTest {
         assertEquals(actual, mapOf(RechargeGeneralViewModel.PARAM_MENU_ID to menuId))
     }
 
-    @Test
-    fun createParams_Full() {
-        val menuId = 1
-        val operatorId = 1
-
-        val actual = rechargeGeneralViewModel.createParams(menuId, operatorId)
-        assertEquals(actual, mapOf(
-                RechargeGeneralViewModel.PARAM_MENU_ID to menuId,
-                RechargeGeneralViewModel.PARAM_OPERATOR to operatorId))
-    }
+//    @Test
+//    fun createParams_Full() {
+//        val menuId = 1
+//        val operatorId = 1
+//
+//        val actual = rechargeGeneralViewModel.createParams(menuId, operatorId)
+//        assertEquals(actual, mapOf(
+//                RechargeGeneralViewModel.PARAM_MENU_ID to menuId,
+//                RechargeGeneralViewModel.PARAM_OPERATOR to operatorId))
+//    }
 }

@@ -35,7 +35,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val homeFeedsListener: HomeFeedsListener,
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
-                         private val parentRecycledViewPool: RecyclerView.RecycledViewPool) : BaseAdapterTypeFactory(), HomeTypeFactory {
+                         private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
+                         private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val productLayout = HashSet(
             listOf(
@@ -134,6 +135,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return RetryViewHolder.LAYOUT
     }
 
+    override fun type(popularKeywordListViewModel: PopularKeywordListViewModel): Int {
+        return PopularKeywordViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -178,9 +183,19 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> BannerImageViewHolder.LAYOUT
 
             /**
+             * refer to popular keyword layout com.tokopedia.home.R.layout#layout_popular_image
+             */
+            DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> PopularKeywordViewHolder.LAYOUT
+
+            /**
              * refer to gif banner layout com.tokopedia.home.R.layout#home_dc_default_error_prompt
              */
             DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> ErrorPromptViewHolder.LAYOUT
+
+            /**
+             * refer to recommendation list carousel com.tokopedia.home.R.layout#home_dc_list_carousel
+             */
+            DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> RecommendationListCarouselViewHolder.LAYOUT
             else -> EmptyBlankViewHolder.LAYOUT
         }
     }
@@ -215,6 +230,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             PlayCardViewHolder.LAYOUT -> viewHolder = PlayCardViewHolder(view, listener)
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener, countDownListener)
+            PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
+            RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

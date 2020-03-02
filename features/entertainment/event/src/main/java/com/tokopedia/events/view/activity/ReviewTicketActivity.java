@@ -197,6 +197,11 @@ public class ReviewTicketActivity extends EventBaseActivity implements
     }
 
     @Override
+    public void showErrorRenderFromPackage() {
+        showToastMessage(getString(R.string.error_message));
+    }
+
+    @Override
     public void renderFromPackageVM(PackageViewModel packageViewModel, SelectedSeatViewModel selectedSeats, int customText1) {
         gotoPromoTv.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable
                 (this, R.drawable.promo_code), null, null, null);

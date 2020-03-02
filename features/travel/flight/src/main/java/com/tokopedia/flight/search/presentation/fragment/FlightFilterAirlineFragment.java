@@ -1,10 +1,10 @@
 package com.tokopedia.flight.search.presentation.fragment;
 
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 
-import com.tokopedia.flight.R;
-import com.tokopedia.flight.search.presentation.adapter.FlightFilterAirlineAdapterTypeFactory;
+import com.tokopedia.flight.filter.presentation.adapter.FlightFilterAirlineAdapterTypeFactory;
 import com.tokopedia.flight.search.presentation.fragment.base.BaseFlightFilterFragment;
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel;
 import com.tokopedia.flight.search.presentation.model.resultstatistics.AirlineStat;

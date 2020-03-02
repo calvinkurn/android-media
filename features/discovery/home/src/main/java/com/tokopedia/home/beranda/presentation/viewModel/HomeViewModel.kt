@@ -8,10 +8,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common_wallet.balance.view.WalletBalanceModel
 import com.tokopedia.home.beranda.common.HomeDispatcherProvider
+import com.tokopedia.home.beranda.data.mapper.HomeDataMapper
+import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.data.model.TokopointHomeDrawerData
 import com.tokopedia.home.beranda.data.model.TokopointsDrawer
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -40,6 +43,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.withContext
 import retrofit2.Response
 import rx.Observable
 import rx.Subscriber
@@ -65,6 +69,7 @@ open class HomeViewModel @Inject constructor(
         private val getHomeReviewSuggestedUseCase: GetHomeReviewSuggestedUseCase,
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
+        private val popularKeywordUseCase: GetPopularKeywordUseCase,
         private val getBusinessWidgetTab: GetBusinessWidgetTab,
         private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
         private val homeDispatcher: HomeDispatcherProvider
@@ -134,6 +139,7 @@ open class HomeViewModel @Inject constructor(
     private var getSuggestedReviewJob: Job? = null
     private var getPendingCashBalanceJob: Job? = null
     private var dismissReviewJob: Job? = null
+    private var getPopularKeywordJob: Job? = null
     private var buWidgetJob: Job? = null
     private var jobChannel: Job? = null
     private val channel = Channel<Triple<Int, Int, HomeVisitable?>>()
@@ -290,6 +296,7 @@ open class HomeViewModel @Inject constructor(
             newHomeViewModel = evaluatePlayWidget(newHomeViewModel)
             newHomeViewModel = evaluateBuWidgetData(newHomeViewModel)
             newHomeViewModel = evaluateRecommendationSection(newHomeViewModel)
+            newHomeViewModel = evaluatePopularKeywordComponent(newHomeViewModel)
             return newHomeViewModel
         }
         return homeDataModel
@@ -534,6 +541,23 @@ open class HomeViewModel @Inject constructor(
         return homeDataModel
     }
 
+    private fun evaluatePopularKeywordComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
+        homeDataModel?.let { homeViewModel ->
+
+            val list = homeViewModel.list.toMutableList()
+            // find the old data from current list
+            _homeLiveData.value?.list?.forEachIndexed{pos, data ->
+                run {
+                    if (data is PopularKeywordListViewModel && pos != -1) {
+                        list[pos] = data
+                    }
+                }
+            }
+            homeViewModel.copy(list = list)
+        }
+        return homeDataModel
+    }
+
     fun getRecommendationFeedSectionPosition() = (_homeLiveData.value?.list?.size?:0)-1
 
 // =================================================================================
@@ -552,6 +576,7 @@ open class HomeViewModel @Inject constructor(
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
+                    getPopularKeyword()
 
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
@@ -780,7 +805,7 @@ open class HomeViewModel @Inject constructor(
             }
         }
     }
-    
+
     private suspend fun updateChannel(channel: Channel<Triple<Int, Int, HomeVisitable?>>){
         for(data in channel){
             val newList = _homeLiveData.value?.list?.toMutableList()
@@ -825,4 +850,45 @@ open class HomeViewModel @Inject constructor(
         data.isShowAnnouncement = walletBalanceModel.isShowAnnouncement
         return data
     }
+    private fun getPopularKeyword() {
+        val data = _homeLiveData.value?.list?.find { it is PopularKeywordListViewModel }
+        if(data != null && data is PopularKeywordListViewModel) {
+            getPopularKeywordData()
+        }
+    }
+
+    fun getPopularKeywordData() {
+        if(getPopularKeywordJob?.isActive == true) return
+        getPopularKeywordJob = launchCatchError(coroutineContext, {
+            popularKeywordUseCase.setParams()
+            val results = popularKeywordUseCase.executeOnBackground()
+            if (results.data.keywords.size != 0) {
+                val resultList = convertPopularKeywordDataList(results.data.keywords)
+                val currentList = _homeLiveData.value?.list?.copy()?.toMutableList()
+                currentList?.let {
+                    val oldData = currentList.find { it is PopularKeywordListViewModel }
+                    if (oldData != null && oldData is PopularKeywordListViewModel) {
+                        oldData.popularKeywordList = resultList
+                    }
+                    val newHomeViewModel = _homeLiveData.value?.copy(
+                            list = currentList
+                    )
+                    withContext(homeDispatcher.ui()) {
+                        _homeLiveData.value = newHomeViewModel
+                    }
+                }
+            }
+        }){
+            it.printStackTrace()
+        }
+    }
+
+    private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): MutableList<PopularKeywordViewModel> {
+        val dataList: MutableList<PopularKeywordViewModel> = mutableListOf()
+        for (pojo in list) {
+            dataList.add(PopularKeywordViewModel(pojo.url, pojo.imageUrl, pojo.keyword, pojo.productCount))
+        }
+        return dataList
+    }
+
 }

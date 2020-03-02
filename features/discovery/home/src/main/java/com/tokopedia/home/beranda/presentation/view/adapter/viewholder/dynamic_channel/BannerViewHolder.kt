@@ -17,6 +17,8 @@ import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.*
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -32,6 +34,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val indicatorView: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
     private val seeAllPromo: TextView = itemView.findViewById(R.id.see_all_promo)
     private val adapter = HomeBannerAdapter(listOf(), this)
+    private val irisSession  = IrisSession(context)
 
     override fun bind(element: BannerViewModel) {
         try {
@@ -103,20 +106,17 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
             slidesList?.let {
                 HomeTrackingUtils.homeSlidingBannerImpression(context, it[position], position)
                 listener.onPromoScrolled(it[position])
-
-                if (!isCache) {
-                    if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO &&
-                            !it[position].isInvoke) {
-                        listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
-                                it[position]
-                        ))
-                        it[position].invoke()
-                    } else if (!it[position].isInvoke) {
-                        listener.putEEToTrackingQueue(HomePageTracking.getBannerImpressionDataLayer(
-                                it[position]
-                        ))
-                        it[position].invoke()
-                    }
+                if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO &&
+                        !it[position].isInvoke) {
+                    listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
+                            it[position]
+                    ))
+                } else if (!it[position].isInvoke) {
+                    val dataLayer = HomePageTracking.getBannerImpressionDataLayer(
+                            it[position]
+                    )
+                    dataLayer.put(KEY_SESSION_IRIS, irisSession.getSessionId())
+                    listener.putEEToTrackingQueue(dataLayer)
                 }
             }
         }

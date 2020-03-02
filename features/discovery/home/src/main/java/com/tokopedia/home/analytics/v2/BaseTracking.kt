@@ -1,6 +1,7 @@
 package com.tokopedia.home.analytics.v2
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.kotlin.model.ImpressHolder
 
 abstract class BaseTracking {
@@ -14,6 +15,7 @@ abstract class BaseTracking {
         const val PROMO_CLICK = "promoClick"
         const val PRODUCT_CLICK = "productClick"
         const val PROMO_VIEW_IRIS = "promoViewIris"
+        const val CLICK_HOMEPAGE = "clickHomepage"
     }
 
     protected object Category{
@@ -24,7 +26,9 @@ abstract class BaseTracking {
     protected object Action{
         const val KEY = "eventAction"
         const val IMPRESSION = "%s impression"
+        const val IMPRESSION_ON = "impression on \"%s"
         const val CLICK = "%s click"
+        const val CLICK_ON = "click on \"%s"
     }
 
     protected object Label{
@@ -35,16 +39,25 @@ abstract class BaseTracking {
         const val CATEGORY_LABEL = "categoryId"
         const val SHOP_LABEL = "shopId"
         const val NONE = ""
+        const val FORMAT_2_ITEMS = "%s - %s"
+    }
+
+    protected object Value{
+        const val NONE_OTHER = "none / other"
+        const val LIST = "/ - p%s - %s - %s"
+        fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
     }
 
     protected object Ecommerce {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
-        const val CLICK = "click"
-        const val IMPRESSIONS = "impressions"
-        const val PROMO_VIEW = "promoView"
-        const val PROMO_CLICK = "promoClick"
-        const val PROMOTIONS = "promotions"
+        private const val PRODUCT_VIEW = "productView"
+        private const val PRODUCT_CLICK = "productClick"
+        private const val CLICK = "click"
+        private const val IMPRESSIONS = "impressions"
+        private const val PROMO_VIEW = "promoView"
+        private const val PROMO_CLICK = "promoClick"
+        private const val PROMOTIONS = "promotions"
         private const val PRODUCTS = "products"
         private const val ACTION_FIELD = "actionField"
         private const val CURRENCY_CODE = "currencyCode"
@@ -54,33 +67,34 @@ abstract class BaseTracking {
         private const val NONE = "none / other"
 
 
-        const val KEY_ID = "id"
-        const val KEY_NAME = "name"
-        const val KEY_CREATIVE = "creative"
-        const val KEY_CREATIVE_URL = "creative_url"
-        const val KEY_PRICE = "price"
-        const val KEY_BRAND = "brand"
-        const val KEY_VARIANT = "variant"
-        const val KEY_CATEGORY = "category"
-        const val KEY_POSITION = "position"
-        const val KEY_LIST = "list"
-        const val KEY_DIMENSION_83 = "dimension83"
-
+        private const val KEY_ID = "id"
+        private const val KEY_NAME = "name"
+        private const val KEY_CREATIVE = "creative"
+        private const val KEY_CREATIVE_URL = "creative_url"
+        private const val KEY_PROMO_ID = "promo_id"
+        private const val KEY_PROMO_CODE = "promo_code"
+        private const val KEY_PRICE = "price"
+        private const val KEY_BRAND = "brand"
+        private const val KEY_VARIANT = "variant"
+        private const val KEY_CATEGORY = "category"
+        private const val KEY_POSITION = "position"
+        private const val KEY_LIST = "list"
+        private const val KEY_ATTRIBUTION = "attribution"
+        private const val KEY_DIMENSION_83 = "dimension83"
+        private const val KEY_DIMENSION_84 = "dimension84"
 
         fun getEcommercePromoView(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
-                    PROMO_VIEW, DataLayer.listOf(
-                    PROMOTIONS, getPromotions(promotions)
-            )
-            )
+                    PROMO_VIEW, getPromotionsMap(promotions))
         }
 
         fun getEcommercePromoClick(promotions: List<Promotion>): Map<String, Any> {
             return DataLayer.mapOf(
-                    CLICK, DataLayer.listOf(
-                    PROMOTIONS, getPromotions(promotions)
-            )
-            )
+                    PROMO_CLICK, getPromotionsMap(promotions))
+        }
+
+        private fun getPromotionsMap(promotions: List<Promotion>): Map<String, Any> {
+            return DataLayer.mapOf(PROMOTIONS, getPromotions(promotions))
         }
 
         fun getEcommerceProductClick(products: List<Product>, list: String): Map<String, Any> {
@@ -120,45 +134,45 @@ abstract class BaseTracking {
             return DataLayer.listOf(*list.toTypedArray<Any>())
         }
 
-        private fun createPromotionMap(promotion: Promotion) : Map<String, Any>{
-            val map = HashMap<String, Any>()
+        private fun createPromotionMap(promotion: Promotion) : Map<String, String>{
+            val map = HashMap<String, String>()
             map[KEY_ID] = promotion.id
             map[KEY_NAME] = promotion.name
             map[KEY_CREATIVE] = promotion.creative
             map[KEY_CREATIVE_URL] = promotion.creativeUrl
             map[KEY_POSITION] = promotion.position
+            map[KEY_PROMO_ID] = promotion.promoIds
+            map[KEY_PROMO_CODE] = promotion.promoCodes
             return map
         }
 
-        private fun createProductMap(product: Product) : Map<String, Any>{
-            val map = HashMap<String, Any>()
+        private fun createProductMap(product: Product, list: String = "") : Map<String, String>{
+            val map = HashMap<String, String>()
             map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
             map[KEY_BRAND] = product.brand
             map[KEY_VARIANT] = product.variant
             map[KEY_PRICE] = product.productPrice.toString()
             map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition.toString()
-            map[KEY_DIMENSION_83] = if(product.freeOngkir) FREE_ONGKIR else NONE
-            return map
-        }
-        private fun createProductMap(product: Product, list: String) : Map<String, Any>{
-            val map = HashMap<String, Any>()
-            map[KEY_ID] = product.id
-            map[KEY_NAME] = product.name
-            map[KEY_BRAND] = product.brand
-            map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice.toString()
-            map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition.toString()
-            map[KEY_LIST] = list
-            map[KEY_DIMENSION_83] = if(product.freeOngkir) FREE_ONGKIR else NONE
+            map[KEY_POSITION] = product.productPosition
+            map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
+            if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
+            if (list.isNotEmpty()) map[KEY_LIST] = list
             return map
         }
     }
 
-    open class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String): ImpressHolder()
-    open class Product(val id: String, val name: String, val productPrice: Int, val brand: String, val variant: String, val category: String, val productPosition: Int, val freeOngkir: Boolean): ImpressHolder()
+    class Promotion(val id: String, val name: String, val creative: String, val creativeUrl: String, val position: String, val promoIds: String = "", val promoCodes: String = "")
+    open class Product(
+            val name: String,
+            val id: String,
+            val productPrice: String,
+            val brand: String,
+            val category: String,
+            val variant: String,
+            val productPosition: String,
+            val isFreeOngkir: Boolean,
+            val channelId: String = ""): ImpressHolder()
 
     open fun getBasicPromotionView(
         event: String,
@@ -215,6 +229,25 @@ abstract class BaseTracking {
                 Category.KEY, eventCategory,
                 Action.KEY, eventAction,
                 Label.KEY, eventLabel,
+                Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list)
+        )
+    }
+
+    open fun getBasicProductChannelClick(
+            event: String,
+            eventCategory: String,
+            eventAction: String,
+            eventLabel: String,
+            list: String,
+            channelId: String,
+            products: List<Product>
+    ): Map<String, Any>{
+        return DataLayer.mapOf(
+                Event.KEY, event,
+                Category.KEY, eventCategory,
+                Action.KEY, eventAction,
+                Label.KEY, eventLabel,
+                Label.CHANNEL_LABEL, channelId,
                 Ecommerce.KEY, Ecommerce.getEcommerceProductClick(products, list)
         )
     }

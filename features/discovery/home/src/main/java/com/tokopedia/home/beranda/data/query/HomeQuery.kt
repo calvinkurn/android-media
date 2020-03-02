@@ -113,6 +113,7 @@ object HomeQuery{
                 title
                 description
                 url
+                back_color
                 cta {
                   type
                   mode

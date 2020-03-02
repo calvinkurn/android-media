@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view;
 
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData;
 
 import java.util.List;
@@ -12,11 +12,11 @@ import java.util.List;
 
 public interface ShippingDurationAdapterListener {
 
-    void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModelList,
+    void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModelList,
                                    int cartPosition, ServiceData serviceData);
 
     boolean isToogleYearEndPromotionOn();
 
-    void onLogisticPromoClicked(LogisticPromoViewModel data);
+    void onLogisticPromoClicked(LogisticPromoUiModel data);
 
 }
