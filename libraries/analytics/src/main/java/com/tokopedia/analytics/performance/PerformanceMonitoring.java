@@ -35,7 +35,7 @@ public class PerformanceMonitoring {
         try {
             FirebasePerformance fp = FirebasePerformance.getInstance();
             if (fp != null) {
-                this.context = context;
+                this.context = context.getApplicationContext();
                 trace = fp.newTrace(traceName);
                 this.traceName = traceName;
                 if (trace != null) {
