@@ -34,9 +34,11 @@ import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
@@ -59,7 +61,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         NotificationUpdateContract.View,
         NotificationItemListener,
-        NotificationUpdateFilterAdapter.FilterAdapterListener,
+        NotificationFilterListener,
         NotificationUpdateLongerTextFragment.LongerContentListener {
 
     private var cursor = ""
@@ -377,7 +379,18 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-    override fun showTextLonger(element: NotificationItemViewBean) {
+    override fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean) {
+        when (bottomSheet) {
+            is BottomSheetType.LongerContent -> showLongerContent(element)
+            is BottomSheetType.ProductCheckout -> showProductCheckout(element)
+        }
+    }
+
+    private fun showProductCheckout(element: NotificationItemViewBean) {
+
+    }
+
+    private fun showLongerContent(element: NotificationItemViewBean) {
         val bundle = Bundle()
 
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
@@ -408,6 +421,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
+
+    override fun isHasNotification(): Boolean = false
 
     companion object {
         const val PARAM_CONTENT_TITLE = "content title"

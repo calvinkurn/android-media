@@ -25,20 +25,20 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.consts.buyerMenu
 import com.tokopedia.notifcenter.data.consts.sellerMenu
-import com.tokopedia.notifcenter.data.entity.DataNotification
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.mapper.NotificationMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
+import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.state.EmptySource
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.di.DaggerNotificationTransactionComponent
+import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationTransactionAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactory
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.transaction.NotificationTransactionFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.transaction.NotificationFilterViewHolder
 import com.tokopedia.notifcenter.presentation.viewmodel.NotificationTransactionViewModel
 import com.tokopedia.notifcenter.util.endLess
 import com.tokopedia.notifcenter.util.viewModelProvider
@@ -47,8 +47,7 @@ import kotlinx.android.synthetic.main.fragment_notification_transaction.*
 import javax.inject.Inject
 
 class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-        NotificationItemListener,
-        NotificationFilterViewHolder.NotifFilterListener,
+        NotificationItemListener, NotificationFilterListener,
         TransactionMenuListener {
 
     @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -270,7 +269,18 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         return NotificationUpdateAnalytics()
     }
 
-    override fun showTextLonger(element: NotificationItemViewBean) {
+    override fun showNotificationDetail(bottomSheet: BottomSheetType, element: NotificationItemViewBean) {
+        when (bottomSheet) {
+            is BottomSheetType.LongerContent -> showLongerContent(element)
+            is BottomSheetType.ProductCheckout -> showProductCheckout(element)
+        }
+    }
+
+    private fun showProductCheckout(element: NotificationItemViewBean) {
+
+    }
+
+    private fun showLongerContent(element: NotificationItemViewBean) {
         val bundle = Bundle()
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
