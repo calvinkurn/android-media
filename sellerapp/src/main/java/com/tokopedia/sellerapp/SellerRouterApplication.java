@@ -124,7 +124,10 @@ import com.tokopedia.sellerapp.drawer.DrawerSellerHelper;
 import com.tokopedia.sellerapp.utils.FingerprintModelGenerator;
 import com.tokopedia.sellerapp.webview.SellerappWebViewActivity;
 import com.tokopedia.sellerapp.welcome.WelcomeActivity;
+import com.tokopedia.sellerhome.SellerHomeRouter;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
+import com.tokopedia.sellerorder.common.util.SomConsts;
+import com.tokopedia.sellerorder.list.presentation.fragment.SomListFragment;
 import com.tokopedia.shop.ShopModuleRouter;
 import com.tokopedia.shop.ShopPageInternalRouter;
 import com.tokopedia.talk.common.TalkRouter;
@@ -153,6 +156,8 @@ import com.tokopedia.transaction.common.TransactionRouter;
 import com.tokopedia.transaction.orders.UnifiedOrderListRouter;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.withdraw.WithdrawRouter;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -190,7 +195,7 @@ public abstract class SellerRouterApplication extends MainApplication
         FlashSaleRouter,
         LinkerRouter,
         ResolutionRouter,
-        MLPRouter {
+        MLPRouter, SellerHomeRouter {
 
     protected RemoteConfig remoteConfig;
     private DaggerProductComponent.Builder daggerProductBuilder;
@@ -1038,5 +1043,13 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
 
+    }
+
+    @NotNull
+    @Override
+    public Fragment getSellerOrderManageFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString(SomConsts.TAB_ACTIVE, SomConsts.STATUS_ALL_ORDER);
+        return SomListFragment.newInstance(bundle);
     }
 }
