@@ -8,7 +8,7 @@
     <dimen name="product_manage_checkbox_select_vertical_spacing">15dp</dimen>
     <dimen name="product_manage_list_image_size">54dp</dimen>
     <dimen name="product_manage_list_image_horizontal_spacing">14dp</dimen>
-    <dimen name="product_manage_vertical_spacing">14dp</dimen>
+    <dimen name="product_manage_vertical_spacing">12dp</dimen>
     <dimen name="product_manage_list_image_vertical_spacing">2dp</dimen>
     <dimen name="product_manage_status_horizontal_spacing">8dp</dimen>
     <dimen name="product_manage_text_stock_vertical_spacing">6dp</dimen>
@@ -19,4 +19,7 @@
     <dimen name="product_manage_button_horizontal_spacing">8dp</dimen>
     <dimen name="product_manage_more_option_vertical_spacing">37dp</dimen>
     <dimen name="product_manage_container_spacing">17dp</dimen>
+    <dimen name="product_manage_horizontal_spacing">14dp</dimen>
+    <dimen name="product_manage_filter_spacing">4dp</dimen>
+    <dimen name="product_manage_search_bar_vertical_spacing">10dp</dimen>
 </resources>
