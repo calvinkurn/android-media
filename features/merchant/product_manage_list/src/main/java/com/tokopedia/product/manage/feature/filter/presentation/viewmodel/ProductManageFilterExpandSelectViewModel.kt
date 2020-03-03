@@ -25,7 +25,7 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
         selectedElement?.let { selected ->
             val selectedIndex = currentData?.indexOf(selected)
             selectedIndex?.let {
-                currentData[it].isSelected = true
+                currentData[it].isSelected = false
             }
         }
         _selectData.postValue(currentData)
