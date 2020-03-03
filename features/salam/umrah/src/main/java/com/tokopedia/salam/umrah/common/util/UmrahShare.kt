@@ -47,7 +47,7 @@ class UmrahShare(private val activity: Activity) {
 
     private fun generateBranchLink(data: TravelAgent, loadShare: () -> Unit, doneLoadShare: () -> Unit, context: Context) {
         loadShare()
-        if(true) {
+        if(isBranchUrlActive()) {
             LinkerManager.getInstance().executeShareRequest(
                     LinkerUtils.createShareRequest(0,
                             travelDataToLinkerDataMapper(data, context), object : ShareCallback {
