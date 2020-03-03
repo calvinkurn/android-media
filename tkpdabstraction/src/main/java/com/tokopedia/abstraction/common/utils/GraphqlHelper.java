@@ -2,8 +2,6 @@ package com.tokopedia.abstraction.common.utils;
 
 import android.content.res.Resources;
 
-import com.tokopedia.track.TrackApp;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
