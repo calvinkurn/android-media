@@ -164,21 +164,23 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/property_price_deals_layout"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/dp_0"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_12"
             app:layout_constraintBottom_toTopOf="@id/container_pay_at_hotel"
             app:layout_constraintEnd_toEndOf="@+id/title"
+            app:layout_constraintHorizontal_bias="1"
             app:layout_constraintLeft_toLeftOf="@+id/title"
             app:layout_constraintRight_toRightOf="@+id/title"
             app:layout_constraintStart_toStartOf="@+id/title"
             app:layout_constraintTop_toBottomOf="@+id/rating_counter"
-            app:layout_goneMarginBottom="@dimen/dp_16">
+            app:layout_goneMarginBottom="@dimen/layout_lvl2">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/hotel_property_item_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_12"
                 android:background="@drawable/bg_hotel_property_tag"
                 android:paddingLeft="@dimen/dp_4"
                 android:paddingTop="@dimen/dp_2"
@@ -188,12 +190,11 @@
                 android:textColor="@color/Red_R400"
                 android:visibility="gone"
                 app:fontSize="micro"
-                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="small"
                 app:typographyWeight="bold"
-                tools:text="la Promo Login kkk lalala "
+                tools:text="Promo Login lallalal yeyeyyeye lalallaa yeyeyye ookeoseokfj"
                 tools:visibility="visible" />
 
             <LinearLayout
@@ -202,14 +203,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dp_4"
                 android:orientation="horizontal"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1"
-                app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_goneMarginTop="@dimen/dp_16"
-                tools:visibility=""
-                app:layout_constraintTop_toBottomOf="@+id/hotel_property_item_tag">
+                app:layout_constraintTop_toBottomOf="@+id/hotel_property_item_tag"
+                app:layout_goneMarginTop="@dimen/dp_16">
 
                 <com.tokopedia.design.component.TextViewCompat
                     android:id="@+id/info"
@@ -240,37 +236,37 @@
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/price"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:gravity="end"
                 android:singleLine="true"
                 app:fontSize="small"
-                app:layout_constraintTop_toBottomOf="@id/container_price_origin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/container_price_origin"
+                app:layout_goneMarginTop="@dimen/dp_34"
                 app:textViewTheme="lightPrimary"
                 app:weight="medium"
-                tools:text="Rp10.800.0000"
-                app:layout_goneMarginTop="@dimen/dp_34"/>
+                tools:text="Rp10.800.0000" />
 
             <com.tokopedia.design.component.TextViewCompat
                 android:id="@+id/include_tax"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:gravity="end"
                 android:text="@string/hotel_item_list_include_pajak"
                 android:textSize="@dimen/sp_10"
                 app:fontSize="micro"
-                app:layout_constraintTop_toBottomOf="@id/price"
-                app:layout_goneMarginBottom="@dimen/dp_8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/price"
                 app:textViewTheme="lightSecondary" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/container_pay_at_hotel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_8"
             android:background="@drawable/bg_hotel_list_pay_at_hotel"
             android:gravity="center"
             android:orientation="horizontal"
@@ -283,7 +279,8 @@
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/property_price_deals_layout">
+            app:layout_constraintTop_toBottomOf="@+id/property_price_deals_layout"
+            tools:visibility="visible">
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:layout_width="@dimen/dp_16"
