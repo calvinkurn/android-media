@@ -46,7 +46,7 @@ class ProductViewHolder(
 
     private fun setTitleAndPrice(product: ProductViewModel) {
         itemView.textTitle.text = product.title
-        itemView.textPrice.text = product.price
+        itemView.textPrice.text = product.priceFormatted
     }
 
     private fun showProductStock(product: ProductViewModel) {
@@ -84,7 +84,7 @@ class ProductViewHolder(
     }
 
     private fun showStockHintImage(product: ProductViewModel) {
-        if(product.isStockEmpty()) itemView.imageStockInformation.show()
+        if(product.isEmpty()) itemView.imageStockInformation.show()
     }
 
     private fun showProductImage(product: ProductViewModel) {
