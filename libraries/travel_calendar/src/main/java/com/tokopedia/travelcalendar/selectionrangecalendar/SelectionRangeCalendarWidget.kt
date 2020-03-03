@@ -50,7 +50,8 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
 
         setTitle(CALENDAR_TITLE)
-        setFullPage(true)
+        isFullpage = true
+        showCloseIcon = true
         setCloseClickListener { this.dismissAllowingStateLoss() }
 
         val childView = View.inflate(context, R.layout.dialog_calendar_multi_pick, null)
@@ -131,14 +132,15 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         setLayoutMargin()
     }
 
-    fun setLayoutMargin() {
+    private fun setLayoutMargin() {
+        var padding16 = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl2).toInt()
+        var padding8 = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt()
 
         val ll = view?.findViewById(R.id.bottom_sheet_wrapper) as View
-        ll.setPadding(0,0,0,0)
+        ll.setPadding(0, padding16,0,padding16)
 
         val header = view?.findViewById(R.id.bottom_sheet_header) as View
-        var padding = resources.getDimension(R.dimen.layout_lvl2).toInt()
-        header.setPadding(padding, 0, padding, 0)
+        header.setPadding(padding16, padding8, padding16, 0)
     }
 
 
