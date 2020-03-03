@@ -25,62 +25,56 @@ class RechargeGeneralViewModel  @Inject constructor(
         dispatcher: CoroutineDispatcher)
     : BaseViewModel(dispatcher) {
 
-    private val _operatorCluster = MutableLiveData<Result<RechargeGeneralOperatorCluster>>()
+    private val mutableOperatorCluster = MutableLiveData<Result<RechargeGeneralOperatorCluster>>()
     val operatorCluster : LiveData<Result<RechargeGeneralOperatorCluster>>
-        get() = _operatorCluster
+        get() = mutableOperatorCluster
 
-    private val _productList = MutableLiveData<Result<RechargeGeneralProductData>>()
+    private val mutableProductList = MutableLiveData<Result<RechargeGeneralProductData>>()
     val productList : LiveData<Result<RechargeGeneralProductData>>
-        get() = _productList
+        get() = mutableProductList
 
-    lateinit var operatorClusterQuery: String
-    lateinit var productListQuery: String
+    fun getOperatorCluster(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
+                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
-    fun getOperatorCluster(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
-        if (::operatorClusterQuery.isInitialized) {
-            launchCatchError(block = {
-                val data = withContext(Dispatchers.Default) {
-                    val graphqlRequest = GraphqlRequest(operatorClusterQuery, RechargeGeneralOperatorCluster.Response::class.java, mapParams)
-                    val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
-                    graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-                }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
-
-                if (data.response.operatorGroups == null) {
-                    throw MessageErrorException(NULL_PRODUCT_ERROR)
-                } else {
-                    _operatorCluster.postValue(Success(data.response))
-                }
-            }) {
-                _operatorCluster.postValue(Fail(it))
+            if (data.response.operatorGroups == null) {
+                throw MessageErrorException(NULL_PRODUCT_ERROR)
+            } else {
+                mutableOperatorCluster.postValue(Success(data.response))
             }
+        }) {
+            mutableOperatorCluster.postValue(Fail(it))
         }
     }
 
-    fun getProductList(mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
-        if (::productListQuery.isInitialized) {
-            launchCatchError(block = {
-                val data = withContext(Dispatchers.Default) {
-                    val graphqlRequest = GraphqlRequest(productListQuery, RechargeGeneralProductData.Response::class.java, mapParams)
-                    val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
-                    graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
-                }.getSuccessData<RechargeGeneralProductData.Response>()
+    fun getProductList(rawQuery: String, mapParams: Map<String, Any>, isLoadFromCloud: Boolean = false) {
+        launchCatchError(block = {
+            val data = withContext(Dispatchers.Default) {
+                val graphqlRequest = GraphqlRequest(rawQuery, RechargeGeneralProductData.Response::class.java, mapParams)
+                val graphqlCacheStrategy = GraphqlCacheStrategy.Builder(if (isLoadFromCloud) CacheType.CLOUD_THEN_CACHE else CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
+            }.getSuccessData<RechargeGeneralProductData.Response>()
 
-                if (data.response.product == null) {
-                    throw MessageErrorException(NULL_PRODUCT_ERROR)
-                } else {
-                    _productList.postValue(Success(data.response))
-                }
-            }) {
-                _productList.postValue(Fail(it))
+            if (data.response.product == null) {
+                throw MessageErrorException(NULL_PRODUCT_ERROR)
+            } else {
+                mutableProductList.postValue(Success(data.response))
             }
+        }) {
+            mutableProductList.postValue(Fail(it))
         }
     }
 
-    fun createParams(menuID: Int, operator: Int? = null): Map<String, Any> {
-        val params: MutableMap<String, Any> = mutableMapOf()
-        params[PARAM_MENU_ID] = menuID
-        operator?.let { opr -> params[PARAM_OPERATOR] = opr.toString() }
-        return params
+fun createOperatorClusterParams(menuID: Int): Map<String, Int> {
+    return mapOf(PARAM_MENU_ID to menuID)
+}
+
+    fun createProductListParams(menuID: Int, operator: Int): Map<String, Any> {
+        return mapOf(PARAM_MENU_ID to menuID, PARAM_OPERATOR to operator.toString())
     }
 
     companion object {
