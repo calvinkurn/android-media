@@ -79,7 +79,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
@@ -1616,6 +1615,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (trackingQueue!=null) {
             trackingQueue.putEETracking(data);
         }
+    }
+
+    @Override
+    public void sendEETracking(@NotNull HashMap<String, Object> data) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(data);
     }
 
     @Override

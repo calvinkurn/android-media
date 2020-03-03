@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.LocalLoad
+import java.util.HashMap
 
 @SuppressLint("SyntheticAccessor")
 class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListener) : AbstractViewHolder<NewBusinessUnitWidgetDataModel>(view){
@@ -40,6 +41,14 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                 }
             }
         }
+
+        override fun sendEnhanceEcommerce(tracker: HashMap<String, Any>) {
+            listener.sendEETracking(tracker)
+        }
+
+        override fun putEnhanceEcommerce(tracker: HashMap<String, Any>) {
+            listener.putEEToTrackingQueue(tracker)
+        }
     })
 
     private val tabChangeListener = object : BaseOnTabSelectedListener<TabLayout.Tab>{
@@ -49,7 +58,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
 
         override fun onTabSelected(tab: TabLayout.Tab) {
-            BusinessUnitTracking.getPageSelected(tab.text.toString())
+            listener.putEEToTrackingQueue(BusinessUnitTracking.getPageSelected(tab.text.toString()) as HashMap<String, Any>)
             viewPager.currentItem = tab.position
         }
     }

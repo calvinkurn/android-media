@@ -17,6 +17,15 @@ class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitL
     private val errorView = view.findViewById<LocalLoad>(R.id.error_bu_unit_widget)
     private var adapter: BusinessUnitItemAdapter? = null
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
+    private val listenerBusinessUnitItemTrackerListener = object : BusinessUnitItemTrackerListener{
+        override fun onClickTracking(tracker: HashMap<String, Any>) {
+            listener.sendEnhanceEcommerce(tracker)
+        }
+
+        override fun onImpressTracking(tracker: HashMap<String, Any>) {
+            listener.putEnhanceEcommerce(tracker)
+        }
+    }
 
     init {
         errorView.title?.text = itemView.context.getString(R.string.widget_gagal_ditampilkan)
@@ -33,7 +42,7 @@ class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitL
         recyclerView.hide()
         errorView.hide()
         if(recyclerView.adapter == null) {
-            adapter = BusinessUnitItemAdapter(model?.tabPosition ?: -1, model?.tabName ?: "")
+            adapter = BusinessUnitItemAdapter(model?.tabPosition ?: -1, model?.tabName ?: "", listenerBusinessUnitItemTrackerListener)
             recyclerView.adapter = adapter
         }
         adapter?.setPositionWidgetOnHome(positionWidget)
@@ -59,5 +68,12 @@ class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitL
 
     interface BusinessUnitListener{
         fun getBusinessUnit(position: Int)
+        fun sendEnhanceEcommerce(tracker: HashMap<String, Any>)
+        fun putEnhanceEcommerce(tracker: HashMap<String, Any>)
+    }
+
+    interface BusinessUnitItemTrackerListener{
+        fun onClickTracking(tracker: HashMap<String, Any>)
+        fun onImpressTracking(tracker: HashMap<String, Any>)
     }
 }
