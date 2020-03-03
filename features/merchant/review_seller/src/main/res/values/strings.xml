@@ -6,4 +6,5 @@
     <string name="title_review_rating_product">Rating Produk</string>
     <string name="title_review_inbox">Inbox Ulasan</string>
     <string name="period">Periode:</string>
+    <string name="review_text">Ulasan</string>
 </resources>

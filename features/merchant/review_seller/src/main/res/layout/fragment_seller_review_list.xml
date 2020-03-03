@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,12 +6,14 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar_review"
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/review_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:theme="@style/ThemeOverlay.AppCompat.Light"
-        app:layout_collapseMode="pin" />
+        app:headerTitle="@string/review_text"
+        app:headerHasBackButton="true"
+        app:headerHasShadow="false"
+        />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:id="@+id/coordinator"
@@ -24,19 +25,13 @@
             android:id="@+id/app_bar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
-            android:theme="@style/AppTheme.AppBarOverlay">
+            android:background="@color/white">
 
-            <com.tokopedia.design.component.Tabs
+            <com.tokopedia.unifycomponents.TabsUnify
                 android:id="@+id/tab_review"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:theme="@style/ThemeOverlay.AppCompat.Light"
-                app:tabGravity="fill"
-                app:tabIndicatorColor="@color/tkpd_main_green"
-                app:tabMode="fixed"
-                app:tabSelectedTextColor="@color/tkpd_main_green"
-                app:tabTextColor="@color/font_black_disabled_38" />
+                />
 
         </com.google.android.material.appbar.AppBarLayout>
 

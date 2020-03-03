@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_12"
+    android:layout_marginTop="@dimen/dp_8">
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/review_period_filter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        app:chipSize="medium"
+        app:chipText="30 Hari Terakhir"
+        app:chipType="normal"
+        app:centerText="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        />
+
+    <com.tokopedia.unifycomponents.ChipsUnify
+        android:id="@+id/review_sort_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        app:chipSize="medium"
+        app:chipText="Rating Tertinggi"
+        app:chipType="normal"
+        app:centerText="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,4 +1,4 @@
-package com.tokopedia.reviewseller.common
+package com.tokopedia.reviewseller.feature.reviewlist.view.model
 
 import com.tokopedia.reviewseller.feature.reviewlist.view.adapter.SellerReviewListTypeFactory
 

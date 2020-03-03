@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardSummary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/dp_4"
-    app:cardElevation="@dimen/dp_4"
+    android:layout_marginBottom="@dimen/dp_14"
     app:cardUseCompatPadding="true"
-    android:layout_margin="@dimen/dp_16">
+    app:card_type="border">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -69,8 +68,24 @@
             app:layout_constraintStart_toEndOf="@id/ivRatingReview"
             app:layout_constraintTop_toBottomOf="@id/tgFiveReview"
             app:typographyType="body_1"
+            app:typographyWeight="bold"
+            tools:text="1.234" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tgReview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_4"
+            android:layout_marginLeft="@dimen/dp_4"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginBottom="@dimen/dp_12"
+            android:textColor="@color/clr_31353b"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tgFiveReview"
+            app:layout_constraintLeft_toRightOf="@id/tgCountReview"
+            app:typographyType="body_1"
             app:typographyWeight="reguler"
-            tools:text="1.234 Ulasan" />
+            android:text="@string/review_text" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tgLabelPeriodReview"
@@ -84,7 +99,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/tgPeriodReview"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_2"
+            app:typographyType="body_1"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -98,7 +113,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline1"
-            app:typographyType="body_2"
+            app:typographyType="body_1"
             app:typographyWeight="reguler"
             tools:text="1 Des 2019 - Hari Ini" />
 
@@ -112,4 +127,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+</com.tokopedia.unifycomponents.CardUnify>

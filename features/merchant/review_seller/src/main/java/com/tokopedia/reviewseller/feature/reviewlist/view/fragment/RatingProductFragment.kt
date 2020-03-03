@@ -54,6 +54,7 @@ class RatingProductFragment: BaseListFragment<Visitable<*>, SellerReviewListType
     override fun initInjector() {}
 
     override fun loadInitialData() {
+        adapter.addElement(ReviewSellerConstant.filterAndSortComposition)
         adapter.addElement(ReviewSellerConstant.summaryReviewProduct)
         adapter.addElement(ReviewSellerConstant.listProductReview)
     }

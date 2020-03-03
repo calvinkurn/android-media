@@ -8,16 +8,18 @@
 
     <com.tokopedia.unifycomponents.CardUnify
         android:id="@+id/cvItemProduct"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_64"
-        android:layout_margin="@dimen/dp_16"
+        android:layout_width="@dimen/dp_80"
+        android:layout_height="@dimen/dp_80"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="@dimen/dp_8"
+        app:card_type="clear"
+        >
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/ivItemProduct"
-            android:layout_width="@dimen/dp_64"
-            android:layout_height="@dimen/dp_64"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_80"
             android:scaleType="centerCrop"/>
 
     </com.tokopedia.unifycomponents.CardUnify>
@@ -27,29 +29,26 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:maxLines="2"
-        android:ellipsize="end"
-        android:layout_marginTop="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginEnd="@dimen/dp_16"
-        android:layout_marginRight="@dimen/dp_16"
+        android:layout_marginStart="@dimen/dp_12"
+        android:layout_marginLeft="@dimen/dp_12"
+        android:layout_marginTop="8dp"
         android:textColor="@color/clr_f531353b"
         app:layout_constraintBottom_toTopOf="@id/ivRating"
         app:layout_constraintStart_toEndOf="@+id/cvItemProduct"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="heading_4"
         app:typographyWeight="bold"
-        tools:text="Adidas NMD Pharell William x Human Mad Halloowowowoow" />
+        tools:text="Adidas NMD Pharell William x Human Made Halloowowowoow" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/ivRating"
-        android:layout_width="@dimen/dp_16"
-        android:layout_height="@dimen/dp_16"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_width="@dimen/dp_18"
+        android:layout_height="@dimen/dp_18"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_4"
-        app:layout_constraintBottom_toBottomOf="@+id/tgCountRating"
+        app:layout_constraintBottom_toBottomOf="@id/cvItemProduct"
         app:layout_constraintStart_toEndOf="@id/cvItemProduct"
         app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
         app:srcCompat="@drawable/ic_rating_star_item" />
@@ -58,13 +57,14 @@
         android:id="@+id/tgCountRating"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="body_2"
+        app:typographyType="body_1"
         app:typographyWeight="bold"
         android:textColor="@color/clr_f531353b"
         android:layout_marginTop="@dimen/dp_4"
         android:layout_marginLeft="@dimen/dp_4"
         android:layout_marginStart="@dimen/dp_4"
         app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
+        app:layout_constraintBottom_toBottomOf="@id/cvItemProduct"
         app:layout_constraintStart_toEndOf="@id/ivRating"
         tools:text="5.0" />
 
@@ -72,7 +72,7 @@
         android:id="@+id/tgCountReview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:typographyType="body_2"
+        app:typographyType="body_1"
         app:typographyWeight="reguler"
         android:textColor="@color/clr_f531353b"
         android:layout_marginTop="@dimen/dp_4"
@@ -80,14 +80,16 @@
         android:layout_marginStart="@dimen/dp_4"
         app:layout_constraintTop_toBottomOf="@id/tgTitleProduct"
         app:layout_constraintStart_toEndOf="@id/tgCountRating"
+        app:layout_constraintBottom_toBottomOf="@id/cvItemProduct"
         tools:text="/ 5 Ulasan" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/cvItemProduct" />
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:layout_marginStart="@dimen/dp_8"
+        app:layout_constraintTop_toBottomOf="@id/cvItemProduct"
+        app:layout_constraintLeft_toLeftOf="@id/cvItemProduct"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
