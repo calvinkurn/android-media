@@ -16,4 +16,7 @@
     <dimen name="play_product_title_image_margin">14dp</dimen>
     <dimen name="play_product_discount_radius">3dp</dimen>
     <dimen name="play_product_buy_padding_start_end">20dp</dimen>
+    
+    <dimen name="play_product_sheet_divider_height">1dp</dimen>
+    <dimen name="play_product_sheet_divider_start_offset">96dp</dimen>
 </resources>

@@ -13,6 +13,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
+import com.tokopedia.play.ui.productsheet.itemdecoration.ProductSheetItemDecoration
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**
@@ -42,6 +43,7 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
         rvDiscountProduct.apply {
             layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
             adapter = productSheetAdapter
+            addItemDecoration(ProductSheetItemDecoration(view.context))
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
