@@ -14,6 +14,7 @@ import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMapper
 import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
+import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.promocheckout.list.model.listpromocatalog.ResponseExchangeCoupon
 import com.tokopedia.usecase.RequestParams
@@ -52,44 +53,44 @@ class PromoCheckoutListMarketplacePresenter(private val checkPromoStackingCodeUs
         view.showProgressLoading()
 
         checkPromoStackingCodeUseCase.setParams(promo)
-        checkPromoStackingCodeUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
-            override fun onNext(t: GraphqlResponse?) {
-                view.hideProgressLoading()
+        checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
+                .subscribe(object : Subscriber<ResponseGetPromoStackUiModel>() {
+                    override fun onNext(responseGetPromoStack: ResponseGetPromoStackUiModel) {
+                        view.hideProgressLoading()
 
-                val responseGetPromoStack = checkPromoStackingCodeMapper.call(t)
-                if (responseGetPromoStack.status.equals(statusOK, true)) {
-                    if (responseGetPromoStack.data.clashings.isClashedPromos) {
-                        view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
-                    } else {
-                        responseGetPromoStack.data.codes.forEach {
-                            if (it.equals(promoCode, true)) {
-                                if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
-                                    view?.hideProgressLoading()
-                                    view.onErrorCheckPromo(MessageErrorException(responseGetPromoStack.data.message.text))
-                                } else {
-                                    view.onSuccessCheckPromo(responseGetPromoStack.data)
+                        if (responseGetPromoStack.status.equals(statusOK, true)) {
+                            if (responseGetPromoStack.data.clashings.isClashedPromos) {
+                                view?.onClashCheckPromo(responseGetPromoStack.data.clashings)
+                            } else {
+                                responseGetPromoStack.data.codes.forEach {
+                                    if (it.equals(promoCode, true)) {
+                                        if (responseGetPromoStack.data.message.state.mapToStatePromoStackingCheckout() == TickerPromoStackingCheckoutView.State.FAILED) {
+                                            view?.hideProgressLoading()
+                                            view.onErrorCheckPromo(MessageErrorException(responseGetPromoStack.data.message.text))
+                                        } else {
+                                            view.onSuccessCheckPromo(responseGetPromoStack.data)
+                                        }
+                                    }
                                 }
                             }
+                        } else {
+                            val message = responseGetPromoStack.data.message.text
+                            view.onErrorCheckPromo(MessageErrorException(message))
                         }
                     }
-                } else {
-                    val message = responseGetPromoStack.data.message.text
-                    view.onErrorCheckPromo(MessageErrorException(message))
-                }
-            }
 
-            override fun onCompleted() {
+                    override fun onCompleted() {
 
-            }
+                    }
 
-            override fun onError(e: Throwable) {
-                if (isViewAttached) {
-                    view.hideProgressLoading()
-                    view.onErrorCheckPromo(e)
-                }
-            }
+                    override fun onError(e: Throwable) {
+                        if (isViewAttached) {
+                            view.hideProgressLoading()
+                            view.onErrorCheckPromo(e)
+                        }
+                    }
 
-        })
+                })
 
     }
 

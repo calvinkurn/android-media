@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.home.beranda.di.module.HomeModule
 import com.tokopedia.home.beranda.di.module.HomeRawModule
-import com.tokopedia.home.beranda.di.module.ShopModule
 import com.tokopedia.home.beranda.di.module.ViewModelModule
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter
 import com.tokopedia.home.beranda.presentation.presenter.HomePresenter
@@ -16,7 +15,7 @@ import dagger.Component
 
 
 @HomeScope
-@Component(modules = [ApiModule::class, HomeModule::class, HomeRawModule::class, ShopModule::class, ViewModelModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [ApiModule::class, HomeModule::class, HomeRawModule::class, ViewModelModule::class], dependencies = [BaseAppComponent::class])
 interface BerandaComponent {
     fun inject(homeFragment: HomeFragment?)
     fun inject(homeFeedFragment: HomeFeedFragment?)

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
 import com.tokopedia.shop.common.di.component.ShopComponent;
 import com.tokopedia.shop.sort.view.fragment.ShopProductSortFragment;
@@ -35,6 +36,16 @@ public class ShopProductSortActivity extends BaseSimpleActivity implements HasCo
     }
 
     @Override
+    protected boolean isShowCloseButton() {
+        return true;
+    }
+
+    @Override
+    protected int getLayoutRes() {
+        return R.layout.activity_shop_product_sort;
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         if(getIntent() != null && savedInstanceState == null){
             sortName = getIntent().getStringExtra(SORT_NAME);
@@ -44,6 +55,9 @@ public class ShopProductSortActivity extends BaseSimpleActivity implements HasCo
             }
         }
         super.onCreate(savedInstanceState);
+        if(null != getSupportActionBar()) {
+            getSupportActionBar().setTitle("");
+        }
     }
 
     @Override

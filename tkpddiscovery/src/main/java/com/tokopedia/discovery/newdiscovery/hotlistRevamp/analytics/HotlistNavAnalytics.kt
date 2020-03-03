@@ -177,7 +177,7 @@ class HotlistNavAnalytics {
                 KEY_LOGIN_TYPE, getLoginType(isLoggedIn),
                 KEY_ECOMMERCE, DataLayer.mapOf(
                 KEY_CURRENCY_CODE, CURRENCY_VALUE,
-                KEY_IMPRESSIONS, DataLayer.listOf(list))
+                KEY_IMPRESSIONS, list)
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }

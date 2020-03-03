@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Item {
+    @SerializedName("id")
+    @Expose
+    private int id;
     @SerializedName("imageUrl")
     @Expose
     private String imageUrl;
@@ -11,9 +14,14 @@ public class Item {
     @Expose
     private String name;
 
-    public Item(String imageUrl, String name) {
+    public Item(int id, String imageUrl, String name) {
+        this.id = id;
         this.imageUrl = imageUrl;
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String imageUrl() {

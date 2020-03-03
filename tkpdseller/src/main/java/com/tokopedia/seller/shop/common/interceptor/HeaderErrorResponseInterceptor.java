@@ -2,7 +2,7 @@ package com.tokopedia.seller.shop.common.interceptor;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 
 import okhttp3.Response;

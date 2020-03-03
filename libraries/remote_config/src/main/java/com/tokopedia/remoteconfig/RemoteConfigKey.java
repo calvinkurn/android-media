@@ -91,6 +91,8 @@ public class RemoteConfigKey {
     public static final String MAIN_APP_DISABLE_NEW_PRODUCT_DETAIL = "main_app_disable_new_product_detail";
     public static final String APP_ENABLE_MERCHANT_CREDIT_LINE = "app_enable_merchant_credit_line";
 
+    public static final String ANDROID_MAIN_APP_ENABLED_OLD_PDP = "android_main_app_enabled_old_pdp";
+
     public static final String NONB1_TTL = "app_nonb_1_ttl";
     public static final String NONB1_DESC = "app_nonb_1_dsc";
     public static final String NONB2_TTL = "app_nonb_2_ttl";
@@ -189,9 +191,21 @@ public class RemoteConfigKey {
 
     public static final String MAINAPP_SALAM_UMRAH = "android_main_app_enabled_umrah";
 
+    public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
+
+
 
     public static final String MAINAPP_RECHARGE_OCR = "android_mainapp_enable_ocr_emoney";
     public static final String MAINAPP_RECHARGE_SMARTCARD = "mainapp_digital_smartcard";
 
     public static final String ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE = "android_customer_enable_in_app_review_digital_thank_you_page";
+
+    public static final String ENABLE_NETWORK_CLIENT_INIT_ASYNC = "android_init_nwclient_async";
+    public static final String ENABLE_SEQ1_ASYNC = "android_exec_seq1_async";
+    public static final String ENABLE_SEQ2_ASYNC = "android_exec_seq2_async";
+    public static final String ENABLE_SEQ3_ASYNC = "android_exec_seq3_async";
+    public static final String ENABLE_SEQ4_ASYNC = "android_exec_seq4_async";
+    public static final String ENABLE_SEQ5_ASYNC = "android_exec_seq5_async";
+    public static final String ENABLE_ASYNC_HOME_SNDSCR = "android_enable_home_sndscr";
+
 }

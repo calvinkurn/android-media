@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.typefactory.inbox;
 
+import android.content.Context;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
@@ -20,9 +21,11 @@ public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
         implements InboxReputationTypeFactory {
 
     private final InboxReputation.View viewListener;
+    private Context context;
 
-    public InboxReputationTypeFactoryImpl(InboxReputation.View viewListener) {
+    public InboxReputationTypeFactoryImpl(Context context, InboxReputation.View viewListener) {
         this.viewListener = viewListener;
+        this.context = context;
     }
 
     @Override
@@ -45,7 +48,7 @@ public class InboxReputationTypeFactoryImpl extends BaseAdapterTypeFactory
         AbstractViewHolder viewHolder;
 
         if (type == InboxReputationViewHolder.LAYOUT)
-            viewHolder = new InboxReputationViewHolder(view, viewListener);
+            viewHolder = new InboxReputationViewHolder(context, view, viewListener);
         else if (type == EmptyReputationSearchViewHolder.LAYOUT) {
             viewHolder = new EmptyReputationSearchViewHolder(view);
         } else if (type == LoadingInboxReputationViewholder.LAYOUT) {

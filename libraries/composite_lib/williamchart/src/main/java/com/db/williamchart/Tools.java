@@ -33,11 +33,10 @@ import com.db.williamchart.base.BaseWilliamChartConfig;
 import com.db.williamchart.base.BaseWilliamChartModel;
 import com.db.williamchart.config.GrossGraphChartConfig;
 import com.db.williamchart.config.GrossGraphDataSetConfig;
-import com.db.williamchart.config.SellerHomeDataSetConfig;
-import com.db.williamchart.config.SellerHomeLineGraphConfig;
 import com.db.williamchart.renderer.StringFormatRenderer;
 import com.db.williamchart.renderer.XRenderer;
 import com.db.williamchart.tooltip.Tooltip;
+import com.db.williamchart.util.AnimationGraphConfiguration;
 import com.db.williamchart.util.BasicGraphConfiguration;
 import com.db.williamchart.util.DataSetConfiguration;
 import com.db.williamchart.util.DefaultTooltipConfiguration;
@@ -136,17 +135,6 @@ public class Tools {
             }
         }
         return 1;
-    }
-
-    public static BaseWilliamChartConfig getSellerHomeLineGraphWidgetConfig(LineChartView lineChartView,
-                                                                            BaseWilliamChartModel dataSetChartModel,
-                                                                            Tooltip tooltip,
-                                                                            TooltipConfiguration tooltipConfiguration) {
-        int chartMarginTop = (lineChartView.getLayoutParams().height / 3) - 20;
-        if (chartMarginTop <= 0) chartMarginTop = 0;
-        return getCommonWilliamChartConfig(lineChartView, dataSetChartModel,
-                new SellerHomeDataSetConfig(), tooltip, tooltipConfiguration,
-                new SellerHomeLineGraphConfig(chartMarginTop, 15));
     }
 
     public static BaseWilliamChartConfig getCommonWilliamChartConfig(LineChartView lineChartView,

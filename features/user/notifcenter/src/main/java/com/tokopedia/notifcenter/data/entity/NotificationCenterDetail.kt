@@ -12,30 +12,17 @@ data class NotificationCenterDetail(
         var pojo: NotificationUpdatePojo = NotificationUpdatePojo()
 )
 data class NotificationUpdatePojo(
-        @Expose
-        @SerializedName("paging")
-        var paging: Paging = Paging(),
-        @Expose
-        @SerializedName("list")
-        var list: List<NotificationUpdateItem> = arrayListOf(),
-        @SerializedName("user_info")
-        @Expose
-        var userInfo: UserInfo = UserInfo()
+        @Expose @SerializedName("paging") var paging: Paging = Paging(),
+        @Expose @SerializedName("list") var list: List<NotificationUpdateItem> = arrayListOf(),
+        @Expose @SerializedName("options") var options: NotificationOptions = NotificationOptions(),
+        @Expose @SerializedName("user_info") var userInfo: UserInfo = UserInfo()
 )
 
 data class UserInfo(
-        @Expose
-        @SerializedName("user_id")
-        val userId: String = "",
-        @Expose
-        @SerializedName("shop_id")
-        val shopId: String = "",
-        @Expose
-        @SerializedName("email")
-        val email: String = "",
-        @Expose
-        @SerializedName("fullname")
-        val fullName: String = ""
+        @Expose @SerializedName("user_id") val userId: String = "",
+        @Expose @SerializedName("shop_id") val shopId: String = "",
+        @Expose @SerializedName("email") val email: String = "",
+        @Expose @SerializedName("fullname") val fullName: String = ""
 ) {
         fun hasShop() : Boolean {
                 return shopId != "0"

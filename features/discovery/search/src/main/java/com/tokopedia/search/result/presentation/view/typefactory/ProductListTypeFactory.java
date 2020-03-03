@@ -3,9 +3,20 @@ package com.tokopedia.search.result.presentation.view.typefactory;
 import android.view.View;
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.search.result.presentation.model.*;
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
+import com.tokopedia.search.result.presentation.model.CpmViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
+import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
+import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
+import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
+import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
+import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
+import com.tokopedia.search.result.presentation.model.TickerViewModel;
 
-public interface ProductListTypeFactory extends SearchSectionTypeFactory {
+public interface ProductListTypeFactory {
     int type(ProductItemViewModel productItem);
 
     int type(CpmViewModel cpmViewModel);
@@ -15,8 +26,6 @@ public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(SuggestionViewModel suggestionViewModel);
 
     int type(QuickFilterViewModel quickFilterViewModel);
-
-    int type(TopAdsViewModel topAdsViewModel);
 
     int type(RelatedSearchViewModel relatedSearchModel);
 
@@ -29,6 +38,12 @@ public interface ProductListTypeFactory extends SearchSectionTypeFactory {
     int type(BannedProductsEmptySearchViewModel bannedProductsEmptySearchViewModel);
 
     int type(BannedProductsTickerViewModel bannedProductsTickerViewModel);
+
+    int type(EmptySearchProductViewModel emptySearchViewModel);
+
+    int getRecyclerViewItem();
+
+    void setRecyclerViewItem(int recyclerViewItem);
 
     AbstractViewHolder createViewHolder(View view, int type);
 }

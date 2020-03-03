@@ -1,6 +1,7 @@
 package com.tokopedia.abstraction.common.network;
 
-import com.tokopedia.abstraction.common.network.interceptor.TkpdBaseInterceptor;
+import com.tokopedia.network.interceptor.TkpdBaseInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import java.util.ArrayList;
 import java.util.Collections;

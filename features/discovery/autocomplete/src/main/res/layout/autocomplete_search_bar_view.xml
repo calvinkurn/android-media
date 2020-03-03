@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/searchTopBar"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:paddingTop="@dimen/dp_4"
+    android:paddingBottom="@dimen/dp_4"
+    android:gravity="center_vertical"
+    android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/actionUpBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_12"
+            app:srcCompat="@drawable/autocomplete_ic_back"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <com.tokopedia.design.component.EditTextCompat
+            android:id="@+id/searchTextView"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:background="@drawable/autocomplete_bg_input"
+            android:paddingTop="@dimen/dp_8"
+            android:paddingBottom="@dimen/dp_8"
+            android:paddingLeft="@dimen/dp_28"
+            android:paddingRight="@dimen/dp_32"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:hint="@string/search_autocomplete_hint"
+            android:imeOptions="actionSearch"
+            android:inputType="textNoSuggestions"
+            android:lines="1"
+            android:textColor="@color/edit_text_color"
+            android:textColorHint="@color/edit_text_color_hint"
+            android:textCursorDrawable="@drawable/autocomplete_cursor_color"
+            android:textSize="@dimen/sp_14"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/actionUpBtn"
+            app:layout_constraintRight_toLeftOf="@id/actionVoiceButton"/>
+
+        <ImageView
+            android:id="@+id/autocompleteIconSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dp_4"
+            app:srcCompat="@drawable/autocomplete_ic_search"
+            app:layout_constraintTop_toTopOf="@id/searchTextView"
+            app:layout_constraintBottom_toBottomOf="@id/searchTextView"
+            app:layout_constraintLeft_toLeftOf="@id/searchTextView"/>
+
+        <ImageView
+            android:id="@+id/actionEmptyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dp_4"
+            android:visibility="gone"
+            app:srcCompat="@drawable/autocomplete_ic_clear"
+            app:layout_constraintTop_toTopOf="@id/searchTextView"
+            app:layout_constraintBottom_toBottomOf="@id/searchTextView"
+            app:layout_constraintRight_toRightOf="@id/searchTextView"/>
+
+        <ImageView
+            android:id="@+id/actionVoiceButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginRight="@dimen/dp_16"
+            app:srcCompat="@drawable/autocomplete_ic_audio"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/searchTextView"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/actionCancelButton"
+            android:text="@string/search_cancel_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginRight="@dimen/dp_16"
+            android:textColor="@color/unify_G500"
+            android:visibility="gone"
+            app:typographyType="body_2"
+            app:typographyWeight="reguler"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/searchTextView"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

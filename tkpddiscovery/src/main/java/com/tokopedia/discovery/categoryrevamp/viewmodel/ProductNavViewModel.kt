@@ -9,8 +9,6 @@ import com.tokopedia.discovery.categoryrevamp.data.subCategoryModel.SubCategoryI
 import com.tokopedia.discovery.categoryrevamp.domain.usecase.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
-import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result

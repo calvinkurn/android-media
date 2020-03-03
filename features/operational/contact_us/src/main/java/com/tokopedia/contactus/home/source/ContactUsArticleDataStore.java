@@ -1,6 +1,6 @@
 package com.tokopedia.contactus.home.source;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.contactus.common.data.BuyerPurchaseList;
 import com.tokopedia.contactus.home.data.BuyerPurchaseData;
 import com.tokopedia.contactus.home.data.ContactUsArticleResponse;

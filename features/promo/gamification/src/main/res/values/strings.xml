@@ -43,4 +43,6 @@
     <string name="gf_crack_token_response_error">Terjadi kendala pada server,  \nsilakan coba lagi ya</string>
     <string name="gf_placeholder_text">+%s</string>
 
+    <string name="path_gamification">/gamification</string>
+    <string name="path_gamification2">/gamification2</string>
 </resources>

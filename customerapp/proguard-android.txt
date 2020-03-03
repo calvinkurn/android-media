@@ -205,3 +205,7 @@ public protected *;
 }
 
 -keep class com.google.firebase.perf.FirebasePerformance
+
+-dontwarn com.google.android.exoplayer2.audio.AudioAttributes
+-dontwarn com.google.android.exoplayer2.mediacodec.MediaCodecUtil
+-dontwarn com.google.android.exoplayer2.ui.DefaultTimeBar

@@ -31,7 +31,7 @@ import com.tokopedia.design.label.LabelView
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
 import com.tokopedia.topads.common.TopAdsWebViewActivity
@@ -573,12 +573,12 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
-        ImageHandler.LoadImage(image_view_shop_icon, shopInfo.info.shopAvatar)
+        ImageHandler.LoadImage(image_view_shop_icon, shopInfo.shopAssets.avatar)
 
         text_view_shop_title.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            Html.fromHtml(shopInfo.info.shopName, Html.FROM_HTML_MODE_LEGACY)
+            Html.fromHtml(shopInfo.shopCore.name, Html.FROM_HTML_MODE_LEGACY)
         } else {
-            Html.fromHtml(shopInfo.info.shopName)
+            Html.fromHtml(shopInfo.shopCore.name)
         }
     }
 

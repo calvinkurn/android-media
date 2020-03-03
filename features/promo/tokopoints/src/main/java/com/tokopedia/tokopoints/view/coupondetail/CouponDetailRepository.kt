@@ -23,7 +23,7 @@ import javax.inject.Provider
 @TokoPointScope
 class CouponDetailRepository @Inject constructor(private val repository: GraphqlRepository,private val map : Map<String, String>) {
 
-   private val cacheStrategy by lazy {
+    private val cacheStrategy by lazy {
         GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build()
     }
@@ -70,6 +70,14 @@ class CouponDetailRepository @Inject constructor(private val repository: Graphql
         val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_SWIPE_COUPON],
                 CouponSwipeUpdateOuter::class.java,
                 variables, false)
+        repository.getReseponse(listOf(request), cacheStrategy)
+    }
+
+    suspend fun getUserPhoneVerificationInfo() = withContext(Dispatchers.IO) {
+
+        val request = GraphqlRequest(map[CommonConstant.GQLQuery.TP_GQL_USER_INFO],
+                PhoneVerificationResponse::class.java,
+                null, false)
         repository.getReseponse(listOf(request), cacheStrategy)
     }
 }
