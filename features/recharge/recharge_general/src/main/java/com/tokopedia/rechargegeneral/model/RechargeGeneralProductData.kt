@@ -19,7 +19,7 @@ data class RechargeGeneralProductData(
         val enquiryFields: List<RechargeGeneralProductInput> = listOf(),
         @SerializedName("product")
         @Expose
-        val product: RechargeGeneralProductItemData = RechargeGeneralProductItemData()
+        val product: RechargeGeneralProductItemData? = RechargeGeneralProductItemData()
 
 ) {
         class Response(

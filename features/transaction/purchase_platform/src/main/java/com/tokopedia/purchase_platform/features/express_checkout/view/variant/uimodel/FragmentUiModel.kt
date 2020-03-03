@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.AtcResponseModel
 
 /**
@@ -14,7 +14,7 @@ data class FragmentUiModel(
         var lastQuantity: Int? = 0,
         var lastPrice: Int? = 0,
         var isStateChanged: Boolean? = false, // True if there are error or user activity (change qty / change courier / change note / change variant / check insurance)
-        var shippingCourierViewModels: MutableList<ShippingCourierViewModel>? = null,
+        var shippingCourierUiModels: MutableList<ShippingCourierUiModel>? = null,
         var viewModels: ArrayList<Visitable<*>> = ArrayList(),
         var hasGenerateFingerprintPublicKey: Boolean = false,
         var fingerprintPublicKey: String? = null

@@ -36,7 +36,7 @@ class BrandlistTracking(context: Context) {
         val screenName = "/official-store/brand/$categoryName"
         val customDimension = java.util.HashMap<String, String>()
         customDimension["event"] = "openScreen"
-        customDimension["screenName"] = "/official-store/brand/categoryName"
+        customDimension["screenName"] = "/official-store/brand/$categoryName"
         tracker.sendScreenAuthenticated(screenName, customDimension)
     }
 
