@@ -803,11 +803,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             filterItems.add(quickTransitFilter)
         }
 
+        flight_sort_filter.addItem(filterItems)
+
         for (item in filterItems) {
             item.refChipUnify.setChevronClickListener { }
         }
-
-        flight_sort_filter.addItem(filterItems)
     }
 
     interface OnFlightSearchFragmentListener {
