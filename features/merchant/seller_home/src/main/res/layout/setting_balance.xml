@@ -1,45 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:paddingTop="10dp"
-    android:paddingBottom="10dp"
+    android:layout_height="@dimen/setting_balance_height"
+    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <com.tokopedia.unifycomponents.DividerUnify
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/setting_divider_thin"
-        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/balanceTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@id/guidelineVertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/balanceValue"
-        app:layout_constraintHorizontal_weight="10"
-        app:typographyType="body_2"/>
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        app:typographyType="body_1"
+        app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"
+        tools:text="Saldo"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/balanceValue"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/balanceTitle"
-        app:layout_constraintStart_toStartOf="@id/guidelineVertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        android:textColor="@color/black"/>
+        app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
+        tools:text="Rp.532.299.490"/>
 
     <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineVertical"
+        android:id="@+id/guidelineVerticalLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.1"/>
+        app:layout_constraintGuide_percent="0.05"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineVerticalRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.95"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -17,6 +17,7 @@ class BalanceViewHolder(itemView: View): AbstractViewHolder<BalanceUiModel>(item
     override fun bind(element: BalanceUiModel) {
         with(itemView) {
             balanceTitle.text = element.balanceTitle
+            balanceValue.text = element.balanceValue
         }
     }
 }

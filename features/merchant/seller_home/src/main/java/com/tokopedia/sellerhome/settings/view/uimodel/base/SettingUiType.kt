@@ -5,5 +5,5 @@ sealed class SettingUiType {
     object DIVIDER : SettingUiType()
     object MENU_ITEM : SettingUiType()
     object SETTING_TITLE : SettingUiType()
-
+    object SHOP_INFO: SettingUiType()
 }

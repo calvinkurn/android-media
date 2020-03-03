@@ -2,7 +2,6 @@ package com.tokopedia.sellerhome.settings.view.typefactory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.settings.view.uimodel.BalanceUiModel
@@ -11,6 +10,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.BalanceViewHolder
 import com.tokopedia.sellerhome.settings.view.viewholder.DividerViewHolder
+import com.tokopedia.sellerhome.settings.view.viewholder.MenuItemsViewHolder
 import com.tokopedia.sellerhome.settings.view.viewholder.SettingTitleViewHolder
 
 class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTypeFactory {
@@ -20,6 +20,7 @@ class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTyp
             BalanceViewHolder.LAYOUT -> BalanceViewHolder(parent)
             DividerViewHolder.LAYOUT -> DividerViewHolder(parent)
             SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
+            MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -37,6 +38,6 @@ class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTyp
     }
 
     override fun type(menuItemUiModel: MenuItemUiModel): Int {
-        return BalanceViewHolder.LAYOUT
+        return MenuItemsViewHolder.LAYOUT
     }
 }

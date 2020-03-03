@@ -4,11 +4,8 @@ import com.tokopedia.sellerhome.settings.view.typefactory.OtherSettingTypeFactor
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiType
 
-class MenuItemUiModel(private val menuItemList: List<MenuItem>) : SettingUiModel {
-
-    init {
-        val listItemUnifyList = mapMenuItemList(menuItemList)
-    }
+class MenuItemUiModel(val title: String = "",
+                      val drawableReference: Int) : SettingUiModel {
 
     override fun type(typeFactory: OtherSettingTypeFactory): Int =
             typeFactory.type(this)

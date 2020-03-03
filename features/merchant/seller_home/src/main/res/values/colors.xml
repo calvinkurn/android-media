@@ -11,4 +11,5 @@
 
     <color name="setting_divider_color">#e5e7e9</color>
     <color name="setting_title_color">#AD31353B</color>
+    <color name="setting_image_border">#E5E7E9</color>
 </resources>
