@@ -30,13 +30,6 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
         notifyDataSetChanged()
     }
 
-    fun clearSelect() {
-        this.data.forEach {
-            it.select = false
-        }
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val itemView = LayoutInflater.from(parent.context)
                 .inflate(com.tokopedia.product.manage.R.layout.item_chips, parent, false)

@@ -2,12 +2,10 @@ package com.tokopedia.product.manage.feature.filter.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.product.manage.common.GQLQueryConstant
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-import javax.inject.Named
 
 class GetProductListMetaUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductListMetaResponse>() {

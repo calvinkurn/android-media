@@ -86,13 +86,13 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        productManageFilterViewModel.getData(userSession.shopId)
         layoutManager = LinearLayoutManager(this.context)
         recyclerView = view.findViewById(com.tokopedia.product.manage.R.id.filter_recycler_view)
         val adapterTypeFactory = FilterAdapterTypeFactory(this, this, this)
         filterAdapter = FilterAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = filterAdapter
-        productManageFilterViewModel.getData(userSession.shopId)
         observeCombinedResponse()
         observeFilterData()
         initView()
@@ -192,16 +192,13 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         btn_close_bottom_sheet.setOnClickListener {
             this.dismiss()
         }
-        setAction(REST_BUTTON_TEXT) {
-            productManageFilterViewModel.clearSelected()
-        }
-        bottomSheetAction.visibility = View.GONE
+        initBottomSheetReset()
     }
 
     private fun checkSelected(filterData: List<FilterViewModel>): Boolean {
-        for (filter in filterData) {
-            for(filterViewModel in filter.data) {
-                if(filterViewModel.select) return true
+        filterData.forEach { filter ->
+            filter.data.forEach {
+                if(it.select) return true
             }
         }
         return false
@@ -212,7 +209,17 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             filterAdapter?.updateData(it)
             if(checkSelected(it)) {
                 bottomSheetAction.visibility = View.VISIBLE
+            } else {
+                bottomSheetAction.visibility = View.GONE
             }
         })
+    }
+
+    private fun initBottomSheetReset() {
+        bottomSheetAction.visibility = View.GONE
+        bottomSheetAction.text = REST_BUTTON_TEXT
+        bottomSheetAction.setOnClickListener {
+            productManageFilterViewModel.clearSelected()
+        }
     }
 }
