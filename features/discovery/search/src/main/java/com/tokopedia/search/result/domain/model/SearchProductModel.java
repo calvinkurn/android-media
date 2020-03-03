@@ -495,9 +495,9 @@ public class SearchProductModel {
         @SerializedName("is_featured")
         @Expose
         private int isFeatured;
-        @SerializedName("rating_string")
+        @SerializedName("rating_average")
         @Expose
-        private String ratingString = "";
+        private String ratingAverage = "";
         @SerializedName("rating")
         @Expose
         private int rating;
@@ -618,8 +618,8 @@ public class SearchProductModel {
             return isFeatured;
         }
 
-        public String getRatingString() {
-            return ratingString;
+        public String getRatingAverage() {
+            return ratingAverage;
         }
 
         public int getRating() {

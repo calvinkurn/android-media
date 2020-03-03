@@ -64,6 +64,7 @@ import rx.Subscriber;
 
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.APP_CLIENT_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.KEY_ADVERTISING_ID;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
@@ -137,7 +138,7 @@ final class ProductListPresenter
 
     private boolean getIsUseRatingString() {
         return getView().getABTestRemoteConfig()
-                .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_COMMA_STAR)
+                .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
                 .equals(AB_TEST_VARIANT_COMMA_STAR);
     }
 
@@ -667,7 +668,7 @@ final class ProductListPresenter
                     item.setImageUrl(topAds.getProduct().getImage().getS_ecs());
                     item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
                     item.setWishlisted(topAds.getProduct().isWishlist());
-                    item.setRatingString(useRatingString ? topAds.getProduct().getProductRatingString() : "");
+                    item.setRatingString(useRatingString ? topAds.getProduct().getProductRatingFormat() : "");
                     item.setRating(useRatingString ? 0 : topAds.getProduct().getProductRating());
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
