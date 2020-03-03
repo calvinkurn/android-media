@@ -109,6 +109,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopView
 import com.tokopedia.feedplus.view.adapter.viewholder.EmptyFeedBeforeLoginViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.EmptyFeedViewHolder
 import com.tokopedia.feedplus.view.adapter.viewholder.productcard.RetryViewHolder
+import com.tokopedia.feedplus.view.util.JankyFrameMonitoringUtil
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
@@ -166,6 +167,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
+    private lateinit var feedScrollJankyFramePM: PerformanceMonitoring
+    private lateinit var jankyFrameMonitoringUtil: JankyFrameMonitoringUtil
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
     private lateinit var createPostBottomSheet: CloseableBottomSheetDialog
 
@@ -174,6 +177,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
+    private var isFeedJankyFramePMActive: Boolean = false
 
     private var isUserEventTrackerDoneTrack = false
 
@@ -242,6 +246,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val COMMENT_ARGS_TOTAL_COMMENT = "ARGS_TOTAL_COMMENT"
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
         //endregion
+
+        //Monitoring Performance Static
+        private const val KEY_JANKY_FRAME_SCROLL = "janky_frames_scroll_feed"
 
         fun newInstance(bundle: Bundle?): FeedPlusFragment {
             val fragment = FeedPlusFragment()
@@ -504,6 +511,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (arguments != null) {
             afterPost = TextUtils.equals(arguments!!.getString(AFTER_POST, ""), TRUE)
         }
+        jankyFrameMonitoringUtil = JankyFrameMonitoringUtil(activity as Activity, KEY_JANKY_FRAME_SCROLL)
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -557,32 +565,45 @@ class FeedPlusFragment : BaseDaggerFragment(),
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    if (hasFeed()
-                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        var position = 0
-                        val item: Visitable<*>
-                        if (itemIsFullScreen()) {
-                            position = layoutManager?.findLastVisibleItemPosition() ?: 0
-                        } else if (layoutManager?.findFirstCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
-                        } else if (layoutManager?.findLastCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
-                        }
+                    if (hasFeed()) {
+                        when (newState) {
+                            RecyclerView.SCROLL_STATE_IDLE -> {
+                                stopFeedScrollJankyFrameCounter()
+                                var position = 0
+                                val item: Visitable<*>
+                                if (itemIsFullScreen()) {
+                                    position = layoutManager?.findLastVisibleItemPosition() ?: 0
+                                } else if (layoutManager?.findFirstCompletelyVisibleItemPosition() != -1) {
+                                    position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
+                                } else if (layoutManager?.findLastCompletelyVisibleItemPosition() != -1) {
+                                    position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
+                                }
 
-                        item = adapter.getlist()[position]
+                                item = adapter.getlist()[position]
 
-                        if (item is DynamicPostViewModel) {
-                            if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
-                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+                                if (item is DynamicPostViewModel) {
+                                    if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
+                                        adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+                                    }
+                                }
+                                FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
                             }
+                            RecyclerView.SCROLL_STATE_DRAGGING -> {
+                                if (!isFeedJankyFramePMActive) {
+                                    startFeedScrollJankyFrameCounter()
+                                }
+                            }
+
                         }
-                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
 
             }
 
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+            }
         })
     }
 
@@ -1979,5 +2000,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             Toast.makeText(context, R.string.feed_after_post, Toast.LENGTH_LONG).show()
         }
+    }
+
+    private fun startFeedScrollJankyFrameCounter() {
+        feedScrollJankyFramePM = PerformanceMonitoring.start(KEY_JANKY_FRAME_SCROLL)
+        isFeedJankyFramePMActive = true
+        jankyFrameMonitoringUtil.startFrameMetrics()
+    }
+
+    private fun stopFeedScrollJankyFrameCounter() {
+        isFeedJankyFramePMActive = false
+        val data = jankyFrameMonitoringUtil.stopFrameMetrics()
+        feedScrollJankyFramePM.putMetric(data.allFramesTag, data.allFrames.toLong())
+        feedScrollJankyFramePM.putMetric(data.jankyFramesTag, data.jankyFrames.toLong())
+        feedScrollJankyFramePM.putMetric(data.allFramesTag, data.allFrames.toLong())
+        feedScrollJankyFramePM.stopTrace()
     }
 }
