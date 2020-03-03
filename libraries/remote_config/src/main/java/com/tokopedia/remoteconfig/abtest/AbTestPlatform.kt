@@ -9,6 +9,7 @@ import com.tokopedia.remoteconfig.GraphqlHelper
 import com.tokopedia.remoteconfig.R
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.abtest.data.AbTestVariantPojo
+import com.tokopedia.remoteconfig.abtest.data.FeatureVariantAnalytics
 import com.tokopedia.remoteconfig.abtest.data.RolloutFeatureVariants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.RequestParams
@@ -131,22 +132,18 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val responseData: AbTestVariantPojo = graphqlResponse.getData(AbTestVariantPojo::class.java)
         val featureVariants = responseData?.dataRollout?.featureVariants
         val globalRevision = responseData.dataRollout.globalRev
-        val status = responseData.dataRollout.status
 
         val currentTimestamp = Date().time
-        editor.clear().commit()
+
         editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
-        editor.commit()
 
         if (featureVariants != null) {
             for (a in featureVariants) {
-                setString(a.feature, a.variant)
+                editor.putString(a.feature, a.variant)
             }
         }
-
-        if (globalRevision != null) {
-            editor.putInt(REVISION, globalRevision).commit()
-        }
+        editor.putInt(REVISION, globalRevision)
+        editor.commit()
 
         return responseData.dataRollout
     }
@@ -159,10 +156,7 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
                 "eventCategory" to "abtesting",
                 "user_id" to if (userSession.isLoggedIn) userSession.userId else null,
                 "feature" to featureVariants.featureVariants?.map {
-                    val jsonObject = JSONObject()
-                    jsonObject.put("name", it.feature)
-                    jsonObject.put("variant", it.variant)
-                    jsonObject
+                    FeatureVariantAnalytics(it.feature, it.variant)
                 }
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
