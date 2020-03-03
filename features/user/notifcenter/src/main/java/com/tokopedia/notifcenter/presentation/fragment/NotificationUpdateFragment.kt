@@ -33,6 +33,7 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateTotalUnread
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.entity.UserInfo
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.BottomSheetType
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -259,7 +260,6 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         }
     }
 
-
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
@@ -271,32 +271,30 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     override fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int) {
         adapter.notifyItemChanged(adapterPosition, BaseNotificationItemViewHolder.PAYLOAD_CHANGE_BACKGROUND)
-        analytics.trackClickNotifList(notification)
         presenter.markReadNotif(notification.notificationId)
-        val needToResetCounter = !notification.isRead
-        if (needToResetCounter) {
+        analytics.trackClickNotifList(notification)
+
+        //if need to reset the counter
+        if (!notification.isRead) {
             updateMarkAllReadCounter()
             notifyBottomActionView()
         }
     }
 
-    override fun addProductToCheckout(notification: NotificationItemViewBean) {
-        analytics.trackProductCheckoutBuyClick(notification)
-
-        val needToRefresh = true
+    override fun addProductToCheckout(userInfo: UserInfo, product: ProductData?) {
         val atcAndBuyAction = ATC_AND_BUY
-        val quantity = notification.totalProduct
+        val needToRefresh = true
 
         startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, notification.userInfo.userId)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, notification.getAtcProduct()?.productId)
-            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, quantity)
-            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, notification.getAtcProduct()?.productId)
+            putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, userInfo.userId)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, product?.productId)
+            putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, "1")
+            putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, product?.productId)
             putExtra(ApplinkConst.Transaction.EXTRA_ACTION, atcAndBuyAction)
             putExtra(ApplinkConst.Transaction.EXTRA_NEED_REFRESH, needToRefresh)
             putExtra(ApplinkConst.Transaction.EXTRA_REFERENCE, ApplinkConst.NOTIFICATION)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, notification.getAtcProduct()?.name)
-            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, notification.getAtcProduct()?.price?.toFloat())
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, product?.name)
+            putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, product?.price?.toFloat())
             putExtra(ApplinkConst.Transaction.EXTRA_OCS, false)
         })
     }
@@ -388,7 +386,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
 
     private fun showProductCheckout(element: NotificationItemViewBean) {
         context?.let {
-            NotificationProductCardDialog(it, childFragmentManager).show(element)
+            NotificationProductCardDialog(
+                    context = it,
+                    fragmentManager = childFragmentManager,
+                    listener = this
+            ).show(element)
         }
     }
 

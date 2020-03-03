@@ -26,6 +26,7 @@ import com.tokopedia.notifcenter.data.consts.EmptyDataStateProvider
 import com.tokopedia.notifcenter.data.consts.buyerMenu
 import com.tokopedia.notifcenter.data.consts.sellerMenu
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.entity.UserInfo
 import com.tokopedia.notifcenter.data.mapper.NotificationMapper
 import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.BottomSheetType
@@ -231,14 +232,11 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     override fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int) {
         val payloadBackground = BaseNotificationItemViewHolder.PAYLOAD_CHANGE_BACKGROUND
         adapter.notifyItemChanged(adapterPosition, payloadBackground)
-
-        //tracking
         analytics.trackNotificationClick(notification)
-
-        //reader
         viewModel.markReadNotification(notification.notificationId)
-        val needToResetCounter = !notification.isRead
-        if (needToResetCounter) {
+
+        //if need to reset the counter
+        if (!notification.isRead) {
             updateMarkAllReadCounter()
             notifyStateFilterActionView()
         }
@@ -346,7 +344,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipeRefresh
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {}
-    override fun addProductToCheckout(notification: NotificationItemViewBean) {}
+    override fun addProductToCheckout(userInfo: UserInfo, product: ProductData?) {}
     override fun getRecyclerViewResourceId() = R.id.lstNotification
     override fun onItemClicked(t: Visitable<*>?) = Unit
     override fun getScreenName() = SCREEN_NAME
