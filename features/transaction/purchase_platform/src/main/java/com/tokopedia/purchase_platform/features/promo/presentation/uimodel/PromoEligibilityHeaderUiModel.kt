@@ -41,21 +41,4 @@ data class PromoEligibilityHeaderUiModel(
             var isCollapsed: Boolean = false
     )
 
-    companion object {
-
-        fun clone(oldData: PromoEligibilityHeaderUiModel): PromoEligibilityHeaderUiModel {
-            return PromoEligibilityHeaderUiModel(
-                    uiData = UiData().apply {
-                        title = oldData.uiData.title
-                        subTitle = oldData.uiData.subTitle
-                        tmpPromo = oldData.uiData.tmpPromo
-                    },
-                    uiState = UiState().apply {
-                        isEnabled = oldData.uiState.isEnabled
-                        isCollapsed = oldData.uiState.isCollapsed
-                    }
-            )
-        }
-
-    }
 }

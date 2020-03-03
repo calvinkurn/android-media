@@ -39,20 +39,4 @@ data class PromoRecommendationUiModel(
             var isButtonSelectEnabled: Boolean = false
     )
 
-    companion object {
-
-        fun clone(oldData: PromoRecommendationUiModel): PromoRecommendationUiModel {
-            return PromoRecommendationUiModel(
-                    uiData = UiData().apply {
-                        title = oldData.uiData.title
-                        subTitle = oldData.uiData.subTitle
-                    },
-                    uiState = UiState().apply {
-                        isButtonSelectEnabled = oldData.uiState.isButtonSelectEnabled
-                    }
-            )
-        }
-
-    }
-
 }

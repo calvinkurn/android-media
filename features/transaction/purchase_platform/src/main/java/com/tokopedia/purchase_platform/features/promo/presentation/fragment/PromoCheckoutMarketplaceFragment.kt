@@ -262,18 +262,14 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         val promoList = HashMap<Int, Visitable<*>>()
         adapter.data.forEach {
             if (it is PromoListItemUiModel && it.uiState.isSellected) {
-                val newData = PromoListItemUiModel.clone(it).apply {
-                    uiState.isSellected = false
-                }
-                promoList[adapter.data.indexOf(it)] = newData
+                it.uiState.isSellected = false
+                promoList[adapter.data.indexOf(it)] = it
             } else if (it is PromoListHeaderUiModel) {
-                val newData = PromoListHeaderUiModel.clone(it).apply {
-                    uiData.subTitle = "Hanya bisa pilih 1"
-                    it.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
-                        promoListItemUiModel.uiState.isSellected = false
-                    }
+                it.uiData.subTitle = "Hanya bisa pilih 1"
+                it.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
+                    promoListItemUiModel.uiState.isSellected = false
                 }
-                promoList[adapter.data.indexOf(it)] = newData
+                promoList[adapter.data.indexOf(it)] = it
             }
         }
         adapter.modifyDataList(promoList)
@@ -288,10 +284,8 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     // --- RECOMMENDATION SECTION
 
     override fun onClickApplyRecommendedPromo(element: PromoRecommendationUiModel) {
-        val newData = PromoRecommendationUiModel.clone(element).apply {
-            uiState.isButtonSelectEnabled = false
-        }
-        adapter.modifyData(adapter.data.indexOf(element), newData)
+        element.uiState.isButtonSelectEnabled = false
+        adapter.modifyData(adapter.data.indexOf(element))
 
         // Todo : get recommendation promo from current list
         // Todo : hit API
@@ -312,10 +306,8 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             val oldData = adapter.data[itemPosition]
             if (oldData is PromoListHeaderUiModel) {
                 if (!oldData.uiState.isCollapsed) {
-                    val newData = PromoListHeaderUiModel.clone(oldData).apply {
-                        uiState.isCollapsed = !oldData.uiState.isCollapsed
-                    }
-                    adapter.modifyData(itemPosition, newData)
+                    oldData.uiState.isCollapsed = !oldData.uiState.isCollapsed
+                    adapter.modifyData(itemPosition)
 
                     val modifiedData = ArrayList<PromoListItemUiModel>()
                     val startIndex = itemPosition + 1
@@ -324,16 +316,13 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                         val oldPromoItem = adapter.data[index] as PromoListItemUiModel
                         modifiedData.add(oldPromoItem)
                     }
-                    newData.uiData.tmpPromoItemList = modifiedData
+                    oldData.uiData.tmpPromoItemList = modifiedData
                     adapter.removeList(modifiedData)
                 } else {
-                    val newData = PromoListHeaderUiModel.clone(oldData).apply {
-//                        uiData.tmpPromoItemList = emptyList()
-                        uiState.isCollapsed = !oldData.uiState.isCollapsed
-                    }
-                    adapter.modifyData(itemPosition, newData)
+                    oldData.uiState.isCollapsed = !oldData.uiState.isCollapsed
+                    adapter.modifyData(itemPosition)
                     adapter.addVisitableList(itemPosition + 1, oldData.uiData.tmpPromoItemList)
-                    newData.uiData.tmpPromoItemList = emptyList()
+                    oldData.uiData.tmpPromoItemList = emptyList()
                 }
             }
         }
@@ -350,16 +339,14 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         }
         oldData?.let {
             val hasSelectPromo = checkHasPromoSellected(it.uiData.identifierId)
-            val newData = PromoListHeaderUiModel.clone(it).apply {
-                if (hasSelectPromo) {
-                    uiData.subTitle = "Promo dipilih"
-                } else {
-                    uiData.subTitle = "Hanya bisa pilih 1"
-                }
+            if (hasSelectPromo) {
+                it.uiData.subTitle = "Promo dipilih"
+            } else {
+                it.uiData.subTitle = "Hanya bisa pilih 1"
             }
             renderFragmentState()
             val headerIndex = adapter.data.indexOf(oldData)
-            adapter.modifyData(headerIndex, newData)
+            adapter.modifyData(headerIndex)
 
             // Un check other
             var unCheckIndex = 0
@@ -370,16 +357,14 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 } else {
                     val promoItem = adapter.data[index] as PromoListItemUiModel
                     if (promoItem.uiData.promoId != element.uiData.promoId && promoItem.uiState.isSellected) {
-                        newPromoItemData = PromoListItemUiModel.clone(promoItem).apply {
-                            uiState.isSellected = false
-                        }
+                        promoItem.uiState.isSellected = false
                         unCheckIndex = index
                         break
                     }
                 }
             }
-            newPromoItemData?.let { promoListItemUiModel ->
-                adapter.modifyData(unCheckIndex, promoListItemUiModel)
+            newPromoItemData?.let {
+                adapter.modifyData(unCheckIndex)
             }
         }
     }
@@ -432,21 +417,17 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 modifiedData.add(oldPromoItem)
             }
 
-            val newData = PromoEligibilityHeaderUiModel.clone(element).apply {
-                uiState.isCollapsed = !element.uiState.isCollapsed
-                uiData.tmpPromo = modifiedData
-            }
+            element.uiState.isCollapsed = !element.uiState.isCollapsed
+            element.uiData.tmpPromo = modifiedData
 
-            adapter.modifyData(position, newData)
+            adapter.modifyData(position)
             adapter.removeList(modifiedData)
         } else {
-            val newData = PromoEligibilityHeaderUiModel.clone(element).apply {
-                uiState.isCollapsed = !element.uiState.isCollapsed
-                uiData.tmpPromo = emptyList()
-            }
+            element.uiState.isCollapsed = !element.uiState.isCollapsed
 
-            adapter.modifyData(position, newData)
+            adapter.modifyData(position)
             adapter.addVisitableList(position + 1, element.uiData.tmpPromo)
+            element.uiData.tmpPromo = emptyList()
         }
     }
 
