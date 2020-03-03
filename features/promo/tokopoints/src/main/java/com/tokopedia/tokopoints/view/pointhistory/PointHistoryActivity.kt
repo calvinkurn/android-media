@@ -32,10 +32,11 @@ class PointHistoryActivity : BaseSimpleActivity(), HasComponent<TokopointBundleC
         return tokoPointComponent
     }
 
-    private fun initInjector() : TokopointBundleComponent {
-        return  DaggerTokopointBundleComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .build()
+    private fun initInjector(): TokopointBundleComponent {
+        return DaggerTokopointBundleComponent.builder()
+            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+            .tokopointsQueryModule(TokopointsQueryModule(this))
+            .build()
     }
 
     companion object {

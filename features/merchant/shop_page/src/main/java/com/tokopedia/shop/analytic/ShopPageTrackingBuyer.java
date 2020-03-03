@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageAttribution;
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct;
@@ -307,7 +307,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
                 joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString),
-                shopProductViewModel.getId(),
+                "",
                 customDimensionShopPage,
                 shopProductViewModel,
                 selectedEtalaseChipName, etalaseSection,
@@ -334,7 +334,7 @@ public class ShopPageTrackingBuyer extends ShopPageTracking {
                 getShopPageCategory(isOwner),
                 loginNonLoginString,
                 joinDash(PRODUCT_LIST_IMPRESSION, getProductEtalaseEvent(selectedEtalaseChipName, etalaseSection), loginNonLoginString, SEARCH_RESULT),
-                shopProductViewModel.getId(),
+                "",
                 customDimensionShopPage,
                 shopProductViewModel,
                 selectedEtalaseChipName, etalaseSection,

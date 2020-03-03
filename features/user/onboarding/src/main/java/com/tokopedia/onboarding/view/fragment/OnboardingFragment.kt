@@ -25,10 +25,15 @@ import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.view.adapter.OnboardingViewPagerAdapter
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.weaver.WeaveInterface
+import com.tokopedia.weaver.Weaver
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import org.jetbrains.annotations.NotNull
 import javax.inject.Inject
 
 
@@ -72,9 +77,20 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val executeViewCreatedWeave = object : WeaveInterface {
+            override fun execute(): Any {
+                return executeViewCreateFlow()
+            }
+        }
+        Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context)
+    }
+
+    @NotNull
+    private fun executeViewCreateFlow() : Boolean{
         initAbTesting()
         trackPreinstall()
         initView()
+        return true
     }
 
     private fun getAbTestVariant(): String =

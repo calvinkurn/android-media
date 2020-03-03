@@ -3,12 +3,12 @@ package com.tokopedia.flight.search.domain
 import android.text.TextUtils
 import android.util.SparseIntArray
 import com.tokopedia.common.travel.constant.TravelSortOption
-import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
-import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
-import com.tokopedia.flight.search.presentation.model.resultstatistics.*
 import com.tokopedia.flight.search.data.db.JourneyAndRoutes
 import com.tokopedia.flight.search.data.repository.FlightSearchRepository
+import com.tokopedia.flight.search.presentation.model.filter.DepartureTimeEnum
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
+import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
+import com.tokopedia.flight.search.presentation.model.resultstatistics.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
@@ -30,6 +30,12 @@ class FlightSearchStatisticsUseCase @Inject constructor(
                 .map { mapToFlightSearchStatisticsModel(it.journeyAndRoutes) }
     }
 
+    fun executeCoroutine(requestParams: RequestParams): FlightSearchStatisticModel? {
+        val filterModel = requestParams.getObject(PARAM_FILTER_MODEL) as FlightFilterModel
+        return mapToFlightSearchStatisticsModel(flightSearchRepository.getSearchFilterStatisticCoroutine(
+                TravelSortOption.CHEAPEST, filterModel).journeyAndRoutes)
+    }
+
     private fun mapToFlightSearchStatisticsModel(journeyAndRoutesList: List<JourneyAndRoutes>):
             FlightSearchStatisticModel {
         var minPrice = Integer.MAX_VALUE
@@ -39,14 +45,18 @@ class FlightSearchStatisticsUseCase @Inject constructor(
         val transitTypeStatList = ArrayList<TransitStat>()
         val airlineStatList = ArrayList<AirlineStat>()
         val departureTimeStatList = ArrayList<DepartureStat>()
+        val arrivalTimeStatList = ArrayList<DepartureStat>()
         val refundableTypeStatList = ArrayList<RefundableStat>()
 
         val transitIDTrackArray = SparseIntArray()
         val airlineIDTrackArray = HashMap<String, Int>()
         val departureIDTrackArray = SparseIntArray()
+        val arrivalIDTrackArray = SparseIntArray()
         val refundableTrackArray = SparseIntArray()
 
         var isHaveSpecialPrice = false
+        var isHaveBaggage = false
+        var isHaveInFlightMeal = false
 
         for (journeyAndRoutes in journeyAndRoutesList) {
             val price = journeyAndRoutes.flightJourneyTable.sortPriceNumeric
@@ -65,12 +75,12 @@ class FlightSearchStatisticsUseCase @Inject constructor(
             if (duration > maxDuration) {
                 maxDuration = duration
             }
+
             // populate total transit and minprice per each transit
             val transitTypeDef = when (journeyAndRoutes.flightJourneyTable.totalTransit) {
                 0 -> TransitEnum.DIRECT
                 1 -> TransitEnum.ONE
-                2 -> TransitEnum.TWO
-                else -> TransitEnum.THREE_OR_MORE
+                else -> TransitEnum.TWO
             }
             if (transitIDTrackArray.get(transitTypeDef.id, -1) == -1) {
                 transitTypeStatList.add(TransitStat(transitTypeDef, price, priceString))
@@ -124,6 +134,26 @@ class FlightSearchStatisticsUseCase @Inject constructor(
                 }
             }
 
+            // populate arrivalTime and minprice per each time
+            val arrivalTimeDef = when (journeyAndRoutes.flightJourneyTable.arrivalTimeInt) {
+                in 0..559 -> DepartureTimeEnum._00
+                in 600..1159 -> DepartureTimeEnum._06
+                in 1200..1759 -> DepartureTimeEnum._12
+                else -> DepartureTimeEnum._18
+            }
+
+            if (arrivalIDTrackArray.get(arrivalTimeDef.id, -1) == -1) {
+                arrivalTimeStatList.add(DepartureStat(arrivalTimeDef, price, priceString))
+                arrivalIDTrackArray.put(arrivalTimeDef.id, arrivalTimeStatList.size - 1)
+            } else {
+                val index = arrivalIDTrackArray.get(arrivalTimeDef.id)
+                val prevArrivalStat = arrivalTimeStatList[index]
+                if (price < prevArrivalStat.minPrice) {
+                    prevArrivalStat.minPrice = price
+                    prevArrivalStat.minPriceString = priceString
+                }
+            }
+
             // populate distinct refundable
             val refundable = journeyAndRoutes.flightJourneyTable.isRefundable
             if (refundableTrackArray.get(refundable.id, -1) == -1) {
@@ -140,16 +170,31 @@ class FlightSearchStatisticsUseCase @Inject constructor(
             if (!TextUtils.isEmpty(journeyAndRoutes.flightJourneyTable.beforeTotal)) {
                 isHaveSpecialPrice = true
             }
+
+            if (!isHaveBaggage || !isHaveInFlightMeal) {
+                for (route in journeyAndRoutes.routes) {
+                    if (route.amenities.contains("baggage")) {
+                        isHaveBaggage = true
+                    }
+                    if (route.amenities.contains("meal")) {
+                        isHaveInFlightMeal = true
+                    }
+
+                    if (isHaveBaggage && isHaveInFlightMeal) break
+                }
+            }
         }
 
         //sort array
         transitTypeStatList.sortWith(Comparator { o1, o2 -> o1.transitType.id - o2.transitType.id })
         airlineStatList.sortWith(Comparator { o1, o2 -> o1.airlineDB.name.compareTo(o2.airlineDB.name) })
         departureTimeStatList.sortWith(Comparator { o1, o2 -> o1.departureTime.id - o2.departureTime.id })
+        arrivalTimeStatList.sortWith(Comparator { o1, o2 -> o1.departureTime.id - o2.departureTime.id })
         refundableTypeStatList.sortWith(Comparator { o1, o2 -> o1.refundableEnum.id - o2.refundableEnum.id })
 
         return FlightSearchStatisticModel(minPrice, maxPrice, minDuration, maxDuration, transitTypeStatList,
-                airlineStatList, departureTimeStatList, refundableTypeStatList, isHaveSpecialPrice)
+                airlineStatList, departureTimeStatList, arrivalTimeStatList, refundableTypeStatList,
+                isHaveSpecialPrice, isHaveBaggage, isHaveInFlightMeal)
     }
 
     fun createRequestParams(flightFilterModel: FlightFilterModel): RequestParams {
