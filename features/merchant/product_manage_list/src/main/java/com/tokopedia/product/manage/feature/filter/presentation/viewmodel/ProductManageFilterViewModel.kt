@@ -104,6 +104,8 @@ class ProductManageFilterViewModel @Inject constructor(
                 filterData.select = false
             }
         }
+        selectedEtalase = null
+        selectedSort = null
         _filterData.postValue(clearedData)
     }
 
