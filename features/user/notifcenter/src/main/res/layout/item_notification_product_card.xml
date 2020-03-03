@@ -1,23 +1,18 @@
-<com.google.android.material.card.MaterialCardView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.MaterialComponents.CardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clipToPadding="false"
-    app:cardCornerRadius="@dimen/dp_8"
-    app:cardPreventCornerOverlap="false">
+    android:layout_marginStart="@dimen/dp_4"
+    android:layout_marginEnd="@dimen/dp_4">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_12"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/body">
+        android:padding="@dimen/dp_12">
 
         <com.tokopedia.notifcenter.widget.RoundedImageView
             android:id="@+id/iv_thumbnail"
@@ -123,4 +118,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</RelativeLayout>
