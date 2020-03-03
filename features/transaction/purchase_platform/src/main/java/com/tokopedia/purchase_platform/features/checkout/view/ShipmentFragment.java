@@ -59,7 +59,7 @@ import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.analytics.CodAnalytics;
 import com.tokopedia.logisticdata.data.constant.LogisticConstant;
@@ -129,7 +129,6 @@ import com.tokopedia.purchase_platform.features.checkout.subfeature.promo_benefi
 import com.tokopedia.purchase_platform.features.checkout.subfeature.webview.CheckoutWebViewActivity;
 import com.tokopedia.purchase_platform.features.checkout.view.adapter.ShipmentAdapter;
 import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDataConverter;
-import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
@@ -2179,11 +2178,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onLogisticPromoChosen(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public void onLogisticPromoChosen(List<ShippingCourierUiModel> shippingCourierUiModels,
                                       CourierItemData courierData, RecipientAddressModel recipientAddressModel,
                                       int cartPosition, ServiceData serviceData, boolean flagNeedToSetPinpoint,
                                       String promoCode, int selectedServiceId) {
-        onShippingDurationChoosen(shippingCourierViewModels, courierData, recipientAddressModel,
+        onShippingDurationChoosen(shippingCourierUiModels, courierData, recipientAddressModel,
                 cartPosition, selectedServiceId, serviceData, flagNeedToSetPinpoint,
                 false, false);
         String cartString = shipmentAdapter.getShipmentCartItemModelByIndex(cartPosition).getCartString();
@@ -2192,7 +2191,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onShippingDurationChoosen(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public void onShippingDurationChoosen(List<ShippingCourierUiModel> shippingCourierUiModels,
                                           CourierItemData recommendedCourier,
                                           RecipientAddressModel recipientAddressModel,
                                           int cartItemPosition, int selectedServiceId,
@@ -2204,8 +2203,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         sendAnalyticsOnClickChecklistShipmentRecommendationDuration(serviceData.getServiceName());
         // Has courier promo means that one of duration has promo, not always current selected duration.
         // It's for analytics purpose
-        if (shippingCourierViewModels.size() > 0) {
-            ServiceData serviceDataTracker = shippingCourierViewModels.get(0).getServiceData();
+        if (shippingCourierUiModels.size() > 0) {
+            ServiceData serviceDataTracker = shippingCourierUiModels.get(0).getServiceData();
             sendAnalyticsOnClickDurationThatContainPromo(
                     (serviceDataTracker.getIsPromo() == 1),
                     serviceDataTracker.getServiceName(),
@@ -2222,7 +2221,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             // If there's no recommendation, user choose courier manually
             ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(cartItemPosition);
             List<ShopShipment> shopShipments = shipmentCartItemModel.getShopShipmentList();
-            onChangeShippingCourier(shippingCourierViewModels, recipientAddressModel, shipmentCartItemModel, shopShipments, cartItemPosition);
+            onChangeShippingCourier(shippingCourierUiModels, recipientAddressModel, shipmentCartItemModel, shopShipments, cartItemPosition);
         } else {
             if (recommendedCourier.isUsePinPoint()
                     && (recipientAddressModel.getLatitude() == null ||
@@ -2258,7 +2257,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                     shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier);
                     shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-                    shipmentAdapter.setShippingCourierViewModels(shippingCourierViewModels, recommendedCourier, cartItemPosition);
+                    shipmentAdapter.setShippingCourierViewModels(shippingCourierUiModels, recommendedCourier, cartItemPosition);
                     if (!TextUtils.isEmpty(recommendedCourier.getPromoCode()) && isDurationClick) {
                         checkCourierPromo(recommendedCourier, cartItemPosition);
                     }
@@ -2320,7 +2319,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
+    public void onCourierChoosen(ShippingCourierUiModel shippingCourierUiModel, CourierItemData courierItemData, RecipientAddressModel recipientAddressModel,
                                  int cartItemPosition, boolean isCod, boolean isPromoCourier, boolean isNeedPinpoint) {
         sendAnalyticsOnClickLogisticThatContainPromo(isPromoCourier, courierItemData.getShipperProductId(), isCod);
         if (isNeedPinpoint || (courierItemData.isUsePinPoint() && (recipientAddressModel.getLatitude() == null ||
@@ -2422,15 +2421,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onChangeShippingCourier(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public void onChangeShippingCourier(List<ShippingCourierUiModel> shippingCourierUiModels,
                                         RecipientAddressModel recipientAddressModel,
                                         ShipmentCartItemModel shipmentCartItemModel,
                                         List<ShopShipment> shopShipmentList,
                                         int cartPosition) {
         sendAnalyticsOnClickChangeCourierShipmentRecommendation(shipmentCartItemModel);
-        if (shippingCourierViewModels == null || shippingCourierViewModels.size() == 0 &&
+        if (shippingCourierUiModels == null || shippingCourierUiModels.size() == 0 &&
                 shipmentPresenter.getShippingCourierViewModelsState(cartPosition) != null) {
-            shippingCourierViewModels = shipmentPresenter.getShippingCourierViewModelsState(cartPosition);
+            shippingCourierUiModels = shipmentPresenter.getShippingCourierViewModelsState(cartPosition);
         }
         if (shipmentPresenter.getHasDeletePromoAfterChecKPromoCodeFinal()) {
             shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
@@ -2439,10 +2438,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             reloadCourier(shipmentCartItemModel, cartPosition, shopShipmentList);
         } else {
             shippingCourierBottomsheet = ShippingCourierBottomsheet.newInstance(
-                    shippingCourierViewModels, recipientAddressModel, cartPosition);
+                    shippingCourierUiModels, recipientAddressModel, cartPosition);
             shippingCourierBottomsheet.setShippingCourierBottomsheetListener(this);
-            if (isToogleYearEndPromoOn() && shippingCourierViewModels != null) {
-                checkHasCourierPromo(shippingCourierViewModels);
+            if (isToogleYearEndPromoOn() && shippingCourierUiModels != null) {
+                checkHasCourierPromo(shippingCourierUiModels);
             }
         }
 
@@ -2475,19 +2474,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         reloadCourier(shipmentCartItemModel, cartPosition, shopShipmentList);
     }
 
-    private void checkHasCourierPromo(List<ShippingCourierViewModel> shippingCourierViewModels) {
+    private void checkHasCourierPromo(List<ShippingCourierUiModel> shippingCourierUiModels) {
         boolean hasCourierPromo = false;
-        for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
-            if (!TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode())) {
+        for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
+            if (!TextUtils.isEmpty(shippingCourierUiModel.getProductData().getPromoCode())) {
                 hasCourierPromo = true;
                 break;
             }
         }
         if (hasCourierPromo) {
-            for (ShippingCourierViewModel shippingCourierViewModel : shippingCourierViewModels) {
+            for (ShippingCourierUiModel shippingCourierUiModel : shippingCourierUiModels) {
                 sendAnalyticsOnDisplayLogisticThatContainPromo(
-                        !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getPromoCode()),
-                        shippingCourierViewModel.getProductData().getShipperProductId()
+                        !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getPromoCode()),
+                        shippingCourierUiModel.getProductData().getShipperProductId()
                 );
             }
         }
@@ -2611,9 +2610,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void updateCourierBottomssheetHasData(List<ShippingCourierViewModel> shippingCourierViewModels, int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList) {
+    public void updateCourierBottomssheetHasData(List<ShippingCourierUiModel> shippingCourierUiModels, int cartPosition, ShipmentCartItemModel shipmentCartItemModel, List<ShopShipment> shopShipmentList) {
         if (shippingCourierBottomsheet != null) {
-            shippingCourierBottomsheet.setShippingCourierViewModels(shippingCourierViewModels, cartPosition, shipmentCartItemModel, shopShipmentList);
+            shippingCourierBottomsheet.setShippingCourierViewModels(shippingCourierUiModels, cartPosition, shipmentCartItemModel, shopShipmentList);
         }
     }
 

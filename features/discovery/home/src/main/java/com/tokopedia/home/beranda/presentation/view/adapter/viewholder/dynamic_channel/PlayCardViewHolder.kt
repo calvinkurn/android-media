@@ -38,7 +38,6 @@ class PlayCardViewHolder(
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
-    private val description = view.findViewById<TextView>(R.id.description)
     private var isClickable = false
     private val masterJob = Job()
     private var playCardViewModel: PlayCardViewModel? = null
@@ -69,7 +68,17 @@ class PlayCardViewHolder(
             playCardViewModel?.let{ playCardViewModel ->
                 if (container.visibility == View.GONE) container.show()
                 initView(playCardViewModel)
-                playCardViewModel.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
+                initAutoPlayVideo(playCardViewModel)
+            }
+        }
+    }
+
+    private fun initAutoPlayVideo(playCardViewModel: PlayCardViewModel) {
+        val videoStream = playCardViewModel.playCardHome?.videoStream
+        if (videoStream != null) {
+            helper?.isAutoPlay = videoStream.config.isAutoPlay
+            if (helper?.isAutoPlay == true && videoStream.config.streamUrl.isNotEmpty()) {
+                playChannel(videoStream.config.streamUrl)
             }
         }
     }
@@ -87,7 +96,6 @@ class PlayCardViewHolder(
         model.playCardHome?.let{ playChannel ->
             handlingTracker(model)
             title.setValue(model.channel.name)
-            description.setValue(model.channel.header.name)
 
             thumbnailView.show()
             thumbnailView.loadImageNoRounded(playChannel.coverUrl)

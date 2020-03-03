@@ -32,12 +32,12 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.chuckerteam.chucker.api.Chucker;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.config.GlobalConfig;
-import com.tokopedia.core.app.TkpdCoreRouter;
 import com.tokopedia.developer_options.R;
 import com.tokopedia.developer_options.notification.ReviewNotificationExample;
 import com.tokopedia.developer_options.presentation.service.DeleteFirebaseTokenService;
@@ -95,11 +95,13 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
+    private TextView vGoToFpm;
     private TextView vGoToAnalytics;
     private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
     private TextView vGoToIrisSendLogDB;
     private CheckBox toggleAnalytics;
+    private CheckBox toggleFpm;
 
     private CheckBox toggleUiBlockDebugger;
 
@@ -108,7 +110,6 @@ public class DeveloperOptionActivity extends BaseActivity {
     private ToggleButton groupChatLogToggle;
 
     private UserSessionInterface userSession;
-    private static TkpdCoreRouter tkpdCoreRouter;
     private SharedPreferences groupChatSf;
 
     private boolean isUserEditEnvironment = true;
@@ -177,12 +178,14 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoTochuck = findViewById(R.id.goto_chuck);
         toggleChuck = findViewById(R.id.toggle_chuck);
 
+        vGoToFpm = findViewById(R.id.goto_fpm);
         vGoToAnalytics = findViewById(R.id.goto_analytics);
         vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
         vGoToIrisSaveLogDB = findViewById(R.id.goto_iris_save_log);
         vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
 
         toggleAnalytics = findViewById(R.id.toggle_analytics);
+        toggleFpm = findViewById(R.id.toggle_fpm);
 
         toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
 
@@ -352,6 +355,12 @@ public class DeveloperOptionActivity extends BaseActivity {
             notificationManagerCompat.notify(777,notifReview);
                 });
 
+        toggleFpm.setChecked(FpmLogger.getInstance().isNotificationEnabled());
+
+        toggleFpm.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableNotification(state));
+
+        vGoToFpm.setOnClickListener(v -> FpmLogger.getInstance().openActivity());
+
         toggleAnalytics.setChecked(GtmLogger.getInstance(this).isNotificationEnabled());
 
         toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
@@ -448,13 +457,6 @@ public class DeveloperOptionActivity extends BaseActivity {
         SharedPreferences.Editor editor = groupChatSf.edit();
         editor.putBoolean(LOG_GROUPCHAT, check);
         editor.apply();
-    }
-
-    private static TkpdCoreRouter coreRouter(Context applicationContext) {
-        if (tkpdCoreRouter == null) {
-            tkpdCoreRouter = (TkpdCoreRouter) applicationContext;
-        }
-        return tkpdCoreRouter;
     }
 
     private SharedPreferences getSharedPreferences(String name) {
