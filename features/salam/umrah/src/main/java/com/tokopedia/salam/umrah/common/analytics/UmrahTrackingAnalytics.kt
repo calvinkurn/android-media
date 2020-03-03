@@ -836,7 +836,7 @@ class UmrahTrackingAnalytics {
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_TRAVEL_AGENT
         map[TrackAppUtils.EVENT_LABEL] = headerTitle
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
-                UMRAH_EVENT_PROMO_VIEW, DataLayer.mapOf(
+                UMRAH_EVENT_PROMO_CLICK, DataLayer.mapOf(
                 PROMOTIONS_LABEL, getTravelAgentImpression(listOf(travelAgent))))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
