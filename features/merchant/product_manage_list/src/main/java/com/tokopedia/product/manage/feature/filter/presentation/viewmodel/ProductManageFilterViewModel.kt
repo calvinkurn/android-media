@@ -67,9 +67,7 @@ class ProductManageFilterViewModel @Inject constructor(
             }
             filterIndex++
         }
-        currentData?.get(filterIndexOfData)?.data?.removeAt(dataIndexofData)
-        filterData.select = !filterData.select
-        currentData?.get(filterIndexOfData)?.data?.add(dataIndexofData, filterData)
+        currentData?.get(filterIndexOfData)?.data?.get(dataIndexofData)?.select = !filterData.select
         _filterData.postValue(currentData)
     }
 
@@ -77,9 +75,7 @@ class ProductManageFilterViewModel @Inject constructor(
         val currentData = _filterData.value
         currentData?.let {
             val filterIndexOfData = it.indexOf(filterViewModel)
-            it.removeAt(filterIndexOfData)
-            filterViewModel.isChipsShown = !filterViewModel.isChipsShown
-            it.add(filterIndexOfData, filterViewModel)
+            it[filterIndexOfData].isChipsShown = !filterViewModel.isChipsShown
             _filterData.postValue(it)
         }
     }
