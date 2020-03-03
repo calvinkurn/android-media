@@ -117,6 +117,9 @@ public class DigitalProductActivity extends BaseSimpleActivity
                 passData.getAdditionalETollOperatorName());
     }
 
+    /* This Method is use to tracking action click when user click product DigitalProduct
+     */
+
     private void handleIntentSlice(Intent intent){
         if(intent.getData() != null) {
             String trackingSliceClick = intent.getStringExtra("RECHARGE_PRODUCT_EXTRA");

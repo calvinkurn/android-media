@@ -102,7 +102,7 @@ class MainSliceProvider : SliceProvider() {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
                         title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                        subtitle = "Pembelian Terakhir : ${recommendationModel?.get(0)?.productName}".capitalizeWords()
+                        subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir)+recommendationModel?.get(0)?.productName).capitalizeWords()
                         primaryAction = SliceAction.create(
                                 mainPendingIntent,
                                 createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
@@ -144,7 +144,7 @@ class MainSliceProvider : SliceProvider() {
                             }
                         }
                     val trackingImpression = TrackingData(listProduct)
-                    Timber.d("P2#ACTION_SLICE_RECHARGE_IMPRESSION#$trackingImpression")
+                    Timber.d(contextNonNull.resources.getString(R.string.slice_track_timber_impression)+trackingImpression)
                     }
                 }
         }
@@ -167,7 +167,7 @@ class MainSliceProvider : SliceProvider() {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
                         title =  contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                        subtitle = "Pembelian Terakhir : ${recommendationModel?.get(0)?.productName}".capitalizeWords()
+                        subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir)+recommendationModel?.get(0)?.productName).capitalizeWords()
                         primaryAction = createPendingIntent(recommendationModel?.get(0)?.position, recommendationModel?.get(0)?.productName)?.let {
                             SliceAction.create(
                                     it,
@@ -232,7 +232,7 @@ class MainSliceProvider : SliceProvider() {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
                         title =  contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                        subtitle = "Pembelian Terakhir : ${recommendationModel?.get(0)?.productName}".capitalizeWords()
+                        subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir)+recommendationModel?.get(0)?.productName).capitalizeWords()
                         primaryAction = createPendingIntent(recommendationModel?.get(0)?.position, recommendationModel?.get(0)?.productName)?.let {
                             SliceAction.create(
                                     it,
@@ -293,12 +293,14 @@ class MainSliceProvider : SliceProvider() {
         DaggerRechargeSliceComponent.builder().build().inject(this)
         GlobalScope.launch(Dispatchers.IO) {
             try {
+
                 val data = repository.getReseponse(listOf(graphqlRequest)).getSuccessData<Data>()
                 recommendationModel = data.rechargeFavoriteRecommendationList.recommendations
                 updateSlice(sliceUri)
             } catch (e: Exception) {
                 if(e.message==NOT_LOGIN)
                 loadString = contextNonNull.resources.getString(R.string.slice_not_login)
+                Timber.d(contextNonNull.resources.getString(R.string.slice_track_timber_impression)+contextNonNull.resources.getString(R.string.slice_not_login))
                 updateSlice(sliceUri)
             }
         }

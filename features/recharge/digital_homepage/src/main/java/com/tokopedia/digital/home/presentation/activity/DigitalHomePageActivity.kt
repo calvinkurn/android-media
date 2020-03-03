@@ -33,7 +33,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         intent?.handleIntent()
-        intent?.handleExtra()
+        handleTracking()
         GraphqlClient.init(this)
     }
 
@@ -63,6 +63,8 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageActivity::class.java)
     }
 
+    /* This Method is use to handle intent from Action
+   */
     private fun Intent.handleIntent() {
         when (action) {
             Intent.ACTION_VIEW -> handleDeepLink(data)
@@ -73,13 +75,15 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
         }
     }
 
-    private fun Intent.handleExtra(){
-        if(intent.data != null) {
-            val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
-            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
-        }
+    /* This Method is use to tracking action click when user click open app in action
+    */
+    private fun handleTracking(){
+            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#DigitalHomepage")
     }
 
+
+    /* This Method is use to checking checking the right path of deeplink
+   */
     private fun handleDeepLink(data: Uri?) {
         var actionHandled = true
         when (data?.path) {
@@ -87,11 +91,11 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
             else -> actionHandled = false
 
         }
-
-
         notifyActionSuccess(actionHandled)
     }
 
+    /* This Method is use to send Action loggin to FirebaseAppIndexing
+   */
     private fun notifyActionSuccess(succeed: Boolean) {
         intent.getStringExtra(actionTokenExtra)?.let { actionToken ->
             val actionStatus = if (succeed) {

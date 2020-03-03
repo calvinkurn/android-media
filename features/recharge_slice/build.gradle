@@ -15,7 +15,6 @@ buildscript {
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
-    implementation project(rootProject.ext.libraries.imagePreviewSlider)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.analytics)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
@@ -30,21 +29,20 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
-    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.playServicesDependencies.analytics
-    implementation rootProject.ext.firebase.appIndexing
 
     // Slice
     implementation rootProject.ext.miscDependencies.slice
 
-    // Glide
+    //firebaseappindexing
     implementation rootProject.ext.firebase.appIndexing
 
+    // Glide
     implementation rootProject.ext.networkDependencies.glide
     annotationProcessor rootProject.ext.networkDependencies.glideProcessor
 

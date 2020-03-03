@@ -62,7 +62,6 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         intent?.handleExtra()
-
     }
 
     override fun shouldShowOptionMenu(): Boolean {
@@ -96,6 +95,8 @@ class VoucherGameListActivity : BaseVoucherGameActivity(), HasComponent<VoucherG
         super.onBackPressed()
     }
 
+    /* This Method is use to tracking action click when user click product Voucher Game
+     */
     private fun Intent.handleExtra() {
         if (intent.data != null) {
             val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)

@@ -70,6 +70,8 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
         }
     }
 
+    /* This Method is use to tracking action click when user click and redirect to RechargeGeneral
+    */
     private fun Intent.handleExtra() {
         if (intent.data != null) {
             val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)

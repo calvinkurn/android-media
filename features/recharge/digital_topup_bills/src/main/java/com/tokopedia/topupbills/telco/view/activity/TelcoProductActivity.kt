@@ -62,6 +62,9 @@ class TelcoProductActivity : BaseTelcoActivity() {
         super.onBackPressed()
     }
 
+    /* This Method is use to tracking Action click when user click TelcoProduct
+    */
+
     private fun Intent.handleExtra(){
         if(intent.data != null) {
             val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
