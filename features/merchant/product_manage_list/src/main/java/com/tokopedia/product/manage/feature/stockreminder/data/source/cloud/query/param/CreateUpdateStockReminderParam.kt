@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.que
 
 import com.google.gson.annotations.SerializedName
 
-data class CreateStockReminderParam(
+data class CreateUpdateStockReminderParam(
     @SerializedName("ShopID")
     val shopId: String = "",
     @SerializedName("IsSellerWh")

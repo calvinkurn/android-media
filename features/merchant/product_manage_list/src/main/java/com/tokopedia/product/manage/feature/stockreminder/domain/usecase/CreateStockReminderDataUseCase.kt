@@ -4,8 +4,8 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.StockReminderQuery
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.ProductWarehouseParam
-import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.CreateStockReminderParam
-import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createresponse.CreateStockReminderResponse
+import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.query.param.CreateUpdateStockReminderParam
+import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import javax.inject.Inject
 
 class CreateStockReminderDataUseCase @Inject constructor(
@@ -21,14 +21,14 @@ class CreateStockReminderDataUseCase @Inject constructor(
 
     fun setParams(shopId: String, productId: String, warehouseId: String, threshold: String) {
 
-        val productWarehouseCreateParam = ProductWarehouseParam(productId, warehouseId, threshold)
-        val listProductWarehouseCreateParam = ArrayList<ProductWarehouseParam>()
+        val productWarehouseParam = ProductWarehouseParam(productId, warehouseId, threshold)
+        val listProductWarehouseParam = ArrayList<ProductWarehouseParam>()
 
-        listProductWarehouseCreateParam.add(productWarehouseCreateParam)
+        listProductWarehouseParam.add(productWarehouseParam)
 
-        val stockReminderCreateParam = CreateStockReminderParam(shopId, true, listProductWarehouseCreateParam)
+        val createStockReminderParam = CreateUpdateStockReminderParam(shopId, true, listProductWarehouseParam)
         val params: Map<String, Any?> = mutableMapOf(
-                PARAM_INPUT to stockReminderCreateParam
+                PARAM_INPUT to createStockReminderParam
         )
         setRequestParams(params)
 

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:id="@+id/layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,17 +13,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
+        android:layout_marginEnd="7dp"
+        android:layout_marginRight="7dp"
         android:lineSpacingExtra="@dimen/sp_6"
-        android:text="Pengingat Stok"
-        app:typographyWeight="bold"
-        app:typographyType="body_1"
-        android:textStyle="bold"
+        android:text="@string/product_stock_reminder_typography_title"
         android:textColor="#f531353b"
         android:textSize="@dimen/sp_14"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/swStockReminder"
         app:layout_constraintEnd_toStartOf="@+id/swStockReminder"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/swStockReminder" />
+        app:layout_constraintTop_toTopOf="@+id/swStockReminder"
+        app:typographyType="body_1"
+        app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
         android:id="@+id/swStockReminder"
@@ -67,8 +70,7 @@
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"
                 android:lineHeight="@dimen/sp_18"
-                android:text="Pengingat akan aktif jika stok
-produk kurang dari"
+                android:text="@string/product_stock_reminder_typography_desc"
                 android:textSize="@dimen/sp_12"
                 app:layout_constraintEnd_toStartOf="@+id/qeStock"
                 app:layout_constraintStart_toStartOf="parent"
@@ -109,7 +111,8 @@ produk kurang dari"
                         android:layout_marginEnd="16dp"
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="8dp"
-                        android:text="Simpan"
+                        android:enabled="false"
+                        android:text="@string/product_stock_reminder_button"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -123,7 +126,5 @@ produk kurang dari"
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.tokopedia.unifycomponents.ContainerUnify>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>
