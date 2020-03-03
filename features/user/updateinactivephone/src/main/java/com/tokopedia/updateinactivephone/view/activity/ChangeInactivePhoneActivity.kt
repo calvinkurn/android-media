@@ -12,14 +12,11 @@ import android.view.WindowManager
 
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.core.app.MainApplication
-import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.view.fragment.ChangeInactivePhoneFragment
 
-class ChangeInactivePhoneActivity : BaseSimpleActivity(), HasComponent<AppComponent> {
+class ChangeInactivePhoneActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return ChangeInactivePhoneFragment.instance
@@ -68,10 +65,6 @@ class ChangeInactivePhoneActivity : BaseSimpleActivity(), HasComponent<AppCompon
             window.statusBarColor = ContextCompat.getColor(this, R.color.white)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
-    }
-
-    override fun getComponent(): AppComponent {
-        return (application as MainApplication).appComponent
     }
 
     companion object {
