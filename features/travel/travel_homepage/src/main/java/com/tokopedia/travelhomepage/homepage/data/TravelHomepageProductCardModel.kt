@@ -1,5 +1,6 @@
 package com.tokopedia.travelhomepage.homepage.data
 
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.ProductGridCardItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 
 /**
@@ -10,7 +11,7 @@ class TravelHomepageProductCardModel (
         val title: String = "",
         val subtitle: String = "",
         val clickSeeAllUrl: String = "",
-        val productItem: List<TravelHomepageProductCardModel> = listOf()
+        val productItem: List<ProductGridCardItemModel> = listOf()
 ): TravelHomepageItemModel() {
     override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int = typeFactory.type(this)
 }
