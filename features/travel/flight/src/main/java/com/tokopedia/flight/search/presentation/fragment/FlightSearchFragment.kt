@@ -819,16 +819,16 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             }
 
             filterItems.add(quickDirectFilter)
-//            filterItems.add(quickBaggageFilter)
-//            filterItems.add(quickMealFilter)
-//            filterItems.add(quickTransitFilter)
+            filterItems.add(quickBaggageFilter)
+            filterItems.add(quickMealFilter)
+            filterItems.add(quickTransitFilter)
         }
 
         sortFilterView.addItem(filterItems)
 
-        for (item in filterItems) {
-            item.refChipUnify.setChevronClickListener { }
-        }
+//        for (item in filterItems) {
+//            item.refChipUnify.setChevronClickListener { }
+//        }
     }
 
     private fun SortFilterItem.toggle() {
