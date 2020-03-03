@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutCentralizedPromoOnGoingPromo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/transparent"
+    android:layout_marginBottom="@dimen/layout_lvl1">
+
+    <include layout="@layout/sah_partial_centralized_promo_on_going_promo_success" />
+
+    <include layout="@layout/sah_partial_centralized_promo_on_going_promo_shimmering" />
+
+    <include layout="@layout/sah_partial_centralized_promo_on_going_promo_error"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
