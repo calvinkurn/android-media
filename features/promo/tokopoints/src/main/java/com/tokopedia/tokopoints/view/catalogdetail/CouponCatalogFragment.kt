@@ -233,7 +233,8 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     }
 
     override fun initInjector() {
-        getComponent(TokopointBundleComponent::class.java).inject(this)
+        getComponent(TokopointBundleComponent::class.java)
+            .inject(this)
     }
 
     override fun onClick(source: View) {

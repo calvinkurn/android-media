@@ -1,5 +1,6 @@
 package com.tokopedia.tokopoints.di
 
+import android.app.Activity
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -12,10 +13,10 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
 @Module
-class TokopointsQueryModule {
+class TokopointsQueryModule(val activity: Activity) {
 
     @Provides
-    fun getContext(@ApplicationContext context: Context) = context
+    fun getContext() = activity
 
     @Provides
     fun getRepository() = Interactor.getInstance().graphqlRepository
