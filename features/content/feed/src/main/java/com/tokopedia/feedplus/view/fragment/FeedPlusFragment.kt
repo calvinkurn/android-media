@@ -2013,7 +2013,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val data = jankyFrameMonitoringUtil.stopFrameMetrics()
         feedScrollJankyFramePM.putMetric(data.allFramesTag, data.allFrames.toLong())
         feedScrollJankyFramePM.putMetric(data.jankyFramesTag, data.jankyFrames.toLong())
-        feedScrollJankyFramePM.putMetric(data.jankyFramesPercentageTag, data.jankyFramesPercentageTag.toLong())
+        feedScrollJankyFramePM.putMetric(data.jankyFramesPercentageTag, data.jankyFramePercentage.toLong())
         feedScrollJankyFramePM.stopTrace()
     }
 }
