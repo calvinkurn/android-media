@@ -32,7 +32,7 @@ class ProductCheckoutViewHolder(
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
 
     private val multiProductAdapter by lazy {
-        val factory = MultipleProductCardFactoryImpl()
+        val factory = MultipleProductCardFactoryImpl(listener)
         MultipleProductCardAdapter(factory, true)
     }
 
@@ -60,7 +60,7 @@ class ProductCheckoutViewHolder(
             ProductCardSnapHelper().attachToRecyclerView(lstProduct)
             lstProduct.adapter = multiProductAdapter
             multiProductAdapter.insertData(
-                    MultipleProductCardMapper.map(element.products)
+                    MultipleProductCardMapper.map(element)
             )
         }
     }
@@ -71,8 +71,9 @@ class ProductCheckoutViewHolder(
 
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {
         btnCheckout.setOnClickListener {
-            listener.addProductToCheckout(element)
             baseItemMarkedClick(element)
+            listener.getAnalytic().trackProductCheckoutBuyClick(element)
+            listener.addProductToCheckout(element.userInfo, element.getAtcProduct())
         }
     }
 
