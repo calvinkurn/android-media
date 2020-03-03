@@ -34,6 +34,8 @@ import com.tokopedia.useridentification.subscriber.GetUserProjectInfoSubcriber;
 import com.tokopedia.useridentification.view.activity.UserIdentificationInfoActivity;
 import com.tokopedia.useridentification.view.listener.UserIdentificationInfo;
 
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 import kotlin.Unit;
@@ -218,7 +220,6 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         ImageHandler.LoadImage(image, KycUrl.ICON_NOT_VERIFIED);
         title.setText(R.string.kyc_intro_title);
         text.setText(R.string.kyc_intro_text);
-
         button.setEnabled(true);
         button.setText(R.string.kyc_intro_button);
         button.setVisibility(View.VISIBLE);
@@ -231,8 +232,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         title.setText(R.string.kyc_verified_title);
         text.setText(R.string.kyc_verified_text);
         button.setText(R.string.kyc_verified_button);
-        button.setButtonVariant(UnifyButton.Variant.GHOST);
-        button.setButtonType(UnifyButton.Type.ALTERNATE);
+        button.setButtonVariant(UnifyButton.Variant.FILLED);
+        button.setButtonType(UnifyButton.Type.MAIN);
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(onGoToTermsButton());
         analytics.eventViewSuccessPage();
@@ -240,9 +241,12 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
 
     private void showStatusPending() {
         ImageHandler.LoadImage(image, KycUrl.ICON_WAITING);
-        button.setVisibility(View.GONE);
         title.setText(R.string.kyc_pending_title);
         text.setText(R.string.kyc_pending_text);
+        button.setText(R.string.kyc_pending_button);
+        button.setButtonVariant(UnifyButton.Variant.GHOST);
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_PENDING));
         analytics.eventViewPendingPage();
     }
 
@@ -262,7 +266,7 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         text.setText(R.string.kyc_blacklist_text);
         button.setText(R.string.kyc_blacklist_button);
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(v -> getActivity().onBackPressed());
+        button.setOnClickListener(onGoToAccountSettingButton(KYCConstant.STATUS_BLACKLISTED));
     }
 
     @Override
@@ -301,6 +305,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             case KYCConstant.STATUS_NOT_VERIFIED:
                 analytics.eventClickOnBackOnBoarding();
                 break;
+            case KYCConstant.STATUS_BLACKLISTED:
+                analytics.eventClickBackBlacklistPage();
             default:
                 break;
         }
@@ -322,6 +328,20 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
         };
     }
 
+    private View.OnClickListener onGoToAccountSettingButton(int status){
+        return v -> {
+            switch (status) {
+                case KYCConstant.STATUS_PENDING:
+                    analytics.eventClickOnButtonPendingPage();
+                    break;
+                case KYCConstant.STATUS_BLACKLISTED:
+                    analytics.eventClickOnButtonBlacklistPage();
+                    break;
+            }
+            getActivity().finish();
+        };
+    }
+
     private void goToFormActivity() {
         if(getActivity() != null){
             Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM, String.valueOf(projectId));
@@ -335,6 +355,8 @@ public class UserIdentificationInfoFragment extends BaseDaggerFragment
             getStatusInfo();
             NetworkErrorHelper.showGreenSnackbar(getActivity(), getString(R.string.text_notification_success_upload));
             analytics.eventViewSuccessSnackbarPendingPage();
+        }else if(requestCode == FLAG_ACTIVITY_KYC_FORM && resultCode == KYCConstant.USER_EXIT) {
+            Objects.requireNonNull(getActivity()).finish();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

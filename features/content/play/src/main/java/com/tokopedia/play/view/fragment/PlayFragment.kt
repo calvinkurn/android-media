@@ -11,7 +11,6 @@ import android.widget.ImageView
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -22,12 +21,12 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
-import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usecase.coroutines.Success
@@ -128,7 +127,6 @@ class PlayFragment : BaseDaggerFragment() {
         super.onActivityCreated(savedInstanceState)
 
         observeGetChannelInfo()
-        observeSocketInfo()
         observeEventUserInfo()
         observeVideoProperty()
     }
@@ -197,23 +195,6 @@ class PlayFragment : BaseDaggerFragment() {
         })
     }
 
-    private fun observeSocketInfo() {
-        playViewModel.observableSocketInfo.observe(viewLifecycleOwner, Observer {
-            view?.let { view ->
-                if (it == PlaySocketInfo.ERROR) {
-                    PlayAnalytics.errorState(channelId, getString(R.string.play_message_socket_error), playViewModel.isLive)
-                } else if (it == PlaySocketInfo.RECONNECT) {
-                    Toaster.make(
-                            view,
-                            getString(R.string.play_message_socket_reconnect),
-                            type = Toaster.TYPE_ERROR,
-                            duration = Snackbar.LENGTH_LONG
-                    )
-                }
-            }
-        })
-    }
-
     private fun observeEventUserInfo() {
         playViewModel.observableEvent.observe(viewLifecycleOwner, Observer {
             if (it.isFreeze)
@@ -226,6 +207,11 @@ class PlayFragment : BaseDaggerFragment() {
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             setWindowSoftInputMode(it.type.isLive)
+            if (it.state is TokopediaPlayVideoState.Error) {
+                PlayAnalytics.errorState(channelId,
+                        it.state.error.message?:getString(R.string.play_common_video_error_message),
+                        playViewModel.isLive)
+            }
         })
     }
 

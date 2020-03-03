@@ -226,7 +226,7 @@ public class AutoCompleteActivity extends BaseActivity
     public void onQueryTextChange(@NotNull SearchParameter searchParameter) {
         if (searchParameter.getSearchQuery().isEmpty()) {
             if (initialStateFragment != null) {
-                initialStateFragment.search(searchParameter);
+                initialStateFragment.getInitialStateData(searchParameter);
             }
         } else {
             if (suggestionFragment != null) {
@@ -268,13 +268,5 @@ public class AutoCompleteActivity extends BaseActivity
 
     public void setSearchQuery(String keyword) {
         searchBarView.setQuery(keyword, false, true);
-    }
-
-    public void deleteAllRecentSearch() {
-        initialStateFragment.deleteAllRecentSearch();
-    }
-
-    public void deleteRecentSearch(String keyword) {
-        initialStateFragment.deleteRecentSearch(keyword);
     }
 }
