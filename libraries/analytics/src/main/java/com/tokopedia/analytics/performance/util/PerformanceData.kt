@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.view.util
+package com.tokopedia.analytics.performance.util
 
 class PerformanceData(allFramesTag: String, jankyFramesTag: String, jankyFramesPercentageTag: String) {
     var allFramesTag = ""

@@ -47,6 +47,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
+import com.tokopedia.analytics.performance.util.PerformanceData;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
@@ -80,7 +83,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
@@ -175,6 +177,8 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     private static final String DEFAULT_UTM_SOURCE = "home_notif";
+    private static final String KEY_JANKY_FRAME_INIT = "janky_frames_init_home";
+    private static final String KEY_JANKY_FRAME_SCROLL = "janky_frames_scroll_home";
     @NonNull
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
@@ -229,6 +233,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
     private JankyFramesMonitoringListener jankyFramesMonitoringListener;
+    private PerformanceMonitoring performanceMonitoring;
+    private JankyFrameMonitoringUtil homeScrollJankyMonitoringUtil;
+    private boolean isHomeJankyFramePMActive = false;
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
@@ -269,7 +276,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-
+        homeScrollJankyMonitoringUtil = new JankyFrameMonitoringUtil(getActivity(), KEY_JANKY_FRAME_SCROLL);
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
@@ -361,6 +368,11 @@ public class HomeFragment extends BaseDaggerFragment implements
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     evaluateFloatingTextButtonOnStateChanged();
                     evaluateInheritScrollForHomeRecommendation();
+                    stopHomeScrollingJankyFrameCount();
+                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    if (!isHomeJankyFramePMActive) {
+                        startHomeScrollingJankyFrameCount();
+                    }
                 }
             }
         });
@@ -1831,6 +1843,22 @@ public class HomeFragment extends BaseDaggerFragment implements
             }
             index++;
         }
+    }
+
+    private void startHomeScrollingJankyFrameCount() {
+        performanceMonitoring = PerformanceMonitoring.start(KEY_JANKY_FRAME_SCROLL);
+        isHomeJankyFramePMActive = true;
+        homeScrollJankyMonitoringUtil.startFrameMetrics();
+
+    }
+
+    private void stopHomeScrollingJankyFrameCount() {
+        isHomeJankyFramePMActive = false;
+        PerformanceData data = homeScrollJankyMonitoringUtil.stopFrameMetrics();
+        performanceMonitoring.putMetric(data.getAllFramesTag(), data.getAllFrames());
+        performanceMonitoring.putMetric(data.getJankyFramesTag(), data.getJankyFrames());
+        performanceMonitoring.putMetric(data.getJankyFramesPercentageTag(), data.getJankyFramePercentage());
+        performanceMonitoring.stopTrace();
     }
 
 }

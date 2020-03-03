@@ -1,4 +1,4 @@
-package com.tokopedia.feedplus.view.util
+package com.tokopedia.analytics.performance.util
 
 import android.annotation.TargetApi
 import android.app.Activity
