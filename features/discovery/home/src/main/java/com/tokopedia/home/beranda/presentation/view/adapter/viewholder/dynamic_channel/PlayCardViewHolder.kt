@@ -36,6 +36,7 @@ class PlayCardViewHolder(
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<View>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
+    private val seeAll = view.findViewById<TextView>(R.id.play_txt_see_all)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
     private val description = view.findViewById<TextView>(R.id.description)
@@ -111,6 +112,10 @@ class PlayCardViewHolder(
                 goToPlayChannel(model)
             }
 
+            seeAll.setSafeOnClickListener {
+                goToChannelList()
+            }
+
             itemView.setSafeOnClickListener {
                 goToPlayChannel(model)
             }
@@ -137,6 +142,10 @@ class PlayCardViewHolder(
             listener.onOpenPlayActivity(frameLayout, model.playCardHome?.channelId)
             HomePageTracking.eventClickPlayBanner(model)
         }
+    }
+
+    private fun goToChannelList() {
+        listener.onOpenPlayChannelList()
     }
 
     fun resume(){
