@@ -3,7 +3,6 @@ package com.tokopedia.productcard.utils
 import android.content.Context
 import android.graphics.Color
 import android.view.View
-import android.view.ViewStub
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.DimenRes
@@ -14,11 +13,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.productcard.R
 import com.tokopedia.productcard.ProductCardModel
+import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifyprinciples.Typography
 
@@ -139,13 +136,8 @@ private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
 private fun Label.determineLabelType(labelGroupType: String) {
     val labelType = labelGroupType.toUnifyLabelType()
 
-    if (labelType != -1) {
-        setLabelType(labelType)
-    }
-    else {
-        unlockFeature = true
-        setLabelType(labelGroupType.toUnifyLabelTypeString())
-    }
+    if (labelType != -1) setLabelType(labelType)
+    else setCustomLabelType(labelGroupType)
 }
 
 private fun String?.toUnifyLabelType(): Int {
@@ -164,10 +156,12 @@ private fun String?.toUnifyLabelType(): Int {
     }
 }
 
-private fun String?.toUnifyLabelTypeString(): String {
-    return when (this) {
-        TRANSPARENT_BLACK -> COLOR_LABEL_TRANSPARENT_BLACK
-        else -> COLOR_LABEL_DEFAULT
+private fun Label.setCustomLabelType(labelGroupType: String) {
+    unlockFeature = true
+
+    when(labelGroupType) {
+        TRANSPARENT_BLACK -> setLabelType(COLOR_LABEL_TRANSPARENT_BLACK)
+        else -> setLabelType(COLOR_LABEL_DEFAULT)
     }
 }
 

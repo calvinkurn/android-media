@@ -13,7 +13,7 @@ internal const val DARK_ORANGE = "darkOrange"
 internal const val TRANSPARENT_BLACK = "transparentBlack"
 
 internal const val COLOR_LABEL_DEFAULT = "#FFFFFF"
-internal const val COLOR_LABEL_TRANSPARENT_BLACK = "#AE31353B"
+internal const val COLOR_LABEL_TRANSPARENT_BLACK = "#AD31353B"
 
 internal const val LABEL_PRODUCT_STATUS = "status"
 internal const val LABEL_PRICE = "price"
