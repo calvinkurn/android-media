@@ -25,7 +25,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
 
         @JvmStatic
         fun createParams(
-                shopId: String,
+                shopId: String = "",
                 status: String = "",
                 layoutId: String = ""
         ) = mapOf<String, Any>(
