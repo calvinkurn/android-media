@@ -71,10 +71,12 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterV
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Active
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Banned
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.InActive
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
-import com.tokopedia.product.manage.feature.list.view.model.ViewState
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
@@ -109,6 +111,7 @@ import com.tokopedia.product.manage.oldlist.view.fragment.ProductManageEditPrice
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByPage
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -319,7 +322,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun loadData(page: Int) {
-        viewModel.getProductList(userSession.shopId)
+        val filters = listOf(FilterByPage(page))
+        viewModel.getProductList(userSession.shopId, filters)
     }
 
     override fun renderList(list: List<ProductViewModel>, hasNextPage: Boolean) {
