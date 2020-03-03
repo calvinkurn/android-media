@@ -8,6 +8,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewhold
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.*
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
+import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
 
 class FilterAdapterTypeFactory(
         private val seeAllListener: SeeAllListener,

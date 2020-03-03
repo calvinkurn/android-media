@@ -17,12 +17,12 @@ import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.activity.ProductManageFilterExpandActivity
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.FilterAdapterTypeFactory
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewholder.ShowChipsListener
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
+import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 class ProductManageFilterFragment : BottomSheetUnify(),
         HasComponent<ProductManageFilterComponent>,
-        SeeAllListener, ChipClickListener, ShowChipsListener{
+        SeeAllListener, ChipClickListener, ShowChipsListener {
 
     companion object {
         const val ACTIVITY_EXPAND_FLAG = "expand_type"

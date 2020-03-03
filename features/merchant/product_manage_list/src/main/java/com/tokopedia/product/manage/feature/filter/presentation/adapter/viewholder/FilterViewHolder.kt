@@ -5,13 +5,11 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.decorator.SpacingItemDecoration
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.*
 import kotlinx.android.synthetic.main.widget_header.view.*
-import android.R.attr.button
-import androidx.core.view.ViewCompat.getRotation
-import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 
 
 class FilterViewHolder(view: View,
@@ -21,6 +19,8 @@ class FilterViewHolder(view: View,
 
     companion object {
         val LAYOUT = com.tokopedia.product.manage.R.layout.item_filter
+        private const val NO_ROTATION = 0f
+        private const val FLIPPED_ROTATION = 180f
     }
 
     private val recyclerView: RecyclerView = itemView.findViewById(com.tokopedia.product.manage.R.id.chips_recycler_view)
@@ -66,18 +66,12 @@ class FilterViewHolder(view: View,
     private fun hideChips() {
         recyclerView.visibility = View.GONE
         seeAllWidget.visibility = View.GONE
-        val deg = if (headerWidget.arrow.rotation == 180f) 0f else 180f
-        headerWidget.arrow.rotation = deg
+        headerWidget.arrow.rotation = NO_ROTATION
     }
 
     private fun showChips() {
         recyclerView.visibility = View.VISIBLE
         seeAllWidget.visibility = View.VISIBLE
-        val deg = if (headerWidget.arrow.rotation == 180f) 0f else 180f
-        headerWidget.arrow.rotation = deg
+        headerWidget.arrow.rotation = FLIPPED_ROTATION
     }
-}
-
-interface ShowChipsListener {
-    fun onShowChips(element: FilterViewModel)
 }
