@@ -149,17 +149,19 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
     }
 
     private fun sendTracking(featureVariants: RolloutFeatureVariants) {
-        val userSession : UserSessionInterface = UserSession(context)
+        featureVariants.featureVariants?.let { featureVariants ->
+            val userSession : UserSessionInterface = UserSession(context)
 
-        val dataLayerAbTest = mapOf(
+            val dataLayerAbTest = mapOf(
                 "event" to "abtesting",
                 "eventCategory" to "abtesting",
                 "user_id" to if (userSession.isLoggedIn) userSession.userId else null,
-                "feature" to featureVariants.featureVariants?.map {
+                "feature" to featureVariants?.map {
                     FeatureVariantAnalytics(it.feature, it.variant)
                 }
-        )
-        TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
+            )
+            TrackApp.getInstance().gtm.sendGeneralEvent(dataLayerAbTest)
+        }
     }
 
     companion object {
