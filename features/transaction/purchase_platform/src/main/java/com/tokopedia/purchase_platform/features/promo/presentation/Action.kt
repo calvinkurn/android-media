@@ -1,0 +1,5 @@
+package com.tokopedia.purchase_platform.features.promo.presentation
+
+sealed class Action<out T: Any>
+data class Update<out T: Any>(val data: T): Action<T>()
+data class Delete<out T: Any>(val data: T): Action<T>()

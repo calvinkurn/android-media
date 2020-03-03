@@ -12,7 +12,7 @@ interface PromoCheckoutActionListener {
 
     fun onClickPromoListHeader(itemPosition: Int)
 
-    fun onClickPromoListItem(element: PromoListItemUiModel)
+    fun onClickPromoListItem(position: Int, element: PromoListItemUiModel)
 
     fun onClickPromoItemDetail(element: PromoListItemUiModel)
 
@@ -20,5 +20,4 @@ interface PromoCheckoutActionListener {
 
     fun updateHeightPromoInputView(height: Int)
 
-    fun getEmptyStateHeight(): Int
 }

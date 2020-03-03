@@ -61,10 +61,10 @@ class PromoListItemViewHolder(private val view: View,
         itemView.card_promo_item.setOnClickListener {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION && element.uiState.isEnabled) {
-                element.uiState.isSellected = !element.uiState.isSellected
-                renderEnablePromoItem(element)
+//                element.uiState.isSellected = !element.uiState.isSellected
+//                renderEnablePromoItem(element)
 
-                listener.onClickPromoListItem(element)
+                listener.onClickPromoListItem(position, element)
             }
         }
 
