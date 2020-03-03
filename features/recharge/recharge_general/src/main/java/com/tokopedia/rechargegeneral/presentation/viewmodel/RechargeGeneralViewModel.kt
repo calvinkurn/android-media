@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
 import com.tokopedia.usecase.coroutines.Fail
@@ -40,7 +41,11 @@ class RechargeGeneralViewModel  @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
-            mutableOperatorCluster.postValue(Success(data.response))
+            if (data.response.operatorGroups == null) {
+                throw MessageErrorException(NULL_PRODUCT_ERROR)
+            } else {
+                mutableOperatorCluster.postValue(Success(data.response))
+            }
         }) {
             mutableOperatorCluster.postValue(Fail(it))
         }
@@ -54,15 +59,19 @@ class RechargeGeneralViewModel  @Inject constructor(
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
             }.getSuccessData<RechargeGeneralProductData.Response>()
 
-            mutableProductList.postValue(Success(data.response))
+            if (data.response.product == null) {
+                throw MessageErrorException(NULL_PRODUCT_ERROR)
+            } else {
+                mutableProductList.postValue(Success(data.response))
+            }
         }) {
             mutableProductList.postValue(Fail(it))
         }
     }
 
-    fun createOperatorClusterParams(menuID: Int): Map<String, Int> {
-        return mapOf(PARAM_MENU_ID to menuID)
-    }
+fun createOperatorClusterParams(menuID: Int): Map<String, Int> {
+    return mapOf(PARAM_MENU_ID to menuID)
+}
 
     fun createProductListParams(menuID: Int, operator: Int): Map<String, Any> {
         return mapOf(PARAM_MENU_ID to menuID, PARAM_OPERATOR to operator.toString())
@@ -71,5 +80,6 @@ class RechargeGeneralViewModel  @Inject constructor(
     companion object {
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_OPERATOR = "operator"
+        const val NULL_PRODUCT_ERROR = "null product"
     }
 }
