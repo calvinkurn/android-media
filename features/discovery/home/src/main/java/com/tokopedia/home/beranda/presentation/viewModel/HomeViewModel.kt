@@ -754,6 +754,32 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+    private fun getPopularKeyword() {
+        val data = _homeLiveData.value?.list?.find { it is PopularKeywordListViewModel }
+        if(data != null && data is PopularKeywordListViewModel) {
+            getPopularKeywordData()
+        }
+    }
+
+    fun getPopularKeywordData() {
+        if(getPopularKeywordJob?.isActive == true) return
+        getPopularKeywordJob = launchCatchError(coroutineContext, {
+            popularKeywordUseCase.setParams()
+            val results = popularKeywordUseCase.executeOnBackground()
+            if (results.data.keywords.isNotEmpty()) {
+                val resultList = convertPopularKeywordDataList(results.data.keywords)
+                _homeLiveData.value?.list?.withIndex()?.find { it.value is PopularKeywordListViewModel }?.let { indexedData ->
+                    val oldData = indexedData.value
+                    if (oldData is PopularKeywordListViewModel) {
+                        channel.send(UpdateLiveDataModel(ACTION_UPDATE, oldData.copy(popularKeywordList = resultList), indexedData.index))
+                    }
+                }
+            }
+        }){
+            it.printStackTrace()
+        }
+    }
+
     fun getFeedTabData() {
         launchCatchError(coroutineContext, block={
             val homeRecommendationTabs = getRecommendationTabUseCase.executeOnBackground()
@@ -805,6 +831,10 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+// ============================================================================================
+// ================================ Live Data Controller ======================================
+// ============================================================================================
+
     private suspend fun updateChannel(channel: Channel<UpdateLiveDataModel>){
         for(data in channel){
             val newList = _homeLiveData.value?.list?.toMutableList()
@@ -831,6 +861,10 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
+// ============================================================================================
+// ================================== Mapper Function =========================================
+// ============================================================================================
+
     private fun mapToHomeHeaderWalletAction(walletBalanceModel: WalletBalanceModel): HomeHeaderWalletAction? {
         val data = HomeHeaderWalletAction()
         data.isLinked = walletBalanceModel.link
@@ -848,32 +882,6 @@ open class HomeViewModel @Inject constructor(
         data.walletType = walletBalanceModel.walletType
         data.isShowAnnouncement = walletBalanceModel.isShowAnnouncement
         return data
-    }
-
-    private fun getPopularKeyword() {
-        val data = _homeLiveData.value?.list?.find { it is PopularKeywordListViewModel }
-        if(data != null && data is PopularKeywordListViewModel) {
-            getPopularKeywordData()
-        }
-    }
-
-    fun getPopularKeywordData() {
-        if(getPopularKeywordJob?.isActive == true) return
-        getPopularKeywordJob = launchCatchError(coroutineContext, {
-            popularKeywordUseCase.setParams()
-            val results = popularKeywordUseCase.executeOnBackground()
-            if (results.data.keywords.isNotEmpty()) {
-                val resultList = convertPopularKeywordDataList(results.data.keywords)
-                _homeLiveData.value?.list?.withIndex()?.find { it.value is PopularKeywordListViewModel }?.let { indexedData ->
-                    val oldData = indexedData.value
-                    if (oldData is PopularKeywordListViewModel) {
-                        channel.send(UpdateLiveDataModel(ACTION_UPDATE, oldData.copy(popularKeywordList = resultList), indexedData.index))
-                    }
-                }
-            }
-        }){
-            it.printStackTrace()
-        }
     }
 
     private fun convertPopularKeywordDataList(list: List<HomeWidget.PopularKeyword>): MutableList<PopularKeywordViewModel> {
