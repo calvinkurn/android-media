@@ -77,6 +77,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
 
     private val filterItems = arrayListOf<SortFilterItem>()
+    lateinit var sortFilterView: SortFilter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -786,9 +787,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     private fun buildQuickFilterView() {
-        flight_sort_filter.filterType = SortFilter.TYPE_ADVANCED
-        flight_sort_filter.sortFilterHorizontalScrollView.scrollX = 0
-        flight_sort_filter.parentListener = {
+        if (!::sortFilterView.isInitialized) {
+            sortFilterView = requireView().findViewById(R.id.flight_sort_filter)
+        }
+
+        sortFilterView.filterType = SortFilter.TYPE_ADVANCED
+        sortFilterView.sortFilterHorizontalScrollView.scrollX = 0
+        sortFilterView.parentListener = {
             showFilterSortBottomSheet()
         }
 
@@ -814,12 +819,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             }
 
             filterItems.add(quickDirectFilter)
-            filterItems.add(quickBaggageFilter)
-            filterItems.add(quickMealFilter)
-            filterItems.add(quickTransitFilter)
+//            filterItems.add(quickBaggageFilter)
+//            filterItems.add(quickMealFilter)
+//            filterItems.add(quickTransitFilter)
         }
 
-        flight_sort_filter.addItem(filterItems)
+        sortFilterView.addItem(filterItems)
 
         for (item in filterItems) {
             item.refChipUnify.setChevronClickListener { }
