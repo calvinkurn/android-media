@@ -35,7 +35,7 @@ class LoggerCloudDatasource {
         try {
             url = URL(Constants.SERVER_URL + token)
             urlConnection = url.openConnection() as HttpURLConnection
-            urlConnection.requestMethod = "POST"
+            urlConnection.requestMethod = Constants.METHOD_POST
             urlConnection.doOutput = true
             val wr = DataOutputStream(urlConnection.outputStream)
             wr.writeBytes(message)

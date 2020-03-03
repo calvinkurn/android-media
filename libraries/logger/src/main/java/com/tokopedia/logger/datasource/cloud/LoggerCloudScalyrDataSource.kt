@@ -42,7 +42,7 @@ class LoggerCloudScalyrDataSource(val context: Context) {
                 scalyrEventList)
             url = URL(Constants.SCALYR_SERVER_URL)
             urlConnection = url.openConnection() as HttpURLConnection
-            urlConnection.requestMethod = "POST"
+            urlConnection.requestMethod = Constants.METHOD_POST
             urlConnection.doOutput = true
             val wr = DataOutputStream(urlConnection.outputStream)
             wr.writeBytes(gson.toJson(scalyrBody))
