@@ -1,7 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
-import com.google.android.gms.tagmanager.DataLayer
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
+import com.tokopedia.analyticconstant.DataLayer
 
 object BusinessUnitTracking : BaseTracking(){
     private object CustomEvent{
@@ -31,7 +30,7 @@ object BusinessUnitTracking : BaseTracking(){
             positionOnWidgetHome
     )
 
-    fun getBusinessUnitClick(promotion: BusinessUnitItemDataModel, tabIndex: Int, tabName: String, positionOnWidgetHome: Int) = getBasicPromotionClick(
+    fun getBusinessUnitClick(promotion: Promotion, tabIndex: Int, tabName: String, positionOnWidgetHome: Int) = getBasicPromotionClick(
             Event.PROMO_CLICK,
             Category.HOMEPAGE,
             CustomAction.BU_CLICK,

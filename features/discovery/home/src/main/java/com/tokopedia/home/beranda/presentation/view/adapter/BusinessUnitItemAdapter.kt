@@ -1,11 +1,12 @@
 package com.tokopedia.home.beranda.presentation.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
+import com.tokopedia.home.beranda.ext.mapToPromotionTracker
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.SizeLargeBusinessViewHolder
@@ -13,6 +14,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.SizeSmallBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
 
+@SuppressLint("SyntheticAccessor")
 class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: String) : RecyclerView.Adapter<SizeSmallBusinessViewHolder>(){
     private var list: List<BusinessUnitItemDataModel> = listOf()
     private var positionWidgetOnHome = -1
@@ -25,7 +27,7 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
         override fun onErrorGetData(throwable: Throwable) {}
 
         override fun onImpressed(element: BusinessUnitItemDataModel, position: Int) {
-            BusinessUnitTracking.getBusinessUnitView(element, tabIndex, tabName, positionWidgetOnHome)
+            BusinessUnitTracking.getBusinessUnitView(element.mapToPromotionTracker(), tabIndex, tabName, positionWidgetOnHome)
         }
     }
     private var adapterTypeFactory = BusinessWidgetTypeFactory(listener)
@@ -45,7 +47,7 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
             holder.bind(businessUnit)
             if(!holder.itemView.hasOnClickListeners()){
                 holder.itemView.setOnClickListener {
-                    BusinessUnitTracking.getBusinessUnitClick(businessUnit, tabIndex, tabName, positionWidgetOnHome)
+                    BusinessUnitTracking.getBusinessUnitClick(businessUnit.mapToPromotionTracker(), tabIndex, tabName, positionWidgetOnHome)
                 }
             }
         }

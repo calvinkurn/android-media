@@ -1,9 +1,10 @@
 package com.tokopedia.tracker
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
+import com.tokopedia.home.beranda.ext.mapToPromotionTracker
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.every
 import io.mockk.mockk
@@ -84,7 +85,7 @@ class BusinessUnitTrackerTest : Spek({
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), BusinessUnitTracking.getBusinessUnitView(businessUnitItemDataModel, tabIndex, tabName, positionOnWidgetHome))
+                val result = areEqualKeyValues(testTracker.getTracker(), BusinessUnitTracking.getBusinessUnitView(businessUnitItemDataModel.mapToPromotionTracker(), tabIndex, tabName, positionOnWidgetHome))
                 Assert.assertEquals(result, true)
             }
         }
@@ -114,7 +115,7 @@ class BusinessUnitTrackerTest : Spek({
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), BusinessUnitTracking.getBusinessUnitClick(businessUnitItemDataModel, tabIndex, tabName, positionOnWidgetHome))
+                val result = areEqualKeyValues(testTracker.getTracker(), BusinessUnitTracking.getBusinessUnitClick(businessUnitItemDataModel.mapToPromotionTracker(), tabIndex, tabName, positionOnWidgetHome))
                 Assert.assertEquals(result, true)
             }
         }

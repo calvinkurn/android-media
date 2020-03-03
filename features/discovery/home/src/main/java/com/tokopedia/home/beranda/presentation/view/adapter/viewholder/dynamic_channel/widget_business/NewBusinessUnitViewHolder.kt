@@ -1,8 +1,10 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business
 
+import android.view.Gravity
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.presentation.view.adapter.BusinessUnitItemAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitDataModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -14,6 +16,7 @@ class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitL
     private val loadingView = view.findViewById<View>(R.id.loading_layout)
     private val errorView = view.findViewById<LocalLoad>(R.id.error_bu_unit_widget)
     private var adapter: BusinessUnitItemAdapter? = null
+    private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
 
     init {
         errorView.title?.text = itemView.context.getString(R.string.widget_gagal_ditampilkan)
@@ -22,6 +25,7 @@ class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitL
             errorView.hide()
             listener.getBusinessUnit(adapterPosition)
         }
+        startSnapHelper.attachToRecyclerView(recyclerView)
     }
 
     fun onBind(model: BusinessUnitDataModel?, positionWidget: Int){

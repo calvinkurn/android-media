@@ -104,7 +104,7 @@ class HomeWidget(
     class ContentItemTab(
             @SerializedName("id")
             @Expose
-            val contentId: Int,
+            val contentId: Int = -1,
             @SerializedName("name")
             @Expose
             val contentName: String = "",
@@ -134,7 +134,7 @@ class HomeWidget(
             val tagName: String = "",
             @SerializedName("tag_type")
             @Expose
-            val tagType: Int,
+            val tagType: Int = -1,
             @SerializedName("price")
             @Expose
             val price: String = "",
@@ -146,7 +146,7 @@ class HomeWidget(
             val pricePrefix: String = "",
             @SerializedName("template_id")
             @Expose
-            val templateId: Int
+            val templateId: Int = -1
     ): Visitable<BusinessWidgetTypeFactory>, ImpressHolder() {
 
         override fun type(typeFactory: BusinessWidgetTypeFactory?): Int {

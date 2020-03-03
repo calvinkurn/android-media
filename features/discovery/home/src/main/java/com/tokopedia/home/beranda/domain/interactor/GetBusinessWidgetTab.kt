@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 class GetBusinessWidgetTab @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase<HomeWidget.Data>
-) : UseCase<HomeWidget>(){
+) : UseCase<HomeWidget>() {
     private val params = RequestParams.create()
     init {
         graphqlUseCase.setTypeClass(HomeWidget.Data::class.java)

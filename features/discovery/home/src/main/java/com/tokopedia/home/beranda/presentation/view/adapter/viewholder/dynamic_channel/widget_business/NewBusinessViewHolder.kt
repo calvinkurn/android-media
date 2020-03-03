@@ -72,7 +72,6 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         viewPager.show()
 
         model = element
-        Log.d("HOME", "YAH CUMAN DI ONBIND SAJA")
 
         if(element?.tabList == null) listener.getTabBusinessWidget(adapterPosition)
         else loadingView.hide()
@@ -87,7 +86,6 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?, payloads: MutableList<Any>) {
         try {
-            Log.d("HOME", "ONBIND DENGAN PAYLOAD")
             model = element
             if (payloads.isNotEmpty() && payloads.getOrNull(0) is Bundle) {
                 val bundle = (payloads.first() as Bundle)
@@ -120,7 +118,6 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
                 }
             }
         }catch (e: Exception){
-            Log.d("HOME", "ERROR BIND!! ${e.localizedMessage}")
             errorBuWidget.show()
             loadingView.hide()
             tabLayout.hide()
