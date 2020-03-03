@@ -9,26 +9,21 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class NewBusinessUnitWidgetDataModel(
-        private var isCache: Boolean = false,
+        private val isCache: Boolean = false,
         val position: Int = -1,
-        private var trackingData: Map<String, Any>? = null,
-        private var trackingDataForCombination: List<Any>? = null,
-        private var isCombined: Boolean = false,
         val backColor: String = "",
         val tabList: List<HomeWidget.TabItem>? = null,
         val contentsList: List<BusinessUnitDataModel>? = null
 ) : HomeVisitable{
     override fun isTrackingCombined(): Boolean {
-        return isCombined
+        return false
     }
 
     override fun isCache(): Boolean {
         return isCache
     }
 
-    override fun setTrackingData(trackingData: MutableMap<String, Any>?) {
-        this.trackingData = trackingData
-    }
+    override fun setTrackingData(trackingData: MutableMap<String, Any>?) {}
 
     override fun equalsWith(b: Any?): Boolean {
         return b is NewBusinessUnitWidgetDataModel && b.tabList === tabList && b.backColor == backColor && b.contentsList === contentsList
@@ -42,9 +37,7 @@ data class NewBusinessUnitWidgetDataModel(
         return trackingData
     }
 
-    override fun setTrackingCombined(isCombined: Boolean) {
-        this.isCombined = isCombined
-    }
+    override fun setTrackingCombined(isCombined: Boolean) {}
 
     override fun getChangePayloadFrom(b: Any?): Bundle {
         val bundle = Bundle()
@@ -63,9 +56,7 @@ data class NewBusinessUnitWidgetDataModel(
         return bundle
     }
 
-    override fun setTrackingDataForCombination(trackingDataForCombination: MutableList<Any>?) {
-        this.trackingDataForCombination = trackingDataForCombination
-    }
+    override fun setTrackingDataForCombination(trackingDataForCombination: MutableList<Any>?) {}
 
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)

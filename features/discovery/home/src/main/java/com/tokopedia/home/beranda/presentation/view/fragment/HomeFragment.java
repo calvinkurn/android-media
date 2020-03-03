@@ -668,7 +668,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 jankyFramesMonitoringListener.submitDynamicChannelCount(layoutCounter);
             }
 
-            if (!isDataValid(data)) {
+            if (isDataValid(data)) {
                 removeNetworkError();
             } else {
                 showToaster(getString(R.string.home_error_connection), Toaster.TYPE_ERROR);
@@ -677,7 +677,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private boolean isDataValid(List<HomeVisitable> visitables) {
-        return !containsInstance(visitables, BannerViewModel.class);
+        return containsInstance(visitables, BannerViewModel.class);
     }
 
     private <T> boolean containsInstance(List<T> list, Class type){

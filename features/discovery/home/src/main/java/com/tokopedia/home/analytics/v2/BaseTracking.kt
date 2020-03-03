@@ -1,9 +1,11 @@
 package com.tokopedia.home.analytics.v2
 
+import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.kotlin.model.ImpressHolder
 
+@SuppressLint("VisibleForTests")
 abstract class BaseTracking {
     protected object Event{
         const val NONE = ""
@@ -48,36 +50,36 @@ abstract class BaseTracking {
         fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
     }
 
-    protected object Ecommerce {
+    object Ecommerce {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
-        const val PRODUCT_VIEW = "productView"
-        const val PRODUCT_CLICK = "productClick"
-        const val CLICK = "click"
-        const val IMPRESSIONS = "impressions"
-        const val PROMO_VIEW = "promoView"
-        const val PROMO_CLICK = "promoClick"
-        const val PROMOTIONS = "promotions"
-        const val PRODUCTS = "products"
-        const val ACTION_FIELD = "actionField"
-        const val CURRENCY_CODE = "currencyCode"
-        const val IDR = "IDR"
-        const val LIST = "list"
-        const val FREE_ONGKIR = "bebas ongkir"
-        const val NONE = "none / other"
+        private const val PRODUCT_VIEW = "productView"
+        private const val PRODUCT_CLICK = "productClick"
+        private const val CLICK = "click"
+        private const val IMPRESSIONS = "impressions"
+        private const val PROMO_VIEW = "promoView"
+        private const val PROMO_CLICK = "promoClick"
+        private const val PROMOTIONS = "promotions"
+        private const val PRODUCTS = "products"
+        private const val ACTION_FIELD = "actionField"
+        private const val CURRENCY_CODE = "currencyCode"
+        private const val IDR = "IDR"
+        private const val LIST = "list"
+        private const val FREE_ONGKIR = "bebas ongkir"
+        private const val NONE = "none / other"
 
 
-        const val KEY_ID = "id"
-        const val KEY_NAME = "name"
-        const val KEY_CREATIVE = "creative"
-        const val KEY_CREATIVE_URL = "creative_url"
-        const val KEY_PROMO_ID = "promo_id"
-        const val KEY_PROMO_CODE = "promo_code"
-        const val KEY_PRICE = "price"
-        const val KEY_BRAND = "brand"
-        const val KEY_VARIANT = "variant"
-        const val KEY_CATEGORY = "category"
-        const val KEY_POSITION = "position"
+        private const val KEY_ID = "id"
+        private const val KEY_NAME = "name"
+        private const val KEY_CREATIVE = "creative"
+        private const val KEY_CREATIVE_URL = "creative_url"
+        private const val KEY_PROMO_ID = "promo_id"
+        private const val KEY_PROMO_CODE = "promo_code"
+        private const val KEY_PRICE = "price"
+        private const val KEY_BRAND = "brand"
+        private const val KEY_VARIANT = "variant"
+        private const val KEY_CATEGORY = "category"
+        private const val KEY_POSITION = "position"
         private const val KEY_LIST = "list"
         private const val KEY_ATTRIBUTION = "attribution"
         private const val KEY_DIMENSION_83 = "dimension83"
@@ -152,7 +154,7 @@ abstract class BaseTracking {
             map[KEY_NAME] = product.name
             map[KEY_BRAND] = product.brand
             map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice.toString()
+            map[KEY_PRICE] = product.productPrice
             map[KEY_CATEGORY] = product.category
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE

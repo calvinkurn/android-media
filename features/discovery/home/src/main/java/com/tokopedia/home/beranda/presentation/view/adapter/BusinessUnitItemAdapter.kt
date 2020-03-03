@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.ext.mapToPromotionTracker
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.SizeLargeBusinessViewHolder
@@ -27,7 +26,7 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
         override fun onErrorGetData(throwable: Throwable) {}
 
         override fun onImpressed(element: BusinessUnitItemDataModel, position: Int) {
-            BusinessUnitTracking.getBusinessUnitView(element.mapToPromotionTracker(), tabIndex, tabName, positionWidgetOnHome)
+            BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex, positionWidgetOnHome))
         }
     }
     private var adapterTypeFactory = BusinessWidgetTypeFactory(listener)
@@ -47,7 +46,7 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
             holder.bind(businessUnit)
             if(!holder.itemView.hasOnClickListeners()){
                 holder.itemView.setOnClickListener {
-                    BusinessUnitTracking.getBusinessUnitClick(businessUnit.mapToPromotionTracker(), tabIndex, tabName, positionWidgetOnHome)
+                    BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(businessUnit, tabName, tabIndex, positionWidgetOnHome))
                 }
             }
         }

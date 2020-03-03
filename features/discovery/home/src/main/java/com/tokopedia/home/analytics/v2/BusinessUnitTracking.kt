@@ -1,7 +1,11 @@
 package com.tokopedia.home.analytics.v2
 
+import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.home.analytics.v2.BaseTracking.Ecommerce.getEcommercePromoClick
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 
+@SuppressLint("VisibleForTests")
 object BusinessUnitTracking : BaseTracking(){
     private object CustomEvent{
         const val CLICK_HOMEPAGE = "clickHomepage"
@@ -10,96 +14,43 @@ object BusinessUnitTracking : BaseTracking(){
     private object CustomAction{
         const val BU_VIEW = "impression on bu widget"
         const val BU_CLICK = "CLICK on bu widget"
+        const val TAB_BU_CLICK = "click on bu widget tab"
     }
 
     fun getPageSelected(header: String) = DataLayer.mapOf(
             Event.KEY, CustomEvent.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
-            Action.KEY, "click on bu widget tab",
+            Action.KEY, CustomAction.TAB_BU_CLICK,
             Label.KEY, header
     )
 
-    fun getBusinessUnitView(promotion: Promotion, tabIndex: Int, tabName: String, positionOnWidgetHome: Int) = getBasicPromotionView(
-            Event.PROMO_VIEW,
-            Category.HOMEPAGE,
-            CustomAction.BU_VIEW,
-            Label.NONE,
-            listOf(promotion),
-            tabIndex,
-            tabName,
-            positionOnWidgetHome
+    fun getBusinessUnitView(promotion: Promotion): MutableMap<String, Any> = DataLayer.mapOf(
+            Event.KEY, Event.PROMO_VIEW,
+            Category.KEY, Category.HOMEPAGE,
+            Action.KEY, CustomAction.BU_VIEW,
+            Label.KEY, Label.NONE,
+            Ecommerce.KEY, Ecommerce.getEcommercePromoView(listOf(promotion))
     )
 
-    fun getBusinessUnitClick(promotion: Promotion, tabIndex: Int, tabName: String, positionOnWidgetHome: Int) = getBasicPromotionClick(
-            Event.PROMO_CLICK,
-            Category.HOMEPAGE,
-            CustomAction.BU_CLICK,
-            promotion.name.toLowerCase(),
-            "",
-            "",
-            "",
-            "",
-            "",
-            listOf(promotion),
-            tabIndex,
-            tabName,
-            positionOnWidgetHome
+    fun getBusinessUnitClick(promotion: Promotion): MutableMap<String, Any> = DataLayer.mapOf(
+            Event.KEY, Event.PROMO_CLICK,
+            Category.KEY, Category.HOMEPAGE,
+            Action.KEY, CustomAction.BU_CLICK,
+            Label.KEY, promotion.name.toLowerCase(),
+            Label.CHANNEL_LABEL, Label.NONE,
+            Label.AFFINITY_LABEL, Label.NONE,
+            Label.ATTRIBUTION_LABEL, Label.NONE,
+            Label.CATEGORY_LABEL, Label.NONE,
+            Label.SHOP_LABEL, Label.NONE,
+            Ecommerce.KEY, getEcommercePromoClick(listOf(promotion))
     )
 
-    private fun getBasicPromotionView(event: String, eventCategory: String, eventAction: String, eventLabel: String, promotions: List<Promotion>, tabIndex: Int, tabName: String, positionOnWidgetHome: Int): Map<String, Any> {
-        return DataLayer.mapOf(
-                Event.KEY, event,
-                Category.KEY, eventCategory,
-                Action.KEY, eventAction,
-                Label.KEY, eventLabel,
-                Ecommerce.KEY, getEcommercePromoView(promotions, tabIndex, tabName, positionOnWidgetHome)
-        )
-    }
-
-    private fun getBasicPromotionClick(event: String, eventCategory: String, eventAction: String, eventLabel: String, channelId: String, affinity: String, attribution: String, categoryId: String, shopId: String, promotions: List<Promotion>, tabIndex: Int, tabName: String, positionOnWidgetHome: Int): Map<String, Any> {
-        return DataLayer.mapOf(
-                Event.KEY, event,
-                Category.KEY, eventCategory,
-                Action.KEY, eventAction,
-                Label.KEY, eventLabel,
-                Label.CHANNEL_LABEL, channelId,
-                Label.AFFINITY_LABEL, affinity,
-                Label.ATTRIBUTION_LABEL, attribution,
-                Label.CATEGORY_LABEL, categoryId,
-                Label.SHOP_LABEL, shopId,
-                Ecommerce.KEY, getEcommercePromoClick(promotions, tabIndex, tabName, positionOnWidgetHome)
-        )
-    }
-
-    private fun getEcommercePromoView(promotions: List<Promotion>, tabIndex: Int, tabName: String, positionOnWidgetHome: Int): Map<String, Any> {
-        return DataLayer.mapOf(
-                Ecommerce.PROMO_VIEW, DataLayer.listOf(
-                Ecommerce.PROMOTIONS, getPromotions(promotions, tabIndex, tabName, positionOnWidgetHome)
-        )
-        )
-    }
-
-    private fun getEcommercePromoClick(promotions: List<Promotion>, tabIndex: Int, tabName: String, positionOnWidgetHome: Int): Map<String, Any> {
-        return DataLayer.mapOf(
-                Ecommerce.CLICK, DataLayer.listOf(
-                Ecommerce.PROMOTIONS, getPromotions(promotions, tabIndex, tabName, positionOnWidgetHome)
-        )
-        )
-    }
-
-    private fun getPromotions(promotions: List<Promotion>, tabIndex: Int, tabName: String, positionOnWidgetHome: Int): List<Any>{
-        val list = ArrayList<Map<String,Any>>()
-        promotions.forEach { list.add(createPromotionMap(it, tabIndex, tabName, positionOnWidgetHome)) }
-        return DataLayer.listOf(*list.toTypedArray<Any>())
-    }
-
-    private fun createPromotionMap(promotion: Promotion, tabIndex: Int, tabName: String, positionOnWidgetHome: Int) : Map<String, Any>{
-        val map = HashMap<String, Any>()
-        map[Ecommerce.KEY_ID] = promotion.id
-        map[Ecommerce.KEY_CREATIVE] = promotion.name
-        map[Ecommerce.KEY_NAME] = Ecommerce.PROMOTION_NAME.format(positionOnWidgetHome, "bu widget - tab $tabIndex", tabName)
-        map[Ecommerce.KEY_CREATIVE_URL] = promotion.creativeUrl
-        map[Ecommerce.KEY_POSITION] = promotion.position
-        return map
-    }
+    fun mapToPromotionTracker(model: BusinessUnitItemDataModel, tabName: String, tabIndex: Int, positionWidget: Int) = Promotion(
+            id = model.content.contentId.toString(),
+            name = Ecommerce.PROMOTION_NAME.format(positionWidget, "bu widget - tab $tabIndex", tabName),
+            creative = model.content.contentName,
+            creativeUrl = model.content.imageUrl,
+            position = model.itemPosition.toString(),
+            promoCodes = Label.NONE,
+            promoIds = Label.NONE)
 }
