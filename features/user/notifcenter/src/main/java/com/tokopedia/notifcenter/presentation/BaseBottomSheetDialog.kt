@@ -23,12 +23,14 @@ abstract class BaseBottomSheetDialog<T>(context: Context, fragmentManager: Fragm
     }
 
     private fun onViewCreated(context: Context, fragmentManager: FragmentManager) {
-        bottomSheet.setChild(onCreateView(context))
-        bottomSheet.showHeader = true
-        bottomSheet.isFullpage = true
-        bottomSheet.showCloseIcon = true
-        bottomSheet.show(fragmentManager, BOTTOM_SHEET_TAG)
-        bottomSheet.setCloseClickListener { bottomSheet.dismiss() }
+        with(bottomSheet) {
+            showCloseIcon = true
+            showHeader = true
+            isFullpage = true
+            setChild(onCreateView(context))
+            show(fragmentManager, BOTTOM_SHEET_TAG)
+            setCloseClickListener { dismiss() }
+        }
     }
 
     companion object {
