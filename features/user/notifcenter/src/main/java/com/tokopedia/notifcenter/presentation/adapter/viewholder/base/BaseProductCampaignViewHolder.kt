@@ -43,18 +43,24 @@ abstract class BaseProductCampaignViewHolder(
 
     override fun bindOnNotificationClick(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
-        productContainer.setOnClickListener { getItemClickListener(product, element) }
+        //single product container
+        productContainer.setOnClickListener {
+            baseItemMarkedClick(element)
+            getItemClickListener(product)
+        }
+
+        //common notification container
         container.setOnClickListener {
+            baseItemMarkedClick(element)
             if (element.products.isSingleItem()) {
-                getItemClickListener(product, element)
+                getItemClickListener(product)
             } else {
                 onBindDetailProductClick(element)
             }
         }
     }
 
-    private fun getItemClickListener(product: ProductData, element: NotificationItemViewBean) {
-        baseItemMarkedClick(element)
+    private fun getItemClickListener(product: ProductData) {
         RouteManager.route(
                 itemView.context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -63,7 +69,6 @@ abstract class BaseProductCampaignViewHolder(
     }
 
     private fun onBindDetailProductClick(element: NotificationItemViewBean) {
-        baseItemMarkedClick(element)
         if (element.isShowBottomSheet) {
             val bottomSheetType = BottomSheetType.map(element.typeBottomSheet)
             listener.showNotificationDetail(bottomSheetType, element)

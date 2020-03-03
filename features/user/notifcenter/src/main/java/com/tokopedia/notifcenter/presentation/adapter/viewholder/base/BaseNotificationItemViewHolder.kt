@@ -115,8 +115,8 @@ abstract class BaseNotificationItemViewHolder(
     abstract fun bindNotificationPayload(element: NotificationItemViewBean)
 
     protected open fun baseItemMarkedClick(element: NotificationItemViewBean) {
-        listener.itemClicked(element, adapterPosition)
         element.isRead = true
+        listener.itemClicked(element, adapterPosition)
     }
 
     protected open fun bindOnNotificationClick(element: NotificationItemViewBean) {
@@ -167,10 +167,6 @@ abstract class BaseNotificationItemViewHolder(
 
     private fun getColorResource(colorId: Int): Int {
         return MethodChecker.getColor(itemView.context, colorId)
-    }
-
-    protected fun getAnalytic(): NotificationUpdateAnalytics {
-        return listener.getAnalytic()
     }
 
     companion object {
