@@ -53,7 +53,11 @@ data class ShopProduct(
 
         @SerializedName("freeOngkir")
         @Expose
-        val freeOngkir: FreeOngkir = FreeOngkir()
+        val freeOngkir: FreeOngkir = FreeOngkir(),
+
+        @SerializedName("label_groups")
+        @Expose
+        val labelGroupList: List<LabelGroup> = listOf()
 ){
         data class Response(
                 @SerializedName("GetShopProduct")
@@ -69,10 +73,6 @@ data class ShopProduct(
                 @Expose
                 val errors: String = "",
 
-                @SerializedName("template")
-                @Expose
-                val template: Template = Template(),
-
                 @SerializedName("status")
                 @Expose
                 val status: String = "",
@@ -80,12 +80,6 @@ data class ShopProduct(
                 @SerializedName("totalData")
                 @Expose
                 val totalData: Int = 0
-        )
-
-        data class Template(
-                @SerializedName("label_groups")
-                @Expose
-                val labelGroupList: List<LabelGroup> = listOf()
         )
 
         data class Price(

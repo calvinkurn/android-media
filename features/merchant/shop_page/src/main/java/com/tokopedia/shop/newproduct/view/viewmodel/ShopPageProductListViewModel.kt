@@ -245,10 +245,7 @@ class ShopPageProductListViewModel @Inject constructor(
         val isHasNextPage = isHasNextPage(productFilter.page, ShopPageConstant.DEFAULT_PER_PAGE, productListResponse.totalData)
         return Pair(
                 isHasNextPage,
-                productListResponse.data.map {
-                    ShopPageProductListMapper.mapShopProductToProductViewModel(
-                            it, isMyShop(shopId), productFilter.etalaseMenu, productListResponse.template.labelGroupList)
-                }
+                productListResponse.data.map { ShopPageProductListMapper.mapShopProductToProductViewModel(it, isMyShop(shopId), productFilter.etalaseMenu) }
         )
     }
 

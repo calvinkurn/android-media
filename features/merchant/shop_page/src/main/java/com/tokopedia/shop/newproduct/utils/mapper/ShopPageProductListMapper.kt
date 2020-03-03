@@ -12,7 +12,6 @@ import com.tokopedia.shop.common.data.viewmodel.ItemUnregisteredViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.data.stampprogress.MembershipStampProgress
 import com.tokopedia.shop.newproduct.view.datamodel.*
-import com.tokopedia.shop.product.data.model.Flags
 import com.tokopedia.shop.product.data.model.ShopFeaturedProduct
 import com.tokopedia.shop.product.data.model.ShopProduct
 import java.text.NumberFormat
@@ -20,10 +19,6 @@ import java.text.ParseException
 import kotlin.math.roundToInt
 
 object ShopPageProductListMapper {
-
-    private const val LABEL_TITLE_PREORDER = "Preorder"
-    private const val LABEL_TITLE_GROSIR = "Grosir"
-    private const val LABEL_TITLE_STOK_HABIS = "Stok habis"
 
     fun mapToShopProductEtalaseListDataModel(
             listShopEtalaseModel: List<ShopEtalaseModel>
@@ -43,7 +38,7 @@ object ShopPageProductListMapper {
         )
     }
 
-    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String, labelGroupList: List<LabelGroup>): ShopProductViewModel =
+    fun mapShopProductToProductViewModel(shopProduct: ShopProduct, isMyOwnProduct: Boolean, etalaseId: String): ShopProductViewModel =
             with(shopProduct) {
                 ShopProductViewModel().also {
                     it.id = productId
@@ -68,33 +63,9 @@ object ShopPageProductListMapper {
                     it.isShowFreeOngkir = freeOngkir.isActive
                     it.freeOngkirPromoIcon = freeOngkir.imgUrl
                     it.etalaseId = etalaseId
-                    it.labelGroupList = mapFlagsToLabelGroupViewModelList(flags, labelGroupList)
+                    it.labelGroupList = labelGroupList.map { labelGroup -> mapToLabelGroupViewModel(labelGroup) }
                 }
             }
-
-    private fun mapFlagsToLabelGroupViewModelList(flags: Flags, labelGroupList: List<LabelGroup>): List<LabelGroupViewModel> {
-        val labelGroupViewModelList = mutableListOf<LabelGroupViewModel>()
-
-        labelGroupList.forEach {
-            if (it.title == LABEL_TITLE_PREORDER && flags.isPreorder) {
-                labelGroupViewModelList.add(
-                        mapToLabelGroupViewModel(it)
-                )
-            }
-            else if (it.title == LABEL_TITLE_GROSIR && flags.isWholesale) {
-                labelGroupViewModelList.add(
-                        mapToLabelGroupViewModel(it)
-                )
-            }
-            else if (it.title == LABEL_TITLE_STOK_HABIS && flags.isSold) {
-                labelGroupViewModelList.add(
-                        mapToLabelGroupViewModel(it)
-                )
-            }
-        }
-
-        return labelGroupViewModelList
-    }
 
     private fun mapToLabelGroupViewModel(labelGroup: LabelGroup): LabelGroupViewModel {
         return LabelGroupViewModel(

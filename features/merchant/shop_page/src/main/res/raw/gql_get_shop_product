@@ -2,13 +2,6 @@ query getShopProduct($shopId: String!, $filter: ProductListFilter!){
     GetShopProduct(shopID: $shopId, filter: $filter){
         status
         errors
-        template{
-            label_groups{
-                position
-                title
-                type
-            }
-        }
         data {
             product_id
             name
@@ -53,6 +46,11 @@ query getShopProduct($shopId: String!, $filter: ProductListFilter!){
             freeOngkir {
                 isActive
                 imgURL
+            }
+            label_groups {
+                position
+                type
+                title
             }
         }
         totalData
