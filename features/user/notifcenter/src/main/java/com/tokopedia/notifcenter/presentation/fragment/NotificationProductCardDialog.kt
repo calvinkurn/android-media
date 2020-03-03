@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.BaseBottomSheetDialog
 import com.tokopedia.notifcenter.presentation.adapter.MultipleProductCardAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.product.MultipleProductCardFactoryImpl
@@ -13,7 +14,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 class NotificationProductCardDialog(
         context: Context,
-        fragmentManager: FragmentManager
+        fragmentManager: FragmentManager,
+        listener: NotificationItemListener
 ): BaseBottomSheetDialog<NotificationItemViewBean>(context, fragmentManager) {
 
     private val txtTitle = container?.findViewById<Typography>(R.id.txt_title)
@@ -21,7 +23,7 @@ class NotificationProductCardDialog(
     private val lstProducts = container?.findViewById<RecyclerView>(R.id.lst_products)
 
     private val productCardAdapter by lazy {
-        val factory = MultipleProductCardFactoryImpl()
+        val factory = MultipleProductCardFactoryImpl(listener)
         MultipleProductCardAdapter(factory)
     }
 
@@ -34,7 +36,9 @@ class NotificationProductCardDialog(
         txtDescription?.text = element.body
 
         lstProducts?.adapter = productCardAdapter
-        productCardAdapter.insertData(MultipleProductCardMapper.map(element.products))
+        productCardAdapter.insertData(
+                MultipleProductCardMapper.map(element)
+        )
     }
 
 }
