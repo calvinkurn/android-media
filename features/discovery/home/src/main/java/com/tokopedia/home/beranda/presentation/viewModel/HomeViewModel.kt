@@ -257,13 +257,6 @@ open class HomeViewModel @Inject constructor(
             }
             headerViewModel.isUserLogin = userSession.isLoggedIn
             launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
-//            val homeListWithNewHeader = _homeLiveData.value?.list?.toMutableList()
-//            homeListWithNewHeader?.let {
-//                it[currentPosition] = headerViewModel.copy()
-//                _homeLiveData.value = _homeLiveData.value?.copy(
-//                        list = it
-//                )
-//            }
         }
 
     }
@@ -334,9 +327,6 @@ open class HomeViewModel @Inject constructor(
         if(playIndex != -1 && newList[playIndex] is PlayCardViewModel){
             launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, playCardViewModel, playIndex)) }
         }
-//        _homeLiveData.value = (_homeLiveData.value?.copy(
-//                list = newList
-//        ))
     }
 
     // play widget it will be removed when load image is failed (deal from PO)
