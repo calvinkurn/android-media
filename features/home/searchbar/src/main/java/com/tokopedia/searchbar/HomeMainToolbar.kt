@@ -199,8 +199,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
                 RouteManager.route(context, ApplinkConstInternalDiscovery.AUTOCOMPLETE)
             }else{
                 RouteManager.route(context,
-                        ApplinkConstInternalDiscovery.AUTOCOMPLETE +
-                                "?navsource={source}&hint={hint}&first_install={first_install}",
+                        ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE,
                         HOME_SOURCE,
                         safeEncodeUTF8(keyword),
                         isFirstInstall.toString())
@@ -221,5 +220,7 @@ class HomeMainToolbar : MainToolbar, CoroutineScope {
         const val TOOLBAR_LIGHT_TYPE = 0
         const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
+
+        private const val PARAM_APPLINK_AUTOCOMPLETE = "?navsource={source}&hint={hint}&first_install={first_install}"
     }
 }
