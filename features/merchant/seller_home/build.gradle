@@ -3,7 +3,6 @@ apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "de.mannodermaus.android-junit5"
 
-
 buildscript {
     repositories {
         mavenCentral()
@@ -45,7 +44,6 @@ android {
 dependencies {
     //features
     implementation project(rootProject.ext.features.resourcesCommon)
-    implementation project(rootProject.ext.features.sellerHomeDrawer)
     implementation project(rootProject.ext.features.sellerorder)
 
     //libs
@@ -57,6 +55,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.baseList)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 
     //internal arr libs
     implementation rootProject.ext.unifyDependencies.icon
