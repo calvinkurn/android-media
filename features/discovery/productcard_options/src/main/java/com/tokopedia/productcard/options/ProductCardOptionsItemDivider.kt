@@ -1,0 +1,3 @@
+package com.tokopedia.productcard.options
+
+internal class ProductCardOptionsItemDivider

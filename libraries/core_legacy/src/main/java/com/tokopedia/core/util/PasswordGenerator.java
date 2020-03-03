@@ -7,8 +7,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Build;
 
-import com.tkpd.library.utils.legacy.CommonUtils;
-
 import java.util.UUID;
 
 @Deprecated
@@ -59,8 +57,6 @@ public class PasswordGenerator {
 	        }
 	    }
 	}
-
-
 
 	public String getUniquePsuedoID() {
 	    // If all else fails, if the user does have lower than API 9 (lower
@@ -114,14 +110,6 @@ public class PasswordGenerator {
 		 String signature = sharedPrefs.getString("SIGNATURE", null);
 		 signature = EncoderDecoder.Decrypt(signature, getAppId().substring(0,16), raw);
 		 return signature;
-	}
-	
-	public String generatePassword(String sk) {
-		String password = getAppId()+"~"+sk+"~"+getSignature();
-		String iv = getAppId().substring(0,8)+getSignature().substring(0,8);
-		CommonUtils.dumper("IV: " + iv);
-		String enc_password = EncoderDecoder.Encrypt(password, iv, rawPassword);
-		return enc_password.replaceAll("\n", "");
 	}
 
     public static void clearTokenStorage(Context context) {

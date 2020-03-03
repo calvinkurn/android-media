@@ -62,7 +62,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.imageuploader)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.linker)
-    implementation project(rootProject.ext.libraries.reactNative)
+//    implementation project(rootProject.ext.libraries.reactNative)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.libraries.analytics)
@@ -85,7 +85,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.miscDependencies.reactNative
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -123,7 +122,11 @@ project.ext {
     groupId = 'com.tokopedia.content'
     versionName = "0.0.1"
     artifactName = "feed-release"
+    unitTestKotlinIncludes = [
+            '**/FeedViewModel.*'
+    ]
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
 

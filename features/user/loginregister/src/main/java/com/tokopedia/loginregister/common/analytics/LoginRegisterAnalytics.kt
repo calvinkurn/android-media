@@ -658,14 +658,6 @@ class LoginRegisterAnalytics @Inject constructor(val userSession: UserSessionInt
 
     private fun onSuccessLoginWithEmail(registerAnalytics: RegisterAnalytics) {
         trackClickOnLoginButtonSuccess()
-
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                EVENT_CLICK_LOGIN,
-                CATEGORY_LOGIN_PAGE,
-                ACTION_LOGIN_EMAIL,
-                "success"
-        ))
-
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_LOGIN_SUCCESS,
                 CATEGORY_LOGIN,

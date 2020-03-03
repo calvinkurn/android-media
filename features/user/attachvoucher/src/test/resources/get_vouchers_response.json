@@ -1,0 +1,102 @@
+{
+  "getPublicMerchantVoucherList": {
+    "vouchers": [
+      {
+        "merchant_voucher_id": 375595,
+        "voucher_id": 525041,
+        "voucher_name": "haaaai",
+        "voucher_code": "VELOMONDAYHAY",
+        "minimum_spend": 100000,
+        "minimum_spend_formatted": "100rb",
+        "in_use_expiry": "0",
+        "valid_thru": "1580405400",
+        "tnc": "<ol>\n    <li>Cashback sebesar  Rp 20.000</li>\n    <li>Berlaku minimal transaksi  Rp 100.000 (total harga produk, belum termasuk ongkos kirim dan biaya tambahan lainnya)</li>\n    <li>Voucher hanya berlaku untuk satu kali untuk pembelanjaan di Velovelo Shop.</li>\n    <li>Cashback akan dikirimkan pada user yang memiliki nomor ponsel yang aktif</li>\n    <li>Tidak bisa digabung dengan promo lain.</li>\n    <li>Satu pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher ini.</li>\n    <li>Tokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan dari pengguna yang merugikan pihak Tokopedia.</li>\n    <li>Dengan menggunakan Voucher ini, pengguna dianggap mengerti dan menyetujui semua syarat & ketentuan yang berlaku.</li>\n</ol>",
+        "restricted_for_liquid_product": false,
+        "owner": {
+          "owner_id": 1,
+          "identifier": "merchant-voucher"
+        },
+        "voucher_type": {
+          "voucher_type": 3,
+          "identifier": "cashback"
+        },
+        "amount": {
+          "amount_type": 1,
+          "amount": 20000
+        },
+        "banner": {
+          "desktop_url": "https://ecs7.tokopedia.net/img/attachment/2020/1/6/47676617/47676617_2a8eba2e-4214-49ec-ae64-62363c008612",
+          "mobile_url": "https://ecs7.tokopedia.net/img/attachment/2020/1/6/47676617/47676617_2a8eba2e-4214-49ec-ae64-62363c008612"
+        },
+        "status": {
+          "status": 2,
+          "identifier": "available"
+        }
+      },
+      {
+        "merchant_voucher_id": 365707,
+        "voucher_id": 513937,
+        "voucher_name": "cacikuku",
+        "voucher_code": "VELOLIBURAN",
+        "minimum_spend": 100000,
+        "minimum_spend_formatted": "100rb",
+        "in_use_expiry": "0",
+        "valid_thru": "1579282200",
+        "tnc": "<ol>\n\t<li>Gratis ongkir hingga Rp 20.000</li>\n\t<li>Minimum transaksi Rp 100.000 (total harga produk, belum termasuk ongkos kirim dan biaya tambahan lainnya).</li>\n\t<li>Voucher hanya berlaku untuk pembelanjaan di Velovelo Shop.</li>\n\t<li>Tidak bisa digabung dengan Voucher lain.</li>\n\t<li>Tidak berlaku untuk pembelian Dropshipper.</li>\n\t<li>Satu pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher ini.</li>\n\t<li>Tokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan dari pengguna yang melanggar Syarat dan Ketentuan atau merugikan pihak Tokopedia.</li>\n\t<li>Dengan menggunakan Voucher ini, pengguna dianggap mengerti dan menyetujui semua Syarat dan Ketentuan yang berlaku.</li>\n</ol>",
+        "restricted_for_liquid_product": false,
+        "owner": {
+          "owner_id": 1,
+          "identifier": "merchant-voucher"
+        },
+        "voucher_type": {
+          "voucher_type": 1,
+          "identifier": "free-ongkir"
+        },
+        "amount": {
+          "amount_type": 1,
+          "amount": 20000
+        },
+        "banner": {
+          "desktop_url": "https://ecs7.tokopedia.net/img/attachment/2019/12/23/47676617/47676617_5a5f6fa8-0bd0-408f-9fee-c9189ecfac2a",
+          "mobile_url": "https://ecs7.tokopedia.net/img/attachment/2019/12/23/47676617/47676617_5a5f6fa8-0bd0-408f-9fee-c9189ecfac2a"
+        },
+        "status": {
+          "status": 2,
+          "identifier": "available"
+        }
+      },
+      {
+        "merchant_voucher_id": 375597,
+        "voucher_id": 525043,
+        "voucher_name": "gratisongkirmonday",
+        "voucher_code": "VELOGRATISONGK",
+        "minimum_spend": 100000,
+        "minimum_spend_formatted": "100rb",
+        "in_use_expiry": "0",
+        "valid_thru": "1580405400",
+        "tnc": "<ol>\n\t<li>Gratis ongkir hingga Rp 20.000</li>\n\t<li>Minimum transaksi Rp 100.000 (total harga produk, belum termasuk ongkos kirim dan biaya tambahan lainnya).</li>\n\t<li>Voucher hanya berlaku untuk pembelanjaan di Velovelo Shop.</li>\n\t<li>Tidak bisa digabung dengan Voucher lain.</li>\n\t<li>Tidak berlaku untuk pembelian Dropshipper.</li>\n\t<li>Satu pengguna Tokopedia hanya boleh menggunakan 1 (satu) akun Tokopedia untuk menggunakan Voucher ini.</li>\n\t<li>Tokopedia berhak melakukan tindakan yang diperlukan apabila diduga terjadi tindakan kecurangan dari pengguna yang melanggar Syarat dan Ketentuan atau merugikan pihak Tokopedia.</li>\n\t<li>Dengan menggunakan Voucher ini, pengguna dianggap mengerti dan menyetujui semua Syarat dan Ketentuan yang berlaku.</li>\n</ol>",
+        "restricted_for_liquid_product": false,
+        "owner": {
+          "owner_id": 1,
+          "identifier": "merchant-voucher"
+        },
+        "voucher_type": {
+          "voucher_type": 1,
+          "identifier": "free-ongkir"
+        },
+        "amount": {
+          "amount_type": 1,
+          "amount": 20000
+        },
+        "banner": {
+          "desktop_url": "https://ecs7.tokopedia.net/img/attachment/2020/1/6/47676617/47676617_86b78344-f2da-42e6-a080-d14763d758ec",
+          "mobile_url": "https://ecs7.tokopedia.net/img/attachment/2020/1/6/47676617/47676617_86b78344-f2da-42e6-a080-d14763d758ec"
+        },
+        "status": {
+          "status": 2,
+          "identifier": "available"
+        }
+      }
+    ]
+  }
+}

@@ -1,18 +1,17 @@
 package com.tokopedia.product.detail.view.adapter
 
 import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import androidx.collection.SparseArrayCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.collection.SparseArrayCompat
-import android.view.View
-import android.view.ViewGroup
-import com.tokopedia.product.detail.common.data.model.product.Media
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 
 class VideoPicturePagerAdapter(val context: Context,
-                               private val media: MutableList<Media> = mutableListOf(),
-                               val urlTemp: String? = null,
+                               private val media: MutableList<ProductMediaDataModel> = mutableListOf(),
                                val onPictureClickListener: ((Int) -> Unit)?,
                                val fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
 

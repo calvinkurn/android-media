@@ -1,6 +1,6 @@
 package com.tokopedia.topads.common.data.api;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant;
 import com.tokopedia.topads.common.data.model.DataCheckPromo;
 import com.tokopedia.topads.common.data.model.DataDeposit;

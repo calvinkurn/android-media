@@ -165,4 +165,41 @@ internal class SearchViewModelTest: Spek({
             }
         }
     }
+
+    Feature("Change bottom navigation visibility") {
+
+        Scenario("change bottom navigation visibility to visible") {
+            lateinit var searchViewModel: SearchViewModel
+
+            Given("search view model") {
+                searchViewModel = SearchViewModel(TestDispatcherProvider())
+            }
+
+            When("change bottom navigation visibility to visible") {
+                searchViewModel.changeBottomNavigationVisibility(true)
+            }
+
+            Then("bottom navigation visibility live data is true") {
+                val bottomNavigationVisibilityLiveData = searchViewModel.getBottomNavigationVisibilityLiveData()
+                bottomNavigationVisibilityLiveData.value shouldBe true
+            }
+        }
+
+        Scenario("change bottom navigation visibility to hidden") {
+            lateinit var searchViewModel: SearchViewModel
+
+            Given("search view model") {
+                searchViewModel = SearchViewModel(TestDispatcherProvider())
+            }
+
+            When("change bottom navigation visibility to hidden") {
+                searchViewModel.changeBottomNavigationVisibility(false)
+            }
+
+            Then("bottom navigation visibility live data is false") {
+                val bottomNavigationVisibilityLiveData = searchViewModel.getBottomNavigationVisibilityLiveData()
+                bottomNavigationVisibilityLiveData.value shouldBe false
+            }
+        }
+    }
 })

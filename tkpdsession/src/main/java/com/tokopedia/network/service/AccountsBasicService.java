@@ -1,10 +1,10 @@
 package com.tokopedia.network.service;
 
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
 import com.tokopedia.core.network.retrofit.services.AuthService;
 import com.tokopedia.network.SessionUrl;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import javax.inject.Inject;
 

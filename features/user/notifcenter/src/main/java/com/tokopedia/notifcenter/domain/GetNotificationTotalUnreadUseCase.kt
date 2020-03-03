@@ -20,11 +20,11 @@ class GetNotificationTotalUnreadUseCase @Inject constructor(
         @ApplicationContext val context: Context,
         private val graphqlUseCase: GraphqlUseCase
 ){
-    fun execute(subscriber: Subscriber<GraphqlResponse>) {
+    fun execute(requestParams: Map<String, Any>, subscriber: Subscriber<GraphqlResponse>) {
         val query = GraphqlHelper.loadRawString(context.resources
                 , R.raw.query_notification_update_total_unread)
         val graphqlRequest = GraphqlRequest(query,
-                NotificationUpdateTotalUnread::class.java)
+                NotificationUpdateTotalUnread::class.java, requestParams)
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE)
                 .setSessionIncluded(true).build()
@@ -37,4 +37,16 @@ class GetNotificationTotalUnreadUseCase @Inject constructor(
     fun unsubscribe(){
         graphqlUseCase.unsubscribe()
     }
+
+    companion object {
+        private const val PARAM_TYPE_OF_NOTIF = "typeOfNotif"
+        private const val TYPE_NOTIF_UPDATE = 1 //update
+
+        fun getRequestParams(typeOfNotif: Int = TYPE_NOTIF_UPDATE): HashMap<String, Any> {
+            val variables = HashMap<String, Any>()
+            variables[PARAM_TYPE_OF_NOTIF] = typeOfNotif
+            return variables
+        }
+    }
+
 }

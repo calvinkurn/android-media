@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.express_checkout.view.profile.m
 
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.profile.ProfileModel
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.profile.ProfileResponseModel
-import com.tokopedia.purchase_platform.features.express_checkout.view.profile.viewmodel.ProfileViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.profile.uimodel.ProfileUiModel
 import javax.inject.Inject
 
 /**
@@ -11,13 +11,13 @@ import javax.inject.Inject
 
 class ViewModelMapper @Inject constructor() : DataMapper {
 
-    override fun convertToViewModels(profileResponseModel: ProfileResponseModel): ArrayList<ProfileViewModel> {
-        val profileViewModels = ArrayList<ProfileViewModel>()
+    override fun convertToViewModels(profileResponseModel: ProfileResponseModel): ArrayList<ProfileUiModel> {
+        val profileViewModels = ArrayList<ProfileUiModel>()
         if (profileResponseModel.profileDataModel != null && profileResponseModel.profileDataModel?.profileModels?.isNotEmpty() == true) {
             val profileModels = profileResponseModel.profileDataModel?.profileModels
             if (profileModels != null) {
                 for ((index, profileModel: ProfileModel) in profileModels.withIndex()) {
-                    val profileViewModel = ProfileViewModel()
+                    val profileViewModel = ProfileUiModel()
                     profileViewModel.profileId = profileModel.id
                     profileViewModel.addressId = profileModel.addressModel?.addressId ?: 0
                     profileViewModel.addressTitle = profileModel.addressModel?.addressName ?: ""

@@ -28,6 +28,7 @@ import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.analytics.*
 import com.tokopedia.sellerhomedrawer.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState
+import com.tokopedia.sellerhomedrawer.data.constant.SellerHomeState.SellingTransaction.EXTRA_STATE_TAB_POSITION
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerNotification
 import com.tokopedia.sellerhomedrawer.data.header.SellerDrawerProfile
 import com.tokopedia.sellerhomedrawer.presentation.listener.*
@@ -38,7 +39,6 @@ import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.SellerDrawerIt
 import com.tokopedia.sellerhomedrawer.presentation.view.viewmodel.sellerheader.SellerDrawerHeader
 import com.tokopedia.track.TrackApp
 import com.tokopedia.url.TokopediaUrl
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.sh_drawer_layout.*
 import javax.inject.Inject
@@ -66,6 +66,11 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
         const val INBOX_REPUTATION_ACTIVITY = "com.tokopedia.tkpd.tkpdreputation.inbox.view.activity"
         const val REPUTATION_DEEPLINK = "tokopedia://review"
         const val URL_KEY = "url"
+        const val TAB_POSITION_SELLING_OPPORTUNITY = 1
+        const val TAB_POSITION_SELLING_NEW_ORDER = 2
+        const val TAB_POSITION_SELLING_CONFIRM_SHIPPING = 3
+        const val TAB_POSITION_SELLING_SHIPPING_STATUS = 4
+        const val TAB_POSITION_SELLING_TRANSACTION_LIST = 5
 
     }
 
@@ -97,22 +102,22 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                 }
                 SellerHomeState.DrawerPosition.SHOP_NEW_ORDER -> {
                     eventDrawerClick(EventLabel.NEW_ORDER)
-                    moveActivityApplink(ApplinkConst.SELLER_NEW_ORDER)
+                    moveActivityApplinkSellingTransaction(ApplinkConst.SELLER_NEW_ORDER, TAB_POSITION_SELLING_NEW_ORDER)
                 }
                 SellerHomeState.DrawerPosition.SHOP_CONFIRM_SHIPPING -> {
                     eventDrawerClick(EventLabel.DELIVERY_CONFIRMATION)
-                    moveActivityApplink(ApplinkConst.SELLER_SHIPMENT)
+                    moveActivityApplinkSellingTransaction(ApplinkConst.SELLER_SHIPMENT, TAB_POSITION_SELLING_CONFIRM_SHIPPING)
                 }
                 SellerHomeState.DrawerPosition.SHOP_SHIPPING_STATUS -> {
                     eventDrawerClick(EventLabel.DELIVERY_CONFIRMATION)
-                    moveActivityApplink(ApplinkConst.SELLER_STATUS)
+                    moveActivityApplinkSellingTransaction(ApplinkConst.SELLER_STATUS, TAB_POSITION_SELLING_SHIPPING_STATUS)
                 }
                 SellerHomeState.DrawerPosition.SHOP_TRANSACTION_LIST -> {
                     eventDrawerClick(EventLabel.SALES_LIST)
-                    moveActivityApplink(ApplinkConst.SELLER_HISTORY)
+                    moveActivityApplinkSellingTransaction(ApplinkConst.SELLER_HISTORY, TAB_POSITION_SELLING_TRANSACTION_LIST)
                 }
                 SellerHomeState.DrawerPosition.SHOP_OPPORTUNITY_LIST -> {
-                    moveActivityApplink(ApplinkConst.SELLER_OPPORTUNITY)
+                    moveActivityApplinkSellingTransaction(ApplinkConst.SELLER_OPPORTUNITY, TAB_POSITION_SELLING_OPPORTUNITY)
                 }
                 SellerHomeState.DrawerPosition.SELLER_INFO -> {
                     eventSellerInfo(
@@ -174,7 +179,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                 }
                 SellerHomeState.DrawerPosition.SELLER_TOP_ADS -> {
                     eventDrawerClick(EventLabel.TOPADS)
-                    RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+                    RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
                 }
                 SellerHomeState.DrawerPosition.SELLER_FLASH_SALE -> {
                     RouteManager.route(context, ApplinkConst.SellerApp.FLASHSALE_MANAGEMENT)
@@ -612,6 +617,12 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
 
     private fun moveActivityApplink(applink: String) {
         RouteManager.route(context, applink)
+    }
+
+    private fun moveActivityApplinkSellingTransaction(applink: String, tabPosition: Int) {
+        val intent = RouteManager.getIntent(context, applink)
+        intent.putExtra(EXTRA_STATE_TAB_POSITION, tabPosition)
+        context.startActivity(intent)
     }
 
     private fun moveActivityApplink(applink: String, vararg params: String) {

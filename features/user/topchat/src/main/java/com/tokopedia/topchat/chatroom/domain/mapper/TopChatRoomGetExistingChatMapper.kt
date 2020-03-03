@@ -9,12 +9,11 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chat_common.domain.pojo.Reply
+import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderViewModel
 import com.tokopedia.merchantvoucher.common.gql.data.*
-import com.tokopedia.topchat.chatlist.data.TopChatUrl
 import com.tokopedia.topchat.chatroom.domain.pojo.ImageDualAnnouncementPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
 import com.tokopedia.topchat.chatroom.view.viewmodel.ImageDualAnnouncementViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SecurityInfoViewModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
 import javax.inject.Inject
 
@@ -23,16 +22,6 @@ import javax.inject.Inject
  */
 
 open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingChatMapper() {
-
-    override fun map(pojo: GetExistingChatPojo): ChatroomViewModel {
-        val chatroomViewModel = super.map(pojo)
-        if (!pojo.chatReplies.hasNext) {
-            chatroomViewModel.listChat.add(chatroomViewModel.listChat.size,
-                    SecurityInfoViewModel(TopChatUrl.SECURITY_INFO_URL))
-        }
-
-        return chatroomViewModel
-    }
 
     override fun mapAttachment(chatItemPojoByDateByTime: Reply): Visitable<*> {
         return when (chatItemPojoByDateByTime.attachment?.type.toString()) {
@@ -43,7 +32,6 @@ open class TopChatRoomGetExistingChatMapper @Inject constructor() : GetExistingC
     }
 
     private fun convertToVoucher(item: Reply): Visitable<*> {
-
         var temp = item.attachment?.attributes
 
         val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(MethodChecker.fromHtml(temp).toString(),
