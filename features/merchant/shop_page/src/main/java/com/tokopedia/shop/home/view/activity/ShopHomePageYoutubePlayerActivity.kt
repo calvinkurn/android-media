@@ -8,6 +8,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import com.tokopedia.shop.R
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 
 /**
  * Created by rizqiaryansa on 2020-03-02.
@@ -17,9 +18,10 @@ class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnIn
 
     companion object {
         private const val EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE = "EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE"
+        private const val FULL_SCREEN_CONTROL_FLAGS_LANDSCAPE = 1
 
-        fun createIntent(context: Context, videoUrls: String) = Intent(context, ShopHomePageYoutubePlayerActivity::class.java).apply {
-            putExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE, videoUrls)
+        fun createIntent(context: Context, videoUrl: String) = Intent(context, ShopHomePageYoutubePlayerActivity::class.java).apply {
+            putExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE, videoUrl)
         }
     }
 
@@ -34,13 +36,13 @@ class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnIn
         videoUrls = intent.getStringExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE)
 
         val frag = supportFragmentManager.findFragmentById(R.id.youtube_player_main_shop_page) as YouTubePlayerSupportFragment
-        frag.initialize(getString(R.string.GOOGLE_API_KEY), this)
+        frag.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
         player?.let {
             youtubePlayerScreen = it
-            it.fullscreenControlFlags = 1
+            it.fullscreenControlFlags = FULL_SCREEN_CONTROL_FLAGS_LANDSCAPE
             it.setOnFullscreenListener { b ->
                 isFullScreen = b
             }
@@ -48,7 +50,7 @@ class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnIn
         }
     }
 
-    override fun onInitializationFailure(p0: YouTubePlayer.Provider?, p1: YouTubeInitializationResult?) {}
+    override fun onInitializationFailure(provider: YouTubePlayer.Provider?, youTubeInitializationResult: YouTubeInitializationResult?) {}
 
     override fun onBackPressed() {
         super.onBackPressed()

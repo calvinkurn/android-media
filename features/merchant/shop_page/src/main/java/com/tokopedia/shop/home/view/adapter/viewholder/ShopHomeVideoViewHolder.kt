@@ -18,6 +18,7 @@ import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
@@ -31,7 +32,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiMo
         val LAYOUT_RES = R.layout.widget_shop_page_video_youtube
     }
 
-    private var selectedIndex: Int = 0
+    private val selectedIndex: Int = 0
     private var dataVideo: List<DisplayWidgetUiModel.WidgetItem>? = null
     private var youTubeThumbnailShopPage: YouTubeThumbnailView? = null
 
@@ -44,7 +45,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiMo
         btnYoutubePlayer = view.findViewById(R.id.btn_youtube_player)
         btnYoutubePlayer?.hide()
         titleVideoYoutube = view.findViewById(R.id.titleVideoYoutube)
-        youTubeThumbnailShopPage?.initialize(getString(R.string.GOOGLE_API_KEY), this)
+        youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
     override fun bind(element: DisplayWidgetUiModel?) {
@@ -72,10 +73,10 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiMo
     override fun onInitializationFailure(youTubeThumbnailView: YouTubeThumbnailView?, youTubeInitializationResult: YouTubeInitializationResult?) {
     }
 
-    override fun onClick(v: View?) {
-        when(v?.id) {
+    override fun onClick(view: View?) {
+        when(view?.id) {
             R.id.btn_youtube_player -> {
-                v.context?.let {
+                view.context?.let {
                     if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                             == YouTubeInitializationResult.SUCCESS) {
                         it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, dataVideo?.get(selectedIndex)?.videoUrl.toString()))

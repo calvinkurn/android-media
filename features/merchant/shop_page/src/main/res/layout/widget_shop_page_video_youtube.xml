@@ -16,6 +16,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- TODO ADD IMAGE PLACEHOLDER VIDEO -->
     <!--    <androidx.appcompat.widget.AppCompatImageView-->
     <!--        android:id="@+id/image_video_placeholder"-->
     <!--        android:layout_width="match_parent"-->
@@ -41,7 +42,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_play_button" />
 
-<!--    <FrameLayout-->
+    <!-- TODO FRAMELAYOUT Container for play in viewholder -->
+    <!--    <FrameLayout-->
 <!--        android:id="@+id/video_container_shop_page"-->
 <!--        android:layout_width="match_parent"-->
 <!--        android:layout_height="@dimen/dp_180"-->

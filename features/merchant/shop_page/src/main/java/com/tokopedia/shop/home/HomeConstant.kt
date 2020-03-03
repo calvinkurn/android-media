@@ -88,6 +88,7 @@ object HomeConstant {
             }
     )
 
+    //TODO data static video
     val videoWidget = DisplayWidgetUiModel(
             name = VIDEO,
             data = mutableListOf<WidgetItem>().apply {

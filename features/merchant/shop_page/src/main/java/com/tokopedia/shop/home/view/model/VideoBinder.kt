@@ -9,6 +9,7 @@ import com.google.android.youtube.player.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVideoViewHolder
 import com.tokopedia.shop.home.view.fragment.IFragmentManager
+import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import java.lang.Exception
 import java.lang.NullPointerException
 
@@ -29,7 +30,6 @@ class VideoBinder(private var widgetModel: DisplayWidgetUiModel) {
     private var youtubePlayerFragment: YouTubePlayerSupportFragment? = null
 
     private var youtubePlayer: YouTubePlayer? = null
-
 
     private var youtubeVideoUrl: String? = null
     private var idYoutubeVideo: String? = null
@@ -113,7 +113,7 @@ class VideoBinder(private var widgetModel: DisplayWidgetUiModel) {
                     ?.add(UNIQUE_ID_PREFIX + videoViewHolder.adapterPosition, youtubePlayerFragment as Fragment)
                     ?.commit()
 
-            youtubePlayerFragment?.initialize(context.getString(R.string.GOOGLE_API_KEY), object :
+            youtubePlayerFragment?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, object :
                     YouTubePlayer.OnInitializedListener {
                 override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
                     youtubePlayer = player
