@@ -95,7 +95,7 @@ class TopChatRoomPresenter @Inject constructor(
         private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
         private var addWishListUseCase: AddWishListUseCase,
         private var removeWishListUseCase: RemoveWishListUseCase,
-        private var uploadImageUseCase2: UploaderUseCase,
+        private var uploadImageUseCase: UploaderUseCase,
         private var chatImageServerUseCase: ChatImageServerUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter, CoroutineScope {
@@ -323,8 +323,8 @@ class TopChatRoomPresenter @Inject constructor(
 
     private fun uploadImageWithSourceId(sourceId: String, image: ImageUploadViewModel) {
         launch(dispatchers.IO) {
-            val requestParams = uploadImageUseCase2.createParams(sourceId, File(image.imageUrl))
-            val result = uploadImageUseCase2(requestParams)
+            val requestParams = uploadImageUseCase.createParams(sourceId, File(image.imageUrl))
+            val result = uploadImageUseCase(requestParams)
             isUploading = false
             withContext(dispatchers.Main) {
                 when (result) {
