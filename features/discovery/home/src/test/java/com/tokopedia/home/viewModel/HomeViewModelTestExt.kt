@@ -87,6 +87,9 @@ fun GetBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget: Home
 fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseReturn(businessList: List<BusinessUnitItemDataModel>){
     coEvery{ executeOnBackground() } returns businessList
 }
+fun GetBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseThrowReturn(){
+    coEvery{ executeOnBackground() } throws Exception()
+}
 
 fun HomeUseCase.givenGetHomeDataReturn(homeDataModel: HomeDataModel) {
     coEvery { getHomeData() } returns flow{

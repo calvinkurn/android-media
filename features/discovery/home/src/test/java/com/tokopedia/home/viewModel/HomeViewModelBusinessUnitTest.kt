@@ -1,17 +1,18 @@
 package com.tokopedia.home.viewModel
 
+import androidx.lifecycle.Observer
 import com.tokopedia.home.beranda.data.model.HomeWidget
-import com.tokopedia.home.beranda.data.model.PlayChannel
 import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetBusinessUnitDataUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetBusinessWidgetTab
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.HomeDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel
-import com.tokopedia.home.ext.observeOnce
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
+import io.mockk.confirmVerified
+import io.mockk.mockk
+import io.mockk.verifyOrder
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -28,6 +29,8 @@ class HomeViewModelBusinessUnitTest : Spek({
         val getBusinessWidgetTab by memoized<GetBusinessWidgetTab>()
         val getBusinessUnitDataUseCase by memoized<GetBusinessUnitDataUseCase>()
         val getHomeUseCase by memoized<HomeUseCase>()
+        val observerHome: Observer<HomeDataModel> = mockk(relaxed = true)
+
         Scenario("Get bu tab success && bu data success") {
             val businessUnitDataModel = NewBusinessUnitWidgetDataModel()
 
@@ -41,6 +44,7 @@ class HomeViewModelBusinessUnitTest : Spek({
 
             Given("home viewmodel") {
                 homeViewModel = createHomeViewModel()
+                homeViewModel.homeLiveData.observeForever(observerHome)
             }
 
             Given("load tab data return success") {
@@ -61,22 +65,33 @@ class HomeViewModelBusinessUnitTest : Spek({
                 homeViewModel.getBusinessUnitTabData(0)
             }
 
+            When("viewModel load business data") {
+                homeViewModel.getBusinessUnitData(1, 0)
+            }
+
             Then("Expect tabs data on live data available") {
-                homeViewModel.homeLiveData.observeOnce {
-                    assert(it.list.contains(businessUnitDataModel) && (it.list.find { it == businessUnitDataModel } as? NewBusinessUnitWidgetDataModel)?.tabList != null
-                            && (it.list.find { it == businessUnitDataModel } as? NewBusinessUnitWidgetDataModel)?.backColor == "red"
-                    )
+                verifyOrder {
+                    observerHome.onChanged(match {
+                        it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).tabList == null
+                    })
+                    observerHome.onChanged(match {
+                        it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null
+                    })
+                    observerHome.onChanged(match {
+                        it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList?.first()?.list != null
+                    })
                 }
+                confirmVerified(observerHome)
             }
-
-            Then("Expect data bu available"){
-
-            }
-
-
         }
 
-        Scenario("Get bu tab success && bu data first") {
+        Scenario("Get bu tab success && bu data first error") {
             val businessUnitDataModel = NewBusinessUnitWidgetDataModel()
 
             Given("dynamic banner") {
@@ -89,6 +104,7 @@ class HomeViewModelBusinessUnitTest : Spek({
 
             Given("home viewmodel") {
                 homeViewModel = createHomeViewModel()
+                homeViewModel.homeLiveData.observeForever(observerHome)
             }
 
             Given("load tab data returns success") {
@@ -96,16 +112,37 @@ class HomeViewModelBusinessUnitTest : Spek({
                 getBusinessWidgetTab.givenGetBusinessWidgetTabUseCaseReturn(homeWidget)
             }
 
+            Given("load data bu return error"){
+                getBusinessUnitDataUseCase.givenGetBusinessUnitDataUseCaseThrowReturn()
+            }
+
             When("viewModel load business tab") {
                 homeViewModel.getBusinessUnitTabData(0)
             }
 
+            When("viewModel load business data") {
+                homeViewModel.getBusinessUnitData(1, 0)
+            }
+
             Then("Expect tabs data on live data available") {
-                homeViewModel.homeLiveData.observeOnce {
-                    assert(it.list.contains(businessUnitDataModel) && (it.list.find { it == businessUnitDataModel } as? NewBusinessUnitWidgetDataModel)?.tabList != null
-                            && (it.list.find { it == businessUnitDataModel } as? NewBusinessUnitWidgetDataModel)?.backColor == "red"
-                    )
+                verifyOrder {
+                    observerHome.onChanged(match {
+                        it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).tabList == null
+                    })
+                    observerHome.onChanged(match {
+                        it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null
+                    })
+                    observerHome.onChanged(match {
+                        it.list.isNotEmpty() && it.list.first() is NewBusinessUnitWidgetDataModel &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).tabList != null &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList != null &&
+                                (it.list.first() as NewBusinessUnitWidgetDataModel).contentsList?.first()?.list?.isEmpty() == true
+                    })
                 }
+                confirmVerified(observerHome)
             }
         }
     }
