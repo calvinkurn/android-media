@@ -3,8 +3,9 @@ package com.tokopedia.search.analytics;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.discovery.common.model.WishlistTrackingModel;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
@@ -26,6 +27,7 @@ import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_CATEGO
 import static com.tokopedia.search.analytics.SearchTrackingConstant.EVENT_LABEL;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.IS_RESULT_FOUND;
 import static com.tokopedia.search.analytics.SearchTrackingConstant.USER_ID;
+import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by henrypriyono on 1/5/18.
@@ -200,18 +202,23 @@ public class SearchTracking {
     public static void eventImpressionSearchResultProduct(TrackingQueue trackingQueue,
                                                           List<Object> list,
                                                           List<ProductItemViewModel> productItemViewModels,
-                                                          String eventLabel) {
+                                                          String eventLabel,
+                                                          String irisSessionId) {
+        HashMap<String, Object> map = (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
+                "eventCategory", "search result",
+                "eventAction", "impression - product",
+                "eventLabel", eventLabel,
+                "ecommerce", DataLayer.mapOf(
+                        "currencyCode", "IDR",
+                        "impressions", DataLayer.listOf(
+                                list.toArray(new Object[list.size()])
+                        ))
+        );
+        if(!TextUtils.isEmpty(irisSessionId))
+            map.put(ConstantKt.KEY_SESSION_IRIS, irisSessionId);
+
         trackingQueue.putEETracking(
-                (HashMap<String, Object>) DataLayer.mapOf("event", "productView",
-                        "eventCategory", "search result",
-                        "eventAction", "impression - product",
-                        "eventLabel", eventLabel,
-                        "ecommerce", DataLayer.mapOf(
-                                "currencyCode", "IDR",
-                                "impressions", DataLayer.listOf(
-                                        list.toArray(new Object[list.size()])
-                                ))
-                )
+                map
         );
     }
 

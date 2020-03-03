@@ -1,6 +1,6 @@
 package com.tokopedia.browse.common.util
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.browse.common.constant.DigitalBrowseEventTracking.Action
 import com.tokopedia.browse.common.constant.DigitalBrowseEventTracking.Event
 import com.tokopedia.browse.common.data.DigitalBrowseServiceAnalyticsModel

@@ -20,7 +20,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -1962,7 +1962,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun trackCardPostElementClick(positionInFeed: Int, element: String) {
-        if (adapter.getlist().size > positionInFeed && adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
+        if (adapter.getlist().size > positionInFeed && positionInFeed >= 0 && adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
             val trackingPostModel = (adapter.getlist()[positionInFeed] as DynamicPostViewModel).trackingPostModel
 
             analytics.eventCardPostElementClick(

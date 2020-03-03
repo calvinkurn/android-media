@@ -9,7 +9,7 @@ import javax.inject.Inject
  * @author by jessica on 06/03/19
  */
 
-class FlightSearchDataCacheSource @Inject
+open class FlightSearchDataCacheSource @Inject
 constructor(private val cacheManager: CacheManager) {
 
     val isExpired: Observable<Boolean>
@@ -19,6 +19,11 @@ constructor(private val cacheManager: CacheManager) {
         get() {
             val specialTag = cacheManager.get(FLIGHT_SPECIAL_TAG_KEY)
             return Observable.just(specialTag)
+        }
+
+    val cacheCoroutine: String
+        get() {
+            return cacheManager.get(FLIGHT_SPECIAL_TAG_KEY)
         }
 
     fun deleteCache(): Observable<Boolean> {

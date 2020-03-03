@@ -1,6 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 
 object HomeRecommendationTracking : BaseTracking(){
