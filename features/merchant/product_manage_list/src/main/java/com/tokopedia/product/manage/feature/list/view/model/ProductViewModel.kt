@@ -9,10 +9,12 @@ data class ProductViewModel(
     val title: String?,
     val imageUrl: String?,
     val price: String?,
-    val status: String?,
+    val priceFormatted: String?,
+    val status: ProductStatus?,
     val url: String?,
     val cashBack: Int,
     val stock: Int?,
+    val isFeatured: Boolean?,
     val isVariant: Boolean?
 ) : Visitable<BaseListCheckableTypeFactory<ProductViewModel>> {
     override fun type(typeFactory: BaseListCheckableTypeFactory<ProductViewModel>): Int {
@@ -21,9 +23,9 @@ data class ProductViewModel(
 
     fun isVariant(): Boolean = isVariant == true
     fun isNotVariant(): Boolean = isVariant != true
-    fun isStockEmpty(): Boolean = stock == 0
 
-    fun isActive(): Boolean = status == ProductStatus.ACTIVE.name
-    fun isInactive(): Boolean = status == ProductStatus.INACTIVE.name
-    fun isBanned(): Boolean = status == ProductStatus.BANNED.name
+    fun isActive(): Boolean = status == ProductStatus.ACTIVE
+    fun isInactive(): Boolean = status == ProductStatus.INACTIVE
+    fun isBanned(): Boolean = status == ProductStatus.BANNED
+    fun isEmpty(): Boolean = status == ProductStatus.EMPTY
 }
