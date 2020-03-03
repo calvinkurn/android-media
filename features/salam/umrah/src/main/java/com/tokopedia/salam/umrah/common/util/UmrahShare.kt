@@ -39,7 +39,7 @@ class UmrahShare(private val activity: Activity) {
             type = TYPE
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             putExtra(Intent.EXTRA_TITLE, context.getString(R.string.umrah_travel_share_name, title))
-            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.umrah_travel_share_desc, shareContent,shareContent))
+            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.umrah_travel_share_desc, title,title)+shareContent)
             putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.umrah_travel_share_name, title))
         }
         activity.startActivity(Intent.createChooser(shareIntent, "Bagikan Produk Ini"))
