@@ -11,5 +11,4 @@ class RecentSearchViewModel(
     override fun type(typeFactory: InitialStateTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

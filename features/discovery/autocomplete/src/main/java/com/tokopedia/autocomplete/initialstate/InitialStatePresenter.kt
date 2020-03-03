@@ -187,7 +187,7 @@ class InitialStatePresenter @Inject constructor(
 
     override fun refreshPopularSearch(searchParameter: SearchParameter) {
         refreshPopularSearchUseCase.execute(
-                InitialStateUseCase.getParams(
+                RefreshPopularSearchUseCase.getParams(
                         searchParameter.getSearchParameterMap(),
                         userSession.deviceId,
                         userSession.userId

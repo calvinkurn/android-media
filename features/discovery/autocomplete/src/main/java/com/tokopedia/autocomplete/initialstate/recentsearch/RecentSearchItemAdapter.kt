@@ -34,13 +34,13 @@ class RecentSearchItemAdapter(private val listener: InitialStateItemClickListene
         return when(viewType){
             TYPE_TWO_LINE -> {
                 val itemView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.layout_recent_search_double_line_item_autocomplete, parent, false)
-                ItemDoubleLineViewHolder(itemView, listener)
+                        .inflate(R.layout.layout_autocomplete_double_line_item, parent, false)
+                RecentSearchDoubleLineItemViewHolder(itemView, listener)
             }
             else -> {
                 val itemView = LayoutInflater.from(parent.context)
-                        .inflate(R.layout.layout_recent_search_single_line_item_autocomplete, parent, false)
-                ItemSingleLineViewHolder(itemView, listener)
+                        .inflate(R.layout.layout_autocomplete_single_line_item, parent, false)
+                RecentSearchSingleLineItemViewHolder(itemView, listener)
             }
         }
 
@@ -48,8 +48,8 @@ class RecentSearchItemAdapter(private val listener: InitialStateItemClickListene
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when(getItemViewType(position)){
-            TYPE_TWO_LINE -> (holder as ItemDoubleLineViewHolder).bind(data[position])
-            else -> (holder as ItemSingleLineViewHolder).bind(data[position])
+            TYPE_TWO_LINE -> (holder as RecentSearchDoubleLineItemViewHolder).bind(data[position])
+            else -> (holder as RecentSearchSingleLineItemViewHolder).bind(data[position])
         }
     }
 
