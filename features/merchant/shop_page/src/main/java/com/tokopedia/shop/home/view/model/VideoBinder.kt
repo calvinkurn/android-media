@@ -17,7 +17,7 @@ import java.lang.NullPointerException
  * Created by rizqiaryansa on 2020-02-27.
  */
 
-class VideoBinder(private var widgetModel: WidgetModel) {
+class VideoBinder(private var widgetModel: DisplayWidgetUiModel) {
 
     private var selectedIndex: Int = 0
 
@@ -43,7 +43,7 @@ class VideoBinder(private var widgetModel: WidgetModel) {
         bindTitle(viewHolder)
     }
 
-    private fun setValueVideo(widgetModel: WidgetModel) {
+    private fun setValueVideo(widgetModel: DisplayWidgetUiModel) {
         youtubeVideoUrl = widgetModel.data?.get(selectedIndex)?.videoUrl
         try {
             idYoutubeVideo = Uri.parse(youtubeVideoUrl).lastPathSegment
@@ -98,8 +98,7 @@ class VideoBinder(private var widgetModel: WidgetModel) {
 
                 fragmentManager.getSupportFragmentManager()
                         ?.beginTransaction()
-                        ?.remove(youtubePlayerFragment as Fragment)
-                        ?.commit()
+                        ?.remove(youtubePlayerFragment as Fragment)?.commit()
 
                 fragmentManager.getSupportFragmentManager()
                         ?.executePendingTransactions()

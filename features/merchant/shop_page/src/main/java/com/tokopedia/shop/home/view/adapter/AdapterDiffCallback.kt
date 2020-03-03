@@ -1,7 +1,7 @@
 package com.tokopedia.shop.home.view.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.shop.home.view.model.WidgetDataModel
+import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 
 /**
  * Created by rizqiaryansa on 2020-02-24.
@@ -9,12 +9,12 @@ import com.tokopedia.shop.home.view.model.WidgetDataModel
 
 object AdapterDiffCallback {
 
-    val WidgetDiffCallback = object : DiffUtil.ItemCallback<WidgetDataModel>() {
-        override fun areItemsTheSame(oldItem: WidgetDataModel, newItem: WidgetDataModel): Boolean {
+    val WidgetDiffCallback = object : DiffUtil.ItemCallback<DisplayWidgetUiModel.WidgetItem>() {
+        override fun areItemsTheSame(oldItem: DisplayWidgetUiModel.WidgetItem, newItem: DisplayWidgetUiModel.WidgetItem): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: WidgetDataModel, newItem: WidgetDataModel): Boolean {
+        override fun areContentsTheSame(oldItem: DisplayWidgetUiModel.WidgetItem, newItem: DisplayWidgetUiModel.WidgetItem): Boolean {
             return oldItem == newItem
         }
     }

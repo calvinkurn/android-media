@@ -1,17 +1,21 @@
-package com.tokopedia.shop.newproduct.view.datamodel
+package com.tokopedia.shop.home.view.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
+import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
+import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapterTypeFactory
 import com.tokopedia.shop.newproduct.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductBadge
+import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel
 
 /**
  * Created by nathan on 2/6/18.
  */
 
-class ShopProductViewModel : BaseShopProductViewModel {
+class ShopHomeProductViewModel : Visitable<BaseAdapterTypeFactory> {
 
     var id: String? = null
     var name: String? = null
@@ -35,8 +39,18 @@ class ShopProductViewModel : BaseShopProductViewModel {
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
 
-    override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
-        return typeFactory.type(this)
+    override fun type(typeFactory: BaseAdapterTypeFactory): Int {
+        return when(typeFactory){
+            is ShopHomeAdapterTypeFactory -> {
+                typeFactory.type(this)
+            }
+            is ShopPageHomeCarousellAdapterTypeFactory ->{
+                typeFactory.type(this)
+            }
+            else ->  {
+                -1
+            }
+        }
     }
 
     constructor() {}

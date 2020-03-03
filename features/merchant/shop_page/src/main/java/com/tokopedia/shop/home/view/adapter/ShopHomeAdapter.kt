@@ -1,25 +1,51 @@
 package com.tokopedia.shop.home.view.adapter
 
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.newproduct.view.viewholder.ShopProductViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
-import com.tokopedia.shop.home.WidgetYoutubeVideo
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVideoViewHolder
-import com.tokopedia.shop.home.view.fragment.IFragmentManager
-import com.tokopedia.shop.home.view.model.WidgetModel
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
  */
 
 class ShopHomeAdapter(
-        val context: Context?,
-        val element: WidgetModel,
         shopHomeAdapterTypeFactory: ShopHomeAdapterTypeFactory
-): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory, null) {
+): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory) {
 
+    companion object{
+        private const val ALL_PRODUCT_STRING = "Semua Produk"
+    }
+
+    override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
+        val layoutParams = holder.itemView.layoutParams
+        if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
+            layoutParams.isFullSpan = getItemViewType(position) != ShopProductViewHolder.GRID_LAYOUT
+        }
+        super.onBindViewHolder(holder, position)
+    }
+
+    fun setProductListData(productList: List<ShopHomeProductViewModel>) {
+        val lastIndex = lastIndex
+        visitables.addAll(productList)
+        notifyItemRangeInserted(lastIndex, productList.size)
+    }
+
+    fun setEtalaseTitleData() {
+        visitables.add(ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, ""))
+        notifyItemInserted(lastIndex)
+    }
+
+    fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
+        val lastIndex = lastIndex
+        visitables.addAll(data)
+        notifyItemRangeInserted(lastIndex, data.size)
+    }
 
 //    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
 //        super.onViewAttachedToWindow(holder)
@@ -45,4 +71,5 @@ class ShopHomeAdapter(
 //            }
 //        }
 //    }
+
 }

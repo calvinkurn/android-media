@@ -3,7 +3,7 @@ package com.tokopedia.shop.home.util
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-object CoroutineCoroutineDispatcherProviderImpl: CoroutineDispatcherProvider {
+object CoroutineDispatcherProviderImpl: CoroutineDispatcherProvider {
     override fun main(): CoroutineDispatcher = Dispatchers.Main
 
     override fun io(): CoroutineDispatcher = Dispatchers.IO

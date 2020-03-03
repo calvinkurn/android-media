@@ -6,15 +6,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.banner.BannerView
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.WidgetSliderBanner
 import com.tokopedia.shop.home.view.BannerShopPage
-import com.tokopedia.shop.home.view.model.WidgetModel
+import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 
 /**
  * Created by rizqiaryansa on 2020-02-25.
  */
 
-class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<WidgetModel>(view),
+class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<DisplayWidgetUiModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener{
@@ -25,7 +24,7 @@ class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<WidgetMode
         banner = view?.findViewById(R.id.banner_shop_page)
     }
 
-    override fun bind(element: WidgetModel?) {
+    override fun bind(element: DisplayWidgetUiModel) {
         banner?.setPromoList(dataWidgetToString(element))
         banner?.onPromoAllClickListener = this
         banner?.onPromoScrolledListener = this
@@ -49,10 +48,9 @@ class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<WidgetMode
 
     override fun onPromoScrolled(p0: Int) {}
 
-    private fun dataWidgetToString(element: WidgetModel?): List<String>? {
+    private fun dataWidgetToString(element: DisplayWidgetUiModel): List<String>? {
         val mutableString: MutableList<String>? = mutableListOf()
-        val listSliderBanner = element?.takeIf { it -> it.name == WidgetSliderBanner }
-        listSliderBanner?.data?.map {
+        element.data?.map {
             it.imageUrl?.let { img ->
                 mutableString?.add(img)
             }

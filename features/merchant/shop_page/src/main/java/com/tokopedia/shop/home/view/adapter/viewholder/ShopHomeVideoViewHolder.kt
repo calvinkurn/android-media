@@ -13,11 +13,10 @@ import com.google.android.youtube.player.YouTubeThumbnailView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.shop.home.view.model.WidgetDataModel
-import com.tokopedia.shop.home.view.model.WidgetModel
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
+import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 
@@ -25,7 +24,7 @@ import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
  * Created by rizqiaryansa on 2020-02-26.
  */
 
-class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<WidgetModel>(view),
+class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiModel>(view),
     YouTubeThumbnailView.OnInitializedListener, View.OnClickListener{
 
     companion object {
@@ -34,7 +33,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<WidgetModel>(view
     }
 
     private val selectedIndex: Int = 0
-    private var dataVideo: MutableList<WidgetDataModel>? = null
+    private var dataVideo: List<DisplayWidgetUiModel.WidgetItem>? = null
     private var youTubeThumbnailShopPage: YouTubeThumbnailView? = null
 
     var btnYoutubePlayer: AppCompatImageView? = null
@@ -49,7 +48,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<WidgetModel>(view
         youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
-    override fun bind(element: WidgetModel?) {
+    override fun bind(element: DisplayWidgetUiModel?) {
         dataVideo = element?.data
         btnYoutubePlayer?.setOnClickListener(this)
     }
