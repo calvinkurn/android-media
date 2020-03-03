@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterModule
 import com.tokopedia.product.manage.feature.filter.presentation.activity.ProductManageFilterExpandActivity
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.FilterAdapterTypeFactory
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewholder.ShowChipsListener
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
@@ -31,7 +32,7 @@ import javax.inject.Inject
 
 class ProductManageFilterFragment : BottomSheetUnify(),
         HasComponent<ProductManageFilterComponent>,
-        SeeAllListener, ChipClickListener{
+        SeeAllListener, ChipClickListener, ShowChipsListener{
 
     companion object {
         const val ACTIVITY_EXPAND_FLAG = "expand_type"
@@ -87,7 +88,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         layoutManager = LinearLayoutManager(this.context)
         recyclerView = view.findViewById(com.tokopedia.product.manage.R.id.filter_recycler_view)
-        val adapterTypeFactory = FilterAdapterTypeFactory(this, this)
+        val adapterTypeFactory = FilterAdapterTypeFactory(this, this, this)
         filterAdapter = FilterAdapter(adapterTypeFactory)
         recyclerView?.layoutManager = layoutManager
         recyclerView?.adapter = filterAdapter
@@ -161,7 +162,11 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     }
 
     override fun onChipClicked(data: FilterDataViewModel) {
-        data.select = true
+        productManageFilterViewModel.updateSelect(data)
+    }
+
+    override fun onShowChips(element: FilterViewModel) {
+        productManageFilterViewModel.updateShow(element)
     }
 
     private fun initInjector() {
@@ -188,19 +193,15 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             this.dismiss()
         }
         setAction(REST_BUTTON_TEXT) {
-            this.clearSelected()
+            productManageFilterViewModel.clearSelected()
         }
         bottomSheetAction.visibility = View.GONE
     }
 
-    private fun clearSelected() {
-        productManageFilterViewModel.clearSelected()
-    }
-
     private fun checkSelected(filterData: List<FilterViewModel>): Boolean {
-        filterData.forEach {filterViewModel ->
-            filterViewModel.data.forEach {
-                if(it.select) return true
+        for (filter in filterData) {
+            for(filterViewModel in filter.data) {
+                if(filterViewModel.select) return true
             }
         }
         return false
@@ -209,7 +210,9 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     private fun observeFilterData() {
         productManageFilterViewModel.filterData.observe(this, Observer {
             filterAdapter?.updateData(it)
-            if(checkSelected(it)) bottomSheetAction.visibility = View.VISIBLE
+            if(checkSelected(it)) {
+                bottomSheetAction.visibility = View.VISIBLE
+            }
         })
     }
 }

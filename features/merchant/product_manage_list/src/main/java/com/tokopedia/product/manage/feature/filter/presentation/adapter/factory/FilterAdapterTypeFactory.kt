@@ -11,7 +11,8 @@ import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllLis
 
 class FilterAdapterTypeFactory(
         private val seeAllListener: SeeAllListener,
-        private val chipClickListener: ChipClickListener
+        private val chipClickListener: ChipClickListener,
+        private val showChipsListener: ShowChipsListener
 ): BaseAdapterTypeFactory(), FilterTypeFactory {
 
     override fun type(filterViewModel: FilterViewModel): Int {
@@ -20,7 +21,7 @@ class FilterAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            FilterViewHolder.LAYOUT -> FilterViewHolder(parent, seeAllListener, chipClickListener)
+            FilterViewHolder.LAYOUT -> FilterViewHolder(parent, seeAllListener, chipClickListener, showChipsListener)
             else -> super.createViewHolder(parent, type)
         }
     }

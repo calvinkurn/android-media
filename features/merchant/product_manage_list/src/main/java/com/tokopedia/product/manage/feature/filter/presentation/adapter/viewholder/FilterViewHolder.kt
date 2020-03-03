@@ -14,7 +14,10 @@ import androidx.core.view.ViewCompat.getRotation
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 
 
-class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, private val chipClickListener: ChipClickListener) : AbstractViewHolder<FilterViewModel>(view) {
+class FilterViewHolder(view: View,
+                       private val seeAllListener: SeeAllListener,
+                       private val chipClickListener: ChipClickListener,
+                       private val showChipsListener: ShowChipsListener) : AbstractViewHolder<FilterViewModel>(view) {
 
     companion object {
         val LAYOUT = com.tokopedia.product.manage.R.layout.item_filter
@@ -24,7 +27,6 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, p
     private var adapter: ChipsAdapter? = null
     private val headerWidget: HeaderWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.filter_header)
     private val seeAllWidget: SeeAllWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.filter_see_all)
-    private var isChipsShown = false
 
 
     init {
@@ -40,12 +42,13 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, p
 
     override fun bind(element: FilterViewModel) {
         headerWidget.bind(element.title)
-        isChipsShown = element.isChipsShown
         if(!element.isChipsShown) {
             hideChips()
+        } else {
+            showChips()
         }
         headerWidget.arrow.setOnClickListener {
-            toggleChipsVisibility()
+            showChipsListener.onShowChips(element)
         }
         adapter = if(element.title == ProductManageFilterMapper.SORT_HEADER ||
                 element.title == ProductManageFilterMapper.ETALASE_HEADER) {
@@ -73,13 +76,8 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, p
         val deg = if (headerWidget.arrow.rotation == 180f) 0f else 180f
         headerWidget.arrow.rotation = deg
     }
+}
 
-    private fun toggleChipsVisibility() {
-        isChipsShown = !isChipsShown
-        if(isChipsShown) {
-            showChips()
-        } else {
-            hideChips()
-        }
-    }
+interface ShowChipsListener {
+    fun onShowChips(element: FilterViewModel)
 }

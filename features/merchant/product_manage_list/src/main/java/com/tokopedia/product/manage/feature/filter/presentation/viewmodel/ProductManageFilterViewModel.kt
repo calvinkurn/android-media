@@ -9,6 +9,7 @@ import com.tokopedia.product.manage.feature.filter.data.model.CombinedResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.filter.domain.ProductManageFilterCombinedUseCase
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
@@ -34,8 +35,8 @@ class ProductManageFilterViewModel @Inject constructor(
     val combinedResponse: LiveData<Result<CombinedResponse>>
         get() = _combinedResponse
 
-    private val _filterData = MutableLiveData<List<FilterViewModel>>()
-    val filterData: LiveData<List<FilterViewModel>>
+    private val _filterData = MutableLiveData<MutableList<FilterViewModel>>()
+    val filterData: LiveData<MutableList<FilterViewModel>>
         get() = _filterData
 
     fun getData(shopId: String) {
@@ -51,15 +52,46 @@ class ProductManageFilterViewModel @Inject constructor(
     }
 
     fun updateData(filterData: List<FilterViewModel>) {
-        _filterData.postValue(filterData)
+        _filterData.postValue(filterData.toMutableList())
+    }
+
+    fun updateSelect(filterData: FilterDataViewModel) {
+        val currentData = _filterData.value
+        var filterIndex = 0
+        var filterIndexOfData = 0
+        var dataIndexofData = 0
+        currentData?.forEach {
+            if(it.data.indexOf(filterData) != -1) {
+                dataIndexofData = it.data.indexOf(filterData)
+                filterIndexOfData = filterIndex
+            }
+            filterIndex++
+        }
+        currentData?.get(filterIndexOfData)?.data?.removeAt(dataIndexofData)
+        filterData.select = !filterData.select
+        currentData?.get(filterIndexOfData)?.data?.add(dataIndexofData, filterData)
+        _filterData.postValue(currentData)
+    }
+
+    fun updateShow(filterViewModel: FilterViewModel) {
+        val currentData = _filterData.value
+        currentData?.let {
+            val filterIndexOfData = it.indexOf(filterViewModel)
+            it.removeAt(filterIndexOfData)
+            filterViewModel.isChipsShown = !filterViewModel.isChipsShown
+            it.add(filterIndexOfData, filterViewModel)
+            _filterData.postValue(it)
+        }
     }
 
     fun clearSelected() {
-        _filterData.value?.forEach {filterViewModel ->
+        val clearedData = _filterData.value
+        clearedData?.forEach {filterViewModel ->
             filterViewModel.data.forEach { filterData ->
                 filterData.select = false
             }
         }
+        _filterData.postValue(clearedData)
     }
 
     private fun isMyShop(shopId: String) = userSession.shopId == shopId

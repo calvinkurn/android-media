@@ -6,7 +6,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.
 class FilterViewModel (
         val title: String,
         val data: MutableList<FilterDataViewModel>,
-        val isChipsShown: Boolean
+        var isChipsShown: Boolean
 ) : Visitable <FilterAdapterTypeFactory> {
 
     override fun type(typeFactory: FilterAdapterTypeFactory): Int {
