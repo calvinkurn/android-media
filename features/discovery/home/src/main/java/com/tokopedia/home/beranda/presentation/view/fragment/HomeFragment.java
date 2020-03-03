@@ -205,6 +205,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private StickyLoginView stickyLoginView;
     private boolean showRecomendation;
     private boolean mShowTokopointNative;
+    private boolean isShowFirstInstallSearch;
     private RecyclerView.OnScrollListener onEggScrollListener;
     private boolean scrollToRecommendList;
 
@@ -299,6 +300,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(getActivity());
         showRecomendation = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_RECOMENDATION_BUTTON, false);
         mShowTokopointNative = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.APP_SHOW_TOKOPOINT_NATIVE, true);
+        isShowFirstInstallSearch = firebaseRemoteConfig.getBoolean(ConstantKey.RemoteConfigKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH, false);
     }
 
     private HomePerformanceMonitoringListener castContextToHomePerformanceMonitoring(Context context) {
@@ -331,6 +333,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             scrollToRecommendList = getArguments().getBoolean(SCROLL_RECOMMEND_LIST);
         }
 
+        fetchRemoteConfig();
         fetchTokopointsNotification(TOKOPOINTS_NOTIFICATION_TYPE);
         setupStatusBar();
         calculateSearchbarView(0);
@@ -440,7 +443,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         subscribeHome();
         initEggTokenScrollListener();
         registerBroadcastReceiverTokoCash();
-        fetchRemoteConfig();
         floatingTextButton.setOnClickListener(view -> {
             scrollToRecommendList();
             HomePageTracking.eventClickJumpRecomendation(getActivity());
@@ -1167,7 +1169,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private boolean isFirstInstall() {
-        if (getContext() != null) {
+        if (getContext() != null &&
+                !userSession.isLoggedIn() &&
+                isShowFirstInstallSearch) {
             sharedPrefs = getContext().getSharedPreferences(
                     ConstantKey.FirstInstallCache.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE);
             long firstInstallCacheValue = sharedPrefs.getLong(

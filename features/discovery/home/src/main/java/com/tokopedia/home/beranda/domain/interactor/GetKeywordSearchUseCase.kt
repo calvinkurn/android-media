@@ -19,6 +19,12 @@ class GetKeywordSearchUseCase @Inject constructor(
         graphqlUseCase.setTypeClass(KeywordSearchData::class.java)
     }
 
+    fun createParams(isFirstInstall: Boolean): Map<String, Any> {
+        return mutableMapOf<String, Any>().apply {
+            put(FIRST_INSTALL, isFirstInstall)
+        }
+    }
+
     override suspend fun executeOnBackground(): KeywordSearchData {
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(KeywordSearchHintQuery.query)
@@ -28,11 +34,5 @@ class GetKeywordSearchUseCase @Inject constructor(
 
     companion object {
         const val FIRST_INSTALL = "firstInstall"
-
-        fun createParams(isFirstInstall: Boolean): Map<String, Any> {
-            return mutableMapOf<String, Any>().apply {
-                put(FIRST_INSTALL, isFirstInstall)
-            }
-        }
     }
 }

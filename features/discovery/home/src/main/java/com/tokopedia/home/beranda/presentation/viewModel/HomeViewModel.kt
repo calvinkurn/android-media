@@ -685,7 +685,7 @@ open class HomeViewModel @Inject constructor(
     fun searchHint(isFirstInstall: Boolean) {
         if(getSearchHintJob?.isActive == true) return
         getSearchHintJob = launchCatchError(coroutineContext, block={
-            getKeywordSearchUseCase.params = GetKeywordSearchUseCase.createParams(isFirstInstall)
+            getKeywordSearchUseCase.params = getKeywordSearchUseCase.createParams(isFirstInstall)
             val data = getKeywordSearchUseCase.executeOnBackground()
             _searchHint.postValue(data.searchData)
         }){}
