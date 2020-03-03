@@ -27,6 +27,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -60,12 +62,21 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
-import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
+import com.tokopedia.product.manage.feature.list.view.adapter.ProductFilterAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
+import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductFilterItemDecoration
+import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
+import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
+import com.tokopedia.product.manage.feature.list.view.model.ViewState
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -86,7 +97,6 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.R
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.STOCK_EDIT_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.oldlist.constant.option.CashbackOption
-import com.tokopedia.product.manage.oldlist.constant.option.StatusProductOption
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageFilterModel
@@ -98,6 +108,7 @@ import com.tokopedia.product.manage.oldlist.view.bottomsheets.EditProductBottomS
 import com.tokopedia.product.manage.oldlist.view.fragment.ProductManageEditPriceDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -118,7 +129,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     MerchantCommonBottomSheet.BottomSheetListener,
     BaseCheckableViewHolder.CheckableInteractionListener,
     ProductViewHolder.ProductViewHolderView,
-    EditProductBottomSheet.EditProductInterface {
+    EditProductBottomSheet.EditProductInterface,
+    FilterViewHolder.ProductFilterListener {
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
@@ -131,6 +143,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
+    private val productFilterAdapter by lazy { ProductFilterAdapter(this) }
 
     private var productManageViewModels: MutableList<ProductViewModel> = mutableListOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
@@ -155,25 +168,32 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         productManageFilterModel.reset()
 
         initView()
-
         loadInitialData()
     }
 
     private fun initView() {
         setupSearchBar()
+        setupProductList()
+        setupProductFilters()
         renderCheckedView()
 
         observeShopInfo()
         observeUpdateProduct()
         observeDeleteProduct()
+
+        observeProductFilters()
         observeProductList()
-        
+
         observeEditPrice()
         observeGetFreeClaim()
         observeGetPopUpInfo()
 
         observeSetCashBack()
         observeSetFeaturedProduct()
+        observeViewState()
+
+        getTopAdsFreeClaim()
+        getGoldMerchantStatus()
     }
 
     private fun setupSearchBar() {
@@ -181,94 +201,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         searchInputView.closeImageButton.setOnClickListener {
             searchInputView.searchText = ""
             loadInitialData()
-        }
-    }
-
-    private fun observeSetFeaturedProduct() {
-        observe(viewModel.setFeaturedProductResult) {
-            when (it) {
-                is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
-                is Fail -> onFailedChangeFeaturedProduct(it.throwable)
-            }
-        }
-    }
-
-    private fun observeGetPopUpInfo() {
-        observe(viewModel.getPopUpResult) {
-            when (it) {
-                is Success -> onSuccessGetPopUp(it.data.isSuccess, it.data.productId)
-                is Fail -> onErrorGetPopUp(it.throwable)
-            }
-        }
-    }
-
-    private fun observeGetFreeClaim() {
-        observe(viewModel.getFreeClaimResult) {
-            when (it) {
-                is Success -> onSuccessGetFreeClaim(it.data)
-                is Fail -> onErrorGetFreeClaim()
-            }
-        }
-    }
-
-    private fun observeSetCashBack() {
-        observe(viewModel.setCashBackResult) {
-            when (it) {
-                is Success -> onSuccessSetCashback(it.data.productId, it.data.cashback)
-                is Fail -> {
-                    val result = it.throwable as SetCashBackResult
-                    onErrorSetCashback(result.error, result.productId, result.cashback)
-                }
-            }
-        }
-    }
-
-    private fun observeEditPrice() {
-        observe(viewModel.editPriceResult) {
-            when (it) {
-                is Success -> onSuccessEditPrice(it.data.productId, it.data.price)
-                is Fail -> {
-                    val result = it.throwable as EditPriceResult
-                    onErrorEditPrice(result.productId, result.price, result.error)
-                }
-            }
-        }
-    }
-
-    private fun observeProductList() {
-        observe(viewModel.productListResult) {
-            when (it) {
-                is Success -> showProductList(it.data)
-                is Fail -> loadEmptyList()
-            }
-        }
-    }
-
-    private fun observeUpdateProduct() {
-        observe(viewModel.updateProductResult) {
-            when (it) {
-                is Success -> onSuccessBulkUpdateProduct(it.data)
-                is Fail -> showMultipleUpdateErrorToast(it.throwable)
-            }
-        }
-    }
-
-    private fun observeDeleteProduct() {
-        observe(viewModel.deleteProductResult) {
-            when (it) {
-                is Success -> onSuccessMultipleDeleteProduct()
-                is Fail -> onErrorMultipleDeleteProduct(it.throwable)
-            }
-        }
-    }
-
-    private fun observeShopInfo() {
-        observe(viewModel.shopInfoResult) {
-            if (it is Success) {
-                goldMerchant = it.data.isGoldMerchant
-                isOfficialStore = it.data.isOfficialStore
-                shopDomain = it.data.shopDomain
-            }
         }
     }
 
@@ -305,6 +237,30 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder) {
+        filterProductList(filter)
+        resetProductFilters(viewHolder)
+    }
+
+    private fun filterProductList(filter: FilterViewModel) {
+        // TODO: Handle filter product here
+        when(filter) {
+            is Default -> {}
+            is Active -> {}
+            is InActive -> {}
+            is Banned -> {}
+        }
+    }
+
+    private fun resetProductFilters(selectedFilter: FilterViewHolder) {
+        for(i in 0..productFilterAdapter.itemCount) {
+            val viewHolder = productFilterList.findViewHolderForAdapterPosition(i)
+            if(viewHolder is FilterViewHolder && viewHolder != selectedFilter) {
+                viewHolder.resetFilter()
+            }
+        }
+    }
+
     private fun clearEtalaseAndStockData() {
         stockType = BulkBottomSheetType.StockType()
         etalaseType = BulkBottomSheetType.EtalaseType()
@@ -316,6 +272,20 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             textProductCount.text = getString(R.string.product_manage_bulk_count, itemsChecked.size.toString())
         } else {
             textProductCount.text = getString(R.string.product_manage_count_format, productManageViewModels.count())
+        }
+    }
+
+    private fun setupProductList() {
+        recycler_view.clearItemDecoration()
+        recycler_view.addItemDecoration(ProductListItemDecoration())
+    }
+
+    private fun setupProductFilters() {
+        with(productFilterList) {
+            adapter = productFilterAdapter
+            layoutManager = LinearLayoutManager(this@ProductManageFragment.context, HORIZONTAL, false)
+            addItemDecoration(ProductFilterItemDecoration())
+            isNestedScrollingEnabled = false
         }
     }
 
@@ -349,9 +319,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun loadData(page: Int) {
-        viewModel.getFreeClaim(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.gql_get_deposit), userSession.shopId)
-        viewModel.getGoldMerchantStatus()
-
         viewModel.getProductList(userSession.shopId)
     }
 
@@ -436,10 +403,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         val bottomSheet = MerchantCommonBottomSheet.newInstance(model)
         bottomSheet.setListener(this)
         bottomSheet.show(childFragmentManager, "merchant_warning_bottom_sheet")
-    }
-
-    private fun onSuccessSetCashback(productId: String, cashback: Int) {
-       productManageListAdapter.updateCashback(productId, cashback)
     }
 
     private fun onErrorMultipleDeleteProduct(e: Throwable?) {
@@ -550,7 +513,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         return Dialog(context!!)
     }
 
-    private fun onErrorGetPopUp(e: Throwable?) {
+    private fun onErrorGetPopUp() {
         onSuccessGetPopUp(false, "")
     }
 
@@ -697,7 +660,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 //        }
 
         bottomSheetBuilder.addItem(R.id.set_cashback_product_menu, R.string.product_manage_menu_set_cashback, R.drawable.ic_manage_product_set_cashback)
-        if (productManageViewModel.status != StatusProductOption.EMPTY) {
+        if (productManageViewModel.status != ProductStatus.EMPTY) {
             bottomSheetBuilder.addItem(R.id.set_promo_ads_product_menu, R.string.product_manage_menu_set_promo_ads, R.drawable.ic_manage_product_topads)
         }
         bottomSheetBuilder.addItem(R.id.change_price_product_menu, R.string.product_manage_menu_set_price, R.drawable.ic_manage_product_set_price)
@@ -707,7 +670,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun onOptionBottomSheetClicked(productManageViewModel: ProductViewModel): BottomSheetItemClickListener {
         return BottomSheetItemClickListener {
-            if (productManageViewModel.status == StatusProductOption.UNDER_SUPERVISION) {
+            if (productManageViewModel.status == ProductStatus.MODERATED) {
                 NetworkErrorHelper.showSnackbar(activity, getString(R.string.product_manage_desc_product_on_supervision, productManageViewModel.title))
                 return@BottomSheetItemClickListener
             }
@@ -719,18 +682,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 goToDuplicateProduct(productManageViewModel.id)
                 ProductManageTracking.eventProductManageOverflowMenu(it.title.toString())
             } else if (itemId == R.id.delete_product_menu) {
-                val productIdList = ArrayList<String>()
-
                 showDialogActionDeleteProduct(DialogInterface.OnClickListener { _, _ ->
                     ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.product.manage.item.R.string.label_delete))
                     viewModel.deleteSingleProduct(productManageViewModel.id)
-                },
-
-                    DialogInterface.OnClickListener { dialog, _ ->
-                        ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.product.manage.item.R.string.label_cancel))
-                        dialog.dismiss()
-                    })
-
+                }, DialogInterface.OnClickListener { dialog, _ ->
+                    ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.product.manage.item.R.string.label_cancel))
+                    dialog.dismiss()
+                })
             } else if (itemId == R.id.change_price_product_menu) {
                 if (productManageViewModel.isVariant()) {
                     showDialogVariantPriceLocked()
@@ -895,7 +853,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             val alertDialogBuilder = AlertDialog.Builder(it, com.tokopedia.design.R.style.AppCompatAlertDialogStyle)
                 .setTitle(getString(com.tokopedia.product.manage.item.R.string.product_price_locked))
                 .setMessage(getString(com.tokopedia.product.manage.item.R.string.product_price_locked_manage_desc))
-                .setPositiveButton(getString(com.tokopedia.design.R.string.close)) { _, i ->
+                .setPositiveButton(getString(com.tokopedia.design.R.string.close)) { _, _ ->
                     // no op, just dismiss
                 }
             val dialog = alertDialogBuilder.create()
@@ -1034,6 +992,120 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             }
         }
     }
+
+    private fun getTopAdsFreeClaim() {
+        val query = GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.gql_get_deposit)
+        viewModel.getFreeClaim(query, userSession.shopId)
+    }
+
+    private fun getGoldMerchantStatus() {
+        viewModel.getGoldMerchantStatus()
+    }
+
+    // region observers
+    private fun observeSetFeaturedProduct() {
+        observe(viewModel.setFeaturedProductResult) {
+            when (it) {
+                is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
+                is Fail -> onFailedChangeFeaturedProduct(it.throwable)
+            }
+        }
+    }
+
+    private fun observeGetPopUpInfo() {
+        observe(viewModel.getPopUpResult) {
+            when (it) {
+                is Success -> onSuccessGetPopUp(it.data.isSuccess, it.data.productId)
+                is Fail -> onErrorGetPopUp()
+            }
+        }
+    }
+
+    private fun observeGetFreeClaim() {
+        observe(viewModel.getFreeClaimResult) {
+            when (it) {
+                is Success -> onSuccessGetFreeClaim(it.data)
+                is Fail -> onErrorGetFreeClaim()
+            }
+        }
+    }
+
+    private fun observeSetCashBack() {
+        observe(viewModel.setCashBackResult) {
+            when (it) {
+                is Fail -> {
+                    val result = it.throwable as SetCashBackResult
+                    onErrorSetCashback(result.error, result.productId, result.cashback)
+                }
+            }
+        }
+    }
+
+    private fun observeEditPrice() {
+        observe(viewModel.editPriceResult) {
+            when (it) {
+                is Success -> onSuccessEditPrice(it.data.productId, it.data.price)
+                is Fail -> {
+                    val result = it.throwable as EditPriceResult
+                    onErrorEditPrice(result.productId, result.price, result.error)
+                }
+            }
+        }
+    }
+
+    private fun observeProductList() {
+        observe(viewModel.productListResult) {
+            when (it) {
+                is Success -> showProductList(it.data)
+                is Fail -> loadEmptyList()
+            }
+        }
+    }
+
+    private fun observeProductFilters() {
+        observe(viewModel.productFilters) {
+            productFilterAdapter.clearAllElements()
+            productFilterAdapter.addElement(it)
+        }
+    }
+
+    private fun observeUpdateProduct() {
+        observe(viewModel.updateProductResult) {
+            when (it) {
+                is Success -> onSuccessBulkUpdateProduct(it.data)
+                is Fail -> showMultipleUpdateErrorToast(it.throwable)
+            }
+        }
+    }
+
+    private fun observeDeleteProduct() {
+        observe(viewModel.deleteProductResult) {
+            when (it) {
+                is Success -> onSuccessMultipleDeleteProduct()
+                is Fail -> onErrorMultipleDeleteProduct(it.throwable)
+            }
+        }
+    }
+
+    private fun observeShopInfo() {
+        observe(viewModel.shopInfoResult) {
+            if (it is Success) {
+                goldMerchant = it.data.isGoldMerchant
+                isOfficialStore = it.data.isOfficialStore
+                shopDomain = it.data.shopDomain
+            }
+        }
+    }
+
+    private fun observeViewState() {
+        observe(viewModel.viewState) {
+            when(it) {
+                is ShowProgressDialog -> showLoadingProgress()
+                is HideProgressDialog -> hideLoadingProgress()
+            }
+        }
+    }
+    // endregion
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
         if (imageUrls != null && imageUrls.size > 0) {

@@ -124,4 +124,10 @@
     <string name="product_manage_inactive">Nonaktif</string>
     <string name="product_manage_count_format">%d Produk</string>
     <string name="product_manage_multiple_select">Pilih Sekaligus</string>
+    <string name="product_manage_filter">Filter</string>
+    <string name="product_manage_filter_active">Aktif (%d)</string>
+    <string name="product_manage_filter_variant">Varian (%d)</string>
+    <string name="product_manage_filter_banned">Pelanggaran (%d)</string>
+    <string name="product_manage_filter_draft">Draf (%d)</string>
+    <string name="product_manage_filter_inactive">Nonaktif (%d)</string>
 </resources>
