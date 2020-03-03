@@ -12,7 +12,7 @@ data class Product(
     @SerializedName("stock")
     val stock: Int?,
     @SerializedName("status")
-    val status: String?,
+    val status: ProductStatus?,
     @SerializedName("featured")
     val featured: Int?,
     @SerializedName("isVariant")
