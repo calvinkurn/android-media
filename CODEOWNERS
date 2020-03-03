@@ -72,12 +72,13 @@
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
-/features/top_ads/top_ads_free_claim/                   @tokopedia/minion-darth
-/features/top_ads/top_ads_management/                   @tokopedia/minion-darth
-/features/top_ads/top_ads_management_common/            @tokopedia/minion-darth
-/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-darth
-/features/top_ads/top_ads_autoads/                      @tokopedia/minion-darth
-/features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-darth
+/features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_common/            @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-skywalker
+/features/top_ads/top_ads_autoads/                      @tokopedia/minion-skywalker
+/features/top_ads/top_ads_create/                       @tokopedia/minion-skywalker
+/features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
 
 /features/recharge/digital_topup_bills                  @tokopedia/minion-mark
 /features/recharge/rechargeocr                          @tokopedia/minion-mark
