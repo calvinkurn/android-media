@@ -29,7 +29,7 @@ class ChipWidget : BaseCustomView {
     fun bind(data: FilterDataViewModel, chipClickListener: ChipClickListener) {
         item_name.text = data.name
         val originalColor = item_name.currentTextColor
-        if(isSelected) {
+        if(data.select) {
             this.isSelected = true
             item_name.setTextColor(ContextCompat.getColor(this.context,com.tokopedia.unifyprinciples.R.color.Green_G500))
         }
