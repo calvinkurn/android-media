@@ -9,7 +9,7 @@ import androidx.collection.SparseArrayCompat
 import android.view.ViewGroup
 
 
-class MediaPagerAdapter(private val media: MutableList<MediaItem>, fm: FragmentManager?)
+class MediaPagerAdapter(private val media: MutableList<MediaItem>, fm: FragmentManager)
     : FragmentStatePagerAdapter(fm) {
 
     private val registeredFragment = SparseArrayCompat<Fragment>()

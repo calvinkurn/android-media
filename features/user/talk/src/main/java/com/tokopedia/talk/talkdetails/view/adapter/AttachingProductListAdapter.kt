@@ -45,10 +45,10 @@ class AttachingProductListAdapter(var data: ArrayList<TalkProductAttachmentViewM
 }
 
 class AttachedProductViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    val image = itemView.findViewById<ImageView>(R.id.attach_product_chat_image)
-    val name = itemView.findViewById<TextView>(R.id.attach_product_chat_name)
-    val price = itemView.findViewById<TextView>(R.id.attach_product_chat_price)
-    val deleteButton = itemView.findViewById<ImageView>(R.id.delete_button)
+    val image = itemView.findViewById<ImageView>(com.tokopedia.attachproduct.R.id.attach_product_chat_image)
+    val name = itemView.findViewById<TextView>(com.tokopedia.attachproduct.R.id.attach_product_chat_name)
+    val price = itemView.findViewById<TextView>(com.tokopedia.attachproduct.R.id.attach_product_chat_price)
+    val deleteButton = itemView.findViewById<ImageView>(com.tokopedia.attachproduct.R.id.delete_button)
 
     fun bind(element: TalkProductAttachmentViewModel,
              listener: AttachingProductListAdapter.ProductAttachingItemClickListener) {

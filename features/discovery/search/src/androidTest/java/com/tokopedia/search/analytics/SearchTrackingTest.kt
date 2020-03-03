@@ -55,19 +55,29 @@ class SearchTrackingTest {
 
     @Test
     fun test_TrackGTMEventSearchAttempt() {
-        SearchTracking.trackGTMEventSearchAttempt(null, false, null)
+        SearchTracking.trackGTMEventSearchAttempt(GeneralSearchTrackingModel())
 
         SearchTracking.trackGTMEventSearchAttempt(
-                "samsung",
-                true,
-                mutableMapOf<String, String>().also {
-                    it["65"] = "Handphone & Tablet"
-                    it["65"] = "Handphone & Tablet"
-                    it["65"] = "Handphone & Tablet"
-                    it["66"] = "Test Category"
-                }
+                GeneralSearchTrackingModel(
+                    "samsung",
+                        "7",
+                        "2",
+                    true,
+                        mutableMapOf<String, String>().also {
+                            it["65"] = "Handphone & Tablet"
+                            it["65"] = "Handphone & Tablet"
+                            it["65"] = "Handphone & Tablet"
+                            it["66"] = "Test Category"
+                        }
+                )
         )
 
-        SearchTracking.trackGTMEventSearchAttempt("samsung", false, mutableMapOf<String, String>())
+        SearchTracking.trackGTMEventSearchAttempt(GeneralSearchTrackingModel(
+                "samsung",
+                "7",
+                "2",
+                false,
+                mapOf()
+        ))
     }
 }

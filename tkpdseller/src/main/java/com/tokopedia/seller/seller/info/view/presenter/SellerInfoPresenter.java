@@ -1,9 +1,10 @@
 package com.tokopedia.seller.seller.info.view.presenter;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.seller.seller.info.data.model.DataList;
+import com.tokopedia.seller.seller.info.data.model.NotificationUpdateActionResponse;
 import com.tokopedia.seller.seller.info.data.model.ResponseSellerInfoModel;
+import com.tokopedia.seller.seller.info.domain.interactor.MarkReadNotificationUseCase;
 import com.tokopedia.seller.seller.info.domain.interactor.SellerCenterUseCase;
 import com.tokopedia.seller.seller.info.view.SellerInfoView;
 import com.tokopedia.seller.seller.info.view.model.SellerInfoModel;
@@ -14,6 +15,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * Created by normansyahputa on 12/5/17.
@@ -21,10 +23,15 @@ import rx.Subscriber;
 
 public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
     private SellerCenterUseCase sellerCenterUseCase;
+    private MarkReadNotificationUseCase markReadNotificationUseCase;
 
     @Inject
-    public SellerInfoPresenter(SellerCenterUseCase sellerCenterUseCase) {
+    public SellerInfoPresenter(
+            SellerCenterUseCase sellerCenterUseCase,
+            MarkReadNotificationUseCase markReadNotificationUseCase
+    ) {
         this.sellerCenterUseCase = sellerCenterUseCase;
+        this.markReadNotificationUseCase = markReadNotificationUseCase;
     }
 
     public void getSellerInfoList(int page) {
@@ -37,7 +44,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
 
                     @Override
                     public void onError(Throwable e) {
-                        CommonUtils.dumper(e);
+                        Timber.d(e);
                         if (isViewAttached()) {
                             getView().onLoadSearchError(e);
                         }
@@ -64,6 +71,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
 
     private SellerInfoModel conv(DataList list) {
         SellerInfoModel sellerInfoModel = new SellerInfoModel();
+        sellerInfoModel.setInfoId(list.getNotifId());
         sellerInfoModel.setContent(list.getContent());
         sellerInfoModel.setCreateTimeUnix(list.getCreateTimeUnix());
         sellerInfoModel.setTitle(list.getTitle());
@@ -79,5 +87,20 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
 
         sellerInfoModel.setSection(section);
         return sellerInfoModel;
+    }
+
+    public void markReadNotification(String infoId) {
+        markReadNotificationUseCase.execute(
+                MarkReadNotificationUseCase.createRequestParams(String.valueOf(infoId)),
+                new Subscriber<NotificationUpdateActionResponse>() {
+                    @Override
+                    public void onCompleted() {}
+
+                    @Override
+                    public void onError(Throwable e) {}
+
+                    @Override
+                    public void onNext(NotificationUpdateActionResponse notificationUpdateActionResponse) {}
+                });
     }
 }

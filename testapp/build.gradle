@@ -68,9 +68,13 @@ buildscript {
     }
 }
 android {
+    packagingOptions {
+        exclude 'META-INF/**'
+    }
+
     project.ext {
-        defaultVersionCode = 221001101;
-        defaultVersionName = "2.21";
+        defaultVersionCode = 299600000;
+        defaultVersionName = "3.60";
         react = [
                 nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"]
         ]
@@ -112,6 +116,7 @@ android {
             zipAlignEnabled false
             testCoverageEnabled false
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", allowDistribution()
+            ext.enableHansel = false
         }
         release {
             signingConfig signingConfigs.debug
@@ -132,7 +137,7 @@ android {
         }
     }
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
+        minSdkVersion 21
         targetSdkVersion rootProject.ext.targetSdkVersion
         multiDexEnabled = true
         applicationId "com.tokopedia.tkpd"
@@ -192,9 +197,8 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
-//    implementation project(rootProject.ext.libraries.cpm)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
-    implementation project(rootProject.ext.libraries.cacheApi)
+    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icon

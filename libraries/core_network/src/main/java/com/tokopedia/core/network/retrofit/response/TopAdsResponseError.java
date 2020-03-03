@@ -3,6 +3,7 @@ package com.tokopedia.core.network.retrofit.response;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.tokopedia.core.network.retrofit.exception.ResponseErrorException;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 
 import java.io.IOException;
 import java.util.List;
@@ -29,6 +30,11 @@ public class TopAdsResponseError extends BaseResponseError {
 
     public void setErrors(List<Error> errors) {
         this.errors = errors;
+    }
+
+    @Override
+    public String getErrorKey() {
+        return null;
     }
 
     public boolean hasBody(){

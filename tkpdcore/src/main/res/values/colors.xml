@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <resources>
-    
+
+    <color name="error_area">#FFADAD</color>
     <color name="selection">#905eba46</color>
     <color name="white">#ffffff</color>
     <color name="transparent">@android:color/transparent</color>

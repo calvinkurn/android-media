@@ -1,10 +1,10 @@
 package com.tokopedia.groupchat.channel.domain.mapper;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.groupchat.channel.domain.pojo.Channel;
 import com.tokopedia.groupchat.channel.domain.pojo.ChannelListPojo;
 import com.tokopedia.groupchat.channel.view.model.ChannelListViewModel;
 import com.tokopedia.groupchat.channel.view.model.ChannelViewModel;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.ArrayList;
 import java.util.List;

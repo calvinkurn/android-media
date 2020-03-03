@@ -19,7 +19,6 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
@@ -68,27 +67,13 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 override fun onError(e: Throwable) {
                     view.stopTrace()
                     view.dismissLoadingDiscover()
-                    ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
-                        override fun onForbidden() {
-                            view.onGoToForbiddenPage()
-                        }
-
-                        override fun onError(errorMessage: String) {
-                            view.onErrorDiscoverLogin(errorMessage)
-                        }
-                    }, e, context)
+                    view.onErrorDiscoverLogin(e)
                 }
 
                 override fun onNext(discoverViewModel: DiscoverViewModel) {
                     view.stopTrace()
                     view.dismissLoadingDiscover()
-                    if (!discoverViewModel.providers.isEmpty()) {
-                        view.onSuccessDiscoverLogin(discoverViewModel.providers)
-                    } else {
-                        view.onErrorDiscoverLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                                ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-                                context))
-                    }
+                    view.onSuccessDiscoverLogin(discoverViewModel.providers)
                 }
             })
         }
@@ -128,7 +113,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         }
     }
 
-    override fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String){
+    override fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
         view.showLoadingLogin()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
@@ -265,7 +250,11 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         registerCheckUseCase.apply {
             setRequestParams(this.getRequestParams(id))
             execute({
-                onSuccess(it.data)
+                if (it.data.errors.isEmpty())
+                    onSuccess(it.data)
+                else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty())
+                    onError(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
+                else onError(RuntimeException())
             }, onError)
         }
     }

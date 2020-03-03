@@ -2,19 +2,19 @@ package com.tokopedia.topchat.chatlist.di
 
 import android.content.Context
 import android.content.res.Resources
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
+import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
@@ -101,8 +101,8 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideChuckInterceptor(@ApplicationContext context: Context): ChuckInterceptor {
-        return ChuckInterceptor(context)
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+        return ChuckerInterceptor(context)
     }
 
     @ChatListScope
@@ -136,7 +136,7 @@ class ChatListNetworkModule {
     fun provideOkHttpClient(@ApplicationContext context: Context,
                             retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
-                            chuckInterceptor: ChuckInterceptor,
+                            chuckInterceptor: ChuckerInterceptor,
                             fingerprintInterceptor: FingerprintInterceptor,
                             httpLoggingInterceptor: HttpLoggingInterceptor,
                             xUserIdInterceptor: XUserIdInterceptor):

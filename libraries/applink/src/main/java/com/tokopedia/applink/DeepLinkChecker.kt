@@ -30,6 +30,7 @@ object DeepLinkChecker {
     const val HOT_LIST = 6
     const val CATEGORY = 7
     const val HOME = 8
+    const val FIND = 9
     const val ETALASE = 10
     const val APPLINK = 11
     const val INVOICE = 12
@@ -57,6 +58,7 @@ object DeepLinkChecker {
     const val PROMO_LIST = 34
     const val PRODUCT_REVIEW = 35
     const val DEALS = 36
+    const val TRAVEL_HOMEPAGE = 37
 
     private val deeplinkMatcher: DeeplinkMatcher by lazy { DeeplinkMatcher() }
 
@@ -68,12 +70,12 @@ object DeepLinkChecker {
         }
         var host = uriData.host ?: return false
         var path = uriData.path ?: return false
-        host = host.replaceFirstWww()
+        host = host.replaceFirstWww().replaceFirstM()
         path = path.replaceLastSlash()
         val uriWithoutParam = "$host$path"
         val excludedHostList = excludedHost.split(",".toRegex())
                 .filter { it.isNotEmpty() }
-                .map { it.replaceFirstWww().replaceLastSlash() }
+                .map { it.replaceFirstWww().replaceFirstM().replaceLastSlash() }
         for (excludedString in excludedHostList) {
             if (uriWithoutParam.startsWith(excludedString)) {
                 return true
@@ -104,6 +106,13 @@ object DeepLinkChecker {
     private fun String.replaceFirstWww(): String {
         if (startsWith("www.")) {
             return replaceFirst("www.", "")
+        }
+        return this
+    }
+
+    private fun String.replaceFirstM(): String {
+        if (startsWith("m.")) {
+            return replaceFirst("m.", "")
         }
         return this
     }
@@ -150,6 +159,11 @@ object DeepLinkChecker {
     }
 
     @JvmStatic
+    fun openFind(url: String, context: Context): Boolean {
+        return openIfExist(context, getFindIntent(context, url))
+    }
+
+    @JvmStatic
     fun openCatalog(url: String, context: Context): Boolean {
         return openIfExist(context, getCatalogIntent(context, url))
     }
@@ -183,7 +197,7 @@ object DeepLinkChecker {
 
     // function for enable Hansel
 
-    private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalog.activity.CatalogDetailActivity"
+    private fun getCatalogDetailClassName() = "com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity"
 
     private fun getHotIntent(context: Context, url: String): Intent {
         val uri = Uri.parse(url)
@@ -191,10 +205,16 @@ object DeepLinkChecker {
         return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.HOME_HOTLIST + "/" + if (uri.pathSegments.size > 1) uri.pathSegments[1] else ""))
     }
 
+    private fun getFindIntent(context: Context, url: String): Intent {
+        val uri = Uri.parse(url)
+        val segments = uri.pathSegments
+        return RouteManager.getIntent(context, DeeplinkMapper.getRegisteredNavigation(context, ApplinkConst.FIND + "/" + if (segments.size > 1) segments[segments.lastIndex] else ""))
+    }
+
     private fun getCatalogIntent(context: Context, url: String): Intent {
         val catalogId = getLinkSegment(url)[1]
         val intent = getIntentByClassName(context, getCatalogDetailClassName())
-        intent.putExtra("ARG_EXTRA_CATALOG_ID", catalogId)
+        intent.putExtra("EXTRA_CATALOG_ID", catalogId)
         return intent
     }
 
@@ -217,9 +237,6 @@ object DeepLinkChecker {
         val intent: Intent
         if (departmentId.isNullOrEmpty()) {
             intent = RouteManager.getIntent(context, constructSearchApplink(uriData))
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtras(bundle)
         } else {
             intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, departmentId)

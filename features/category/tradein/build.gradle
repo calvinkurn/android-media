@@ -52,7 +52,6 @@ dependencies {
         exclude group: 'com.android.support.constraint'
         exclude group: 'com.github.scottyab'
     }
-    implementation rootProject.ext.firebase.fireStore
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.multiDex
@@ -62,6 +61,7 @@ dependencies {
 
     implementation project(rootProject.ext.features.commonTradein)
     implementation rootProject.ext.miscDependencies.rootbeer
+    implementation project(rootProject.ext.libraries.iris)
 }
 
 project.ext {

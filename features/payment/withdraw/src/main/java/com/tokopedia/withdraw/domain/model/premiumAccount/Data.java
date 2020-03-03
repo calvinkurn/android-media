@@ -36,6 +36,12 @@ public class Data  {
     @Expose
     private int statusInt;
 
+    @SerializedName("copywriting")
+    @Expose
+    private CopyWriting copyWriting;
+
+
+
     public boolean isIsPowerWD() {
         return isPowerWD;
     }
@@ -116,4 +122,12 @@ public class Data  {
         this.statusInt = statusInt;
     }
 
+
+    public CopyWriting getCopyWriting() {
+        return copyWriting;
+    }
+
+    public void setCopyWriting(CopyWriting copyWriting) {
+        this.copyWriting = copyWriting;
+    }
 }

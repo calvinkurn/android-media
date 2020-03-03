@@ -2,7 +2,7 @@ package com.tokopedia.opportunity.data.source;
 
 import android.content.Context;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.core.base.common.util.GetData;
 import com.tokopedia.core.base.di.qualifier.ApplicationContext;
 import com.tokopedia.core.base.domain.RequestParams;

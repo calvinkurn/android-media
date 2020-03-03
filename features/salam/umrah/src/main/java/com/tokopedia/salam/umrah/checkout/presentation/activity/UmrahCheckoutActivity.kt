@@ -39,10 +39,6 @@ class UmrahCheckoutActivity : BaseSimpleActivity(), HasComponent<UmrahCheckoutCo
                     .umrahComponent(UmrahComponentInstance.getUmrahComponent(application))
                     .build()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     companion object{
         const val EXTRA_PRICE = "EXTRA_PRICE"
         const val EXTRA_TOTAL_PRICE = "EXTRA_TOTAL_PRICE"

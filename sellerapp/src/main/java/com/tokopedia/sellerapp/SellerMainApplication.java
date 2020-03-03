@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -7,9 +8,10 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.webkit.URLUtil;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
-import android.webkit.URLUtil;
 
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.moengage.inapp.InAppManager;
@@ -21,25 +23,28 @@ import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
-import com.tokopedia.contactus.inboxticket2.view.activity.InboxListActivity;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.Constants;
 import com.tokopedia.core.network.retrofit.utils.AuthUtil;
-import com.tokopedia.core.util.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.graphql.data.GraphqlClient;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.sellerapp.dashboard.view.activity.DashboardActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkActivity;
 import com.tokopedia.sellerapp.deeplink.DeepLinkHandlerActivity;
 import com.tokopedia.sellerapp.utils.CacheApiWhiteList;
+import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
+
+import timber.log.Timber;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -47,12 +52,6 @@ import java.util.concurrent.TimeUnit;
 
 public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
-
-    public static final int SELLER_APPLICATION = 2;
-
-    public static SellerMainApplication get(Context context) {
-        return (SellerMainApplication) context.getApplicationContext();
-    }
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -86,7 +85,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
         if (deepLinkUri != null) {
-            CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
+            Timber.d("FCM moengage SELLER clicked " + deepLinkUri.toString());
             if (URLUtil.isNetworkUrl(deepLinkUri.toString())) {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -99,7 +98,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
             } else {
-                CommonUtils.dumper("FCM entered no one");
+                Timber.d("FCM entered no one");
             }
 
             return true;
@@ -126,7 +125,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         com.tokopedia.config.GlobalConfig.DEEPLINK_ACTIVITY_CLASS_NAME = DeepLinkActivity.class.getName();
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            com.tokopedia.core.util.GlobalConfig.VERSION_NAME = pInfo.versionName;
+            com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
             com.tokopedia.config.GlobalConfig.VERSION_NAME = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -143,6 +142,11 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
         PersistentCacheManager.init(this);
 
+        LogManager.init(this);
+        if (LogManager.instance != null) {
+            LogManager.instance.setLogEntriesToken(TimberWrapper.LOGENTRIES_TOKEN);
+        }
+        TimberWrapper.init(this);
         super.onCreate();
 
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
@@ -208,5 +212,4 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
         return null;
     }
-
 }

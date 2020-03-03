@@ -21,7 +21,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_product_report.*
 import javax.inject.Inject
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.view.activity.ProductReportFormActivity
@@ -107,7 +106,7 @@ class ProductReportFragment : BaseDaggerFragment(), ReportReasonAdapter.OnReason
 
     override fun onDestroy() {
         viewModel.reasonResponse.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 

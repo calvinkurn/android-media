@@ -1,33 +1,28 @@
 package com.tokopedia.topchat.chatlist.activity
 
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.tabs.TabLayout
-import androidx.core.graphics.drawable.DrawableCompat
-import androidx.viewpager.widget.PagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.airbnb.deeplinkdispatch.DeepLink
+import androidx.core.graphics.drawable.DrawableCompat
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import androidx.viewpager.widget.PagerAdapter
+import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.coachmark.CoachMarkPreference
-import com.tokopedia.kotlin.extensions.view.debug
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.topchat.R
@@ -46,6 +41,7 @@ import com.tokopedia.topchat.chatlist.viewmodel.ChatTabCounterViewModel
 import com.tokopedia.topchat.chatlist.viewmodel.WebSocketViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 import javax.inject.Inject
 
 
@@ -75,23 +71,17 @@ class ChatListActivity : BaseTabActivity()
         component.inject(this)
     }
 
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_chat_list
-    }
-
-    override fun getScreenName(): String {
-        return "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
-    }
+    override fun getLayoutRes() = R.layout.activity_chat_list
+    override fun getScreenName() = "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
+    override fun getPageLimit() = tabList.size
+    override fun getViewPagerResourceId(): Int = R.id.pager
+    override fun getTabLayoutResourceId(): Int = R.id.indicator
+    override fun getToolbarResourceID(): Int = R.id.toolbar
 
     override fun getViewPagerAdapter(): PagerAdapter? {
-        fragmentAdapter = ChatListPagerAdapter(supportFragmentManager)
-        fragmentAdapter.setItemList(tabList)
-
-        return fragmentAdapter
-    }
-
-    override fun getPageLimit(): Int {
-        return tabList.size
+        return ChatListPagerAdapter(supportFragmentManager).apply {
+            setItemList(tabList)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -148,7 +138,7 @@ class ChatListActivity : BaseTabActivity()
     private fun initOnBoarding() {
         if (!userSession.hasShop()) return
         tabLayout.viewTreeObserver.addOnGlobalLayoutListener {
-            if (!isOnBoardingAlreadyShown())  {
+            if (!isOnBoardingAlreadyShown()) {
                 showOnBoarding()
             }
         }
@@ -206,7 +196,7 @@ class ChatListActivity : BaseTabActivity()
                     when (result) {
                         is Success -> {
                             tabList[0].counter = result.data.chatNotifications.chatTabCounter.unreadsSeller.toString()
-                            if(tabList.size > 1) {
+                            if (tabList.size > 1) {
                                 tabList[1].counter = result.data.chatNotifications.chatTabCounter.unreadsUser.toString()
                             }
                             setNotificationCounterOnTab()
@@ -267,7 +257,7 @@ class ChatListActivity : BaseTabActivity()
     }
 
     private fun forwardToFragment(incomingChatWebSocketModel: IncomingChatWebSocketModel) {
-        debug(TAG, incomingChatWebSocketModel.toString())
+        Timber.d(incomingChatWebSocketModel.toString())
         val contactId = incomingChatWebSocketModel.getContactId()
         val tag = incomingChatWebSocketModel.getTag()
         val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
@@ -276,7 +266,7 @@ class ChatListActivity : BaseTabActivity()
 
 
     private fun forwardToFragment(incomingTypingWebSocketModel: IncomingTypingWebSocketModel) {
-        debug(TAG, incomingTypingWebSocketModel.toString())
+        Timber.d(incomingTypingWebSocketModel.toString())
         val contactId = incomingTypingWebSocketModel.getContactId()
         val tag = incomingTypingWebSocketModel.getTag()
         val fragment: ChatListFragment? = determineFragmentByTag(contactId, tag)
@@ -328,7 +318,7 @@ class ChatListActivity : BaseTabActivity()
         tabLayout.removeAllTabs()
         for (i in 0 until tabList.size) {
             tabLayout.addTab(tabLayout.newTab())
-            tabLayout.setBackgroundColor(MethodChecker.getColor(this, R.color.white))
+            tabLayout.setBackgroundColor(MethodChecker.getColor(this, com.tokopedia.design.R.color.white))
         }
         for (i in 0 until tabLayout.tabCount) {
             val title = tabList[i].title
@@ -427,51 +417,43 @@ class ChatListActivity : BaseTabActivity()
 
     private fun setTabSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Green_G500))
+        titleView?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Green_G500))
 
         val icon = customView?.findViewById<ImageView>(R.id.icon)?.drawable
         icon?.let {
             val wrappedDrawable = DrawableCompat.wrap(it)
-            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, R.color.Green_G500))
+            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, com.tokopedia.unifycomponents.R.color.Green_G500))
         }
     }
 
     private fun setTabUnSelectedView(customView: View?) {
         val titleView = customView?.findViewById<TextView>(R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Neutral_N200))
+        titleView?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N200))
 
         val icon = customView?.findViewById<ImageView>(R.id.icon)?.drawable
         icon?.let {
             val wrappedDrawable = DrawableCompat.wrap(it)
-            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, R.color.Neutral_N200))
+            DrawableCompat.setTint(wrappedDrawable, MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Neutral_N200))
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         webSocketViewModel.itemChat.removeObservers(this)
-        webSocketViewModel.clear()
+        webSocketViewModel.flush()
         chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
-        chatNotifCounterViewModel.clear()
+        chatNotifCounterViewModel.flush()
     }
 
-    object DeeplinkIntent {
-        @DeepLink(ApplinkConst.TOPCHAT_IDLESS)
-        @JvmStatic
-        fun createIntent(context: Context, extras: Bundle) = createIntent(context)
+    override fun getComponent(): ChatListComponent {
+        return DaggerChatListComponent.builder().baseAppComponent(
+                (application as BaseMainApplication).baseAppComponent).build()
     }
-
 
     companion object {
         const val BUYER_ANALYTICS_LABEL = "buyer"
         const val SELLER_ANALYTICS_LABEL = "seller"
         const val TAG = "ChatListActivity"
         private val TAG_ONBOARDING = ChatListActivity::class.java.name + ".OnBoarding"
-        fun createIntent(context: Context) = Intent(context, ChatListActivity::class.java)
-    }
-
-    override fun getComponent(): ChatListComponent {
-        return DaggerChatListComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
     }
 }

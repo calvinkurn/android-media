@@ -62,7 +62,10 @@
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@id/constraint_layout"
             app:layout_constraintBottom_toBottomOf="@id/constraint_layout"
-            android:layout_margin="@dimen/dp_16">
+            android:layout_marginLeft="@dimen/dp_12"
+            android:layout_marginBottom="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16">
 
         </LinearLayout>
 
@@ -159,7 +162,7 @@
                     app:typographyType="small"
                     app:typographyWeight="bold"
                     android:textColor="@color/white"
-                    tools:text="@string/due_day"
+                    tools:text="7 Hari 7 malam"
                     android:layout_toRightOf="@id/ic_time"
                     android:layout_toEndOf="@id/ic_time"/>
 
@@ -169,30 +172,36 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_date_order"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:typographyType="small"
-            tools:text="25 Des 2018"
-            app:layout_constraintTop_toBottomOf="@id/label_invoice"
-            app:layout_constraintStart_toEndOf="@id/ic_product_card"
-            android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_10"
-            android:gravity="start"/>
+            android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginTop="@dimen/dp_18"
+            android:gravity="start"
+            app:layout_constraintEnd_toStartOf="@+id/label_due_response"
+            app:layout_constraintStart_toEndOf="@id/ic_product_card"
+            app:layout_constraintTop_toBottomOf="@id/label_invoice"
+            app:typographyType="small"
+            tools:text="25 Des 2018" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_buyer_name"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="Delia Nelson"
-            app:layout_constraintTop_toBottomOf="@id/label_date_order"
-            app:layout_constraintStart_toEndOf="@id/ic_product_card"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginTop="@dimen/dp_2"
-            android:gravity="start"/>
+            android:layout_marginEnd="@dimen/dp_4"
+            android:layout_marginRight="@dimen/dp_4"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="2"
+            app:layout_constraintEnd_toStartOf="@+id/ic_label_due_card"
+            app:layout_constraintStart_toEndOf="@id/ic_product_card"
+            app:layout_constraintTop_toBottomOf="@id/label_date_order"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            tools:text="Delia Nelson Delia NelsonDelia NelsonDelia NelsonDelia Nelson" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

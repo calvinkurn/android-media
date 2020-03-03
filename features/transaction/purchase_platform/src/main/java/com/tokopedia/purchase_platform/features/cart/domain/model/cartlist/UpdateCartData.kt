@@ -9,7 +9,7 @@ import android.os.Parcelable
 
 data class UpdateCartData(
         var isSuccess: Boolean = false,
-        var message: String? = null
+        var message: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),

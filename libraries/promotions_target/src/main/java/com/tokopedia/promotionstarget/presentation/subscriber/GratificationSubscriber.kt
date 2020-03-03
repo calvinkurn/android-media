@@ -30,10 +30,10 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
     @Inject
     lateinit var claimGratificationUseCase: ClaimPopGratificationUseCase
 
-    private val job = SupervisorJob()
+    private var job:Job? = null
     private val mapOfJobs = ConcurrentHashMap<Activity, Job>()
     private val mapOfDialogs = ConcurrentHashMap<Activity, Pair<TargetPromotionsDialog, Dialog>>()
-    private val scope = CoroutineScope(job)
+    private var scope:CoroutineScope? =null
     private var weakOldClaimCouponApi: WeakReference<ClaimCouponApi>? = null
 
     companion object {
@@ -170,7 +170,9 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
 
     private fun showGratificationDialog(activity: Activity, gratificationData: GratificationData, intent: Intent) {
         val weakActivity = WeakReference(activity)
-        scope.launch(Dispatchers.IO + ceh) {
+        initSafeJob()
+        initSafeScope()
+        scope?.launch(Dispatchers.IO + ceh) {
             supervisorScope {
                 val childJob = launch {
                     val response = presenter.getGratificationAndShowDialog(gratificationData)
@@ -199,23 +201,27 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             val activity = weakActivity.get()!!
             val autoHitActionButton = intent.getBooleanExtra(TargetPromotionsDialog.PARAM_WAITING_FOR_LOGIN, false)
 
-            val claimApi: ClaimCouponApi
+            var claimApi: ClaimCouponApi?=null
             if (autoHitActionButton && weakOldClaimCouponApi?.get() != null) {
                 claimApi = weakOldClaimCouponApi?.get()!!
             } else {
-                claimApi = ClaimCouponApi(scope, Dispatchers.Main, Dispatchers.IO, claimGratificationUseCase)
-                weakOldClaimCouponApi?.clear()
-                weakOldClaimCouponApi = WeakReference(claimApi)
+                if(scope!=null) {
+                    claimApi = ClaimCouponApi(scope!!, Dispatchers.Main, Dispatchers.IO, claimGratificationUseCase)
+                    weakOldClaimCouponApi?.clear()
+                    weakOldClaimCouponApi = WeakReference(claimApi)
+                }
             }
-            val bottomSheetDialog = dialog.show(activity,
-                    TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON,
-                    data,
-                    couponDetailResponse,
-                    gratificationData,
-                    claimApi,
-                    autoHitActionButton)
-            if (bottomSheetDialog != null) {
-                mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
+            if(claimApi!=null) {
+                val bottomSheetDialog = dialog.show(activity,
+                        TargetPromotionsDialog.TargetPromotionsCouponType.SINGLE_COUPON,
+                        data,
+                        couponDetailResponse,
+                        gratificationData,
+                        claimApi,
+                        autoHitActionButton)
+                if (bottomSheetDialog != null) {
+                    mapOfDialogs[activity] = Pair(dialog, bottomSheetDialog)
+                }
             }
         }
     }
@@ -232,6 +238,24 @@ class GratificationSubscriber(val appContext: Context) : BaseApplicationLifecycl
             dialogPair.second.dismiss()
         }
         mapOfDialogs.clear()
+    }
+
+    private fun initSafeScope(){
+        try {
+            if(scope == null){
+                if(job!=null) {
+                    scope = CoroutineScope(job!!)
+                }
+            }
+        }catch (th:Throwable){ }
+    }
+
+    private fun initSafeJob(){
+        try {
+            if(job == null){
+                job = SupervisorJob()
+            }
+        }catch (th:Throwable){ }
     }
 
 }

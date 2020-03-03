@@ -22,6 +22,7 @@ open class GetNotificationUpdateMapper @Inject constructor(){
                     time = notificationUpdateItem.createTime,
                     title = notificationUpdateItem.title,
                     body = MethodChecker.fromHtml(notificationUpdateItem.shortDescription).toString(),
+                    bodyHtml = notificationUpdateItem.shortDescriptionHtml,
                     sectionTitle = notificationUpdateItem.sectionKey,
                     templateKey = notificationUpdateItem.templateKey,
                     isRead = convertReadStatus(notificationUpdateItem.readStatus),
@@ -31,34 +32,11 @@ open class GetNotificationUpdateMapper @Inject constructor(){
                     typeLink = notificationUpdateItem.typeLink,
                     totalProduct = notificationUpdateItem.totalProducts,
                     btnText = notificationUpdateItem.btnText,
-                    products = notificationUpdateItem.productData
-            )
-            list.add(datum)
-        }
-        return NotificationViewData(item.paging, list, item.userInfo)
-    }
-
-    fun mapToNotifTransaction(pojo: NotificationCenterDetail) : NotificationViewData {
-        val item = pojo.pojo
-        val list = arrayListOf<NotificationItemViewBean>()
-        for (notificationUpdateItem in item.list) {
-            val datum = NotificationItemViewBean(
-                    notificationId = notificationUpdateItem.notifId,
-                    iconUrl = notificationUpdateItem.sectionIcon,
-                    contentUrl = notificationUpdateItem.dataNotification.infoThumbnailUrl,
-                    time = notificationUpdateItem.createTime,
-                    title = notificationUpdateItem.title,
-                    body = MethodChecker.fromHtml(notificationUpdateItem.shortDescription).toString(),
-                    sectionTitle = notificationUpdateItem.sectionKey,
-                    templateKey = notificationUpdateItem.templateKey,
-                    isRead = convertReadStatus(notificationUpdateItem.readStatus),
-                    appLink = notificationUpdateItem.dataNotification.appLink,
-                    label = notificationUpdateItem.typeOfUser,
-                    hasShop = item.userInfo.hasShop(),
-                    typeLink = notificationUpdateItem.typeLink,
-                    totalProduct = notificationUpdateItem.totalProducts,
-                    btnText = notificationUpdateItem.btnText,
-                    products = notificationUpdateItem.productData
+                    products = notificationUpdateItem.productData,
+                    dataNotification = notificationUpdateItem.dataNotification,
+                    isLongerContent = notificationUpdateItem.isLongerContent,
+                    options = item.options,
+                    userInfo = item.userInfo
             )
             list.add(datum)
         }

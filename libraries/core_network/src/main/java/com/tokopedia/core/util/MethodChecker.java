@@ -19,6 +19,8 @@ import com.tokopedia.core.network.CoreNetworkApplication;
 
 import java.io.File;
 
+import timber.log.Timber;
+
 /**
  * Created by nisie on 10/28/16.
  */
@@ -52,7 +54,7 @@ public class MethodChecker {
             CookieManager.getInstance().removeAllCookies(new ValueCallback<Boolean>() {
                 @Override
                 public void onReceiveValue(Boolean value) {
-                    GeneralUtils.dumper("Success Clear Cookie");
+                    Timber.d("Success Clear Cookie");
                 }
             });
         } else {

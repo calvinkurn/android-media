@@ -14,7 +14,6 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.*
 import android.widget.AdapterView
-import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
@@ -67,7 +66,7 @@ class ReportDialogFragment : DialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        dialog.window?.run {
+        dialog?.window?.run {
             requestFeature(Window.FEATURE_NO_TITLE)
             setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN or WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
         }
@@ -213,8 +212,8 @@ class ReportDialogFragment : DialogFragment() {
     }
 
     override fun onResume() {
-        dialog.window?.run {
-            val params = dialog.window!!.attributes
+        dialog?.window?.run {
+            val params = dialog?.window!!.attributes
             params.width = WindowManager.LayoutParams.MATCH_PARENT
             params.height = WindowManager.LayoutParams.WRAP_CONTENT
             attributes = params as WindowManager.LayoutParams
@@ -224,10 +223,10 @@ class ReportDialogFragment : DialogFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        productReportViewModel.clear()
+        productReportViewModel.flush()
     }
 
-    override fun show(manager: FragmentManager, tag: String) {
+    override fun show(manager: FragmentManager, tag: String?) {
         val fragment = manager.findFragmentByTag(tag)
         if (fragment != null) {
             val ft = manager.beginTransaction()

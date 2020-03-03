@@ -80,4 +80,6 @@
 
     <string name="title_header_saldo_intro">Info Detail Saldo</string>
     <string name="saldo_detail_title_activity_people_deposit">Detail Saldo</string>
+
+    <string name="title_product_manage">Daftar Produk</string>
 </resources>

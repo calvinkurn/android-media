@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_32"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:id="@+id/umrah_partner_section_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_marginTop="@dimen/dp_8"
+            android:text="@string/umrah_home_page_partner_label"
+            android:textColor="@color/Neutral_N700_96"
+            app:typographyType="heading_3"
+            app:typographyWeight="bold"
+            android:layout_marginStart="@dimen/dp_20" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_umrah_home_page_partner_travel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <include
+        android:id="@+id/umrah_partner_section_shimmering"
+        layout="@layout/partial_umrah_home_page_partner_travel_shimmering"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
+</FrameLayout>

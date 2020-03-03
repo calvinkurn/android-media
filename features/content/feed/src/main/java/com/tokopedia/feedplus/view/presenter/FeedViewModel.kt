@@ -436,7 +436,7 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             data.id = id
             data.rowNumber = rowNumber
             val params = LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike)
-            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().single()
+            val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
             return data
         } catch (e: Throwable) {
@@ -452,6 +452,7 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             data.rowNumber = rowNumber
             val params = FollowKolPostGqlUseCase.getParam(id, data.status)
             followKolPostGqlUseCase.clearRequest()
+            followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, data.status))
             val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
 
             val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
@@ -476,6 +477,7 @@ class FeedViewModel @Inject constructor(val baseDispatcher: FeedDispatcherProvid
             data.rowNumber = rowNumber
             val params = FollowKolPostGqlUseCase.getParam(id, data.status)
             followKolPostGqlUseCase.clearRequest()
+            followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, data.status))
             val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
 
             val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)

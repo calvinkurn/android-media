@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <View
+        android:id="@+id/v_immersive_box"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout"/>
+</merge>

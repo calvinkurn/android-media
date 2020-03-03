@@ -1,24 +1,24 @@
 package com.tokopedia.common_tradein.viewmodel;
 
 import android.app.Application;
-import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import android.content.Intent;
+
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
-import com.tokopedia.graphql.data.model.GraphqlRequest;
-import com.tokopedia.graphql.data.model.GraphqlResponse;
-import com.tokopedia.graphql.domain.GraphqlUseCase;
 import com.tokopedia.common_tradein.R;
+import com.tokopedia.common_tradein.customviews.TradeInTextView;
 import com.tokopedia.common_tradein.model.TradeInParams;
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse;
 import com.tokopedia.common_tradein.model.ValidateTradePDP;
-import com.tokopedia.common_tradein.customviews.TradeInTextView;
-import com.tokopedia.tradein_common.viewcontrollers.AccessRequestFragment;
+import com.tokopedia.design.dialog.AccessRequestDialogFragment;
+import com.tokopedia.graphql.data.model.GraphqlRequest;
+import com.tokopedia.graphql.data.model.GraphqlResponse;
+import com.tokopedia.graphql.domain.GraphqlUseCase;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
     private MutableLiveData<ValidateTradeInResponse> responseData;
     private WeakReference<FragmentActivity> activityWeakReference;
 
-    public TradeInTextViewModel(){
+    public TradeInTextViewModel() {
         super();
         responseData = new MutableLiveData<>();
     }
@@ -44,11 +44,11 @@ public class TradeInTextViewModel extends ViewModel implements ITradeInParamRece
             FragmentManager fragmentManager = activityWeakReference.get().getSupportFragmentManager();
             FragmentActivity activity = activityWeakReference.get();
 
-            AccessRequestFragment accessDialog = AccessRequestFragment.newInstance();
+            AccessRequestDialogFragment accessDialog = AccessRequestDialogFragment.Companion.newInstance();
             accessDialog.setBodyText(activity.getString(R.string.tradein_text_permission_description));
             accessDialog.setTitle(activity.getString(R.string.tradein_text_request_access));
             accessDialog.setNegativeButton("");
-            accessDialog.show(fragmentManager, AccessRequestFragment.TAG);
+            accessDialog.show(fragmentManager, AccessRequestDialogFragment.TAG);
         }
     }
 

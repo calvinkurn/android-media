@@ -8,26 +8,29 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.TransitionDrawable
 import android.os.Build
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.DrawableCompat
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.tokopedia.applink.ApplinkConst
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.searchbar.helper.ViewHelper
 import kotlinx.android.synthetic.main.home_main_toolbar.view.*
+import kotlinx.coroutines.*
 import java.net.URLEncoder
+import kotlin.coroutines.CoroutineContext
 import kotlin.text.Charsets.UTF_8
 
 
-class HomeMainToolbar : MainToolbar {
-    var toolbarType: Int = 0
+class HomeMainToolbar : MainToolbar, CoroutineScope {
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.Main
+    private var toolbarType: Int = 0
 
-    var shadowApplied: Boolean = false
+    private var shadowApplied: Boolean = false
 
     private lateinit var wishlistCrossfader: TransitionDrawable
 
@@ -35,46 +38,43 @@ class HomeMainToolbar : MainToolbar {
 
     private lateinit var inboxCrossfader: TransitionDrawable
 
-    lateinit var wishlistBitmapWhite: Drawable
+    private lateinit var wishlistBitmapWhite: Drawable
 
-    lateinit var notifBitmapWhite: Drawable
+    private lateinit var notifBitmapWhite: Drawable
 
-    lateinit var inboxBitmapWhite: Drawable
+    private lateinit var inboxBitmapWhite: Drawable
 
-    lateinit var wishlistBitmapGrey: Drawable
+    private lateinit var wishlistBitmapGrey: Drawable
 
-    lateinit var notifBitmapGrey: Drawable
+    private lateinit var notifBitmapGrey: Drawable
 
-    lateinit var inboxBitmapGrey: Drawable
+    private lateinit var inboxBitmapGrey: Drawable
 
-    constructor(context: Context) : super(context) {}
+    constructor(context: Context) : super(context)
 
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {}
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     override fun init(context: Context, attrs: AttributeSet?) {
         super.init(context, attrs)
-
-        initImageSearch()
 
         showShadow()
 
         setBackgroundAlpha(0f)
 
         toolbarType = TOOLBAR_LIGHT_TYPE
-
-        initToolbarIcon()
-
-        switchToLightToolbar()
+        launch {
+            //main
+            val result = initializeinBackground()
+            result.await()
+            setImageDrawables()
+            //..........
+        }
     }
 
-    private fun initImageSearch() {
-        val imageViewImageSearch = findViewById<ImageView>(R.id.imageview_image_search)
-
-        imageViewImageSearch.setOnClickListener {
-            RouteManager.route(context, ApplinkConstInternalDiscovery.IMAGE_SEARCH_RESULT)
-        }
+    fun initializeinBackground() : Deferred<Unit> = async(Dispatchers.IO){
+            initToolbarIcon()
     }
 
     private fun initToolbarIcon() {
@@ -89,14 +89,16 @@ class HomeMainToolbar : MainToolbar {
         wishlistCrossfader = TransitionDrawable(arrayOf<Drawable>(wishlistBitmapGrey, wishlistBitmapWhite))
         notifCrossfader = TransitionDrawable(arrayOf<Drawable>(notifBitmapGrey, notifBitmapWhite))
         inboxCrossfader = TransitionDrawable(arrayOf<Drawable>(inboxBitmapGrey, inboxBitmapWhite))
+    }
 
-        btnWishlist.setImageDrawable(wishlistCrossfader)
-        btnNotification.setImageDrawable(notifCrossfader)
-        btnInbox.setImageDrawable(inboxCrossfader)
-
+    fun setImageDrawables(){
         wishlistCrossfader.startTransition(0)
         notifCrossfader.startTransition(0)
         inboxCrossfader.startTransition(0)
+        btnWishlist.setImageDrawable(wishlistCrossfader)
+        btnNotification.setImageDrawable(notifCrossfader)
+        btnInbox.setImageDrawable(inboxCrossfader)
+        switchToLightToolbar()
     }
 
     fun hideShadow() {
@@ -104,7 +106,7 @@ class HomeMainToolbar : MainToolbar {
             shadowApplied = false
             val pL = toolbar.paddingLeft
             var pT = 0
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 pT = ViewHelper.getStatusBarHeight(context)
             }
             val pR = toolbar.paddingRight
@@ -119,7 +121,7 @@ class HomeMainToolbar : MainToolbar {
             shadowApplied = true
             val pL = toolbar.paddingLeft
             var pT = 0
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 pT = ViewHelper.getStatusBarHeight(context)
             }
             val pR = toolbar.paddingRight
@@ -151,13 +153,13 @@ class HomeMainToolbar : MainToolbar {
         }
     }
 
-    fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
+    private fun getBitmapDrawableFromVectorDrawable(context: Context, drawableId: Int): Drawable {
         return if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             ContextCompat.getDrawable(context, drawableId) as Drawable
         } else BitmapDrawable(context.resources, getBitmapFromVectorDrawable(context, drawableId))
     }
 
-    fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
+    private fun getBitmapFromVectorDrawable(context: Context, drawableId: Int): Bitmap {
         var drawable = ContextCompat.getDrawable(context, drawableId)
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             drawable = DrawableCompat.wrap(drawable!!).mutate()
@@ -211,8 +213,8 @@ class HomeMainToolbar : MainToolbar {
     }
 
     companion object {
-        val TOOLBAR_LIGHT_TYPE = 0
-        val TOOLBAR_DARK_TYPE = 1
+        const val TOOLBAR_LIGHT_TYPE = 0
+        const val TOOLBAR_DARK_TYPE = 1
         private const val HOME_SOURCE = "home"
     }
 }

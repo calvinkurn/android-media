@@ -1,6 +1,6 @@
 package com.tokopedia.core.network.apiservices.drawer.api;
 
-import com.tokopedia.abstraction.common.data.model.response.GraphqlResponse;
+import com.tokopedia.network.data.model.response.GraphqlResponse;
 import com.tokopedia.core.drawer2.data.pojo.UserData;
 
 import java.util.Map;

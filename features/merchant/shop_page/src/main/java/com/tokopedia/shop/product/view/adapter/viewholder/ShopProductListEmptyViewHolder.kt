@@ -10,7 +10,7 @@ import kotlinx.android.synthetic.main.shop_product_list_empty_state.view.*
 
 class ShopProductListEmptyViewHolder(
         val view: View,
-        private val emptyProductOnClickListener: Callback
+        private val emptyProductOnClickListener: Callback?
 ) : BaseEmptyViewHolder<EmptyModel>(view) {
 
     companion object {
@@ -31,7 +31,7 @@ class ShopProductListEmptyViewHolder(
             btn_result_empty.run {
                 text = context.getString(R.string.shop_product_list_empty_button_text)
                 setOnClickListener {
-                    emptyProductOnClickListener.onEmptyButtonClicked()
+                    emptyProductOnClickListener?.onEmptyButtonClicked()
                 }
             }
         }

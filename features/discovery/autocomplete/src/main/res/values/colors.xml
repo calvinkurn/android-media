@@ -7,5 +7,7 @@
     <color name="search_layover_bg">#baa0a7be</color>
     <color name="white_four">#e0e0e0</color>
     <color name="grey_400">#bdbdbd</color>
+    <color name="edit_text_color">#f531353b</color>
+    <color name="edit_text_color_hint">#7031353b</color>
 
 </resources>

@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,13 +14,15 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseTabActivity
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
+import com.tokopedia.notifcenter.data.entity.NotificationTabItem
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
 import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
@@ -31,7 +31,7 @@ import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFr
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
 import com.tokopedia.notifcenter.presentation.presenter.NotificationActivityPresenter
 import com.tokopedia.notifcenter.util.CacheManager
-import com.tokopedia.notifcenter.util.NotifPreference
+import com.tokopedia.notifcenter.widget.NotificationTabLayout
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import javax.inject.Inject
 
@@ -39,65 +39,83 @@ import javax.inject.Inject
  * Created by meta on 20/06/18.
  */
 
-class NotificationActivity : BaseTabActivity(),
-        HasComponent<BaseAppComponent>,
+class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         NotificationActivityContract.View,
         NotificationUpdateFragment.NotificationUpdateListener {
 
     @Inject lateinit var presenter: NotificationActivityPresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
-    @Inject lateinit var notifPreference: NotifPreference
     @Inject lateinit var cacheManager: CacheManager
 
-    private val handler = Handler()
-
     private var fragmentAdapter: NotificationFragmentAdapter? = null
-    private val tabList = ArrayList<NotificationFragmentAdapter.NotificationFragmentItem>()
+    private val tabList = ArrayList<NotificationTabItem>()
     private var updateCounter = 0L
 
+    private val notificationLayout by lazy {
+        NotificationTabLayout(this)
+    }
+
+    private val customTabView by lazy {
+        tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_activity), NotificationTransactionFragment()))
-        tabList.add(NotificationFragmentAdapter.NotificationFragmentItem(getString(R.string.title_notification_update), NotificationUpdateFragment()))
+        initTabLayoutItem()
+
         super.onCreate(savedInstanceState)
         initInjector()
-        initView()
+        initView(savedInstanceState)
 
         baseContext?.let {
             val remoteConfig = FirebaseRemoteConfigImpl(it)
             val redDotGimmickRemoteConfigStatus = remoteConfig.getBoolean(RED_DOT_GIMMICK_REMOTE_CONFIG_KEY, false)
-            val redDotGimmickLocalStatus = notifPreference.isDisplayedGimmickNotif
+            val redDotGimmickLocalStatus = cacheManager.isDisplayedGimmick
             if (redDotGimmickRemoteConfigStatus && !redDotGimmickLocalStatus) {
-                notifPreference.isDisplayedGimmickNotif = true
-                presenter.sendNotif(onSuccessSendNotif(), onErrorSendNotif())
+                cacheManager.isDisplayedGimmick = true
+                presenter.sendNotif(onSuccessSendNotification(), onErrorSendNotification())
             }
         }
     }
 
-    private fun onSuccessSendNotif(): (NotifCenterSendNotifData) -> Unit {
+    private fun initTabLayoutItem() {
+        //transaction
+        tabList.add(NotificationTabItem(
+                getString(R.string.title_notification_transaction),
+                NotificationTransactionFragment()
+        ))
+
+        //update
+        tabList.add(NotificationTabItem(
+                getString(R.string.title_notification_update),
+                NotificationUpdateFragment()
+        ))
+    }
+
+    private fun onSuccessSendNotification(): (NotifCenterSendNotifData) -> Unit {
         return {
             presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         }
     }
 
-    private fun onErrorSendNotif(): (Throwable) -> Unit {
+    private fun onErrorSendNotification(): (Throwable) -> Unit {
         return {
             presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         }
     }
 
-    fun initInjector() {
+    private fun initInjector() {
         DaggerNotificationUpdateComponent.builder()
                 .baseAppComponent(component).build().inject(this)
         presenter.attachView(this)
     }
 
-    private fun initView() {
+    private fun initView(savedInstanceState: Bundle?) {
         val initialIndexPage = if (cacheManager.isExist(KEY_TAB_POSITION)) {
             cacheManager.read(KEY_TAB_POSITION)
         } else {
             getParamInt(Intent.EXTRA_TITLE,
                     intent.extras,
-                    null,
+                    savedInstanceState,
                     INDEX_NOTIFICATION_ACTIVITY)
         }
         initTabLayout(initialIndexPage)
@@ -106,67 +124,67 @@ class NotificationActivity : BaseTabActivity(),
     }
 
     override fun goToUpdateTab() {
+        val updateTabPosition = 1
         if (cacheManager.isExist(KEY_TAB_POSITION)) {
             val position = cacheManager.read(KEY_TAB_POSITION)
             changeTabPager(position)
         } else {
-            viewPager.currentItem = 1
+            viewPager.currentItem = updateTabPosition
         }
     }
 
     override fun onSuccessLoadNotifUpdate() {
-        clearNotifCounter(INDEX_NOTIFICATION_UPDATE)
+        clearTabCounter(INDEX_NOTIFICATION_UPDATE)
     }
 
     private fun onSuccessGetUpdateUnreadCounter(): (NotificationUpdateUnread) -> Unit {
         return {
-            if (it.pojo.notifUnreadInt > 0) {
-                var notif = tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView?.findViewById<View>(R.id.circle)
-                notif?.visibility = View.VISIBLE
-            }
+            customTabView
+                    ?.findViewById<View>(R.id.circle)
+                    ?.showWithCondition(
+                            it.pojo.notifUnreadInt > 0
+                    )
             updateCounter = it.pojo.notifUnreadInt
             setCounterNotificationUpdate()
         }
     }
 
     private fun initTabLayout(initialIndexPage: Int) {
-        for (i in 0 until tabList.size) {
+        tabList.forEachIndexed { index, _ ->
+            //add a new tab
             tabLayout.addTab(tabLayout.newTab())
-        }
-        for (i in 0 until tabLayout.tabCount) {
-            val title = tabList[i].title
-            val tab = tabLayout.getTabAt(i)
-            tab?.customView = createCustomView(title)
-            if (i == viewPager.currentItem) {
-                setTabSelectedView(tab?.customView)
+
+            //define the tab content
+            val titleTab = tabList[index].title
+            val tabCurrentLayout = tabLayout.getTabAt(index)
+            tabCurrentLayout?.customView = notificationLayout.init(titleTab)
+            if (index == viewPager.currentItem) {
+                notificationLayout.selected(tabCurrentLayout?.customView)
             }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             tabLayout.elevation = 0f
         }
-        tabLayout.setBackgroundResource(R.color.white)
-        tabLayout.tabMode = TabLayout.MODE_FIXED
 
         tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(tab: TabLayout.Tab) {
-            }
+            override fun onTabReselected(tab: TabLayout.Tab) {}
 
             override fun onTabUnselected(tab: TabLayout.Tab) {
-                setTabUnSelectedView(tab.customView)
+                notificationLayout.unselected(tab.customView)
             }
 
             override fun onTabSelected(tab: TabLayout.Tab) {
                 changeTabPager(tab.position)
-                clearNotifCounter(tab.position)
-                setTabSelectedView(tab.customView)
-                resetCircle(tab.customView)
-
+                clearTabCounter(tab.position)
+                notificationLayout.selected(tab.customView)
+                notificationLayout.removeDot(tab.customView)
             }
         })
 
-        val tab = tabLayout.getTabAt(initialIndexPage)
-        tab?.select()
+        tabLayout.setBackgroundResource(R.color.white)
+        tabLayout.tabMode = TabLayout.MODE_FIXED
+        tabLayout.getTabAt(initialIndexPage)?.select()
     }
 
     private fun changeTabPager(position: Int) {
@@ -175,54 +193,22 @@ class NotificationActivity : BaseTabActivity(),
         analytics.trackNotificationCenterTab(position)
     }
 
-    private fun clearNotifCounter(position: Int) {
+    private fun clearTabCounter(position: Int) {
         if (position == INDEX_NOTIFICATION_UPDATE) {
             presenter.clearNotifCounter()
             resetCounterNotificationUpdate()
         }
     }
 
-
     override fun resetCounterNotificationUpdate() {
         updateCounter = 0
         setCounterNotificationUpdate()
     }
 
-    private fun resetCircle(customView: View?) {
-        var notif = customView?.findViewById<View>(R.id.circle)
-        notif?.visibility = View.GONE
-    }
-
-    private fun setTabSelectedView(customView: View?) {
-        val titleView = customView?.findViewById<TextView>(R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Green_G500))
-    }
-
-    private fun setTabUnSelectedView(customView: View?) {
-        val titleView = customView?.findViewById<TextView>(R.id.title)
-        titleView?.setTextColor(MethodChecker.getColor(this, R.color.Neutral_N200))
-    }
-
-    private fun createCustomView(title: String): View? {
-        var customView = LayoutInflater.from(this).inflate(R.layout.item_notification_tab_title, null);
-        var titleView = customView.findViewById<TextView>(R.id.title)
-        titleView.text = title
-        return customView
-    }
-
     override fun getViewPagerAdapter(): PagerAdapter? {
         fragmentAdapter = NotificationFragmentAdapter(supportFragmentManager)
         fragmentAdapter?.setItemList(tabList)
-
         return fragmentAdapter
-    }
-
-    override fun getLayoutRes(): Int {
-        return R.layout.activity_notification_page
-    }
-
-    override fun getPageLimit(): Int {
-        return tabList.size + 1
     }
 
     override fun getComponent(): BaseAppComponent {
@@ -230,26 +216,28 @@ class NotificationActivity : BaseTabActivity(),
     }
 
     private fun setCounterNotificationUpdate() {
-        val defaultTitle = getString(R.string.title_notification_update)
         var counter = ""
+        val defaultTitle = getString(R.string.title_notification_update)
         if (updateCounter > 0) {
-            counter = getString(R.string.title_counter_update_notification, updateCounter.toString())
+            counter = setCounterText(updateCounter.toString())
         } else if (updateCounter > 99) {
-            counter = getString(R.string.title_counter_update_notification, getString(R.string.exceed_ninety_nine))
+            counter = setCounterText(getString(R.string.exceed_ninety_nine))
         }
-        val titleView: TextView? = tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView?.findViewById(R.id.title)
-        titleView?.let {
+
+        val tabView = tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView
+        val textTab: TextView? = tabView?.findViewById(R.id.title)
+
+        textTab?.let {
             it.text = String.format("%s%s", defaultTitle, counter)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        presenter.detachView()
+    private fun setCounterText(text: String): String {
+        return getString(R.string.title_counter_update_notification, text)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_notification_activity, menu)
+        menuInflater.inflate(R.menu.menu_notifcenter_main, menu)
         return true
     }
 
@@ -265,6 +253,19 @@ class NotificationActivity : BaseTabActivity(),
         return true
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        presenter.detachView()
+    }
+
+    override fun getPageLimit(): Int = tabList.size + 1
+
+    override fun getViewPagerResourceId(): Int = R.id.pager
+    override fun getTabLayoutResourceId(): Int = R.id.indicator
+    override fun getToolbarResourceID(): Int = R.id.toolbar
+
+    override fun getLayoutRes(): Int = R.layout.activity_notification_page
+
     companion object {
         private const val KEY_TAB_POSITION = "tab_position"
 
@@ -277,8 +278,8 @@ class NotificationActivity : BaseTabActivity(),
         }
 
         fun createIntentUpdate(context: Context): Intent {
-            var intent = Intent(context, NotificationActivity::class.java)
-            var bundle = Bundle()
+            val intent = Intent(context, NotificationActivity::class.java)
+            val bundle = Bundle()
             bundle.putInt(Intent.EXTRA_TITLE, INDEX_NOTIFICATION_UPDATE)
             intent.putExtras(bundle)
             return intent

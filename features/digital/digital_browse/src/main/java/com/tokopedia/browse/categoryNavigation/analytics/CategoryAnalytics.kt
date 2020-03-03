@@ -9,13 +9,12 @@ import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.HashMap
 
+private const val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
+
 class CategoryAnalytics {
 
-    val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
-    val LAUNCH_PAGE_HOME = "belanja/home"
-
-    val pageName = "/kategori-belanja"
-    val nameWithPageName = "$pageName - %s"
+    private val pageName = "/kategori-belanja"
+    private val nameWithPageName = "$pageName - %s"
 
     companion object {
         fun createInstance(): CategoryAnalytics {

@@ -14,9 +14,9 @@ import retrofit2.http.POST
 interface ApiInterface {
 
     @POST(SINGLE_EVENT)
-    fun sendSingleEventAsync(@Body data: RequestBody) : Deferred<Response<String>>
+    suspend fun sendSingleEventAsync(@Body data: RequestBody) : Response<String>
 
     @POST(MULTI_EVENT)
-    fun sendMultiEventAsync(@Body data: RequestBody) : Deferred<Response<String>>
+    suspend fun sendMultiEventAsync(@Body data: RequestBody) : Response<String>
 
 }

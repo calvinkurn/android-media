@@ -1,6 +1,9 @@
 package com.tokopedia.salam.umrah.homepage.presentation.fragment
 
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,15 +14,19 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getYearNow
-import com.tokopedia.salam.umrah.homepage.data.*
+import com.tokopedia.salam.umrah.homepage.data.Products
+import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
+import com.tokopedia.salam.umrah.homepage.data.UmrahCategories
+import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageModel
 import com.tokopedia.salam.umrah.homepage.di.UmrahHomepageComponent
 import com.tokopedia.salam.umrah.homepage.presentation.activity.UmrahHomepageActivity
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.factory.UmrahHomepageFactoryImpl
-import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageCategoryViewHolder
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import com.tokopedia.salam.umrah.homepage.presentation.viewmodel.UmrahHomepageViewModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -53,6 +60,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
         resetIsRequested()
+        setHideFAB()
     }
 
     override fun initInjector() = getComponent(UmrahHomepageComponent::class.java)
@@ -73,7 +81,37 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         rv_umrah_home_page.setHasFixedSize(true)
         rv_umrah_home_page.setDrawingCacheEnabled(true)
         rv_umrah_home_page.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_HIGH)
+        fab_umrah_home_page_message.bringToFront()
+        fab_umrah_home_page_message.setOnClickListener {
+            checkChatSession()
+        }
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_LOGIN -> context?.let{checkChatSession()}
+            }
+        }
+    }
+
+    private fun checkChatSession(){
+        if (userSessionInterface.isLoggedIn){
+            context?.let {
+                startChatUmrah(it)
+            }
+        }else{
+            goToLoginPage()
+        }
+    }
+
+    private fun startChatUmrah(context: Context){
+        val intent = RouteManager.getIntent(context,
+                ApplinkConst.TOPCHAT_ASKSELLER,
+                resources.getString(R.string.umrah_shop_id), "",
+                resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
+        startActivity(intent)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,9 +126,14 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setHideFAB()
         umrahHomepageViewModel.homePageModel.observe(this, Observer {
             clearAllData()
-            it?.run { renderList(this) }
+            it?.run {
+                renderList(this)
+                if(this.get(UMRAH_SEARCH_PARAM_INDEX).isSuccess)
+                fab_umrah_home_page_message.show()
+            }
         })
 
         umrahHomepageViewModel.isError.observe(this, Observer {
@@ -110,6 +153,8 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         isRequestedCategory = false
         isDreamFundViewed = false
         isRequestedSpinnerLike = false
+        isRequestedBanner = false
+        isRequestedPartner = false
     }
 
     private fun loadDataAll() {
@@ -118,6 +163,10 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         adapter.clearAllElements()
         showLoading()
         umrahHomepageViewModel.getIntialList(true)
+    }
+
+    private fun setHideFAB(){
+        fab_umrah_home_page_message.hide()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -183,12 +232,41 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     override fun onImpressionFeaturedCategory(headerTitle: String, product: Products, position: Int, positionDC: Int) {
         trackingUmrahUtil.umrahImpressionFeaturedCategoryTracker(headerTitle,product, position, positionDC)
     }
+
+    override fun onBindBannerVH(isLoadedFromCloud: Boolean) {
+        umrahHomepageViewModel.getBannerData(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_umrah_home_page_banner), isLoadedFromCloud)
+    }
+
+    override fun onClickBanner(banner: UmrahBanner, position: Int) {
+        trackingUmrahUtil.umrahClickBannerTracker(banner, position)
+    }
+
+    override fun onImpressionBanner(banner: UmrahBanner, position: Int) {
+        trackingUmrahUtil.umrahImpressionBannerTracker(banner,position)
+    }
+
+    override fun onBindPartnerVH(isLoadFromCloud: Boolean) {
+        umrahHomepageViewModel.getPartnerTravelData(GraphqlHelper.loadRawString(resources,
+                R.raw.gql_query_umrah_common_travel_agents), isLoadFromCloud)
+    }
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
         var isRequestedMyUmrah = false
         var isDreamFundViewed = false
         var isRequestedCategory = false
         var isRequestedSpinnerLike = false
+        var isRequestedBanner = false
+        var isRequestedPartner = false
+        const val REQUEST_CODE_LOGIN = 400
+        const val UMRAH_SEARCH_PARAM_INDEX = 0
+    }
+
+    private fun goToLoginPage() {
+        if (activity != null) {
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    REQUEST_CODE_LOGIN)
+        }
     }
 }
 

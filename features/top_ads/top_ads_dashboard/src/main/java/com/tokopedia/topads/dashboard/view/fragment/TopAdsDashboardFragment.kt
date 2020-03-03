@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -30,7 +30,8 @@ import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.label.LabelView
 import com.tokopedia.design.utils.DateLabelUtils
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.shop.common.data.source.cloud.model.ShopInfo
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+
 import com.tokopedia.topads.auto.view.widget.AutoAdsWidgetView
 import com.tokopedia.topads.common.TopAdsMenuBottomSheets
 import com.tokopedia.topads.common.TopAdsWebViewActivity
@@ -214,7 +215,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         button_add_promo.visibility = View.GONE
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Callback) {
             callback = context
@@ -572,12 +573,12 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
     }
 
     override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
-        ImageHandler.LoadImage(image_view_shop_icon, shopInfo.info.shopAvatar)
+        ImageHandler.LoadImage(image_view_shop_icon, shopInfo.shopAssets.avatar)
 
         text_view_shop_title.text = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            Html.fromHtml(shopInfo.info.shopName, Html.FROM_HTML_MODE_LEGACY)
+            Html.fromHtml(shopInfo.shopCore.name, Html.FROM_HTML_MODE_LEGACY)
         } else {
-            Html.fromHtml(shopInfo.info.shopName)
+            Html.fromHtml(shopInfo.shopCore.name)
         }
     }
 
@@ -626,7 +627,7 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         onLoadTopAdsShopDepositSuccess(dashboardPopulateResponse.dataDeposit)
         onSuccessPopulateTotalAds(dashboardPopulateResponse.totalAd)
         if (!isUsageExists || !isAdExists) {
-            isShowAutoAddPromo = GlobalConfig.isCustomerApp()
+            isShowAutoAddPromo = !GlobalConfig.isSellerApp()
         }
     }
 
@@ -779,12 +780,12 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater?.inflate(R.menu.menu_top_ads_dashboard, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item?.itemId == R.id.menu_more) {
             showMoreBottomSheetDialog()
             return true

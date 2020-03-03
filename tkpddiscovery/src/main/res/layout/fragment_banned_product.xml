@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:gravity="center">
 
-    <ImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/img_banned_product"
         android:layout_width="0dp"
         android:layout_height="250dp"
@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/cat_ic_banned_item" />
+        app:remoteFileName="cat_ic_banned_item.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_header"
@@ -74,7 +74,7 @@
         android:gravity="center"
         android:paddingLeft="@dimen/dp_20"
         android:paddingRight="@dimen/dp_20"
-        android:text="@string/buka_browser"
+        android:text="@string/banned_fragment_buka_browser"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_18"

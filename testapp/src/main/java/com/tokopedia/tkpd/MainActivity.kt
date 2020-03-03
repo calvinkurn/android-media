@@ -6,7 +6,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.readystatesoftware.chuck.Chuck
+import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.application.MyApplication
 import com.tokopedia.authentication.AuthHelper
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity() {
         val button = findViewById<Button>(R.id.button)
         val chuckButton = findViewById<Button>(R.id.chuckButton)
 
-        chuckButton.setOnClickListener { startActivity(Chuck.getLaunchIntent(this)) }
+        chuckButton.setOnClickListener { startActivity(Chucker.getLaunchIntent(this, Chucker.SCREEN_HTTP)) }
         button.setOnClickListener {
             goTo()
         }
@@ -196,5 +196,4 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
 
     }
-
 }

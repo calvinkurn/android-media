@@ -1,13 +1,12 @@
 package com.tokopedia.navigation;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
-import com.tokopedia.navigation.presentation.activity.MainParentActivity;
 
 /**
  * Created by meta on 18/07/18.
@@ -38,13 +37,9 @@ public interface GlobalNavRouter {
 
     Intent getHomeIntent(Context context);
 
-    Intent instanceIntentDigitalCategoryList();
-
     Intent gotoWishlistPage(Context context);
 
     boolean getBooleanRemoteConfig(String key, boolean defaultValue);
 
     void sendOpenHomeEvent();
-
-    void setCategoryAbTestingConfig();
 }

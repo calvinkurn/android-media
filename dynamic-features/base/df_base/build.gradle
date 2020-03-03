@@ -1,0 +1,112 @@
+apply plugin: 'com.android.dynamic-feature'
+apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply plugin: 'io.hansel.preprocessor.feature'
+
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://hansel.io/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+
+    signingConfigs {
+        debug {
+            storeFile file("debug.keystore")
+        }
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+    }
+
+    // Specifies 4 flavor dimensions.
+    flavorDimensions "tier", "client"
+
+    productFlavors {
+        live {
+            dimension "tier"
+        }
+        staging {
+            dimension "tier"
+        }
+        dev {
+            dimension "client"
+        }
+        prod {
+            dimension "client"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(rootProject.ext.app.customerapp)
+
+    //Base
+    implementation project(rootProject.ext.features.onboarding)
+    //Category
+    //implementation project(rootProject.ext.features.agerestriction) //Need to fix the structure
+    implementation project(rootProject.ext.features.tradeIn)
+    //Content
+    implementation project(rootProject.ext.features.affiliate)
+    implementation project(rootProject.ext.features.profile)
+    //Digital
+    implementation project(rootProject.ext.features.digitalTopupBills)
+    implementation project(rootProject.ext.features.digitalHomepage)
+    implementation project(rootProject.ext.features.voucherGame)
+    implementation project(rootProject.ext.features.rechargeOcr)
+    implementation project(rootProject.ext.features.rechargeGeneral)
+    implementation project(rootProject.ext.features.digitalDeals)
+    implementation project(rootProject.ext.features.digitalproduct)
+    //Discovery
+    implementation project(rootProject.ext.features.similarSearch)
+    implementation project(rootProject.ext.features.search)
+    implementation project(rootProject.ext.features.autocomplete)
+    implementation project(rootProject.ext.features.homeWishlist)
+    implementation project(rootProject.ext.features.productCardOptions)
+    //Fintech
+    implementation project(rootProject.ext.features.ovoPayWithQr)
+    implementation project(rootProject.ext.features.wallet)
+    implementation project(rootProject.ext.features.instantLoan)
+    implementation project(rootProject.ext.features.ovop2p)
+    implementation project(rootProject.ext.features.saldodetails)
+    //IM
+    //implementation project(rootProject.ext.features.referral) //Need to fix the structure
+    //Merchant
+    implementation project(rootProject.ext.features.report)
+    implementation project(rootProject.ext.features.shopOpen)
+    //Operational
+    implementation project(rootProject.ext.features.contactUs)
+    implementation project(rootProject.ext.features.chatbot)
+    //Payment
+    implementation project(rootProject.ext.features.paymentSetting)
+    //Promo
+    implementation project(rootProject.ext.features.tokopoints)
+    //Salam
+    implementation project(rootProject.ext.features.umrah)
+    //Travel
+    implementation project(rootProject.ext.features.travelHomepage)
+    implementation project(rootProject.ext.features.flight)
+    implementation project(rootProject.ext.features.hotel)
+    //User
+    implementation project(rootProject.ext.features.changePhoneNumber)
+    implementation project(rootProject.ext.features.changepassword)
+    implementation project(rootProject.ext.features.groupchat)
+    implementation project(rootProject.ext.features.profileCompletion)
+    implementation project(rootProject.ext.features.settingbank)
+    implementation project(rootProject.ext.features.settingnotif)
+    implementation project(rootProject.ext.features.attachinvoice)
+    implementation project(rootProject.ext.features.kyccentralized)
+    implementation project(rootProject.ext.features.notifCenter)
+    implementation project(rootProject.ext.features.talk)
+    implementation project(rootProject.ext.features.attachvoucher)
+    implementation project(rootProject.ext.features.topchat)
+}

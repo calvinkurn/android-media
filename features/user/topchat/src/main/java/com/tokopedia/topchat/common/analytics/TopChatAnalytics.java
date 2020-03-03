@@ -6,7 +6,8 @@ import com.tokopedia.attachproduct.analytics.AttachProductAnalytics;
 import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel;
 import com.tokopedia.chat_common.data.BannedProductAttachmentViewModel;
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel;
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 
@@ -93,6 +94,9 @@ public class TopChatAnalytics {
         public static final String VIEW_BANNED_PRODUCT = "view banned product bubble";
         static final String EVENT_ACTION_CLICK_COMMUNITY_TAB = "click on community tab";
         String CLICK_HEADER = "click header-shop icon";
+        String CLICK_ADD_TO_WISHLIST = "add wishlist - chat";
+        String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
+        String CLICK_QUOTATION_ATTACHMENT = "click bayar on quotation thumbnail";
     }
 
     public interface Label {
@@ -358,7 +362,7 @@ public class TopChatAnalytics {
         ));
     }
 
-    public void invoiceAttachmentSent(@NotNull InvoicePreviewViewModel invoice) {
+    public void invoiceAttachmentSent(@NotNull InvoicePreviewUiModel invoice) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
                         EVENT_NAME, Name.CHAT_DETAIL,
@@ -455,4 +459,35 @@ public class TopChatAnalytics {
                 eventLabel
         );
     }
+
+    // #AP3
+    public void eventClickAddToWishList(@NotNull String productId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_ADD_TO_WISHLIST,
+                productId
+        );
+    }
+
+    // #AP4
+    public void eventClickRemoveFromWishList(@NotNull String productId) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_REMOVE_FROM_WISHLIST,
+                productId
+        );
+    }
+
+    // #QT1
+    public void eventClickQuotation(@NotNull QuotationUiModel msg) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                Name.CHAT_DETAIL,
+                Category.CHAT_DETAIL,
+                Action.CLICK_QUOTATION_ATTACHMENT,
+                msg.getQuotationId()
+        );
+    }
+
 }
