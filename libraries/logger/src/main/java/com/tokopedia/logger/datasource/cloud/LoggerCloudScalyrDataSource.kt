@@ -38,7 +38,8 @@ class LoggerCloudScalyrDataSource(val context: Context) {
         var responseCode = Constants.LOG_DEFAULT_ERROR_CODE
 
         try {
-            val scalyrBody = ScalyrBody(decodedToken, LogSession.getLogSession(context), ScalyrSessionInfo(Constants.ANDROID_APP_VALUE),
+            val scalyrBody = ScalyrBody(decodedToken, LogSession.getLogSession(context),
+                ScalyrSessionInfo(Constants.ANDROID_APP_VALUE, Constants.SCALYR_PARSER),
                 scalyrEventList)
             url = URL(Constants.SCALYR_SERVER_URL)
             urlConnection = url.openConnection() as HttpURLConnection
