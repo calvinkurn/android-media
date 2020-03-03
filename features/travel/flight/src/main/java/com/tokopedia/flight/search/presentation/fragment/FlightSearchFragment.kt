@@ -40,6 +40,7 @@ import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
+import com.tokopedia.sortfilter.SortFilterItem
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
 import kotlinx.android.synthetic.main.include_filter_bottom_action_view.*
@@ -72,6 +73,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private lateinit var performanceMonitoringP1: PerformanceMonitoring
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
+
+    private val filterItems = arrayListOf<SortFilterItem>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -353,6 +356,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun showFilterAndSortView() {
         bottom_action_filter_sort.visibility = View.VISIBLE
+        buildQuickFilterView()
     }
 
     override fun showEmptyFlightStateView() {
@@ -779,6 +783,17 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightFilterBottomSheet.show(requireFragmentManager(), FlightFilterBottomSheet.TAG_FILTER)
     }
 
+    private fun buildQuickFilterView() {
+        if (filterItems.size < FILTER_SORT_ITEM_SIZE) {
+            val quickDirectFilter = SortFilterItem(getString(R.string.direct))
+            quickDirectFilter.listener = {}
+
+            filterItems.add(quickDirectFilter)
+        }
+
+        flight_sort_filter.addItem(filterItems)
+    }
+
     interface OnFlightSearchFragmentListener {
 
         fun selectFlight(selectedFlightID: String, selectedTerm: String, flightPriceViewModel: FlightPriceViewModel,
@@ -788,20 +803,21 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     companion object {
-        val MAX_PROGRESS = 100
-        private val EMPTY_MARGIN = 0
-        private val REQUEST_CODE_SEARCH_FILTER = 1
-        private val REQUEST_CODE_SEE_DETAIL_FLIGHT = 2
-        private val SAVED_FILTER_MODEL = "svd_filter_model"
-        private val SAVED_SORT_OPTION = "svd_sort_option"
-        private val SAVED_AIRPORT_COMBINE = "svd_airport_combine"
-        private val SAVED_PROGRESS = "svd_progress"
-        private val SAVED_IS_COMBINE_DONE = "svd_is_combine_done"
-        private val DEFAULT_DIMENS_MULTIPLIER = 0.5f
-        private val PADDING_SEARCH_LIST = 60
-        private val FLIGHT_SEARCH_P1_TRACE = "tr_flight_search_p1"
-        private val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
-        private val MAX_DATE_ADDITION_YEAR = 1
+        const val MAX_PROGRESS = 100
+        private const val FILTER_SORT_ITEM_SIZE = 4
+        private const val EMPTY_MARGIN = 0
+        private const val REQUEST_CODE_SEARCH_FILTER = 1
+        private const val REQUEST_CODE_SEE_DETAIL_FLIGHT = 2
+        private const val SAVED_FILTER_MODEL = "svd_filter_model"
+        private const val SAVED_SORT_OPTION = "svd_sort_option"
+        private const val SAVED_AIRPORT_COMBINE = "svd_airport_combine"
+        private const val SAVED_PROGRESS = "svd_progress"
+        private const val SAVED_IS_COMBINE_DONE = "svd_is_combine_done"
+        private const val DEFAULT_DIMENS_MULTIPLIER = 0.5f
+        private const val PADDING_SEARCH_LIST = 60
+        private const val FLIGHT_SEARCH_P1_TRACE = "tr_flight_search_p1"
+        private const val FLIGHT_SEARCH_P2_TRACE = "tr_flight_search_p2"
+        private const val MAX_DATE_ADDITION_YEAR = 1
         private val TAG_FLIGHT_SORT = "tag_flight_sort"
 
         fun newInstance(passDataViewModel: FlightSearchPassDataViewModel): FlightSearchFragment {

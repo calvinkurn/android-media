@@ -40,6 +40,7 @@
                 android:id="@+id/flight_sort_filter"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:sort_filter_relationship="AND"
                 app:sort_filter_type="advanced" />
 
             <androidx.recyclerview.widget.RecyclerView
