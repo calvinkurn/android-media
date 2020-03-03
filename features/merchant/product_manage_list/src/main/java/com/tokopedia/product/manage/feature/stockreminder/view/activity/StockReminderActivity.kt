@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.stockreminder.constant.AppScreen
 import com.tokopedia.product.manage.feature.stockreminder.di.DaggerStockReminderComponent
 import com.tokopedia.product.manage.feature.stockreminder.view.fragment.StockReminderFragment
-import com.tokopedia.product.manage.oldlist.R
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.activity_stock_reminder.*
 import javax.inject.Inject
