@@ -1,4 +1,5 @@
 query get_chat_replies($msgId: Int!, $page: Int!) {
+  status
   chatReplies(msgId: $msgId, page: $page) {
     block {
       blockedUntil

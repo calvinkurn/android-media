@@ -24,7 +24,6 @@
 /features/digital/digital_browse/                   	@tokopedia/minion-dave
 /features/discovery/global_nav_widget/              	@tokopedia/minion-dave
 /features/discovery/global_nav_widget_samples/      	@tokopedia/minion-dave
-/features/home/account-home/                        	@tokopedia/minion-dave
 /features/home/navigation/                          	@tokopedia/minion-dave
 /features/home/navigation-common/                   	@tokopedia/minion-dave
 /features/home/searchbar/                           	@tokopedia/minion-dave
@@ -152,6 +151,7 @@
 /features/user/attachcommon/                            @tokopedia/minion-kevin
 /features/user/stickylogin/                             @tokopedia/minion-kevin
 /features/user/campaign_shake_landing/                  @tokopedia/minion-kevin
+/features/home/account-home/                        	@tokopedia/minion-kevin
 
 /features/operational/contact_us        				@tokopedia/minion-darth
 
@@ -182,6 +182,8 @@
 
 /libraries/adapter_delegate/							@tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team
+/libraries/analytics_debugger/							@tokopedia/core-team
+/libraries/analytics_debugger_noop/					    @tokopedia/core-team
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team
 /libraries/base_adapter/								@tokopedia/core-team
