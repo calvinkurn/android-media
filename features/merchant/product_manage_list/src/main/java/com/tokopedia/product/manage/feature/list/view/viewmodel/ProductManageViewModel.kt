@@ -4,8 +4,10 @@ import android.accounts.NetworkErrorException
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
-import com.tokopedia.product.manage.feature.list.view.extension.mapToViewModels
+import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToProductFilters
+import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
@@ -55,6 +57,7 @@ class ProductManageViewModel(
 
     val viewState = MutableLiveData<ViewState>()
 
+    val productFilters = MutableLiveData<List<FilterViewModel>>()
     val productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
     val shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
     val updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
@@ -111,10 +114,11 @@ class ProductManageViewModel(
             val productList = withContext(ioDispatcher) {
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
                 val getProductList = getProductListUseCase.execute(requestParams)
-                val productListResponse = getProductList.productList?.data
-                productListResponse.mapToViewModels()
+                val productListResponse = getProductList.productList
+                productListResponse
             }
-            productListResult.value = Success(productList)
+            productListResult.value = Success(mapToViewModels(productList))
+            productFilters.value = mapToProductFilters(productList)
         }, onError = {
             productListResult.value = Fail(it)
         })
@@ -311,7 +315,9 @@ class ProductManageViewModel(
     fun failedBulkDataMapper(failData: List<ProductUpdateV3Response>, confirmationProductDataList: List<ConfirmationProductData>)
         : MutableList<ConfirmationProductData> {
         return confirmationProductDataList.filter {
-            failData.map { it.productUpdateV3Data.productId }.contains(it.productId)
+            failData.map { response ->
+                response.productUpdateV3Data.productId
+            }.contains(it.productId)
         }.toMutableList()
     }
 
