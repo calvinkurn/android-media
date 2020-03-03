@@ -9,14 +9,13 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.data.viewbean.MultipleProductCardViewBean
+import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.MultipleProductCardAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.product.MultipleProductCardFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseProductCampaignViewHolder
-import com.tokopedia.notifcenter.util.ProductSnapHelper
+import com.tokopedia.notifcenter.util.ProductCardSnapHelper
 import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.unifycomponents.UnifyButton
@@ -34,7 +33,7 @@ class ProductCheckoutViewHolder(
 
     private val multiProductAdapter by lazy {
         val factory = MultipleProductCardFactoryImpl()
-        MultipleProductCardAdapter(factory)
+        MultipleProductCardAdapter(factory, true)
     }
 
     override fun bindProductView(element: NotificationItemViewBean) {
@@ -58,9 +57,11 @@ class ProductCheckoutViewHolder(
             cardContainer.show()
         } else {
             cardContainer.hide()
-            ProductSnapHelper().attachToRecyclerView(lstProduct)
+            ProductCardSnapHelper().attachToRecyclerView(lstProduct)
             lstProduct.adapter = multiProductAdapter
-            multiProductAdapter.insertData(mapMultiProduct(element.products))
+            multiProductAdapter.insertData(
+                    MultipleProductCardMapper.map(element.products)
+            )
         }
     }
 
@@ -77,16 +78,6 @@ class ProductCheckoutViewHolder(
 
     companion object {
         @LayoutRes val LAYOUT = R.layout.item_notification_product_checkout
-
-        fun mapMultiProduct(products: List<ProductData>): ArrayList<MultipleProductCardViewBean> {
-            val multiProductCards = arrayListOf<MultipleProductCardViewBean>()
-            products.forEach {
-                val multiProductCardItem = MultipleProductCardViewBean()
-                multiProductCardItem.product = it
-                multiProductCards.add(multiProductCardItem)
-            }
-            return multiProductCards
-        }
     }
 
 }
