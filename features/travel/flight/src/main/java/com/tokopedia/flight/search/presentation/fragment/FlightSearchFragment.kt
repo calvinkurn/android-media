@@ -788,7 +788,23 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             val quickDirectFilter = SortFilterItem(getString(R.string.direct))
             quickDirectFilter.listener = {}
 
+            val quickBaggageFilter = SortFilterItem(getString(R.string.flight_search_filter_baggage_label))
+            quickBaggageFilter.listener = {}
+
+            val quickMealFilter = SortFilterItem(getString(R.string.flight_search_filter_meal_label))
+            quickMealFilter.listener = {}
+
+            val quickTransitFilter = SortFilterItem(getString(R.string.flight_search_filter_transit))
+            quickTransitFilter.listener = {}
+
             filterItems.add(quickDirectFilter)
+            filterItems.add(quickBaggageFilter)
+            filterItems.add(quickMealFilter)
+            filterItems.add(quickTransitFilter)
+        }
+
+        for (item in filterItems) {
+            item.refChipUnify.setChevronClickListener { }
         }
 
         flight_sort_filter.addItem(filterItems)
