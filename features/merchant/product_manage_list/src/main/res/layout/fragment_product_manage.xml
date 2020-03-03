@@ -27,15 +27,23 @@
             android:id="@+id/search_input_view_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+            android:layout_marginBottom="@dimen/product_manage_search_bar_vertical_spacing"
             app:layout_scrollFlags="scroll|snap|enterAlways"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/productFilterList"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/product_manage_horizontal_spacing"
+            android:paddingRight="@dimen/product_manage_horizontal_spacing"
+            android:layout_marginBottom="@dimen/product_manage_vertical_spacing" />
 
         <LinearLayout
             android:paddingRight="@dimen/product_manage_container_spacing"
             android:paddingEnd="@dimen/product_manage_container_spacing"
             android:paddingLeft="@dimen/product_manage_container_spacing"
             android:paddingStart="@dimen/product_manage_container_spacing"
-            android:layout_marginBottom="@dimen/product_manage_container_spacing"
+            android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -61,10 +69,6 @@
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipe_refresh_layout"
-        android:paddingRight="@dimen/product_manage_container_spacing"
-        android:paddingEnd="@dimen/product_manage_container_spacing"
-        android:paddingLeft="@dimen/product_manage_container_spacing"
-        android:paddingStart="@dimen/product_manage_container_spacing"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
