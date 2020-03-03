@@ -4,7 +4,6 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.ComponentEvent
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
-import com.tokopedia.play.view.type.ProductSheetContent
 import com.tokopedia.play.view.uimodel.*
 
 /**

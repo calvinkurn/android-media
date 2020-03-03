@@ -474,8 +474,15 @@ class PlayViewModel @Inject constructor(
             withContext(dispatchers.main) {
                 _observableProductSheetContent.value = ProductSheetUiModel(
                         title = "Barang & Promo Pilihan",
-                        contentList = List(5) {
-                            ProductSheetProduct(
+                        voucherList = List(5) { voucherIndex ->
+                            MerchantVoucherUiModel(
+                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.DeliveryFee,
+                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
+                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
+                            )
+                        },
+                        productList = List(5) {
+                            ProductLineUiModel(
                                     id = it.toString(),
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",

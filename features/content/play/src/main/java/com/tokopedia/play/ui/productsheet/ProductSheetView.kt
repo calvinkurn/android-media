@@ -12,8 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
-import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
-import com.tokopedia.play.ui.productsheet.itemdecoration.ProductSheetItemDecoration
+import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
+import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
+import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
+import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**
@@ -25,9 +27,11 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
             .findViewById(R.id.cl_product_sheet)
 
     private val tvSheetTitle: TextView = view.findViewById(R.id.tv_sheet_title)
-    private val rvDiscountProduct: RecyclerView = view.findViewById(R.id.rv_discount_product)
+    private val rvProductList: RecyclerView = view.findViewById(R.id.rv_product_list)
+    private val rvVoucherList: RecyclerView = view.findViewById(R.id.rv_voucher_list)
 
-    private val productSheetAdapter = ProductSheetAdapter()
+    private val productLineAdapter = ProductLineAdapter()
+    private val voucherAdapter = MerchantVoucherAdapter()
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
 
@@ -40,10 +44,16 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
                     hide()
                 }
 
-        rvDiscountProduct.apply {
+        rvProductList.apply {
             layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
-            adapter = productSheetAdapter
-            addItemDecoration(ProductSheetItemDecoration(view.context))
+            adapter = productLineAdapter
+            addItemDecoration(ProductLineItemDecoration(view.context))
+        }
+
+        rvVoucherList.apply {
+            layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
+            adapter = voucherAdapter
+            addItemDecoration(MerchantVoucherItemDecoration(view.context))
         }
 
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
@@ -72,7 +82,8 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
 
     internal fun setProductSheet(model: ProductSheetUiModel) {
         tvSheetTitle.text = model.title
-        productSheetAdapter.setItemsAndAnimateChanges(model.contentList)
+        voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
+        productLineAdapter.setItemsAndAnimateChanges(model.productList)
     }
 
     companion object {

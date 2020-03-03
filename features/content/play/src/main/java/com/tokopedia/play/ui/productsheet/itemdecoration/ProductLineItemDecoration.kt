@@ -8,14 +8,15 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.R
+import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 
 /**
  * Created by jegul on 03/03/20
  */
-class ProductSheetItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
+class ProductLineItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
-    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_product_sheet_divider_height)
-    private val startOffset = context.resources.getDimensionPixelOffset(R.dimen.play_product_sheet_divider_start_offset)
+    private val dividerHeight = context.resources.getDimensionPixelOffset(R.dimen.play_product_line_divider_height)
+    private val startOffset = context.resources.getDimensionPixelOffset(R.dimen.play_product_line_divider_start_offset)
 
     private val mPaint = Paint().apply {
         color = MethodChecker.getColor(context, R.color.play_product_sheet_divider)
@@ -24,7 +25,8 @@ class ProductSheetItemDecoration(context: Context) : RecyclerView.ItemDecoration
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         val position = parent.getChildAdapterPosition(view)
 
-        if (position != parent.childCount - 1) outRect.bottom = dividerHeight
+        if (position != parent.childCount - 1)
+            outRect.bottom = dividerHeight
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {

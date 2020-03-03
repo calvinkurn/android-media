@@ -5,15 +5,14 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.viewholder.MerchantVoucherViewHolder
-import com.tokopedia.play.view.type.ProductSheetContent
-import com.tokopedia.play.view.type.ProductSheetVoucher
+import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 
 /**
  * Created by jegul on 03/03/20
  */
-class MerchantVoucherAdapterDelegate : TypedAdapterDelegate<ProductSheetVoucher, ProductSheetContent, MerchantVoucherViewHolder>(R.layout.item_play_merchant_voucher_list) {
+class MerchantVoucherAdapterDelegate : TypedAdapterDelegate<MerchantVoucherUiModel, MerchantVoucherUiModel, MerchantVoucherViewHolder>(R.layout.item_play_merchant_voucher) {
 
-    override fun onBindViewHolder(item: ProductSheetVoucher, holder: MerchantVoucherViewHolder) {
+    override fun onBindViewHolder(item: MerchantVoucherUiModel, holder: MerchantVoucherViewHolder) {
         holder.bind(item)
     }
 
