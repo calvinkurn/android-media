@@ -25,12 +25,22 @@ class FilterViewHolder(
     private val chipText by lazy { itemView.chipFilter.chip_text }
 
     override fun bind(filter: FilterViewModel) {
-        chipText.text = context.getString(filter.titleId, filter.count)
+        setFilterTitle(filter)
+        setFilterImage(filter)
+        setOnClickListener(filter)
+    }
 
+    private fun setFilterTitle(filter: FilterViewModel) {
+        chipText.text = context.getString(filter.titleId, filter.count)
+    }
+
+    private fun setFilterImage(filter: FilterViewModel) {
         filter.icon?.let {
             chipFilter.chipImageResource = ContextCompat.getDrawable(context, it)
         }
+    }
 
+    private fun setOnClickListener(filter: FilterViewModel) {
         itemView.setOnClickListener {
             onClickProductFilter(filter)
             toggleSelectFilter(filter)
