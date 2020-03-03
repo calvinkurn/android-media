@@ -347,7 +347,7 @@ class HomeFeedTrackerTest : Spek({
     }
 })
 
-fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
+private fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
     first.forEach{
         if(it.value != second[it.key]) return false
     }

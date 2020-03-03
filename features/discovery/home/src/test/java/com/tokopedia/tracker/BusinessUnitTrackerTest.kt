@@ -16,7 +16,7 @@ class BusinessUnitTrackerTest : Spek({
 
     val positionOnWidgetHome = 5
     val tabIndex = 5
-    val tabName = ""
+    val tabName = "Keuangan"
     val businessUnitItemDataModel = BusinessUnitItemDataModel(
             content = HomeWidget.ContentItemTab(
                     contentId = 101,
@@ -52,7 +52,8 @@ class BusinessUnitTrackerTest : Spek({
                 )
             }
             Then("must true") {
-                val result = areEqualKeyValues(testTracker.getTracker(), BusinessUnitTracking.getPageSelected(tabName))
+                val result =
+                        areEqualKeyValues(testTracker.getTracker(), BusinessUnitTracking.getPageSelected(tabName))
                 Assert.assertEquals(result, true)
             }
         }
@@ -71,11 +72,12 @@ class BusinessUnitTrackerTest : Spek({
                                 "promotions", DataLayer.listOf(
                                     DataLayer.mapOf(
                                         "id", "101",
-                                        "name", "LISTRIK PLN",
-                                        "creative", "/ - p${positionOnWidgetHome} - bu widget - $tabName",
-                                        "creative_url", "none / other",
+                                        "creative", "LISTRIK PLN",
+                                        "name", "/ - p${positionOnWidgetHome} - bu widget - tab ${tabIndex} - $tabName",
+                                        "creative_url", "https://ecs7.tokopedia.net/img/recharge/operator/pln_2.png",
                                         "position", "3",
-                                        "promo_code", "no code"
+                                        "promo_code", "",
+                                        "promo_id", ""
                                 )
                                 )
                             )
@@ -89,6 +91,7 @@ class BusinessUnitTrackerTest : Spek({
             }
         }
     }
+
     Feature("Click tracker") {
         Scenario("Test Click tracker") {
             Given("the real tracker data") {
@@ -96,16 +99,18 @@ class BusinessUnitTrackerTest : Spek({
                         "event", "promoClick",
                         "eventCategory", "homepage",
                         "eventAction", "click on bu widget",
-                        "eventLabel", "listrik pln",
+                        "eventLabel", "LISTRIK PLN",
                         "ecommerce", DataLayer.mapOf(
                             "promoClick", DataLayer.mapOf(
                                 "promotions", DataLayer.listOf(
                                     DataLayer.mapOf(
                                         "id", "101",
-                                        "creative", "listrik pln",
+                                        "creative", "LISTRIK PLN",
                                         "name", "/ - p${positionOnWidgetHome} - bu widget - tab $tabIndex - $tabName",
                                         "creative_url", "https://ecs7.tokopedia.net/img/recharge/operator/pln_2.png",
-                                        "position", "3"
+                                        "position", "3",
+                                        "promo_id", "",
+                                        "promo_code", ""
                                 )
                                 )
                             )
@@ -120,3 +125,9 @@ class BusinessUnitTrackerTest : Spek({
         }
     }
 })
+private fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
+    first.forEach{
+        if(it.value != second[it.key]) return false
+    }
+    return true
+}
