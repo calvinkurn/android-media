@@ -10,16 +10,17 @@ import com.tokopedia.notifcenter.presentation.adapter.typefactory.product.Multip
 import com.tokopedia.notifcenter.util.resize
 
 class MultipleProductCardAdapter(
-        private val multipleProductCardFactory: MultipleProductCardFactoryImpl
+        private val multipleProductCardFactory: MultipleProductCardFactoryImpl,
+        private val isResizable: Boolean = false
 ): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>(multipleProductCardFactory) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         val containerView = onCreateViewItem(parent, viewType)
-        containerView.resize(80)
+        if (isResizable) containerView.resize(80)
         return multipleProductCardFactory.createViewHolder(containerView, viewType)
     }
 
-    fun insertData(data: ArrayList<MultipleProductCardViewBean>) {
+    fun insertData(data: List<MultipleProductCardViewBean>) {
         addElement(data)
     }
 
