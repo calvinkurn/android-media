@@ -387,7 +387,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     }
 
     private fun showProductCheckout(element: NotificationItemViewBean) {
-
+        context?.let {
+            NotificationProductCardDialog(it, childFragmentManager).show(element)
+        }
     }
 
     private fun showLongerContent(element: NotificationItemViewBean) {
