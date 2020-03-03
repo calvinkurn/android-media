@@ -1,23 +1,43 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper
 
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.*
 import javax.inject.Inject
 
 class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
 
-    override fun convertToDomainModel(response: Response): PreferenceListResponseModel {
-        val preferenceListResponseModel = PreferenceListResponseModel()
-        preferenceListResponseModel.messages = response.messages
+    override fun convertToDomainModel(response: PreferenceListGqlResponse): PreferenceListResponseModel {
+        if (response.data.status.equals("OK", true)) {
+            val data = response.data.data
+            if (data.success == 1) {
+                val preferenceListResponseModel = PreferenceListResponseModel()
+                preferenceListResponseModel.messages = data.messages
 
-        val profilesModules = ArrayList<ProfilesItemModel?>()
-        for(profile: ProfilesItem in response.profiles) {
-            profilesModules.add(getProfilesItemModel(profile))
+                val profilesModules = ArrayList<ProfilesItemModel>()
+                for (profile: ProfilesItem in data.profiles) {
+                    profilesModules.add(getProfilesItemModel(profile))
+                }
+
+                preferenceListResponseModel.profiles = profilesModules
+
+                return preferenceListResponseModel
+            } else {
+                val errorMessage = data.messages
+                if (errorMessage.isNotEmpty()) {
+                    throw MessageErrorException(errorMessage[0])
+                } else {
+                    throw MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                }
+            }
+        } else {
+            val errorMessage = response.data.errorMessage
+            if (errorMessage.isNotEmpty()) {
+                throw MessageErrorException(errorMessage[0])
+            } else {
+                throw MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+            }
         }
-
-        preferenceListResponseModel.profiles = profilesModules
-
-        return preferenceListResponseModel
     }
 
 
@@ -50,7 +70,7 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
         addressModel.fullAddress = address.addressStreet + ", " +
                 address.districtName + ", " +
                 address.cityName + ", " +
-                address.provinceName + ", " +
+                address.provinceName + " " +
                 address.postalCode
 
 
@@ -60,8 +80,8 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
     private fun getShipmentModel(shipment: Shipment): ShipmentModel {
         val shipmentModel = ShipmentModel()
         shipmentModel.serviceId = shipment.serviceId
-        shipmentModel.serviceDuration = shipmentModel.serviceDuration
-        shipmentModel.serviceName = shipmentModel.serviceName
+        shipmentModel.serviceDuration = shipment.serviceDuration
+        shipmentModel.serviceName = shipment.serviceName
 
         return shipmentModel
     }

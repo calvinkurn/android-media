@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.view.PreferenceListAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -71,13 +72,13 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
     }
 
     private fun getListener(): PreferenceListAdapter.PreferenceListAdapterListener = object : PreferenceListAdapter.PreferenceListAdapterListener {
-        override fun onPreferenceSelected(preference: Preference) {
+        override fun onPreferenceSelected(preference: ProfilesItemModel) {
             //Todo: update selected preference api
             bottomSheet?.dismiss()
             listener.onChangePreference(preference)
         }
 
-        override fun onPreferenceEditClicked(preference: Preference) {
+        override fun onPreferenceEditClicked(preference: ProfilesItemModel) {
             bottomSheet?.dismiss()
             listener.onEditPreference(preference)
         }
@@ -95,7 +96,7 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
     }
 
     private fun updateList(preferences: List<Preference>) {
-        adapter?.submitList(preferences)
+//        adapter?.submitList(preferences)
         progressBar?.gone()
         rvPreferenceList?.visible()
         btnAddPreference?.visible()
@@ -107,9 +108,9 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
 
     interface PreferenceListBottomSheetListener {
 
-        fun onChangePreference(preference: Preference)
+        fun onChangePreference(preference: ProfilesItemModel)
 
-        fun onEditPreference(preference: Preference)
+        fun onEditPreference(preference: ProfilesItemModel)
 
         fun onAddPreference()
     }

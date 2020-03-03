@@ -4,17 +4,17 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 
-class PreferenceListAdapter(private val listener: PreferenceListAdapterListener) : ListAdapter<Preference, PreferenceListViewHolder>(DIFF_CALLBACK) {
+class PreferenceListAdapter(private val listener: PreferenceListAdapterListener) : ListAdapter<ProfilesItemModel, PreferenceListViewHolder>(DIFF_CALLBACK) {
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<Preference>() {
-            override fun areItemsTheSame(oldItem: Preference, newItem: Preference): Boolean {
-                return oldItem.id == newItem.id
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ProfilesItemModel>() {
+            override fun areItemsTheSame(oldItem: ProfilesItemModel, newItem: ProfilesItemModel): Boolean {
+                return oldItem.profileId == newItem.profileId
             }
 
-            override fun areContentsTheSame(oldItem: Preference, newItem: Preference): Boolean {
+            override fun areContentsTheSame(oldItem: ProfilesItemModel, newItem: ProfilesItemModel): Boolean {
                 return oldItem == newItem
             }
 
@@ -33,8 +33,8 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener)
 
     interface PreferenceListAdapterListener {
 
-        fun onPreferenceSelected(preference: Preference)
+        fun onPreferenceSelected(preference: ProfilesItemModel)
 
-        fun onPreferenceEditClicked(preference: Preference)
+        fun onPreferenceEditClicked(preference: ProfilesItemModel)
     }
 }

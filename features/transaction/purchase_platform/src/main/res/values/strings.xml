@@ -290,4 +290,8 @@
 
     <string name="one_click_checkout">Express Checkout</string>
     <string name="pay">Bayar</string>
+    <string name="preference_number">Pilihan %1d</string>
+    <string name="add_first_preference">Atur</string>
+    <string name="add_preference">Tambah Pilihan</string>
+    <string name="lbl_make_default_preference">Jadikan Pilihan Utama</string>
 </resources>

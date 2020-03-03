@@ -1,18 +1,34 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference
 
+import com.google.gson.annotations.SerializedName
+
 data class Address(
-	val latitude: String? = null,
-	val addressId: Int? = null,
-	val addressName: String? = null,
-	val provinceName: String? = null,
-	val districtName: String? = null,
-	val cityName: String? = null,
-	val provinceId: Int? = null,
-	val phone: String? = null,
-	val addressStreet: String? = null,
-	val receiverName: String? = null,
-	val districtId: Int? = null,
-	val postalCode: String? = null,
-	val cityId: Int? = null,
-	val longitude: String? = null
+        @SerializedName("address_id")
+        val addressId: Int = 0,
+        @SerializedName("receiver_name")
+        val receiverName: String = "",
+        @SerializedName("address_name")
+        val addressName: String = "",
+        @SerializedName("address_street")
+        val addressStreet: String = "",
+        @SerializedName("district_id")
+        val districtId: Int = 0,
+        @SerializedName("district_name")
+        val districtName: String = "",
+        @SerializedName("city_id")
+        val cityId: Int = 0,
+        @SerializedName("city_name")
+        val cityName: String = "",
+        @SerializedName("province_id")
+        val provinceId: Int = 0,
+        @SerializedName("province_name")
+        val provinceName: String = "",
+        @SerializedName("phone")
+        val phone: String = "",
+        @SerializedName("longitude")
+        val longitude: String = "",
+        @SerializedName("latitude")
+        val latitude: String = "",
+        @SerializedName("postal_code")
+        val postalCode: String = ""
 )
