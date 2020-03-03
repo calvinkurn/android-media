@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.DiscountedPrice
@@ -30,12 +31,14 @@ class ProductLineViewHolder(itemView: View) : BaseViewHolder(itemView) {
     private val btnProductBuy: UnifyButton = itemView.findViewById(R.id.btn_product_buy)
     private val ivProductAtc: ImageView = itemView.findViewById(R.id.iv_product_atc)
 
+    private val imageRadius = itemView.resources.getDimensionPixelSize(R.dimen.play_product_image_radius).toFloat()
+
     init {
         tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     }
 
     fun bind(item: ProductSheetProduct) {
-        ivProductImage.loadImage(item.imageUrl)
+        ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
         tvProductTitle.text = item.title
 
         when (item.price) {
