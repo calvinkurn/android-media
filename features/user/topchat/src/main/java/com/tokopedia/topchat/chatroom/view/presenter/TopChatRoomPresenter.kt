@@ -79,10 +79,11 @@ import kotlin.coroutines.CoroutineContext
  */
 
 class TopChatRoomPresenter @Inject constructor(
+        tkpdAuthInterceptor: TkpdAuthInterceptor,
+        fingerprintInterceptor: FingerprintInterceptor,
+        userSession: UserSessionInterface,
+        private var dispatchers: TopchatCoroutineContextProvider,
         private var getChatUseCase: GetChatUseCase,
-        override var userSession: UserSessionInterface,
-        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        private val fingerprintInterceptor: FingerprintInterceptor,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
         private var uploadImageUseCase: UploadImageUseCase<TopChatImageUploadPojo>,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
@@ -99,7 +100,7 @@ class TopChatRoomPresenter @Inject constructor(
         private var addWishListUseCase: AddWishListUseCase,
         private var removeWishListUseCase: RemoveWishListUseCase,
         private var uploadImageUseCase2: UploaderUseCase,
-        private var dispatchers: TopchatCoroutineContextProvider
+        private var chatImageServerUseCase: ChatImageServerUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter, CoroutineScope {
 
@@ -311,31 +312,17 @@ class TopChatRoomPresenter @Inject constructor(
         }
     }
 
-    override fun startUploadImages(it: ImageUploadViewModel) {
-        processDummyMessage(it)
+    override fun startUploadImages(image: ImageUploadViewModel) {
+        processDummyMessage(image)
         isUploading = true
-        launch(dispatchers.IO) {
-            val params = uploadImageUseCase2.createParams(uploadSourceId, File(it.imageUrl))
-            val result = uploadImageUseCase2(params)
-            withContext(dispatchers.Main) {
-                when (result) {
-                    is UploadResult.Success -> {
-                        when (networkMode) {
-//                            MODE_API -> sendByApi(
-//                                    ReplyChatUseCase.generateParamAttachImage(thisMessageId, this.picSrc),
-//                                    it
-//                            )
-//                            MODE_WEBSOCKET -> sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
-//                                    this.picSrc, it.startTime))
-                        }
-                        isUploading = false
-                    }
-                    is UploadResult.Error -> {
-
-                    }
+        chatImageServerUseCase.getSourceId(
+                { sourceId ->
+                    uploadImageWithSourceId(sourceId, image)
+                },
+                {
+                    view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, it), image)
                 }
-            }
-        }
+        )
 
 //        uploadImageUseCase.unsubscribe()
 //        val reqParam = HashMap<String, RequestBody>()
@@ -370,6 +357,41 @@ class TopChatRoomPresenter @Inject constructor(
 //            }
 //
 //        })
+    }
+
+    private fun uploadImageWithSourceId(sourceId: String, image: ImageUploadViewModel) {
+        launch(dispatchers.IO) {
+            val requestParams = uploadImageUseCase2.createParams(sourceId, File(image.imageUrl))
+            val result = uploadImageUseCase2(requestParams)
+            isUploading = false
+            withContext(dispatchers.Main) {
+                when (result) {
+                    is UploadResult.Success -> onSuccessUploadImage(result, image)
+                    is UploadResult.Error -> onErrorUploadImage(image)
+                }
+            }
+        }
+    }
+
+    private fun onSuccessUploadImage(result: UploadResult.Success, image: ImageUploadViewModel) {
+        when (networkMode) {
+            MODE_WEBSOCKET -> sendImageByWebSocket(result, image)
+            MODE_API -> sendImageByApi(result, image)
+        }
+    }
+
+    private fun sendImageByWebSocket(result: UploadResult.Success, image: ImageUploadViewModel) {
+        val requestParams = TopChatWebSocketParam.generateParamSendImage(thisMessageId, result.uploadId, image.startTime)
+        sendMessageWebSocket(requestParams)
+    }
+
+    private fun sendImageByApi(result: UploadResult.Success, image: ImageUploadViewModel) {
+        val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, result.uploadId)
+        sendByApi(requestParams, image)
+    }
+
+    private fun onErrorUploadImage(image: ImageUploadViewModel) {
+        view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, Throwable("Something went wrong")), image)
     }
 
     private fun validateImageAttachment(uri: String?): Boolean {
@@ -734,9 +756,5 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun removeFromWishList(productId: String, userId: String, wishListActionListener: WishListActionListener) {
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
-    }
-
-    companion object {
-        const val uploadSourceId = "FYkQxT"
     }
 }

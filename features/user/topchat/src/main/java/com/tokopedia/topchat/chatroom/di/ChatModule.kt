@@ -34,6 +34,7 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
+import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface
@@ -251,6 +252,13 @@ class ChatModule {
     @Provides
     internal fun provideRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
+    }
+
+    @ChatScope
+    @Provides
+    fun provideChatImageServerUseCase(graphqlRepository: GraphqlRepository)
+            : com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<ChatImageServerResponse> {
+        return com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase(graphqlRepository)
     }
 
 }
