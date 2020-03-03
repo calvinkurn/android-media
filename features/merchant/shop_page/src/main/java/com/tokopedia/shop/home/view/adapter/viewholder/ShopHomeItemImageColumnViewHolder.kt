@@ -15,7 +15,7 @@ class ShopHomeItemImageColumnViewHolder(itemView: View): RecyclerView.ViewHolder
 
     private val ivMultipleColumn: AppCompatImageView = itemView.findViewById(R.id.ivMultipleColumn)
 
-    fun bind(data: DisplayWidgetUiModel.WidgetItem) {
+    fun bind(data: DisplayWidgetUiModel.DisplayWidgetItem) {
         ImageHandler.LoadImage(ivMultipleColumn, data.imageUrl)
     }
 }

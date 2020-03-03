@@ -1,8 +1,10 @@
 package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
+import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -10,22 +12,68 @@ import kotlin.math.roundToInt
 
 object ShopPageHomeMapper {
 
-    fun mapToShopHomeWidgetModel(
+    fun mapToListWidgetUiModel(
             shopLayoutWidgetResponse: ShopLayoutWidget,
             isMyOwnProduct: Boolean
     ): List<BaseShopHomeWidgetUiModel> {
         return mutableListOf<BaseShopHomeWidgetUiModel>().apply {
             shopLayoutWidgetResponse.listWidget.onEach {
-                when (it.name.toLowerCase()) {
-                    PRODUCT.toLowerCase() -> {
-                        add(mapToShopHomeCarouselProductUiModel(it, isMyOwnProduct))
-                    }
+                val widgetUiModel = mapToWidgetUiModel(it, isMyOwnProduct)
+                widgetUiModel?.let { model ->
+                    add(model)
                 }
             }
         }
     }
 
-    private fun mapToShopHomeCarouselProductUiModel(
+    private fun mapToWidgetUiModel(
+            widgetResponse: ShopLayoutWidget.Widget,
+            isMyOwnProduct: Boolean
+    ): BaseShopHomeWidgetUiModel? {
+        return when (widgetResponse.type.toLowerCase()) {
+            DISPLAY -> {
+                mapToDisplayWidget(widgetResponse)
+            }
+            PRODUCT.toLowerCase() -> {
+                mapToProductUiModel(widgetResponse, isMyOwnProduct)
+            }
+            else -> {
+                null
+            }
+        }
+    }
+
+    private fun mapToDisplayWidget(widgetResponse: ShopLayoutWidget.Widget): DisplayWidgetUiModel {
+        return DisplayWidgetUiModel(
+                widgetResponse.widgetID,
+                widgetResponse.layoutOrder,
+                widgetResponse.name,
+                widgetResponse.type,
+                mapToHeaderModel(widgetResponse.header),
+                mapToListDisplayWidgetItem(widgetResponse.data)
+        )
+    }
+
+    private fun mapToListDisplayWidgetItem(
+            data: List<ShopLayoutWidget.Widget.Data>
+    ): List<DisplayWidgetUiModel.DisplayWidgetItem>? {
+        return mutableListOf<DisplayWidgetUiModel.DisplayWidgetItem>().apply {
+            data.onEach {
+                add(mapToDisplayWidgetItem(it))
+            }
+        }
+    }
+
+    private fun mapToDisplayWidgetItem(data: ShopLayoutWidget.Widget.Data): DisplayWidgetUiModel.DisplayWidgetItem {
+        return DisplayWidgetUiModel.DisplayWidgetItem(
+                data.imageUrl,
+                data.appLink,
+                data.webLink,
+                data.videoUrl
+        )
+    }
+
+    private fun mapToProductUiModel(
             widgetModel: ShopLayoutWidget.Widget,
             isMyOwnProduct: Boolean
     ): ShopHomeCarousellProductUiModel {

@@ -15,7 +15,7 @@ class ShopHomeItemSliderSquareViewHolder(itemView: View): RecyclerView.ViewHolde
 
     private val ivSliderSquare: AppCompatImageView = itemView.findViewById(R.id.ivSliderSquare)
 
-    fun bind(element: DisplayWidgetUiModel.WidgetItem) {
+    fun bind(element: DisplayWidgetUiModel.DisplayWidgetItem) {
         ImageHandler.LoadImage(ivSliderSquare, element.imageUrl)
     }
 }

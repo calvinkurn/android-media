@@ -9,13 +9,13 @@ import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 
 object AdapterDiffCallback {
 
-    val WidgetDiffCallback = object : DiffUtil.ItemCallback<DisplayWidgetUiModel.WidgetItem>() {
-        override fun areItemsTheSame(oldItem: DisplayWidgetUiModel.WidgetItem, newItem: DisplayWidgetUiModel.WidgetItem): Boolean {
-            return oldItem == newItem
+    val WidgetDiffCallback = object : DiffUtil.ItemCallback<DisplayWidgetUiModel.DisplayWidgetItem>() {
+        override fun areItemsTheSame(oldItemDisplay: DisplayWidgetUiModel.DisplayWidgetItem, newItemDisplay: DisplayWidgetUiModel.DisplayWidgetItem): Boolean {
+            return oldItemDisplay == newItemDisplay
         }
 
-        override fun areContentsTheSame(oldItem: DisplayWidgetUiModel.WidgetItem, newItem: DisplayWidgetUiModel.WidgetItem): Boolean {
-            return oldItem == newItem
+        override fun areContentsTheSame(oldItemDisplay: DisplayWidgetUiModel.DisplayWidgetItem, newItemDisplay: DisplayWidgetUiModel.DisplayWidgetItem): Boolean {
+            return oldItemDisplay == newItemDisplay
         }
     }
 }

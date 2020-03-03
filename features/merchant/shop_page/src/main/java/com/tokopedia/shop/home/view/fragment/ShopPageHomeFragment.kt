@@ -108,9 +108,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessGetShopHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
         shopHomeAdapter.setHomeLayoutData(data)
-//        adapter.addElement(HomeConstant.tripleItemImage)
-//        adapter.addElement(HomeConstant.sliderSquareWidget)
-//        adapter.addElement(HomeConstant.sliderBannerWidget)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory> {

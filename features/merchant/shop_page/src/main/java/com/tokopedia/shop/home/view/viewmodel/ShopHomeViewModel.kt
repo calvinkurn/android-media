@@ -7,8 +7,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.util.Util
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
-import com.tokopedia.shop.newproduct.utils.mapper.ShopPageProductListMapper
-import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProductFilterInput
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
@@ -66,7 +64,7 @@ class ShopHomeViewModel @Inject constructor(
 
     private suspend fun getShopPageHomeLayout(shopId: String): List<BaseShopHomeWidgetUiModel> {
         getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId)
-        return ShopPageHomeMapper.mapToShopHomeWidgetModel(
+        return ShopPageHomeMapper.mapToListWidgetUiModel(
                 getShopPageHomeLayoutUseCase.executeOnBackground(),
                 Util.isMyShop(shopId, userSessionShopId)
         )

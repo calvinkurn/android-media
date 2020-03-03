@@ -33,7 +33,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiMo
     }
 
     private val selectedIndex: Int = 0
-    private var dataVideo: List<DisplayWidgetUiModel.WidgetItem>? = null
+    private var dataVideo: List<DisplayWidgetUiModel.DisplayWidgetItem>? = null
     private var youTubeThumbnailShopPage: YouTubeThumbnailView? = null
 
     var btnYoutubePlayer: AppCompatImageView? = null
