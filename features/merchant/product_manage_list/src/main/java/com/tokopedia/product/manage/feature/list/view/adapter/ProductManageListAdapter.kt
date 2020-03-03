@@ -19,20 +19,10 @@ class ProductManageListAdapter(
         }
     }
 
-    fun updateCashback(productId: String, cashback: Int) {
-        data.forEachIndexed { index, it ->
-            if (it.id.equals(productId, ignoreCase = true)) {
-                /*it.productCashback = cashback*/
-                notifyItemChanged(index)
-                return
-            }
-        }
-    }
-
     fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
-        data.forEachIndexed { index, productManageViewModel ->
-            if (productManageViewModel.id.equals(productId, ignoreCase = true)) {
-                /*productManageViewModel.isFeatureProduct = isFeaturedProduct*/
+        data.forEachIndexed { index, product ->
+            if (product.id.equals(productId, ignoreCase = true)) {
+                product.copy(isFeatured = isFeaturedProduct)
                 notifyItemChanged(index)
                 return
             }
