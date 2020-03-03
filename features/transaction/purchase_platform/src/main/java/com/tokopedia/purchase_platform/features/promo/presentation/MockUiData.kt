@@ -22,6 +22,7 @@ fun mockPromoInput(): PromoInputUiModel {
             },
             uiState = PromoInputUiModel.UiState().apply {
                 isButtonSelectEnabled = false
+                isError = false
             }
     )
 }
@@ -308,8 +309,13 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
 fun mockEmptyState(): Visitable<*> {
     return PromoEmptyStateUiModel(
             uiData = PromoEmptyStateUiModel.UiData().apply {
-                message = "Yaah, kamu belum punya kupon belanja"
+                title = "Yaah, kamu belum punya kupon belanja"
+                subTitle = "Ini Sub Title"
                 imageUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/06/newpm-cta-bottom-bg.jpg"
+                buttonText = "Click Me"
+            },
+            uiState = PromoEmptyStateUiModel.UiState().apply {
+                isShowButton = true
             }
     )
 }

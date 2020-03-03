@@ -37,3 +37,6 @@ include ':features:discovery:productcard'
 include ':features:discovery:topadssdk'
 include ':features:discovery:wishlist_common'
 include ':features:user:seamless_login'
+
+// Promo checkout
+include ':features:promo:promo_checkout'

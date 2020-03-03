@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.promo.presentation.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
@@ -35,6 +36,10 @@ abstract class PromoCheckoutAdapterTypeFactory(private val listener: PromoChecko
         return PromoEmptyStateViewHolder.LAYOUT
     }
 
+    override fun type(uiModel: LoadingModel): Int {
+        return PromoLoadingViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, viewType: Int): AbstractViewHolder<out Visitable<*>> {
         return when (viewType) {
             PromoRecommendationViewHolder.LAYOUT -> PromoRecommendationViewHolder(view, listener)
@@ -43,6 +48,7 @@ abstract class PromoCheckoutAdapterTypeFactory(private val listener: PromoChecko
             PromoListHeaderViewHolder.LAYOUT -> PromoListHeaderViewHolder(view, listener)
             PromoListItemViewHolder.LAYOUT -> PromoListItemViewHolder(view, listener)
             PromoEmptyStateViewHolder.LAYOUT -> PromoEmptyStateViewHolder(view, listener)
+            PromoLoadingViewHolder.LAYOUT -> PromoLoadingViewHolder(view)
             else -> super.createViewHolder(view, viewType)
         }
 

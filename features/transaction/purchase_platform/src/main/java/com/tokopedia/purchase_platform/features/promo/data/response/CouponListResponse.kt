@@ -1,0 +1,89 @@
+package com.tokopedia.purchase_platform.features.promo.data.response
+
+import com.google.gson.annotations.SerializedName
+
+data class CouponListResponse(
+        @SerializedName("empty_state")
+        val emptyState: EmptyStateResponse = EmptyStateResponse(),
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("sub_title")
+        val subTitle: String = "",
+        @SerializedName("promo_recommendation")
+        val promoRecommendation: PromoRecommendation = PromoRecommendation(),
+        @SerializedName("coupon_sections")
+        val couponSections: List<CouponSection> = emptyList()
+)
+
+data class EmptyStateResponse(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("description")
+        val description: String = "",
+        @SerializedName("image_url")
+        val imageUrl: String = ""
+)
+
+data class PromoRecommendation(
+        @SerializedName("codes")
+        val codes: List<String> = emptyList(),
+        @SerializedName("message")
+        val message: String = ""
+)
+
+data class CouponSection(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("sub_title")
+        val subTitle: String = "",
+        @SerializedName("icon_url")
+        val iconUrl: String = "",
+        @SerializedName("is_enabled")
+        val isEnabled: Boolean = false,
+        @SerializedName("is_collapsed")
+        val isCollapsed: Boolean = false,
+        @SerializedName("tags")
+        val tags: List<String> = emptyList()
+)
+
+data class Coupon(
+        @SerializedName("code")
+        val code: String = "",
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("message")
+        val message: String = "",
+        @SerializedName("expiry_info")
+        val expiryInfo: String = "",
+        @SerializedName("expiry_count_down")
+        val expiryCountDown: Int = 0,
+        @SerializedName("coupon_url")
+        val couponUrl: String = "",
+        @SerializedName("coupon_app_link")
+        val couponAppLink: String = "",
+        @SerializedName("unique_id")
+        val uniqueId: String = "",
+        @SerializedName("shop_id")
+        val shopId: Int = 0,
+        @SerializedName("tag_image_urls")
+        val tagImageUrls: List<String> = emptyList(),
+        @SerializedName("benefit_amount")
+        val benefitAmount: Int = 0,
+        @SerializedName("is_recommended")
+        val isRecommended: Boolean = false,
+        @SerializedName("is_selected")
+        val isSelected: Boolean = false,
+        @SerializedName("is_attempted")
+        val isAttempted: Boolean = false,
+        @SerializedName("radio_check_state")
+        val radioCheckState: String = "",
+        @SerializedName("clashing_infos")
+        val clashingInfos: List<ClashingInfo> = emptyList()
+)
+
+data class ClashingInfo(
+        @SerializedName("code")
+        val code: String = "",
+        @SerializedName("message")
+        val message: String = ""
+)

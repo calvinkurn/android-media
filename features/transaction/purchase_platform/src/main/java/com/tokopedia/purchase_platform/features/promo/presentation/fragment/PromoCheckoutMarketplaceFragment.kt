@@ -19,6 +19,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -29,14 +30,12 @@ import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
-import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
+import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
-import com.tokopedia.purchase_platform.features.promo.presentation.mockEmptyState
-import com.tokopedia.purchase_platform.features.promo.presentation.mockPromoInput
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
@@ -175,20 +174,20 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun loadData(page: Int) {
         hideLoading()
-//        adapter.addVisitable(mockPromoRecommendation())
+        adapter.addVisitable(mockPromoRecommendation())
         adapter.addVisitable(mockPromoInput())
 
-//        adapter.addVisitable(mockEligibleHeader())
-//        adapter.addVisitableList(mockEligiblePromoGlobalSection())
-//        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
-//        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
+        adapter.addVisitable(mockEligibleHeader())
+        adapter.addVisitableList(mockEligiblePromoGlobalSection())
+        adapter.addVisitableList(mockEligiblePromoGoldMerchantSection())
+        adapter.addVisitableList(mockEligiblePromoOfficialStoreSection())
 
-//        adapter.addVisitable(mockIneligibleHeader())
-//        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
-//        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
-//        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
+        adapter.addVisitable(mockIneligibleHeader())
+        adapter.addVisitableList(mockIneligiblePromoGlobalSection())
+        adapter.addVisitableList(mockIneligiblePromoGoldMerchantSection())
+        adapter.addVisitableList(mockIneligiblePromoOfficialStoreSection())
 
-        adapter.addVisitable(mockEmptyState())
+//        adapter.addVisitable(mockEmptyState())
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -234,6 +233,30 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     // --- FRAGMENT LEVEL ACTION
+
+    private fun showSavePromoDialog() {
+        activity?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle("Simpan promo sebelum keluar?")
+                setDescription("Kamu baru saja mengubah pilihan promo. Mau disimpan?")
+                setPrimaryCTAText("Simpan Promo Baru")
+                setSecondaryCTAText("Keluar Halaman")
+                setPrimaryCTAClickListener {
+                    // Todo : Hit validate use
+                    dismiss()
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                    it.finish()
+                }
+            }.show()
+        }
+    }
+
+    override fun onBackPressed() {
+        // Todo : validate if has any changes but have not hit validate use
+        showSavePromoDialog()
+    }
 
     override fun onClickResetPromo() {
         val promoList = HashMap<Int, Visitable<*>>()
@@ -305,11 +328,12 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     adapter.removeList(modifiedData)
                 } else {
                     val newData = PromoListHeaderUiModel.clone(oldData).apply {
-                        uiData.tmpPromoItemList = emptyList()
+//                        uiData.tmpPromoItemList = emptyList()
                         uiState.isCollapsed = !oldData.uiState.isCollapsed
                     }
                     adapter.modifyData(itemPosition, newData)
                     adapter.addVisitableList(itemPosition + 1, oldData.uiData.tmpPromoItemList)
+                    newData.uiData.tmpPromoItemList = emptyList()
                 }
             }
         }
@@ -389,7 +413,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
         Toast.makeText(context, "Go to detail promo", Toast.LENGTH_SHORT).show()
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
-            putExtra(EXTRA_KUPON_CODE, "12345")
+            putExtra(EXTRA_KUPON_CODE, "FONSBBLIF29DDV9L51M")
             putExtra(EXTRA_IS_USE, true)
             putExtra(ONE_CLICK_SHIPMENT, false)
             putExtra(PAGE_TRACKING, FROM_CART)
