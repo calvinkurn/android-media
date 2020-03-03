@@ -83,6 +83,7 @@ object HomeConstant {
             }
     )
 
+    //TODO data static video
     val videoWidget = WidgetModel(
             name = WidgetYoutubeVideo,
             data = mutableListOf<WidgetDataModel>().apply {
