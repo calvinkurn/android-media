@@ -11,6 +11,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.SplashScreen;
 import com.tokopedia.core.gcm.FCMCacheManager;
+import com.tokopedia.fcmcommon.service.SyncFcmTokenService;
 import com.tokopedia.installreferral.InstallReferral;
 import com.tokopedia.installreferral.InstallReferralKt;
 import com.tokopedia.iris.Iris;
@@ -64,7 +65,7 @@ public class ConsumerSplashScreen extends SplashScreen {
 
 
         checkInstallReferrerInitialised();
-
+        syncFcmToken();
     }
 
     private void checkInstallReferrerInitialised() {
@@ -87,6 +88,10 @@ public class ConsumerSplashScreen extends SplashScreen {
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(chkTmprApkWeave,
                 RemoteConfigKey.ENABLE_SEQ4_ASYNC, ConsumerSplashScreen.this);
+    }
+
+    private void syncFcmToken() {
+        SyncFcmTokenService.Companion.startService(this);
     }
 
     private void trackIrisEventForAppOpen() {

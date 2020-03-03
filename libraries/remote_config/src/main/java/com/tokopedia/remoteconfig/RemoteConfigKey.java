@@ -151,7 +151,6 @@ public class RemoteConfigKey {
 
     public static final String PLAY_YOUTUBE_FULL_SCREEN = "android_customer_enable_play_youtube_fullscreen";
 
-    public static final String APP_ENABLE_CATEGORY_REVAMP = "app_enable_category_revamp";
     public static final String APP_ENABLE_BANNED_NAVIGATION = "app_enable_banned_navigation";
 
     public static final String TOPCHAT_COMPRESS = "android_topchat_compress";
@@ -159,7 +158,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_CART_ICON_IN_SEARCH = "android_customer_enable_cart_icon_in_search";
     public static final String ENABLE_CART_ICON_IN_SHOP = "android_customer_enable_cart_icon_in_shop";
 
-    public static final String APP_ENABLE_CATALOG_REVAMP = "app_enable_catalog_revamp";
     public static final String TOPCHAT_OLD = "android_topchat_old";
     public static final String TOPCHAT_SELLER_BROADCAST = "android_topchat_seller_broadcast";
     public static final String ENABLE_PASS_GA_CLIENT_ID_WEB = "enable_pass_ga_client_to_web";
@@ -210,4 +208,5 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
 
+    public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
 }

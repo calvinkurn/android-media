@@ -6,8 +6,8 @@ import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentContract;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData;
@@ -72,23 +72,23 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&
                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
-                for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                    if (shippingDurationViewModel.getShippingCourierViewModelList() != null &&
-                            shippingDurationViewModel.getShippingCourierViewModelList().size() > 0) {
-                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationViewModel.getShippingCourierViewModelList()) {
-                            shippingCourierViewModel.setSelected(false);
+                for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                    if (shippingDurationUiModel.getShippingCourierViewModelList() != null &&
+                            shippingDurationUiModel.getShippingCourierViewModelList().size() > 0) {
+                        for (ShippingCourierUiModel shippingCourierUiModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
+                            shippingCourierUiModel.setSelected(false);
                         }
-                        for (ShippingCourierViewModel shippingCourierViewModel : shippingDurationViewModel.getShippingCourierViewModelList()) {
-                            if (isTradeInDropOff || (shippingCourierViewModel.getProductData().getShipperProductId() == spId &&
-                                    shippingCourierViewModel.getProductData().getShipperId() == shipperId)) {
-                                if (shippingCourierViewModel.getProductData().getError() != null &&
-                                        !TextUtils.isEmpty(shippingCourierViewModel.getProductData().getError().getErrorMessage())) {
+                        for (ShippingCourierUiModel shippingCourierUiModel : shippingDurationUiModel.getShippingCourierViewModelList()) {
+                            if (isTradeInDropOff || (shippingCourierUiModel.getProductData().getShipperProductId() == spId &&
+                                    shippingCourierUiModel.getProductData().getShipperId() == shipperId)) {
+                                if (shippingCourierUiModel.getProductData().getError() != null &&
+                                        !TextUtils.isEmpty(shippingCourierUiModel.getProductData().getError().getErrorMessage())) {
                                     view.renderCourierStateFailed(itemPosition, isTradeInDropOff);
                                     return;
                                 } else {
-                                    shippingCourierViewModel.setSelected(true);
-                                    presenter.setShippingCourierViewModelsState(shippingDurationViewModel.getShippingCourierViewModelList(), itemPosition);
-                                    CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierViewModel);
+                                    shippingCourierUiModel.setSelected(true);
+                                    presenter.setShippingCourierViewModelsState(shippingDurationUiModel.getShippingCourierViewModelList(), itemPosition);
+                                    CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(shippingCourierUiModel);
                                     if (shippingRecommendationData.getLogisticPromo() != null) {
                                         String disableMsg = shippingRecommendationData.getLogisticPromo().getDisableText();
                                         courierItemData.setLogPromoMsg(disableMsg);
@@ -119,11 +119,11 @@ public class GetCourierRecommendationSubscriber extends Subscriber<ShippingRecom
             if (shippingRecommendationData != null &&
                     shippingRecommendationData.getShippingDurationViewModels() != null &&
                     shippingRecommendationData.getShippingDurationViewModels().size() > 0) {
-                for (ShippingDurationViewModel shippingDurationViewModel : shippingRecommendationData.getShippingDurationViewModels()) {
-                    for (ProductData productData : shippingDurationViewModel.getServiceData().getProducts()) {
+                for (ShippingDurationUiModel shippingDurationUiModel : shippingRecommendationData.getShippingDurationViewModels()) {
+                    for (ProductData productData : shippingDurationUiModel.getServiceData().getProducts()) {
                         if (productData.getShipperId() == shipperId && productData.getShipperProductId() == spId) {
                             view.updateCourierBottomssheetHasData(
-                                    shippingDurationViewModel.getShippingCourierViewModelList(),
+                                    shippingDurationUiModel.getShippingCourierViewModelList(),
                                     itemPosition, shipmentCartItemModel, shopShipmentList
                             );
                             return;

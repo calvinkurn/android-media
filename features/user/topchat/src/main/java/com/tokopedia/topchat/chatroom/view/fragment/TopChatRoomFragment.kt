@@ -359,13 +359,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         super.onProductClicked(element)
-
-        analytics.eventClickProductThumbnailEE(element.blastId,
-                element.productId.toString(),
-                element.productName,
-                element.priceInt,
-                element.category, element.variants.toString())
-
+        analytics.eventClickProductThumbnailEE(element, session)
         analytics.trackProductAttachmentClicked()
     }
 
@@ -661,13 +655,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
-        (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
+        analytics.eventClickBuyProductAttachment(element)
         val buyPageIntent = presenter.getBuyPageIntent(context, element)
         startActivity(buyPageIntent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        (viewState as TopChatViewState).sendAnalyticsClickATC(element)
+        analytics.eventClickAddToCartProductAttachment(element, session)
         val atcPageIntent = presenter.getAtcPageIntent(context, element)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
@@ -804,7 +798,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
-            analytics.eventSeenProductAttachment(element)
+            analytics.eventSeenProductAttachment(element, session)
         }
     }
 
@@ -842,7 +836,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         presenter.clearAttachmentPreview()
     }
 
-    override fun notifyAttachmentsSent() {
+    override fun clearAttachmentPreviews() {
         getViewState().clearAttachmentPreview()
     }
 
