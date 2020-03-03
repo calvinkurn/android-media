@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.HomeConstant
@@ -45,7 +46,7 @@ class GetShopPageHomeLayoutUseCase @Inject constructor(
         val gqlRequest = GraphqlRequest(gqlQuery, ShopLayoutWidget.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
-        val error = gqlResponse.getError(ShopLayoutWidget.Response::class.java)
+        val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ShopLayoutWidget.Response>(ShopLayoutWidget.Response::class.java)
                     .shopLayoutWidget
