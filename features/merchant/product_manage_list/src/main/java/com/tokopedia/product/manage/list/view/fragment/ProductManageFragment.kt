@@ -55,6 +55,9 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -154,7 +157,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
     private var itemsChecked: MutableList<ProductManageViewModel> = mutableListOf()
 
-
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
     lateinit var prefs: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -169,6 +172,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         context?.let {
             prefs = it.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
         }
+        permissionCheckerHelper = PermissionCheckerHelper()
         setHasOptionsMenu(true)
     }
 
@@ -805,7 +809,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     showDialogChangeProductPrice(productManageViewModel.productId, productManageViewModel.productPricePlain, productManageViewModel.productCurrencyId)
                 }
             } else if (itemId == com.tokopedia.product.manage.list.R.id.share_product_menu) {
-                downloadBitmap(productManageViewModel)
+                onShareProductClicked(productManageViewModel)
             } else if (itemId == com.tokopedia.product.manage.list.R.id.set_cashback_product_menu) {
                 onSetCashbackClicked(productManageViewModel)
             } else if (itemId == com.tokopedia.product.manage.list.R.id.set_promo_ads_product_menu) {
@@ -821,6 +825,33 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 //                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
 //            }
         }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(PERMISSION_READ_EXTERNAL_STORAGE, PERMISSION_WRITE_EXTERNAL_STORAGE)
+    }
+
+    private fun onShareProductClicked(productManageViewModel: ProductManageViewModel) {
+        permissionCheckerHelper.checkPermissions(
+                this,
+                getPermissions(),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        context?.let {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                        context?.let {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
+                    }
+
+                    override fun onPermissionGranted() {
+                        downloadBitmap(productManageViewModel)
+                    }
+                })
     }
 
     private fun onSetFeaturedProductClicked(productManageViewModel: ProductManageViewModel, setFeaturedType: Int) {
@@ -1087,6 +1118,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        context?.let {
+            permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
     }
 

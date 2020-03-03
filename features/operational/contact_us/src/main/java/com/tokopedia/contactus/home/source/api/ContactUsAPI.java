@@ -1,12 +1,12 @@
 package com.tokopedia.contactus.home.source.api;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.contactus.common.api.ContactUsURL;
 import com.tokopedia.contactus.home.data.BuyerPurchaseData;
 import com.tokopedia.contactus.home.data.ContactUsArticleResponse;
 import com.tokopedia.contactus.home.data.TopBotStatus;
 import com.tokopedia.contactus.orderquery.data.CreateTicketResult;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import java.util.List;
 import java.util.Map;

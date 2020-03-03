@@ -37,12 +37,12 @@ class BannedProductAttachmentViewModel : ProductAttachmentViewModel {
             canShowFooter: Boolean, blastId: Int, productPriceInt: Int, category: String,
             variant: List<AttachmentVariant>, dropPercentage: String, priceBefore: String, shopId: Int,
             freeShipping: FreeShipping, categoryId: Int, playStoreData: PlayStoreData, minOrder: Int,
-            remainingStock: Int, status: Int
+            remainingStock: Int, status: Int, wishList: Boolean
     ) : super(
             messageId, fromUid, from, fromRole, attachmentId, attachmentType, replyTime, isRead,
             productId, productName, productPrice, productUrl, productImage, isSender, message,
             canShowFooter, blastId, productPriceInt, category, variant, dropPercentage, priceBefore,
-            shopId, freeShipping, categoryId, playStoreData, minOrder, remainingStock, status
+            shopId, freeShipping, categoryId, playStoreData, minOrder, remainingStock, status, wishList
     )
 
 

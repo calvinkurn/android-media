@@ -2,13 +2,16 @@ package com.tokopedia.search.result.presentation.view.typefactory;
 
 import android.view.View;
 
+import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory;
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
 import com.tokopedia.discovery.common.constants.SearchConstant;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
-import com.tokopedia.search.result.presentation.model.EmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
+import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
+import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
+import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
@@ -16,13 +19,12 @@ import com.tokopedia.search.result.presentation.model.RecommendationTitleViewMod
 import com.tokopedia.search.result.presentation.model.RelatedSearchViewModel;
 import com.tokopedia.search.result.presentation.model.SuggestionViewModel;
 import com.tokopedia.search.result.presentation.model.TickerViewModel;
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchViewModel;
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewModel;
-import com.tokopedia.search.result.presentation.model.TopAdsViewModel;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsEmptySearchViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsTickerViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.CpmViewHolder;
+import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.GlobalNavViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ProductEmptySearchViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.QuickFilterViewHolder;
@@ -32,9 +34,7 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder;
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsEmptySearchViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BannedProductsTickerViewHolder;
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TopAdsViewHolder;
+import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener;
 import com.tokopedia.search.result.presentation.view.listener.EmptyStateListener;
 import com.tokopedia.search.result.presentation.view.listener.GlobalNavListener;
@@ -43,10 +43,9 @@ import com.tokopedia.search.result.presentation.view.listener.QuickFilterListene
 import com.tokopedia.search.result.presentation.view.listener.RelatedSearchListener;
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener;
 import com.tokopedia.search.result.presentation.view.listener.TickerListener;
-import com.tokopedia.search.result.presentation.view.listener.BannedProductsRedirectToBrowserListener;
 import com.tokopedia.topads.sdk.base.Config;
 
-public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl implements ProductListTypeFactory {
+public class ProductListTypeFactoryImpl extends BaseAdapterTypeFactory implements ProductListTypeFactory {
 
     private final ProductListener productListener;
     private final TickerListener tickerListener;
@@ -59,6 +58,7 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     private final RecommendationListener recommendationListener;
     private final BannedProductsRedirectToBrowserListener bannedProductsRedirectToBrowserListener;
     private final Config topAdsConfig;
+    private int recyclerViewItem;
 
     public ProductListTypeFactoryImpl(ProductListener productListener,
                                       TickerListener tickerListener,
@@ -83,6 +83,16 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
         this.recommendationListener = recommendationListener;
         this.bannedProductsRedirectToBrowserListener = bannedProductsRedirectToBrowserListener;
         this.topAdsConfig = config;
+    }
+
+    @Override
+    public int getRecyclerViewItem() {
+        return recyclerViewItem;
+    }
+
+    @Override
+    public void setRecyclerViewItem(int recyclerViewItem) {
+        this.recyclerViewItem = recyclerViewItem;
     }
 
     @Override
@@ -119,13 +129,8 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
     }
 
     @Override
-    public int type(EmptySearchViewModel emptySearchModel) {
+    public int type(EmptySearchProductViewModel emptySearchModel) {
         return ProductEmptySearchViewHolder.LAYOUT;
-    }
-
-    @Override
-    public int type(TopAdsViewModel topAdsViewModel) {
-        return TopAdsViewHolder.LAYOUT;
     }
 
     @Override
@@ -183,8 +188,6 @@ public class ProductListTypeFactoryImpl extends SearchSectionTypeFactoryImpl imp
             viewHolder = new QuickFilterViewHolder(view, quickFilterListener);
         } else if (type == ProductEmptySearchViewHolder.LAYOUT) {
             viewHolder = new ProductEmptySearchViewHolder(view, emptyStateListener, bannerAdsListener, topAdsConfig);
-        } else if (type == TopAdsViewHolder.LAYOUT) {
-            viewHolder = new TopAdsViewHolder(view, productListener);
         } else if (type == RelatedSearchViewHolder.LAYOUT) {
             viewHolder = new RelatedSearchViewHolder(view, relatedSearchListener);
         } else if (type == GlobalNavViewHolder.LAYOUT) {

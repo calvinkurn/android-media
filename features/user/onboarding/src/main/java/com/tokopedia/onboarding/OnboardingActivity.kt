@@ -74,7 +74,6 @@ class OnboardingActivity : BaseActivity() {
 
     override fun onStart() {
         super.onStart()
-        analytics.sendScreen(currentPosition)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -24,7 +24,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
-@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 4)
+@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 5)
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
         NotificationStatusConverter.class,
@@ -101,13 +101,43 @@ public abstract class RoomDB extends RoomDatabase {
         }
     };
 
+    /**
+     * Below Migration added to Create BaseNotificationModel Table*
+     **/
+    private static final Migration MIGRATION_4_5 = new Migration(4, 5) {
+        @Override
+        public void migrate(SupportSQLiteDatabase database) {
+            database.execSQL("DROP TABLE IF EXISTS `inapp_data`");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `inapp_data` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, " +
+                    "`campaignId` TEXT, `freq` INTEGER NOT NULL, `notificationType` TEXT, `campaignUserToken` TEXT, " +
+                    "`parentId` TEXT, `e` INTEGER NOT NULL, `inAnim` TEXT, `s` TEXT, `d` INTEGER NOT NULL, " +
+                    "`st` INTEGER NOT NULL, `et` INTEGER NOT NULL, `ct` INTEGER NOT NULL, `buf_time` INTEGER NOT NULL, " +
+                    "`shown` INTEGER NOT NULL, `last_shown` INTEGER NOT NULL, `ui_img` TEXT, `ui_appLink` TEXT, " +
+                    "`ui_btnOri` TEXT, `ui_inAppButtons` TEXT, `ui_bg_img` TEXT, `ui_bg_clr` TEXT, " +
+                    "`ui_bg_sc` TEXT, `ui_bg_sw` INTEGER, `ui_bg_rd` REAL, `ui_ttl_txt` TEXT, " +
+                    "`ui_ttl_clr` TEXT, `ui_ttl_sz` TEXT, `ui_msg_txt` TEXT, `ui_msg_clr` TEXT, `ui_msg_sz` TEXT)");
+            database.execSQL("DROP TABLE IF EXISTS `BaseNotificationModel`");
+            database.execSQL("CREATE TABLE IF NOT EXISTS `BaseNotificationModel` (`notificationId` INTEGER NOT NULL," +
+                    " `campaignId` INTEGER NOT NULL, `priority` INTEGER NOT NULL, `title` TEXT, `detailMessage` TEXT," +
+                    " `message` TEXT, `icon` TEXT, `soundFileName` TEXT, `tribeKey` TEXT, `appLink` TEXT, `actionBtn` " +
+                    "TEXT NOT NULL, `customValues` TEXT, `type` TEXT, `channelName` TEXT, `videoPush` TEXT, `subText`" +
+                    " TEXT, `visualCollapsedImg` TEXT, `visualExpandedImg` TEXT, `carouselIndex` INTEGER NOT NULL, " +
+                    "`isVibration` INTEGER NOT NULL, `isSound` INTEGER NOT NULL, `isUpdatingExisting` INTEGER NOT NULL," +
+                    " `carousel` TEXT NOT NULL, `grid` TEXT NOT NULL, `productInfo` TEXT NOT NULL, `parentId` INTEGER NOT NULL," +
+                    " `campaignUserToken` TEXT, `notificationStatus` INTEGER NOT NULL, `startTime` INTEGER NOT NULL, `endTime` " +
+                    "INTEGER NOT NULL, `notificationMode` INTEGER NOT NULL, `media_fallback_url` TEXT, " +
+                    "`media_high_quality_url` TEXT, `media_medium_quality_url` TEXT, `media_low_quality_url` TEXT, " +
+                    "`media_display_url` TEXT, `media_id` TEXT, PRIMARY KEY(`campaignId`))");
+        }
+    };
+
     public static RoomDB getDatabase(final Context context) {
         if (INSTANCE == null) {
             synchronized (RoomDB.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             RoomDB.class, "inapp_database")
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
                             .build();
                 }
             }

@@ -1,9 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tokopedia.payment.setting">
 
-    <application
-        android:allowBackup="true"
-        android:label="@string/payment_setting_app_name">
+    <application>
         <activity
             android:name=".list.view.activity.SettingListPaymentActivity"
             android:label="@string/payment_title_list_card"

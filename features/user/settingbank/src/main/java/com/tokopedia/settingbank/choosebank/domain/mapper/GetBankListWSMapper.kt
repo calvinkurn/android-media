@@ -1,6 +1,6 @@
 package com.tokopedia.settingbank.choosebank.domain.mapper
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.settingbank.choosebank.domain.pojo.BankAccount
 import com.tokopedia.settingbank.choosebank.domain.pojo.BankListPojo

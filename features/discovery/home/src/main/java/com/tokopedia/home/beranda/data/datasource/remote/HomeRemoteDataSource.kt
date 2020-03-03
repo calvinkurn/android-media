@@ -5,17 +5,16 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.home.beranda.common.HomeDispatcherProvider
 import com.tokopedia.home.beranda.data.query.HomeQuery
 import com.tokopedia.home.beranda.domain.model.HomeData
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
-import javax.inject.Named
 
 class HomeRemoteDataSource(
         private val graphqlRepository: GraphqlRepository,
-        @Named("dispatchersIO") private val dispatchers: CoroutineDispatcher
+        private val dispatchers: HomeDispatcherProvider
 ) {
-    suspend fun getHomeData(): GraphqlResponse = withContext(dispatchers) {
+    suspend fun getHomeData(): GraphqlResponse = withContext(dispatchers.io()) {
         val cacheStrategy =
                 GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
 

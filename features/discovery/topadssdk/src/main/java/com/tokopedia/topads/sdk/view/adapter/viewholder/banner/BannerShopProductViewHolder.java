@@ -85,7 +85,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
             newLabelTxt.setVisibility(View.GONE);
         }
 
-        if (element.getProduct().getCampaign().getDiscountPercentage() > 0) {
+        if (hasDiscount(element)) {
             discountTxt.setText(String.format("%d%%", element.getProduct().getCampaign().getDiscountPercentage()));
             discountTxt.setVisibility(View.VISIBLE);
             slashedPrice.setVisibility(View.VISIBLE);
@@ -94,7 +94,7 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
             discountTxt.setVisibility(View.GONE);
             slashedPrice.setVisibility(View.INVISIBLE);
         }
-        setRating(element.getProduct().getProductRating());
+        setRating(element.getProduct().getProductRating(), !hasDiscount(element));
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,19 +107,23 @@ public class BannerShopProductViewHolder extends AbstractViewHolder<BannerShopPr
         });
     }
 
-    private void setRating(int productRating) {
+    private boolean hasDiscount(BannerShopProductViewModel element) {
+        return element.getProduct().getCampaign().getDiscountPercentage() > 0;
+    }
+
+    private void setRating(int productRating, boolean isVisible) {
         int rating = Math.round(productRating / 20f);
         rating1.setImageResource(getRatingDrawable(rating >= 1));
         rating2.setImageResource(getRatingDrawable(rating >= 2));
         rating3.setImageResource(getRatingDrawable(rating >= 3));
         rating4.setImageResource(getRatingDrawable(rating >= 4));
         rating5.setImageResource(getRatingDrawable(rating >= 5));
-        rating1.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
-        rating2.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
-        rating3.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
-        rating4.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
-        rating5.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
-        reviewCountTxt.setVisibility((rating > 0) ? View.VISIBLE : View.GONE);
+        rating1.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        rating2.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        rating3.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        rating4.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        rating5.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
+        reviewCountTxt.setVisibility((isVisible && (rating > 0)) ? View.VISIBLE : View.GONE);
     }
 
     private int getRatingDrawable(Boolean isActive) {

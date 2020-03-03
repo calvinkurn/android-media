@@ -4,10 +4,9 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
-import com.tkpd.library.utils.CommonUtils;
-import com.tokopedia.core2.R;
 import com.tokopedia.core.analytics.UnifyTracking;
 import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.core2.R;
 import com.tokopedia.logisticdata.data.entity.address.DistrictRecommendationAddress;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 import com.tokopedia.seller.shopsettings.shipping.fragment.EditShippingViewListener;
@@ -36,6 +35,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import timber.log.Timber;
 
 /**
  * Created by Kris on 2/23/2016.
@@ -394,7 +395,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                         view.showErrorToast(view.getMainContext().getString(R.string.msg_no_connection));
                     }
                 });
-        CommonUtils.dumper("PORING" + compiledShippingId());
+        Timber.d("PORING" + compiledShippingId());
     }
 
     private void putDataToHashMap(Map<String, String> shippingParams) {

@@ -41,7 +41,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
     }
 
     fun mapHideMessage(response: WebSocketResponse): Boolean {
-        return when (response.getType()?.toLowerCase()) {
+        return when (response.type.toLowerCase()) {
             VoteAnnouncementViewModel.POLLING_CANCEL, VoteAnnouncementViewModel.POLLING_UPDATE,
             VibrateViewModel.TYPE, SprintSaleAnnouncementViewModel.SPRINT_SALE_UPCOMING,
             PinnedMessageViewModel.TYPE, AdsViewModel.TYPE, GroupChatQuickReplyViewModel.TYPE,
@@ -53,13 +53,13 @@ class PlayWebSocketMessageMapper @Inject constructor() {
     }
 
     fun map(response: WebSocketResponse): Visitable<*>? {
-        val data = response.getData()
-        if (response.getType() == null) {
+        val data = response.jsonObject
+        if (response.type.isEmpty()) {
             return null
         }
 
         gson = Gson()
-        return when (response.getType()?.toLowerCase()) {
+        return when (response.type.toLowerCase()) {
             VoteAnnouncementViewModel.POLLING_START,
             VoteAnnouncementViewModel.POLLING_FINISHED,
             VoteAnnouncementViewModel.POLLING_END,
@@ -266,7 +266,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
                     if (pojo.campaignName != null) pojo.campaignName else "",
                     pojo.startDate * 1000L,
                     pojo.endDate * 1000L,
-                    response.getType()!!
+                    response.type
             )
         }
 
@@ -373,7 +373,7 @@ class PlayWebSocketMessageMapper @Inject constructor() {
         pojo.user?.let {
             return VoteAnnouncementViewModel(
                     pojo.description,
-                    response.getType()!!,
+                    response.type,
                     pojo.timestamp!!,
                     pojo.timestamp!!,
                     "",

@@ -1,6 +1,6 @@
 package com.tokopedia.talk.common.data
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse
+import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.talk.addtalk.domain.CreateTalkPojo
 import com.tokopedia.talk.common.domain.pojo.BaseActionTalkPojo
 import com.tokopedia.talk.common.domain.pojo.InboxTalkPojo

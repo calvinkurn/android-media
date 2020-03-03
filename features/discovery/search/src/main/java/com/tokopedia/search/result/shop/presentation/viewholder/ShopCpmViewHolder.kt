@@ -47,8 +47,6 @@ internal class ShopCpmViewHolder(
     }
 
     private fun initCpmModel(shopCpmViewModel: ShopCpmViewModel) {
-        itemView.adsBannerViewSearchShop?.shouldShowWithAction(shopCpmViewModel.cpmModel.data.size > 0) {
-            itemView.adsBannerViewSearchShop?.displayAds(shopCpmViewModel.cpmModel)
-        }
+        itemView.adsBannerViewSearchShop?.displayAds(shopCpmViewModel.cpmModel)
     }
 }

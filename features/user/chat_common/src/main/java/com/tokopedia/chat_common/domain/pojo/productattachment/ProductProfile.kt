@@ -53,4 +53,7 @@ class ProductProfile {
     @SerializedName("status")
     @Expose
     val status: Int = 1
+    @SerializedName("wishlist")
+    @Expose
+    val wishList: Boolean = false
 }

@@ -10,6 +10,7 @@ import com.tokopedia.merchantvoucher.common.model.*
 import kotlinx.android.synthetic.main.widget_merchant_voucher_view.view.*
 import android.content.ClipData
 import android.content.ClipboardManager
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherConst.DELIVERY_VOUCHER_IMAGE_URL
@@ -26,7 +27,7 @@ import com.tokopedia.merchantvoucher.common.constant.MerchantVoucherTypeDef.*
     |                      +-+-+        |
     +----------------------+   +--------+
  */
-class MerchantVoucherView : CustomVoucherView {
+open class MerchantVoucherView : CustomVoucherView {
 
     var onMerchantVoucherViewListener: OnMerchantVoucherViewListener? = null
 
@@ -53,8 +54,9 @@ class MerchantVoucherView : CustomVoucherView {
 
     private fun init() {
         clipToPadding = false
-        LayoutInflater.from(context).inflate(R.layout.widget_merchant_voucher_view,
-                this, true)
+        LayoutInflater.from(context).inflate(getVoucherLayout(), this, true).apply {
+            initView(this)
+        }
         btnUseVoucher.visibility = View.GONE
         //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below comment for future release
         //btnUseVoucher.text = context.getString(R.string.use_voucher)
@@ -78,6 +80,24 @@ class MerchantVoucherView : CustomVoucherView {
                 clipboard.setPrimaryClip(clip)
                 onMerchantVoucherViewListener?.onMerchantUseVoucherClicked(this)
             }
+        }
+    }
+
+    protected open fun initView(view: View) { }
+
+    @LayoutRes
+    protected open fun getVoucherLayout(): Int {
+        return R.layout.widget_merchant_voucher_view
+    }
+
+    fun setData(merchantVoucherViewModel: MerchantVoucherViewModel?, hasActionButton: Boolean = true) {
+        setData(merchantVoucherViewModel)
+        if (!hasActionButton) {
+            btnUseVoucher.visibility = View.GONE
+            btnUseVoucher.isEnabled = false
+        } else {
+            btnUseVoucher.visibility = View.VISIBLE
+            btnUseVoucher.isEnabled = true
         }
     }
 

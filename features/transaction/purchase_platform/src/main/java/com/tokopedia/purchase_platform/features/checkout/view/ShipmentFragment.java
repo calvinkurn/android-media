@@ -130,11 +130,11 @@ import com.tokopedia.purchase_platform.features.checkout.view.converter.RatesDat
 import com.tokopedia.purchase_platform.features.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.purchase_platform.features.checkout.view.di.CheckoutModule;
 import com.tokopedia.purchase_platform.features.checkout.view.di.DaggerCheckoutComponent;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.NotEligiblePromoHolderdata;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentButtonPaymentModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentDonationModel;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.ShipmentNotifierModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 
@@ -170,6 +170,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         MerchantVoucherListBottomSheetFragment.ActionListener, ClashBottomSheetFragment.ActionListener,
         PromoNotEligibleActionListener, InsuranceItemActionListener {
 
+    private static int LOYALTY_ACTIVITY_REQUEST_CODE = 12345;
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
@@ -1312,7 +1313,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onResultFromRequestCodeCourierOptions(requestCode, data);
         } else if (requestCode == CheckoutConstant.REQUEST_CODE_CHECKOUT_ADDRESS) {
             onResultFromRequestCodeAddressOptions(resultCode, data);
-        } else if (requestCode == IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE) {
+        } else if (requestCode == LOYALTY_ACTIVITY_REQUEST_CODE) {
             onResultFromRequestCodeLoyalty(resultCode, data);
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
             onResultFromCourierPinpoint(resultCode, data);
@@ -1529,7 +1530,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentDetailData.setSelectedCourier(oldShipmentDetailData.getSelectedCourier());
         }
         shipmentDetailData.setTradein(isTradeIn());
-        shipmentDetailData.setTradeInDropOff(isTradeInByDropOff());
 
         return shipmentDetailData;
     }
@@ -1791,7 +1791,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Promo promo = generateCheckPromoFirstStepParam();
 
         Intent intent = getIntentToPromoList(promo);
-        startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+        startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE);
     }
 
     @NotNull
@@ -2042,10 +2042,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         Promo promo = generateCheckPromoFirstStepParam();
         if (dataGlobal.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
             Intent intent = getIntentToPromoDetail(promo, dataGlobal);
-            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+            startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE);
         } else {
             Intent intent = getIntentToPromoList(promo);
-            startActivityForResult(intent, IRouterConstant.LoyaltyModule.LOYALTY_ACTIVITY_REQUEST_CODE);
+            startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 

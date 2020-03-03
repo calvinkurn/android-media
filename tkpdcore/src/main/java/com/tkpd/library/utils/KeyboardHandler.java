@@ -29,15 +29,4 @@ public class KeyboardHandler {
 
         inputMethodManager.hideSoftInputFromWindow(windowToken, 0);
     }
-
-    public static void showSoftKeyboard(Activity activity) {
-        InputMethodManager inputMethodManager =
-                (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        View currentFocus = activity.getCurrentFocus();
-        if (currentFocus != null)
-            inputMethodManager.showSoftInput(currentFocus, InputMethodManager.SHOW_IMPLICIT);
-
-    }
-
-
 }

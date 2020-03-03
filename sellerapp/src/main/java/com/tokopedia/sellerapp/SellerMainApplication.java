@@ -44,6 +44,8 @@ import com.tokopedia.url.TokopediaUrl;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import timber.log.Timber;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -83,7 +85,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
 
     private boolean handleClick(@Nullable String screenName, @Nullable Bundle extras, @Nullable Uri deepLinkUri) {
         if (deepLinkUri != null) {
-            CommonUtils.dumper("FCM moengage SELLER clicked " + deepLinkUri.toString());
+            Timber.d("FCM moengage SELLER clicked " + deepLinkUri.toString());
             if (URLUtil.isNetworkUrl(deepLinkUri.toString())) {
                 Intent intent = new Intent(this, DeepLinkActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -96,7 +98,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
                 intent.setData(Uri.parse(deepLinkUri.toString()));
                 startActivity(intent);
             } else {
-                CommonUtils.dumper("FCM entered no one");
+                Timber.d("FCM entered no one");
             }
 
             return true;
@@ -130,7 +132,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
-
+        initRemoteConfig();
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
@@ -209,10 +211,5 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
     @Override
     public Intent getCreateResCenterActivityIntent(Context context, String orderId) {
         return null;
-    }
-
-    @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-
     }
 }

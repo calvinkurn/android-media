@@ -4,14 +4,14 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.tokopedia.abstraction.common.data.model.response.BaseResponseError;
-import com.tokopedia.abstraction.common.utils.view.CommonUtils;
+import com.tokopedia.network.data.model.response.BaseResponseError;
 
 import java.io.IOException;
 
 import okhttp3.Interceptor;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import timber.log.Timber;
 
 /**
  * Created by hendry on 9/15/2017.
@@ -46,8 +46,8 @@ public class ErrorResponseInterceptor implements Interceptor {
                 return response;
             } else {
                 if (responseError.hasBody()) {
-                    CommonUtils.dumper(response.headers().toString());
-                    CommonUtils.dumper(responseBodyString);
+                    Timber.d(response.headers().toString());
+                    Timber.d(responseBodyString);
                     //noinspection ConstantConditions
                     response.body().close();
                     throw responseError.createException();

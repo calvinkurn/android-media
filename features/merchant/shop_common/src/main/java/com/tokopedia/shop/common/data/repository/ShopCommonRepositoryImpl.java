@@ -18,12 +18,12 @@ public class ShopCommonRepositoryImpl implements ShopCommonRepository {
     }
 
     @Override
-    public Observable<ShopInfo> getShopInfo(String shopId) {
-        return shopInfoDataSource.getShopInfo(shopId);
+    public Observable<ShopInfo> getShopInfo(String shopId, String userId, String deviceId) {
+        return shopInfoDataSource.getShopInfo(shopId, userId, deviceId);
     }
 
     @Override
-    public Observable<ShopInfo> getShopInfoByDomain(String shopDomain) {
-        return shopInfoDataSource.getShopInfoByDomain(shopDomain);
+    public Observable<ShopInfo> getShopInfoByDomain(String shopDomain, String userId, String deviceId) {
+        return shopInfoDataSource.getShopInfoByDomain(shopDomain, userId, deviceId);
     }
 }
