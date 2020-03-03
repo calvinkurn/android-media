@@ -48,10 +48,11 @@ class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) 
             price.text = propertyPrice.price
 
             if (propertyPrice.deals.price.isNotEmpty()) {
+                container_price_origin.visibility = View.VISIBLE
                 price_origin.visibility = View.VISIBLE
                 price_origin.text = propertyPrice.deals.price
                 price_origin.paintFlags = price_origin.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            } else price_origin.visibility = View.GONE
+            } else container_price_origin.visibility = View.GONE
 
             if (propertyPrice.deals.tagging.isNotEmpty()) {
                 hotel_property_item_tag.visibility = View.VISIBLE
