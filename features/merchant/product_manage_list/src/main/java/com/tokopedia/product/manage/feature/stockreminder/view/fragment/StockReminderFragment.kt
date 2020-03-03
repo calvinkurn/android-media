@@ -109,6 +109,7 @@ class StockReminderFragment: BaseDaggerFragment() {
                 threshold = qeStock.getValue()
                 viewModel.updateStockReminder(userSession.shopId, productId, warehouseId, threshold.toString())
             }
+            activity?.finish()
         }
     }
 
@@ -118,9 +119,10 @@ class StockReminderFragment: BaseDaggerFragment() {
                 warehouseId = stockReminderData.data.getByProductIds.data[0].productsWareHouse[0].wareHouseId
                 threshold = stockReminderData.data.getByProductIds.data[0].productsWareHouse[0].threshold
 
+                qeStock.setValue(threshold)
+
                 if(threshold != 0) {
                     swStockReminder.isChecked = true
-                    btnSaveReminder.isEnabled = true
                 }
             }
             is Fail -> { }
