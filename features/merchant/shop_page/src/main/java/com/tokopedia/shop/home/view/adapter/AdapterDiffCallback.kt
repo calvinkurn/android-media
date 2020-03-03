@@ -17,6 +17,5 @@ object AdapterDiffCallback {
         override fun areContentsTheSame(oldItem: DisplayWidgetUiModel.WidgetItem, newItem: DisplayWidgetUiModel.WidgetItem): Boolean {
             return oldItem == newItem
         }
-
     }
 }

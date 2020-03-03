@@ -50,7 +50,7 @@ class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<DisplayWid
 
     private fun dataWidgetToString(element: DisplayWidgetUiModel): List<String>? {
         val mutableString: MutableList<String>? = mutableListOf()
-        element.data?.forEach {
+        element.data?.map {
             it.imageUrl?.let { img ->
                 mutableString?.add(img)
             }

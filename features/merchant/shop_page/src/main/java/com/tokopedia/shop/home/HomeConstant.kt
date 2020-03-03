@@ -4,24 +4,27 @@ import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
-import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE
+import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
+import com.tokopedia.shop.home.WidgetName.VIDEO
+import com.tokopedia.shop.home.WidgetType.DISPLAY
 import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel.WidgetItem
 
 
-
-
-
 object HomeConstant {
+    const val YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
+
     val singleItemImage = DisplayWidgetUiModel(
-            name = DISPLAY_SINGLE_COLUMN,
+            name = DISPLAY,
+            type = DISPLAY_SINGLE_COLUMN,
             data = mutableListOf(WidgetItem(
                     imageUrl = "https://ecs7.tokopedia.net/img/attachment/2020/1/9/11329846/11329846_1a88a8a6-64a5-4fde-a424-38d6afe11014.jpg"
             ))
     )
 
     val doubleItemImage = DisplayWidgetUiModel(
-            name = DISPLAY_DOUBLE_COLUMN,
+            name = DISPLAY,
+            type = DISPLAY_DOUBLE_COLUMN,
             data = mutableListOf<WidgetItem>().apply {
                 add(WidgetItem(
                         imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/31/11329846/11329846_076fed82-338d-4b19-8cc3-3746c5118ba2.jpg"
@@ -33,7 +36,8 @@ object HomeConstant {
     )
 
     val tripleItemImage = DisplayWidgetUiModel(
-            name = DISPLAY_TRIPLE_COLUMN,
+            name = DISPLAY,
+            type = DISPLAY_TRIPLE_COLUMN,
             data = mutableListOf<WidgetItem>().apply {
                 add(WidgetItem(
                         imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/7/31/11329846/11329846_076fed82-338d-4b19-8cc3-3746c5118ba2.jpg"
@@ -44,17 +48,12 @@ object HomeConstant {
                 add(WidgetItem(
                         imageUrl = "https://ecs7.tokopedia.net/img/attachment/2020/1/9/11329846/11329846_1a88a8a6-64a5-4fde-a424-38d6afe11014.jpg"
                 ))
-//                add(DisplayWidgetUiModel.WidgetItem(
-//                        imageUrl = "https://media1.popsugar-assets.com/files/thumbor/7jVLK8037Jju3yfG8chytlrJX1c/856x0:4377x3521/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2019/10/16/000/n/1922564/3418e0025da7a0f9bf8b71.79617211_/i/Best-Fashion-From-Amazon-2019.jpg"
-//                ))
-//                add(DisplayWidgetUiModel.WidgetItem(
-//                        imageUrl = "https://media1.popsugar-assets.com/files/thumbor/7jVLK8037Jju3yfG8chytlrJX1c/856x0:4377x3521/fit-in/2048xorig/filters:format_auto-!!-:strip_icc-!!-/2019/10/16/000/n/1922564/3418e0025da7a0f9bf8b71.79617211_/i/Best-Fashion-From-Amazon-2019.jpg"
-//                ))
             }
     )
 
     val sliderSquareWidget = DisplayWidgetUiModel(
-            name = SLIDER_SQUARE,
+            name = DISPLAY ,
+            type = SLIDER_SQUARE_BANNER,
             data = mutableListOf<WidgetItem>().apply {
                 add(WidgetItem(
                         imageUrl = "https://ecs7.tokopedia.net/img/attachment/2019/8/27/48918596/48918596_1aec657d-beaa-4df0-a4e1-36eec6543eb3.jpg"
@@ -88,21 +87,30 @@ object HomeConstant {
                 ))
             }
     )
+
+    val videoWidget = DisplayWidgetUiModel(
+            name = VIDEO,
+            data = mutableListOf<WidgetItem>().apply {
+                add(WidgetItem(
+                        videoUrl = "Ez6ODtGpL1w"
+                ))
+            }
+    )
 }
 
-object GqlQueryConstant{
+object GqlQueryConstant {
     const val GQL_GET_SHOP_PAGE_HOME_LAYOUT = "gql_get_shop_page_home_layout"
 }
 
-object WidgetType{
+object WidgetType {
     const val DISPLAY = "display"
     const val PRODUCT = "product"
     const val VOUCHER = "voucher"
 }
 
-object WidgetName{
+object WidgetName {
     const val SLIDER_BANNER = "slider_banner"
-    const val SLIDER_SQUARE = "slider_square"
+    const val SLIDER_SQUARE_BANNER = "slider_square"
     const val DISPLAY_SINGLE_COLUMN = "display_single_column"
     const val DISPLAY_DOUBLE_COLUMN = "display_double_column"
     const val DISPLAY_TRIPLE_COLUMN = "display_triple_column"

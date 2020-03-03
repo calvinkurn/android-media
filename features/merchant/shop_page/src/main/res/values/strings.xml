@@ -219,5 +219,8 @@
     <string name="shop_page_setting_shipping">Lokasi dan Pengiriman</string>
     <string name="shop_page_setting_action_edit_location">Tambah dan ubah lokasi toko</string>
     <string name="shop_page_setting_action_manage_shipping_service">Atur layanan pengiriman</string>
+    <string name="GOOGLE_API_KEY">AIzaSyCRkgwGBe8ZxjcK07Cnl3Auf72BpgA6lLo</string>
+    <string name="video_component_tag">video_container</string>
+
 
 </resources>

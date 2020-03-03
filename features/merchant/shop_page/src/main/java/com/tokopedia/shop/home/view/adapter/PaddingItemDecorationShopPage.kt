@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE
+import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 
 /**
  * Created by rizqiaryansa on 2020-02-24.
@@ -25,7 +25,7 @@ class PaddingItemDecorationShopPage(private val typeWidget: String) : RecyclerVi
                     }
                 }
             }
-            SLIDER_SQUARE -> {
+            SLIDER_SQUARE_BANNER -> {
                 if (position > 0) {
                     parent.adapter.also {
                         outRect.left = 8

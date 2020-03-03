@@ -6,9 +6,9 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
-import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
-import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE
+import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
+import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductEtalaseTitleViewHolder
@@ -20,11 +20,11 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome {
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        when (baseShopHomeWidgetUiModel.name) {
+        when(baseShopHomeWidgetUiModel.name) {
             DISPLAY_SINGLE_COLUMN, DISPLAY_DOUBLE_COLUMN, DISPLAY_TRIPLE_COLUMN -> return ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES
-            SLIDER_SQUARE -> return ShopHomeSliderSquareViewHolder.LAYOUT_RES
+            SLIDER_SQUARE_BANNER -> return ShopHomeSliderSquareViewHolder.LAYOUT_RES
             SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
-            PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT
+            VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
         }
         return -1
     }
@@ -46,6 +46,9 @@ class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome
                     parent
             )
             ShopHomeSliderBannerViewHolder.LAYOUT_RES -> ShopHomeSliderBannerViewHolder(
+                    parent
+            )
+            ShopHomeVideoViewHolder.LAYOUT_RES -> ShopHomeVideoViewHolder(
                     parent
             )
             ShopHomeProductViewHolder.LAYOUT -> {
