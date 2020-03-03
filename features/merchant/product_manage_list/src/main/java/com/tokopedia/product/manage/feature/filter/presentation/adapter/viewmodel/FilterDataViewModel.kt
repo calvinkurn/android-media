@@ -4,5 +4,5 @@ data class FilterDataViewModel(
         val id: String,
         val name: String,
         val values: String = "",
-        val select: Boolean = false
+        var select: Boolean = false
 )

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 
-class ChipsAdapter(private val listener: ChipClickListener) : RecyclerView.Adapter<ChipsAdapter.ItemViewHolder>() {
+class ChipsAdapter(private val listener: ChipClickListener, private val canSelectMany: Boolean) : RecyclerView.Adapter<ChipsAdapter.ItemViewHolder>() {
     private var data: MutableList<FilterDataViewModel> = mutableListOf()
 
     companion object {
@@ -27,6 +27,13 @@ class ChipsAdapter(private val listener: ChipClickListener) : RecyclerView.Adapt
             }
         }
         data = dataToDisplay
+        notifyDataSetChanged()
+    }
+
+    fun clearSelect() {
+        this.data.forEach {
+            it.select = false
+        }
         notifyDataSetChanged()
     }
 

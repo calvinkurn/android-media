@@ -19,7 +19,6 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.FilterAd
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.FilterAdapterTypeFactory
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
@@ -42,6 +41,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         const val CATEGORIES_CACHE_MANAGER_KEY = "categories"
         const val OTHER_FILTER_CACHE_MANAGER_KEY = "filter"
         const val BOTTOMSHEET_TITLE = "Filter"
+        const val REST_BUTTON_TEXT = "Reset"
         const val EXPAND_FILTER_REQUEST = 1
         const val UPDATE_SORT_SUCCESS_RESPONSE = 200
         const val UPDATE_ETALASE_SUCCESS_RESPONSE = 300
@@ -93,6 +93,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         recyclerView?.adapter = filterAdapter
         productManageFilterViewModel.getData(userSession.shopId)
         observeCombinedResponse()
+        observeFilterData()
         initView()
     }
 
@@ -159,8 +160,8 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         }
     }
 
-    override fun onChipClicked(id: String) {
-
+    override fun onChipClicked(data: FilterDataViewModel) {
+        data.select = true
     }
 
     private fun initInjector() {
@@ -185,5 +186,18 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         btn_close_bottom_sheet.setOnClickListener {
             this.dismiss()
         }
+        setAction(REST_BUTTON_TEXT) {
+            this.clearSelected()
+        }
+    }
+
+    private fun clearSelected() {
+        productManageFilterViewModel.clearSelected()
+    }
+
+    private fun observeFilterData() {
+        productManageFilterViewModel.filterData.observe(this, Observer {
+            filterAdapter?.updateData(it)
+        })
     }
 }

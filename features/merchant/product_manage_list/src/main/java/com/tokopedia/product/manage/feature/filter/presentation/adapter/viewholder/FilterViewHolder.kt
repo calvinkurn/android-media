@@ -11,17 +11,17 @@ import com.tokopedia.product.manage.feature.filter.presentation.widget.*
 import kotlinx.android.synthetic.main.widget_header.view.*
 import android.R.attr.button
 import androidx.core.view.ViewCompat.getRotation
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 
 
-
-class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, chipClickListener: ChipClickListener) : AbstractViewHolder<FilterViewModel>(view) {
+class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, private val chipClickListener: ChipClickListener) : AbstractViewHolder<FilterViewModel>(view) {
 
     companion object {
         val LAYOUT = com.tokopedia.product.manage.R.layout.item_filter
     }
 
     private val recyclerView: RecyclerView = itemView.findViewById(com.tokopedia.product.manage.R.id.chips_recycler_view)
-    val adapter: ChipsAdapter
+    private var adapter: ChipsAdapter? = null
     private val headerWidget: HeaderWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.filter_header)
     private val seeAllWidget: SeeAllWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.filter_see_all)
     private var isChipsShown = false
@@ -36,8 +36,6 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, c
         recyclerView.addItemDecoration(SpacingItemDecoration(staticDimen8dp))
         recyclerView.layoutManager = layoutManager
         ViewCompat.setLayoutDirection(recyclerView, ViewCompat.LAYOUT_DIRECTION_LTR)
-        adapter = ChipsAdapter(chipClickListener)
-        recyclerView.adapter = adapter
     }
 
     override fun bind(element: FilterViewModel) {
@@ -49,7 +47,14 @@ class FilterViewHolder(view: View, private val seeAllListener: SeeAllListener, c
         headerWidget.arrow.setOnClickListener {
             toggleChipsVisibility()
         }
-        adapter.setData(element)
+        adapter = if(element.title == ProductManageFilterMapper.SORT_HEADER ||
+                element.title == ProductManageFilterMapper.ETALASE_HEADER) {
+            ChipsAdapter(chipClickListener, false)
+        } else {
+            ChipsAdapter(chipClickListener, true)
+        }
+        recyclerView.adapter = adapter
+        adapter?.setData(element)
         seeAllWidget.setOnClickListener {
             seeAllListener.onSeeAll(element)
         }

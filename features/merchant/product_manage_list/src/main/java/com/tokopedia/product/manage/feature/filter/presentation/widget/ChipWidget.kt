@@ -35,7 +35,7 @@ class ChipWidget : BaseCustomView {
         }
         this.setOnClickListener {
             toggleSelected(originalColor)
-            chipClickListener.onChipClicked(data.id)
+            chipClickListener.onChipClicked(data)
         }
     }
 
@@ -50,5 +50,5 @@ class ChipWidget : BaseCustomView {
 }
 
 interface ChipClickListener {
-    fun onChipClicked(id: String)
+    fun onChipClicked(data: FilterDataViewModel)
 }

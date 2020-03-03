@@ -9,6 +9,7 @@ import com.tokopedia.product.manage.feature.filter.data.model.CombinedResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.filter.domain.ProductManageFilterCombinedUseCase
+import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,6 +34,10 @@ class ProductManageFilterViewModel @Inject constructor(
     val combinedResponse: LiveData<Result<CombinedResponse>>
         get() = _combinedResponse
 
+    private val _filterData = MutableLiveData<List<FilterViewModel>>()
+    val filterData: LiveData<List<FilterViewModel>>
+        get() = _filterData
+
     fun getData(shopId: String) {
         productManageFilterCombinedUseCase.params = ProductManageFilterCombinedUseCase.createRequestParams(shopId, isMyShop(shopId))
         launchCatchError(block = {
@@ -42,6 +47,18 @@ class ProductManageFilterViewModel @Inject constructor(
             }
         }) {
             Fail(it)
+        }
+    }
+
+    fun updateData(filterData: List<FilterViewModel>) {
+        _filterData.postValue(filterData)
+    }
+
+    fun clearSelected() {
+        _filterData.value?.forEach {filterViewModel ->
+            filterViewModel.data.forEach { filterData ->
+                filterData.select = false
+            }
         }
     }
 
