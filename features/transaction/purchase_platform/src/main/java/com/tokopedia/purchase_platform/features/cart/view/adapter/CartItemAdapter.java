@@ -122,5 +122,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartItemShowTickerOutOfStock(String productId);
 
         void onCartItemSimilarProductUrlClicked(String similarProductUrl);
+
+        CompositeSubscription onGetCompositeSubscriber();
     }
 }

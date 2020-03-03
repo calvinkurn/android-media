@@ -101,6 +101,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import kotlinx.android.synthetic.main.fragment_cart.*
+import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
 
@@ -147,6 +149,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var recentViewMapper: RecentViewMapper
     @Inject
     lateinit var promoMapper: PromoMapper
+    @Inject
+    lateinit var compositeSubscription: CompositeSubscription
 
     lateinit var cartAdapter: CartAdapter
     private var refreshHandler: RefreshHandler? = null
@@ -1252,8 +1256,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         FLAG_IS_CART_EMPTY = false
         cartAdapter.removeCartEmptyData()
 
-        val promoStackingData = getPromoGlobalData(cartListData)
-        renderPromoGlobal(promoStackingData)
+        /*val promoStackingData = getPromoGlobalData(cartListData)
+        renderPromoGlobal(promoStackingData)*/
+        renderLastApply(cartListData)
         renderTickerError(cartListData)
         renderCartAvailable(cartListData)
         renderCartNotAvailable(cartListData)
@@ -1307,6 +1312,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.addPromoStackingVoucherData(promoStackingData)
         if (promoStackingData.state !== TickerPromoStackingCheckoutView.State.FAILED) {
             onPromoGlobalTrackingImpression(promoStackingData)
+        }
+    }
+
+    private fun renderLastApply(cartListData: CartListData) {
+        promo_checkout_btn_cart?.apply {
+
         }
     }
 
@@ -1461,7 +1472,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         bottomLayout.show()
         bottomLayoutShadow.show()
         cardHeader.show()
-        llPromoCheckout.show()
     }
 
     private fun showErrorContainer() {
@@ -2458,5 +2468,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cache.putInt(CartConstant.IS_HAS_CART, if (counter > 0) 1 else 0)
         cache.putInt(CartConstant.CACHE_TOTAL_CART, counter);
         cache.applyEditor();
+    }
+
+    override fun onGetCompositeSubscriber(): CompositeSubscription {
+        return compositeSubscription
+    }
+
+    override fun onDetach() {
+        compositeSubscription.unsubscribe()
+        super.onDetach()
     }
 }
