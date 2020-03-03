@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
-import android.util.Log
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.IconCompat.createWithBitmap
 import androidx.core.graphics.drawable.IconCompat.createWithResource
@@ -22,7 +21,6 @@ import com.tokopedia.recharge_slice.data.Data
 import com.tokopedia.recharge_slice.data.Recommendation
 import com.tokopedia.recharge_slice.ui.activity.MainActivity
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.GraphqlClient
@@ -30,8 +28,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recharge_slice.data.Product
 import com.tokopedia.recharge_slice.data.TrackingData
 import com.tokopedia.recharge_slice.di.DaggerRechargeSliceComponent
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -288,12 +284,10 @@ class MainSliceProvider : SliceProvider() {
         val deviceId = 0
         val params = mapOf(RECHARGE_SLICE_DEVICE_ID to deviceId)
         val graphqlRequest = GraphqlRequest(gqlQuery, Data::class.java, params)
-        alreadyGetData = true
         GraphqlClient.init(contextNonNull)
         DaggerRechargeSliceComponent.builder().build().inject(this)
         GlobalScope.launch(Dispatchers.IO) {
             try {
-
                 val data = repository.getReseponse(listOf(graphqlRequest)).getSuccessData<Data>()
                 recommendationModel = data.rechargeFavoriteRecommendationList.recommendations
                 updateSlice(sliceUri)
