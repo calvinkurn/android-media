@@ -12,7 +12,6 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
-import com.tokopedia.play.view.type.ProductSheetContent
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**
@@ -43,18 +42,6 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
             layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
             adapter = productSheetAdapter
         }
-
-        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-            }
-
-            override fun onStateChanged(bottomSheet: View, newState: Int) {
-                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-                }
-            }
-        })
     }
 
     override val containerId: Int = view.id
