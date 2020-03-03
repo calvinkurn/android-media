@@ -42,7 +42,7 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
     }
 
     override fun onBindViewHolder(holder: SizeSmallBusinessViewHolder, position: Int) {
-        getItem(position)?.let {businessUnit ->
+        getItem(position).let {businessUnit ->
             holder.bind(businessUnit)
             if(!holder.itemView.hasOnClickListeners()){
                 holder.itemView.setOnClickListener {
@@ -55,7 +55,7 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
     override fun getItemCount(): Int = list.size
 
     override fun getItemViewType(position: Int): Int {
-        return type(getItem(position)?.content)
+        return type(getItem(position).content)
     }
 
     private fun type(itemTab: HomeWidget.ContentItemTab?): Int {
@@ -76,11 +76,6 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
         this.positionWidgetOnHome = index
     }
 
-    private fun getItem(listPosition: Int): BusinessUnitItemDataModel? =
-        if (listPosition >= 0 && listPosition < list.size) {
-            list[listPosition]
-        } else {
-            null
-        }
+    private fun getItem(listPosition: Int): BusinessUnitItemDataModel = list[listPosition]
 
 }

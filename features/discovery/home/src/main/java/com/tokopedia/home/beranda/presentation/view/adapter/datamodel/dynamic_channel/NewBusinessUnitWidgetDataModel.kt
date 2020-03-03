@@ -26,15 +26,15 @@ data class NewBusinessUnitWidgetDataModel(
     override fun setTrackingData(trackingData: MutableMap<String, Any>?) {}
 
     override fun equalsWith(b: Any?): Boolean {
-        return b is NewBusinessUnitWidgetDataModel && b.tabList === tabList && b.backColor == backColor && b.contentsList === contentsList
+        return b is NewBusinessUnitWidgetDataModel && b.tabList === tabList && b.backColor == backColor && b.contentsList === contentsList && isCache == b.isCache()
     }
 
     override fun getTrackingDataForCombination(): List<Any>? {
-        return trackingDataForCombination
+        return null
     }
 
     override fun getTrackingData(): Map<String, Any>? {
-        return trackingData
+        return null
     }
 
     override fun setTrackingCombined(isCombined: Boolean) {}
