@@ -32,6 +32,7 @@ class ProductSheetComponent(
                             is ScreenStateEvent.BottomInsetsView -> if (it.type.isBottomSheet) {
                                 if (it.isShown) uiView.show() else uiView.hide()
                             }
+                            is ScreenStateEvent.SetProductSheet -> uiView.setProductSheet(it.productSheetModel)
                         }
                     }
         }

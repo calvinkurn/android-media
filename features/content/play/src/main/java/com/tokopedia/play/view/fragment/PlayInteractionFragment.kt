@@ -166,6 +166,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         observeVOD()
         observeVideoProperty()
+        observeProductSheetContent()
         observeTitleChannel()
         observeQuickReply()
         observeVideoStream()
@@ -240,6 +241,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         .emit(
                                 ScreenStateEvent::class.java,
                                 ScreenStateEvent.VideoPropertyChanged(it)
+                        )
+            }
+        })
+    }
+
+    private fun observeProductSheetContent() {
+        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.SetProductSheet(it)
                         )
             }
         })

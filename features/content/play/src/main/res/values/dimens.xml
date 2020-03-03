@@ -10,4 +10,8 @@
     <dimen name="play_product_sheet_radius">10dp</dimen>
     <dimen name="play_product_sheet_title_margin_start">12dp</dimen>
     <dimen name="play_product_sheet_title_content_margin">20dp</dimen>
+
+    <dimen name="play_product_image_size">61dp</dimen>
+    <dimen name="play_product_title_image_margin">14dp</dimen>
+    <dimen name="play_product_discount_radius">3dp</dimen>
 </resources>

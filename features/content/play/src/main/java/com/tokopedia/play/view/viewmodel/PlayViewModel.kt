@@ -19,8 +19,7 @@ import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.view.type.KeyboardState
-import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
@@ -73,6 +72,8 @@ class PlayViewModel @Inject constructor(
         get() = _observablePinned
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
         get() = _observableVideoProperty
+    val observableProductSheetContent: LiveData<ProductSheetUiModel>
+        get() = _observableProductSheetContent
 
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
@@ -88,6 +89,7 @@ class PlayViewModel @Inject constructor(
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    private val _observableProductSheetContent = MutableLiveData<ProductSheetUiModel>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
@@ -157,10 +159,11 @@ class PlayViewModel @Inject constructor(
     init {
         stateHandler.observeForever(stateHandlerObserver)
 
-        _observablePinned.addSource(_observablePinnedMessage, _observablePinned::setValue)
-        _observablePinned.addSource(_observablePinnedProduct, _observablePinned::setValue)
+        _observablePinned.addSource(_observablePinnedMessage) { _observablePinned.value = it }
+        _observablePinned.addSource(_observablePinnedProduct) { _observablePinned.value = it }
 
 //        startMockFreeze()
+        setMockProductSheetContent()
     }
 
     override fun onCleared() {
@@ -460,6 +463,33 @@ class PlayViewModel @Inject constructor(
             withContext(dispatchers.main) {
                 _observableEvent.value = _observableEvent.value?.copy(
                         isFreeze = true
+                )
+            }
+        }
+    }
+
+    private fun setMockProductSheetContent() {
+        launch(dispatchers.io) {
+            delay(3000)
+            withContext(dispatchers.main) {
+                _observableProductSheetContent.value = ProductSheetUiModel(
+                        title = "Barang & Promo Pilihan",
+                        contentList = List(5) {
+                            ProductSheetProduct(
+                                    id = it.toString(),
+                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
+                                    title = "Product $it",
+                                    price = if (it % 2 == 0) {
+                                        OriginalPrice("Rp20$it.000")
+                                    } else {
+                                        DiscountedPrice(
+                                                originalPrice = "Rp20$it.000",
+                                                discountPercent = it * 10,
+                                                discountedPrice = "Rp2$it.000"
+                                        )
+                                    }
+                            )
+                        }
                 )
             }
         }

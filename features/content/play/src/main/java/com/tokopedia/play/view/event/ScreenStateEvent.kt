@@ -4,6 +4,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.ComponentEvent
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ProductSheetContent
 import com.tokopedia.play.view.uimodel.*
 
 /**
@@ -23,6 +24,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetTotalLikes(val totalLikes: TotalLikeUiModel): ScreenStateEvent()
     data class SetPinned(val pinned: PinnedUiModel) : ScreenStateEvent()
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
+    data class SetProductSheet(val productSheetModel: ProductSheetUiModel) : ScreenStateEvent()
     /**
      * Chat
      */
@@ -52,7 +54,9 @@ sealed class ScreenStateEvent : ComponentEvent {
      */
     data class VideoPropertyChanged(val videoProp: VideoPropertyUiModel) : ScreenStateEvent()
     data class VideoStreamChanged(val videoStream: VideoStreamUiModel) : ScreenStateEvent()
-
+    /**
+     * Room Event
+     */
     data class OnNewPlayRoomEvent(val event: PlayRoomEvent) : ScreenStateEvent()
 
     object OnNoMoreAction : ScreenStateEvent()

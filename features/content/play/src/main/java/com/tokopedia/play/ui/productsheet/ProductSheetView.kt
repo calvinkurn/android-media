@@ -4,10 +4,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
+import com.tokopedia.play.view.type.ProductSheetContent
+import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**
  * Created by jegul on 02/03/20
@@ -16,6 +22,11 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
 
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_product_sheet, container, true)
             .findViewById(R.id.cl_product_sheet)
+
+    private val tvSheetTitle: TextView = view.findViewById(R.id.tv_sheet_title)
+    private val rvDiscountProduct: RecyclerView = view.findViewById(R.id.rv_discount_product)
+
+    private val productSheetAdapter = ProductSheetAdapter()
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
 
@@ -27,6 +38,23 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
                 .setOnClickListener {
                     hide()
                 }
+
+        rvDiscountProduct.apply {
+            layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
+            adapter = productSheetAdapter
+        }
+
+        bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+            }
+
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                    bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                }
+            }
+        })
     }
 
     override val containerId: Int = view.id
@@ -43,6 +71,11 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
 
     override fun hide() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    internal fun setProductSheet(model: ProductSheetUiModel) {
+        tvSheetTitle.text = model.title
+        productSheetAdapter.setItemsAndAnimateChanges(model.contentList)
     }
 
     companion object {
