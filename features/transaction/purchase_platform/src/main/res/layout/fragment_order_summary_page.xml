@@ -233,8 +233,6 @@
                 android:layout_width="@dimen/dp_140"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
-                android:drawableStart="@drawable/ic_btn_pay_shield"
-                android:drawableLeft="@drawable/ic_btn_pay_shield"
                 android:drawablePadding="@dimen/dp_neg_16"
                 android:text="@string/pay"
                 app:layout_constraintBottom_toBottomOf="parent"

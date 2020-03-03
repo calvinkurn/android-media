@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
@@ -153,6 +154,123 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun calculateTotal() {
 
+    }
+
+    fun generateCheckoutRequest() {
+        val dataRequest = DataCheckoutRequest.Builder()
+                .addressId(1)
+                .shopProducts(listOf(
+                        generateShopProductRequest()
+                ))
+    }
+
+    private fun generateShopProductRequest(): ShopProductCheckoutRequest {
+        val shopProductCheckoutBuilder = ShopProductCheckoutRequest.Builder()
+                .shippingInfo(ShippingInfoCheckoutRequest.Builder()
+                        .shippingId(1)
+                        .spId(2)
+                        .ratesId("")
+                        .checksum("")
+                        .ut("")
+                        .analyticsDataShippingCourierPrice("")
+                        .ratesFeature(generateRatesFeature())
+                        .build())
+//                                .fcancelPartial(shipmentDetailData.getUsePartialOrder() ? 1 : 0)
+//                .finsurance((shipmentDetailData.getUseInsurance() != null && shipmentDetailData.getUseInsurance()) ? 1 : 0)
+//        .isOrderPriority((shipmentDetailData.isOrderPriority() != null && shipmentDetailData.isOrderPriority() ? 1 : 0))
+//        .isPreorder(shipmentCartItemModel.isProductIsPreorder() ? 1 : 0)
+//        .shopId(shipmentCartItemModel.getShopId())
+//                .warehouseId(shipmentCartItemModel.getFulfillmentId())
+//                .cartString(shipmentCartItemModel.getCartString())
+                .productData(listOf(generateProductDataCheckout()))
+//                .build()
+
+        val promoCodes = ArrayList<String>()
+        val promoRequests = ArrayList<PromoRequest>()
+//        if (shipmentCartItemModel.getVoucherOrdersItemUiModel() != null) {
+//            promoCodes.add(shipmentCartItemModel.getVoucherOrdersItemUiModel().code)
+//            val promoRequest = PromoRequest()
+//            promoRequest.code = shipmentCartItemModel.getVoucherOrdersItemUiModel().code
+//            promoRequest.type = PromoRequest.TYPE_MERCHANT
+//            promoRequests.add(promoRequest)
+//        }
+
+//        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+//            promoCodes.add(shipmentCartItemModel.getVoucherLogisticItemUiModel().code)
+//            val promoRequest = PromoRequest()
+//            promoRequest.code = shipmentCartItemModel.getVoucherLogisticItemUiModel().code
+//            promoRequest.type = PromoRequest.TYPE_LOGISTIC
+//            promoRequests.add(promoRequest)
+//        }
+//        shopProductCheckoutBuilder.promos(promoRequests)
+
+//        if (promoCodes.size > 0) {
+//            shopProductCheckoutBuilder.promoCodes(promoCodes)
+//        }
+
+//        if (shipmentDetailData.getUseDropshipper() != null && shipmentDetailData.getUseDropshipper()) {
+//            shopProductCheckoutBuilder.isDropship(1)
+//                    .dropshipData(DropshipDataCheckoutRequest.Builder()
+//                            .name(shipmentDetailData.getDropshipperName())
+//                            .telpNo(shipmentDetailData.getDropshipperPhone())
+//                            .build())
+//        } else {
+//            shopProductCheckoutBuilder.isDropship(0)
+//        }
+
+        return shopProductCheckoutBuilder.build()
+    }
+
+    private fun generateProductDataCheckout(): ProductDataCheckoutRequest {
+//        var courierId = ""
+//        var serviceId = ""
+//        var shippingPrice = ""
+//        if (shipmentDetailData != null && shipmentDetailData.selectedCourier != null) {
+//            courierId = shipmentDetailData.selectedCourier.shipperProductId.toString()
+//            serviceId = shipmentDetailData.selectedCourier.serviceId.toString()
+//            shippingPrice = shipmentDetailData.selectedCourier.shipperPrice.toString()
+//        }
+        return ProductDataCheckoutRequest.Builder()
+//                .productId(cartItem.productId)
+//                .purchaseProtection(cartItem.isProtectionOptIn)
+//                .productName(cartItem.analyticsProductCheckoutData.productName)
+//                .productPrice(cartItem.analyticsProductCheckoutData.productPrice)
+//                .productBrand(cartItem.analyticsProductCheckoutData.productBrand)
+//                .productCategory(cartItem.analyticsProductCheckoutData.productCategory)
+//                .productVariant(cartItem.analyticsProductCheckoutData.productVariant)
+//                .productQuantity(cartItem.analyticsProductCheckoutData.productQuantity)
+//                .productShopId(cartItem.analyticsProductCheckoutData.productShopId)
+//                .productShopType(cartItem.analyticsProductCheckoutData.productShopType)
+//                .productShopName(cartItem.analyticsProductCheckoutData.productShopName)
+//                .productCategoryId(cartItem.analyticsProductCheckoutData.productCategoryId)
+//                .productListName(cartItem.analyticsProductCheckoutData.productListName)
+//                .productAttribution(cartItem.analyticsProductCheckoutData.productAttribution)
+//                .cartId(cartItem.cartId)
+//                .warehouseId(cartItem.analyticsProductCheckoutData.warehouseId)
+//                .productWeight(cartItem.analyticsProductCheckoutData.productWeight)
+//                .promoCode(cartItem.analyticsProductCheckoutData.promoCode)
+//                .promoDetails(cartItem.analyticsProductCheckoutData.promoDetails)
+//                .buyerAddressId(cartItem.analyticsProductCheckoutData.buyerAddressId)
+//                .shippingDuration(serviceId)
+//                .courier(courierId)
+//                .shippingPrice(shippingPrice)
+//                .codFlag(cartItem.analyticsProductCheckoutData.codFlag)
+//                .tokopediaCornerFlag(cartItem.analyticsProductCheckoutData.tokopediaCornerFlag)
+//                .isFulfillment(cartItem.analyticsProductCheckoutData.isFulfillment)
+//                .setDiscountedPrice(cartItem.analyticsProductCheckoutData.isDiscountedPrice)
+//                .isFreeShipping(cartItem.isFreeShipping)
+                .build()
+    }
+
+    private fun generateRatesFeature(): RatesFeature {
+        val result = RatesFeature()
+        val otdg = OntimeDeliveryGuarantee()
+//        if (courierItemData.getOntimeDelivery() != null) {
+//            otdg.setAvailable(courierItemData.getOntimeDelivery().available)
+//            otdg.setDuration(courierItemData.getOntimeDelivery().value)
+//        }
+        result.ontimeDeliveryGuarantee = otdg
+        return result
     }
 
     override fun onCleared() {

@@ -31,6 +31,7 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
         view.tv_choose_preference.setOnClickListener {
             listener.onChangePreferenceClicked()
         }
+        view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.ic_arrow_drop_down_grey_checkout_module, 0)
     }
 
     interface OrderPreferenceCardListener {

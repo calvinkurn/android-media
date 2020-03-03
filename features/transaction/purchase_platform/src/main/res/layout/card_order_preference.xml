@@ -171,6 +171,7 @@
             android:ellipsize="end"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
+            app:drawableRightCompat="@drawable/ic_arrow_drop_down_grey_checkout_module"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
             app:typographyType="body_3"
