@@ -154,7 +154,8 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
     }
 
     private fun getCatalogMenuDetail() {
-        getFavoriteNumbers(TelcoComponentType.TELCO_PREPAID)
+        getMenuDetail(TelcoComponentType.TELCO_PREPAID)
+        getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_PREPAID)
     }
 
     private fun getDataFromBundle(savedInstanceState: Bundle?) {
@@ -390,7 +391,7 @@ class DigitalTelcoPrepaidFragment : DigitalBaseTelcoFragment() {
 
     override fun setupCheckoutData() {
         val inputs = mutableMapOf<String, String>()
-        inputs[EXPRESS_PARAM_CLIENT_NUMBER] = clientNumber
+        inputs[EXPRESS_PARAM_CLIENT_NUMBER] = telcoClientNumberWidget.getInputNumber()
         val operatorId = checkoutPassData.operatorId ?: ""
         if (operatorId.isNotEmpty()) inputs[EXPRESS_PARAM_OPERATOR_ID] = operatorId
         inputFields = inputs

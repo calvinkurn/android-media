@@ -147,8 +147,8 @@ class DigitalTelcoPostpaidFragment : DigitalBaseTelcoFragment() {
     }
 
     fun getCatalogMenuDetail() {
-        getMenuDetail(TelcoComponentType.CLIENT_NUMBER_POSTPAID)
-        getFavoriteNumbers(TelcoComponentType.CLIENT_NUMBER_POSTPAID)
+        getMenuDetail(TelcoComponentType.TELCO_POSTPAID)
+        getFavoriteNumbers(TelcoComponentType.FAV_NUMBER_POSTPAID)
     }
 
     private fun getDataFromBundle(savedInstanceState: Bundle?) {

@@ -137,9 +137,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var enquiryLabel = ""
     private var enquiryData: TopupBillsEnquiry? = null
 
-    private var operatorName = ""
-    private var categoryName = ""
-
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
