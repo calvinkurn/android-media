@@ -50,7 +50,7 @@ class MainSliceProvider : SliceProvider() {
 
     var recommendationModel: List<Recommendation>? = null
 
-    var loadString : String ? = "Loading..."
+    var loadString : String ? = ""
     var alreadyGetData = false
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
@@ -323,6 +323,7 @@ class MainSliceProvider : SliceProvider() {
 
     override fun onCreateSliceProvider(): Boolean {
         contextNonNull = context ?: return false
+        loadString = contextNonNull.resources.getString(R.string.slice_loading)
         return true
     }
 
