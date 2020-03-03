@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.manage.item.main.base.view.service.UploadProductService
-import com.tokopedia.product.manage.oldlist.R
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.oldlist.constant.DRAFT_PRODUCT
 import com.tokopedia.product.manage.oldlist.di.DaggerOldProductManageComponent
 import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
@@ -35,7 +35,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         if (rowCount == 0L) {
             tvDraftProductInfo.visibility = View.GONE
         } else {
-            tvDraftProductInfo.text = MethodChecker.fromHtml(getString(com.tokopedia.product.manage.oldlist.R.string.product_manage_you_have_x_unfinished_product, rowCount))
+            tvDraftProductInfo.text = MethodChecker.fromHtml(getString(com.tokopedia.product.manage.R.string.product_manage_you_have_x_unfinished_product, rowCount))
             tvDraftProductInfo.setOnClickListener {
                 ProductManageTracking.eventDraftClick(DRAFT_PRODUCT)
                 RouteManager.route(activity, ApplinkConst.PRODUCT_DRAFT)
@@ -60,7 +60,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        tvDraftProductInfo = view.findViewById(com.tokopedia.product.manage.oldlist.R.id.tv_draft_product)
+        tvDraftProductInfo = view.findViewById(com.tokopedia.product.manage.R.id.tv_draft_product)
         tvDraftProductInfo.visibility = View.GONE
     }
 
