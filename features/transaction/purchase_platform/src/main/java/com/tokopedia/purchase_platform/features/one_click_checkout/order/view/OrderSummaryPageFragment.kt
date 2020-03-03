@@ -210,7 +210,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 intent.apply {
                     putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, 1)
                     putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, 1)
-                    putExtra(PreferenceEditActivity.EXTRA_PAYMENT_ID, 1)
+                    putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, "")
                     putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                     putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, viewModel.generateListShopShipment())
                 }

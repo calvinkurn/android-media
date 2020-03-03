@@ -22,7 +22,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
     var addressId = -1
     var shippingId = -1
-    var paymentId = -1
+    var gatewayCode = ""
     var paymentQuery = ""
     var shippingParam: ShippingParam? = null
     var listShopShipment: ArrayList<ShopShipment>? = null
@@ -46,14 +46,14 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
         addressId = intent.getIntExtra(EXTRA_ADDRESS_ID, -1)
         shippingId = intent.getIntExtra(EXTRA_SHIPPING_ID, -1)
-        paymentId = intent.getIntExtra(EXTRA_PAYMENT_ID, -1)
+        gatewayCode = intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
         shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
 
-        if (addressId == -1 || shippingId == -1 || paymentId == -1) {
-            supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment()).commit()
+        if (addressId == -1 || shippingId == -1 || gatewayCode.isNotBlank()) {
+            supportFragmentManager.beginTransaction().replace(R.id.container, PaymentMethodFragment.newInstance()).commit()
         } else {
-            supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment())
+            supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment.newInstance(true))
         }
     }
 
@@ -125,7 +125,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
         const val EXTRA_ADDRESS_ID = "address_id"
         const val EXTRA_SHIPPING_ID = "shipping_id"
-        const val EXTRA_PAYMENT_ID = "payment_id"
+        const val EXTRA_GATEWAY_CODE = "gateway_code"
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"
         const val EXTRA_LIST_SHOP_SHIPMENT = "list_shop_shipment"

@@ -13,12 +13,14 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 import rx.Observable
@@ -34,7 +36,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
         const val FORCE_TIMEOUT = 90000L
 
-        const val ARG_IS_EDIT = "is_edit"
+        private const val ARG_IS_EDIT = "is_edit"
 
         fun newInstance(isEdit: Boolean = false): PaymentMethodFragment {
             val paymentMethodFragment = PaymentMethodFragment()
@@ -59,7 +61,24 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initHeader()
         initWebView()
+    }
+
+    private fun initHeader() {
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            parent.hideAddButton()
+            parent.hideDeleteButton()
+            parent.setHeaderTitle("Pilih Metode Pembayaran")
+            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+                parent.hideStepper()
+            } else {
+                parent.setHeaderSubtitle("Langkah 3 dari 3")
+                parent.showStepper()
+                parent.setStepperValue(75, true)
+            }
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -103,12 +122,12 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 
         override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
             super.onPageStarted(view, url, favicon)
-            progress_bar.visible()
+            progress_bar?.visible()
         }
 
         override fun onPageFinished(view: WebView?, url: String?) {
             super.onPageFinished(view, url)
-            progress_bar.gone()
+            progress_bar?.gone()
         }
 
         override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -120,7 +139,10 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             val query = uri.query
             val isSuccess = uri.getQueryParameter("success")
             if (isSuccess != null && isSuccess.equals("true", true)) {
-                goToNextStep()
+                val gatewayCode = uri.getQueryParameter("gateway_code")
+                if (gatewayCode != null) {
+                    goToNextStep(gatewayCode)
+                }
             }
             return super.shouldInterceptRequest(view, url)
         }
@@ -151,14 +173,14 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 //        showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
     }
 
-    private fun goToNextStep() {
-        if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
-            activity?.onBackPressed()
-        } else {
-            val parent = activity
-            if (parent is PreferenceEditActivity) {
-                parent.addFragment(ShippingDurationFragment())
-                parent.setStepperValue(100, true)
+    private fun goToNextStep(gatewayCode: String) {
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            parent.gatewayCode = gatewayCode
+            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+                parent.onBackPressed()
+            } else {
+                parent.addFragment(PreferenceSummaryFragment.newInstance())
             }
         }
     }

@@ -220,7 +220,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         intent.apply {
             putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, 1)
             putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, 1)
-            putExtra(PreferenceEditActivity.EXTRA_PAYMENT_ID, 1)
+            putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, "")
         }
         startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
     }

@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
 import dagger.Component
 
 @PreferenceEditScope
@@ -11,4 +12,5 @@ import dagger.Component
 interface PreferenceEditComponent{
     fun inject(addressListFragment: AddressListFragment )
     fun inject(shippingDurationFragment: ShippingDurationFragment)
+    fun inject(summaryFragment: PreferenceSummaryFragment)
 }
