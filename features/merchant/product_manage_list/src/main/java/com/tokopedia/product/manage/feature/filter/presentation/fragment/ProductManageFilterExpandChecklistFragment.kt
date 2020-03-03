@@ -102,9 +102,9 @@ class ProductManageFilterExpandChecklistFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView()
         observeDataLength()
         observeChecklistData()
+        initView()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -137,13 +137,13 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun initView() {
         initTitle()
-        initButtons()
         configToolbar()
         recyclerView?.setOnTouchListener { _, _ ->
             searchView?.hideKeyboard()
             submitButton?.visibility = View.VISIBLE
             false
         }
+        initButtons()
     }
 
     private fun configToolbar() {
@@ -238,11 +238,6 @@ class ProductManageFilterExpandChecklistFragment :
             }
             this.activity?.finish()
         }
-        if(checkSelectData()) {
-            showButtons()
-        } else {
-            hideButtons()
-        }
         reset?.setOnClickListener {
             adapter?.clearAllChecklists()
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
@@ -256,15 +251,6 @@ class ProductManageFilterExpandChecklistFragment :
         } else {
             title?.text = OTHER_FILTER_TITLE
         }
-    }
-
-    private fun checkSelectData(): Boolean {
-        productManageFilterExpandChecklistViewModel.checklistData.value?.forEach {
-            if(it.isSelected) {
-                return true
-            }
-        }
-        return false
     }
 
     private fun search(searchQuery: String): List<ChecklistViewModel> {

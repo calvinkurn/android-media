@@ -18,12 +18,11 @@ class ProductManageFilterExpandChecklistViewModel @Inject constructor(): ViewMod
 
     fun initData(data: List<ChecklistViewModel>) {
         _checklistData.postValue(data.toMutableList())
-        _dataSize.postValue(0)
-        _checklistData.value?.forEach {
-            if(it.isSelected) {
-                updateDataSize(1)
-            }
+        var numSelected = 0
+        data.forEach {
+            if(it.isSelected) numSelected++
         }
+        _dataSize.postValue(numSelected)
     }
 
     fun updateSelectedItem(element: ChecklistViewModel) {

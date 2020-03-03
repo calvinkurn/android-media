@@ -161,8 +161,12 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         }
     }
 
-    override fun onChipClicked(data: FilterDataViewModel) {
-        productManageFilterViewModel.updateSelect(data)
+    override fun onChipClicked(data: FilterDataViewModel, canSelectMany: Boolean, title: String) {
+        if(canSelectMany) {
+            productManageFilterViewModel.updateSelect(data)
+        } else {
+            productManageFilterViewModel.updateSelect(data, title)
+        }
     }
 
     override fun onShowChips(element: FilterViewModel) {

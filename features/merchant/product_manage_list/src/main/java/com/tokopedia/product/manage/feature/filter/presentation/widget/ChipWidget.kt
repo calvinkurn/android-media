@@ -26,7 +26,7 @@ class ChipWidget : BaseCustomView {
         View.inflate(context, com.tokopedia.product.manage.R.layout.widget_chip, this)
     }
 
-    fun bind(data: FilterDataViewModel, chipClickListener: ChipClickListener) {
+    fun bind(data: FilterDataViewModel, chipClickListener: ChipClickListener, canSelectMany: Boolean, title: String) {
         item_name.text = data.name
         val originalColor = item_name.currentTextColor
         if(data.select) {
@@ -35,7 +35,7 @@ class ChipWidget : BaseCustomView {
         }
         this.setOnClickListener {
             toggleSelected(originalColor)
-            chipClickListener.onChipClicked(data)
+            chipClickListener.onChipClicked(data, canSelectMany, title)
         }
     }
 
@@ -50,5 +50,5 @@ class ChipWidget : BaseCustomView {
 }
 
 interface ChipClickListener {
-    fun onChipClicked(data: FilterDataViewModel)
+    fun onChipClicked(data: FilterDataViewModel, canSelectMany: Boolean, title: String)
 }

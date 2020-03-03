@@ -17,35 +17,27 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
     }
 
     fun updateSelectedItem(selectedElement: SelectViewModel?, element: SelectViewModel) {
-        val index = _selectData.value?.indexOf(element)
-        _selectData.value?.remove(element)
-        updateElementValue(element, true)
+        val currentData = _selectData.value
+        val index = currentData?.indexOf(element)
+        index?.let {
+            currentData[it].isSelected = true
+        }
         selectedElement?.let { selected ->
-            val selectedIndex = _selectData.value?.indexOf(selected)
-            _selectData.value?.remove(selected)
-            updateElementValue(selected, false)
+            val selectedIndex = currentData?.indexOf(selected)
             selectedIndex?.let {
-                _selectData.value?.add(it, selected)
+                currentData[it].isSelected = true
             }
         }
-        index?.let {
-            _selectData.value?.add(it,element)
-        }
+        _selectData.postValue(currentData)
     }
 
     fun updateSelectedItem(element: SelectViewModel) {
-        val index = _selectData.value?.indexOf(element)
-        _selectData.value?.remove(element)
-        updateElementValue(element, true)
+        val currentData = _selectData.value
+        val index = currentData?.indexOf(element)
         index?.let {
-            _selectData.value?.add(it, element)
+            currentData[it].isSelected = true
         }
-    }
-
-    private fun updateElementValue(element: SelectViewModel?, value: Boolean) {
-        element?.let {
-            it.isSelected = value
-        }
+        _selectData.postValue(currentData)
     }
 
 }

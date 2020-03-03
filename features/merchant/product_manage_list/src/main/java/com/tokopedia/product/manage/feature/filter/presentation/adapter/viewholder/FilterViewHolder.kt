@@ -50,11 +50,14 @@ class FilterViewHolder(view: View,
         headerWidget.arrow.setOnClickListener {
             showChipsListener.onShowChips(element)
         }
-        adapter = if(element.title == ProductManageFilterMapper.SORT_HEADER ||
-                element.title == ProductManageFilterMapper.ETALASE_HEADER) {
-            ChipsAdapter(chipClickListener, false)
-        } else {
-            ChipsAdapter(chipClickListener, true)
+        adapter = when(element.title) {
+            ProductManageFilterMapper.SORT_HEADER -> {
+                ChipsAdapter(chipClickListener, false, element.title)
+            }
+            ProductManageFilterMapper.ETALASE_HEADER -> {
+                ChipsAdapter(chipClickListener, false, element.title)
+            }
+            else -> ChipsAdapter(chipClickListener, true)
         }
         recyclerView.adapter = adapter
         adapter?.setData(element)

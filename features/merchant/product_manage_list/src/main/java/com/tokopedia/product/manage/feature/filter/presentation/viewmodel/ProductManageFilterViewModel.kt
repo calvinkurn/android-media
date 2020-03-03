@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.data.model.CombinedResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
@@ -39,6 +40,9 @@ class ProductManageFilterViewModel @Inject constructor(
     val filterData: LiveData<MutableList<FilterViewModel>>
         get() = _filterData
 
+    private var selectedSort: FilterDataViewModel? = null
+    private var selectedEtalase: FilterDataViewModel? = null
+
     fun getData(shopId: String) {
         productManageFilterCombinedUseCase.params = ProductManageFilterCombinedUseCase.createRequestParams(shopId, isMyShop(shopId))
         launchCatchError(block = {
@@ -57,17 +61,30 @@ class ProductManageFilterViewModel @Inject constructor(
 
     fun updateSelect(filterData: FilterDataViewModel) {
         val currentData = _filterData.value
-        var filterIndex = 0
-        var filterIndexOfData = 0
-        var dataIndexofData = 0
-        currentData?.forEach {
-            if(it.data.indexOf(filterData) != -1) {
-                dataIndexofData = it.data.indexOf(filterData)
-                filterIndexOfData = filterIndex
+        val indexes = getIndexOfData(filterData)
+        currentData?.get(indexes.first())?.data?.get(indexes.last())?.select = !filterData.select
+        _filterData.postValue(currentData)
+    }
+
+    fun updateSelect(filterData: FilterDataViewModel, title: String) {
+        var selectedIndex = emptyList<Int>()
+        val currentData = _filterData.value
+        val indexes = getIndexOfData(filterData)
+        currentData?.get(indexes.first())?.data?.get(indexes.last())?.select = !filterData.select
+        if(title == ProductManageFilterMapper.SORT_HEADER) {
+            selectedSort?.let {
+                selectedIndex = getIndexOfData(it)
             }
-            filterIndex++
+            selectedSort = currentData?.get(indexes.first())?.data?.get(indexes.last())
+        } else {
+            selectedEtalase?.let {
+                selectedIndex = getIndexOfData(it)
+            }
+            selectedEtalase = currentData?.get(indexes.first())?.data?.get(indexes.last())
         }
-        currentData?.get(filterIndexOfData)?.data?.get(dataIndexofData)?.select = !filterData.select
+        if(selectedIndex.isNotEmpty()) {
+            currentData?.get(selectedIndex.first())?.data?.get(selectedIndex.last())?.select = false
+        }
         _filterData.postValue(currentData)
     }
 
@@ -91,4 +108,19 @@ class ProductManageFilterViewModel @Inject constructor(
     }
 
     private fun isMyShop(shopId: String) = userSession.shopId == shopId
+
+    private fun getIndexOfData(data: FilterDataViewModel): List<Int> {
+        var filterIndex = 0
+        var filterIndexOfData = 0
+        var dataIndexOfData = 0
+        val currentData = _filterData.value
+        currentData?.forEach {
+            if(it.data.indexOf(data) != -1) {
+                dataIndexOfData = it.data.indexOf(data)
+                filterIndexOfData = filterIndex
+            }
+            filterIndex++
+        }
+        return listOf(filterIndexOfData, dataIndexOfData)
+    }
 }
