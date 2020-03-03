@@ -173,6 +173,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             when(it) {
                 is Success -> {
                     val mappedResult = ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data)
+                    productManageFilterViewModel.updateData(mappedResult)
                     filterAdapter?.updateData(mappedResult)
                 }
                 is Fail -> {
@@ -189,15 +190,26 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         setAction(REST_BUTTON_TEXT) {
             this.clearSelected()
         }
+        bottomSheetAction.visibility = View.GONE
     }
 
     private fun clearSelected() {
         productManageFilterViewModel.clearSelected()
     }
 
+    private fun checkSelected(filterData: List<FilterViewModel>): Boolean {
+        filterData.forEach {filterViewModel ->
+            filterViewModel.data.forEach {
+                if(it.select) return true
+            }
+        }
+        return false
+    }
+
     private fun observeFilterData() {
         productManageFilterViewModel.filterData.observe(this, Observer {
             filterAdapter?.updateData(it)
+            if(checkSelected(it)) bottomSheetAction.visibility = View.VISIBLE
         })
     }
 }
