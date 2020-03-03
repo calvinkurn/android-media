@@ -6,7 +6,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.ProductReviewModel
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewModel
 import com.tokopedia.unifyprinciples.Typography
 
 class SellerReviewListViewHolder(itemView: View): AbstractViewHolder<ProductReviewModel>(itemView) {

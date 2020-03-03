@@ -198,6 +198,6 @@ class MainActivity : AppCompatActivity() {
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
-        RouteManager.route(this, ApplinkConstInternalMarketplace.CART)
+        RouteManager.route(this, ApplinkConstInternalMarketplace.REVIEW_SELLER)
     }
 }

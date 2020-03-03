@@ -1,7 +1,8 @@
 package com.tokopedia.reviewseller.common
 
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.HeaderModel
-import com.tokopedia.reviewseller.feature.reviewdetail.view.model.ItemRatingBarModel
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.FilterAndSortModel
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.ProductReviewModel
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.SummaryReviewModel
 
 /**
  * @author by milhamj on 2020-02-14.
@@ -90,8 +91,10 @@ object ReviewSellerConstant {
     //TODO add data static summary product review
     val summaryReviewProduct = SummaryReviewModel(
             "4.6",
-            "1.234 Ulasan",
+            "1.234",
             "1 Des 2019 - Hari ini")
+
+    val filterAndSortComposition = FilterAndSortModel("7 Hari Terakhir")
 
     val headerRatingData = HeaderModel("4.6", "1.234 Ulasan")
     val listRatingBarData = mutableListOf<ItemRatingBarModel>().apply {
@@ -100,5 +103,4 @@ object ReviewSellerConstant {
         add(ItemRatingBarModel("3", "6"))
         add(ItemRatingBarModel("2", "0"))
         add(ItemRatingBarModel("1", "4"))
-    }
 }

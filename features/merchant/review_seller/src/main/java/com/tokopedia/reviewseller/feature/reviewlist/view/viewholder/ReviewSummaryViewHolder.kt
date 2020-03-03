@@ -2,15 +2,10 @@ package com.tokopedia.reviewseller.feature.reviewlist.view.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.reviewseller.R
-import com.tokopedia.reviewseller.common.SummaryReviewModel
-import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.reviewseller.feature.reviewlist.view.model.SummaryReviewModel
 import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.item_rating_produk.view.tgCountRating
-import kotlinx.android.synthetic.main.item_rating_produk.view.tgCountReview
-import kotlinx.android.synthetic.main.summary_review_product.view.*
 
 class ReviewSummaryViewHolder(itemView: View): AbstractViewHolder<SummaryReviewModel>(itemView) {
 
