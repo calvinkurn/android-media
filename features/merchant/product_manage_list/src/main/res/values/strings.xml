@@ -105,4 +105,10 @@
     <string name="product_manage_title_edit">Ubah</string>
     <string name="product_manage_title_share">Bagikan</string>
 
+    <string name="product_stock_reminder_toaster_success_desc">Pengingat stok %1$s berhasil dipasang.</string>
+    <string name="product_stock_reminder_header_title">Pasang Pengingat Stok</string>
+    <string name="product_stock_reminder_typography_title">Pengingat Stok</string>
+    <string name="product_stock_reminder_typography_desc">Pengingat akan aktif jika stok produk kurang dari"</string>
+    <string name="product_stock_reminder_button">Simpan</string>
+
 </resources>
