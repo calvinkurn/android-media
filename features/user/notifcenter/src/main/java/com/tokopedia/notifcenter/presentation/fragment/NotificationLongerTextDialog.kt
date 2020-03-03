@@ -69,7 +69,7 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_notification_update_longer, container, false).apply {
+        return inflater.inflate(R.layout.dialog_notification_update_longer, container, false).apply {
             contentImageView = findViewById(R.id.content_image)
             contentTextView = findViewById(R.id.content_text)
             contentTitleView = findViewById(R.id.content_title)
