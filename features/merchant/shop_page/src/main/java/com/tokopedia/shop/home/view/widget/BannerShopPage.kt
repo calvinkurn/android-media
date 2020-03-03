@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view
+package com.tokopedia.shop.home.view.widget
 
 import android.content.Context
 import android.util.AttributeSet

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.banner.BannerView
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.BannerShopPage
+import com.tokopedia.shop.home.view.widget.BannerShopPage
 import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 
 /**
