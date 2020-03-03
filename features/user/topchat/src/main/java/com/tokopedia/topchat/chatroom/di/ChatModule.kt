@@ -1,16 +1,16 @@
 package com.tokopedia.topchat.chatroom.di
 
 import android.content.Context
-import com.google.gson.Gson
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -20,11 +20,13 @@ import com.tokopedia.imageuploader.domain.GenerateHostRepository
 import com.tokopedia.imageuploader.domain.UploadImageRepository
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.utils.ImageUploaderUtils
+import com.tokopedia.mediauploader.di.MediaUploaderModule
+import com.tokopedia.mediauploader.di.MediaUploaderNetworkModule
+import com.tokopedia.mediauploader.di.NetworkModule
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -56,7 +58,15 @@ import javax.inject.Named
  * @author : Steven 29/11/18
  */
 
-@Module(includes = arrayOf(ImageUploaderModule::class, ChatNetworkModule::class))
+@Module(
+        includes = arrayOf(
+                ImageUploaderModule::class,
+                ChatNetworkModule::class,
+                MediaUploaderModule::class,
+                MediaUploaderNetworkModule::class,
+                NetworkModule::class
+        )
+)
 class ChatModule {
 
     private val NET_READ_TIMEOUT = 60

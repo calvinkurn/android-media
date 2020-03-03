@@ -8,7 +8,6 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -31,8 +30,11 @@ import com.tokopedia.chat_common.network.ChatUrl.Companion.CHAT_WEBSOCKET_DOMAIN
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
 import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
+import com.tokopedia.mediauploader.data.state.UploadResult
+import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
@@ -47,10 +49,7 @@ import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
-import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.*
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -60,6 +59,10 @@ import com.tokopedia.websocket.WebSocketSubscriber
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -69,6 +72,7 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * @author : Steven 11/12/18
@@ -93,8 +97,14 @@ class TopChatRoomPresenter @Inject constructor(
         private var seamlessLoginUsecase: SeamlessLoginUsecase,
         private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
         private var addWishListUseCase: AddWishListUseCase,
-        private var removeWishListUseCase: RemoveWishListUseCase)
-    : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper), TopChatContract.Presenter {
+        private var removeWishListUseCase: RemoveWishListUseCase,
+        private var uploadImageUseCase2: UploaderUseCase,
+        private var dispatchers: TopchatCoroutineContextProvider
+) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
+        TopChatContract.Presenter, CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = dispatchers.Main + SupervisorJob()
 
     var thisMessageId: String = ""
 
@@ -304,39 +314,62 @@ class TopChatRoomPresenter @Inject constructor(
     override fun startUploadImages(it: ImageUploadViewModel) {
         processDummyMessage(it)
         isUploading = true
-        uploadImageUseCase.unsubscribe()
-        val reqParam = HashMap<String, RequestBody>()
-        RequestBody.create(MediaType.parse("text/plain"), "1")
-        reqParam["web_service"] = createRequestBody("1")
-        reqParam["id"] = createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
-        val params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
+        launch(dispatchers.IO) {
+            val params = uploadImageUseCase2.createParams(uploadSourceId, File(it.imageUrl))
+            val result = uploadImageUseCase2(params)
+            withContext(dispatchers.Main) {
+                when (result) {
+                    is UploadResult.Success -> {
+                        when (networkMode) {
+//                            MODE_API -> sendByApi(
+//                                    ReplyChatUseCase.generateParamAttachImage(thisMessageId, this.picSrc),
+//                                    it
+//                            )
+//                            MODE_WEBSOCKET -> sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
+//                                    this.picSrc, it.startTime))
+                        }
+                        isUploading = false
+                    }
+                    is UploadResult.Error -> {
 
-        uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>() {
-            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
-                t.dataResultImageUpload.data?.run {
-                    when (networkMode) {
-                        MODE_API -> sendByApi(
-                                ReplyChatUseCase.generateParamAttachImage(thisMessageId, this.picSrc),
-                                it
-                        )
-                        MODE_WEBSOCKET -> sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
-                                this.picSrc, it.startTime))
                     }
                 }
-                isUploading = false
             }
+        }
 
-
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-                isUploading = false
-                view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, e), it)
-            }
-
-        })
+//        uploadImageUseCase.unsubscribe()
+//        val reqParam = HashMap<String, RequestBody>()
+//        RequestBody.create(MediaType.parse("text/plain"), "1")
+//        reqParam["web_service"] = createRequestBody("1")
+//        reqParam["id"] = createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
+//        val params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
+//
+//        uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>() {
+//            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
+//                t.dataResultImageUpload.data?.run {
+//                    when (networkMode) {
+//                        MODE_API -> sendByApi(
+//                                ReplyChatUseCase.generateParamAttachImage(thisMessageId, this.picSrc),
+//                                it
+//                        )
+//                        MODE_WEBSOCKET -> sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
+//                                this.picSrc, it.startTime))
+//                    }
+//                }
+//                isUploading = false
+//            }
+//
+//
+//            override fun onCompleted() {
+//
+//            }
+//
+//            override fun onError(e: Throwable?) {
+//                isUploading = false
+//                view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, e), it)
+//            }
+//
+//        })
     }
 
     private fun validateImageAttachment(uri: String?): Boolean {
@@ -703,4 +736,7 @@ class TopChatRoomPresenter @Inject constructor(
         removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
+    companion object {
+        const val uploadSourceId = "FYkQxT"
+    }
 }
