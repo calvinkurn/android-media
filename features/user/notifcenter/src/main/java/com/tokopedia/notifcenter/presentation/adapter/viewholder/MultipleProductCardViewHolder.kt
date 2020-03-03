@@ -4,19 +4,24 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.entity.ProductData
 import com.tokopedia.notifcenter.data.viewbean.MultipleProductCardViewBean
+import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.notifcenter.widget.ProductVariantLayout
 import com.tokopedia.unifycomponents.UnifyButton
 
 class MultipleProductCardViewHolder(
-        itemView: View
+        itemView: View,
+        val listener: NotificationItemListener
 ): AbstractViewHolder<MultipleProductCardViewBean>(itemView) {
 
     private val thumbnail: ImageView = itemView.findViewById(R.id.iv_thumbnail)
@@ -24,6 +29,7 @@ class MultipleProductCardViewHolder(
     private val productPrice: TextView = itemView.findViewById(R.id.tv_product_price)
     private val productVariant: ProductVariantLayout = itemView.findViewById(R.id.pvl_variant)
     private val productCampaign: CampaignRedView = itemView.findViewById(R.id.cl_campaign)
+    private val productContainer: ConstraintLayout = itemView.findViewById(R.id.cl_product)
     private val btnCheckout: UnifyButton = itemView.findViewById(R.id.btn_checkout)
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
 
@@ -50,10 +56,18 @@ class MultipleProductCardViewHolder(
     }
 
     private fun productCheckoutClicked(element: MultipleProductCardViewBean) {
+        productContainer.setOnClickListener {
+            //TODO: tracker
+            RouteManager.route(
+                    itemView.context,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    element.product.productId
+            )
+        }
+
         btnCheckout.setOnClickListener {
-            //listener.itemClicked(element, adapterPosition)
-            //listener.addProductToCheckout(element)
-            //element.isRead = true
+            //TODO: tracker
+            listener.addProductToCheckout(element.userInfo, element.product)
         }
     }
 
