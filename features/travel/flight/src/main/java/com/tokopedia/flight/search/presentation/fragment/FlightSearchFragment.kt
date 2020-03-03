@@ -40,7 +40,9 @@ import com.tokopedia.flight.search.presentation.contract.FlightSearchContract
 import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
+import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
 import kotlinx.android.synthetic.main.include_filter_bottom_action_view.*
@@ -784,18 +786,32 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     private fun buildQuickFilterView() {
+        flight_sort_filter.filterType = SortFilter.TYPE_ADVANCED
+        flight_sort_filter.sortFilterHorizontalScrollView.scrollX = 0
+        flight_sort_filter.parentListener = {
+            showFilterSortBottomSheet()
+        }
+
         if (filterItems.size < FILTER_SORT_ITEM_SIZE) {
             val quickDirectFilter = SortFilterItem(getString(R.string.direct))
-            quickDirectFilter.listener = {}
+            quickDirectFilter.listener = {
+                quickDirectFilter.toggle()
+            }
 
             val quickBaggageFilter = SortFilterItem(getString(R.string.flight_search_filter_baggage_label))
-            quickBaggageFilter.listener = {}
+            quickBaggageFilter.listener = {
+                quickBaggageFilter.toggle()
+            }
 
             val quickMealFilter = SortFilterItem(getString(R.string.flight_search_filter_meal_label))
-            quickMealFilter.listener = {}
+            quickMealFilter.listener = {
+                quickMealFilter.toggle()
+            }
 
             val quickTransitFilter = SortFilterItem(getString(R.string.flight_search_filter_transit))
-            quickTransitFilter.listener = {}
+            quickTransitFilter.listener = {
+                quickTransitFilter.toggle()
+            }
 
             filterItems.add(quickDirectFilter)
             filterItems.add(quickBaggageFilter)
@@ -807,6 +823,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         for (item in filterItems) {
             item.refChipUnify.setChevronClickListener { }
+        }
+    }
+
+    private fun SortFilterItem.toggle() {
+        type = if (type == ChipsUnify.TYPE_NORMAL) {
+            ChipsUnify.TYPE_SELECTED
+        } else {
+            ChipsUnify.TYPE_NORMAL
         }
     }
 
