@@ -11,6 +11,7 @@ query umrahTravelAgents($params: UmrahTravelAgentsInput!){
     permissionOfUmrah
     pilgrimsPerYear
     establishedSince
+    slugName
     ui {
         establishedSince
         pilgrimsPerYear

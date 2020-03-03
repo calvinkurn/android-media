@@ -10,10 +10,14 @@ import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.R;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.core.analytics.model.CustomerWrapper;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.track.interfaces.ContextAnalytics;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -54,7 +58,18 @@ public class MoengageAnalytics extends ContextAnalytics {
                         //.setNotificationType(R.integer.notification_type_multiple)
                         .build();
         MoEngage.initialise(moEngage);
-        sendExistingUserAndInstallTrackingEvent();
+        executeInstallTrackingAsync();
+    }
+
+    private void executeInstallTrackingAsync(){
+        WeaveInterface installTrackingWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return sendExistingUserAndInstallTrackingEvent();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(installTrackingWeave, RemoteConfigKey.ENABLE_ASYNC_INSTALLTRACK, context);
     }
 
     @Override
@@ -114,11 +129,13 @@ public class MoengageAnalytics extends ContextAnalytics {
         sendTrackEvent(builder.build(), eventName);
     }
 
-    public void sendExistingUserAndInstallTrackingEvent() {
+    @NotNull
+    private boolean sendExistingUserAndInstallTrackingEvent() {
         if (getContext() != null) {
             UserSessionInterface userSession = new UserSession(getContext());
             MoEHelper.getInstance(getContext()).setExistingUser(userSession.isLoggedIn());
         }
+        return true;
     }
 
     /**

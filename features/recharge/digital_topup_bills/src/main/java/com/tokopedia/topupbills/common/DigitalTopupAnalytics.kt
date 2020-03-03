@@ -1,6 +1,6 @@
 package com.tokopedia.topupbills.common
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.topupbills.telco.data.TelcoProductDataCollection
 import com.tokopedia.common.topupbills.data.TopupBillsPromo
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
