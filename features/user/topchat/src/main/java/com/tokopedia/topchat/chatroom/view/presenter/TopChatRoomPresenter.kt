@@ -31,8 +31,6 @@ import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
-import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.mediauploader.data.state.UploadResult
 import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -44,7 +42,6 @@ import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.domain.usecase.DeleteMessageListUseCase
-import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -85,7 +82,6 @@ class TopChatRoomPresenter @Inject constructor(
         private var dispatchers: TopchatCoroutineContextProvider,
         private var getChatUseCase: GetChatUseCase,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
-        private var uploadImageUseCase: UploadImageUseCase<TopChatImageUploadPojo>,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
         private var replyChatUseCase: ReplyChatUseCase,
         private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
@@ -323,40 +319,6 @@ class TopChatRoomPresenter @Inject constructor(
                     view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, it), image)
                 }
         )
-
-//        uploadImageUseCase.unsubscribe()
-//        val reqParam = HashMap<String, RequestBody>()
-//        RequestBody.create(MediaType.parse("text/plain"), "1")
-//        reqParam["web_service"] = createRequestBody("1")
-//        reqParam["id"] = createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
-//        val params = uploadImageUseCase.createRequestParam(it.imageUrl, "/upload/attachment", "fileToUpload\"; filename=\"image.jpg", reqParam)
-//
-//        uploadImageUseCase.execute(params, object : Subscriber<ImageUploadDomainModel<TopChatImageUploadPojo>>() {
-//            override fun onNext(t: ImageUploadDomainModel<TopChatImageUploadPojo>) {
-//                t.dataResultImageUpload.data?.run {
-//                    when (networkMode) {
-//                        MODE_API -> sendByApi(
-//                                ReplyChatUseCase.generateParamAttachImage(thisMessageId, this.picSrc),
-//                                it
-//                        )
-//                        MODE_WEBSOCKET -> sendMessageWebSocket(TopChatWebSocketParam.generateParamSendImage(thisMessageId,
-//                                this.picSrc, it.startTime))
-//                    }
-//                }
-//                isUploading = false
-//            }
-//
-//
-//            override fun onCompleted() {
-//
-//            }
-//
-//            override fun onError(e: Throwable?) {
-//                isUploading = false
-//                view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, e), it)
-//            }
-//
-//        })
     }
 
     private fun uploadImageWithSourceId(sourceId: String, image: ImageUploadViewModel) {
@@ -549,7 +511,6 @@ class TopChatRoomPresenter @Inject constructor(
     override fun detachView() {
         destroyWebSocket()
         getChatUseCase.unsubscribe()
-        uploadImageUseCase.unsubscribe()
         getTemplateChatRoomUseCase.unsubscribe()
         replyChatUseCase.unsubscribe()
         getExistingMessageIdUseCase.unsubscribe()

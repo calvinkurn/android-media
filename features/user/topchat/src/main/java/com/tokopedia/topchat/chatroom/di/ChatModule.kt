@@ -33,7 +33,6 @@ import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl
 import com.tokopedia.topchat.chatroom.data.api.ChatRoomApi
 import com.tokopedia.topchat.chatroom.domain.mapper.GetTemplateChatRoomMapper
-import com.tokopedia.topchat.chatroom.domain.pojo.TopChatImageUploadPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.imageserver.ChatImageServerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.roomsettings.RoomSettingResponse
 import com.tokopedia.topchat.chatroom.domain.usecase.GetTemplateChatRoomUseCase
@@ -61,7 +60,6 @@ import javax.inject.Named
 
 @Module(
         includes = arrayOf(
-                ImageUploaderModule::class,
                 ChatNetworkModule::class,
                 MediaUploaderModule::class,
                 MediaUploaderNetworkModule::class,
@@ -85,16 +83,6 @@ class ChatModule {
     @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return (context as NetworkRouter)
-    }
-
-    @Provides
-    fun provideUploadImageUseCase(
-            @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
-            @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
-            @ImageUploaderQualifier gson: Gson,
-            @ImageUploaderQualifier userSession: UserSessionInterface,
-            @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<TopChatImageUploadPojo> {
-        return UploadImageUseCase(uploadImageRepository, generateHostRepository, gson, userSession, TopChatImageUploadPojo::class.java, imageUploaderUtils)
     }
 
     @ChatScope
