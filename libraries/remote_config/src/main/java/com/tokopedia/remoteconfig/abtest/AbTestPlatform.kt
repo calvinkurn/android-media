@@ -134,14 +134,13 @@ class AbTestPlatform @JvmOverloads constructor (val context: Context): RemoteCon
         val globalRevision = responseData.dataRollout.globalRev
 
         val currentTimestamp = Date().time
-        editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
-
         if (featureVariants != null) {
             editor.clear()
             for (a in featureVariants) {
                 editor.putString(a.feature, a.variant)
             }
         }
+        editor.putLong(KEY_SP_TIMESTAMP_AB_TEST, currentTimestamp)
         editor.putInt(REVISION, globalRevision)
         editor.commit()
 
