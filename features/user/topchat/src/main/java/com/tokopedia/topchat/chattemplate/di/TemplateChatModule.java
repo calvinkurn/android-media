@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -48,31 +47,40 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class TemplateChatModule {
 
+    private Context mContext;
+
+    private TemplateChatModule() {}
+
+    public TemplateChatModule(Context context) {
+        mContext = context;
+    }
+
+    @Provides
+    Context provideContext() {
+        return mContext;
+    }
+
     @TemplateChatScope
     @Provides
-    UserSessionInterface provideUserSessionInterface(
-            @ApplicationContext Context context) {
+    UserSessionInterface provideUserSessionInterface(Context context) {
         return new UserSession(context);
     }
 
     @TemplateChatScope
     @Provides
-    UserSession provideUserSession(
-            @ApplicationContext Context context) {
+    UserSession provideUserSession(Context context) {
         return new UserSession(context);
     }
 
     @TemplateChatScope
     @Provides
-    NetworkRouter provideNetworkRouter(
-            @ApplicationContext Context context) {
+    NetworkRouter provideNetworkRouter(Context context) {
         return (NetworkRouter) context;
     }
 
     @TemplateChatScope
     @Provides
-    ChuckerInterceptor provideChuckerInterceptor(
-            @ApplicationContext Context context) {
+    ChuckerInterceptor provideChuckerInterceptor(Context context) {
         return new ChuckerInterceptor(context);
     }
 
@@ -83,14 +91,14 @@ public class TemplateChatModule {
     }
 
     @Provides
-    public XUserIdInterceptor provideXUserIdInterceptor(@ApplicationContext Context context,
+    public XUserIdInterceptor provideXUserIdInterceptor(Context context,
                                                         NetworkRouter networkRouter,
                                                         UserSession userSession) {
         return new XUserIdInterceptor(context, networkRouter, userSession);
     }
 
     @Provides
-    public TkpdAuthInterceptor provideChatTkpdAuthInterceptor(@ApplicationContext Context context,
+    public TkpdAuthInterceptor provideChatTkpdAuthInterceptor(Context context,
                                                               NetworkRouter networkRouter,
                                                               UserSessionInterface userSessionInterface) {
         return new TkpdAuthInterceptor(context, networkRouter, userSessionInterface);
@@ -99,7 +107,7 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
+    OkHttpClient provideOkHttpClient(Context context,
                                      @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
                                      ChuckerInterceptor chuckInterceptor,
