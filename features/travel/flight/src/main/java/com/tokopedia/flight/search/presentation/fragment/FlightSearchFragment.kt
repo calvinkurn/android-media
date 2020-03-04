@@ -538,9 +538,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (flightFilterModel != null) {
             this.flightFilterModel = flightFilterModel
         }
-        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, this.flightFilterModel, false)
         setInFilterMode()
-        setupQuickFilter()
+        flightSearchPresenter.fetchSortAndFilter(selectedSortOption, this.flightFilterModel, false)
     }
 
     fun searchFlightData() {
@@ -769,53 +768,45 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             val quickDirectFilter = SortFilterItem(getString(R.string.direct))
             quickDirectFilter.listener = {
                 quickDirectFilter.toggle()
-                if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList != null
-                        && flightFilterModel.transitTypeList.contains(TransitEnum.DIRECT)) {
+                if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList.contains(TransitEnum.DIRECT)) {
                     flightFilterModel.transitTypeList.remove(TransitEnum.DIRECT)
                 } else if (::flightFilterModel.isInitialized) {
-                    if (flightFilterModel.transitTypeList == null) flightFilterModel.transitTypeList = arrayListOf()
                     flightFilterModel.transitTypeList.add(TransitEnum.DIRECT)
                 }
-                recountIndicatorCount()
+                flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
             val quickBaggageFilter = SortFilterItem(getString(R.string.flight_search_filter_baggage_label))
             quickBaggageFilter.listener = {
                 quickBaggageFilter.toggle()
-                if (::flightFilterModel.isInitialized && flightFilterModel.facilityList != null
-                        && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
+                if (::flightFilterModel.isInitialized && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
                     flightFilterModel.facilityList.remove(FlightFilterFacilityEnum.BAGGAGE)
                 } else if (::flightFilterModel.isInitialized) {
-                    if (flightFilterModel.facilityList == null) flightFilterModel.facilityList = arrayListOf()
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.BAGGAGE)
                 }
-                recountIndicatorCount()
+                flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
             val quickMealFilter = SortFilterItem(getString(R.string.flight_search_filter_meal_label))
             quickMealFilter.listener = {
                 quickMealFilter.toggle()
-                if (::flightFilterModel.isInitialized && flightFilterModel.facilityList != null
-                        && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
+                if (::flightFilterModel.isInitialized && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
                     flightFilterModel.facilityList.remove(FlightFilterFacilityEnum.MEAL)
-                } else if (::flightFilterModel.isInitialized && flightFilterModel.facilityList != null) {
-                    if (flightFilterModel.facilityList == null) flightFilterModel.facilityList = arrayListOf()
+                } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.MEAL)
                 }
-                recountIndicatorCount()
+                flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
             val quickTransitFilter = SortFilterItem(getString(R.string.flight_search_filter_transit))
             quickTransitFilter.listener = {
                 quickTransitFilter.toggle()
-                if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList != null
-                        && flightFilterModel.transitTypeList.contains(TransitEnum.ONE)) {
+                if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList.contains(TransitEnum.ONE)) {
                     flightFilterModel.transitTypeList.remove(TransitEnum.ONE)
-                } else if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList != null) {
-                    if (flightFilterModel.transitTypeList == null) flightFilterModel.transitTypeList = arrayListOf()
+                } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.transitTypeList.add(TransitEnum.ONE)
                 }
-                recountIndicatorCount()
+                flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
             filterItems.add(quickDirectFilter)

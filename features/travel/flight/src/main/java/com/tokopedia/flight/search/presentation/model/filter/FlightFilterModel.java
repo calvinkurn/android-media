@@ -19,12 +19,12 @@ public class FlightFilterModel implements Parcelable, Cloneable {
     private int priceMax = Integer.MAX_VALUE;
     private int durationMin = 0;
     private int durationMax = Integer.MAX_VALUE;
-    private List<TransitEnum> transitTypeList;
-    private List<String> airlineList;
-    private List<DepartureTimeEnum> departureTimeList;
-    private List<DepartureTimeEnum> arrivalTimeList;
-    private List<RefundableEnum> refundableTypeList;
-    private List<FlightFilterFacilityEnum> facilityList;
+    private List<TransitEnum> transitTypeList = new ArrayList<>();
+    private List<String> airlineList = new ArrayList<>();
+    private List<DepartureTimeEnum> departureTimeList = new ArrayList<>();
+    private List<DepartureTimeEnum> arrivalTimeList = new ArrayList<>();
+    private List<RefundableEnum> refundableTypeList = new ArrayList<>();
+    private List<FlightFilterFacilityEnum> facilityList = new ArrayList<>();
     private boolean isHasFilter = false;
     private boolean isSpecialPrice = false;
     private boolean isBestPairing = false;
