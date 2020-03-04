@@ -89,21 +89,6 @@ open class NotificationItemViewBean(
         return product
     }
 
-    private fun getProductIdImpression(): String {
-        if (products.isEmpty()) return ""
-        val product = products.first()
-        return if (isHasProductCard()) product.productId else ""
-    }
-
-    private fun isHasProductCard(): Boolean {
-        return typeLink == TYPE_WISHLIST || typeLink == TYPE_PRODUCT_CHECKOUT
-    }
-
-    fun getImpressionTrackLabel(location: String): String {
-        val productId = getProductIdImpression()
-        return "$location - $templateKey - $notificationId - $productId"
-    }
-
     companion object {
         const val BUYER_TYPE = 1
         const val SELLER_TYPE = 2
