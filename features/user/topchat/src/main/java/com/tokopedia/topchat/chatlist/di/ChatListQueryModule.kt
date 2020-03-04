@@ -18,11 +18,7 @@ import dagger.multibindings.StringKey
 
 @ChatListScope
 @Module
-class ChatListQueryModule(val context: Context) {
-
-    @Provides
-    fun provideContext(): Context = context
-
+class ChatListQueryModule {
     @ChatListScope
     @Provides
     @IntoMap

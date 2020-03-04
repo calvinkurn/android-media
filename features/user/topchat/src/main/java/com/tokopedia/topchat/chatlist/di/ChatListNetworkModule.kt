@@ -31,10 +31,7 @@ import javax.inject.Named
  */
 
 @Module
-class ChatListNetworkModule(val context: Context) {
-
-    @Provides
-    fun provideContext(): Context = context
+class ChatListNetworkModule {
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60

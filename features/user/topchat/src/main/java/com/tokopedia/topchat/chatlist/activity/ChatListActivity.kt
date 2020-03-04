@@ -448,11 +448,7 @@ class ChatListActivity : BaseTabActivity()
     override fun getComponent(): ChatListComponent {
         return DaggerChatListComponent.builder()
                 .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-                .chatListNetworkModule(ChatListNetworkModule(this))
-                .chatListQueryModule(ChatListQueryModule(this))
-                .chatListSettingModule(ChatListSettingModule(this))
-                .chatNotificationsQueryModule(ChatNotificationsQueryModule(this))
-                .commonTopchatModule(CommonTopchatModule(this))
+                .chatListContextModule(ChatListContextModule(this))
                 .build()
     }
 

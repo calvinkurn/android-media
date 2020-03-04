@@ -16,11 +16,7 @@ import kotlinx.coroutines.Dispatchers
 
 @ChatListScope
 @Module
-class ChatListSettingModule(val context: Context) {
-
-    @Provides
-    fun provideContext(): Context = context
-
+class ChatListSettingModule {
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
@@ -29,6 +25,7 @@ class ChatListSettingModule(val context: Context) {
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
+    @ChatListScope
     fun provideUserSessionInterface(context: Context): UserSessionInterface = UserSession(context)
 
 }
