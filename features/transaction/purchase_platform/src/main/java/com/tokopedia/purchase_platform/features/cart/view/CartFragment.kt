@@ -116,9 +116,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     lateinit var cartRecyclerView: RecyclerView
     lateinit var btnToShipment: TextView
     lateinit var tvTotalPrice: TextView
-    lateinit var tvPromoBenefitInfo: TextView
-    lateinit var tvPromoUsageInfo: TextView
-    lateinit var clPromoFunnel: ConstraintLayout
     lateinit var rlContent: RelativeLayout
     lateinit var cbSelectAll: CheckBox
     lateinit var llHeader: LinearLayout
@@ -1310,7 +1307,17 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     private fun renderPromoCheckout(cartListData: CartListData) {
-        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
+        cartListData.lastApplyData?.let { lastApply ->
+            if (lastApply.errorDetailMsg.isNotEmpty()) {
+                promoCheckoutBtn.state = ButtonPromoCheckoutView.State.INACTIVE
+                promoCheckoutBtn.title = lastApply.errorDetailMsg
+
+            } else {
+                promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
+                promoCheckoutBtn.title = lastApply.additionalInfoMsg
+                promoCheckoutBtn.desc = lastApply.additionalInfoDetailMsg
+            }
+        }
     }
 
     private fun renderPromoGlobal(promoStackingData: PromoStackingData) {

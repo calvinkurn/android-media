@@ -9,5 +9,5 @@ data class PromoMessageInfo (
         @SerializedName("message")
         var message: String = "",
 
-        @SerializedName("Detail")
+        @SerializedName("detail")
         var detail: String = "")

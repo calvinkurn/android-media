@@ -74,8 +74,8 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
         promo_checkout_loading_state?.visibility = View.GONE
         tv_promo_checkout_title?.visibility = View.VISIBLE
         tv_promo_checkout_desc?.visibility = View.VISIBLE
-        tv_promo_checkout_title?.text = context.getString(R.string.promo_checkout_label)
-        tv_promo_checkout_desc?.text = context.getString(R.string.promo_checkout_benefit_info)
+        tv_promo_checkout_title?.text = title
+        tv_promo_checkout_desc?.text = desc
         iv_promo_checkout_left?.setImageResource(R.drawable.ic_promo_checkout_percentage)
         iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_chevron_right)
     }
@@ -84,7 +84,7 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
         promo_checkout_loading_state?.visibility = View.GONE
         tv_promo_checkout_title?.visibility = View.VISIBLE
         tv_promo_checkout_desc?.visibility = View.VISIBLE
-        tv_promo_checkout_title?.text = context.getString(R.string.promo_checkout_failed_label)
+        tv_promo_checkout_title?.text = title
         tv_promo_checkout_desc?.text = context.getString(R.string.promo_checkout_failed_info)
         iv_promo_checkout_left?.setImageResource(R.drawable.ic_promo_checkout_percentage_inactive)
         iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_refresh)
