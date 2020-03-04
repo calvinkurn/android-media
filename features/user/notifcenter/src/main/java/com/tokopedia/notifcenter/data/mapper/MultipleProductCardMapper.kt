@@ -11,6 +11,8 @@ object MultipleProductCardMapper {
             val multiProductCardItem = MultipleProductCardViewBean()
             multiProductCardItem.product = it
             multiProductCardItem.userInfo = notification.userInfo
+            multiProductCardItem.templateKey = notification.templateKey
+            multiProductCardItem.notificationId = notification.notificationId
             multiProductCards.add(multiProductCardItem)
         }
         return multiProductCards
