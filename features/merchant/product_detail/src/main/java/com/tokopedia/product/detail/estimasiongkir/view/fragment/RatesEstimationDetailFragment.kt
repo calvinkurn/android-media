@@ -113,7 +113,7 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
     private fun getCostEstimation() {
         setViewState(VIEW_LOADING)
         val weightInKg: Float = if (productWeightUnit.toLowerCase() == KG) productWeight else (productWeight / 1000)
-        viewModel.getCostEstimation(weightInKg, shopDomain, origin)
+        viewModel.getCostEstimation(weightInKg, shopDomain, origin, shopId, productId)
     }
 
     private fun setViewState(viewLoading: Int) {
