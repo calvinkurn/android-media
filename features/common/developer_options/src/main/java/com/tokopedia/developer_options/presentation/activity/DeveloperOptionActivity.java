@@ -1,5 +1,6 @@
 package com.tokopedia.developer_options.presentation.activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Notification;
 import android.content.ClipData;
@@ -18,11 +19,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.NotificationManagerCompat;
@@ -45,6 +48,9 @@ import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.permissionchecker.PermissionCheckerHelper;
+
+import org.jetbrains.annotations.NotNull;
 
 @DeepLink(ApplinkConst.DEVELOPER_OPTIONS)
 public class DeveloperOptionActivity extends BaseActivity {
@@ -103,6 +109,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView accessTokenView;
 
     private Button requestFcmToken;
+
+    private PermissionCheckerHelper permissionCheckerHelper;
 
     @Override
     public String getScreenName() {
@@ -289,7 +297,16 @@ public class DeveloperOptionActivity extends BaseActivity {
         toggleFpmNotif.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableNotification(state));
 
         toggleFpmAutoLogFile.setChecked(FpmLogger.getInstance().isAutoLogFileEnabled());
-        toggleFpmAutoLogFile.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableAutoLogFile(state));
+        toggleFpmAutoLogFile.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    requestPermissionWriteFile();
+                } else {
+                    FpmLogger.getInstance().enableAutoLogFile(false);
+                }
+            }
+        });
 
         vGoToFpm.setOnClickListener(v -> FpmLogger.getInstance().openActivity());
 
@@ -364,6 +381,37 @@ public class DeveloperOptionActivity extends BaseActivity {
             Intent intent = new Intent(this, DeleteFirebaseTokenService.class);
             startService(intent);
         });
+    }
+
+    private void requestPermissionWriteFile() {
+        permissionCheckerHelper = new PermissionCheckerHelper();
+        permissionCheckerHelper.checkPermission(
+                this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                new PermissionCheckerHelper.PermissionCheckListener() {
+                    @Override
+                    public void onPermissionDenied(@NotNull String permissionText) {
+                        toggleFpmAutoLogFile.setChecked(false);
+                    }
+
+                    @Override
+                    public void onNeverAskAgain(@NotNull String permissionText) {
+
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+                        FpmLogger.getInstance().enableAutoLogFile(true);
+                    }
+                },
+                "Please give storage access permission to write log file"
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        permissionCheckerHelper.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     private void startRemoteConfigEditor(String prefix) {
