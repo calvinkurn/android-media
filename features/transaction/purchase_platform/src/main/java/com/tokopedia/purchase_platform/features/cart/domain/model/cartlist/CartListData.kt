@@ -4,6 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.CartPromoData
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 
@@ -27,7 +29,8 @@ data class CartListData(
         var isAllSelected: Boolean = false,
         var isShowOnboarding: Boolean = false,
         var promoBenefitInfo: String? = null,
-        var promoUsageInfo: String? = null
+        var promoUsageInfo: String? = null,
+        var lastApplyData: LastApplyData? = null
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -44,7 +47,8 @@ data class CartListData(
             parcel.readByte() != 0.toByte(),
             parcel.readByte() != 0.toByte(),
             parcel.readString(),
-            parcel.readString()) {
+            parcel.readString(),
+            parcel.readParcelable(CartTickerErrorData::class.java.classLoader)) {
     }
 
     override fun equals(obj: Any?): Boolean {

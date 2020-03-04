@@ -16,12 +16,9 @@ import com.google.android.flexbox.FlexboxLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher
+import com.tokopedia.purchase_platform.common.utils.*
 import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher.TEXTWATCHER_NOTE_DEBOUNCE_TIME
-import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME
-import com.tokopedia.purchase_platform.common.utils.QuantityWrapper
-import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -92,9 +89,11 @@ class CartItemViewHolder constructor(itemView: View,
     private var cartItemHolderData: CartItemHolderData? = null
     private var quantityTextwatcherListener: QuantityTextWatcher.QuantityTextwatcherListener? = null
     private var noteTextwatcherListener: NoteTextWatcher.NoteTextwatcherListener? = null
+    private var checkboxWatcherListener: CheckboxWatcher.CheckboxWatcherListener? = null
     private var parentPosition: Int = 0
     private var dataSize: Int = 0
     private var quantityDebounceSubscription: Subscription? = null
+    private var checkboxDebounceSubscription: Subscription? = null
     private var noteDebounceSubscription: Subscription? = null
 
     init {
@@ -161,10 +160,38 @@ class CartItemViewHolder constructor(itemView: View,
         viewHolderListener = null
         compositeSubscription.remove(quantityDebounceSubscription)
         compositeSubscription.remove(noteDebounceSubscription)
+        compositeSubscription.remove(checkboxDebounceSubscription)
     }
 
+    /*private fun initCheckboxWatcherDebouncer(compositeSubscription: CompositeSubscription) {
+        checkboxDebounceSubscription = Observable.create(Observable.OnSubscribe<CheckboxWrapper> { subscriber ->
+            checkboxWatcherListener = CheckboxWatcher.CheckboxWatcherListener { checkbox -> subscriber.onNext(checkbox) }
+        })
+                .debounce(CHECKBOX_WATCHER_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Subscriber<CheckboxWrapper>() {
+                    override fun onNext(t: CheckboxWrapper?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onCompleted() {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                    override fun onError(e: Throwable?) {
+                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    }
+
+                })
+
+        compositeSubscription.add(quantityDebounceSubscription)
+    }*/
+
     private fun initTextWatcherDebouncer(compositeSubscription: CompositeSubscription) {
-        quantityDebounceSubscription = Observable.create(Observable.OnSubscribe<QuantityWrapper> { subscriber -> quantityTextwatcherListener = QuantityTextWatcher.QuantityTextwatcherListener { quantity -> subscriber.onNext(quantity) } }).debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
+        quantityDebounceSubscription = Observable.create(Observable.OnSubscribe<QuantityWrapper> { subscriber ->
+            quantityTextwatcherListener = QuantityTextWatcher.QuantityTextwatcherListener { quantity -> subscriber.onNext(quantity) } })
+                .debounce(TEXTWATCHER_QUANTITY_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Subscriber<QuantityWrapper>() {
