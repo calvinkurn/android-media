@@ -12,9 +12,9 @@
 
     <!--bottom nav-->
     <string name="sah_home">Home</string>
-    <string name="sah_product">Product</string>
+    <string name="sah_product">Produk</string>
     <string name="sah_chat">Chat</string>
-    <string name="sah_order">Order</string>
+    <string name="sah_sale">Penjualan</string>
     <string name="sah_others">Lainnya</string>
 
     <!--toolbar menu-->

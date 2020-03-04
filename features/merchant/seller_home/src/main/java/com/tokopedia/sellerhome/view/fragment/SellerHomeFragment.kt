@@ -3,10 +3,10 @@ package com.tokopedia.sellerhome.view.fragment
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.view.*
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.view.ViewCompat
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +25,7 @@ import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.WidgetType
 import com.tokopedia.sellerhome.common.utils.Utils
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.domain.model.GetShopStatusResponse
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
 import com.tokopedia.sellerhome.view.bottomsheet.view.SellerHomeBottomSheetContent
 import com.tokopedia.sellerhome.view.model.*
@@ -60,7 +61,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
-    private var pageRefreshListener: PageRefreshListener? = null
 
     private var widgetHasMap = hashMapOf<String, MutableList<BaseWidgetUiModel<*>>>()
     private val sellerHomeViewModel by lazy {
@@ -88,7 +88,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_sah, container, false)
     }
 
@@ -105,27 +104,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         observeWidgetData(sellerHomeViewModel.postListWidgetData, WidgetType.POST_LIST)
         observeWidgetData(sellerHomeViewModel.carouselWidgetData, WidgetType.CAROUSEL)
         observeTickerLiveData()
+        observeShopStatusLiveData()
     }
 
     override fun onResume() {
         super.onResume()
         if (!isFirstLoad)
             reloadPage()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.sah_menu_toolbar_notification, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.menu_sah_notification)
-            println("open notification")
-        return super.onOptionsItemSelected(item)
-    }
-
-    fun setOnPageRefreshedListener(listener: PageRefreshListener) {
-        this.pageRefreshListener = listener
     }
 
     private fun hideTooltipIfExist() {
@@ -135,7 +120,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
     }
 
     private fun setupView() = view?.run {
-        (activity as AppCompatActivity).setSupportActionBar(sahToolbar)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             activity?.window?.statusBarColor = context.getResColor(R.color.Neutral_N0)
         activity?.setLightStatusBar(true)
@@ -157,24 +141,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         swipeRefreshLayout.setOnRefreshListener {
             reloadPage()
-            pageRefreshListener?.onRefreshPage()
         }
 
         sahGlobalError.setActionClickListener {
             reloadPage()
-        }
-
-        sahNestedScrollView.setOnScrollChangeListener { v: NestedScrollView, scrollX: Int, scrollY: Int, oldScrollX: Int, oldScrollY: Int ->
-            showToolbarShadow(scrollY != 0)
-        }
-    }
-
-    private fun showToolbarShadow(isShown: Boolean) = view?.run {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) return@run
-        if (isShown) {
-            sahToolbar.elevation = 10f
-        } else {
-            sahToolbar.elevation = 0f
         }
     }
 
@@ -191,20 +161,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
 
         sahGlobalError.gone()
         sellerHomeViewModel.getWidgetLayout()
-    }
-
-    fun setShopStatus(shopStatus: ShopStatus) = view?.run {
-        when (shopStatus) {
-            ShopStatus.OFFICIAL_STORE -> {
-                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
-            }
-            ShopStatus.POWER_MERCHANT -> {
-                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
-            }
-            else -> {
-                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
-            }
-        }
     }
 
     override fun getAdapterTypeFactory(): SellerHomeAdapterTypeFactory {
@@ -427,6 +383,35 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.getTicker()
     }
 
+    private fun observeShopStatusLiveData() {
+        sellerHomeViewModel.shopStatus.observe(viewLifecycleOwner, Observer {
+            if (it is Success)
+                setOnSuccessGetShopStatus(it.data)
+        })
+        sellerHomeViewModel.getShopStatus()
+    }
+
+    private fun setOnSuccessGetShopStatus(goldPmOsStatus: GetShopStatusResponse) = view?.run {
+        val mShopStatus = goldPmOsStatus.result.data
+        val shopStatus: ShopStatus = when {
+            mShopStatus.isOfficialStore() -> ShopStatus.OFFICIAL_STORE
+            mShopStatus.isPowerMerchantActive() || mShopStatus.isPowerMerchantIdle() -> ShopStatus.POWER_MERCHANT
+            else -> ShopStatus.REGULAR_MERCHANT
+        }
+
+        when (shopStatus) {
+            ShopStatus.OFFICIAL_STORE -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_official_store)
+            }
+            ShopStatus.POWER_MERCHANT -> {
+                viewBgShopStatus.setBackgroundResource(R.drawable.sah_shop_state_bg_power_merchant)
+            }
+            else -> {
+                viewBgShopStatus.setBackgroundColor(context.getResColor(android.R.color.transparent))
+            }
+        }
+    }
+
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(liveData: LiveData<Result<List<D>>>, type: String) {
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
@@ -473,6 +458,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
 
+        println("Tickers : ${tickers.size}")
+
         view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
         view?.tickerView?.run {
             val tickersData = tickers.map {
@@ -490,9 +477,5 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 }
             })
         }
-    }
-
-    interface PageRefreshListener {
-        fun onRefreshPage()
     }
 }

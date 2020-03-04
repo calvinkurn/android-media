@@ -5,18 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/sahToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:subtitleTextAppearance="?subtitleTextAppearance"
-        app:theme="?toolbarTheme"
-        app:titleTextAppearance="?titleTextAppearance" />
-
     <RelativeLayout
         android:id="@+id/relTicker"
         android:layout_width="match_parent"
@@ -24,7 +12,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sahToolbar"
+        app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible">
 
         <com.tokopedia.unifycomponents.ticker.Ticker
