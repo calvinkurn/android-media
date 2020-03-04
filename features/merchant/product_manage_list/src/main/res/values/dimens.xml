@@ -2,4 +2,18 @@
 <resources>
     <dimen name="dp_1">1dp</dimen>
     <dimen name="dp_18">18dp</dimen>
+    <dimen name="product_manage_list_padding_top">9dp</dimen>
+    <dimen name="product_manage_list_padding_bottom">20dp</dimen>
+    <dimen name="product_manage_checkbox_select_horizontal_spacing">10dp</dimen>
+    <dimen name="product_manage_checkbox_select_vertical_spacing">15dp</dimen>
+    <dimen name="product_manage_list_image_size">54dp</dimen>
+    <dimen name="product_manage_list_image_horizontal_spacing">14dp</dimen>
+    <dimen name="product_manage_vertical_spacing">12dp</dimen>
+    <dimen name="product_manage_text_stock_vertical_spacing">6dp</dimen>
+    <dimen name="product_manage_stock_information_vertical_spacing">10dp</dimen>
+    <dimen name="product_manage_button_height">32dp</dimen>
+    <dimen name="product_manage_button_horizontal_spacing_long">12dp</dimen>
+    <dimen name="product_manage_more_option_vertical_spacing">37dp</dimen>
+    <dimen name="product_manage_container_spacing">17dp</dimen>
+    <dimen name="product_manage_horizontal_spacing">14dp</dimen>
 </resources>

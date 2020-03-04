@@ -23,7 +23,7 @@ class ProductManageListViewHolder(view: View, checkableListener: CheckableIntera
 
     companion object {
         @LayoutRes
-        var LAYOUT = com.tokopedia.product.manage.R.layout.item_manage_product_list
+        var LAYOUT = com.tokopedia.product.manage.R.layout.item_manage_product_list_old
     }
 
     private val productImageView: ImageView = view.findViewById(com.tokopedia.product.manage.R.id.image_view_product)
