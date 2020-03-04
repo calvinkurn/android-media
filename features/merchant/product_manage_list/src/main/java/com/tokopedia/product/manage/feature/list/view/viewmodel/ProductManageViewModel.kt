@@ -4,6 +4,7 @@ import android.accounts.NetworkErrorException
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToProductFilters
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
@@ -200,7 +201,7 @@ class ProductManageViewModel(
     }
 
     fun getPopupsInfo(productId: String) {
-        val shopId = getShopIdInteger()
+        val shopId = productId.toIntOrZero()
         popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
             object : Subscriber<Boolean>() {
                 override fun onNext(isSuccess: Boolean) {
@@ -259,15 +260,6 @@ class ProductManageViewModel(
                 }
             })
 
-    }
-
-    private fun getShopIdInteger(): Int {
-        return try {
-            Integer.parseInt(userSessionInterface.shopId)
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-            0
-        }
     }
 
     fun mapToProductConfirmationData(isActionDelete: Boolean, stockType: BulkBottomSheetType.StockType, etalaseType: BulkBottomSheetType.EtalaseType,
