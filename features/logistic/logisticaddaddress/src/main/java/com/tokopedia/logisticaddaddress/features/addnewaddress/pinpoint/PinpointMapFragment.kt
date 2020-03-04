@@ -472,7 +472,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
 
         invalid_title?.text = getString(R.string.out_of_indonesia_title)
         invalid_desc?.text = getString(R.string.out_of_indonesia_desc)
-        invalid_img?.setImageResource(R.drawable.tokopedia_out_of_indonesia)
+        invalid_img?.loadRemoteImageDrawable("tokopedia_out_of_indonesia.png")
         invalid_button?.visibility = View.GONE
 
         invalid_ic_search_btn?.setOnClickListener {
