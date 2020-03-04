@@ -434,6 +434,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 detailResponse.receiver.phone,
                 detailResponse.receiver.street,
                 detailResponse.receiver.district + ", " + detailResponse.receiver.city + " " + detailResponse.receiver.postal,
+                detailResponse.receiver.province,
                 detailResponse.flagOrderMeta.flagFreeShipping,
                 detailResponse.bookingInfo.driver.photo,
                 detailResponse.bookingInfo.driver.name,

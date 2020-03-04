@@ -1,12 +1,14 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 
+import com.google.android.gms.maps.model.LatLng
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
 import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryGeometryUiModel
+import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.district_boundary.DistrictBoundaryResponseUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictResponseUiModel
 import com.tokopedia.logisticdata.data.entity.response.Data
 import com.tokopedia.logisticdata.data.entity.response.KeroMapsAutofill
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
@@ -21,7 +23,6 @@ import rx.Subscriber
 object PinpointMapPresenterTest : Spek({
 
     val getDistrictUseCase: GetDistrictUseCase = mockk(relaxUnitFun = true)
-    val getDistrictMapper: GetDistrictMapper = mockk()
     val revGeoCodeUseCase: RevGeocodeUseCase = mockk(relaxUnitFun = true)
     val districtBoundUseCase: DistrictBoundaryUseCase = mockk(relaxUnitFun = true)
     val districtBoundMapper: DistrictBoundaryMapper = mockk()
@@ -29,7 +30,7 @@ object PinpointMapPresenterTest : Spek({
     lateinit var presenter: PinpointMapPresenter
 
     beforeEachTest {
-        presenter = PinpointMapPresenter(getDistrictUseCase, getDistrictMapper, revGeoCodeUseCase,
+        presenter = PinpointMapPresenter(getDistrictUseCase, revGeoCodeUseCase,
                 districtBoundUseCase, districtBoundMapper)
         presenter.attachView(view)
     }
@@ -51,23 +52,18 @@ object PinpointMapPresenterTest : Spek({
 
     Feature("get district") {
         Scenario("get succcess district") {
-            val gqlSuccess = GraphqlResponse(mapOf(), mapOf(), false)
-            val uiModel = GetDistrictDataUiModel(title = "city")
-            val successModel = GetDistrictResponseUiModel(
-                    data = uiModel
+            val successModel = GetDistrictDataUiModel(
+                    districtId = 1
             )
             Given("usecase gives success") {
-                every { getDistrictUseCase.execute(any(), any()) } answers {
-                    secondArg<Subscriber<GraphqlResponse>>().onNext(gqlSuccess)
-                }
-                every { getDistrictMapper.map(gqlSuccess) } returns successModel
+                every { getDistrictUseCase.execute(any()) } returns Observable.just(successModel)
             }
             When("executed") {
                 presenter.getDistrict("123")
             }
             Then("on success is called") {
                 verify {
-                    view.onSuccessPlaceGetDistrict(uiModel)
+                    view.onSuccessPlaceGetDistrict(successModel)
                 }
             }
         }
@@ -108,6 +104,30 @@ object PinpointMapPresenterTest : Spek({
             }
             Then("view shows out of reach dialog") {
                 verify { view.showOutOfReachDialog() }
+            }
+        }
+    }
+
+    Feature("district boundary") {
+        Scenario("success") {
+            val anyGql = GraphqlResponse(null, null, false)
+            val listBoundaries = mutableListOf(LatLng(12.4, 12.5))
+            val response = DistrictBoundaryResponseUiModel(
+                    geometry = DistrictBoundaryGeometryUiModel(listBoundaries)
+            )
+            Given("success response") {
+                every { districtBoundUseCase.execute(any(), any()) } answers {
+                    secondArg<Subscriber<GraphqlResponse>>().onNext(anyGql)
+                }
+                every { districtBoundMapper.map(anyGql) } returns response
+            }
+
+            When("executed") {
+                presenter.getDistrictBoundary(0, "asdn", 0)
+            }
+
+            Then("view shows boundary") {
+                verify { view.showBoundaries(listBoundaries) }
             }
         }
     }
