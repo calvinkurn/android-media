@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.chat_common.network.ChatUrl.Companion.TOPCHAT
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.user.session.UserSession
 import dagger.Module
 import dagger.Provides
@@ -38,13 +39,13 @@ class ChatNetworkModule {
 
     @ChatScope
     @Provides
-    fun provideUserSession(context: Context): UserSession {
+    fun provideUserSession(@ApplicationContext context: Context): UserSession {
         return UserSession(context)
     }
 
     @ChatScope
     @Provides
-    fun provideResources(context: Context): Resources {
+    fun provideResources(@TopchatContext context: Context): Resources {
         return context.resources
     }
 }
