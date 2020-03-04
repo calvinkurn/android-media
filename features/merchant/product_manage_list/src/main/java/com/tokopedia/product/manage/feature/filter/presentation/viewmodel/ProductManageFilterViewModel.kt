@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
-import com.tokopedia.product.manage.feature.filter.data.model.CombinedResponse
+import com.tokopedia.product.manage.feature.filter.data.model.FilterMetaDataEtalaseCategoryResponse
 import com.tokopedia.product.manage.feature.filter.domain.ProductManageFilterCombinedUseCase
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
@@ -22,8 +22,8 @@ class ProductManageFilterViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val _combinedResponse = MutableLiveData<Result<CombinedResponse>>()
-    val combinedResponse: LiveData<Result<CombinedResponse>>
+    private val _combinedResponse = MutableLiveData<Result<FilterMetaDataEtalaseCategoryResponse>>()
+    val filterMetaDataEtalaseCategoryResponse: LiveData<Result<FilterMetaDataEtalaseCategoryResponse>>
         get() = _combinedResponse
 
     private val _filterData = MutableLiveData<MutableList<FilterViewModel>>()

@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.filter.domain
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase.Companion.PARAM_FILTER
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
-import com.tokopedia.product.manage.feature.filter.data.model.CombinedResponse
+import com.tokopedia.product.manage.feature.filter.data.model.FilterMetaDataEtalaseCategoryResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase.Companion.PARAM_SHOP_ID
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -23,7 +23,7 @@ class ProductManageFilterCombinedUseCase @Inject constructor(
         private val getProductListMetaUseCase: GetProductListMetaUseCase,
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
         private val getCategoryListUseCase: GetCategoryListUseCase
-        ) : UseCase<CombinedResponse>() {
+        ) : UseCase<FilterMetaDataEtalaseCategoryResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
@@ -43,11 +43,11 @@ class ProductManageFilterCombinedUseCase @Inject constructor(
         }
     }
 
-    override suspend fun executeOnBackground(): CombinedResponse = withContext(Dispatchers.IO) {
+    override suspend fun executeOnBackground(): FilterMetaDataEtalaseCategoryResponse = withContext(Dispatchers.IO) {
         val productListMetaData = executeProductListMetaDataUseCaseAsync()
         val shopEtalase = executeEtalaseUseCaseAsync()
         val categories = executeCategoriesUseCaseAsync()
-        return@withContext CombinedResponse(productListMetaData.await(), shopEtalase.await(), categories.await())
+        return@withContext FilterMetaDataEtalaseCategoryResponse(productListMetaData.await(), shopEtalase.await(), categories.await())
     }
 
     private suspend fun executeProductListMetaDataUseCaseAsync(): Deferred<ProductListMetaResponse> {

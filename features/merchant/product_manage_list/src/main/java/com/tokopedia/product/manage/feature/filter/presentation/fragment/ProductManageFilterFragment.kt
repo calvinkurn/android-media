@@ -186,7 +186,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     }
 
     private fun observeCombinedResponse() {
-        productManageFilterViewModel.combinedResponse.observe(this, Observer {
+        productManageFilterViewModel.filterMetaDataEtalaseCategoryResponse.observe(this, Observer {
             when(it) {
                 is Success -> {
                     val mappedResult = ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data)
