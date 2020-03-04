@@ -66,13 +66,13 @@ class ProductCheckoutViewHolder(
     }
 
     override fun bindProductCardClick(element: NotificationItemViewBean) {
-        listener.getAnalytic().trackProductCheckoutCardClick(element)
+        listener.getAnalytic().trackProductCheckoutCardClick(notification = element)
     }
 
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {
         btnCheckout.setOnClickListener {
             baseItemMarkedClick(element)
-            listener.getAnalytic().trackProductCheckoutBuyClick(element)
+            listener.getAnalytic().trackProductCheckoutBuyClick(notification = element)
             listener.addProductToCheckout(element.userInfo, element.getAtcProduct())
         }
     }

@@ -57,7 +57,7 @@ class MultipleProductCardViewHolder(
 
     private fun productCheckoutClicked(element: MultipleProductCardViewBean) {
         productContainer.setOnClickListener {
-            //TODO: tracker
+            listener.getAnalytic().trackProductCheckoutCardClick(notification = element)
             RouteManager.route(
                     itemView.context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -66,7 +66,7 @@ class MultipleProductCardViewHolder(
         }
 
         btnCheckout.setOnClickListener {
-            //TODO: tracker
+            listener.getAnalytic().trackProductCheckoutBuyClick(notification = element)
             listener.addProductToCheckout(element.userInfo, element.product)
         }
     }
