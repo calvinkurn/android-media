@@ -12,5 +12,7 @@ interface SuggestionContract {
 
     interface Presenter : CustomerPresenter<View> {
         fun search(searchParameter: SearchParameter)
+
+        fun onItemClicked(item: BaseSuggestionViewModel)
     }
 }
