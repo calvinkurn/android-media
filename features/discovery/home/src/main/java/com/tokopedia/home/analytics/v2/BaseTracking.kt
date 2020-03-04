@@ -28,9 +28,9 @@ abstract class BaseTracking {
     protected object Action{
         const val KEY = "eventAction"
         const val IMPRESSION = "%s impression"
-        const val IMPRESSION_ON = "impression on \"%s"
+        const val IMPRESSION_ON = "impression on %s"
         const val CLICK = "%s click"
-        const val CLICK_ON = "click on \"%s"
+        const val CLICK_ON = "click on %s"
     }
 
     protected object Label{

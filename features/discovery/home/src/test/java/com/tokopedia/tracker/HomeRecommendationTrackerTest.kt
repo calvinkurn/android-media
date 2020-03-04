@@ -6,6 +6,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.every
 import io.mockk.mockk
+import com.tokopedia.areEqualKeyValues
 import org.junit.Assert.assertEquals
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
@@ -346,10 +347,3 @@ class HomeFeedTrackerTest : Spek({
         }
     }
 })
-
-private fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
-    first.forEach{
-        if(it.value != second[it.key]) return false
-    }
-    return true
-}

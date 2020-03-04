@@ -21,7 +21,7 @@ class MixTopProductViewHolder(view: View, val homeCategoryListener: HomeCategory
             val gridItem = mixTopProductDataModel.grid
             setItemWithWrapBlankSpaceConfig(gridItem, mixTopProductDataModel.blankSpaceConfig)
             setOnClickListener {
-                MixTopTracking.getMixTopClick(MixTopTracking.mapChannelToProductTracker(mixTopProductDataModel.channel), mixTopProductDataModel.channel.header.name, mixTopProductDataModel.positionOnWidgetHome)
+                MixTopTracking.getMixTopClick(MixTopTracking.mapChannelToProductTracker(mixTopProductDataModel.channel), mixTopProductDataModel.channel.header.name, mixTopProductDataModel.channel.id, mixTopProductDataModel.positionOnWidgetHome)
                 homeCategoryListener.onSectionItemClicked(gridItem.applink)
             }
         }

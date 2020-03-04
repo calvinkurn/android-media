@@ -30,17 +30,18 @@ object MixTopTracking : BaseTracking() {
             products
     )
 
-    fun getMixTopClick(products: List<Product>, headerName: String, positionOnWidgetHome: String) = getBasicProductClick(
+    fun getMixTopClick(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String) = getBasicProductChannelClick(
             Event.PRODUCT_CLICK,
             Category.HOMEPAGE,
             CustomAction.CLICK_ON_CAROUSEL_PRODUCT,
             headerName,
             CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
+            channelId,
             products
     )
 
     fun getMixTopSeeAllClick(headerName: String) = DataLayer.mapOf(
-            Event.CLICK, Event.CLICK_HOMEPAGE,
+            Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL_PRODUCT,
             Label.KEY, headerName
@@ -59,9 +60,5 @@ object MixTopTracking : BaseTracking() {
     )
 
     fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map { mapGridToProductTracker(it.value, channels.id,  it.index) }
-
-    fun mapChannelsToProductTracker(channels: List<DynamicHomeChannel.Channels>, position: Int) = channels.map{
-        mapChannelToProductTracker(it)
-    }
 
 }
