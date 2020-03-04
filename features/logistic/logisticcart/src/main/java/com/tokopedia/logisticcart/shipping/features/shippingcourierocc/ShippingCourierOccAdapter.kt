@@ -8,9 +8,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.Shippin
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ArmyViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.NotifierViewHolder
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
-import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
+import com.tokopedia.logisticcart.shipping.model.*
 
 class ShippingCourierOccAdapter(val list: List<RatesViewModelType>, val shippingCourierAdapterListener: ShippingCourierAdapterListener, val shippingDurationAdapterListener: ShippingDurationAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -29,15 +27,15 @@ class ShippingCourierOccAdapter(val list: List<RatesViewModelType>, val shipping
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ShippingCourierViewHolder -> holder.bindData(list[position] as ShippingCourierViewModel, shippingCourierAdapterListener)
-            is ArmyViewHolder -> holder.bindData(list[position] as LogisticPromoViewModel, shippingDurationAdapterListener)
+            is ShippingCourierViewHolder -> holder.bindData(list[position] as ShippingCourierUiModel, shippingCourierAdapterListener)
+            is ArmyViewHolder -> holder.bindData(list[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (list[position]) {
-            is ShippingCourierViewModel -> ShippingCourierViewHolder.ITEM_VIEW_SHIPMENT_COURIER
-            is LogisticPromoViewModel -> ArmyViewHolder.LAYOUT
+            is ShippingCourierUiModel -> ShippingCourierViewHolder.ITEM_VIEW_SHIPMENT_COURIER
+            is LogisticPromoUiModel -> ArmyViewHolder.LAYOUT
             else -> NotifierViewHolder.LAYOUT
         }
     }

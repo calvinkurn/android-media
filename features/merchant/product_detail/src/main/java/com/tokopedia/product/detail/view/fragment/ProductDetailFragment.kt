@@ -777,15 +777,15 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                 atcRequestParam.setQuantity(qty)
                 atcRequestParam.setWarehouseId(warehouseId)
 
-                val expressCheckoutUriString = ApplinkConstInternalMarketplace.EXPRESS_CHECKOUT
-                val intent = RouteManager.getIntent(it, expressCheckoutUriString)
-                intent?.run {
-                    putExtra(EXTRA_ATC_REQUEST, atcRequestParam)
-                    putExtra(TRACKER_ATTRIBUTION, trackerAttribution)
-                    putExtra(TRACKER_LIST_NAME, trackerListName)
-                    startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS)
-                    it.overridePendingTransition(R.anim.pull_up, 0)
-                }
+//                val expressCheckoutUriString = ApplinkConstInternalMarketplace.EXPRESS_CHECKOUT
+//                val intent = RouteManager.getIntent(it, expressCheckoutUriString)
+//                intent?.run {
+//                    putExtra(EXTRA_ATC_REQUEST, atcRequestParam)
+//                    putExtra(TRACKER_ATTRIBUTION, trackerAttribution)
+//                    putExtra(TRACKER_LIST_NAME, trackerListName)
+//                    startActivityForResult(intent, REQUEST_CODE_ATC_EXPRESS)
+//                    it.overridePendingTransition(R.anim.pull_up, 0)
+//                }
             } catch (e: Exception) {
 
             }

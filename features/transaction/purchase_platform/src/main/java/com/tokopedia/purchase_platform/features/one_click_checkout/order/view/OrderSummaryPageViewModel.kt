@@ -9,6 +9,7 @@ import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationViewModel
 import kotlinx.coroutines.*
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
@@ -79,11 +80,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                 val logisticPromo = data.logisticPromo
                                 if (logisticPromo != null) {
                                     // validate army courier
-                                    val serviceData: ShippingDurationViewModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
+                                    val serviceData: ShippingDurationUiModel? = getRatesDataFromLogisticPromo(logisticPromo.serviceId, data.shippingDurationViewModels)
                                     if (serviceData == null) {
                                         data.logisticPromo = null
                                     } else {
-                                        val courierData: ShippingCourierViewModel? = getCourierDatabySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList)
+                                        val courierData: ShippingCourierUiModel? = getCourierDatabySpId(logisticPromo.shipperProductId, serviceData.shippingCourierViewModelList)
                                         if (courierData == null) {
                                             data.logisticPromo = null
                                         }
@@ -134,7 +135,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         return arrayListOf()
     }
 
-    private fun getCourierDatabySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierViewModel>): ShippingCourierViewModel? {
+    private fun getCourierDatabySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
         return shippingCourierViewModels.firstOrNull { it.productData.shipperProductId == spId }
 //        for (shippingCourierViewModel in shippingCourierViewModels) {
 //            if (shippingCourierViewModel.productData.shipperProductId == spId) {
@@ -144,7 +145,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 //        return null
     }
 
-    private fun getRatesDataFromLogisticPromo(serviceId: Int, list: List<ShippingDurationViewModel>): ShippingDurationViewModel? {
+    private fun getRatesDataFromLogisticPromo(serviceId: Int, list: List<ShippingDurationUiModel>): ShippingDurationUiModel? {
         list.firstOrNull { it.serviceData.serviceId == serviceId }
                 ?.let {
                     return it

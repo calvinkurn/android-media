@@ -7,7 +7,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Notifi
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationViewHolder
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
-import com.tokopedia.logisticcart.shipping.model.ShippingDurationViewModel
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
 
 class ShippingDurationOccAdapter(private val list: List<RatesViewModelType>, private val shippingDurationAdapterListener: ShippingDurationAdapterListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -25,13 +25,13 @@ class ShippingDurationOccAdapter(private val list: List<RatesViewModelType>, pri
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ShippingDurationViewHolder -> holder.bindData(list[position] as ShippingDurationViewModel, shippingDurationAdapterListener, true)
+            is ShippingDurationViewHolder -> holder.bindData(list[position] as ShippingDurationUiModel, shippingDurationAdapterListener, true)
         }
     }
 
     override fun getItemViewType(position: Int): Int {
         return when (list[position]) {
-            is ShippingDurationViewModel -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
+            is ShippingDurationUiModel -> ShippingDurationViewHolder.ITEM_VIEW_SHIPMENT_DURATION
             else -> NotifierViewHolder.LAYOUT
         }
     }

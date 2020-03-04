@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model
 
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 
@@ -21,7 +21,7 @@ data class Shipment(
         val shipperName: String? = null,
         val shipperProductId: Int? = null,
         val logisticPromoTickerMessage: String? = null,
-        val logisticPromoViewModel: LogisticPromoViewModel? = null, // BBO ?
+        val logisticPromoViewModel: LogisticPromoUiModel? = null, // BBO ?
         val shippingRecommendationData: ShippingRecommendationData? = null
 )
 

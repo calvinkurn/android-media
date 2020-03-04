@@ -6,9 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierAdapterListener
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
-import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel
+import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_shipping_occ.view.*
@@ -43,12 +41,12 @@ class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDu
         rvShipping.adapter = ShippingCourierOccAdapter(list, this, this)
     }
 
-    override fun onCourierChoosen(shippingCourierViewModel: ShippingCourierViewModel, cartPosition: Int, isNeedPinpoint: Boolean) {
+    override fun onCourierChoosen(shippingCourierViewModel: ShippingCourierUiModel, cartPosition: Int, isNeedPinpoint: Boolean) {
         listener.onCourierChosen(shippingCourierViewModel)
         bottomSheetUnify.dismiss()
     }
 
-    override fun onShippingDurationChoosen(shippingCourierViewModelList: MutableList<ShippingCourierViewModel>?, cartPosition: Int, serviceData: ServiceData?) {
+    override fun onShippingDurationChoosen(shippingCourierViewModelList: MutableList<ShippingCourierUiModel>?, cartPosition: Int, serviceData: ServiceData?) {
 
     }
 
@@ -56,7 +54,7 @@ class ShippingCourierOccBottomSheet : ShippingCourierAdapterListener, ShippingDu
         return false
     }
 
-    override fun onLogisticPromoClicked(data: LogisticPromoViewModel) {
+    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
         listener.onLogisticPromoClicked(data)
         bottomSheetUnify.dismiss()
     }

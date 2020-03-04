@@ -19,11 +19,11 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
     fun initView() {
         view.tv_shipping_price.setOnClickListener {
             ShippingCourierOccBottomSheet().showBottomSheet(fragment, listOf(), object : ShippingCourierOccBottomSheetListener {
-                override fun onCourierChosen(shippingCourierViewModel: ShippingCourierViewModel) {
+                override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
 
                 }
 
-                override fun onLogisticPromoClicked(data: LogisticPromoViewModel) {
+                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
 
                 }
             })
