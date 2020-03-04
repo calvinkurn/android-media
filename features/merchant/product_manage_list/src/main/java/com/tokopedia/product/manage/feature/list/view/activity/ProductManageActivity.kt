@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.constant.TkpdState
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -18,6 +17,7 @@ import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawer
 class ProductManageActivity : BaseSellerReceiverDrawerActivity(), HasComponent<ProductManageListComponent> {
 
     companion object {
+        private const val MANAGE_PRODUCT = 8
         private const val SCREEN_NAME = "Store - Manage product"
     }
 
@@ -58,7 +58,7 @@ class ProductManageActivity : BaseSellerReceiverDrawerActivity(), HasComponent<P
     }
 
     override fun setDrawerPosition(): Int {
-        return TkpdState.DrawerPosition.MANAGE_PRODUCT
+        return MANAGE_PRODUCT
     }
 
     override fun getScreenName(): String {
