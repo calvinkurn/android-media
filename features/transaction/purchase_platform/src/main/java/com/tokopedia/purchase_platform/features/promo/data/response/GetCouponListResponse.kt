@@ -2,7 +2,25 @@ package com.tokopedia.purchase_platform.features.promo.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class CouponListResponse(
+data class GqlResponse(
+        @SerializedName("coupon_list_recommendation")
+        val couponListRecommendation: CouponListRecommendation = CouponListRecommendation()
+)
+
+data class CouponListRecommendation(
+        @SerializedName("message")
+        val message: List<String> = emptyList(),
+        @SerializedName("error_code")
+        val errorCode: String = "",
+        @SerializedName("status")
+        val status: String = "",
+        @SerializedName("data")
+        val data: Data = Data()
+)
+
+data class Data(
+        @SerializedName("result_status")
+        val resultStatus: ResultStatus = ResultStatus(),
         @SerializedName("empty_state")
         val emptyState: EmptyStateResponse = EmptyStateResponse(),
         @SerializedName("title")
@@ -12,7 +30,41 @@ data class CouponListResponse(
         @SerializedName("promo_recommendation")
         val promoRecommendation: PromoRecommendation = PromoRecommendation(),
         @SerializedName("coupon_sections")
-        val couponSections: List<CouponSection> = emptyList()
+        val couponSections: List<CouponSection> = emptyList(),
+        @SerializedName("additional_message")
+        val additionalMessage: String = "",
+        @SerializedName("reward_points_info")
+        val rewardPointsInfo: RewardPointsInfo = RewardPointsInfo()
+)
+
+data class RewardPointsInfo(
+        @SerializedName("message")
+        val message: String = "",
+        @SerializedName("gain_reward_points_tnc")
+        val gainRewardPointsTnc: GainRewardPointsTnc = GainRewardPointsTnc()
+)
+
+data class GainRewardPointsTnc(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("tnc_details")
+        val tncDetails: List<TncDetail> = emptyList()
+)
+
+data class TncDetail(
+      @SerializedName("icon_image_url")
+      val iconImageUrl: String = "",
+      @SerializedName("description")
+      val description: String = ""
+)
+
+data class ResultStatus(
+        @SerializedName("code")
+        val code: String = "",
+        @SerializedName("message")
+        val message: List<String> = emptyList(),
+        @SerializedName("reason")
+        val reason: String = ""
 )
 
 data class EmptyStateResponse(
@@ -43,7 +95,26 @@ data class CouponSection(
         @SerializedName("is_collapsed")
         val isCollapsed: Boolean = false,
         @SerializedName("tags")
-        val tags: List<String> = emptyList()
+        val tags: List<String> = emptyList(),
+        @SerializedName("sub_sections")
+        val subSection: SubSection = SubSection()
+)
+
+data class SubSection(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("sub_title")
+        val subTitle: String = "",
+        @SerializedName("icon_url")
+        val iconUrl: String = "",
+        @SerializedName("is_enabled")
+        val isEnabled: Boolean = false,
+        @SerializedName("is_collapsed")
+        val isCollapsed: Boolean = false,
+        @SerializedName("tags")
+        val tags: List<String> = emptyList(),
+        @SerializedName("coupons")
+        val coupons: List<Coupon> = emptyList()
 )
 
 data class Coupon(

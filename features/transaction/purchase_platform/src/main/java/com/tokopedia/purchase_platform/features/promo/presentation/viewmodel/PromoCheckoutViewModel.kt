@@ -165,7 +165,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
                 // Get expanded promo item from temporary data on header, then put on the map
                 val mapList = HashMap<Visitable<*>, List<Visitable<*>>>()
-                // Set map key >> header, map value >> expanded promo
+                // Set map key = header, map value = expanded promo list
                 mapList[headerData] = headerData.uiData.tmpPromoItemList
                 // Update expanded view
                 _tmpListUiModel.value = Insert(mapList)
