@@ -338,7 +338,7 @@
             android:lines="1"
             android:gravity="center_vertical"
             android:inputType="text"
-            android:hint="Pno#TAG#message (required Timber Server Logging ON)"
+            android:hint="Pno#TAG#message (required Server Logging ON)"
             app:backgroundTint="@color/Green_G500" />
 
         <androidx.appcompat.widget.AppCompatTextView
