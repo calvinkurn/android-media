@@ -157,10 +157,14 @@
                         app:typographyWeight="bold"
                         android:visibility="gone"
                         tools:visibility="visible"
-                        tools:text="Hotel Murah Meriah Sangat Muurah yayayay lalala yeyeyea"
+                        tools:text="Hotel Murah Meriah Sangat Muurahasdafd yayayayaaaaaaaaaa lalala yeyeyea"
                         android:lines="1"
                         android:maxLines="1"
-                        android:ellipsize="end"/>
+                        android:ellipsize="end"
+                        android:gravity="end"
+                        android:layout_marginLeft="@dimen/dp_8"
+                        android:layout_marginStart="@dimen/dp_8"
+                        />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/room_list_slash_price_tv"

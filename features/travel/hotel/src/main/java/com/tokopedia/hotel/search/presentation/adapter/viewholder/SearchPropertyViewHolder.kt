@@ -6,10 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.search.data.model.Property
 import com.tokopedia.hotel.search.data.model.PropertyPrice
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_property_search_result.view.*
 
 class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) {
@@ -58,8 +55,10 @@ class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) 
             if (propertyPrice.deals.tagging.isNotEmpty()) {
                 hotel_property_item_tag.visibility = View.VISIBLE
                 hotel_property_item_tag.text = propertyPrice.deals.tagging
+                price_origin_shadow.visibility = if (price_origin.isVisible) View.GONE else View.INVISIBLE
             } else {
                 hotel_property_item_tag.visibility = if (!element.isDirectPayment) View.GONE else View.INVISIBLE
+                price_origin_shadow.visibility = View.GONE
             }
 
             if (!element.isDirectPayment) {
