@@ -13,7 +13,7 @@ class ProductFilterItemDecoration: RecyclerView.ItemDecoration() {
 
         if(itemPosition > 0) {
             outRect.left = view.resources
-                .getDimensionPixelSize(R.dimen.product_manage_filter_spacing)
+                .getDimensionPixelSize(R.dimen.spacing_lvl2)
         }
     }
 }
