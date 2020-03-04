@@ -38,6 +38,7 @@ public class FeedAnalytics {
 
     private static final String PRODUCT_VIEW = "productView";
     private static final String PRODUCT_CLICK = "productClick";
+    private static final String POST_CLICK_VALUE = "click new post";
 
     private static final String DASH = " - ";
     private static final String SINGLE = "single";
@@ -559,7 +560,7 @@ public class FeedAnalytics {
                 DataLayer.mapOf(
                         EVENT_NAME, EVENT_CLICK_FEED,
                         EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
-                        EVENT_ACTION, "click new post",
+                        EVENT_ACTION, POST_CLICK_VALUE,
                         EVENT_LABEL, ""
                 )
         );
