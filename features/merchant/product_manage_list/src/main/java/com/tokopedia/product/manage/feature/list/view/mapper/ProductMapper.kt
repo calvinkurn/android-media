@@ -1,6 +1,6 @@
 package com.tokopedia.product.manage.feature.list.view.mapper
 
-import com.tokopedia.product.manage.common.extension.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel

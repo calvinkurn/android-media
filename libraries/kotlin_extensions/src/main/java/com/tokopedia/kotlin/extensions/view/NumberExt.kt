@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.common.extension
+package com.tokopedia.kotlin.extensions.view
 
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
