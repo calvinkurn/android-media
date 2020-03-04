@@ -600,13 +600,13 @@ class ShopPageFragment :
                 listOf(homeFragment, shopPageProductFragment, feedFragment, shopReviewFragment)
             }
             isShowFeed -> {
-                listOf(shopPageProductFragment, feedFragment, shopReviewFragment)
+                listOf(homeFragment, shopPageProductFragment, feedFragment, shopReviewFragment)
             }
             isOfficialStore -> {
                 listOf(homeFragment, shopPageProductFragment, shopReviewFragment)
             }
             else -> {
-                listOf(shopPageProductFragment, shopReviewFragment)
+                listOf(homeFragment, shopPageProductFragment, shopReviewFragment)
             }
         }
     }

@@ -15,17 +15,13 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.di.component.ShopComponent
-import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
-import com.tokopedia.shop.newproduct.view.datamodel.ShopProductViewModel
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -108,9 +104,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun onSuccessGetShopHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
         shopHomeAdapter.setHomeLayoutData(data)
-//        adapter.addElement(HomeConstant.tripleItemImage)
-//        adapter.addElement(HomeConstant.sliderSquareWidget)
-//        adapter.addElement(HomeConstant.sliderBannerWidget)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory> {

@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeItemSliderSquareViewHolder
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 /**
  * Created by rizqiaryansa on 2020-02-24.
  */
 
-class ShopHomeSliderSquareAdapter: ListAdapter<DisplayWidgetUiModel.WidgetItem, ShopHomeItemSliderSquareViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
+class ShopHomeSliderSquareAdapter: ListAdapter<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, ShopHomeItemSliderSquareViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
 
     override fun onBindViewHolder(holderItem: ShopHomeItemSliderSquareViewHolder, position: Int) {
         getItem(position)?.let { holderItem.bind(it) }
