@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'newrelic'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 
@@ -420,6 +421,8 @@ dependencies {
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
+
+    implementation 'com.newrelic.agent.android:android-agent:5.24.2'
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

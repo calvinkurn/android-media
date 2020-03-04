@@ -40,6 +40,7 @@ import com.tokopedia.sellerapp.utils.timber.TimberWrapper;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.newrelic.agent.android.NewRelic;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -155,6 +156,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GraphqlClient.init(this);
         NetworkClient.init(this);
         initializeAbTestVariant();
+        NewRelic.withApplicationToken(
+                "AA15db6a8bcd89dcd7647c74a18e777e9190f9057b-NRMA"
+        ).start(this);
     }
 
     @Override
