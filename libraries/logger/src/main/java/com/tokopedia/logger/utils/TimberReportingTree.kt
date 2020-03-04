@@ -26,6 +26,8 @@ class TimberReportingTree(private val tags: List<String>) : Timber.DebugTree() {
         if (clientLogs == null || clientLogs.isEmpty()) {
             LogManager.logentriesEnabled = true
             LogManager.scalyrEnabled = false
+            LogManager.isPrimaryLogentries = true
+            LogManager.isPrimaryScalyr = false
         } else {
             // curently logentries are always enabled.
             LogManager.logentriesEnabled = clientLogs.contains(Constants.CLIENT_LOGENTRIES)
