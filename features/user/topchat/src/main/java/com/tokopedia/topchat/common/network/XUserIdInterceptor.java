@@ -17,7 +17,7 @@ import java.util.Map;
 public class XUserIdInterceptor extends TkpdAuthInterceptor {
     private static final String TAG = XUserIdInterceptor.class.getSimpleName();
 
-    public XUserIdInterceptor(@ApplicationContext Context context,
+    public XUserIdInterceptor(Context context,
                               NetworkRouter networkRouter,
                               UserSessionInterface userSession) {
         super(context, networkRouter, userSession, "web_service_v4");
