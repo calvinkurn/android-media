@@ -10,6 +10,8 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ServicesItemModelNoPrice
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import kotlinx.android.synthetic.main.fragment_shipping_duration.*
@@ -38,20 +40,30 @@ class ShippingDurationFragment : BaseDaggerFragment(){
 
     private fun initViewModel(){
         viewModel.shippingDuration.observe(this, Observer {
-            adapter.submitList(it)
+            renderData(it.services)
         })
+    }
+
+    private fun renderData(data: List<ServicesItemModelNoPrice>){
+        adapter.shippingDurationList.clear()
+        adapter.shippingDurationList.addAll(data)
+        adapter.notifyDataSetChanged()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-        setStep()
+        viewModel.getShippingDuration()
 
         ticker_info.setTextDescription(getString(R.string.ticker_label_text))
         shipping_duration_rv.adapter = adapter
         shipping_duration_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
-//        item_shipping_radio.isChecked = !item_shipping_radio.isChecked
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setStep()
     }
 
     private fun setStep(){
