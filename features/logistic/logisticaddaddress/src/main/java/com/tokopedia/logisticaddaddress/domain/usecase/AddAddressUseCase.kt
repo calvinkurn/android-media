@@ -19,7 +19,7 @@ class AddAddressUseCase
                 model.postalCode, model.phone, model.provinceId.toString(), model.cityId.toString(),
                 model.districtId.toString(), model.latitude, model.longitude
         )
-        val gqlParam = mapOf("input" to param)
+        val gqlParam = mapOf("input" to param.toMap())
         val gqlRequest = GraphqlRequest(kero_add_address_query,
                 AddAddressResponse::class.java, gqlParam)
         gql.clearRequest()
