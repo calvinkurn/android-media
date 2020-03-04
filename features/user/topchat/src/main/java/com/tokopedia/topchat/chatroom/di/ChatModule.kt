@@ -55,10 +55,7 @@ import javax.inject.Named
  */
 
 @Module(includes = arrayOf(ImageUploaderModule::class, ChatNetworkModule::class))
-class ChatModule(val context: Context) {
-
-    @Provides
-    fun provideContext(): Context = context
+class ChatModule {
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60

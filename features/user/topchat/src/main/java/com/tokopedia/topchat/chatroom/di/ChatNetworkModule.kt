@@ -16,11 +16,7 @@ import javax.inject.Named
  */
 
 @Module
-class ChatNetworkModule(val context: Context) {
-
-    @Provides
-    fun provideContext(): Context = context
-
+class ChatNetworkModule {
     @ChatScope
     @Provides
     @Named("retrofit")
@@ -50,6 +46,4 @@ class ChatNetworkModule(val context: Context) {
     fun provideResources(context: Context): Resources {
         return context.resources
     }
-
-
 }

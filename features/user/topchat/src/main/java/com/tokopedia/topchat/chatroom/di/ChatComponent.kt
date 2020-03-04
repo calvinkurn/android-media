@@ -11,7 +11,7 @@ import dagger.Component
 
 @ChatScope
 @Component(
-        modules = arrayOf(ChatModule::class),
+        modules = arrayOf(ChatModule::class, ChatRoomContextModule::class),
         dependencies = arrayOf(BaseAppComponent::class)
 )
 interface ChatComponent {

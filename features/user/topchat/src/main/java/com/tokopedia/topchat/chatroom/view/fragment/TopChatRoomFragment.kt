@@ -53,8 +53,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
-import com.tokopedia.topchat.chatroom.di.ChatModule
-import com.tokopedia.topchat.chatroom.di.ChatNetworkModule
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -160,8 +159,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
             context?.let {
                 val chatComponent = DaggerChatComponent.builder()
                         .baseAppComponent(((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                        .chatModule(ChatModule(it))
-                        .chatNetworkModule(ChatNetworkModule(it))
+                        .chatRoomContextModule(ChatRoomContextModule(it))
                         .build()
                 chatComponent.inject(this)
             }

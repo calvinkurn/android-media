@@ -30,8 +30,7 @@ import com.tokopedia.design.base.BaseToaster;
 import com.tokopedia.design.component.ToasterError;
 import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.topchat.R;
-import com.tokopedia.topchat.chatroom.di.ChatModule;
-import com.tokopedia.topchat.chatroom.di.ChatNetworkModule;
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule;
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent;
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ChatSettingsResponse;
 import com.tokopedia.topchat.chatroom.view.listener.ChatSettingsInterface;
@@ -120,8 +119,7 @@ public class ChatRoomSettingsFragment extends BaseDaggerFragment implements Chat
         if (getActivity() != null) {
             DaggerChatComponent.builder()
                     .baseAppComponent(((BaseMainApplication) getActivity().getApplication()).getBaseAppComponent())
-                    .chatModule(new ChatModule(getContext()))
-                    .chatNetworkModule(new ChatNetworkModule(getContext()))
+                    .chatRoomContextModule(new ChatRoomContextModule(getContext()))
                     .build()
                     .inject(this);
         }
