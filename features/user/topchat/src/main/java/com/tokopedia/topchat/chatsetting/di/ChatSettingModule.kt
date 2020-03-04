@@ -18,7 +18,10 @@ import javax.inject.Named
 
 @Module
 @ChatSettingScope
-class ChatSettingModule {
+class ChatSettingModule(val context: Context) {
+
+    @Provides
+    fun provideContext(): Context = context
 
     @ChatSettingScope
     @Provides
@@ -27,7 +30,7 @@ class ChatSettingModule {
     @ChatSettingScope
     @Provides
     @Named(ChatListQueriesConstant.QUERY_GET_CHAT_SETTING)
-    fun provideGqlQueryShopReputation(@ApplicationContext context: Context): String {
+    fun provideGqlQueryShopReputation(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_get_chat_settings)
     }
 
