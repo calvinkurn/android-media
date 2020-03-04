@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
-import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.user_identification_common.KycUrl;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity;
