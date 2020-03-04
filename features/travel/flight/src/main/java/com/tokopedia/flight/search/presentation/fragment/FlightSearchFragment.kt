@@ -769,9 +769,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             val quickDirectFilter = SortFilterItem(getString(R.string.direct))
             quickDirectFilter.listener = {
                 quickDirectFilter.toggle()
-                if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList.contains(TransitEnum.DIRECT)) {
+                if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList != null
+                        && flightFilterModel.transitTypeList.contains(TransitEnum.DIRECT)) {
                     flightFilterModel.transitTypeList.remove(TransitEnum.DIRECT)
                 } else if (::flightFilterModel.isInitialized) {
+                    if (flightFilterModel.transitTypeList == null) flightFilterModel.transitTypeList = arrayListOf()
                     flightFilterModel.transitTypeList.add(TransitEnum.DIRECT)
                 }
                 recountIndicatorCount()
@@ -780,9 +782,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             val quickBaggageFilter = SortFilterItem(getString(R.string.flight_search_filter_baggage_label))
             quickBaggageFilter.listener = {
                 quickBaggageFilter.toggle()
-                if (::flightFilterModel.isInitialized && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
+                if (::flightFilterModel.isInitialized && flightFilterModel.facilityList != null
+                        && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
                     flightFilterModel.facilityList.remove(FlightFilterFacilityEnum.BAGGAGE)
                 } else if (::flightFilterModel.isInitialized) {
+                    if (flightFilterModel.facilityList == null) flightFilterModel.facilityList = arrayListOf()
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.BAGGAGE)
                 }
                 recountIndicatorCount()
@@ -791,9 +795,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             val quickMealFilter = SortFilterItem(getString(R.string.flight_search_filter_meal_label))
             quickMealFilter.listener = {
                 quickMealFilter.toggle()
-                if (::flightFilterModel.isInitialized && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
+                if (::flightFilterModel.isInitialized && flightFilterModel.facilityList != null
+                        && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
                     flightFilterModel.facilityList.remove(FlightFilterFacilityEnum.MEAL)
-                } else if (::flightFilterModel.isInitialized) {
+                } else if (::flightFilterModel.isInitialized && flightFilterModel.facilityList != null) {
+                    if (flightFilterModel.facilityList == null) flightFilterModel.facilityList = arrayListOf()
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.MEAL)
                 }
                 recountIndicatorCount()
@@ -802,9 +808,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             val quickTransitFilter = SortFilterItem(getString(R.string.flight_search_filter_transit))
             quickTransitFilter.listener = {
                 quickTransitFilter.toggle()
-                if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList.contains(TransitEnum.ONE)) {
+                if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList != null
+                        && flightFilterModel.transitTypeList.contains(TransitEnum.ONE)) {
                     flightFilterModel.transitTypeList.remove(TransitEnum.ONE)
-                } else if (::flightFilterModel.isInitialized) {
+                } else if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList != null) {
+                    if (flightFilterModel.transitTypeList == null) flightFilterModel.transitTypeList = arrayListOf()
                     flightFilterModel.transitTypeList.add(TransitEnum.ONE)
                 }
                 recountIndicatorCount()
@@ -838,12 +846,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         var counter = 0
 
         if (::flightFilterModel.isInitialized && flightFilterModel.hasFilter()) {
-            counter += flightFilterModel.transitTypeList.size
-            counter += flightFilterModel.airlineList.size
-            counter += flightFilterModel.departureTimeList.size
-            counter += flightFilterModel.arrivalTimeList.size
-            counter += flightFilterModel.refundableTypeList.size
-            counter += flightFilterModel.facilityList.size
+            counter += if (flightFilterModel.transitTypeList != null) flightFilterModel.transitTypeList.size else 0
+            counter += if (flightFilterModel.airlineList != null) flightFilterModel.airlineList.size else 0
+            counter += if (flightFilterModel.departureTimeList != null) flightFilterModel.departureTimeList.size else 0
+            counter += if (flightFilterModel.arrivalTimeList != null) flightFilterModel.arrivalTimeList.size else 0
+            counter += if (flightFilterModel.refundableTypeList != null) flightFilterModel.refundableTypeList.size else 0
+            counter += if (flightFilterModel.facilityList != null) flightFilterModel.facilityList.size else 0
 
             if (flightFilterModel.isSpecialPrice) counter++
         }
