@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 
 class CentralizedPromoAdapter<T: Visitable<F>, F: BaseAdapterTypeFactory>(typeFactory: F)
     : BaseListAdapter<T, F>(typeFactory) {
-    override fun setElements(data: MutableList<Visitable<Any>>?) {
+    override fun setElements(data: List<Visitable<*>>) {
         visitables = data
     }
 }

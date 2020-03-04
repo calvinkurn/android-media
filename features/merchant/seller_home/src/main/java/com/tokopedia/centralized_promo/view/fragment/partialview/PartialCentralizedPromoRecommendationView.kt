@@ -31,7 +31,6 @@ class PartialCentralizedPromoRecommendationView(
                 layoutManager = GridLayoutManager(context, 2)
                 adapter = this@PartialCentralizedPromoRecommendationView.adapter
                 addItemDecoration(OnGoingPromotionItemDecoration(4.dpToPx(context.resources.displayMetrics)))
-                setHasFixedSize(true)
             }
         }
     }

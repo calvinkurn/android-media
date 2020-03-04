@@ -31,7 +31,6 @@ class PartialCentralizedPromoOnGoingPromoView(
             rvCentralizedPromoOnGoingPromo.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = this@PartialCentralizedPromoOnGoingPromoView.adapter
-                setHasFixedSize(true)
             }
         }
     }
@@ -40,9 +39,9 @@ class PartialCentralizedPromoOnGoingPromoView(
         if (data.errorMessage.isBlank()) {
             with(view) {
                 if (data.promotions.isNotEmpty()) {
-                    show()
                     tvOnGoingPromo.text = data.title
                     DiffUtilHelper.calculate(adapter.data, data.promotions, adapter)
+                    show()
                 } else {
                     hide()
                 }

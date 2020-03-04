@@ -32,7 +32,6 @@ class PartialCentralizedPromoPostView(
             rvCentralizedPromoPostList.apply {
                 layoutManager = LinearLayoutManager(context)
                 adapter = this@PartialCentralizedPromoPostView.adapter
-                setHasFixedSize(true)
             }
         }
     }
@@ -40,9 +39,9 @@ class PartialCentralizedPromoPostView(
     override fun renderData(data: PostListUiModel) {
         with(view) {
             if (data.posts.isNotEmpty()) {
-                show()
                 tvCentralizedPromoPostListTitle.text = context.getString(R.string.sah_label_tips_and_trick)
                 DiffUtilHelper.calculate(adapter.data, data.posts, adapter)
+                show()
             } else {
                 gone()
             }
