@@ -465,7 +465,7 @@ class TrackingHotelUtil {
 
     fun hotelLastSearchImpression(lastSearchItems: TravelRecentSearchModel.Item, position: Int) {
         val map = mutableMapOf<String, Any>()
-        map[EVENT] = PROMO_VIEW
+        map[EVENT] = VIEW_ITEM
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = ACTION_LAST_SEARCH_IMPRESSION
         map[EVENT_LABEL] = "$HOTEL_LABEL - $REGION_LABEL - ${lastSearchItems.title} - 1 - 2 - ${lastSearchItems.subtitle} - 1"
@@ -476,7 +476,7 @@ class TrackingHotelUtil {
 
     fun hotelLastSearchClick(lastSearchItems: TravelRecentSearchModel.Item, position: Int) {
         val map = mutableMapOf<String, Any>()
-        map[EVENT] = PROMO_CLICK
+        map[EVENT] = SELECT_CONTENT
         map[EVENT_CATEGORY] = DIGITAL_NATIVE
         map[EVENT_ACTION] = ACTION_LAST_SEARCH_CLICK
         map[EVENT_LABEL] = "$HOTEL_LABEL - $REGION_LABEL - ${lastSearchItems.title} - 1 - 2 - ${lastSearchItems.subtitle} - 1"
