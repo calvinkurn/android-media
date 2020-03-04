@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.productsheet
 import android.view.ViewGroup
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.ui.productsheet.interaction.ProductSheetInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
@@ -16,10 +17,10 @@ import kotlinx.coroutines.launch
  */
 class ProductSheetComponent(
         container: ViewGroup,
-        bus: EventBusFactory,
+        private val bus: EventBusFactory,
         coroutineScope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<Unit>, CoroutineScope by coroutineScope {
+) : UIComponent<ProductSheetInteractionEvent>, CoroutineScope by coroutineScope, ProductSheetView.Listener {
 
     private val uiView = initView(container)
 
@@ -42,10 +43,22 @@ class ProductSheetComponent(
         return uiView.containerId
     }
 
-    override fun getUserInteractionEvents(): Flow<Unit> {
-        return emptyFlow()
+    override fun getUserInteractionEvents(): Flow<ProductSheetInteractionEvent> {
+        return bus.getSafeManagedFlow(ProductSheetInteractionEvent::class.java)
+    }
+
+    override fun onProductSheetHidden(view: ProductSheetView) {
+        launch {
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductSheetHidden)
+        }
+    }
+
+    override fun onProductSheetShown(view: ProductSheetView) {
+        launch {
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductSheetShown)
+        }
     }
 
     private fun initView(container: ViewGroup) =
-            ProductSheetView(container)
+            ProductSheetView(container, this)
 }

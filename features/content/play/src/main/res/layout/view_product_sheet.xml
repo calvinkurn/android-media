@@ -13,7 +13,7 @@
         android:background="@drawable/bg_play_product_sheet"
         app:behavior_skipCollapsed="true"
         app:behavior_hideable="true"
-        app:layout_behavior="com.tokopedia.play.ui.productsheet.behavior.LockableBottomSheetBehavior"
+        app:layout_behavior="com.tokopedia.play.view.custom.behavior.LockableBottomSheetBehavior"
         tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout"
         >
 
@@ -69,4 +69,5 @@
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </merge>

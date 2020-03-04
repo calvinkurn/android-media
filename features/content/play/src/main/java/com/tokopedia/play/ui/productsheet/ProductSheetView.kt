@@ -16,12 +16,16 @@ import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
+import com.tokopedia.play.view.custom.behavior.LockableBottomSheetBehavior
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**
  * Created by jegul on 02/03/20
  */
-class ProductSheetView(container: ViewGroup) : UIView(container) {
+class ProductSheetView(
+        container: ViewGroup,
+        listener: Listener
+) : UIView(container) {
 
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_product_sheet, container, true)
             .findViewById(R.id.cl_product_sheet)
@@ -33,7 +37,7 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
     private val productLineAdapter = ProductLineAdapter()
     private val voucherAdapter = MerchantVoucherAdapter()
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(view)
+    private val bottomSheetBehavior = BottomSheetBehavior.from(view) as LockableBottomSheetBehavior
 
     private val maxHeight : Int
             get() = (container.height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
@@ -62,6 +66,16 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
 
             insets
         }
+
+        bottomSheetBehavior.setListener(object : LockableBottomSheetBehavior.Listener {
+            override fun onBottomSheetHidden(bottomSheet: View) {
+                listener.onProductSheetHidden(this@ProductSheetView)
+            }
+
+            override fun onBottomSheetExpanded(bottomSheet: View) {
+                listener.onProductSheetShown(this@ProductSheetView)
+            }
+        })
     }
 
     override val containerId: Int = view.id
@@ -88,5 +102,10 @@ class ProductSheetView(container: ViewGroup) : UIView(container) {
 
     companion object {
         private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
+    }
+
+    interface Listener {
+        fun onProductSheetHidden(view: ProductSheetView)
+        fun onProductSheetShown(view: ProductSheetView)
     }
 }

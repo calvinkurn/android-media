@@ -38,6 +38,7 @@ import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
 import com.tokopedia.play.ui.productsheet.ProductSheetComponent
+import com.tokopedia.play.ui.productsheet.interaction.ProductSheetInteractionEvent
 import com.tokopedia.play.ui.quickreply.QuickReplyComponent
 import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
@@ -127,6 +128,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var productSheetComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
+    private lateinit var clPlayInteraction: ConstraintLayout
 
     private var channelId: String = ""
 
@@ -190,7 +192,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
         PlayAnalytics.clickWatchMode(channelId, playViewModel.isLive)
-        view?.let { triggerImmersive(it, VISIBLE_ALPHA) }
+        triggerImmersive(clPlayInteraction, VISIBLE_ALPHA)
         bottomSheet.dismiss()
     }
 
@@ -355,10 +357,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     //endregion
 
     private fun setupView(view: View) {
-        PlayAnalytics.clickWatchArea(channelId, playViewModel.isLive)
-        view.setOnClickListener {
+        clPlayInteraction = view.findViewById(R.id.cl_play_interaction)
+
+        clPlayInteraction.setOnClickListener {
             triggerImmersive(
-                    view = view,
+                    view = clPlayInteraction,
                     whenAlpha = INVISIBLE_ALPHA
             )
         }
@@ -542,7 +545,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         when (it) {
                             ImmersiveBoxInteractionEvent.BoxClicked -> {
                                 PlayAnalytics.clickWatchArea(channelId, playViewModel.isLive)
-                                view?.let { fragmentView -> triggerImmersive(fragmentView, VISIBLE_ALPHA) }
+                                triggerImmersive(clPlayInteraction, VISIBLE_ALPHA)
                             }
                         }
                     }
@@ -589,8 +592,20 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         return endLiveInfoComponent
     }
 
-    private fun initProductSheetComponent(container: ViewGroup): UIComponent<Unit> {
-        return ProductSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+    private fun initProductSheetComponent(container: ViewGroup): UIComponent<ProductSheetInteractionEvent> {
+        val productSheetComponent = ProductSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            productSheetComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            ProductSheetInteractionEvent.OnProductSheetHidden -> onProductSheetHidden()
+                            ProductSheetInteractionEvent.OnProductSheetShown -> onProductSheetShown()
+                        }
+                    }
+        }
+
+        return productSheetComponent
     }
     //endregion
 
@@ -1115,5 +1130,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         launch {
             EventBusFactory.get(viewLifecycleOwner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(BottomInsetsType.BottomSheet, true))
         }
+    }
+
+    private fun onProductSheetShown() {
+
+    }
+
+    private fun onProductSheetHidden() {
+
     }
 }
