@@ -44,4 +44,10 @@ public class PerformanceMonitoring {
             trace.putMetric(parameter, value);
         }
     }
+
+    public void putCustomAttribute(String attribute, String value) {
+        if (trace != null) {
+            trace.putAttribute(attribute, value);
+        }
+    }
 }

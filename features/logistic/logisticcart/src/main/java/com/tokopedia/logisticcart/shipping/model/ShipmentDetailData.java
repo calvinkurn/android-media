@@ -32,7 +32,6 @@ public class ShipmentDetailData implements Parcelable {
     private int addressId;
     private boolean preorder;
     private boolean isTradein;
-    private boolean isTradeInDropOff;
     private Boolean isOrderPriority;
 
     public ShipmentDetailData() {
@@ -62,9 +61,8 @@ public class ShipmentDetailData implements Parcelable {
         addressId = in.readInt();
         preorder = in.readByte() != 0;
         isTradein = in.readByte() != 0;
-        isTradeInDropOff = in.readByte() != 0;
         byte tmpIsOrderPriority = in.readByte();
-        isOrderPriority = tmpIsOrderPriority ==0 ? null : tmpIsOrderPriority ==1;
+        isOrderPriority = tmpIsOrderPriority == 0 ? null : tmpIsOrderPriority == 1;
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -239,14 +237,6 @@ public class ShipmentDetailData implements Parcelable {
         isTradein = tradein;
     }
 
-    public boolean isTradeInDropOff() {
-        return isTradeInDropOff;
-    }
-
-    public void setTradeInDropOff(boolean tradeInDropOff) {
-        isTradeInDropOff = tradeInDropOff;
-    }
-
     public Boolean isOrderPriority() {
         return isOrderPriority;
     }
@@ -291,7 +281,6 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeByte((byte) (preorder ? 1 : 0));
         dest.writeTypedList(shippingCourierViewModels);
         dest.writeByte((byte) (isTradein ? 1 : 0));
-        dest.writeByte((byte) (isTradeInDropOff ? 1 : 0));
         dest.writeByte((byte) (isOrderPriority == null ? 0 : isOrderPriority ? 1 : 2));
     }
 }

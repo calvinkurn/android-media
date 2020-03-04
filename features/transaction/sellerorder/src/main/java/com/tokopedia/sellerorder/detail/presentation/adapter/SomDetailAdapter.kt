@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_HEADER_TYPE
 import com.tokopedia.sellerorder.common.util.SomConsts.DETAIL_PAYMENT_TYPE
@@ -31,7 +32,12 @@ class SomDetailAdapter : RecyclerView.Adapter<SomDetailAdapter.BaseViewHolder<*>
         fun onShowBookingCode(bookingCode: String, bookingType: String)
         fun onShowBuyerRequestCancelReasonBottomSheet()
         fun onSeeInvoice(invoiceUrl: String)
+        fun onCopiedInvoice(invoice: String, str: String)
         fun onClickProduct(productId: Int)
+        fun onCopiedAddress(address: String, str: String)
+        fun onAddedCoachMarkHeader(coachMark: CoachMarkItem)
+        fun onAddedCoachMarkProducts(coachMark: CoachMarkItem)
+        fun onAddedCoachMarkShipping(coachMark: CoachMarkItem)
     }
 
     companion object {

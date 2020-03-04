@@ -130,13 +130,6 @@ public class ReactNativeDiscoveryActivity extends ReactFragmentActivity<GeneralR
         // Do not put super, avoid crash transactionTooLarge
     }
 
-    @Override
-    protected void registerShake() {
-        if (mAllowShake) {
-            super.registerShake();
-        }
-    }
-
     // Setting custom logs for Discovery Activity with Page ID
     public void setCrashLog() {
         if (!GlobalConfig.DEBUG && getIntent() != null && getIntent().hasExtra(PAGE_ID)) {

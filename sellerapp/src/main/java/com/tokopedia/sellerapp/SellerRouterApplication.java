@@ -95,7 +95,7 @@ import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity;
+import com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -135,6 +135,7 @@ import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity;
 import com.tokopedia.tkpd.tkpdreputation.ReputationRouter;
 import com.tokopedia.tkpd.tkpdreputation.TkpdReputationInternalRouter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.activity.InboxReputationActivity;
+import com.tokopedia.tkpd.tkpdreputation.review.shop.view.ReviewShopFragment;
 import com.tokopedia.topads.TopAdsComponentInstance;
 import com.tokopedia.topads.TopAdsManagementRouter;
 import com.tokopedia.topads.TopAdsModuleRouter;
@@ -166,6 +167,7 @@ import rx.Observable;
 import static com.tokopedia.core.analytics.AppEventTracking.Event.CLICK_PDP;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_OLD_PRODUCT_MANAGE;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -243,6 +245,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
+
+        if(remoteConfig.getBoolean(ENABLE_OLD_PRODUCT_MANAGE)) {
+            intent = new Intent(context, com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity.class);
+        }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -674,6 +681,11 @@ public abstract class SellerRouterApplication extends MainApplication
     }
 
     @Override
+    public Fragment getReviewFragment(Activity activity, String shopId, String shopDomain) {
+        return ReviewShopFragment.createInstance(shopId, shopDomain);
+    }
+
+    @Override
     public Intent getShopPageIntent(Context context, String shopId) {
         return ShopPageInternalRouter.getShopPageIntent(context, shopId);
     }
@@ -699,14 +711,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getInboxChannelsIntent(Context context) {
         return null;
-    }
-
-    @Override
-    public void init() {
-    }
-
-    @Override
-    public void unregisterShake() {
     }
 
     @Override
@@ -776,11 +780,6 @@ public abstract class SellerRouterApplication extends MainApplication
     public Intent getChatBotIntent(Context context, String messageId) {
         return RouteManager.getIntent(context, ApplinkConst.CHATBOT
                 .replace(String.format("{%s}", ApplinkConst.Chat.MESSAGE_ID), messageId));
-    }
-
-    @Override
-    public void registerShake(String screenName, Activity activity) {
-
     }
 
     @Override
@@ -1040,11 +1039,6 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public Intent getLoginIntent(Context context) {
         return LoginActivity.DeepLinkIntents.getCallingIntent(context);
-    }
-
-    @Override
-    public void onActivityDestroyed(String screenName, Activity baseActivity) {
-
     }
 
     @Override

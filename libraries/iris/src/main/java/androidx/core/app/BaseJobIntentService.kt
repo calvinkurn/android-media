@@ -1,5 +1,7 @@
 package androidx.core.app
 
+import timber.log.Timber
+
 /**
  * This fix should be tracked from time to time as any change in the support libraries might break it.
  *
@@ -11,7 +13,9 @@ abstract class BaseJobIntentService : JobIntentService() {
     internal override fun dequeueWork(): GenericWorkItem? {
         try {
             return super.dequeueWork()
-        } catch (ignored: SecurityException) { }
+        } catch (e: SecurityException) {
+            Timber.e("P1#IRIS#dequeueWork %s", e.toString())
+        }
         return null
     }
 }

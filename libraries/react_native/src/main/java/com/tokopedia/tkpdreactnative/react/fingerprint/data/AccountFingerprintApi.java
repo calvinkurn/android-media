@@ -1,6 +1,6 @@
 package com.tokopedia.tkpdreactnative.react.fingerprint.data;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.tkpdreactnative.react.fingerprint.data.model.DataResponseSavePublicKey;
 import com.tokopedia.tkpdreactnative.react.fingerprint.utils.FingerprintConstantRegister;
 

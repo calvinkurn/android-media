@@ -14,7 +14,7 @@ import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.adapter.CheckoutProfileAdapter
 import com.tokopedia.purchase_platform.features.express_checkout.view.profile.di.DaggerCheckoutProfileComponent
-import com.tokopedia.purchase_platform.features.express_checkout.view.profile.viewmodel.ProfileViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.profile.uimodel.ProfileUiModel
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.analytics.ExpressCheckoutAnalyticsTracker
 import javax.inject.Inject
 
@@ -57,9 +57,9 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         return getString(R.string.title_choose_other_template)
     }
 
-    public fun updateArguments(profileViewModel: com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProfileViewModel?) {
+    public fun updateArguments(profileUiModel: com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.ProfileUiModel?) {
         val bundle = Bundle()
-        bundle.putParcelable(ARGUMENT_DEFAULT_PROFILE_VIEW_MODEL, profileViewModel)
+        bundle.putParcelable(ARGUMENT_DEFAULT_PROFILE_VIEW_MODEL, profileUiModel)
         arguments = bundle
     }
 
@@ -83,8 +83,8 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         rvProfile = view.findViewById<View>(R.id.rv_profile) as RecyclerView
         llNetworkErrorView = view.findViewById<View>(R.id.ll_network_error_view) as LinearLayout
         tvContinueWithoutTemplate.setOnClickListener {
-            for (profileViewModel: ProfileViewModel in adapter.data) {
-                profileViewModel.isSelected = false
+            for (profileUiModel: ProfileUiModel in adapter.data) {
+                profileUiModel.isSelected = false
             }
             listener.onContinueWithoutProfile()
         }
@@ -116,11 +116,11 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         updateHeight()
     }
 
-    override fun setData(data: ArrayList<ProfileViewModel>) {
-        val currentSelectedProfile = arguments?.getParcelable(ARGUMENT_DEFAULT_PROFILE_VIEW_MODEL) as com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.ProfileViewModel
-        for (profileViewModel: ProfileViewModel in data) {
-            if (profileViewModel.profileId == currentSelectedProfile.profileId && currentSelectedProfile.isSelected) {
-                profileViewModel.isSelected = true
+    override fun setData(data: ArrayList<ProfileUiModel>) {
+        val currentSelectedProfile = arguments?.getParcelable(ARGUMENT_DEFAULT_PROFILE_VIEW_MODEL) as com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.ProfileUiModel
+        for (profileUiModel: ProfileUiModel in data) {
+            if (profileUiModel.profileId == currentSelectedProfile.profileId && currentSelectedProfile.isSelected) {
+                profileUiModel.isSelected = true
                 break
             }
         }
@@ -133,8 +133,8 @@ class CheckoutProfileBottomSheet : BottomSheets(), CheckoutProfileContract.View,
         listener.onChangeTemplateBottomshictButtonCloseClicked()
     }
 
-    override fun onItemSelected(profileViewModel: ProfileViewModel) {
-        listener.onProfileChanged(profileViewModel)
+    override fun onItemSelected(profileUiModel: ProfileUiModel) {
+        listener.onProfileChanged(profileUiModel)
     }
 
     override fun getActivityContext(): Context? {

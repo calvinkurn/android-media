@@ -26,15 +26,19 @@
         <activity
             android:name=".inbox.view.activity.InboxReputationFilterActivity"
             android:label="@string/title_filter"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".inbox.view.activity.ImageUploadPreviewActivity"
             android:label="@string/title_activity_image_upload"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
         <activity
             android:name=".inbox.view.activity.InboxReputationReportActivity"
             android:label="@string/title_report"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
         <activity
             android:name=".createreputation.ui.activity.CreateReviewActivity"
             android:label="@string/title_activity_reputation"
