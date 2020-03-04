@@ -63,7 +63,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     private suspend fun getShopPageHomeLayout(shopId: String): List<BaseShopHomeWidgetUiModel> {
-        getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId)
+        getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId, status = "3")
         return ShopPageHomeMapper.mapToListWidgetUiModel(
                 getShopPageHomeLayoutUseCase.executeOnBackground(),
                 Util.isMyShop(shopId, userSessionShopId)

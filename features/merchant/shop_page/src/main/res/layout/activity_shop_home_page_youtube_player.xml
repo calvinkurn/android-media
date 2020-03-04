@@ -6,9 +6,8 @@
     android:orientation="horizontal"
     android:background="@color/black">
 
-    <fragment
-        android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
-        android:id="@+id/youtube_player_main_shop_page"
+    <com.google.android.youtube.player.YouTubePlayerView
+        android:id="@+id/youtube_player_main"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"/>

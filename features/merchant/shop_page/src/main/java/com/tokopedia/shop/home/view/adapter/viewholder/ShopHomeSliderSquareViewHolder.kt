@@ -33,6 +33,6 @@ class ShopHomeSliderSquareViewHolder(itemView: View) : AbstractViewHolder<Displa
         }
         shopHomeSliderSquareAdapter.submitList(element.data)
 
-        itemView.tgHeaderSliderBanner.text = "New Axe Apollo"
+        itemView.tgHeaderSliderBanner.text = element.header.title
     }
 }

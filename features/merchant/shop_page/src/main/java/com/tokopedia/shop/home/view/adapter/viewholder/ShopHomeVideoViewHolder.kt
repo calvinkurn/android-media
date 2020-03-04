@@ -19,6 +19,7 @@ import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
+import java.util.regex.Pattern
 
 /**
  * Created by rizqiaryansa on 2020-02-26.
@@ -33,7 +34,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiMo
     }
 
     private val selectedIndex: Int = 0
-    private var dataVideo: List<DisplayWidgetUiModel.DisplayWidgetItem>? = null
+    private var videoUrl: String = ""
     private var youTubeThumbnailShopPage: YouTubeThumbnailView? = null
 
     var btnYoutubePlayer: AppCompatImageView? = null
@@ -48,14 +49,22 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiMo
         youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
-    override fun bind(element: DisplayWidgetUiModel?) {
-        dataVideo = element?.data
+    override fun bind(element: DisplayWidgetUiModel) {
+        val regex = "v=([^\\s&#]*)"
+        videoUrl = element.data?.first()?.videoUrl ?: ""
+        val pattern = Pattern.compile(regex, Pattern.MULTILINE)
+        val matcher = pattern.matcher(videoUrl)
+        videoUrl = if(matcher.find()) {
+            matcher.group(1)
+        }else{
+            videoUrl
+        }
         btnYoutubePlayer?.setOnClickListener(this)
     }
 
     override fun onInitializationSuccess(youTubeThumbnailView: YouTubeThumbnailView?, youTubeThumbnailLoader: YouTubeThumbnailLoader?) {
 
-        youTubeThumbnailLoader?.setVideo(dataVideo?.get(selectedIndex)?.videoUrl)
+        youTubeThumbnailLoader?.setVideo(videoUrl)
         youTubeThumbnailLoader?.setOnThumbnailLoadedListener(object: YouTubeThumbnailLoader.OnThumbnailLoadedListener {
             override fun onThumbnailLoaded(childYouTubeThumbnailView: YouTubeThumbnailView?, p1: String?) {
                 childYouTubeThumbnailView?.visible()
@@ -79,10 +88,10 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiMo
                 view.context?.let {
                     if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                             == YouTubeInitializationResult.SUCCESS) {
-                        it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, dataVideo?.get(selectedIndex)?.videoUrl.toString()))
+                        it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, videoUrl))
                     } else {
                         it.startActivity(Intent(Intent.ACTION_VIEW,
-                                Uri.parse(HomeConstant.YOUTUBE_BASE_URL + dataVideo?.get(selectedIndex)?.videoUrl)))
+                                Uri.parse(HomeConstant.YOUTUBE_BASE_URL + videoUrl)))
                     }
                 }
             }

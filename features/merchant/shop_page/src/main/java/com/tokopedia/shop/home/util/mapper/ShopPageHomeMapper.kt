@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetType.DISPLAY
+import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
@@ -31,12 +32,15 @@ object ShopPageHomeMapper {
             isMyOwnProduct: Boolean
     ): BaseShopHomeWidgetUiModel? {
         return when (widgetResponse.type.toLowerCase()) {
-            DISPLAY -> {
+            DISPLAY.toLowerCase() -> {
                 mapToDisplayWidget(widgetResponse)
             }
             PRODUCT.toLowerCase() -> {
                 mapToProductUiModel(widgetResponse, isMyOwnProduct)
             }
+//            VOUCHER.toLowerCase() -> {
+//                mapToVoucherUiModel(widgetResponse)
+//            }
             else -> {
                 null
             }

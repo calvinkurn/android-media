@@ -4,17 +4,19 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.youtube.player.YouTubeBaseActivity
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import com.tokopedia.shop.R
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
+import kotlinx.android.synthetic.main.activity_shop_home_page_youtube_player.*
 
 /**
  * Created by rizqiaryansa on 2020-03-02.
  */
 
-class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnInitializedListener {
+class ShopHomePageYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
 
     companion object {
         private const val EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE = "EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE"
@@ -35,8 +37,7 @@ class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnIn
 
         videoUrls = intent.getStringExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE)
 
-        val frag = supportFragmentManager.findFragmentById(R.id.youtube_player_main_shop_page) as YouTubePlayerSupportFragment
-        frag.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
+        youtube_player_main.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
@@ -65,6 +66,6 @@ class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnIn
     }
 
     private fun playVideo() {
-        youtubePlayerScreen.loadVideo(videoUrls)
+        youtubePlayerScreen.cueVideo(videoUrls)
     }
 }
