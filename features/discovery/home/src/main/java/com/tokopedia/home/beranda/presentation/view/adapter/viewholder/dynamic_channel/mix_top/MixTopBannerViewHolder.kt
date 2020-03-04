@@ -1,4 +1,4 @@
-package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel
+package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top
 
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -11,21 +11,23 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.BannerItemAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.ProductBannerMixDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.typefactory.BannerMixTypeFactoryImpl
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopProductDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopSeeMoreDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopVisitable
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.typeFactory.MixTopTypeFactoryImpl
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 class MixTopBannerViewHolder(
         itemView: View, val homeCategoryListener: HomeCategoryListener,
@@ -37,7 +39,7 @@ class MixTopBannerViewHolder(
     private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
     private val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
-    private var adapter: BannerItemAdapter? = null
+    private var adapter: MixTopAdapter? = null
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.home_mix_top_banner
@@ -47,12 +49,25 @@ class MixTopBannerViewHolder(
         mappingView(channel)
     }
 
+    override fun bind(element: DynamicChannelViewModel?, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        val channel = element?.channel
+        val blankSpaceConfig = computeBlankSpaceConfig(channel)
+        element?.let {
+            channel?.let {channel->
+                val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
+                mappingHeader(channel)
+                mappingItem(channel, visitables)
+            }
+        }
+    }
+
     override fun getViewHolderClassName(): String {
         return MixTopBannerViewHolder::class.java.simpleName
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-
+        homeCategoryListener.putEEToTrackingQueue(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
     }
 
     private fun mappingView(channel: DynamicHomeChannel.Channels) {
@@ -87,16 +102,15 @@ class MixTopBannerViewHolder(
         }
     }
 
-    private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<Visitable<BannerMixTypeFactory>>){
+    private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<MixTopVisitable>){
         if (adapter == null) {
             startSnapHelper.attachToRecyclerView(recyclerView)
-            adapter = BannerItemAdapter(
-                    BannerMixTypeFactoryImpl(homeCategoryListener),
-                    channel.layout,
+            adapter = MixTopAdapter(
+                    MixTopTypeFactoryImpl(homeCategoryListener),
                     channel.grids,
                     channel,
-                    homeCategoryListener,
-                    visitables)
+                    homeCategoryListener)
+            adapter?.setItems(visitables)
 
             recyclerView.adapter = adapter
         } else {
@@ -129,13 +143,13 @@ class MixTopBannerViewHolder(
     }
 
     private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels,
-                                             blankSpaceConfig: BlankSpaceConfig): MutableList<Visitable<BannerMixTypeFactory>> {
-        val visitables: MutableList<Visitable<BannerMixTypeFactory>> = channel.grids.map {
-            ProductBannerMixDataModel(it, channel, getLayoutType(channel), blankSpaceConfig)
+                                             blankSpaceConfig: BlankSpaceConfig): MutableList<MixTopVisitable> {
+        val visitables: MutableList<MixTopVisitable> = channel.grids.map {
+            MixTopProductDataModel(it, channel, blankSpaceConfig, adapterPosition.toString())
         }.toMutableList()
 
         if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
-            visitables.add(SeeMoreBannerMixDataModel(
+            visitables.add(MixTopSeeMoreDataModel(
                     channel
             ))
         }

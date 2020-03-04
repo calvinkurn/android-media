@@ -58,7 +58,7 @@ object MixTopTracking : BaseTracking() {
             variant = ""
     )
 
-    private fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map { mapGridToProductTracker(it.value, channels.id,  it.index) }
+    fun mapChannelToProductTracker(channels: DynamicHomeChannel.Channels) = channels.grids.withIndex().map { mapGridToProductTracker(it.value, channels.id,  it.index) }
 
     fun mapChannelsToProductTracker(channels: List<DynamicHomeChannel.Channels>, position: Int) = channels.map{
         mapChannelToProductTracker(it)
