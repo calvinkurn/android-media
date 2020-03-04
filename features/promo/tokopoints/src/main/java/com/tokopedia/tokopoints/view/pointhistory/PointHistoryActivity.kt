@@ -10,7 +10,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.tokopoints.R
-import com.tokopedia.tokopoints.di.*
+import com.tokopedia.tokopoints.di.DaggerTokopointBundleComponent
+import com.tokopedia.tokopoints.di.TokopointBundleComponent
+import com.tokopedia.tokopoints.di.TokopointsQueryModule
 
 class PointHistoryActivity : BaseSimpleActivity(), HasComponent<TokopointBundleComponent> {
     private val tokoPointComponent: TokopointBundleComponent by lazy { initInjector() }
