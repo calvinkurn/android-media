@@ -57,18 +57,18 @@ class ProductManageViewModel(
     mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
 
-    val _viewState = MutableLiveData<ViewState>()
+    private val _viewState = MutableLiveData<ViewState>()
 
-    val _productFilters = MutableLiveData<List<FilterViewModel>>()
-    val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
-    val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
-    val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
-    val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
-    val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
-    val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
-    val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
+    private val _productFilters = MutableLiveData<List<FilterViewModel>>()
+    private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
+    private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
+    private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
+    private val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
+    private val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
+    private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
+    private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
 
     val viewState : LiveData<ViewState>
         get() = _viewState
