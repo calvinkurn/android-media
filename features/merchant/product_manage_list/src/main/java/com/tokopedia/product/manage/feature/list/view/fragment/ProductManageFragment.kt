@@ -26,7 +26,6 @@ import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
@@ -68,6 +67,7 @@ import com.tokopedia.product.manage.feature.list.view.adapter.decoration.Product
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterViewHolder
+import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
@@ -75,10 +75,20 @@ import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Acti
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Banned
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.InActive
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Delete
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Duplicate
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Preview
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.RemoveFeaturedProduct
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetCashBack
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetFeaturedProduct
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetTopAds
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.StockReminder
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
+import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -133,16 +143,18 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     BaseCheckableViewHolder.CheckableInteractionListener,
     ProductViewHolder.ProductViewHolderView,
     EditProductBottomSheet.EditProductInterface,
-    FilterViewHolder.ProductFilterListener {
+    FilterViewHolder.ProductFilterListener,
+    ProductMenuViewHolder.ProductMenuListener {
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var shopDomain: String = ""
     private var goldMerchant: Boolean = false
     private var isOfficialStore: Boolean = false
-    private var shopDomain: String = ""
+    private var manageProductBottomSheet: ManageProductBottomSheet? = null
 
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
@@ -167,6 +179,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         productManageFilterModel = ProductManageFilterModel()
         productManageFilterModel.reset()
 
@@ -178,6 +191,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         setupSearchBar()
         setupProductList()
         setupProductFilters()
+        setupBottomSheet()
         renderCheckedView()
 
         observeShopInfo()
@@ -205,6 +219,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             searchInputView.searchText = ""
             loadInitialData()
         }
+    }
+
+    private fun setupBottomSheet() {
+        manageProductBottomSheet = ManageProductBottomSheet(view, this, fragmentManager)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -620,101 +638,62 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onClickStockInformation() {
     }
 
-    override fun onClickMoreOptionsButton(productManageViewModel: ProductViewModel) {
-        showActionProductDialog(productManageViewModel)
+    override fun onClickMoreOptionsButton(product: ProductViewModel) {
+        hideSoftKeyboard()
+
+        if (product.status == ProductStatus.MODERATED) {
+            val errorMessage = getString(R.string.product_manage_desc_product_on_supervision, product.title)
+            NetworkErrorHelper.showSnackbar(activity, errorMessage)
+        } else {
+            manageProductBottomSheet?.show(product)
+        }
     }
 
-    private fun showActionProductDialog(productManageViewModel: ProductViewModel) {
+    override fun onClickOptionMenu(menu: ProductMenuViewModel) {
+        val product = menu.product
+        val productId = product.id
+        val menuTitle = getString(menu.title)
+
+        when(menu) {
+            is Preview -> goToPDP(productId)
+            is Duplicate -> clickDuplicateProduct(productId, menuTitle)
+            is StockReminder -> {
+                //handle stock reminder here
+            }
+            is Delete -> clickDeleteProductMenu(productId, menuTitle)
+            is SetTopAds -> onPromoTopAdsClicked(product)
+            is SetCashBack -> onSetCashbackClicked(product)
+            is SetFeaturedProduct -> {
+                //handle SetFeaturedProduct here
+            }
+            is RemoveFeaturedProduct -> {
+                //handle RemoveFeaturedProduct here
+            }
+        }
+
+        manageProductBottomSheet?.dismiss()
+    }
+
+    private fun clickDuplicateProduct(productId: String, menuTitle: String) {
+        goToDuplicateProduct(productId)
+        ProductManageTracking.eventProductManageOverflowMenu(menuTitle)
+    }
+
+    private fun clickDeleteProductMenu(productId: String, menuTitle: String) {
+        showDialogActionDeleteProduct(DialogInterface.OnClickListener { _, _ ->
+            val label = menuTitle + " - " + getString(com.tokopedia.product.manage.item.R.string.label_delete)
+            ProductManageTracking.eventProductManageOverflowMenu(label)
+            viewModel.deleteSingleProduct(productId)
+        }, DialogInterface.OnClickListener { dialog, _ ->
+            val label = menuTitle + " - " + getString(com.tokopedia.product.manage.item.R.string.label_cancel)
+            ProductManageTracking.eventProductManageOverflowMenu(label)
+            dialog.dismiss()
+        })
+    }
+
+    private fun hideSoftKeyboard() {
         activity?.let {
             KeyboardHandler.hideSoftKeyboard(it)
-        }
-
-        val bottomSheetBuilder = BottomSheetBuilder(activity)
-            .setMode(BottomSheetBuilder.MODE_LIST)
-            .addTitleItem(productManageViewModel.title)
-
-        populateBottomSheetMenu(bottomSheetBuilder, productManageViewModel)
-
-        val bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-            .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
-            .createDialog()
-        bottomSheetDialog.show()
-    }
-
-    /**
-     * Populate bottom sheet menu items according to shop states
-     */
-    private fun populateBottomSheetMenu(bottomSheetBuilder: BottomSheetBuilder, productManageViewModel: ProductViewModel) {
-        val context: Context = this.context ?: return
-
-        bottomSheetBuilder.addItem(R.id.edit_product_menu, R.string.product_manage_title_edit, R.drawable.ic_manage_product_edit)
-        bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, R.drawable.ic_manage_product_duplicate)
-        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.product_manage_menu_delete_product, R.drawable.ic_manage_product_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
-
-        //Commented this code as quick fix in response to backend gql still hasn't been pushed to production env.
-        //Activate it later after the backend gql as soon after backend gql prod is up running.
-
-//        //If shop is power merchant or official store, shop owner can add or remove featured product
-//        if (productManagePresenter.isPowerMerchant() || isOfficialStore) {
-//            //If the product is a featured product, show remove option. Show add option when the product is not.
-//            if (productManageViewModel.isFeatureProduct)
-//                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_remove_featured_product, R.drawable.ic_manage_featured_product)
-//            else
-//                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_add_featured_product, R.drawable.ic_manage_featured_product)
-//        }
-
-        bottomSheetBuilder.addItem(R.id.set_cashback_product_menu, R.string.product_manage_menu_set_cashback, R.drawable.ic_manage_product_set_cashback)
-        if (productManageViewModel.status != ProductStatus.EMPTY) {
-            bottomSheetBuilder.addItem(R.id.set_promo_ads_product_menu, R.string.product_manage_menu_set_promo_ads, R.drawable.ic_manage_product_topads)
-        }
-        bottomSheetBuilder.addItem(R.id.change_price_product_menu, R.string.product_manage_menu_set_price, R.drawable.ic_manage_product_set_price)
-        bottomSheetBuilder.addItem(R.id.share_product_menu, R.string.product_manage_title_share, R.drawable.ic_manage_product_share)
-
-    }
-
-    private fun onOptionBottomSheetClicked(productManageViewModel: ProductViewModel): BottomSheetItemClickListener {
-        return BottomSheetItemClickListener {
-            if (productManageViewModel.status == ProductStatus.MODERATED) {
-                NetworkErrorHelper.showSnackbar(activity, getString(R.string.product_manage_desc_product_on_supervision, productManageViewModel.title))
-                return@BottomSheetItemClickListener
-            }
-            val itemId = it.itemId
-            if (itemId == R.id.edit_product_menu) {
-                goToEditProduct(productManageViewModel.id)
-                ProductManageTracking.eventProductManageOverflowMenu(it.title.toString())
-            } else if (itemId == R.id.duplicat_product_menu) {
-                goToDuplicateProduct(productManageViewModel.id)
-                ProductManageTracking.eventProductManageOverflowMenu(it.title.toString())
-            } else if (itemId == R.id.delete_product_menu) {
-                showDialogActionDeleteProduct(DialogInterface.OnClickListener { _, _ ->
-                    ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.product.manage.item.R.string.label_delete))
-                    viewModel.deleteSingleProduct(productManageViewModel.id)
-                }, DialogInterface.OnClickListener { dialog, _ ->
-                    ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.product.manage.item.R.string.label_cancel))
-                    dialog.dismiss()
-                })
-            } else if (itemId == R.id.change_price_product_menu) {
-                if (productManageViewModel.isVariant()) {
-                    showDialogVariantPriceLocked()
-                } else {
-                    showDialogChangeProductPrice(productManageViewModel.id, productManageViewModel.price.orEmpty())
-                }
-            } else if (itemId == R.id.share_product_menu) {
-                downloadBitmap(productManageViewModel)
-            } else if (itemId == R.id.set_cashback_product_menu) {
-                onSetCashbackClicked(productManageViewModel)
-            } else if (itemId == R.id.set_promo_ads_product_menu) {
-                onPromoTopAdsClicked(productManageViewModel)
-            }
-
-            //Commented this code as quick fix in response to backend gql still hasn't been pushed to production env.
-            //Activate it later after the backend gql as soon after backend gql prod is up running.
-//            else if (itemId == R.id.set_featured_product) {
-//                if (productManageViewModel.isFeatureProduct)
-//                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
-//                else
-//                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
-//            }
         }
     }
 
@@ -827,13 +806,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         return cashbackText
     }
 
-    private fun downloadBitmap(productManageViewModel: ProductViewModel) {
+    private fun downloadBitmap(product: ProductViewModel) {
         activity?.let {
-            val price = productManageViewModel.price
+            val price = product.price
             val productShare = ProductShare(it, ProductShare.MODE_IMAGE)
 
-            val cashBackText = if (productManageViewModel.cashBack > 0) {
-                getString(R.string.pml_sticker_cashback, productManageViewModel.cashBack)
+            val cashBackText = if (product.cashBack > 0) {
+                getString(R.string.pml_sticker_cashback, product.cashBack)
             } else {
                 ""
             }
@@ -841,10 +820,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             val data = ProductData().apply {
                 priceText = "Rp $price"
                 cashbacktext = cashBackText
-                productId = productManageViewModel.id
-                productName = productManageViewModel.title
-                productUrl = productManageViewModel.url
-                productImageUrl = productManageViewModel.imageUrl
+                productId = product.id
+                productName = product.title
+                productUrl = product.url
+                productImageUrl = product.imageUrl
                 shopUrl = getString(R.string.pml_sticker_shop_link, shopDomain)
             }
             
@@ -888,9 +867,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    override fun onClickProductItem(productManageViewModel: ProductViewModel) {
-       productManageListAdapter.notifyDataSetChanged()
-        goToPDP(productManageViewModel.id)
+    override fun onClickProductItem(product: ProductViewModel) {
+        goToPDP(product.id)
         ProductManageTracking.eventProductManageClickDetail()
     }
 
