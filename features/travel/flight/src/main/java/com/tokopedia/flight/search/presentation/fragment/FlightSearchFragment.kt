@@ -767,44 +767,48 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (filterItems.size < FILTER_SORT_ITEM_SIZE) {
             val quickDirectFilter = SortFilterItem(getString(R.string.direct))
             quickDirectFilter.listener = {
-                quickDirectFilter.toggle()
                 if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList.contains(TransitEnum.DIRECT)) {
                     flightFilterModel.transitTypeList.remove(TransitEnum.DIRECT)
+                    quickDirectFilter.unselect()
                 } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.transitTypeList.add(TransitEnum.DIRECT)
+                    quickDirectFilter.select()
                 }
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
             val quickBaggageFilter = SortFilterItem(getString(R.string.flight_search_filter_baggage_label))
             quickBaggageFilter.listener = {
-                quickBaggageFilter.toggle()
                 if (::flightFilterModel.isInitialized && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
                     flightFilterModel.facilityList.remove(FlightFilterFacilityEnum.BAGGAGE)
+                    quickBaggageFilter.unselect()
                 } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.BAGGAGE)
+                    quickBaggageFilter.select()
                 }
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
             val quickMealFilter = SortFilterItem(getString(R.string.flight_search_filter_meal_label))
             quickMealFilter.listener = {
-                quickMealFilter.toggle()
                 if (::flightFilterModel.isInitialized && flightFilterModel.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
                     flightFilterModel.facilityList.remove(FlightFilterFacilityEnum.MEAL)
+                    quickMealFilter.unselect()
                 } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.MEAL)
+                    quickMealFilter.select()
                 }
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
 
             val quickTransitFilter = SortFilterItem(getString(R.string.flight_search_filter_transit))
             quickTransitFilter.listener = {
-                quickTransitFilter.toggle()
                 if (::flightFilterModel.isInitialized && flightFilterModel.transitTypeList.contains(TransitEnum.ONE)) {
                     flightFilterModel.transitTypeList.remove(TransitEnum.ONE)
+                    quickTransitFilter.unselect()
                 } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.transitTypeList.add(TransitEnum.ONE)
+                    quickTransitFilter.select()
                 }
                 flightSearchPresenter.fetchSortAndFilter(selectedSortOption, flightFilterModel, false)
             }
@@ -820,13 +824,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (::flightFilterModel.isInitialized) {
             flightFilterModel.let {
                 if (it.transitTypeList != null && it.transitTypeList.contains(TransitEnum.DIRECT))
-                    filterItems[QUICK_FILTER_DIRECT_ORDER].toggle()
+                    filterItems[QUICK_FILTER_DIRECT_ORDER].select()
                 if (it.facilityList != null && it.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE))
-                    filterItems[QUICK_FILTER_BAGGAGE_ORDER].toggle()
+                    filterItems[QUICK_FILTER_BAGGAGE_ORDER].select()
                 if (it.facilityList != null && it.facilityList.contains(FlightFilterFacilityEnum.MEAL))
-                    filterItems[QUICK_FILTER_MEAL_ORDER].toggle()
+                    filterItems[QUICK_FILTER_MEAL_ORDER].select()
                 if (it.transitTypeList != null && it.transitTypeList.contains(TransitEnum.ONE))
-                    filterItems[QUICK_FILTER_TRANSIT_ORDER].toggle()
+                    filterItems[QUICK_FILTER_TRANSIT_ORDER].select()
             }
         }
 
@@ -836,15 +840,13 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     private fun recountIndicatorCount() {
         var counter = 0
 
-        if (::flightFilterModel.isInitialized && flightFilterModel.hasFilter()) {
+        if (::flightFilterModel.isInitialized) {
             counter += if (flightFilterModel.transitTypeList != null) flightFilterModel.transitTypeList.size else 0
             counter += if (flightFilterModel.airlineList != null) flightFilterModel.airlineList.size else 0
             counter += if (flightFilterModel.departureTimeList != null) flightFilterModel.departureTimeList.size else 0
             counter += if (flightFilterModel.arrivalTimeList != null) flightFilterModel.arrivalTimeList.size else 0
             counter += if (flightFilterModel.refundableTypeList != null) flightFilterModel.refundableTypeList.size else 0
             counter += if (flightFilterModel.facilityList != null) flightFilterModel.facilityList.size else 0
-
-            if (flightFilterModel.isSpecialPrice) counter++
         }
 
         flight_sort_filter.indicatorCounter = counter
@@ -854,12 +856,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         inFilterMode = flightFilterModel.hasFilter()
     }
 
-    private fun SortFilterItem.toggle() {
-        type = if (type == ChipsUnify.TYPE_NORMAL) {
-            ChipsUnify.TYPE_SELECTED
-        } else {
-            ChipsUnify.TYPE_NORMAL
-        }
+    private fun SortFilterItem.select() {
+        type = ChipsUnify.TYPE_SELECTED
+    }
+
+    private fun SortFilterItem.unselect() {
+        type = ChipsUnify.TYPE_NORMAL
     }
 
     interface OnFlightSearchFragmentListener {
