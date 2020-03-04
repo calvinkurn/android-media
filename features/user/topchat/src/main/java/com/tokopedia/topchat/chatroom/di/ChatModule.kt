@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatroom.di
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.Gson
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
@@ -70,7 +71,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideNetworkRouter(context: Context): NetworkRouter {
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return (context as NetworkRouter)
     }
 

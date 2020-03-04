@@ -3,6 +3,7 @@ package com.tokopedia.topchat.chatlist.di
 import android.content.Context
 import android.content.res.Resources
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
@@ -40,7 +41,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideChatRetrofit(context: Context, userSession: UserSession): Retrofit {
+    fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
             throw IllegalStateException("Application must implement "
                     .plus(NetworkRouter::class.java.simpleName)
@@ -70,7 +71,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideNetworkRouter(context: Context): NetworkRouter {
+    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return (context as NetworkRouter)
     }
 
