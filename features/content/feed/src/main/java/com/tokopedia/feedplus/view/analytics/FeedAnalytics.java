@@ -554,6 +554,17 @@ public class FeedAnalytics {
         );
     }
 
+    public void eventNewPostClick() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, EVENT_CLICK_FEED,
+                        EVENT_CATEGORY, CONTENT_FEED_TIMELINE,
+                        EVENT_ACTION, "click new post",
+                        EVENT_LABEL, ""
+                )
+        );
+    }
+
     private HashMap<String, Object> getProductEcommerceImpressions(List<ProductEcommerce> productList,
                                                                    String list) {
         ArrayList<Object> products = new ArrayList<>();
