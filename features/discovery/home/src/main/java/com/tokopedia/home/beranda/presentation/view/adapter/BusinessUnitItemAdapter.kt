@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
@@ -43,6 +44,7 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
             holder.bind(businessUnit)
             if(!holder.itemView.hasOnClickListeners()){
                 holder.itemView.setOnClickListener {
+                    RouteManager.route(holder.itemView.context, businessUnit.content.applink)
                     listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(businessUnit, tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
                 }
             }

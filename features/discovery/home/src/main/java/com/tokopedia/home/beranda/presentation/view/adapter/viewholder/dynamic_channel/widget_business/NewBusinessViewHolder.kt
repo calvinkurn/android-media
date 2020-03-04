@@ -58,7 +58,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
 
 
         override fun onTabSelected(tab: TabLayout.Tab) {
-            listener.putEEToTrackingQueue(BusinessUnitTracking.getPageSelected(tab.text.toString()) as HashMap<String, Any>)
+            listener.sendEETracking(BusinessUnitTracking.getPageSelected(tab.text.toString()) as HashMap<String, Any>)
             viewPager.currentItem = tab.position
         }
     }
