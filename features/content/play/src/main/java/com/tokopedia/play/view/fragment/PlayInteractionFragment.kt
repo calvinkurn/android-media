@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHei
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
@@ -37,6 +36,8 @@ import com.tokopedia.play.ui.pinned.PinnedComponent
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.ui.playbutton.PlayButtonComponent
 import com.tokopedia.play.ui.playbutton.interaction.PlayButtonInteractionEvent
+import com.tokopedia.play.ui.productsheet.ProductSheetComponent
+import com.tokopedia.play.ui.productsheet.interaction.ProductSheetInteractionEvent
 import com.tokopedia.play.ui.quickreply.QuickReplyComponent
 import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
 import com.tokopedia.play.ui.sendchat.SendChatComponent
@@ -53,7 +54,8 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.bottomsheet.PlayMoreActionBottomSheet
 import com.tokopedia.play.view.event.ScreenStateEvent
-import com.tokopedia.play.view.type.KeyboardState
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
@@ -76,6 +78,7 @@ import kotlin.coroutines.CoroutineContext
 class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreActionBottomSheet.Listener {
 
     companion object {
+        private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
 
         private const val INVISIBLE_ALPHA = 0f
         private const val VISIBLE_ALPHA = 1f
@@ -122,10 +125,27 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
+    private lateinit var productSheetComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
+    private lateinit var clPlayInteraction: ConstraintLayout
+
+    private val productSheetMaxHeight: Int
+        get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
+
+    private val sendChatView: View
+        get() = requireView().findViewById(sendChatComponent.getContainerId())
+    private val quickReplyView: View
+        get() = requireView().findViewById(quickReplyComponent.getContainerId())
+    private val statsInfoView: View
+        get() = requireView().findViewById(statsInfoComponent.getContainerId())
+    private val chatListView: View
+        get() = requireView().findViewById(chatListComponent.getContainerId())
 
     private var channelId: String = ""
+
+    private val playFragment: PlayFragment
+        get() = requireParentFragment() as PlayFragment
 
     override fun getScreenName(): String = "Play Interaction"
 
@@ -147,7 +167,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
-        initComponents(view as ViewGroup)
+        initCoordinatorComponent(view as ViewGroup)
+        initComponents(view.findViewById(R.id.cl_play_interaction) as ViewGroup)
         return view
     }
 
@@ -162,6 +183,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         observeVOD()
         observeVideoProperty()
+        observeProductSheetContent()
         observeTitleChannel()
         observeQuickReply()
         observeVideoStream()
@@ -169,10 +191,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeTotalLikes()
         observeTotalViews()
         observeChatList()
-        observePinnedMessage()
+        observePinned()
         observeFollowShop()
         observeLikeContent()
-        observeKeyboardState()
+        observeBottomInsetsState()
         observeEventUserInfo()
 
         observeLoggedInInteractionEvent()
@@ -185,7 +207,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
         PlayAnalytics.clickWatchMode(channelId, playViewModel.isLive)
-        view?.let { triggerImmersive(it, VISIBLE_ALPHA) }
+        triggerImmersive(clPlayInteraction, VISIBLE_ALPHA)
         bottomSheet.dismiss()
     }
 
@@ -241,6 +263,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         })
     }
 
+    private fun observeProductSheetContent() {
+        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.SetProductSheet(it)
+                        )
+            }
+        })
+    }
+
     private fun observeTitleChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -283,8 +317,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         })
     }
 
-    private fun observePinnedMessage() {
-        playViewModel.observablePinnedMessage.observe(viewLifecycleOwner, Observer(::setPinnedMessage))
+    private fun observePinned() {
+        playViewModel.observablePinned.observe(viewLifecycleOwner, Observer(::setPinned))
     }
 
     private fun observeLoggedInInteractionEvent() {
@@ -311,13 +345,23 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         })
     }
 
-    private fun observeKeyboardState() {
-        playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
+    private fun observeBottomInsetsState() {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(it.type, it.isShown))
 
-                if (it is KeyboardState.Shown && !it.isPreviousStateSame) calculateInteractionHeightOnKeyboardShown(it.estimatedKeyboardHeight)
+                if (it.type is BottomInsetsType.BottomSheet && !it.isPreviousStateSame) {
+                    when (it) {
+                        is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Shown -> pushParentPlayByProductSheetHeight(it.estimatedInsetsHeight)
+                    }
+                } else if (it.type is BottomInsetsType.Keyboard && !it.isPreviousStateSame) {
+                    when (it) {
+                        is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Shown -> pushParentPlayByKeyboardHeight(it.estimatedInsetsHeight)
+                    }
+                }
             }
         })
     }
@@ -338,10 +382,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     //endregion
 
     private fun setupView(view: View) {
-        PlayAnalytics.clickWatchArea(channelId, playViewModel.isLive)
-        view.setOnClickListener {
+        clPlayInteraction = view.findViewById(R.id.cl_play_interaction)
+
+        clPlayInteraction.setOnClickListener {
             triggerImmersive(
-                    view = view,
+                    view = clPlayInteraction,
                     whenAlpha = INVISIBLE_ALPHA
             )
         }
@@ -365,6 +410,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     //region Component Initialization
+    private fun initCoordinatorComponent(container: ViewGroup) {
+        productSheetComponent = initProductSheetComponent(container)
+    }
+
     private fun initComponents(container: ViewGroup) {
         sizeContainerComponent = initSizeContainerComponent(container)
         gradientBackgroundComponent = initGradientBackgroundComponent(container)
@@ -443,9 +492,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             pinnedComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            is PinnedInteractionEvent.PinnedActionClicked -> {
+                            is PinnedInteractionEvent.PinnedMessageClicked -> {
                                 PlayAnalytics.clickPinnedMessage(channelId, it.message, playViewModel.isLive)
                                 openPageByApplink(it.applink)
+                            }
+                            PinnedInteractionEvent.PinnedProductClicked -> {
+                                openProductSheet()
                             }
                         }
                     }
@@ -518,7 +570,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         when (it) {
                             ImmersiveBoxInteractionEvent.BoxClicked -> {
                                 PlayAnalytics.clickWatchArea(channelId, playViewModel.isLive)
-                                view?.let { fragmentView -> triggerImmersive(fragmentView, VISIBLE_ALPHA) }
+                                triggerImmersive(clPlayInteraction, VISIBLE_ALPHA)
                             }
                         }
                     }
@@ -563,6 +615,21 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
 
         return endLiveInfoComponent
+    }
+
+    private fun initProductSheetComponent(container: ViewGroup): UIComponent<ProductSheetInteractionEvent> {
+        val productSheetComponent = ProductSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            productSheetComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
+                        }
+                    }
+        }
+
+        return productSheetComponent
     }
     //endregion
 
@@ -849,7 +916,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
     }
 
-    private fun setPinnedMessage(pinnedMessage: PinnedMessageUiModel) {
+    private fun setPinned(pinnedMessage: PinnedUiModel) {
         launch {
           EventBusFactory.get(viewLifecycleOwner)
                   .emit(
@@ -989,36 +1056,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         if (shouldFinish) activity?.finish()
     }
 
-    private fun calculateInteractionHeightOnKeyboardShown(estimatedKeyboardHeight: Int) {
-        val sendChatView = view?.findViewById<View>(sendChatComponent.getContainerId())
-        val sendChatViewTotalHeight = if (sendChatView != null) {
-            val height = sendChatView.height
-            val marginLp = sendChatView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        } else 0
-
-        val quickReplyView = view?.findViewById<View>(quickReplyComponent.getContainerId())
-        val quickReplyViewTotalHeight = if (quickReplyView != null && !playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
-            val height = if (quickReplyView.height <= 0) 2 * view?.findViewById<View>(statsInfoComponent.getContainerId())?.height.orZero() else quickReplyView.height
-            val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        } else 0
-
-        val chatListView = view?.findViewById<View>(chatListComponent.getContainerId())
-        val chatListViewTotalHeight = if (chatListView != null) {
-            val height = resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
-            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        } else 0
-
-        val statusBarHeight = view?.let { getStatusBarHeight(it.context) } ?: 0
-        val requiredMargin = resources.getDimensionPixelOffset(R.dimen.spacing_lvl4)
-
-        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
-
-        (parentFragment as? PlayFragment)?.onKeyboardShown(interactionTopmostY)
-    }
-
     private fun hideSystemUI() {
         PlayFullScreenHelper.hideSystemUi(requireActivity())
     }
@@ -1081,5 +1118,45 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) view.requestApplyInsets()
             else view.requestFitSystemWindows()
         } catch (e: Exception) {}
+    }
+
+    private fun openProductSheet() {
+        playViewModel.onShowProductSheet(productSheetMaxHeight)
+    }
+
+    private fun closeProductSheet() {
+        playViewModel.onHideProductSheet()
+    }
+
+    private fun pushParentPlayByProductSheetHeight(productSheetHeight: Int) {
+        val requiredMargin = offset16
+        playFragment.onBottomInsetsViewShown(getScreenHeight() - (productSheetHeight + requiredMargin))
+    }
+
+    private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
+        val sendChatViewTotalHeight = run {
+            val height = sendChatView.height
+            val marginLp = sendChatView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val quickReplyViewTotalHeight = if (!playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
+            val height = if (quickReplyView.height <= 0) 2 * statsInfoView.height else quickReplyView.height
+            val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        } else 0
+
+        val chatListViewTotalHeight = run {
+            val height = resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
+            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val statusBarHeight = view?.let { getStatusBarHeight(it.context) } ?: 0
+        val requiredMargin = offset16
+
+        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
+
+        playFragment.onBottomInsetsViewShown(interactionTopmostY)
     }
 }

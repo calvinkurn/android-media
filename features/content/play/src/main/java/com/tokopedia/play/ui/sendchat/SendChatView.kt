@@ -73,14 +73,6 @@ class SendChatView(container: ViewGroup, val listener: Listener) : UIView(contai
         }
     }
 
-    private fun send() {
-        val message: String = etChat.text.toString()
-        if (message.isNotEmpty() && message.isNotBlank()) {
-            listener.onSendChatClicked(this, message)
-            etChat.setText("")
-        }
-    }
-
     override val containerId: Int = view.id
 
     override fun show() {
@@ -120,6 +112,14 @@ class SendChatView(container: ViewGroup, val listener: Listener) : UIView(contai
         val imm = etChat.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (shouldShow) imm.showSoftInput(etChat, InputMethodManager.SHOW_IMPLICIT)
         else imm.hideSoftInputFromWindow(etChat.windowToken, 0)
+    }
+
+    private fun send() {
+        val message: String = etChat.text.toString()
+        if (message.isNotEmpty() && message.isNotBlank()) {
+            listener.onSendChatClicked(this, message)
+            etChat.setText("")
+        }
     }
 
     interface Listener {

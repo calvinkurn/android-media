@@ -65,8 +65,7 @@ class PlayFragment : BaseDaggerFragment() {
 
     private val offset12 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_12) }
 
-    private val onKeyboardShownAnimator = AnimatorSet()
-    private val onKeyboardHiddenAnimator = AnimatorSet()
+    private val videoScaleAnimator = AnimatorSet()
 
     private lateinit var playViewModel: PlayViewModel
 
@@ -259,12 +258,11 @@ class PlayFragment : BaseDaggerFragment() {
         super.onDestroy()
         playViewModel.destroy()
 
-        onKeyboardShownAnimator.cancel()
-        onKeyboardHiddenAnimator.cancel()
+        videoScaleAnimator.cancel()
     }
 
-    fun onKeyboardShown(bottomMostBounds: Int) {
-        onKeyboardShownAnimator.cancel()
+    fun onBottomInsetsViewShown(bottomMostBounds: Int) {
+        videoScaleAnimator.cancel()
 
         val currentHeight = flVideo.height
         val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
@@ -278,20 +276,20 @@ class PlayFragment : BaseDaggerFragment() {
         val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
         val marginTopXt = marginTop * scaleFactor
         flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
-        onKeyboardShownAnimator.apply {
+        videoScaleAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
     }
 
-    fun onKeyboardHidden() {
-        onKeyboardHiddenAnimator.cancel()
+    fun onBottomInsetsViewHidden() {
+        videoScaleAnimator.cancel()
 
         val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
         val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
         animatorY.duration = ANIMATION_DURATION
         animatorX.duration = ANIMATION_DURATION
 
-        onKeyboardHiddenAnimator.apply {
+        videoScaleAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
     }
@@ -323,7 +321,6 @@ class PlayFragment : BaseDaggerFragment() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
                 flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-                this@PlayFragment.onKeyboardHidden()
             }
         })
     }

@@ -24,6 +24,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.custom.RoundedConstraintLayout
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.EventUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
@@ -105,7 +106,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeVOD()
         observeVideoProperty()
         observeOneTapOnboarding()
-        observeKeyboardState()
+        observeBottomInsetsState()
         observeEventUserInfo()
     }
 
@@ -135,8 +136,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, EventObserver { showOneTapOnboarding() })
     }
 
-    private fun observeKeyboardState() {
-        playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
+    private fun observeBottomInsetsState() {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             if (::containerVideo.isInitialized) {
                 if (it.isShown) containerVideo.setCornerRadius(cornerRadius)
                 else containerVideo.setCornerRadius(0f)
@@ -144,7 +145,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.KeyboardStateChanged(it.isShown))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(it.type, it.isShown))
             }
         })
     }

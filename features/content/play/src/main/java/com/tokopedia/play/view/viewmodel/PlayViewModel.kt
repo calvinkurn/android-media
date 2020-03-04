@@ -19,8 +19,7 @@ import com.tokopedia.play.domain.GetTotalLikeUseCase
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
-import com.tokopedia.play.view.type.KeyboardState
-import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
@@ -67,12 +66,14 @@ class PlayViewModel @Inject constructor(
         get() = _observableQuickReply
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableKeyboardState: LiveData<KeyboardState>
-        get() = _observableKeyboardState
-    val observablePinnedMessage: LiveData<PinnedMessageUiModel>
-        get() = _observablePinnedMessage
+    val observableBottomInsetsState: LiveData<BottomInsetsState>
+        get() = _observableBottomInsetsState
+    val observablePinned: LiveData<PinnedUiModel>
+        get() = _observablePinned
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
         get() = _observableVideoProperty
+    val observableProductSheetContent: LiveData<ProductSheetUiModel>
+        get() = _observableProductSheetContent
 
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
@@ -84,9 +85,12 @@ class PlayViewModel @Inject constructor(
     private val _observablePartnerInfo: MutableLiveData<PartnerInfoUiModel> = MutableLiveData()
     private val _observableQuickReply = MutableLiveData<QuickReplyUiModel>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
-    private val _observableKeyboardState = MutableLiveData<KeyboardState>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
+    private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    private val _observableProductSheetContent = MutableLiveData<ProductSheetUiModel>()
+    private val _observableBottomInsetsState = MutableLiveData<BottomInsetsState>()
+    private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
             _observableVideoProperty.value = VideoPropertyUiModel(it.channelType, _observableVideoProperty.value?.state
@@ -154,7 +158,12 @@ class PlayViewModel @Inject constructor(
 
     init {
         stateHandler.observeForever(stateHandlerObserver)
+
+        _observablePinned.addSource(_observablePinnedMessage) { _observablePinned.value = it }
+        _observablePinned.addSource(_observablePinnedProduct) { _observablePinned.value = it }
+
 //        startMockFreeze()
+        setMockProductSheetContent()
     }
 
     override fun onCleared() {
@@ -171,15 +180,38 @@ class PlayViewModel @Inject constructor(
         return playManager.getDurationVideo()
     }
 
+    //region bottom insets
     fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-        _observableKeyboardState.value =
-                if (_observableVideoStream.value?.channelType?.isLive == true) KeyboardState.Shown(estimatedKeyboardHeight, _observableKeyboardState.value?.isHidden == false)
-                else KeyboardState.Hidden(observableKeyboardState.value?.isShown == false)
+        _observableBottomInsetsState.value =
+                if (_observableVideoStream.value?.channelType?.isLive == true) BottomInsetsState.Shown(
+                        type = BottomInsetsType.Keyboard,
+                        estimatedInsetsHeight = estimatedKeyboardHeight,
+                        isPreviousStateSame = observableBottomInsetsState.value?.isHidden == false)
+                else BottomInsetsState.Hidden(
+                        type = BottomInsetsType.Keyboard,
+                        isPreviousStateSame = observableBottomInsetsState.value?.isShown == false)
     }
 
     fun onKeyboardHidden() {
-        _observableKeyboardState.value = KeyboardState.Hidden(observableKeyboardState.value?.isShown == false)
+        _observableBottomInsetsState.value = BottomInsetsState.Hidden(
+                type = BottomInsetsType.Keyboard,
+                isPreviousStateSame = observableBottomInsetsState.value?.isShown == false)
     }
+
+    fun onShowProductSheet(estimatedProductSheetHeight: Int) {
+        _observableBottomInsetsState.value = BottomInsetsState.Shown(
+                type = BottomInsetsType.BottomSheet(estimatedProductSheetHeight),
+                estimatedInsetsHeight = estimatedProductSheetHeight,
+                isPreviousStateSame = observableBottomInsetsState.value?.isHidden == false
+        )
+    }
+
+    fun onHideProductSheet() {
+        _observableBottomInsetsState.value = BottomInsetsState.Hidden(
+                type = BottomInsetsType.BottomSheet(null),
+                isPreviousStateSame = observableBottomInsetsState.value?.isShown == false)
+    }
+    //end region
 
     fun getChannelInfo(channelId: String) {
 
@@ -454,6 +486,40 @@ class PlayViewModel @Inject constructor(
             withContext(dispatchers.main) {
                 _observableEvent.value = _observableEvent.value?.copy(
                         isFreeze = true
+                )
+            }
+        }
+    }
+
+    private fun setMockProductSheetContent() {
+        launch(dispatchers.io) {
+            delay(3000)
+            withContext(dispatchers.main) {
+                _observableProductSheetContent.value = ProductSheetUiModel(
+                        title = "Barang & Promo Pilihan",
+                        voucherList = List(5) { voucherIndex ->
+                            MerchantVoucherUiModel(
+                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.DeliveryFee,
+                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
+                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
+                            )
+                        },
+                        productList = List(5) {
+                            ProductLineUiModel(
+                                    id = it.toString(),
+                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
+                                    title = "Product $it",
+                                    price = if (it % 2 == 0) {
+                                        OriginalPrice("Rp20$it.000")
+                                    } else {
+                                        DiscountedPrice(
+                                                originalPrice = "Rp20$it.000",
+                                                discountPercent = it * 10,
+                                                discountedPrice = "Rp2$it.000"
+                                        )
+                                    }
+                            )
+                        }
                 )
             }
         }
