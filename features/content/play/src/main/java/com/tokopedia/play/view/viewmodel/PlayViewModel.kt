@@ -397,7 +397,7 @@ class PlayViewModel @Inject constructor(
             id = channel.channelId,
             title = channel.title,
             description = channel.description,
-            channelType = PlayChannelType.Live,
+            channelType = if (channel.videoStream.isLive) PlayChannelType.Live else PlayChannelType.VOD,
             moderatorName = channel.moderatorName,
             partnerId = channel.partnerId,
             partnerType = PartnerType.getTypeByValue(channel.partnerType),
@@ -415,7 +415,9 @@ class PlayViewModel @Inject constructor(
 
     private fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            channelType = PlayChannelType.Live,
+            channelType = if (videoStream.isLive
+                    && videoStream.type.equals(PlayChannelType.Live.value, true))
+                PlayChannelType.Live else PlayChannelType.VOD,
             isActive = isActive
     )
 
