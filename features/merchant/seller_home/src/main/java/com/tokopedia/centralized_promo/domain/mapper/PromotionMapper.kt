@@ -12,7 +12,7 @@ class PromotionMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(data: GetPromotionListResponse?): OnGoingPromoListUiModel {
         return OnGoingPromoListUiModel(
                 title = data?.data?.title.orEmpty(),
-                promotions = data?.data?.promotions?.map {
+                promotions = ArrayList(data?.data?.promotions?.map {
                     OnGoingPromoUiModel(
                             title = it.title.orEmpty(),
                             status = Status(
@@ -25,7 +25,7 @@ class PromotionMapper @Inject constructor() {
                                     url = it.footer?.url.orEmpty()
                             )
                     )
-                }.orEmpty(),
+                }.orEmpty()),
                 errorMessage = data?.header?.message?.joinToString("\n").orEmpty()
         )
     }

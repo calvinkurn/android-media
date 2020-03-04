@@ -1,12 +1,11 @@
 package com.tokopedia.centralized_promo.view.fragment.partialview
 
 import android.view.View
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
-import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoDiffUtil
 import com.tokopedia.centralized_promo.view.adapter.DiffUtilHelper
+import com.tokopedia.centralized_promo.view.fragment.CoachMarkListener
 import com.tokopedia.centralized_promo.view.model.PostListUiModel
 import com.tokopedia.centralized_promo.view.model.PostUiModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -20,8 +19,11 @@ import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view
 
 class PartialCentralizedPromoPostView(
         private val view: View,
-        adapterTypeFactory: CentralizedPromoAdapterTypeFactory
-) : PartialView<PostListUiModel, CentralizedPromoAdapterTypeFactory, PostUiModel>(adapterTypeFactory) {
+        adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
+        coachMarkListener: CoachMarkListener
+) : PartialView<PostListUiModel, CentralizedPromoAdapterTypeFactory, PostUiModel>(adapterTypeFactory, coachMarkListener) {
+
+    override var shouldShowCoachMark: Boolean = false
 
     init {
         setupPostRecycler()

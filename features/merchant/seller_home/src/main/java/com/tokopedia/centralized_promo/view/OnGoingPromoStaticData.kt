@@ -8,7 +8,7 @@ import com.tokopedia.centralized_promo.view.model.Status
 object OnGoingPromoStaticData {
     fun provideStaticData() = OnGoingPromoListUiModel(
             title = "Your On Going Promotion",
-            promotions = listOf(
+            promotions = arrayListOf(
                     OnGoingPromoUiModel(
                             title = "Flash Sale",
                             status = Status(

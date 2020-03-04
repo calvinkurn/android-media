@@ -5,7 +5,6 @@
     android:id="@+id/layoutCentralizedPromoOnGoingPromoError"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent"
     android:padding="@dimen/layout_lvl2"
     android:visibility="gone">
 

@@ -5,7 +5,7 @@ import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeF
 
 data class OnGoingPromoListUiModel(
         val title: String,
-        val promotions: List<OnGoingPromoUiModel>,
+        val promotions: ArrayList<OnGoingPromoUiModel>,
         val errorMessage: String
 ): BaseUiModel()
 

@@ -29,7 +29,7 @@ class GetOnGoingPromoUseCaseTest {
 
         private val successResult = OnGoingPromoListUiModel(
                 title = "Track your promotion",
-                promotions = listOf(
+                promotions = arrayListOf(
                         OnGoingPromoUiModel(
                                 title = "Flash Sale",
                                 status = Status(
@@ -48,7 +48,7 @@ class GetOnGoingPromoUseCaseTest {
 
         private val errorResultWithMessage = OnGoingPromoListUiModel(
                 title = "Track your promotion",
-                promotions = emptyList(),
+                promotions = ArrayList(),
                 errorMessage = "Terjadi Kesalahan Pada Server"
         )
     }

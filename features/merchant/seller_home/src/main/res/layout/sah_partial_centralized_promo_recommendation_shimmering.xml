@@ -4,7 +4,6 @@
     android:id="@+id/layoutCentralizedPromoRecommendationShimmering"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/transparent"
     android:paddingTop="@dimen/layout_lvl2">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView

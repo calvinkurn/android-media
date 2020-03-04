@@ -4,14 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardPromoBroadcastChat"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/transparent">
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="@dimen/sah_dimen_150dp"
         android:layout_marginTop="@dimen/layout_lvl3"
-        android:background="@color/transparent"
         app:cardCornerRadius="@dimen/layout_lvl1"
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/layout_lvl2"
@@ -20,15 +18,13 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/transparent">
+            android:layout_height="match_parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvRecommendedPromoTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/layout_lvl3"
-                android:background="@color/transparent"
                 android:textAlignment="center"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +40,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:background="@color/transparent"
                 android:textAlignment="center"
                 android:textColor="@color/sah_description_desc"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +56,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:background="@color/transparent"
                 android:textAlignment="center"
                 android:textColor="@color/Neutral_N700_96"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -95,7 +89,6 @@
         android:id="@+id/cardPromotionIcon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:background="@color/transparent"
         app:cardCornerRadius="@dimen/layout_lvl2"
         app:cardElevation="@dimen/layout_lvl1"
         app:contentPadding="@dimen/layout_lvl1"
@@ -111,7 +104,6 @@
             android:layout_height="24dp"
             android:layout_gravity="center"
             android:adjustViewBounds="true"
-            android:background="@color/transparent"
             app:srcCompat="@drawable/sh_ic_top_ads_color" />
 
     </androidx.cardview.widget.CardView>

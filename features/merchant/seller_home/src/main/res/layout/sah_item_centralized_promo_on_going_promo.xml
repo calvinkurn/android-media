@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@color/transparent"
     app:cardCornerRadius="@dimen/layout_lvl1"
     app:cardUseCompatPadding="true"
     app:layout_constraintEnd_toEndOf="parent"
@@ -16,7 +15,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/transparent"
         android:minWidth="160dp">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -113,7 +111,6 @@
             android:id="@+id/ivCaret"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:background="@color/transparent"
             android:paddingStart="4dp"
             android:paddingLeft="4dp"
             android:paddingEnd="@dimen/layout_lvl1"

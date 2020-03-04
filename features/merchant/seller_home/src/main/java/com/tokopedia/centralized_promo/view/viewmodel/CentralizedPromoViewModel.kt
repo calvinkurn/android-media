@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.centralized_promo.domain.usecase.GetCentralizedPromoPostUseCase
 import com.tokopedia.centralized_promo.domain.usecase.GetOnGoingPromoUseCase
 import com.tokopedia.centralized_promo.view.LayoutType
+import com.tokopedia.centralized_promo.view.OnGoingPromoStaticData
 import com.tokopedia.centralized_promo.view.RecommendedPromotionStaticData
 import com.tokopedia.centralized_promo.view.model.BaseUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -63,8 +64,9 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getOnGoingPromotion(): Result<BaseUiModel> {
         return try {
-            getOnGoingPromoUseCase.params = GetOnGoingPromoUseCase.getRequestParams(false)
-            Success(getOnGoingPromoUseCase.executeOnBackground())
+//            getOnGoingPromoUseCase.params = GetOnGoingPromoUseCase.getRequestParams(false)
+//            Success(getOnGoingPromoUseCase.executeOnBackground())
+            Success(OnGoingPromoStaticData.provideStaticData())
         } catch (t: Throwable) {
             Fail(t)
         }
