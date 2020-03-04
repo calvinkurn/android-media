@@ -42,23 +42,23 @@ class PromoListHeaderViewHolder(private val view: View,
         }
 
         if (element.uiState.isEnabled) {
-            renderEnablePromoListHeader()
+            renderEnablePromoListHeader(element)
         } else {
-            renderDisablePromoListHeader()
+            renderDisablePromoListHeader(element)
         }
     }
 
-    private fun renderEnablePromoListHeader() {
+    private fun renderEnablePromoListHeader(element: PromoListHeaderUiModel) {
         setImageFilterNormal(itemView.image_promo_list_header)
         itemView.label_promo_list_header_sub_title.show()
         itemView.image_chevron.show()
         itemView.setOnClickListener {
             val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) listener.onClickPromoListHeader(adapterPosition)
+            if (position != RecyclerView.NO_POSITION) listener.onClickPromoListHeader(adapterPosition, element)
         }
     }
 
-    private fun renderDisablePromoListHeader() {
+    private fun renderDisablePromoListHeader(element: PromoListHeaderUiModel) {
         setImageFilterGrayScale(itemView.image_promo_list_header)
         itemView.label_promo_list_header_sub_title.gone()
         itemView.image_chevron.gone()

@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.listener
 
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibilityHeaderUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoRecommendationUiModel
 
@@ -10,7 +11,7 @@ interface PromoCheckoutActionListener {
 
     fun onClickApplyManualInputPromo(promoCode: String)
 
-    fun onClickPromoListHeader(itemPosition: Int)
+    fun onClickPromoListHeader(itemPosition: Int, element: PromoListHeaderUiModel)
 
     fun onClickPromoListItem(position: Int, element: PromoListItemUiModel)
 

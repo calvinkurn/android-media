@@ -31,6 +31,7 @@ import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.Delete
+import com.tokopedia.purchase_platform.features.promo.presentation.Insert
 import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
 import com.tokopedia.purchase_platform.features.promo.presentation.Update
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
@@ -104,7 +105,8 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         observePromoRecommendationUiModel()
         observePromoInputUiModel()
         observePromoListUiModel()
-        observePromoListItemChangeUiModel()
+        observeVisitableChangeUiModel()
+        observeVisitableListChangeUiModel()
         observeEmptyStateUiModel()
     }
 
@@ -150,14 +152,26 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         })
     }
 
-    private fun observePromoListItemChangeUiModel() {
-        viewModel.tmpPromoListUiModel.observe(this, Observer {
+    private fun observeVisitableChangeUiModel() {
+        viewModel.tmpUiModel.observe(this, Observer {
             when (it) {
                 is Update -> {
                     adapter.modifyData(adapter.data.indexOf(it.data))
                 }
                 is Delete -> {
                     adapter.removeData(it.data)
+                }
+            }
+        })
+    }
+
+    private fun observeVisitableListChangeUiModel() {
+        viewModel.tmpListUiModel.observe(this, Observer {
+            when (it) {
+                is Insert -> {
+                    it.data.forEach {
+                        adapter.addVisitableList((adapter.data.indexOf(it.key) + 1), it.value)
+                    }
                 }
             }
         })
@@ -318,31 +332,8 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     }
 
-    override fun onClickPromoListHeader(itemPosition: Int) {
-        if (itemPosition < adapter.data.size) {
-            val oldData = adapter.data[itemPosition]
-            if (oldData is PromoListHeaderUiModel) {
-                if (!oldData.uiState.isCollapsed) {
-                    oldData.uiState.isCollapsed = !oldData.uiState.isCollapsed
-                    adapter.modifyData(itemPosition)
-
-                    val modifiedData = ArrayList<PromoListItemUiModel>()
-                    val startIndex = itemPosition + 1
-                    for (index in startIndex until adapter.data.size) {
-                        if (adapter.data[index] !is PromoListItemUiModel) break
-                        val oldPromoItem = adapter.data[index] as PromoListItemUiModel
-                        modifiedData.add(oldPromoItem)
-                    }
-                    oldData.uiData.tmpPromoItemList = modifiedData
-                    adapter.removeDataList(modifiedData)
-                } else {
-                    oldData.uiState.isCollapsed = !oldData.uiState.isCollapsed
-                    adapter.modifyData(itemPosition)
-                    adapter.addVisitableList(itemPosition + 1, oldData.uiData.tmpPromoItemList)
-                    oldData.uiData.tmpPromoItemList = emptyList()
-                }
-            }
-        }
+    override fun onClickPromoListHeader(itemPosition: Int, element: PromoListHeaderUiModel) {
+        viewModel.updatePromoSectionList(element)
     }
 
     override fun onClickPromoListItem(position: Int, element: PromoListItemUiModel) {

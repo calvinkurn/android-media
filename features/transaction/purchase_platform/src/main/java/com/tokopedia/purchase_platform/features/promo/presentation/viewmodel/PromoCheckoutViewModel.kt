@@ -37,10 +37,15 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
     val promoListUiModel: LiveData<MutableList<Visitable<*>>>
         get() = _promoListUiModel
 
-    // Temporary data
-    private val _tmpPromoListUiModel = MutableLiveData<Action<Visitable<*>>>()
-    val tmpPromoListUiModel: LiveData<Action<Visitable<*>>>
-        get() = _tmpPromoListUiModel
+    // Temporary single data
+    private val _tmpUiModel = MutableLiveData<Action<Visitable<*>>>()
+    val tmpUiModel: LiveData<Action<Visitable<*>>>
+        get() = _tmpUiModel
+
+    // Temporary multiple data with header as index
+    private val _tmpListUiModel = MutableLiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>()
+    val tmpListUiModel: LiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>
+        get() = _tmpListUiModel
 
     fun loadData() {
         // Todo : Hit API. Currently use mock local data
@@ -116,6 +121,50 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         fragmentUiModel.value?.let {
             it.uiState.hasAnyPromoSelected = hasAnyPromoSelected
             _fragmentUiModel.value = it
+        }
+    }
+
+    fun updatePromoSectionList(element: PromoListHeaderUiModel) {
+        if (!element.uiState.isCollapsed) {
+            promoListUiModel.value?.indexOf(element)?.let {
+                val headerData = promoListUiModel.value?.get(it) as PromoListHeaderUiModel
+                headerData.uiState.isCollapsed = !headerData.uiState.isCollapsed
+
+                val modifiedData = ArrayList<PromoListItemUiModel>()
+                val startIndex = it + 1
+                val endIndex = promoListUiModel.value?.size ?: 0
+                for (index in startIndex until endIndex) {
+                    if (promoListUiModel.value?.get(index) !is PromoListItemUiModel) break
+                    val oldPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
+                    modifiedData.add(oldPromoItem)
+                }
+                _tmpUiModel.value = Update(headerData)
+                headerData.uiData.tmpPromoItemList = modifiedData
+                modifiedData.forEach {
+                    _tmpUiModel.value = Delete(it)
+                }
+                promoListUiModel.value?.removeAll(modifiedData)
+            }
+        } else {
+            promoListUiModel.value?.indexOf(element)?.let {
+                val headerData = promoListUiModel.value?.get(it) as PromoListHeaderUiModel
+                headerData.uiState.isCollapsed = !headerData.uiState.isCollapsed
+
+                val mapList = HashMap<Visitable<*>, List<Visitable<*>>>()
+                mapList[headerData] = headerData.uiData.tmpPromoItemList
+                _tmpListUiModel.value = Insert(mapList)
+
+                var startIndex = it + 1
+                headerData.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
+                    promoListUiModel.value?.add(startIndex++, promoListItemUiModel)
+                }
+
+                _tmpUiModel.value = Update(headerData)
+
+                headerData.uiData.tmpPromoItemList = emptyList()
+                _tmpUiModel.value = Update(headerData)
+            }
+
         }
     }
 }
