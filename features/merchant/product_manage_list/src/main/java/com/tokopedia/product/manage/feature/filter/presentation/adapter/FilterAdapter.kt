@@ -13,10 +13,4 @@ class FilterAdapter(
         visitables.addAll(filterViewModels)
         notifyDataSetChanged()
     }
-
-    fun updateSpecificData(filterViewModel: FilterViewModel?, index: Int) {
-        visitables.removeAt(index)
-        visitables.add(index,filterViewModel)
-        notifyItemChanged(index)
-    }
 }

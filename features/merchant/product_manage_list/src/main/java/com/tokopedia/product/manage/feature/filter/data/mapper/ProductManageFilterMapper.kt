@@ -5,6 +5,8 @@ import com.tokopedia.product.manage.feature.filter.data.model.CombinedResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.*
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 class ProductManageFilterMapper {
@@ -75,7 +77,7 @@ class ProductManageFilterMapper {
             }
         }
 
-        fun mapChecklistViewModelsTpFilterViewModel(key: String, checklistViewModels: List<ChecklistViewModel>): FilterViewModel {
+        fun mapChecklistViewModelsToFilterViewModel(key: String, checklistViewModels: List<ChecklistViewModel>, isChipsShown: Boolean): FilterViewModel {
             val data = mutableListOf<FilterDataViewModel>()
             for(checklistViewModel in checklistViewModels) {
                 data.add(
@@ -88,9 +90,9 @@ class ProductManageFilterMapper {
                 )
             }
             return if(key == ProductManageFilterFragment.CATEGORIES_CACHE_MANAGER_KEY) {
-                FilterViewModel(CATEGORY_HEADER, data, HIDE_CHIPS)
+                FilterViewModel(CATEGORY_HEADER, data, isChipsShown)
             } else {
-                FilterViewModel(OTHER_FILTER_HEADER, data, HIDE_CHIPS)
+                FilterViewModel(OTHER_FILTER_HEADER, data, isChipsShown)
             }
         }
 

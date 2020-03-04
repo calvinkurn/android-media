@@ -143,19 +143,27 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             when(resultCode) {
                 UPDATE_SORT_SUCCESS_RESPONSE -> {
                     val dataToUpdate: FilterViewModel? = savedInstanceManager?.get(SORT_CACHE_MANAGER_KEY, FilterViewModel::class.java)
-                    filterAdapter?.updateSpecificData(dataToUpdate, ITEM_SORT_INDEX)
+                    dataToUpdate?.let {
+                        productManageFilterViewModel.updateSpecificData(it, ITEM_SORT_INDEX)
+                    }
                 }
                 UPDATE_ETALASE_SUCCESS_RESPONSE -> {
                     val dataToUpdate: FilterViewModel? = savedInstanceManager?.get(ETALASE_CACHE_MANAGER_KEY, FilterViewModel::class.java)
-                    filterAdapter?.updateSpecificData(dataToUpdate, ITEM_ETALASE_INDEX)
+                    dataToUpdate?.let {
+                        productManageFilterViewModel.updateSpecificData(it, ITEM_ETALASE_INDEX)
+                    }
                 }
                 UPDATE_CATEGORIES_SUCCESS_RESPONSE -> {
                     val dataToUpdate: FilterViewModel? = savedInstanceManager?.get(CATEGORIES_CACHE_MANAGER_KEY, FilterViewModel::class.java)
-                    filterAdapter?.updateSpecificData(dataToUpdate, ITEM_CATEGORIES_INDEX)
+                    dataToUpdate?.let {
+                        productManageFilterViewModel.updateSpecificData(it, ITEM_CATEGORIES_INDEX)
+                    }
                 }
                 UPDATE_OTHER_FILTER_SUCCESS_RESPONSE -> {
                     val dataToUpdate: FilterViewModel? = savedInstanceManager?.get(OTHER_FILTER_CACHE_MANAGER_KEY, FilterViewModel::class.java)
-                    filterAdapter?.updateSpecificData(dataToUpdate, ITEM_OTHER_FILTER_INDEX)
+                    dataToUpdate?.let {
+                        productManageFilterViewModel.updateSpecificData(it, ITEM_OTHER_FILTER_INDEX)
+                    }
                 }
             }
         }

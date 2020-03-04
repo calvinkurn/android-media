@@ -59,6 +59,14 @@ class ProductManageFilterViewModel @Inject constructor(
         _filterData.postValue(filterData.toMutableList())
     }
 
+    fun updateSpecificData(filterViewModel: FilterViewModel, index: Int) {
+        val currentValue = _filterData.value
+        currentValue?.let {
+            it[index] = filterViewModel
+        }
+        _filterData.postValue(currentValue)
+    }
+
     fun updateSelect(filterData: FilterDataViewModel) {
         val currentData = _filterData.value
         val indexes = getIndexOfData(filterData)

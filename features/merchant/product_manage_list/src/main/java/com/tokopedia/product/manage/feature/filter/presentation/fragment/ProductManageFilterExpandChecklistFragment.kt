@@ -67,6 +67,7 @@ class ProductManageFilterExpandChecklistFragment :
     private var submitButton: UnifyButton? = null
     private var errorImage: ImageView? = null
     private var errorMessage: Typography? = null
+    private var isChipsShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,6 +80,7 @@ class ProductManageFilterExpandChecklistFragment :
         cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
         val filterViewModel: FilterViewModel? = flag.let { cacheManager?.get(it, FilterViewModel::class.java) }
         filterViewModel?.let {
+            isChipsShown = filterViewModel.isChipsShown
             productManageFilterExpandChecklistViewModel.initData(ProductManageFilterMapper.mapFilterViewModelsToChecklistViewModels(it))
         }
     }
@@ -178,7 +180,6 @@ class ProductManageFilterExpandChecklistFragment :
                         productManageFilterExpandChecklistViewModel.checklistData.value?.toList()?.let {data ->
                             adapter?.updateChecklistData(data)
                         }
-
                     }
                 }
             }
@@ -223,23 +224,24 @@ class ProductManageFilterExpandChecklistFragment :
         submitButton?.setOnClickListener {
             if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
                 cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY,
-                        ProductManageFilterMapper.mapChecklistViewModelsTpFilterViewModel(
+                        ProductManageFilterMapper.mapChecklistViewModelsToFilterViewModel(
                                 CATEGORIES_CACHE_MANAGER_KEY,
-                                productManageFilterExpandChecklistViewModel.checklistData.value ?: listOf()
+                                productManageFilterExpandChecklistViewModel.checklistData.value ?: listOf(),
+                                isChipsShown
                         ))
                 this.activity?.setResult(ProductManageFilterFragment.UPDATE_CATEGORIES_SUCCESS_RESPONSE)
             } else {
                 cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY,
-                        ProductManageFilterMapper.mapChecklistViewModelsTpFilterViewModel(
+                        ProductManageFilterMapper.mapChecklistViewModelsToFilterViewModel(
                                 OTHER_FILTER_CACHE_MANAGER_KEY,
-                                productManageFilterExpandChecklistViewModel.checklistData.value ?: listOf()
+                                productManageFilterExpandChecklistViewModel.checklistData.value ?: listOf(),
+                                isChipsShown
                         ))
                 this.activity?.setResult(ProductManageFilterFragment.UPDATE_OTHER_FILTER_SUCCESS_RESPONSE)
             }
             this.activity?.finish()
         }
         reset?.setOnClickListener {
-            adapter?.clearAllChecklists()
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
         }
     }
