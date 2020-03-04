@@ -2,7 +2,6 @@ package com.tokopedia.topchat.chatroom.di
 
 import android.content.Context
 import android.content.res.Resources
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.chat_common.network.ChatUrl.Companion.TOPCHAT
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
@@ -17,12 +16,15 @@ import javax.inject.Named
  */
 
 @Module
-class ChatNetworkModule {
+class ChatNetworkModule(val context: Context) {
+
+    @Provides
+    fun provideContext(): Context = context
 
     @ChatScope
     @Provides
     @Named("retrofit")
-     fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
+    fun provideChatRetrofit(context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
             throw IllegalStateException("Application must implement "
                     .plus(NetworkRouter::class.java.simpleName)
@@ -37,16 +39,15 @@ class ChatNetworkModule {
         )
     }
 
-
     @ChatScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSession {
+    fun provideUserSession(context: Context): UserSession {
         return UserSession(context)
     }
 
     @ChatScope
     @Provides
-     fun provideResources(@ApplicationContext context: Context): Resources {
+    fun provideResources(context: Context): Resources {
         return context.resources
     }
 

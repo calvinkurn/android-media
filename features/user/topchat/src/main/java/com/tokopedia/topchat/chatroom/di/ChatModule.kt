@@ -1,16 +1,15 @@
 package com.tokopedia.topchat.chatroom.di
 
 import android.content.Context
-import com.google.gson.Gson
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
@@ -24,7 +23,6 @@ import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
-import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.factory.MessageFactory
 import com.tokopedia.topchat.chatlist.data.mapper.DeleteMessageMapper
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository
@@ -57,7 +55,10 @@ import javax.inject.Named
  */
 
 @Module(includes = arrayOf(ImageUploaderModule::class, ChatNetworkModule::class))
-class ChatModule {
+class ChatModule(val context: Context) {
+
+    @Provides
+    fun provideContext(): Context = context
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60
@@ -66,13 +67,13 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
+    fun provideUserSessionInterface(context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @ChatScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+    fun provideNetworkRouter(context: Context): NetworkRouter {
         return (context as NetworkRouter)
     }
 
@@ -116,13 +117,13 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+    fun provideChuckerInterceptor(context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
     @ChatScope
     @Provides
-    fun provideXUserIdInterceptor(@ApplicationContext context: Context,
+    fun provideXUserIdInterceptor(context: Context,
                                   networkRouter: NetworkRouter,
                                   userSession: UserSession):
             XUserIdInterceptor {
@@ -139,7 +140,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+    fun provideTkpdAuthInterceptor(context: Context,
                                    networkRouter: NetworkRouter,
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
@@ -148,7 +149,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context,
+    fun provideOkHttpClient(context: Context,
                             @InboxQualifier retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,
@@ -214,7 +215,7 @@ class ChatModule {
     @ChatScope
     @Provides
     @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+    fun provideAddToCartMutation(context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
@@ -233,13 +234,13 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
+    internal fun provideAddWishListUseCase(context: Context): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
 
     @ChatScope
     @Provides
-    internal fun provideRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
+    internal fun provideRemoveWishListUseCase(context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
 
