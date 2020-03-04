@@ -17,6 +17,7 @@ import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
 import rx.Subscriber
 import javax.inject.Inject
 import androidx.core.app.NotificationManagerCompat
+import com.tokopedia.topchat.common.analytics.TopChatAnalytics
 import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
@@ -25,9 +26,13 @@ class NotificationChatService : JobIntentService() {
     private val REPLY_KEY = "reply_chat_key"
     private val MESSAGE_ID = "message_chat_id"
     private val NOTIFICATION_ID = "notification_id"
+    private val USER_ID = "user_id"
 
     @Inject
     lateinit var replyChatUseCase: ReplyChatUseCase
+
+    @Inject
+    lateinit var analytics: TopChatAnalytics
 
     private var jobScheduler: JobScheduler? = null
 
@@ -69,15 +74,17 @@ class NotificationChatService : JobIntentService() {
 
         val messageId = intent.getStringExtra(MESSAGE_ID)
         val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)
+        val userId = intent.getStringExtra(USER_ID)
 
         val params = ReplyChatUseCase.generateParam(messageId, message)
 
         replyChatUseCase.execute(params, object : Subscriber<ReplyChatViewModel>() {
             override fun onNext(response: ReplyChatViewModel) {
                 if (response.isSuccessReplyChat) {
+                    analytics.eventClickReplyChatFromNotif(if (userId.isBlank()) "0" else userId)
                     clearNotification(notificationId)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        if(isJobIdRunning(JOB_ID_RETRY)) {
+                        if (isJobIdRunning(JOB_ID_RETRY)) {
                             jobScheduler?.cancel(JOB_ID_RETRY)
                         }
                     }

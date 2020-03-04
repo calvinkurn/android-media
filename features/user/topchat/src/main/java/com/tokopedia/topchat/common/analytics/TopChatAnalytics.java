@@ -12,6 +12,9 @@ import com.tokopedia.track.TrackAppUtils;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.inject.Inject;
 
 /**
@@ -46,6 +49,7 @@ public class TopChatAnalytics {
         String MESSAGE_ROOM = "message room";
 
         static String EVENT_CATEGORY_INBOX_CHAT = "inbox-chat";
+        String PUSH_NOTIFICATION = "push notification";
 
     }
 
@@ -95,6 +99,7 @@ public class TopChatAnalytics {
         String CLICK_HEADER = "click header-shop icon";
         String CLICK_ADD_TO_WISHLIST = "add wishlist - chat";
         String CLICK_REMOVE_FROM_WISHLIST = "remove wishlist - chat";
+        String CLICK_REPLY_BUTTON = "click on reply button";
     }
 
     public interface Label {
@@ -476,5 +481,16 @@ public class TopChatAnalytics {
                 Action.CLICK_REMOVE_FROM_WISHLIST,
                 productId
         );
+    }
+
+    public void eventClickReplyChatFromNotif(String userId) {
+        Map<String, Object> payload = new HashMap<>();
+        payload.put(EVENT_NAME, Name.CHAT_DETAIL);
+        payload.put(EVENT_CATEGORY, Category.PUSH_NOTIFICATION);
+        payload.put(EVENT_ACTION, Action.CLICK_REPLY_BUTTON);
+        payload.put(EVENT_LABEL, "");
+        payload.put("userId", userId);
+
+        TrackApp.getInstance().getGTM().sendGeneralEvent(payload);
     }
 }
