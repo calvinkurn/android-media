@@ -54,12 +54,10 @@ public class UserIdentificationFormFaceFragment extends
             @Override
             public void onClick(View v) {
                 analytics.eventClickNextSelfiePage();
-                if(GlobalConfig.isSellerApp()){
-                    Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
-                            PARAM_VIEW_MODE_FACE);
-                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
-                    startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
-                }
+                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                        PARAM_VIEW_MODE_FACE);
+                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
+                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
             }
         });
         ImageHandler.LoadImage(correctImage, KycUrl.SELFIE_OK);
