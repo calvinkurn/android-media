@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.viewmodel
 
 import android.accounts.NetworkErrorException
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
@@ -56,18 +57,41 @@ class ProductManageViewModel(
     mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
 
-    val viewState = MutableLiveData<ViewState>()
+    val _viewState = MutableLiveData<ViewState>()
 
-    val productFilters = MutableLiveData<List<FilterViewModel>>()
-    val productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
-    val shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
-    val updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    val deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    val editPriceResult = MutableLiveData<Result<EditPriceResult>>()
-    val setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
-    val getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
-    val getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
-    val setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
+    val _productFilters = MutableLiveData<List<FilterViewModel>>()
+    val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
+    val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
+    val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
+    val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
+    val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
+    val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
+    val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
+
+    val viewState : LiveData<ViewState>
+        get() = _viewState
+    val productFilters : LiveData<List<FilterViewModel>>
+        get() = _productFilters
+    val productListResult : LiveData<Result<List<ProductViewModel>>>
+        get() = _productListResult
+    val shopInfoResult : LiveData<Result<ShopInfoResult>>
+        get() = _shopInfoResult
+    val updateProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
+        get() = _updateProductResult
+    val deleteProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
+        get() = _deleteProductResult
+    val editPriceResult : LiveData<Result<EditPriceResult>>
+        get() = _editPriceResult
+    val setCashBackResult : LiveData<Result<SetCashBackResult>>
+        get() = _setCashBackResult
+    val getFreeClaimResult : LiveData<Result<DataDeposit>>
+        get() = _getFreeClaimResult
+    val getPopUpResult : LiveData<Result<GetPopUpResult>>
+        get() = _getPopUpResult
+    val setFeaturedProductResult : LiveData<Result<SetFeaturedProductResult>>
+        get() = _setFeaturedProductResult
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
@@ -85,9 +109,9 @@ class ProductManageViewModel(
 
                 ShopInfoResult(shopDomain, isGoldMerchant, isOfficialStore)
             }
-            shopInfoResult.value = Success(status)
+            _shopInfoResult.value = Success(status)
         }) {
-            shopInfoResult.value = Fail(it)
+            _shopInfoResult.value = Fail(it)
         }
     }
 
@@ -99,13 +123,13 @@ class ProductManageViewModel(
 
         bulkUpdateProductUseCase.execute(requestParams, object : Subscriber<ProductUpdateV3SuccessFailedResponse>() {
             override fun onNext(listOfUpdateResponse: ProductUpdateV3SuccessFailedResponse) {
-                updateProductResult.value = Success(listOfUpdateResponse)
+                _updateProductResult.value = Success(listOfUpdateResponse)
             }
 
             override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
-                updateProductResult.value = Fail(e)
+                _updateProductResult.value = Fail(e)
             }
         })
     }
@@ -120,11 +144,11 @@ class ProductManageViewModel(
             }
 
             if(productList?.isNotEmpty() == true) {
-                productListResult.value = Success(mapToViewModels(productList))
-                productFilters.value = mapToProductFilters(productList)
+                _productListResult.value = Success(mapToViewModels(productList))
+                _productFilters.value = mapToProductFilters(productList)
             }
         }, onError = {
-            productListResult.value = Fail(it)
+            _productListResult.value = Fail(it)
         })
     }
 
@@ -141,9 +165,9 @@ class ProductManageViewModel(
                 override fun onNext(data: ProductUpdateV3Response) {
                     hideProgressDialog()
                     if (data.productUpdateV3Data.isSuccess) {
-                        editPriceResult.value = Success(EditPriceResult(productId, price))
+                        _editPriceResult.value = Success(EditPriceResult(productId, price))
                     } else {
-                        editPriceResult.value = Fail(EditPriceResult(productId, price, NetworkErrorException()))
+                        _editPriceResult.value = Fail(EditPriceResult(productId, price, NetworkErrorException()))
                     }
                 }
 
@@ -152,7 +176,7 @@ class ProductManageViewModel(
                 }
 
                 override fun onError(e: Throwable) {
-                    editPriceResult.value = Fail(EditPriceResult(productId, price, NetworkErrorException()))
+                    _editPriceResult.value = Fail(EditPriceResult(productId, price, NetworkErrorException()))
                 }
             })
     }
@@ -164,9 +188,9 @@ class ProductManageViewModel(
             override fun onNext(isSuccess: Boolean) {
                 hideProgressDialog()
                 if (isSuccess) {
-                    setCashBackResult.value = Success(SetCashBackResult(productId, cashback))
+                    _setCashBackResult.value = Success(SetCashBackResult(productId, cashback))
                 } else {
-                    setCashBackResult.value = Fail(SetCashBackResult(productId, cashback, NetworkErrorException()))
+                    _setCashBackResult.value = Fail(SetCashBackResult(productId, cashback, NetworkErrorException()))
                 }
             }
 
@@ -175,7 +199,7 @@ class ProductManageViewModel(
 
             override fun onError(e: Throwable?) {
                 hideProgressDialog()
-                setCashBackResult.value = Fail(SetCashBackResult(productId, cashback, NetworkErrorException()))
+                _setCashBackResult.value = Fail(SetCashBackResult(productId, cashback, NetworkErrorException()))
             }
 
         })
@@ -186,14 +210,14 @@ class ProductManageViewModel(
         topAdsGetShopDepositGraphQLUseCase.execute(requestParams,
             object : Subscriber<DataDeposit>() {
                 override fun onNext(dataDeposit: DataDeposit) {
-                    getFreeClaimResult.value = Success(dataDeposit)
+                    _getFreeClaimResult.value = Success(dataDeposit)
                 }
 
                 override fun onCompleted() {
                 }
 
                 override fun onError(e: Throwable) {
-                    getFreeClaimResult.value = Fail(e)
+                    _getFreeClaimResult.value = Fail(e)
                 }
 
             })
@@ -205,14 +229,14 @@ class ProductManageViewModel(
         popupManagerAddProductUseCase.execute(PopupManagerAddProductUseCase.createRequestParams(shopId),
             object : Subscriber<Boolean>() {
                 override fun onNext(isSuccess: Boolean) {
-                    getPopUpResult.value = Success(GetPopUpResult(productId, isSuccess))
+                    _getPopUpResult.value = Success(GetPopUpResult(productId, isSuccess))
                 }
 
                 override fun onCompleted() {
                 }
 
                 override fun onError(e: Throwable) {
-                    getPopUpResult.value = Fail(e)
+                    _getPopUpResult.value = Fail(e)
                 }
 
             })
@@ -228,14 +252,14 @@ class ProductManageViewModel(
             object : Subscriber<ProductUpdateV3SuccessFailedResponse>() {
                 override fun onNext(listResponse: ProductUpdateV3SuccessFailedResponse) {
                     hideProgressDialog()
-                    deleteProductResult.value = Success(listResponse)
+                    _deleteProductResult.value = Success(listResponse)
                 }
 
                 override fun onCompleted() {
                 }
 
                 override fun onError(e: Throwable) {
-                    deleteProductResult.value = Fail(e)
+                    _deleteProductResult.value = Fail(e)
                 }
 
             })
@@ -248,7 +272,7 @@ class ProductManageViewModel(
         editFeaturedProductUseCase.execute(requestParams,
             object : Subscriber<Unit>() {
                 override fun onNext(unit: Unit) {
-                    setFeaturedProductResult.value = Success(SetFeaturedProductResult(productId, status))
+                    _setFeaturedProductResult.value = Success(SetFeaturedProductResult(productId, status))
                 }
 
                 override fun onCompleted() {
@@ -256,7 +280,7 @@ class ProductManageViewModel(
                 }
 
                 override fun onError(throwable: Throwable) {
-                    setFeaturedProductResult.value = Fail(throwable)
+                    _setFeaturedProductResult.value = Fail(throwable)
                 }
             })
 
@@ -324,6 +348,7 @@ class ProductManageViewModel(
         popupManagerAddProductUseCase.unsubscribe()
         getProductListUseCase.cancelJobs()
         bulkUpdateProductUseCase.unsubscribe()
+        editFeaturedProductUseCase.unsubscribe()
     }
 
     private fun mapToBulkUpdateParam(confirmationData: List<ConfirmationProductData>): MutableList<ProductUpdateV3Param> {
@@ -342,10 +367,10 @@ class ProductManageViewModel(
     }
 
     private fun showProgressDialog() {
-        viewState.value = ShowProgressDialog
+        _viewState.value = ShowProgressDialog
     }
 
     private fun hideProgressDialog() {
-        viewState.value = HideProgressDialog
+        _viewState.value = HideProgressDialog
     }
 }
