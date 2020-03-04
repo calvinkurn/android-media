@@ -41,19 +41,13 @@ interface FlightSearchContract {
 
         fun setCombineStatus(isCombineDone: Boolean)
 
-        fun setUIMarkFilter()
-
         fun setSearchPassData(passDataViewModel: FlightSearchPassDataViewModel)
-
-        fun setSelectedSortItem(sortItemId: Int)
 
         fun showDepartureDateMaxTwoYears(resId: Int)
 
         fun showDepartureDateShouldAtLeastToday(resId: Int)
 
         fun showReturnDateShouldGreatedOrEqual(resId: Int)
-
-        fun showFilterAndSortView()
 
         fun showEmptyFlightStateView()
 
@@ -62,8 +56,6 @@ interface FlightSearchContract {
         fun showGetSearchListError(e: Throwable)
 
         fun hideHorizontalProgress()
-
-        fun hideFilterAndSortView()
 
         fun removeToolbarElevation()
 

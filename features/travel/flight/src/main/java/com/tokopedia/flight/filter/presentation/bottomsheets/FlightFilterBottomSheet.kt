@@ -138,7 +138,11 @@ class FlightFilterBottomSheet : BottomSheetUnify(), OnFlightFilterListener, Flig
             rvFlightFilter.setHasFixedSize(true)
 
             btnFlightFilterSave.setOnClickListener {
-                listener?.onSaveFilter(getFlightSelectedSort(), getFlightFilterModel())
+                val filterModel = getFlightFilterModel()
+                filterModel?.apply {
+                    setHasFilter(getStatisticModel())
+                }
+                listener?.onSaveFilter(getFlightSelectedSort(), filterModel)
                 dismiss()
             }
         }
