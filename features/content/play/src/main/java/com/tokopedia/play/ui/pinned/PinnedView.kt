@@ -69,6 +69,7 @@ class PinnedView(
         if (!pinnedMessage.applink.isNullOrEmpty()) {
             tvPinnedAction.visible()
             tvPinnedAction.setOnClickListener {
+                //TODO("Uncomment Development Code")
 //                listener.onPinnedMessageActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
                 listener.onPinnedProductActionClicked(this)
             }
