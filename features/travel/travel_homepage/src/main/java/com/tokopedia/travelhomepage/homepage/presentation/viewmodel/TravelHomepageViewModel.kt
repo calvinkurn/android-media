@@ -53,7 +53,7 @@ class TravelHomepageViewModel @Inject constructor(
                         updatedList[BANNER_ORDER] = TravelHomepageBannerModel(banners.data)
                         updatedList[BANNER_ORDER].isLoaded = true
                         updatedList[BANNER_ORDER].isSuccess = true
-                        travelItemList.value = updatedList
+                        travelItemList.postValue(updatedList)
                     }
                 }
                 is Fail -> {
@@ -61,7 +61,7 @@ class TravelHomepageViewModel @Inject constructor(
                         val updatedList = it.toMutableList()
                         updatedList[BANNER_ORDER].isLoaded = true
                         updatedList[BANNER_ORDER].isSuccess = false
-                        travelItemList.value = updatedList
+                        travelItemList.postValue(updatedList)
                     }
                     checkIfAllError()
                 }

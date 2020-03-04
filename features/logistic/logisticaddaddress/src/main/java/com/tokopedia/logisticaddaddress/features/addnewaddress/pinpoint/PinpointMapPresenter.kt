@@ -3,24 +3,21 @@ package com.tokopedia.logisticaddaddress.features.addnewaddress.pinpoint
 import android.app.Activity
 import com.google.android.gms.location.LocationServices
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.locationmanager.DeviceLocation
 import com.tokopedia.locationmanager.LocationDetectorHelper
 import com.tokopedia.logisticaddaddress.R
-import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressScope
 import com.tokopedia.logisticaddaddress.domain.mapper.DistrictBoundaryMapper
-import com.tokopedia.logisticaddaddress.domain.mapper.GetDistrictMapper
 import com.tokopedia.logisticaddaddress.domain.usecase.DistrictBoundaryUseCase
 import com.tokopedia.logisticaddaddress.domain.usecase.GetDistrictUseCase
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
-import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
-import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.GetDistrictSubscriber
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.get_district.GetDistrictDataUiModel
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
-import com.tokopedia.logisticdata.data.entity.response.Data
 import com.tokopedia.logisticdata.domain.usecase.RevGeocodeUseCase
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.usecase.RequestParams
+import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,7 +28,6 @@ const val FOREIGN_COUNTRY_MESSAGE = "Lokasi di luar Indonesia."
 
 @AddNewAddressScope
 class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: GetDistrictUseCase,
-                                               private val getDistrictMapper: GetDistrictMapper,
                                                private val revGeocodeUseCase: RevGeocodeUseCase,
                                                private val districtBoundaryUseCase: DistrictBoundaryUseCase,
                                                private val districtBoundaryMapper: DistrictBoundaryMapper) : BaseDaggerPresenter<PinpointMapListener>() {
@@ -40,8 +36,19 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
     private var permissionCheckerHelper: PermissionCheckerHelper? = null
 
     fun getDistrict(placeId: String) {
-        getDistrictUseCase.setParams(placeId)
-        getDistrictUseCase.execute(RequestParams.create(), GetDistrictSubscriber(view, getDistrictMapper))
+        getDistrictUseCase
+                .execute(placeId)
+                .subscribe(object : Subscriber<GetDistrictDataUiModel>() {
+                    override fun onNext(model: GetDistrictDataUiModel) {
+                        view.onSuccessPlaceGetDistrict(model)
+                    }
+
+                    override fun onCompleted() {}
+
+                    override fun onError(e: Throwable?) {
+                        Timber.d(e)
+                    }
+                })
     }
 
     fun autofill(lat: Double, long: Double, zoom: Float) {
@@ -52,15 +59,14 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         }
         val param = "$lat,$long"
         view.showLoading()
+        revGeocodeUseCase.clearCache()
         revGeocodeUseCase.execute(param)
                 .subscribe(
                         {
                             if (it.messageError.isNotEmpty() && it.messageError[0].equals(FOREIGN_COUNTRY_MESSAGE, true)) {
                                 view.showOutOfReachDialog()
                             } else {
-                                var errMsg = ""
-                                if (it.messageError.isNotEmpty()) errMsg = it.messageError[0]
-                                view?.onSuccessAutofill(it.data, errMsg)
+                                view?.onSuccessAutofill(it.data)
                             }
                         },
                         {
@@ -76,68 +82,8 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
         districtBoundaryUseCase.unsubscribe()
     }
 
-    fun clearCacheGetDistrict() {
-        getDistrictUseCase.clearCache()
-    }
-
-    fun clearCacheAutofill() {
-        revGeocodeUseCase.clearCache()
-    }
-
-    fun loadAddEdit(isMismatchSolved: Boolean, isChangesRequested: Boolean) {
-        if (saveAddressDataModel.districtId == 0 && saveAddressDataModel.postalCode.isEmpty()) {
-            view.showFailedDialog()
-
-            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniNotSuccess(eventLabel = LOGISTIC_LABEL)
-            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeFailed(eventLabel = LOGISTIC_LABEL)
-        } else if (saveAddressDataModel.postalCode.isEmpty()) {
-            view.goToAddEditActivity(true, isMismatchSolved, isUnnamedRoad = false, isZipCodeNull = true)
-        } else {
-            if (isChangesRequested) {
-                view.finishBackToAddEdit(false, isMismatchSolved)
-            } else {
-                view.goToAddEditActivity(false, isMismatchSolved, false, false)
-            }
-
-            AddNewAddressAnalytics.eventClickButtonPilihLokasiIniSuccess(eventLabel = LOGISTIC_LABEL)
-            AddNewAddressAnalytics.eventClickButtonTandaiLokasiChangeAddressNegativeSuccess(eventLabel = LOGISTIC_LABEL)
-        }
-    }
-
-    fun convertGetDistrictToSaveAddressDataUiModel(getDistrictDataUiModel: GetDistrictDataUiModel, zipCodes: MutableList<String>?): SaveAddressDataModel {
-        val saveAddressDataModel = SaveAddressDataModel()
-        saveAddressDataModel.title = getDistrictDataUiModel.title
-        saveAddressDataModel.formattedAddress = getDistrictDataUiModel.formattedAddress
-        saveAddressDataModel.districtId = getDistrictDataUiModel.districtId
-        saveAddressDataModel.provinceId = getDistrictDataUiModel.provinceId
-        saveAddressDataModel.cityId = getDistrictDataUiModel.cityId
-        saveAddressDataModel.postalCode = getDistrictDataUiModel.postalCode
-        saveAddressDataModel.latitude = getDistrictDataUiModel.latitude
-        saveAddressDataModel.longitude = getDistrictDataUiModel.longitude
-        saveAddressDataModel.selectedDistrict = getDistrictDataUiModel.formattedAddress
-        if (zipCodes != null) {
-            saveAddressDataModel.zipCodes = zipCodes
-        }
-        this.saveAddressDataModel = saveAddressDataModel
-        return saveAddressDataModel
-    }
-
-    fun convertAutofillToSaveAddressDataUiModel(autoFillModel: Data, zipCodes: MutableList<String>?): SaveAddressDataModel {
-        val saveAddressDataModel = SaveAddressDataModel()
-        saveAddressDataModel.title = autoFillModel.title
-        saveAddressDataModel.formattedAddress = autoFillModel.formattedAddress
-        saveAddressDataModel.districtId = autoFillModel.districtId
-        saveAddressDataModel.provinceId = autoFillModel.provinceId
-        saveAddressDataModel.cityId = autoFillModel.cityId
-        saveAddressDataModel.postalCode = autoFillModel.postalCode
-        saveAddressDataModel.latitude = autoFillModel.latitude
-        saveAddressDataModel.longitude = autoFillModel.longitude
-        saveAddressDataModel.selectedDistrict = autoFillModel.formattedAddress
-        if (zipCodes != null) {
-            saveAddressDataModel.zipCodes = zipCodes
-        }
-        this.saveAddressDataModel = saveAddressDataModel
-        return saveAddressDataModel
+    fun setAddress(address: SaveAddressDataModel) {
+        this.saveAddressDataModel = address
     }
 
     fun getSaveAddressDataModel(): SaveAddressDataModel {
@@ -151,7 +97,18 @@ class PinpointMapPresenter @Inject constructor(private val getDistrictUseCase: G
 
     fun getDistrictBoundary(districtId: Int, keroToken: String, keroUt: Int) {
         districtBoundaryUseCase.setParams(districtId, keroToken, keroUt)
-        districtBoundaryUseCase.execute(RequestParams.create(), DistrictBoundarySubscriber(view, districtBoundaryMapper))
+        districtBoundaryUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+            override fun onNext(t: GraphqlResponse) {
+                val districtBoundaryResponseUiModel = districtBoundaryMapper.map(t)
+                view.showBoundaries(districtBoundaryResponseUiModel.geometry.listCoordinates)
+            }
+
+            override fun onCompleted() {}
+
+            override fun onError(e: Throwable?) {
+                Timber.d(e)
+            }
+        })
     }
 
     fun requestLocation(activity: Activity) {

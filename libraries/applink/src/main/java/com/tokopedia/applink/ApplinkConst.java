@@ -299,6 +299,7 @@ public interface ApplinkConst {
     String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
+    String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -412,6 +413,11 @@ public interface ApplinkConst {
         String INVOICE_STATUS_ID = "invoice_status_id";
         String INVOICE_STATUS = "invoice_status";
         String INVOICE_TOTAL_AMOUNT = "invoice_total_amount";
+
+        String PATH_ASK_SELLER = "askseller";
+        String PATH_ASK_BUYER = "askbuyer";
+
+        String SOURCE_ASK_SELLER = "tx_ask_seller";
     }
 
     interface AttachInvoice {
@@ -476,5 +482,14 @@ public interface ApplinkConst {
         String RESULT_ATC_SUCCESS_MESSAGE = "atc_success_message";
 
         String ORDER_LIST = "tokopedia-android-internal://transaction/order-list";
+    }
+
+    interface Liveness {
+        String EXTRA_IS_SUCCESS_REGISTER = "isSuccessRegister";
+        String EXTRA_LIST_RETAKE = "listRetake";
+        String EXTRA_LIST_MESSAGE = "listMessage";
+        String EXTRA_TITLE = "title";
+        String EXTRA_SUBTITLE = "subtitle";
+        String EXTRA_BUTTON = "button";
     }
 }

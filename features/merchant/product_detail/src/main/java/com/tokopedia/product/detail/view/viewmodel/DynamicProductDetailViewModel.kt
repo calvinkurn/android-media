@@ -13,6 +13,7 @@ import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -239,11 +240,12 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
             _p2ShopDataResp.value = p2ShopDeferred.await().also {
                 shopInfo = it.shopInfo
-                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInResponse()
                 tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
                 tradeInParams.usedPrice = tradeInResponse.usedPrice
                 tradeInParams.remainingPrice = tradeInResponse.remainingPrice
-                tradeInParams.isUseKyc = if (tradeInResponse.useKyc) 1 else 0
+                tradeInParams.isUseKyc = if (tradeInResponse.isUseKyc) 1 else 0
+                tradeInParams.widgetString = tradeInResponse.widgetString
             }
 
             _p2General.value = p2GeneralAsync.await()

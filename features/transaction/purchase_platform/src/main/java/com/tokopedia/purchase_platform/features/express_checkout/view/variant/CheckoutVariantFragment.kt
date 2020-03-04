@@ -291,7 +291,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
     }
 
     override fun onClickEditCourier() {
-        shippingCourierBottomsheet.updateArguments(fragmentUiModel.shippingCourierViewModels)
+        shippingCourierBottomsheet.updateArguments(fragmentUiModel.shippingCourierUiModels)
         if (!shippingCourierBottomsheet.isAdded) {
             activity?.supportFragmentManager?.run {
                 shippingCourierBottomsheet.show(this, "")
@@ -842,15 +842,15 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierViewModels: MutableList<ShippingCourierViewModel>?) {
-        if (shippingCourierViewModels != null) {
-            for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
-                if (shippingCourierViewModel.productData.isRecommend) {
-                    shippingCourierViewModel.isSelected = true
+    override fun updateShippingData(productData: ProductData, serviceData: ServiceData, shippingCourierUiModels: MutableList<ShippingCourierUiModel>?) {
+        if (shippingCourierUiModels != null) {
+            for (shippingCourierUiModel: ShippingCourierUiModel in shippingCourierUiModels) {
+                if (shippingCourierUiModel.productData.isRecommend) {
+                    shippingCourierUiModel.isSelected = true
                     break
                 }
             }
-            fragmentUiModel.shippingCourierViewModels = shippingCourierViewModels
+            fragmentUiModel.shippingCourierUiModels = shippingCourierUiModels
         }
 
         val profileViewModel = fragmentUiModel.getProfileViewModel()
@@ -927,7 +927,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
         }
     }
 
-    override fun onShippingDurationChoosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>,
+    override fun onShippingDurationChoosen(shippingCourierUiModels: MutableList<ShippingCourierUiModel>,
                                            courierItemData: CourierItemData,
                                            recipientAddressModel: RecipientAddressModel,
                                            cartPosition: Int,
@@ -936,20 +936,20 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
                                            flagNeedToSetPinpoint: Boolean,
                                            isDurationClick: Boolean,
                                            isClearPromo: Boolean) {
-        if (shippingCourierViewModels != null) {
+        if (shippingCourierUiModels != null) {
             val summaryViewModel = fragmentUiModel.getSummaryViewModel()
             if (summaryViewModel != null) {
                 onSummaryChanged(summaryViewModel)
             }
-            fragmentUiModel.shippingCourierViewModels = shippingCourierViewModels
-            for (shippingCourierViewModel: ShippingCourierViewModel in shippingCourierViewModels) {
-                if (shippingCourierViewModel.productData.isRecommend || shippingCourierViewModel.serviceData.serviceId == selectedServiceId) {
-                    if (shippingCourierViewModel.serviceData.error != null &&
-                        !TextUtils.isEmpty(shippingCourierViewModel.serviceData.error.errorMessage) &&
-                        shippingCourierViewModel.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+            fragmentUiModel.shippingCourierUiModels = shippingCourierUiModels
+            for (shippingCourierUiModel: ShippingCourierUiModel in shippingCourierUiModels) {
+                if (shippingCourierUiModel.productData.isRecommend || shippingCourierUiModel.serviceData.serviceId == selectedServiceId) {
+                    if (shippingCourierUiModel.serviceData.error != null &&
+                        !TextUtils.isEmpty(shippingCourierUiModel.serviceData.error.errorMessage) &&
+                        shippingCourierUiModel.serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                         goToGeolocationActivity()
                     } else {
-                        updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData, shippingCourierViewModels)
+                        updateShippingData(shippingCourierUiModel.productData, shippingCourierUiModel.serviceData, shippingCourierUiModels)
                     }
                     break
                 }
@@ -978,10 +978,10 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
 
     }
 
-    override fun onCourierChoosen(shippingCourierViewModel: ShippingCourierViewModel, courierItemData: CourierItemData?,
+    override fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, courierItemData: CourierItemData?,
                                   recipientAddressModel: RecipientAddressModel?, cartPosition: Int, hasCourierPromo: Boolean,
                                   isPromoCourier: Boolean, isNeedPinpoint: Boolean) {
-        updateShippingData(shippingCourierViewModel.productData, shippingCourierViewModel.serviceData, null)
+        updateShippingData(shippingCourierUiModel.productData, shippingCourierUiModel.serviceData, null)
     }
 
     override fun onCourierShipmentRecpmmendationCloseClicked() {
@@ -1070,7 +1070,7 @@ class CheckoutVariantFragment : BaseListFragment<Visitable<*>, CheckoutVariantAd
             }))
     }
 
-    override fun onLogisticPromoChosen(shippingCourierViewModels: MutableList<ShippingCourierViewModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, serviceData: ServiceData, flagNeedToSetPinpoint: Boolean, promoCode: String, selectedServiceId: Int) {
+    override fun onLogisticPromoChosen(shippingCourierUiModels: MutableList<ShippingCourierUiModel>, courierData: CourierItemData, recipientAddressModel: RecipientAddressModel, cartPosition: Int, serviceData: ServiceData, flagNeedToSetPinpoint: Boolean, promoCode: String, selectedServiceId: Int) {
         // Haven't discussed yet
     }
 
