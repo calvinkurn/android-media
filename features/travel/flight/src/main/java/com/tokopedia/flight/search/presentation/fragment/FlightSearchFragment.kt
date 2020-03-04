@@ -45,7 +45,6 @@ import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
-import kotlinx.android.synthetic.main.include_filter_bottom_action_view.*
 import java.util.*
 import javax.inject.Inject
 
@@ -826,9 +825,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
         sortFilterView.addItem(filterItems)
 
-//        for (item in filterItems) {
-//            item.refChipUnify.setChevronClickListener { }
-//        }
     }
 
     private fun SortFilterItem.toggle() {
