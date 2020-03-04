@@ -19,14 +19,13 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
             android:visibility="gone"
-            app:layout_scrollFlags="scroll"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            app:layout_scrollFlags="scroll" />
 
         <com.tokopedia.design.text.SearchInputView
             android:id="@+id/search_input_view_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/product_manage_search_bar_vertical_spacing"
             app:layout_scrollFlags="scroll|snap|enterAlways"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -35,7 +34,9 @@
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/product_manage_horizontal_spacing"
             android:paddingRight="@dimen/product_manage_horizontal_spacing"
-            android:layout_marginBottom="@dimen/product_manage_vertical_spacing" />
+            android:layout_marginTop="@dimen/product_manage_vertical_spacing"
+            android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
+            app:layout_scrollFlags="scroll" />
 
         <LinearLayout
             android:paddingRight="@dimen/product_manage_container_spacing"
@@ -45,7 +46,8 @@
             android:layout_marginBottom="@dimen/product_manage_vertical_spacing"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll">
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/textProductCount"
                 android:layout_width="0dp"

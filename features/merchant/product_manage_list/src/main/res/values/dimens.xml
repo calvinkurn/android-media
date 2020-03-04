@@ -21,5 +21,4 @@
     <dimen name="product_manage_container_spacing">17dp</dimen>
     <dimen name="product_manage_horizontal_spacing">14dp</dimen>
     <dimen name="product_manage_filter_spacing">4dp</dimen>
-    <dimen name="product_manage_search_bar_vertical_spacing">10dp</dimen>
 </resources>
