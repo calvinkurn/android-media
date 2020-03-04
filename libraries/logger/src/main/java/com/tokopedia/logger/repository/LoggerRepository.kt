@@ -61,14 +61,14 @@ class LoggerRepository(private val logDao: LoggerDao,
                                                secretKey: SecretKey) = coroutineScope {
         val scalyrEventList = mutableListOf<ScalyrEvent>()
         for (log in logs) {
-            val ts = log.timeStamp
+            val ts = System.currentTimeMillis() * 1000
             val message = decrypt(log.message, secretKey)
             val truncatedMessage = if (message.length > Constants.MAX_BUFFER) {
                 message.substring(0, Constants.MAX_BUFFER)
             } else {
                 message
             }
-            scalyrEventList.add(ScalyrEvent(ts * 1000, ScalyrEventAttrs(truncatedMessage)))
+            scalyrEventList.add(ScalyrEvent(ts, ScalyrEventAttrs(truncatedMessage)))
         }
         scalyrLogger.sendLogToServer(scalyrEventList)
     }
