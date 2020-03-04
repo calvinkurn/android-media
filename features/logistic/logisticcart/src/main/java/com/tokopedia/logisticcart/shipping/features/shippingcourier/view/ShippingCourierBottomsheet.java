@@ -20,7 +20,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingC
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData;
 
@@ -46,7 +46,7 @@ public class ShippingCourierBottomsheet extends BottomSheets
     private ProgressBar pbLoading;
 
     private ShippingCourierBottomsheetListener shippingCourierBottomsheetListener;
-    private List<ShippingCourierViewModel> mCourierModelList = new ArrayList<>();
+    private List<ShippingCourierUiModel> mCourierModelList = new ArrayList<>();
     private RecipientAddressModel mRecipientAddress;
 
     @Inject
@@ -54,13 +54,13 @@ public class ShippingCourierBottomsheet extends BottomSheets
     @Inject
     ShippingCourierConverter courierConverter;
 
-    public static ShippingCourierBottomsheet newInstance(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public static ShippingCourierBottomsheet newInstance(List<ShippingCourierUiModel> shippingCourierUiModels,
                                                          RecipientAddressModel recipientAddressModel,
                                                          int cartPosition) {
         ShippingCourierBottomsheet shippingCourierBottomsheet = new ShippingCourierBottomsheet();
         Bundle bundle = new Bundle();
-        if (shippingCourierViewModels != null) {
-            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        if (shippingCourierUiModels != null) {
+            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierUiModels));
         }
         bundle.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel);
         bundle.putInt(ARGUMENT_CART_POSITION, cartPosition);
@@ -82,20 +82,20 @@ public class ShippingCourierBottomsheet extends BottomSheets
         this.shippingCourierBottomsheetListener = shippingCourierBottomsheetListener;
     }
 
-    public void updateArguments(List<ShippingCourierViewModel> shippingCourierViewModels) {
+    public void updateArguments(List<ShippingCourierUiModel> shippingCourierUiModels) {
         Bundle bundle = new Bundle();
-        if (shippingCourierViewModels != null) {
-            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierViewModels));
+        if (shippingCourierUiModels != null) {
+            bundle.putParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST, new ArrayList<>(shippingCourierUiModels));
         }
         setArguments(bundle);
     }
 
-    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels,
+    public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels,
                                              int cartPosition, ShipmentCartItemModel shipmentCartItemModel,
                                              List<ShopShipment> shopShipmentList) {
         hideLoading();
-        if (shippingCourierViewModels != null && shippingCourierViewModels.size() > 0) {
-            mCourierModelList = shippingCourierViewModels;
+        if (shippingCourierUiModels != null && shippingCourierUiModels.size() > 0) {
+            mCourierModelList = shippingCourierUiModels;
             setupRecyclerView(cartPosition);
             updateHeight();
         } else {
@@ -133,10 +133,10 @@ public class ShippingCourierBottomsheet extends BottomSheets
         if (getArguments() != null) {
             mRecipientAddress = getArguments().getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL);
             int cartPosition = getArguments().getInt(ARGUMENT_CART_POSITION);
-            List<ShippingCourierViewModel> shippingCourierViewModels =
+            List<ShippingCourierUiModel> shippingCourierUiModels =
                     getArguments().getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST);
-            if (shippingCourierViewModels != null) {
-                mCourierModelList = shippingCourierViewModels;
+            if (shippingCourierUiModels != null) {
+                mCourierModelList = shippingCourierUiModels;
                 setupRecyclerView(cartPosition);
             } else {
                 showLoading();
@@ -163,22 +163,22 @@ public class ShippingCourierBottomsheet extends BottomSheets
     }
 
     @Override
-    public void onCourierChoosen(ShippingCourierViewModel shippingCourierViewModel, int cartPosition, boolean isNeedPinpoint) {
-        ProductData productData = shippingCourierViewModel.getProductData();
-        int spId = shippingCourierViewModel.getProductData().getShipperProductId();
-        if (shippingCourierViewModel.getProductData().getError() != null) {
+    public void onCourierChoosen(ShippingCourierUiModel shippingCourierUiModel, int cartPosition, boolean isNeedPinpoint) {
+        ProductData productData = shippingCourierUiModel.getProductData();
+        int spId = shippingCourierUiModel.getProductData().getShipperProductId();
+        if (shippingCourierUiModel.getProductData().getError() != null) {
             // Not updating when it has Error Pinpoint Needed
-            if (!shippingCourierViewModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
+            if (!shippingCourierUiModel.getProductData().getError().getErrorId().equals(ErrorProductData.ERROR_PINPOINT_NEEDED)) {
                 courierConverter.updateSelectedCourier(mCourierModelList, spId);
             }
         } else {
             courierConverter.updateSelectedCourier(mCourierModelList, spId);
         }
-        CourierItemData courierItemData = courierConverter.convertToCourierItemData(shippingCourierViewModel);
+        CourierItemData courierItemData = courierConverter.convertToCourierItemData(shippingCourierUiModel);
         boolean isCod = productData.getCodProductData() != null && (productData.getCodProductData().getIsCodAvailable() == 1);
         if (shippingCourierBottomsheetListener != null) {
             shippingCourierBottomsheetListener.onCourierChoosen(
-                    shippingCourierViewModel, courierItemData, mRecipientAddress, cartPosition, isCod,
+                    shippingCourierUiModel, courierItemData, mRecipientAddress, cartPosition, isCod,
                     !TextUtils.isEmpty(productData.getPromoCode()), isNeedPinpoint);
         }
         dismiss();

@@ -13,6 +13,7 @@ public class UserIdentificationAnalytics {
     private final int projectID;
 
     private static class Event {
+        private static final String CLICK_ACCOUNT = "clickAccount";
         private static final String VIEW_KYC = "viewKYC";
         private static final String CLICK_KYC = "clickKYC";
         private static final String VIEW_TRADEIN = "viewTradeIn";
@@ -20,17 +21,22 @@ public class UserIdentificationAnalytics {
     }
 
     private static class Action {
+        private static final String CLICK_ON_BUTTON_BACK = "click on button back";
+
         private static final String VIEW_KYC_ONBOARDING = "view on KYC onboarding";
-        private static final String CLICK_BACK_ONBOARDING = "click on back KYC onboarding";
         private static final String CLICK_NEXT_ONBOARDING = "click on lanjut kyc onboarding";
+        private static final String CLICK_ON_MULAI_ONBOARDING = "click on button mulai";
 
         private static final String VIEW_PENDING_PAGE = "view on menunggu verifikasi";
-        private static final String CLICK_BACK_PENDING_PAGE = "click on back menunggu verifikasi";
+//        private static final String CLICK_BACK_PENDING_PAGE = "click on back menunggu verifikasi";
+        private static final String CLICK_ON_MENGERTI_PENDING_PAGE = "click on button mengerti";
         private static final String VIEW_SUCCESS_SNACKBAR_PENDING_PAGE = "view on success message verifikasi";
 
         private static final String VIEW_REJECTED_PAGE = "view on gagal verifikasi";
-        private static final String CLICK_BACK_REJECTED_PAGE = "click on back gagal verifikasi";
-        private static final String CLICK_NEXT_REJECTED_PAGE = "click on unggah ulang gagal verifikasi";
+//        private static final String CLICK_BACK_REJECTED_PAGE = "click on back gagal verifikasi";
+        private static final String CLICK_NEXT_REJECTED_PAGE = "click on button upload ulang";
+
+        private static final String CLICK_ON_KEMBALI_BLACKLIST_PAGE = "click on button kembali";
 
         private static final String VIEW_SUCCES_PAGE = "view on success terverifikasi";
         private static final String CLICK_BACK_SUCCESS_PAGE = "click on back success terverfikasi";
@@ -39,7 +45,15 @@ public class UserIdentificationAnalytics {
 
     private static class Category {
         private static final String KYC_PAGE = "kyc page";
+        private static final String KYC_ONBOARDING_PAGE = "kyc onboarding page";
         private static final String KYC_PAGE_TRADEIN = "kyc trade in page";
+    }
+
+    private static class Label {
+        private static final String labelOne = "1";
+        private static final String labelTwo = "2";
+        private static final String labelThree = "3";
+        private static final String labelFour = "4";
     }
 
     private UserIdentificationAnalytics(int projectID) {
@@ -61,10 +75,10 @@ public class UserIdentificationAnalytics {
 
     public void eventClickOnBackOnBoarding() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_ONBOARDING,
-                ""
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
+                Action.CLICK_ON_BUTTON_BACK,
+                Label.labelOne
         ));
     }
 
@@ -73,9 +87,9 @@ public class UserIdentificationAnalytics {
             sendTradeInClickEvent(Action.CLICK_NEXT_ONBOARDING,"");
         } else {
             TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                    Event.CLICK_KYC,
-                    Category.KYC_PAGE,
-                    Action.CLICK_NEXT_ONBOARDING,
+                    Event.CLICK_ACCOUNT,
+                    Category.KYC_ONBOARDING_PAGE,
+                    Action.CLICK_ON_MULAI_ONBOARDING,
                     ""
             ));
         }
@@ -92,9 +106,18 @@ public class UserIdentificationAnalytics {
 
     public void eventClickBackPendingPage() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_PENDING_PAGE,
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
+                Action.CLICK_ON_BUTTON_BACK,
+                Label.labelTwo
+        ));
+    }
+
+    public void eventClickOnButtonPendingPage(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
+                Action.CLICK_ON_MENGERTI_PENDING_PAGE,
                 ""
         ));
     }
@@ -119,19 +142,37 @@ public class UserIdentificationAnalytics {
 
     public void eventClickBackRejectedPage() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
-                Action.CLICK_BACK_REJECTED_PAGE,
-                ""
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
+                Action.CLICK_ON_BUTTON_BACK,
+                Label.labelThree
         ));
     }
 
     public void eventClickNextRejectedPage() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
-                Event.CLICK_KYC,
-                Category.KYC_PAGE,
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
                 Action.CLICK_NEXT_REJECTED_PAGE,
                 ""
+        ));
+    }
+
+    public void eventClickOnButtonBlacklistPage(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
+                Action.CLICK_ON_KEMBALI_BLACKLIST_PAGE,
+                ""
+        ));
+    }
+
+    public void eventClickBackBlacklistPage(){
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
+                Event.CLICK_ACCOUNT,
+                Category.KYC_ONBOARDING_PAGE,
+                Action.CLICK_ON_BUTTON_BACK,
+                Label.labelFour
         ));
     }
 
