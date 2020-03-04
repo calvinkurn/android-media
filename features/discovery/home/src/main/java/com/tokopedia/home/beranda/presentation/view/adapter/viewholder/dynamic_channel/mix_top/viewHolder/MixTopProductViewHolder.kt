@@ -12,7 +12,7 @@ import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 class MixTopProductViewHolder(view: View, val homeCategoryListener: HomeCategoryListener): AbstractViewHolder<MixTopProductDataModel>(view) {
     companion object {
         @LayoutRes
-        val LAYOUT_ITEM = R.layout.home_banner_item
+        val LAYOUT_ITEM = R.layout.home_banner_item_carousel
     }
     private val productCardView: ThematicCardView? by lazy { view.findViewById<ThematicCardView>(R.id.banner_item) }
 

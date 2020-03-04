@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.design.countdown.CountDownView
@@ -18,6 +19,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopProductDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopSeeMoreDataModel
@@ -39,10 +41,25 @@ class MixTopBannerViewHolder(
     private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
     private val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
+    private val background = itemView
     private var adapter: MixTopAdapter? = null
     companion object{
         @LayoutRes
         val LAYOUT = R.layout.home_mix_top_banner
+        private const val CTA_MODE_MAIN = "main"
+        private const val CTA_MODE_TRANSACTION = "transaction"
+        private const val CTA_MODE_INVERTED = "inverted"
+        private const val CTA_MODE_DISABLED = "disabled"
+        private const val CTA_MODE_ALTERNATE = "alternate"
+
+        private const val CTA_TYPE_FILLED = "filled"
+        private const val CTA_TYPE_GHOST = "ghost"
+        private const val CTA_TYPE_TEXT = "text_only"
+
+        private const val BLUE = "blue"
+        private const val YELLOW = "yellow"
+        private const val RED = "red"
+        private const val GREEN = "green"
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {
@@ -74,21 +91,30 @@ class MixTopBannerViewHolder(
         val blankSpaceConfig = computeBlankSpaceConfig(channel)
         val visitables = mappingVisitablesFromChannel(channel, blankSpaceConfig)
 
-        mappingHeader(channel)
-        mappingItem(channel, visitables)
-
         recyclerView.setRecycledViewPool(parentRecycledViewPool)
         recyclerView.setHasFixedSize(true)
+
+        valuateRecyclerViewDecoration(channel)
+
+        mappingHeader(channel)
+        mappingCtaButton(channel.banner.cta)
+        mappingItem(channel, visitables)
+
     }
 
     private fun mappingHeader(channel: DynamicHomeChannel.Channels){
         val bannerItem = channel.banner
         val ctaData = channel.banner.cta
+        val textColor = if (bannerItem.textColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
+        val backColor = if (bannerItem.backColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.backColor)
+
         bannerTitle.text = bannerItem.title
         bannerDescription.text = bannerItem.description
-        val textColor = if (bannerItem.textColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
+
+        background.setBackgroundColor(backColor)
         bannerTitle.setTextColor(textColor)
         bannerDescription.setTextColor(textColor)
+
         bannerUnifyButton.setOnClickListener {
             if (ctaData.couponCode.isEmpty()) {
                 homeCategoryListener.onSectionItemClicked(channel.banner.applink)
@@ -118,6 +144,39 @@ class MixTopBannerViewHolder(
         }
     }
 
+    private fun mappingCtaButton(cta: DynamicHomeChannel.CtaData) {
+
+        //set false first to prevent unexpected behavior
+        bannerUnifyButton.isInverse = false
+
+        if (cta.text.isEmpty()) {
+            bannerUnifyButton.visibility = View.GONE
+            return
+        }
+        var mode = CTA_MODE_MAIN
+        var type = CTA_TYPE_FILLED
+
+        if (cta.mode.isNotEmpty()) mode = cta.mode
+
+        if (cta.text.isNotEmpty()) type = cta.type
+
+        when (type) {
+            CTA_TYPE_FILLED -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.FILLED
+            CTA_TYPE_GHOST -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.GHOST
+            CTA_TYPE_TEXT -> bannerUnifyButton.buttonVariant = UnifyButton.Variant.TEXT_ONLY
+        }
+
+        when (mode) {
+            CTA_MODE_MAIN -> bannerUnifyButton.buttonType = UnifyButton.Type.MAIN
+            CTA_MODE_TRANSACTION -> bannerUnifyButton.buttonType = UnifyButton.Type.TRANSACTION
+            CTA_MODE_ALTERNATE -> bannerUnifyButton.buttonType = UnifyButton.Type.ALTERNATE
+            CTA_MODE_DISABLED -> bannerUnifyButton.isEnabled = false
+            CTA_MODE_INVERTED -> bannerUnifyButton.isInverse = true
+        }
+
+        bannerUnifyButton.text = cta.text
+    }
+
     private fun copyCoupon(view: View, cta: DynamicHomeChannel.CtaData) {
         val clipboard = view.context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText("Coupon Code", cta.couponCode)
@@ -140,6 +199,19 @@ class MixTopBannerViewHolder(
             if (it.name.isNotEmpty()) blankSpaceConfig.productName = true
         }
         return blankSpaceConfig
+    }
+
+    private fun valuateRecyclerViewDecoration(channel: DynamicHomeChannel.Channels) {
+        if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
+        recyclerView.layoutManager = LinearLayoutManager(
+                itemView.context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+        )
+        /**
+         * Attach startSnapHelper to recyclerView
+         */
+        startSnapHelper.attachToRecyclerView(recyclerView)
     }
 
     private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels,

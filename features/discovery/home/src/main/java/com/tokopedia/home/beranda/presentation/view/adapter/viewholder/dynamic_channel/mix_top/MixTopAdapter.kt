@@ -35,6 +35,14 @@ class MixTopAdapter(var mixTypeFactoryImpl: MixTopTypeFactoryImpl,
     }
 
     override fun onBindViewHolder(holder: AbstractViewHolder<MixTopVisitable>, position: Int) {
+        holder.bind(visitables[position])
+    }
 
+    override fun onBindViewHolder(holder: AbstractViewHolder<MixTopVisitable>, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) {
+            holder.bind(visitables[position], payloads)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
     }
 }
