@@ -35,7 +35,10 @@ class TopchatUploadImageUseCase @Inject constructor(
         assignCallback(onSuccess, onError)
         chatImageServerUseCase.getSourceId(
                 { sourceId -> uploadImageWithSourceId(sourceId, image) },
-                { throwable -> this.onError?.invoke(throwable, image) }
+                { throwable ->
+                    this.onError?.invoke(throwable, image)
+                    setUploading(false)
+                }
         )
     }
 
