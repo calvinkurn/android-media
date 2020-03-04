@@ -232,7 +232,8 @@ ext {
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
-            liveness              : "ai.advance.liveness:guardian_core_v1.6@aar"
+            liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
+            javaxInject           :  "javax.inject:javax.inject:1"
     ]
 
     testDependencies = [
