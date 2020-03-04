@@ -115,10 +115,13 @@ class ProductManageViewModel(
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList
-                productListResponse
+                productListResponse?.data
             }
-            productListResult.value = Success(mapToViewModels(productList))
-            productFilters.value = mapToProductFilters(productList)
+
+            if(productList?.isNotEmpty() == true) {
+                productListResult.value = Success(mapToViewModels(productList))
+                productFilters.value = mapToProductFilters(productList)
+            }
         }, onError = {
             productListResult.value = Fail(it)
         })
