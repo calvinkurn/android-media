@@ -68,4 +68,7 @@ interface PlayViewState {
     fun isChannelActive(): Boolean
     fun setChatPermitDisabled(chatPermitViewModel: ChatPermitViewModel)
     fun onChatDisabledError(message: String, action: String)
+
+    fun onOrientationChanged(orientation: Int)
+    fun exitFullScreen()
 }

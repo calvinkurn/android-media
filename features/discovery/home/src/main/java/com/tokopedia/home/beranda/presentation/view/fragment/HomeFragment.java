@@ -277,6 +277,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         viewModel = viewModelProvider.get(HomeViewModel.class);
         setGeolocationPermission();
         needToShowGeolocationComponent();
+        getStickyContent();
     }
 
     @Override
@@ -582,9 +583,12 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void observeTrackingData(){
         viewModel.getTrackingLiveData().observe(this, trackingData-> {
-            List<Visitable> visitables = new ArrayList(trackingData.getContentIfNotHandled());
-            addImpressionToTrackingQueue(visitables);
-            setupViewportImpression(visitables);
+            List<HomeVisitable> homeVisitables = trackingData.getContentIfNotHandled();
+            if (homeVisitables != null) {
+                List<Visitable> visitables = new ArrayList(homeVisitables);
+                addImpressionToTrackingQueue(visitables);
+                setupViewportImpression(visitables);
+            }
         });
     }
 
