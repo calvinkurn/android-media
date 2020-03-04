@@ -44,6 +44,19 @@ class TravelHomepageViewModel @Inject constructor(
         isAllError.value = false
     }
 
+    fun getListFromCloud(rawQuery: String, isLoadFromCloud: Boolean) {
+        launchCatchError(block = {
+            val layoutResult = getEmptyModelsUseCase.getTravelLayoutSubhomepage(rawQuery, isLoadFromCloud)
+            if (layoutResult is Success) {
+                travelItemList.value = layoutResult.data
+                isAllError.value = false
+            }
+        }) {
+                isAllError.value = true
+        }
+
+    }
+
     fun getBanner(rawQuery: String, isFromCloud: Boolean) {
         launch(dispatcherProvider.ui()) {
             when (val banners = getTravelCollectiveBannerUseCase.execute(rawQuery, TravelType.ALL, isFromCloud)) {

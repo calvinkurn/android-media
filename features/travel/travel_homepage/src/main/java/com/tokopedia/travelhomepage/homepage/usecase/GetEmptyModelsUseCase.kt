@@ -1,15 +1,25 @@
 package com.tokopedia.travelhomepage.homepage.usecase
 
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
+import com.tokopedia.travelhomepage.homepage.widget.TravelHomepageProductGridCardWidget
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import javax.inject.Inject
 
 /**
  * @author by jessica on 2019-08-19
  */
 
-class GetEmptyModelsUseCase {
+class GetEmptyModelsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
     fun requestEmptyViewModels(loadFromCloud: Boolean): List<TravelHomepageItemModel> {
 
@@ -37,5 +47,40 @@ class GetEmptyModelsUseCase {
                 recentSearchModel,
                 recommendationModel,
                 destinationModel)
+    }
+
+    suspend fun getTravelLayoutSubhomepage(rawQuery: String, fromCloud: Boolean): Result<List<TravelHomepageItemModel>> {
+        if (fromCloud) useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        else useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
+
+        useCase.clearRequest()
+
+        return try {
+            val graphqlRequest = GraphqlRequest(rawQuery, TravelLayoutSubhomepage.Response::class.java)
+            useCase.addRequest(graphqlRequest)
+
+            val subhomepageLayouts = useCase.executeOnBackground().getSuccessData<TravelLayoutSubhomepage.Response>().response
+            Success(mappingToTravelHomepageItem(subhomepageLayouts.layoutList))
+        } catch (throwable: Throwable) {
+            Fail(throwable)
+        }
+    }
+
+    private fun mappingToTravelHomepageItem(list: List<TravelLayoutSubhomepage.Data>): List<TravelHomepageItemModel> {
+        val travelHomepageItems = mutableListOf<TravelHomepageItemModel>()
+        for (item in list) {
+            when (item.widgetType) {
+                WIDGET_TYPE_SLIDER_BANNER -> travelHomepageItems.add(TravelHomepageProductCardModel())
+                WIDGET_TYPE_DUAL_BANNER -> travelHomepageItems.add(TravelHomepageCategoryListModel())
+            }
+            travelHomepageItems.lastOrNull()?.layoutData = item
+        }
+        return travelHomepageItems
+    }
+
+    companion object {
+        const val WIDGET_TYPE_SLIDER_BANNER = "SliderBanner"
+        const val WIDGET_TYPE_DYNAMIC_ICON = "DynamicIcon"
+        const val WIDGET_TYPE_DUAL_BANNER = "DualBanner"
     }
 }

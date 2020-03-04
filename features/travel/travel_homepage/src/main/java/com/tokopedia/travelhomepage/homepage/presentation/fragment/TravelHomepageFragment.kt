@@ -158,7 +158,8 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun loadData(page: Int) {
-        travelHomepageViewModel.getIntialList(swipeToRefresh?.isRefreshing ?: false)
+//        travelHomepageViewModel.getIntialList(swipeToRefresh?.isRefreshing ?: false)
+        travelHomepageViewModel.getListFromCloud(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_get_layout), true)
     }
 
     fun loadDataFromCloud() {

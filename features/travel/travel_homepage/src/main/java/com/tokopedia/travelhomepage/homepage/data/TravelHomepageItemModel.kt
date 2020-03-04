@@ -9,6 +9,7 @@ import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.Travel
 
 abstract class TravelHomepageItemModel(var isLoaded: Boolean = false,
                                        var isSuccess: Boolean = false,
-                                       var isLoadFromCloud: Boolean = true): Visitable<TravelHomepageAdapterTypeFactory> {
+                                       var isLoadFromCloud: Boolean = true,
+                                       var layoutData: TravelLayoutSubhomepage.Data = TravelLayoutSubhomepage.Data() ): Visitable<TravelHomepageAdapterTypeFactory> {
     abstract override fun type(typeFactory: TravelHomepageAdapterTypeFactory): Int
 }
