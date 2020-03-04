@@ -774,6 +774,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.transitTypeList.add(TransitEnum.DIRECT)
                 }
+                recountIndicatorCount()
             }
 
             val quickBaggageFilter = SortFilterItem(getString(R.string.flight_search_filter_baggage_label))
@@ -784,6 +785,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.BAGGAGE)
                 }
+                recountIndicatorCount()
             }
 
             val quickMealFilter = SortFilterItem(getString(R.string.flight_search_filter_meal_label))
@@ -794,6 +796,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.facilityList.add(FlightFilterFacilityEnum.MEAL)
                 }
+                recountIndicatorCount()
             }
 
             val quickTransitFilter = SortFilterItem(getString(R.string.flight_search_filter_transit))
@@ -804,6 +807,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 } else if (::flightFilterModel.isInitialized) {
                     flightFilterModel.transitTypeList.add(TransitEnum.ONE)
                 }
+                recountIndicatorCount()
             }
 
             filterItems.add(quickDirectFilter)
@@ -822,6 +826,25 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
                 if (it.transitTypeList.contains(TransitEnum.ONE)) filterItems[QUICK_FILTER_TRANSIT_ORDER].toggle()
             }
         }
+
+        recountIndicatorCount()
+    }
+
+    private fun recountIndicatorCount() {
+        var counter = 0
+
+        if (::flightFilterModel.isInitialized && flightFilterModel.hasFilter()) {
+            counter += flightFilterModel.transitTypeList.size
+            counter += flightFilterModel.airlineList.size
+            counter += flightFilterModel.departureTimeList.size
+            counter += flightFilterModel.arrivalTimeList.size
+            counter += flightFilterModel.refundableTypeList.size
+            counter += flightFilterModel.facilityList.size
+
+            if (flightFilterModel.isSpecialPrice) counter++
+        }
+
+        flight_sort_filter.indicatorCounter = counter
     }
 
     private fun setInFilterMode() {
