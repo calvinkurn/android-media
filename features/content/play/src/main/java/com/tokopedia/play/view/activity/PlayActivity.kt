@@ -82,14 +82,14 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     override fun onBackPressed() {
         if (isTaskRoot) {
             val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+            val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
+            if (fragment != null && fragment is PlayFragment) {
+                fragment.setResult()
+            }
             startActivity(intent)
             finish()
         } else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                supportFinishAfterTransition()
-            } else {
-                super.onBackPressed()
-            }
+            supportFinishAfterTransition()
         }
     }
 }
