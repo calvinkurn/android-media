@@ -1,0 +1,39 @@
+package com.tokopedia.salam.umrah.travel.presentation.activity
+
+import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.salam.umrah.R
+import com.tokopedia.salam.umrah.common.di.UmrahComponentInstance
+import com.tokopedia.salam.umrah.common.presentation.activity.UmrahBaseActivity
+import com.tokopedia.salam.umrah.travel.di.DaggerUmrahTravelComponent
+import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
+import com.tokopedia.salam.umrah.travel.presentation.fragment.UmrahTravelListFragment
+
+/**
+ * @author by Firman on 04/03/20
+ */
+
+class UmrahTravelListActivity: UmrahBaseActivity(), HasComponent<UmrahTravelComponent>{
+
+    override fun getMenuButton(): Int = R.menu.umrah_base_menu
+
+    override fun onClickShare() {
+
+    }
+
+    override fun onClickSalam() {
+
+    }
+
+    override fun onClickHelp() {
+
+    }
+
+    override fun getComponent(): UmrahTravelComponent = DaggerUmrahTravelComponent.builder()
+            .umrahComponent(UmrahComponentInstance.getUmrahComponent(application))
+            .build()
+
+    override fun getNewFragment(): Fragment? = UmrahTravelListFragment.createInstance()
+
+    override fun shouldShowMenuWhite(): Boolean = false
+}
