@@ -1,15 +1,16 @@
 package com.tokopedia.play.ui.productsheet
 
 import android.view.ViewGroup
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.productsheet.interaction.ProductSheetInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -29,10 +30,8 @@ class ProductSheetComponent(
             bus.getSafeManagedFlow(ScreenStateEvent::class.java)
                     .collect {
                         when (it) {
-                            ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.BottomInsetsView -> if (it.type.isBottomSheet) {
-                                if (it.isShown) uiView.show() else uiView.hide()
-                            }
+                            ScreenStateEvent.Init -> uiView.setStateHidden()
+                            is ScreenStateEvent.BottomInsetsView -> if (it.type is BottomInsetsType.BottomSheet) handleIfBottomSheet(it.type.height.orZero(), it.isShown)
                             is ScreenStateEvent.SetProductSheet -> uiView.setProductSheet(it.productSheetModel)
                         }
                     }
@@ -47,18 +46,16 @@ class ProductSheetComponent(
         return bus.getSafeManagedFlow(ProductSheetInteractionEvent::class.java)
     }
 
-    override fun onProductSheetHidden(view: ProductSheetView) {
+    override fun onCloseButtonClicked(view: ProductSheetView) {
         launch {
-            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductSheetHidden)
-        }
-    }
-
-    override fun onProductSheetShown(view: ProductSheetView) {
-        launch {
-            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductSheetShown)
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnCloseProductSheet)
         }
     }
 
     private fun initView(container: ViewGroup) =
             ProductSheetView(container, this)
+
+    private fun handleIfBottomSheet(height: Int, isShown: Boolean) {
+        if (isShown) uiView.showWithHeight(height) else uiView.hide()
+    }
 }

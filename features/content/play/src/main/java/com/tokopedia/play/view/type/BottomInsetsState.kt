@@ -3,6 +3,10 @@ package com.tokopedia.play.view.type
 /**
  * Created by jegul on 04/03/20
  */
+/**
+ * For Keyboard : The keyboard can't be controlled and will show/hide first, the state will be broadcasted thereafter
+ * For Others: The action itself is the one that is broadcasted instead of the state
+ */
 sealed class BottomInsetsState {
 
     abstract val isPreviousStateSame: Boolean

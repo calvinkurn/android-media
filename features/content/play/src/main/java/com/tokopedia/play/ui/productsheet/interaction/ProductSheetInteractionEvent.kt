@@ -7,6 +7,5 @@ import com.tokopedia.play.component.ComponentEvent
  */
 sealed class ProductSheetInteractionEvent : ComponentEvent {
 
-    object OnProductSheetShown : ProductSheetInteractionEvent()
-    object OnProductSheetHidden : ProductSheetInteractionEvent()
+    object OnCloseProductSheet : ProductSheetInteractionEvent()
 }

@@ -321,8 +321,6 @@ class PlayFragment : BaseDaggerFragment() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
                 flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-                
-                this@PlayFragment.onBottomInsetsViewHidden()
             }
         })
     }

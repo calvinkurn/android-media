@@ -15,8 +15,6 @@ class LockableBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
 
     private var mLocked = false
 
-    private var listener: Listener? = null
-
     constructor()
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
@@ -27,9 +25,6 @@ class LockableBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 mLocked = newState == STATE_EXPANDED
-
-                if (newState == STATE_EXPANDED) listener?.onBottomSheetExpanded(bottomSheet)
-                else if (newState == STATE_HIDDEN) listener?.onBottomSheetHidden(bottomSheet)
             }
         })
     }
@@ -66,14 +61,5 @@ class LockableBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
     override fun onNestedPreFling(coordinatorLayout: CoordinatorLayout, child: V, target: View, velocityX: Float, velocityY: Float): Boolean {
         return if (!mLocked) super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY)
         else false
-    }
-
-    fun setListener(listener: Listener) {
-        this.listener = listener
-    }
-
-    interface Listener {
-        fun onBottomSheetHidden(bottomSheet: View)
-        fun onBottomSheetExpanded(bottomSheet: View)
     }
 }

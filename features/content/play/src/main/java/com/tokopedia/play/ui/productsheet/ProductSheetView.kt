@@ -10,13 +10,14 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
-import com.tokopedia.play.view.custom.behavior.LockableBottomSheetBehavior
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**
@@ -24,7 +25,7 @@ import com.tokopedia.play.view.uimodel.ProductSheetUiModel
  */
 class ProductSheetView(
         container: ViewGroup,
-        listener: Listener
+        private val listener: Listener
 ) : UIView(container) {
 
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_product_sheet, container, true)
@@ -37,15 +38,12 @@ class ProductSheetView(
     private val productLineAdapter = ProductLineAdapter()
     private val voucherAdapter = MerchantVoucherAdapter()
 
-    private val bottomSheetBehavior = BottomSheetBehavior.from(view) as LockableBottomSheetBehavior
-
-    private val maxHeight : Int
-            get() = (container.height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
+    private val bottomSheetBehavior = BottomSheetBehavior.from(view)
 
     init {
         view.findViewById<ImageView>(R.id.iv_close)
                 .setOnClickListener {
-                    hide()
+                    listener.onCloseButtonClicked(this)
                 }
 
         rvProductList.apply {
@@ -66,32 +64,32 @@ class ProductSheetView(
 
             insets
         }
-
-        bottomSheetBehavior.setListener(object : LockableBottomSheetBehavior.Listener {
-            override fun onBottomSheetHidden(bottomSheet: View) {
-                listener.onProductSheetHidden(this@ProductSheetView)
-            }
-
-            override fun onBottomSheetExpanded(bottomSheet: View) {
-                listener.onProductSheetShown(this@ProductSheetView)
-            }
-        })
     }
 
     override val containerId: Int = view.id
 
     override fun show() {
-        if (view.height != maxHeight) {
-            val layoutParams = view.layoutParams as CoordinatorLayout.LayoutParams
-            layoutParams.height = maxHeight
-            view.layoutParams = layoutParams
-        }
-
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        view.show()
     }
 
     override fun hide() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        view.gone()
+    }
+
+    internal fun setStateHidden() {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    internal fun showWithHeight(height: Int) {
+        if (view.height != height) {
+            val layoutParams = view.layoutParams as CoordinatorLayout.LayoutParams
+            layoutParams.height = height
+            view.layoutParams = layoutParams
+        }
+
+        show()
     }
 
     internal fun setProductSheet(model: ProductSheetUiModel) {
@@ -100,12 +98,7 @@ class ProductSheetView(
         productLineAdapter.setItemsAndAnimateChanges(model.productList)
     }
 
-    companion object {
-        private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
-    }
-
     interface Listener {
-        fun onProductSheetHidden(view: ProductSheetView)
-        fun onProductSheetShown(view: ProductSheetView)
+        fun onCloseButtonClicked(view: ProductSheetView)
     }
 }

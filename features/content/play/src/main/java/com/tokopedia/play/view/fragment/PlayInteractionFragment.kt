@@ -78,6 +78,7 @@ import kotlin.coroutines.CoroutineContext
 class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreActionBottomSheet.Listener {
 
     companion object {
+        private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
 
         private const val INVISIBLE_ALPHA = 0f
         private const val VISIBLE_ALPHA = 1f
@@ -129,6 +130,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
     private lateinit var clPlayInteraction: ConstraintLayout
 
+    private val productSheetMaxHeight: Int
+        get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
+
     private val sendChatView: View
         get() = requireView().findViewById(sendChatComponent.getContainerId())
     private val quickReplyView: View
@@ -137,8 +141,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         get() = requireView().findViewById(statsInfoComponent.getContainerId())
     private val chatListView: View
         get() = requireView().findViewById(chatListComponent.getContainerId())
-    private val productSheetView: View
-        get() = requireView().findViewById(productSheetComponent.getContainerId())
 
     private var channelId: String = ""
 
@@ -192,7 +194,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observePinned()
         observeFollowShop()
         observeLikeContent()
-        observableBottomInsetsState()
+        observeBottomInsetsState()
         observeEventUserInfo()
 
         observeLoggedInInteractionEvent()
@@ -343,15 +345,23 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         })
     }
 
-    private fun observableBottomInsetsState() {
+    private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(it.type, it.isShown))
 
-                if (it is BottomInsetsState.Shown &&
-                        !it.isPreviousStateSame &&
-                        it.type == BottomInsetsType.Keyboard) pushParentPlayByKeyboardHeight(it.estimatedInsetsHeight)
+                if (it.type is BottomInsetsType.BottomSheet && !it.isPreviousStateSame) {
+                    when (it) {
+                        is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Shown -> pushParentPlayByProductSheetHeight(it.estimatedInsetsHeight)
+                    }
+                } else if (it.type is BottomInsetsType.Keyboard && !it.isPreviousStateSame) {
+                    when (it) {
+                        is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
+                        is BottomInsetsState.Shown -> pushParentPlayByKeyboardHeight(it.estimatedInsetsHeight)
+                    }
+                }
             }
         })
     }
@@ -487,7 +497,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                                 openPageByApplink(it.applink)
                             }
                             PinnedInteractionEvent.PinnedProductClicked -> {
-                                openProductBottomSheet()
+                                openProductSheet()
                             }
                         }
                     }
@@ -614,8 +624,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             productSheetComponent.getUserInteractionEvents()
                     .collect {
                         when (it) {
-                            ProductSheetInteractionEvent.OnProductSheetHidden -> onProductSheetHidden()
-                            ProductSheetInteractionEvent.OnProductSheetShown -> onProductSheetShown()
+                            ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
                         }
                     }
         }
@@ -1047,33 +1056,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         if (shouldFinish) activity?.finish()
     }
 
-    private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
-        val sendChatViewTotalHeight = run {
-            val height = sendChatView.height
-            val marginLp = sendChatView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val quickReplyViewTotalHeight = if (!playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
-            val height = if (quickReplyView.height <= 0) 2 * statsInfoView.height else quickReplyView.height
-            val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        } else 0
-
-        val chatListViewTotalHeight = run {
-            val height = resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
-            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
-            height + marginLp.bottomMargin + marginLp.topMargin
-        }
-
-        val statusBarHeight = view?.let { getStatusBarHeight(it.context) } ?: 0
-        val requiredMargin = offset16
-
-        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
-
-        playFragment.onBottomInsetsViewShown(interactionTopmostY)
-    }
-
     private fun hideSystemUI() {
         PlayFullScreenHelper.hideSystemUi(requireActivity())
     }
@@ -1138,19 +1120,43 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         } catch (e: Exception) {}
     }
 
-    private fun openProductBottomSheet() {
-        launch {
-            EventBusFactory.get(viewLifecycleOwner).emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(BottomInsetsType.BottomSheet, true))
-        }
+    private fun openProductSheet() {
+        playViewModel.onShowProductSheet(productSheetMaxHeight)
     }
 
-    private fun onProductSheetShown() {
-        val productSheetHeight = productSheetView.height
+    private fun closeProductSheet() {
+        playViewModel.onHideProductSheet()
+    }
+
+    private fun pushParentPlayByProductSheetHeight(productSheetHeight: Int) {
         val requiredMargin = offset16
         playFragment.onBottomInsetsViewShown(getScreenHeight() - (productSheetHeight + requiredMargin))
     }
 
-    private fun onProductSheetHidden() {
-        playFragment.onBottomInsetsViewHidden()
+    private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
+        val sendChatViewTotalHeight = run {
+            val height = sendChatView.height
+            val marginLp = sendChatView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val quickReplyViewTotalHeight = if (!playViewModel.observableQuickReply.value?.quickReplyList.isNullOrEmpty()) {
+            val height = if (quickReplyView.height <= 0) 2 * statsInfoView.height else quickReplyView.height
+            val marginLp = quickReplyView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        } else 0
+
+        val chatListViewTotalHeight = run {
+            val height = resources.getDimensionPixelSize(R.dimen.play_chat_max_height)
+            val marginLp = chatListView.layoutParams as ViewGroup.MarginLayoutParams
+            height + marginLp.bottomMargin + marginLp.topMargin
+        }
+
+        val statusBarHeight = view?.let { getStatusBarHeight(it.context) } ?: 0
+        val requiredMargin = offset16
+
+        val interactionTopmostY = getScreenHeight() - (estimatedKeyboardHeight + sendChatViewTotalHeight + chatListViewTotalHeight + quickReplyViewTotalHeight + statusBarHeight + requiredMargin)
+
+        playFragment.onBottomInsetsViewShown(interactionTopmostY)
     }
 }

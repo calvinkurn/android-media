@@ -3,14 +3,14 @@ package com.tokopedia.play.view.type
 /**
  * Created by jegul on 02/03/20
  */
-enum class BottomInsetsType {
+sealed class BottomInsetsType {
 
-    Keyboard,
-    BottomSheet;
+    object Keyboard : BottomInsetsType()
+    data class BottomSheet(val height: Int?) : BottomInsetsType()
 
     val isKeyboard: Boolean
-        get() = this == Keyboard
+        get() = this is Keyboard
 
     val isBottomSheet: Boolean
-        get() = this == BottomSheet
+        get() = this is BottomSheet
 }

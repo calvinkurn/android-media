@@ -106,7 +106,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeVOD()
         observeVideoProperty()
         observeOneTapOnboarding()
-        observableBottomInsetsState()
+        observeBottomInsetsState()
         observeEventUserInfo()
     }
 
@@ -136,7 +136,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, EventObserver { showOneTapOnboarding() })
     }
 
-    private fun observableBottomInsetsState() {
+    private fun observeBottomInsetsState() {
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             if (::containerVideo.isInitialized) {
                 if (it.isShown) containerVideo.setCornerRadius(cornerRadius)
