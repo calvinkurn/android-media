@@ -5,15 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendation
-import com.tokopedia.purchase_platform.features.promo.data.response.GqlResponse
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
+import com.tokopedia.purchase_platform.features.promo.data.response.GqlCouponListRecommendationResponse
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.GetCouponListRecommendationUseCase
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispatcher,
+                                                 val getCouponListRecommendationUseCase: GetCouponListRecommendationUseCase,
                                                  val uiModelMapper: PromoCheckoutUiModelMapper)
     : BaseViewModel(dispatcher) {
 
@@ -55,8 +60,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         get() = _tmpListUiModel
 
     fun loadData() {
-        // Todo : Hit API. Currently use mock local data
-
         // Init fragment ui model
         val fragmentUiModel = FragmentUiModel(
                 uiData = FragmentUiModel.UiData().apply {
@@ -70,13 +73,17 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         )
         _fragmentUiModel.value = fragmentUiModel
 
-        // Init Data
-//        mockData()
-        val couponListRecommendation = Gson().fromJson(MOCK_RESPONSE, GqlResponse::class.java)
-        if (couponListRecommendation.couponListRecommendation.data.promoRecommendation.codes.isNotEmpty()) {
-            _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(couponListRecommendation.couponListRecommendation)
-        }
+        launchCatchError(block = {
+            val couponListRecommendation = withContext(dispatcher) {
+                getCouponListRecommendationUseCase.params = HashMap()
+                getCouponListRecommendationUseCase.executeOnBackground()
+            }
+            if (couponListRecommendation.couponListRecommendation.data.promoRecommendation.codes.isNotEmpty()) {
+                _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(couponListRecommendation.couponListRecommendation)
+            }
+        }) {
 
+        }
     }
 
     private fun mockData() {
