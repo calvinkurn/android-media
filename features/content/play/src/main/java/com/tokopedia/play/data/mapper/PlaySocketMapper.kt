@@ -11,8 +11,7 @@ import com.tokopedia.websocket.WebSocketResponse
  */
 
 class PlaySocketMapper(
-        private val webSocketResponse: WebSocketResponse,
-        private val amountStringStepArray: Array<String>
+        private val webSocketResponse: WebSocketResponse
 ) {
 
     private val gson = Gson()
@@ -55,7 +54,7 @@ class PlaySocketMapper(
     private fun mapToTotalView(): TotalView {
         val totalView = gson.fromJson(webSocketResponse.jsonObject, TotalView::class.java)
         if (totalView.totalViewFormatted.isNullOrEmpty())
-            totalView.totalViewFormatted = totalView.totalView.toAmountString(amountStringStepArray, separator = ".")
+            totalView.totalViewFormatted = formatTotalView(totalView.totalView)
         return totalView
     }
 
@@ -74,4 +73,27 @@ class PlaySocketMapper(
     private fun mapToBannedFreeze(): BannedFreeze {
         return gson.fromJson(webSocketResponse.jsonObject, BannedFreeze::class.java)
     }
+
+    //region helper
+    private fun formatTotalView(totalView: Int): String {
+        return when (totalView) {
+            in 0..99_999 -> totalView.toString()
+            in 100_000..999_999 -> "${totalView.toString().substring(0, 3)}k"
+            in 1_000_000..9_999_999 -> {
+                val totalViewString = totalView.toString()
+                buildString {
+                    append(totalViewString[0])
+                    if (totalViewString[1] != '0') {
+                        append(",")
+                        append(totalViewString[1])
+                    }
+                    append("m")
+                }
+            }
+            in 10_000_000..99_999_999 -> "${totalView.toString().substring(0,2)}m"
+            in 100_000_000..999_999_999 -> "${totalView.toString().substring(0,3)}m"
+            else -> totalView.toString()
+        }
+    }
+    //endregion
 }
