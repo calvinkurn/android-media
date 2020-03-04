@@ -87,7 +87,8 @@ public class DeveloperOptionActivity extends BaseActivity {
     private TextView vGoToIrisSaveLogDB;
     private TextView vGoToIrisSendLogDB;
     private CheckBox toggleAnalytics;
-    private CheckBox toggleFpm;
+    private CheckBox toggleFpmNotif;
+    private CheckBox toggleFpmAutoLogFile;
 
     private CheckBox toggleUiBlockDebugger;
 
@@ -171,7 +172,8 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
 
         toggleAnalytics = findViewById(R.id.toggle_analytics);
-        toggleFpm = findViewById(R.id.toggle_fpm);
+        toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
+        toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
 
         toggleUiBlockDebugger = findViewById(R.id.toggle_ui_block_debugger);
 
@@ -283,9 +285,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             notificationManagerCompat.notify(777,notifReview);
                 });
 
-        toggleFpm.setChecked(FpmLogger.getInstance().isNotificationEnabled());
+        toggleFpmNotif.setChecked(FpmLogger.getInstance().isNotificationEnabled());
+        toggleFpmNotif.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableNotification(state));
 
-        toggleFpm.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableNotification(state));
+        toggleFpmAutoLogFile.setChecked(FpmLogger.getInstance().isAutoLogFileEnabled());
+        toggleFpmAutoLogFile.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableAutoLogFile(state));
 
         vGoToFpm.setOnClickListener(v -> FpmLogger.getInstance().openActivity());
 
