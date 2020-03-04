@@ -25,6 +25,7 @@ import com.tokopedia.product.manage.oldlist.constant.option.PictureStatusProduct
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageFilterModel
 import com.tokopedia.product.manage.item.etalase.view.model.MyEtalaseItemViewModel
 import com.tokopedia.product.manage.item.category.view.model.ProductManageCategoryViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_product_manage_filter.*
 import java.util.*
 
@@ -100,7 +101,8 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         btn_submit_manage.setOnClickListener {
             onSubmitFilter()
         }
-
+        val bottomSheet = context?.let { com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.createInstance(it) }
+        this.childFragmentManager.let { bottomSheet?.show(it,"BottomSheetTag") }
     }
 
     private fun onSubmitFilter() {

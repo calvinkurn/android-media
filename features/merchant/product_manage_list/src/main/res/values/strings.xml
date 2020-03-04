@@ -104,5 +104,12 @@
 
     <string name="product_manage_title_edit">Ubah</string>
     <string name="product_manage_title_share">Bagikan</string>
+    <string name="filter_see_all">Lihat semua</string>
+    <string name="filter_button">Tampilkan Produk</string>
+    <string name="filter_search_bar">Cari Kategori</string>
+    <string name="filter_expand_activity">Expand</string>
+    <string name="filter_expand_save_button">Simpan</string>
+    <string name="filter_expand_reset">Reset</string>
+    <string name="filter_expand_category_not_found">Oops, kategori yang kamu cari tidak ditemukan.</string>
 
 </resources>
