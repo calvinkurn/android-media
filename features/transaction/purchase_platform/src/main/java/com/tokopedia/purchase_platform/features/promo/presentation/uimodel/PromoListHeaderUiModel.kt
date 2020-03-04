@@ -33,7 +33,7 @@ class PromoListHeaderUiModel(
     data class UiData(
             var title: String = "",
             var subTitle: String = "",
-            var promoType: Int = 0,
+            var iconUrl: String = "",
             var identifierId: Int = 0,
             var tmpPromoItemList: List<PromoListItemUiModel> = emptyList()
     ) {

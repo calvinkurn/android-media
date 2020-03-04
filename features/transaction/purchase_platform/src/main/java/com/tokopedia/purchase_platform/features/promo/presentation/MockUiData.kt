@@ -46,7 +46,7 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
             uiData = PromoListHeaderUiModel.UiData().apply {
                 title = "Kupon saya global"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_GLOBAL
+                iconUrl = ""
                 identifierId = 1
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -119,7 +119,7 @@ fun mockEligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 identifierId = 2
                 title = "Ini promo power merchant"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_POWER_MERCHANT
+                iconUrl = ""
                 tmpPromoItemList = arrayListOf(promoListItemUiModel3)
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -151,7 +151,7 @@ fun mockEligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 identifierId = 3
                 title = "Ini promo official store"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_MERCHANT_OFFICIAL
+                iconUrl = ""
                 tmpPromoItemList = arrayListOf(promoListItemUiModel4)
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -182,7 +182,7 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
             uiData = PromoListHeaderUiModel.UiData().apply {
                 title = "Kupon saya global"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_GLOBAL
+                iconUrl = ""
                 identifierId = 11
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -245,7 +245,7 @@ fun mockIneligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 identifierId = 22
                 title = "Ini promo power merchant"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_POWER_MERCHANT
+                iconUrl = ""
                 tmpPromoItemList = emptyList()
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -279,7 +279,7 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 identifierId = 33
                 title = "Ini promo official store"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_MERCHANT_OFFICIAL
+                iconUrl = ""
                 tmpPromoItemList = emptyList()
             },
             uiState = PromoListHeaderUiModel.UiState().apply {

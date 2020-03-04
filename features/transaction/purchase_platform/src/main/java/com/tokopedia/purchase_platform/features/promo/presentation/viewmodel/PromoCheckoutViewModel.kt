@@ -2,17 +2,13 @@ package com.tokopedia.purchase_platform.features.promo.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
-import com.tokopedia.purchase_platform.features.promo.data.response.GqlCouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.GetCouponListRecommendationUseCase
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -73,18 +69,46 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         )
         _fragmentUiModel.value = fragmentUiModel
 
-        mockData()
-//        launchCatchError(block = {
-//            val couponListRecommendation = withContext(dispatcher) {
-//                getCouponListRecommendationUseCase.params = HashMap()
-//                getCouponListRecommendationUseCase.executeOnBackground()
-//            }
-//            if (couponListRecommendation.couponListRecommendation.data.promoRecommendation.codes.isNotEmpty()) {
-//                _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(couponListRecommendation.couponListRecommendation)
-//            }
-//        }) {
-//
-//        }
+//        mockData()
+        launchCatchError(block = {
+            val response = withContext(dispatcher) {
+                getCouponListRecommendationUseCase.params = HashMap()
+                getCouponListRecommendationUseCase.executeOnBackground()
+            }
+
+            val promoRecommendation = response.couponListRecommendation.data.promoRecommendation
+            if (promoRecommendation.codes.isNotEmpty()) {
+                _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(response.couponListRecommendation)
+            }
+
+            val promoInputUiModel = PromoInputUiModel(
+                    uiData = PromoInputUiModel.UiData().apply {
+                        promoCode = ""
+                    },
+                    uiState = PromoInputUiModel.UiState().apply {
+                        isButtonSelectEnabled = false
+                        isError = false
+                    }
+            )
+            _promoInputUiModel.value = promoInputUiModel
+
+            val couponSection = response.couponListRecommendation.data.couponSections
+            val couponList = ArrayList<Visitable<*>>()
+            couponSection.forEach { couponSectionItem ->
+                val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
+                couponList.add(eligibilityHeader)
+
+                val headerIdentifierId = 0
+                couponSectionItem.subSections.forEach { couponSubSection ->
+                    val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId)
+                    couponList.add(promoHeader)
+                }
+            }
+            _promoListUiModel.value = couponList
+
+        }) {
+
+        }
     }
 
     private fun mockData() {

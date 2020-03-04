@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
@@ -10,9 +11,6 @@ import com.tokopedia.purchase_platform.features.promo.presentation.listener.Prom
 import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterGrayScale
 import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterNormal
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_GLOBAL
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_MERCHANT_OFFICIAL
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel.UiData.Companion.PROMO_TYPE_POWER_MERCHANT
 import kotlinx.android.synthetic.main.item_promo_list_header.view.*
 
 class PromoListHeaderViewHolder(private val view: View,
@@ -24,12 +22,11 @@ class PromoListHeaderViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoListHeaderUiModel) {
-        if (element.uiData.promoType == PROMO_TYPE_GLOBAL) {
-            itemView.image_promo_list_header.setImageResource(R.drawable.ic_promo_global)
-        } else if (element.uiData.promoType == PROMO_TYPE_MERCHANT_OFFICIAL) {
-            itemView.image_promo_list_header.setImageResource(R.drawable.ic_badge_shop_official)
-        } else if (element.uiData.promoType == PROMO_TYPE_POWER_MERCHANT) {
-            itemView.image_promo_list_header.setImageResource(R.drawable.ic_power_merchant)
+        if (element.uiData.iconUrl.isNotBlank()) {
+            ImageHandler.loadImageRounded2(itemView.context, itemView.image_promo_list_header, element.uiData.iconUrl)
+            itemView.image_promo_list_header.show()
+        } else {
+            itemView.image_promo_list_header.gone()
         }
 
         itemView.label_promo_list_header_title.text = element.uiData.title

@@ -2,7 +2,6 @@ package com.tokopedia.purchase_platform.features.promo.presentation.fragment
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +19,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.dialog.DialogUnify
@@ -32,7 +32,6 @@ import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.cart.view.CartFragment
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
@@ -140,12 +139,12 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                 }
 
                 if (lastHeaderUiModel != null) {
-                    if (lastHeaderUiModel?.uiData?.promoType == PromoListHeaderUiModel.UiData.PROMO_TYPE_GLOBAL) {
-                        section_image_promo_list_header.setImageResource(R.drawable.ic_promo_global)
-                    } else if (lastHeaderUiModel?.uiData?.promoType == PromoListHeaderUiModel.UiData.PROMO_TYPE_MERCHANT_OFFICIAL) {
-                        section_image_promo_list_header.setImageResource(R.drawable.ic_badge_shop_official)
-                    } else if (lastHeaderUiModel?.uiData?.promoType == PromoListHeaderUiModel.UiData.PROMO_TYPE_POWER_MERCHANT) {
-                        section_image_promo_list_header.setImageResource(R.drawable.ic_power_merchant)
+
+                    if (lastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
+                        ImageHandler.loadImageRounded2(context, section_image_promo_list_header, lastHeaderUiModel?.uiData?.iconUrl)
+                        section_image_promo_list_header.show()
+                    } else {
+                        section_image_promo_list_header.gone()
                     }
 
                     section_label_promo_list_header_title.text = lastHeaderUiModel?.uiData?.title

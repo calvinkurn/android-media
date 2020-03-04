@@ -1,6 +1,8 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.mapper
 
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendation
+import com.tokopedia.purchase_platform.features.promo.data.response.CouponSection
+import com.tokopedia.purchase_platform.features.promo.data.response.SubSection
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import javax.inject.Inject
 
@@ -43,24 +45,31 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapPromoEligibleHeaderUiModel(): PromoEligibilityHeaderUiModel {
+    fun mapPromoEligibilityHeaderUiModel(couponSectionItem: CouponSection): PromoEligibilityHeaderUiModel {
         return PromoEligibilityHeaderUiModel(
                 uiData = PromoEligibilityHeaderUiModel.UiData().apply {
-
+                    title = couponSectionItem.title
+                    subTitle = couponSectionItem.subTitle
+                    tmpPromo = emptyList() // Todo : baca dari backend
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
-
+                    isEnabled = couponSectionItem.isEnabled
                 }
         )
     }
 
-    fun mapPromoListHeaderUiModel(): PromoListHeaderUiModel {
+    fun mapPromoListHeaderUiModel(couponSubSection: SubSection, headerIdentifierId: Int): PromoListHeaderUiModel {
         return PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
-
+                    title = couponSubSection.title
+                    subTitle = couponSubSection.subTitle
+                    iconUrl = couponSubSection.iconUrl
+                    identifierId = headerIdentifierId
+                    tmpPromoItemList = emptyList()
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
-
+                    isEnabled = couponSubSection.isEnabled
+                    isCollapsed = false // Todo : baca dari backend
                 }
         )
     }
