@@ -75,7 +75,9 @@ class RechargeGeneralActivity : BaseSimpleActivity(), HasComponent<RechargeGener
     private fun Intent.handleExtra() {
         if (intent.data != null) {
             val trackingClick = intent.getStringExtra(RECHARGE_PRODUCT_EXTRA)
-            Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
+            if (trackingClick!=null) {
+                Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#$trackingClick")
+            }
         }
     }
 }
