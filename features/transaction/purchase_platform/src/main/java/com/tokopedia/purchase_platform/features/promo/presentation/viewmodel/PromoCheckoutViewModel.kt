@@ -37,12 +37,14 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
     val promoListUiModel: LiveData<MutableList<Visitable<*>>>
         get() = _promoListUiModel
 
-    // Temporary single data
+    // Temporary single data. This live data is used for modify or delete single item
     private val _tmpUiModel = MutableLiveData<Action<Visitable<*>>>()
     val tmpUiModel: LiveData<Action<Visitable<*>>>
         get() = _tmpUiModel
 
-    // Temporary multiple data with header as index
+    // Temporary multiple data. This live data is used for insert list of items to adapter.
+    // The data is a map, with visitable as key and list of visitable as value.
+    // The key is supposed to be the header of the list
     private val _tmpListUiModel = MutableLiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>()
     val tmpListUiModel: LiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>
         get() = _tmpListUiModel
@@ -127,9 +129,11 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
     fun updatePromoSectionList(element: PromoListHeaderUiModel) {
         if (!element.uiState.isCollapsed) {
             promoListUiModel.value?.indexOf(element)?.let {
+                // Get the header data and set inverse collapsed value
                 val headerData = promoListUiModel.value?.get(it) as PromoListHeaderUiModel
                 headerData.uiState.isCollapsed = !headerData.uiState.isCollapsed
 
+                // Get promo item which will be collapsed and store into single list
                 val modifiedData = ArrayList<PromoListItemUiModel>()
                 val startIndex = it + 1
                 val endIndex = promoListUiModel.value?.size ?: 0
@@ -138,27 +142,41 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                     val oldPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
                     modifiedData.add(oldPromoItem)
                 }
+
+                // Update header
                 _tmpUiModel.value = Update(headerData)
+
+                // Store collapsed promo item to promo header as temporary value
                 headerData.uiData.tmpPromoItemList = modifiedData
+
+                // Remove collapsed promo item from view
                 modifiedData.forEach {
                     _tmpUiModel.value = Delete(it)
                 }
+
+                // Remove collapsed item
                 promoListUiModel.value?.removeAll(modifiedData)
             }
         } else {
             promoListUiModel.value?.indexOf(element)?.let {
+                // Get the header data and set inverse collapsed value
                 val headerData = promoListUiModel.value?.get(it) as PromoListHeaderUiModel
                 headerData.uiState.isCollapsed = !headerData.uiState.isCollapsed
 
+                // Get expanded promo item from temporary data on header, then put on the map
                 val mapList = HashMap<Visitable<*>, List<Visitable<*>>>()
+                // Set map key >> header, map value >> expanded promo
                 mapList[headerData] = headerData.uiData.tmpPromoItemList
+                // Update expanded view
                 _tmpListUiModel.value = Insert(mapList)
 
+                // Store expanded promo item into live data
                 var startIndex = it + 1
                 headerData.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
                     promoListUiModel.value?.add(startIndex++, promoListItemUiModel)
                 }
 
+                // Update header
                 _tmpUiModel.value = Update(headerData)
 
                 headerData.uiData.tmpPromoItemList = emptyList()
