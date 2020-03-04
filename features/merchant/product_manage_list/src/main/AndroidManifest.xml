@@ -7,7 +7,6 @@
         android:label="@string/app_name">
         <activity
             android:name="com.tokopedia.product.manage.feature.stockreminder.view.activity.StockReminderActivity"
-            android:label="@string/product_stock_reminder_header_title"
             android:theme="@style/Theme.White"
             android:screenOrientation="portrait">
             <intent-filter>
