@@ -16,6 +16,7 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.common.chat.api.ChatApi
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -65,7 +66,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideResources(context: Context): Resources {
+    fun provideResources(@TopchatContext context: Context): Resources {
         return context.resources
     }
 

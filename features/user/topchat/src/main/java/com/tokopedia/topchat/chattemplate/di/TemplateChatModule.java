@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext;
 import com.tokopedia.topchat.common.network.XUserIdInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -58,6 +59,7 @@ public class TemplateChatModule {
 
     @Provides
     @TemplateChatScope
+    @TopchatContext
     Context provideContext() {
         return mContext;
     }

@@ -9,6 +9,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
 import com.tokopedia.topchat.chatsetting.data.GetChatSettingResponse
 import com.tokopedia.topchat.chatsetting.usecase.GetChatSettingUseCase
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
@@ -21,6 +22,7 @@ class ChatSettingModule(val context: Context) {
 
     @Provides
     @ChatSettingScope
+    @TopchatContext
     fun provideContext(): Context = context
 
     @ChatSettingScope
@@ -30,7 +32,7 @@ class ChatSettingModule(val context: Context) {
     @ChatSettingScope
     @Provides
     @Named(ChatListQueriesConstant.QUERY_GET_CHAT_SETTING)
-    fun provideGqlQueryShopReputation(context: Context): String {
+    fun provideGqlQueryShopReputation(@TopchatContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.query_get_chat_settings)
     }
 
