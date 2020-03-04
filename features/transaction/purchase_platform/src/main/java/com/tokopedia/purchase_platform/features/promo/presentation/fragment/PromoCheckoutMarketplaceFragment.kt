@@ -123,6 +123,18 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     isShow = true
                 } else if (lastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == lastHeaderUiModel?.uiData?.identifierId) {
                     isShow = true
+                } else if (lastData is PromoListItemUiModel && lastData.uiState.isEnabled) {
+                    if (lastHeaderUiModel != null && lastData.uiData.parentIdentifierId == lastHeaderUiModel?.uiData?.identifierId) {
+                        isShow = true
+                    } else {
+                        adapter.data.forEach {
+                            if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
+                                lastHeaderUiModel = it
+                                return@forEach
+                            }
+                        }
+                        isShow = true
+                    }
                 } else {
                     isShow = false
                 }
