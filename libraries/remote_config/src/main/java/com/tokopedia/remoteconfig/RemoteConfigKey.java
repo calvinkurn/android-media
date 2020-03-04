@@ -193,7 +193,7 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_NEW_SHOP_PAGE = "android_main_app_enable_new_shop_page";
 
-    public static final String ENABLE_OLD_PRODUCT_MANAGE = "android_main_app_enable_old_product_manage";
+    public static final String ENABLE_OLD_PRODUCT_MANAGE = "android_seller_app_enable_old_product_manage";
 
 
 
