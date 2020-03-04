@@ -13,7 +13,7 @@
 
     <ImageView
         android:id="@+id/rating_review"
-        android:layout_width="@dimen/dp_100"
+        android:layout_width="@dimen/dp_120"
         android:layout_height="@dimen/dp_24"
         android:layout_marginTop="@dimen/dp_9"
         app:layout_constraintLeft_toLeftOf="parent"

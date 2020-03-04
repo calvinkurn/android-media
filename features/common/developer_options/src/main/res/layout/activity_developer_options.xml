@@ -119,6 +119,27 @@
             android:text="Device ID: 1213124" />
 
         <CheckBox
+            android:id="@+id/toggle_fpm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable FPM Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_fpm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View FPM Log"
+            android:textColor="@color/white" />
+
+        <CheckBox
             android:id="@+id/toggle_analytics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
