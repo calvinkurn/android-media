@@ -161,5 +161,11 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustResize" />
 
+<!--        <service android:name="com.tokopedia.idl.RemoteService">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.tokopedia.idl.RemoteService" />-->
+<!--            </intent-filter>-->
+<!--        </service>-->
+
     </application>
 </manifest>
