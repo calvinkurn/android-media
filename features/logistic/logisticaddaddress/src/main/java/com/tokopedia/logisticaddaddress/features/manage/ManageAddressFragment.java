@@ -32,7 +32,7 @@ import com.tokopedia.logisticaddaddress.features.addaddress.AddAddressFragment;
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics;
 import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressTypeFactory;
 import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressViewHolder;
-import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressViewModel;
+import com.tokopedia.logisticaddaddress.features.manage.adapter.AddressUiModel;
 import com.tokopedia.logisticdata.data.entity.address.AddressModel;
 import com.tokopedia.logisticdata.data.entity.address.Token;
 
@@ -48,7 +48,7 @@ import static com.tokopedia.logisticaddaddress.common.AddressConstants.SCREEN_NA
 /**
  * Created by Fajar Ulin Nuha on 13/11/18.
  */
-public class ManageAddressFragment extends BaseListFragment<AddressViewModel, AddressTypeFactory>
+public class ManageAddressFragment extends BaseListFragment<AddressUiModel, AddressTypeFactory>
         implements AddressViewHolder.ManageAddressListener, ManageAddressContract.View {
 
     private static final int DEFAULT_PAGE_VALUE = 1;
@@ -86,7 +86,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     }
 
     @Override
-    public void onItemClicked(AddressViewModel viewModel) {
+    public void onItemClicked(AddressUiModel viewModel) {
 
     }
 
@@ -158,14 +158,14 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     }
 
     @Override
-    public void setActionEditButton(AddressViewModel viewModel) {
+    public void setActionEditButton(AddressUiModel viewModel) {
         openFormAddressView(
                 AddressViewModelMapper.convertFromViewModel(viewModel)
         );
     }
 
     @Override
-    public void setActionDeleteButton(AddressViewModel viewModel) {
+    public void setActionDeleteButton(AddressUiModel viewModel) {
         String message = String.format(
                 getString(R.string.delete_prompt_message), viewModel.getAddressName());
         showDialogConfirmation(message,
@@ -173,7 +173,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     }
 
     @Override
-    public void setActionDefaultButtonClicked(AddressViewModel viewModel) {
+    public void setActionDefaultButtonClicked(AddressUiModel viewModel) {
         String message = String.format(getString(R.string.prioritize_message_prompt),
                 viewModel.getAddressName(), viewModel.getAddressFull());
         showDialogConfirmation(message,
@@ -215,7 +215,7 @@ public class ManageAddressFragment extends BaseListFragment<AddressViewModel, Ad
     }
 
     @Override
-    public void showData(List<AddressViewModel> data, boolean hasNext) {
+    public void showData(List<AddressUiModel> data, boolean hasNext) {
         renderList(data, hasNext);
         toggleFilterFab(true);
     }

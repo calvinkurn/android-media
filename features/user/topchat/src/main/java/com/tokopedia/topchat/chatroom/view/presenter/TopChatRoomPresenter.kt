@@ -66,7 +66,6 @@ import okhttp3.RequestBody
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
-import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import javax.inject.Inject
@@ -403,7 +402,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun sendMessageWithWebsocket(messageId: String, sendMessage: String, startTime: String, opponentId: String) {
         processDummyMessage(mapToDummyMessage(thisMessageId, sendMessage, startTime))
-        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime))
+        sendMessageWebSocket(TopChatWebSocketParam.generateParamSendMessage(messageId, sendMessage, startTime, attachmentsPreview))
         sendMessageWebSocket(TopChatWebSocketParam.generateParamStopTyping(messageId))
     }
 
@@ -455,18 +454,18 @@ class TopChatRoomPresenter @Inject constructor(
             onSendingMessage: () -> Unit
     ) {
         if (isValidReply(sendMessage)) {
-            sendAttachments(messageId, opponentId)
+            sendAttachments(messageId, opponentId, sendMessage)
             sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage)
+            view.clearAttachmentPreviews()
         }
     }
 
-    private fun sendAttachments(messageId: String, opponentId: String) {
+    private fun sendAttachments(messageId: String, opponentId: String, message: String) {
         if (attachmentsPreview.isEmpty()) return
         attachmentsPreview.forEach { attachment ->
-            attachment.sendTo(messageId, opponentId, listInterceptor)
+            attachment.sendTo(messageId, opponentId, message, listInterceptor)
             view.sendAnalyticAttachmentSent(attachment)
         }
-        view.notifyAttachmentsSent()
     }
 
     override fun deleteChat(messageId: String, onError: (Throwable) -> Unit, onSuccessDeleteConversation: () -> Unit) {
