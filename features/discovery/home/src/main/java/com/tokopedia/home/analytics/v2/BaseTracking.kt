@@ -153,9 +153,9 @@ abstract class BaseTracking {
             map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
             map[KEY_BRAND] = if(product.brand.isNotBlank()) product.brand else NONE
-            map[KEY_VARIANT] = if(product.brand.isNotBlank()) product.variant else NONE
+            map[KEY_VARIANT] = if(product.variant.isNotBlank()) product.variant else NONE
             map[KEY_PRICE] = product.productPrice
-            map[KEY_CATEGORY] = if(product.brand.isNotBlank()) product.category else NONE
+            map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE

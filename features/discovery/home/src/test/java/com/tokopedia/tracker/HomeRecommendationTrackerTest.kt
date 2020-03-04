@@ -11,7 +11,7 @@ import org.junit.Assert.assertEquals
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
-class HomeFeedTrackerTest : Spek({
+class HomeRecommendationTrackerTest : Spek({
     InstantTaskExecutorRuleSpek(this)
     val tabName = "for you"
     val homeFeedViewModel = HomeFeedViewModel(
@@ -45,7 +45,7 @@ class HomeFeedTrackerTest : Spek({
                         DataLayer.mapOf(
                                 "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
                                 "id","679625601",
-                                "price",40000,
+                                "price","40000",
                                 "brand", "none / other",
                                 "variant","none / other",
                                 "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
@@ -77,7 +77,7 @@ class HomeFeedTrackerTest : Spek({
                         DataLayer.mapOf(
                                 "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
                                 "id","679625601",
-                                "price",40000,
+                                "price","40000",
                                 "brand", "none / other",
                                 "variant","none / other",
                                 "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
@@ -109,7 +109,7 @@ class HomeFeedTrackerTest : Spek({
                          DataLayer.mapOf(
                                  "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
                                  "id","679625601",
-                                 "price",40000,
+                                 "price","40000",
                                  "brand", "none / other",
                                  "variant","none / other",
                                  "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
@@ -141,7 +141,7 @@ class HomeFeedTrackerTest : Spek({
                          DataLayer.mapOf(
                                  "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
                                  "id","679625601",
-                                 "price",40000,
+                                 "price","40000",
                                  "brand", "none / other",
                                  "variant","none / other",
                                  "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
@@ -161,6 +161,7 @@ class HomeFeedTrackerTest : Spek({
         }
 
     }
+
     Feature("Wishlist click"){
         Scenario("Add wishlist"){
             Given("the real tracker data"){
@@ -205,6 +206,7 @@ class HomeFeedTrackerTest : Spek({
             }
         }
     }
+
     Feature("Click tracker"){
         Scenario("Test click tracker login user non topads"){
             Given("the real tracker data"){
@@ -223,7 +225,7 @@ class HomeFeedTrackerTest : Spek({
                         DataLayer.mapOf(
                                 "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
                                 "id","679625601",
-                                "price",40000,
+                                "price","40000",
                                 "brand", "none / other",
                                 "variant","none / other",
                                 "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
@@ -258,7 +260,7 @@ class HomeFeedTrackerTest : Spek({
                                 DataLayer.mapOf(
                                         "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
                                         "id","679625601",
-                                        "price",40000,
+                                        "price","40000",
                                         "brand", "none / other",
                                         "variant","none / other",
                                         "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
@@ -293,7 +295,7 @@ class HomeFeedTrackerTest : Spek({
                         DataLayer.mapOf(
                                 "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
                                 "id","679625601",
-                                "price",40000,
+                                "price","40000",
                                 "brand", "none / other",
                                 "variant","none / other",
                                 "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
@@ -328,7 +330,7 @@ class HomeFeedTrackerTest : Spek({
                                 DataLayer.mapOf(
                                         "name", "kabel antena tv kualitas Premium jack model L, Male to Female 3 M",
                                         "id","679625601",
-                                        "price",40000,
+                                        "price","40000",
                                         "brand", "none / other",
                                         "variant","none / other",
                                         "category","Elektronik/TV \\u0026 Aksesoris/Antena TV \\u0026 Parabola",
