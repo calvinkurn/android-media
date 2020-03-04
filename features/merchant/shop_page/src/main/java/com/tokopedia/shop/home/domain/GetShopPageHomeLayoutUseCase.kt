@@ -7,7 +7,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
-import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

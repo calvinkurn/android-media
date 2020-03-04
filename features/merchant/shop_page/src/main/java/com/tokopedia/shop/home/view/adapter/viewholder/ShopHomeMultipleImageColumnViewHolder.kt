@@ -7,14 +7,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import kotlinx.android.synthetic.main.widget_shop_home_multiple_image_column.view.*
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
  */
 
-class ShopHomeMultipleImageColumnViewHolder(itemView: View) : AbstractViewHolder<DisplayWidgetUiModel>(itemView) {
+class ShopHomeMultipleImageColumnViewHolder(itemView: View) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -27,7 +27,7 @@ class ShopHomeMultipleImageColumnViewHolder(itemView: View) : AbstractViewHolder
 
     private val shopHomeMultipleImageColumnAdapter by lazy { ShopHomeMultipleImageColumnAdapter() }
 
-    override fun bind(element: DisplayWidgetUiModel) {
+    override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         val gridLayoutManager = GridLayoutManager(itemView.context, SPAN_SIZE_SINGLE)
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
