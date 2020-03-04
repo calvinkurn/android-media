@@ -33,7 +33,6 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         intent?.handleIntent()
-        handleTracking()
         GraphqlClient.init(this)
     }
 
@@ -59,6 +58,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
         const val DIGITAL_HOMEPAGE_SCREEN_NAME = "/digital/subhomepage/topup"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_USER_EXTRA = "RECHARGE_USER_EXTRA"
+        const val RECHARGE_PATH_SLICE = "/recharge/home"
 
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageActivity::class.java)
     }
@@ -87,17 +87,18 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     private fun handleDeepLink(data: Uri?) {
         var actionHandled = true
         when (data?.path) {
-            "/recharge/home" -> actionHandled = true
+            RECHARGE_PATH_SLICE -> actionHandled = true
             else -> actionHandled = false
 
         }
         notifyActionSuccess(actionHandled)
     }
 
-    /* This Method is use to send Action loggin to FirebaseAppIndexing
+    /* This Method is use to send Action logging to FirebaseAppIndexing
    */
     private fun notifyActionSuccess(succeed: Boolean) {
         intent.getStringExtra(actionTokenExtra)?.let { actionToken ->
+            handleTracking()
             val actionStatus = if (succeed) {
                 Action.Builder.STATUS_TYPE_COMPLETED
             } else {
