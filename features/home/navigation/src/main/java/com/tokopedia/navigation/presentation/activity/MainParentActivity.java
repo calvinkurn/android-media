@@ -378,7 +378,7 @@ public class MainParentActivity extends BaseActivity implements
     @NotNull
     private boolean executeFirstTimeEvent(){
         if (isFirstTime()) {
-            globalNavAnalytics.trackFirstTime(this);
+            globalNavAnalytics.trackFirstTime(MainParentActivity.this);
         }
         return true;
     }
@@ -1018,46 +1018,46 @@ public class MainParentActivity extends BaseActivity implements
                     args.putBoolean(GlobalNavConstant.EXTRA_APPLINK_FROM_PUSH, true);
                     args.putBoolean(GlobalNavConstant.FROM_APP_SHORTCUTS, true);
 
-                    Intent intentHome = MainParentActivity.start(this);
+                    Intent intentHome = MainParentActivity.start(MainParentActivity.this);
                     intentHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intentHome.setAction(Intent.ACTION_VIEW);
 
-                    Intent productIntent = RouteManager.getIntent(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
+                    Intent productIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConstInternalDiscovery.AUTOCOMPLETE);
                     productIntent.setAction(Intent.ACTION_VIEW);
                     productIntent.putExtras(args);
 
-                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(this, SHORTCUT_BELI_ID)
+                    ShortcutInfo productShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_BELI_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_beli))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_search_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_search_shortcut))
                             .setIntents(new Intent[]{intentHome, productIntent})
                             .setRank(0)
                             .build();
                     shortcutInfos.add(productShortcut);
 
                     if (userSession.isLoggedIn()) {
-                        Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(this);
+                        Intent wishlistIntent = ((GlobalNavRouter) getApplication()).gotoWishlistPage(MainParentActivity.this);
                         wishlistIntent.setAction(Intent.ACTION_VIEW);
                         wishlistIntent.putExtras(args);
 
-                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHARE_ID)
+                        ShortcutInfo wishlistShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_SHARE_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_share))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_wishlist_shortcut))
+                                .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_wishlist_shortcut))
                                 .setIntents(new Intent[]{intentHome, wishlistIntent})
                                 .setRank(1)
                                 .build();
                         shortcutInfos.add(wishlistShortcut);
                     }
 
-                    Intent digitalIntent = RouteManager.getIntent(this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
+                    Intent digitalIntent = RouteManager.getIntent(MainParentActivity.this, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME);
                     digitalIntent.setAction(Intent.ACTION_VIEW);
                     digitalIntent.putExtras(args);
 
-                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(this, SHORTCUT_DIGITAL_ID)
+                    ShortcutInfo digitalShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_DIGITAL_ID)
                             .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
                             .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_bayar))
-                            .setIcon(Icon.createWithResource(this, R.drawable.ic_pay_shortcut))
+                            .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_pay_shortcut))
                             .setIntents(new Intent[]{intentHome, digitalIntent})
                             .setRank(2)
                             .build();
@@ -1076,10 +1076,10 @@ public class MainParentActivity extends BaseActivity implements
                         shopIntent.setAction(Intent.ACTION_VIEW);
                         shopIntent.putExtras(args);
 
-                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(this, SHORTCUT_SHOP_ID)
+                        ShortcutInfo shopShortcut = new ShortcutInfo.Builder(MainParentActivity.this, SHORTCUT_SHOP_ID)
                                 .setShortLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
                                 .setLongLabel(getResources().getString(R.string.navigation_home_label_longpress_jual))
-                                .setIcon(Icon.createWithResource(this, R.drawable.ic_sell_shortcut))
+                                .setIcon(Icon.createWithResource(MainParentActivity.this, R.drawable.ic_sell_shortcut))
                                 .setIntents(new Intent[]{intentHome, shopIntent})
                                 .setRank(3)
                                 .build();
