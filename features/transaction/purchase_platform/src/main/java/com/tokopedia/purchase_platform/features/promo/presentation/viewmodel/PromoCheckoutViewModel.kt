@@ -73,17 +73,18 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         )
         _fragmentUiModel.value = fragmentUiModel
 
-        launchCatchError(block = {
-            val couponListRecommendation = withContext(dispatcher) {
-                getCouponListRecommendationUseCase.params = HashMap()
-                getCouponListRecommendationUseCase.executeOnBackground()
-            }
-            if (couponListRecommendation.couponListRecommendation.data.promoRecommendation.codes.isNotEmpty()) {
-                _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(couponListRecommendation.couponListRecommendation)
-            }
-        }) {
-
-        }
+        mockData()
+//        launchCatchError(block = {
+//            val couponListRecommendation = withContext(dispatcher) {
+//                getCouponListRecommendationUseCase.params = HashMap()
+//                getCouponListRecommendationUseCase.executeOnBackground()
+//            }
+//            if (couponListRecommendation.couponListRecommendation.data.promoRecommendation.codes.isNotEmpty()) {
+//                _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(couponListRecommendation.couponListRecommendation)
+//            }
+//        }) {
+//
+//        }
     }
 
     private fun mockData() {

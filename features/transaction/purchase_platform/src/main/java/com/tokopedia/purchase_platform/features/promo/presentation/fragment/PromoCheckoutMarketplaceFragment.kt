@@ -1,6 +1,8 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.fragment
 
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.google.android.material.snackbar.Snackbar
@@ -29,11 +32,9 @@ import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.cart.view.CartFragment
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
-import com.tokopedia.purchase_platform.features.promo.presentation.Delete
-import com.tokopedia.purchase_platform.features.promo.presentation.Insert
-import com.tokopedia.purchase_platform.features.promo.presentation.PromoDecoration
-import com.tokopedia.purchase_platform.features.promo.presentation.Update
+import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
@@ -61,6 +62,11 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     private val viewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PromoCheckoutViewModel::class.java]
+    }
+
+    companion object {
+        private val HAS_ELEVATION = 12
+        private val NO_ELEVATION = 0
     }
 
     override fun initInjector() {
@@ -101,6 +107,64 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             button_apply_no_promo.isLoading = !button_apply_promo.isLoading
         }
 
+        var lastHeaderUiModel: PromoListHeaderUiModel? = null
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+                val lastData = adapter.data[topItemPosition]
+
+                var isShow = false
+                if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
+                    lastHeaderUiModel = lastData
+                    isShow = true
+                } else if (lastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == lastHeaderUiModel?.uiData?.identifierId) {
+                    isShow = true
+                } else {
+                    isShow = false
+                }
+
+                if (lastHeaderUiModel != null) {
+                    if (lastHeaderUiModel?.uiData?.promoType == PromoListHeaderUiModel.UiData.PROMO_TYPE_GLOBAL) {
+                        section_image_promo_list_header.setImageResource(R.drawable.ic_promo_global)
+                    } else if (lastHeaderUiModel?.uiData?.promoType == PromoListHeaderUiModel.UiData.PROMO_TYPE_MERCHANT_OFFICIAL) {
+                        section_image_promo_list_header.setImageResource(R.drawable.ic_badge_shop_official)
+                    } else if (lastHeaderUiModel?.uiData?.promoType == PromoListHeaderUiModel.UiData.PROMO_TYPE_POWER_MERCHANT) {
+                        section_image_promo_list_header.setImageResource(R.drawable.ic_power_merchant)
+                    }
+
+                    section_label_promo_list_header_title.text = lastHeaderUiModel?.uiData?.title
+                    section_label_promo_list_header_sub_title.text = lastHeaderUiModel?.uiData?.subTitle
+
+                    if (lastHeaderUiModel?.uiState?.isCollapsed == false) {
+                        section_image_chevron.rotation = 180f
+                    } else {
+                        section_image_chevron.rotation = 0f
+                    }
+
+                    setImageFilterNormal(section_image_promo_list_header)
+                    section_label_promo_list_header_sub_title.show()
+                    section_image_chevron.show()
+                    section_image_chevron.setOnClickListener {
+                        if (lastHeaderUiModel != null) {
+                            onClickPromoListHeader(adapter.data.indexOf(lastHeaderUiModel), lastHeaderUiModel!!)
+                        }
+                    }
+                }
+
+                if (isShow) {
+                    header_promo_section.show()
+                    setToolbarShadowVisibility(false)
+                } else {
+                    header_promo_section.gone()
+                    setToolbarShadowVisibility(true)
+                }
+            }
+        })
+
         observeFragmentUiModel()
         observePromoRecommendationUiModel()
         observePromoInputUiModel()
@@ -108,6 +172,16 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
         observeEmptyStateUiModel()
+    }
+
+    private fun setToolbarShadowVisibility(show: Boolean) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (show) {
+                app_bar_layout.elevation = HAS_ELEVATION.toFloat()
+            } else {
+                app_bar_layout.elevation = NO_ELEVATION.toFloat()
+            }
+        }
     }
 
     private fun observeFragmentUiModel() {

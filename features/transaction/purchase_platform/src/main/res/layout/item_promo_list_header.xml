@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_8"
         android:ellipsize="end"
-        android:text="Kupon saya"
+        android:text="Kupon saya 111"
         app:layout_constraintStart_toEndOf="@+id/image_promo_list_header"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_2"
