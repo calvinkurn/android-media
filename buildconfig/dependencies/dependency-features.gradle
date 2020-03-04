@@ -210,7 +210,7 @@ ext {
             userIdentificationCommon        : ":features:user:user_identification_common",
             kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
-            fcm_common                      : ":features:fcm_common",
+liveness                        : ":features:user:liveness",            fcm_common                      : ":features:fcm_common",
 
             tkpdcore                        : ":tkpdcore",
             tkpddiscovery                   : ":tkpddiscovery",

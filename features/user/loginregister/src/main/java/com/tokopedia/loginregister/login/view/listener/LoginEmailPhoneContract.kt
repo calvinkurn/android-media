@@ -6,6 +6,7 @@ import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
@@ -103,6 +104,10 @@ interface LoginEmailPhoneContract {
 
         fun onErrorGetTickerInfo(error: Throwable)
 
+        fun onGetDynamicBannerSuccess(dynamicBannerDataModel: DynamicBannerDataModel)
+
+        fun onGetDynamicBannerError(throwable: Throwable)
+
         fun onErrorCheckStatusFingerprint(e: Throwable)
 
         fun onSuccessCheckStatusFingerprint(data: StatusFingerprint)
@@ -140,5 +145,7 @@ interface LoginEmailPhoneContract {
         fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit)
 
         fun removeFingerprintData()
+
+        fun getDynamicBanner(page: String)
     }
 }

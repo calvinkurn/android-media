@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
 import com.tokopedia.loginregister.login.domain.StatusFingerprint
@@ -49,6 +50,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val getProfileUseCase: GetProfileUseCase,
                                                    private val tickerInfoUseCase: TickerInfoUseCase,
                                                    private val statusPinUseCase: StatusPinUseCase,
+                                                   private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
                                                    private val cryptographyUtils: Cryptography,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
@@ -301,6 +303,16 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 else onError(RuntimeException())
             }, onError)
         }
+    }
+
+    override fun getDynamicBanner(page: String) {
+        val params = DynamicBannerUseCase.createRequestParams(page)
+        dynamicBannerUseCase.createParams(params)
+        dynamicBannerUseCase.execute(onSuccess = {
+            view.onGetDynamicBannerSuccess(it)
+        }, onError = {
+            view.onGetDynamicBannerError(it)
+        })
     }
 
     override fun detachView() {

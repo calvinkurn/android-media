@@ -32,7 +32,7 @@ public class LoginModule {
 
     @LoginScope
     @Provides
-    CoroutineDispatcher provideMainDispatcher(){
+    CoroutineDispatcher provideMainDispatcher() {
         return Dispatchers.getMain();
     }
 

@@ -71,7 +71,7 @@ class RechargeGeneralViewModelTest {
 
         try {
             rechargeGeneralViewModel.operatorCluster.observeForever(observer)
-            rechargeGeneralViewModel.getOperatorCluster(mapParams)
+            rechargeGeneralViewModel.getOperatorCluster("", mapParams)
         } finally {
             rechargeGeneralViewModel.operatorCluster.removeObserver(observer)
         }
@@ -88,7 +88,7 @@ class RechargeGeneralViewModelTest {
 
         try {
             rechargeGeneralViewModel.operatorCluster.observeForever(observer)
-            rechargeGeneralViewModel.getOperatorCluster(mapParams)
+            rechargeGeneralViewModel.getOperatorCluster("", mapParams)
         } finally {
             rechargeGeneralViewModel.operatorCluster.removeObserver(observer)
         }
@@ -115,7 +115,7 @@ class RechargeGeneralViewModelTest {
 
         try {
             rechargeGeneralViewModel.productList.observeForever(observer)
-            rechargeGeneralViewModel.getProductList(mapParams)
+            rechargeGeneralViewModel.getProductList("", mapParams)
         } finally {
             rechargeGeneralViewModel.productList.removeObserver(observer)
         }
@@ -130,28 +130,28 @@ class RechargeGeneralViewModelTest {
 
         try {
             rechargeGeneralViewModel.productList.observeForever(observer)
-            rechargeGeneralViewModel.getProductList(mapParams)
+            rechargeGeneralViewModel.getProductList("", mapParams)
         } finally {
             rechargeGeneralViewModel.productList.removeObserver(observer)
         }
     }
 
     @Test
-    fun createParams_Partial() {
+    fun createOperatorClusterParams() {
         val menuId = 1
 
-        val actual = rechargeGeneralViewModel.createParams(menuId)
+        val actual = rechargeGeneralViewModel.createOperatorClusterParams(menuId)
         assertEquals(actual, mapOf(RechargeGeneralViewModel.PARAM_MENU_ID to menuId))
     }
 
     @Test
-    fun createParams_Full() {
+    fun createProductListParams() {
         val menuId = 1
         val operatorId = 1
 
-        val actual = rechargeGeneralViewModel.createParams(menuId, operatorId)
+        val actual = rechargeGeneralViewModel.createProductListParams(menuId, operatorId)
         assertEquals(actual, mapOf(
                 RechargeGeneralViewModel.PARAM_MENU_ID to menuId,
-                RechargeGeneralViewModel.PARAM_OPERATOR to operatorId))
+                RechargeGeneralViewModel.PARAM_OPERATOR to operatorId.toString()))
     }
 }

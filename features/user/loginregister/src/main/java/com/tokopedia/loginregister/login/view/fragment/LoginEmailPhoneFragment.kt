@@ -29,7 +29,6 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -44,6 +43,7 @@ import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.LinkerConstants
@@ -57,6 +57,8 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.activation.view.activity.ActivationActivity
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.data.DynamicBannerConstant
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
@@ -93,6 +95,7 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_login_with_phone.*
 import java.util.*
 import javax.inject.Inject
@@ -272,29 +275,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
         if (!GlobalConfig.isSellerApp()) {
             if (isShowBanner) {
-                context?.let {
-                    analytics.eventViewBanner()
-                    ImageHandler.loadImage(it, bannerLogin, BANNER_LOGIN_URL,
-                            R.drawable.banner_login_register_placeholder)
-                    bannerLogin.visibility = View.VISIBLE
-                }
-            } else if (isFromAtcPage() && isShowTicker) {
-                tickerAnnouncement.visibility = View.VISIBLE
-                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
-                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
-                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
-                    override fun onDismiss() {
-                        analytics.eventClickCloseTicker()
-                    }
-                })
-                tickerAnnouncement.setOnClickListener {
-                    analytics.eventClickTicker()
-                }
+                presenter.getDynamicBanner(DynamicBannerConstant.Page.LOGIN)
             } else {
-                presenter.getTickerInfo()
+                showTicker()
             }
         }
 
@@ -1191,12 +1174,6 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
     }
 
-    private fun goToProfileCompletionPage() {
-        if (activity != null) {
-            RouteManager.route(context, ApplinkConst.PROFILE_COMPLETION)
-        }
-    }
-
     private fun onGoToChangeName() {
         if (activity != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
@@ -1410,6 +1387,55 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     private fun logoutGoogleAccountIfExist() {
         val googleSignInAccount = GoogleSignIn.getLastSignedInAccount(context)
         if (googleSignInAccount != null) mGoogleSignInClient.signOut()
+    }
+
+    override fun onGetDynamicBannerSuccess(dynamicBannerDataModel: DynamicBannerDataModel) {
+        if (dynamicBannerDataModel.banner.isEnable) {
+            context?.let {
+                ImageUtils.loadImage(
+                        imageView = bannerLogin,
+                        url = dynamicBannerDataModel.banner.imgUrl,
+                        imageLoaded = {
+                            if (it) {
+                                bannerLogin.show()
+                                analytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
+                            } else {
+                                bannerLogin.hide()
+                                showTicker()
+                            }
+                        })
+            }
+        } else {
+            showTicker()
+        }
+    }
+
+    override fun onGetDynamicBannerError(throwable: Throwable) {
+        bannerLogin.hide()
+        showTicker()
+    }
+
+    private fun showTicker() {
+        if (!GlobalConfig.isSellerApp()) {
+            if (isFromAtcPage() && isShowTicker) {
+                tickerAnnouncement.visibility = View.VISIBLE
+                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
+                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
+                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                    override fun onDismiss() {
+                        analytics.eventClickCloseTicker()
+                    }
+                })
+                tickerAnnouncement.setOnClickListener {
+                    analytics.eventClickTicker()
+                }
+            } else {
+                presenter.getTickerInfo()
+            }
+        }
     }
 
     companion object {

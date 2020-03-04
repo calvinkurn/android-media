@@ -67,26 +67,18 @@ class ChatListActivity : BaseTabActivity()
 
     private var fragmentViewCreated = false
 
-    private fun initInjector() {
-        component.inject(this)
-    }
-
     override fun getLayoutRes() = R.layout.activity_chat_list
     override fun getScreenName() = "/${ChatListAnalytic.Category.CATEGORY_INBOX_CHAT}"
     override fun getPageLimit() = tabList.size
     override fun getViewPagerResourceId(): Int = R.id.pager
     override fun getTabLayoutResourceId(): Int = R.id.indicator
     override fun getToolbarResourceID(): Int = R.id.toolbar
-
-    override fun getViewPagerAdapter(): PagerAdapter? {
-        return ChatListPagerAdapter(supportFragmentManager).apply {
-            setItemList(tabList)
-        }
-    }
+    override fun getViewPagerAdapter(): PagerAdapter? = fragmentAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         initTabList()
+        initPageAdapter()
         super.onCreate(savedInstanceState)
         useLightNotificationBar()
         setupViewModel()
@@ -96,11 +88,8 @@ class ChatListActivity : BaseTabActivity()
         initOnBoarding()
     }
 
-    private fun useLightNotificationBar() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            window.statusBarColor = Color.WHITE
-        }
+    private fun initInjector() {
+        component.inject(this)
     }
 
     private fun initTabList() {
@@ -110,6 +99,18 @@ class ChatListActivity : BaseTabActivity()
 
         if (!GlobalConfig.isSellerApp()) {
             addBuyerTabFragment()
+        }
+    }
+
+    private fun initPageAdapter() {
+        fragmentAdapter = ChatListPagerAdapter(supportFragmentManager)
+        fragmentAdapter.setItemList(tabList)
+    }
+
+    private fun useLightNotificationBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            window.statusBarColor = Color.WHITE
         }
     }
 

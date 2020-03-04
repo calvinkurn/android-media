@@ -15,6 +15,8 @@
     <string name="path_add_password">/add-password</string>
     <string name="path_profile_completion">/profile-completion</string>
     <string name="path_setting_profile">/setting-profile</string>
+    <string name="path_liveness_detection">/liveness-detection</string>
+
     <string name="path_landing_shop_creation">/landing-shop-creation</string>
     <string name="path_phone_shop_creation">/phone-shop-creation</string>
     <string name="path_name_shop_creation">/name-shop-creation</string>

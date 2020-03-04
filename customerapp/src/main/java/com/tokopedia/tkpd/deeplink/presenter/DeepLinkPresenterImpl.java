@@ -43,8 +43,7 @@ import com.tokopedia.core.session.model.SecurityModel;
 import com.tokopedia.core.util.AppUtils;
 import com.tokopedia.core.util.SessionHandler;
 import com.tokopedia.discovery.catalogrevamp.ui.activity.CatalogDetailPageActivity;
-import com.tokopedia.discovery.intermediary.view.IntermediaryActivity;
-import com.tokopedia.discovery.newdiscovery.category.presentation.CategoryActivity;
+import com.tokopedia.discovery.categoryrevamp.view.activity.CategoryNavActivity;
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase;
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo;
 import com.tokopedia.session.domain.interactor.SignInInteractor;
@@ -799,11 +798,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private void openCategory(String uriData, Bundle bundle) {
         URLParser urlParser = new URLParser(uriData);
         if (!urlParser.getParamKeyValueMap().isEmpty()) {
-            CategoryActivity.moveTo(
-                    context,
-                    uriData,
-                    bundle
-            );
+            context.startActivity(CategoryNavActivity.getCategoryIntentWithFilter(context,uriData));
         } else {
             RouteManager.route(context, bundle, ApplinkConstInternalMarketplace.DISCOVERY_CATEGORY_DETAIL, urlParser.getDepIDfromURI(context));
         }
@@ -825,7 +820,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
             intent.putExtras(defaultBundle);
             context.startActivity(intent);
         } else {
-            IntermediaryActivity.moveToClear(context, departmentId);
+            context.startActivity(CategoryNavActivity.getCategoryIntentWithDepartmentId(context,departmentId));
         }
     }
 

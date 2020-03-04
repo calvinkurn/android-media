@@ -64,7 +64,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.design.component.BottomNavigation;
 import com.tokopedia.dynamicfeatures.DFInstaller;
-import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.home.account.presentation.fragment.AccountHomeFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
 import com.tokopedia.navigation.GlobalNavAnalytics;
@@ -87,12 +86,17 @@ import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
+import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
 import com.tokopedia.showcase.ShowCasePreference;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSessionInterface;
+import com.tokopedia.weaver.WeaveInterface;
+import com.tokopedia.weaver.Weaver;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -174,7 +178,7 @@ public class MainParentActivity extends BaseActivity implements
 
     private PerformanceMonitoring mainParentPerformanceMonitoring;
 
-    Window.OnFrameMetricsAvailableListener onFrameMetricAvailableListener;
+    Window.OnFrameMetricsAvailableListener onFrameMetricAvailableListener = null;
 
     // animate icon OS
     private MenuItem osMenu;
@@ -256,13 +260,26 @@ public class MainParentActivity extends BaseActivity implements
         }
         cacheManager = PreferenceManager.getDefaultSharedPreferences(this);
         createView(savedInstanceState);
-        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+        WeaveInterface executeEventsWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return sendOpenHomeEvent();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(executeEventsWeave, RemoteConfigKey.ENABLE_ASYNC_OPENHOME_EVENT, getContext());
 
         if (userSession.hasShop() && !DFInstaller.isInstalled(getApplication(), DFM_MERCHANT_SELLER_CUSTOMERAPP)) {
             ArrayList<String> list = new ArrayList<>();
             list.add(DFM_MERCHANT_SELLER_CUSTOMERAPP);
             new DFInstaller().installOnBackground(this.getApplication(), list, null, null, "Home");
         }
+    }
+
+    @NotNull
+    private boolean sendOpenHomeEvent() {
+        ((GlobalNavRouter) getApplicationContext()).sendOpenHomeEvent();
+        return true;
     }
 
     @Override
@@ -327,7 +344,6 @@ public class MainParentActivity extends BaseActivity implements
 
     private void createView(Bundle savedInstanceState) {
         isFirstNavigationImpression = true;
-        GraphqlClient.init(this);
         setContentView(R.layout.activity_main_parent);
 
         bottomNavigation = findViewById(R.id.bottomnav);
@@ -343,15 +359,28 @@ public class MainParentActivity extends BaseActivity implements
 
         fragmentList = fragments();
 
-        if (isFirstTime()) {
-            globalNavAnalytics.trackFirstTime(this);
-        }
+        WeaveInterface firstTimeWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return executeFirstTimeEvent();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext());
 
         handleAppLinkBottomNavigation(savedInstanceState);
         checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
 
         initNewFeedClickReceiver();
+    }
+
+    @NotNull
+    private boolean executeFirstTimeEvent(){
+        if (isFirstTime()) {
+            globalNavAnalytics.trackFirstTime(this);
+        }
+        return true;
     }
 
     private void handleAppLinkBottomNavigation(Bundle savedInstanceState) {
@@ -590,15 +619,35 @@ public class MainParentActivity extends BaseActivity implements
         }
         isUserFirstTimeLogin = !userSession.isLoggedIn();
 
-        addShortcuts();
+        WeaveInterface addShortcutsWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return addShortcuts();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(addShortcutsWeave, RemoteConfigKey.ENABLE_ASYNC_ADDSHORTCUTS, getContext());
 
         registerNewFeedClickedReceiver();
 
+        WeaveInterface checkAppSignatureWeave = new WeaveInterface() {
+            @NotNull
+            @Override
+            public Object execute() {
+                return checkAppSignature();
+            }
+        };
+        Weaver.Companion.executeWeaveCoRoutineWithFirebase(checkAppSignatureWeave, RemoteConfigKey.ENABLE_ASYNC_CHECKAPPSIGNATURE, getContext());
+
+        if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+    }
+
+    @NotNull
+    private boolean checkAppSignature(){
         if (!((BaseMainApplication) getApplication()).checkAppSignature()) {
             finish();
         }
-
-        if (currentFragment != null) configureStatusBarBasedOnFragment(currentFragment);
+        return true;
     }
 
     @Override
@@ -956,7 +1005,8 @@ public class MainParentActivity extends BaseActivity implements
         this.presenter = presenter;
     }
 
-    private void addShortcuts() {
+    @NotNull
+    private boolean addShortcuts() {
         if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             try {
                 ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
@@ -1043,6 +1093,7 @@ public class MainParentActivity extends BaseActivity implements
                 e.printStackTrace();
             }
         }
+        return true;
     }
 
     @Override
@@ -1157,14 +1208,16 @@ public class MainParentActivity extends BaseActivity implements
 
     private void incrementAllFramesFragmentMetrics(FrameMetrics frameMetricsCopy) {
         PerformanceData performanceData = fragmentPerformanceDatas.get(currentSelectedFragmentPosition);
-        performanceData.incrementAllFrames();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            float totalDurationMs = (float) (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION));
-            if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
-                performanceData.incremenetJankyFrames();
+        if (performanceData != null) {
+            performanceData.incrementAllFrames();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                float totalDurationMs = (float) (0.000001 * frameMetricsCopy.getMetric(FrameMetrics.TOTAL_DURATION));
+                if (totalDurationMs > DEFAULT_WARNING_LEVEL_MS) {
+                    performanceData.incremenetJankyFrames();
+                }
             }
+            fragmentPerformanceDatas.setValueAt(currentSelectedFragmentPosition, performanceData);
         }
-        fragmentPerformanceDatas.setValueAt(currentSelectedFragmentPosition, performanceData);
     }
 
     private void setupMetrics() {
@@ -1180,6 +1233,7 @@ public class MainParentActivity extends BaseActivity implements
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             if (onFrameMetricAvailableListener != null) {
                 activity.getWindow().removeOnFrameMetricsAvailableListener(onFrameMetricAvailableListener);
+                onFrameMetricAvailableListener = null;
             }
         }
     }
