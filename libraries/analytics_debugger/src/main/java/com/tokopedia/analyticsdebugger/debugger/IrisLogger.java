@@ -89,26 +89,34 @@ public class IrisLogger implements IrisLoggerInterface {
 
     @Override
     public void putSaveIrisEvent(String data) {
-        IrisSaveLogDB irisSaveLogDB = new IrisSaveLogDB();
-        irisSaveLogDB.setData(prettify(data));
-        irisSaveLogDB.setTimestamp(System.currentTimeMillis());
-        irisSaveLogDBSource.insertAll(irisSaveLogDB)
-                .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
+        try {
+            IrisSaveLogDB irisSaveLogDB = new IrisSaveLogDB();
+            irisSaveLogDB.setData(prettify(data));
+            irisSaveLogDB.setTimestamp(System.currentTimeMillis());
+            irisSaveLogDBSource.insertAll(irisSaveLogDB)
+                    .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
+        }catch (Exception ignored) { }
     }
 
     @Override
     public void putSendIrisEvent(String data, int rowCount) {
-        IrisSendLogDB irisSendLogDB = new IrisSendLogDB();
-        irisSendLogDB.setData(rowCount + " - " + prettify(data));
-        irisSendLogDB.setTimestamp(System.currentTimeMillis());
-        irisSendLogDBSource.insertAll(irisSendLogDB)
-                .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
+        try {
+            IrisSendLogDB irisSendLogDB = new IrisSendLogDB();
+            irisSendLogDB.setData(rowCount + " - " + prettify(data));
+            irisSendLogDB.setTimestamp(System.currentTimeMillis());
+            irisSendLogDBSource.insertAll(irisSendLogDB)
+                    .subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
+        } catch (Exception ignored) { }
     }
 
     private String prettify(String jsonString) {
-        JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
-        Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
-        return gson.toJson(jsonObject);
+        try {
+            JsonObject jsonObject = new JsonParser().parse(jsonString).getAsJsonObject();
+            Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().setLenient().create();
+            return gson.toJson(jsonObject);
+        } catch (Exception e) {
+            return jsonString;
+        }
     }
 
     @Override

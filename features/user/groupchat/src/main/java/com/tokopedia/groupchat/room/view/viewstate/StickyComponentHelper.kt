@@ -1,5 +1,6 @@
 package com.tokopedia.groupchat.room.view.viewstate
 
+import android.content.res.Configuration
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -31,6 +32,15 @@ class StickyComponentHelper(
 
     private val stickyComponentAdapter = StickyComponentAdapter(eventClickStickyComponent(), eventViewStickyComponent(), eventGoToAtc())
 
+    private val currentOrientation: Int
+        get() = activity.resources.configuration.orientation
+
+    private val isLandscape: Boolean
+        get() = currentOrientation == Configuration.ORIENTATION_LANDSCAPE
+
+    private val isPortrait: Boolean
+        get() = currentOrientation == Configuration.ORIENTATION_PORTRAIT
+
     init {
         stickyComponentView.layoutManager = LinearLayoutManager(
                 stickyComponentView.context,
@@ -46,13 +56,17 @@ class StickyComponentHelper(
         list?.list?.run {
             if(this.isNotEmpty()) {
                 stickyComponentAdapter.setList(this)
-                show()
+                if (isPortrait) show()
             }
         }
     }
 
-    fun show() {
+    private fun show() {
         stickyComponentView.show()
+    }
+
+    fun showIfNotEmpty() {
+        if (stickyComponentAdapter.itemCount > 0) show()
     }
 
     fun hide() {

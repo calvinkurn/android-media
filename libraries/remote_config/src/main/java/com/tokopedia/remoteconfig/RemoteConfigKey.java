@@ -208,5 +208,6 @@ public class RemoteConfigKey {
     public static final String ENABLE_ASYNC_ADDSHORTCUTS = "android_async_addshortcuts";
     public static final String ENABLE_ASYNC_CHECKAPPSIGNATURE = "android_async_checkappsignature";
 
+    public static final String WHITELIST_USER_LOG_NOTIFICATION = "key_whitelist_user_log_notification";
     public static final String ENABLE_PREFERENCE_SETTINGS = "android_enable_preference_settings";
 }

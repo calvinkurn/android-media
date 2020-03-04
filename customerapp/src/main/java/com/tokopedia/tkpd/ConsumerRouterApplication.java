@@ -151,7 +151,6 @@ import com.tokopedia.oms.domain.PostVerifyCartWrapper;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
-import com.tokopedia.product.detail.ProductDetailRouter;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
 import com.tokopedia.profilecompletion.data.repository.ProfileRepositoryImpl;
@@ -227,7 +226,7 @@ import okhttp3.Interceptor;
 import okhttp3.Response;
 import rx.Observable;
 import rx.functions.Func1;
-import tradein_common.TradeInUtils;
+import com.tokopedia.common_tradein.utils.TradeInUtils;
 
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
@@ -276,7 +275,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         CMRouter,
         ILoyaltyRouter,
         ResolutionRouter,
-        ProductDetailRouter,
         KYCRouter {
 
     @Inject
@@ -1299,11 +1297,6 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     public boolean isAllowLogOnChuckInterceptorNotification() {
         LocalCacheHandler cache = new LocalCacheHandler(this, DeveloperOptionActivity.CHUCK_ENABLED);
         return cache.getBoolean(DeveloperOptionActivity.IS_CHUCK_ENABLED, false);
-    }
-
-    @Override
-    public String getDeviceId(Context context) {
-        return TradeInUtils.getDeviceId(context);
     }
 
     @Override
