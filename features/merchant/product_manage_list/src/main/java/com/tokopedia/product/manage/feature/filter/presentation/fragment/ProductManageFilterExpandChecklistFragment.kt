@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.product.manage.ProductManageInstance
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
@@ -31,6 +32,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.widget.Checklist
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.fragment_product_manage_filter_search.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -56,17 +58,9 @@ class ProductManageFilterExpandChecklistFragment :
     lateinit var productManageFilterExpandChecklistViewModel: ProductManageFilterExpandChecklistViewModel
 
     private var cacheManager: SaveInstanceCacheManager? = null
-    private var toolbar: Toolbar? = null
-    private var title: Typography? = null
-    private var recyclerView: RecyclerView? = null
     private var adapter: SelectAdapter? = null
     private var flag: String = ""
     private var cacheManagerId: String = ""
-    private var searchView: SearchInputView? = null
-    private var reset: Typography? = null
-    private var submitButton: UnifyButton? = null
-    private var errorImage: ImageView? = null
-    private var errorMessage: Typography? = null
     private var isChipsShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,24 +80,16 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(com.tokopedia.product.manage.R.layout.fragment_product_manage_filter_search, container, false)
+        val view = inflater.inflate(R.layout.fragment_product_manage_filter_search, container, false)
         val adapterTypeFactory = SelectAdapterTypeFactory(this, this)
         adapter = SelectAdapter(adapterTypeFactory)
-        recyclerView = view.findViewById(com.tokopedia.product.manage.R.id.filter_search_recycler_view)
-        toolbar = view.findViewById(com.tokopedia.product.manage.R.id.checklist_toolbar)
-        title = view.findViewById(com.tokopedia.product.manage.R.id.page_title)
-        reset = view.findViewById(com.tokopedia.product.manage.R.id.reset_checklist)
-        submitButton = view.findViewById(com.tokopedia.product.manage.R.id.btn_submit)
-        searchView = view.findViewById(com.tokopedia.product.manage.R.id.filter_category_search)
-        errorImage = view.findViewById(com.tokopedia.product.manage.R.id.filter_search_error_img)
-        errorMessage = view.findViewById(com.tokopedia.product.manage.R.id.filter_search_error_text)
-        recyclerView?.adapter = adapter
-        recyclerView?.layoutManager = LinearLayoutManager(this.context)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        filter_search_recycler_view.adapter = adapter
+        filter_search_recycler_view.layoutManager = LinearLayoutManager(this.context)
         observeDataLength()
         observeChecklistData()
         initView()
@@ -140,19 +126,19 @@ class ProductManageFilterExpandChecklistFragment :
     private fun initView() {
         initTitle()
         configToolbar()
-        recyclerView?.setOnTouchListener { _, _ ->
-            searchView?.hideKeyboard()
-            submitButton?.visibility = View.VISIBLE
+        filter_search_recycler_view.setOnTouchListener { _, _ ->
+            filter_category_search?.hideKeyboard()
+            btn_submit.visibility = View.VISIBLE
             false
         }
         initButtons()
     }
 
     private fun configToolbar() {
-        toolbar?.setNavigationIcon(com.tokopedia.product.manage.R.drawable.product_manage_arrow_back)
+        checklist_toolbar?.setNavigationIcon(R.drawable.product_manage_arrow_back)
         activity?.let {
             (it as? AppCompatActivity)?.let { appCompatActivity ->
-                appCompatActivity.setSupportActionBar(toolbar)
+                appCompatActivity.setSupportActionBar(checklist_toolbar)
                 appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
                 appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
@@ -160,10 +146,10 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun initSearchView() {
-        searchView?.setDelayTextChanged(250)
-        searchView?.setListener(object : SearchInputView.Listener {
+        filter_category_search.setDelayTextChanged(250)
+        filter_category_search.setListener(object : SearchInputView.Listener {
             override fun onSearchSubmitted(text: String?) {
-                searchView?.hideKeyboard()
+                filter_category_search.hideKeyboard()
             }
             override fun onSearchTextChanged(text: String?) {
                 hideError()
@@ -184,12 +170,12 @@ class ProductManageFilterExpandChecklistFragment :
                 }
             }
         })
-        searchView?.visibility = View.VISIBLE
-        searchView?.setFocusChangeListener {
-            if(submitButton?.visibility == View.VISIBLE) {
-                submitButton?.visibility = View.GONE
+        filter_category_search.visibility = View.VISIBLE
+        filter_category_search.setFocusChangeListener {
+            if(btn_submit.visibility == View.VISIBLE) {
+                btn_submit.visibility = View.GONE
             } else {
-                submitButton?.visibility = View.VISIBLE
+                btn_submit.visibility = View.VISIBLE
             }
         }
     }
@@ -211,17 +197,17 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showButtons() {
-        submitButton?.isEnabled = true
-        reset?.visibility = View.VISIBLE
+        btn_submit.isEnabled = true
+        reset_checklist.visibility = View.VISIBLE
     }
 
     private fun hideButtons() {
-        submitButton?.isEnabled = false
-        reset?.visibility = View.GONE
+        btn_submit.isEnabled = false
+        reset_checklist.visibility = View.GONE
     }
 
     private fun initButtons() {
-        submitButton?.setOnClickListener {
+        btn_submit.setOnClickListener {
             if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
                 cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY,
                         ProductManageFilterMapper.mapChecklistViewModelsToFilterViewModel(
@@ -241,17 +227,17 @@ class ProductManageFilterExpandChecklistFragment :
             }
             this.activity?.finish()
         }
-        reset?.setOnClickListener {
+        reset_checklist.setOnClickListener {
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
         }
     }
 
     private fun initTitle() {
         if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
-            title?.text = CATEGORIES_TITLE
+            page_title.text = CATEGORIES_TITLE
             initSearchView()
         } else {
-            title?.text = OTHER_FILTER_TITLE
+            page_title.text = OTHER_FILTER_TITLE
         }
     }
 
@@ -266,15 +252,15 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showError() {
-        recyclerView?.visibility = View.GONE
-        errorImage?.visibility = View.VISIBLE
-        errorMessage?.visibility = View.VISIBLE
+        filter_search_recycler_view.visibility = View.GONE
+        filter_search_error_img.visibility = View.VISIBLE
+        filter_search_error_text.visibility = View.VISIBLE
     }
 
     private fun hideError() {
-        recyclerView?.visibility = View.VISIBLE
-        errorImage?.visibility = View.GONE
-        errorMessage?.visibility = View.GONE
+        filter_search_recycler_view.visibility = View.VISIBLE
+        filter_search_error_img?.visibility = View.GONE
+        filter_search_error_text.visibility = View.GONE
     }
 
 

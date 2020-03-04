@@ -14,30 +14,55 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
 
     fun updateData(data: List<SelectViewModel>) {
         _selectData.postValue(data.toMutableList())
+        selectedElement = findSelectedData(data)
     }
 
-    fun updateSelectedItem(selectedElement: SelectViewModel?, element: SelectViewModel) {
-        val currentData = _selectData.value
-        val index = currentData?.indexOf(element)
-        index?.let {
-            currentData[it].isSelected = true
-        }
-        selectedElement?.let { selected ->
-            val selectedIndex = currentData?.indexOf(selected)
-            selectedIndex?.let {
-                currentData[it].isSelected = false
-            }
-        }
-        _selectData.postValue(currentData)
-    }
+    private var selectedElement: SelectViewModel? = null
 
     fun updateSelectedItem(element: SelectViewModel) {
         val currentData = _selectData.value
+        if(selectedElement != null) {
+            val selectIndex = currentData?.indexOf(selectedElement!!)
+            val selected = selectIndex?.let { currentData[it] }
+            selected?.let {
+                it.isSelected = !it.isSelected
+            }
+            if(selected == element) {
+                selectedElement = null
+                _selectData.postValue(currentData)
+                return
+            }
+        }
         val index = currentData?.indexOf(element)
         index?.let {
-            currentData[it].isSelected = true
+            updateSpecificData(currentData, it)
         }
         _selectData.postValue(currentData)
+    }
+
+    private fun updateSpecificData(currentData:MutableList<SelectViewModel>, index: Int) {
+        index.let {
+            if(it < 5) {
+                currentData[it].isSelected = !currentData[it].isSelected
+            } else {
+                val dataToBeSelected = currentData[it]
+                dataToBeSelected.isSelected = !currentData[it].isSelected
+                currentData.removeAt(it)
+                currentData.add(0, dataToBeSelected)
+            }
+            selectedElement = currentData[it]
+        }
+    }
+
+    private fun findSelectedData(selectViewModels: List<SelectViewModel>): SelectViewModel? {
+        val selectedData = selectViewModels.filter {
+            it.isSelected
+        }
+        return if(selectedData.isNotEmpty()) {
+            selectedData.first()
+        } else {
+            null
+        }
     }
 
 }

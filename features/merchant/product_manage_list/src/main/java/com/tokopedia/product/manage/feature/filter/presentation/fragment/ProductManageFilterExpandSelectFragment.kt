@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
@@ -30,6 +31,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.Produc
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.android.synthetic.main.fragment_product_manage_filter_select.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -54,13 +56,9 @@ class ProductManageFilterExpandSelectFragment :
     lateinit var productManageFilterExpandSelectViewModel: ProductManageFilterExpandSelectViewModel
 
     private var cacheManager: SaveInstanceCacheManager? = null
-    private var toolbar: Toolbar? = null
-    private var title: Typography? = null
-    private var recyclerView: RecyclerView? = null
     private var adapter: SelectAdapter? = null
     private var flag: String = ""
     private var cacheManagerId: String = ""
-    private var selectedElement: SelectViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,19 +77,16 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(com.tokopedia.product.manage.R.layout.fragment_product_manage_filter_select, container, false)
+        val view = inflater.inflate(R.layout.fragment_product_manage_filter_select, container, false)
         val adapterTypeFactory = SelectAdapterTypeFactory(this, this)
         adapter = SelectAdapter(adapterTypeFactory)
-        recyclerView = view.findViewById(com.tokopedia.product.manage.R.id.select_recycler_view)
-        toolbar = view.findViewById(com.tokopedia.product.manage.R.id.select_toolbar)
-        title = view.findViewById(com.tokopedia.product.manage.R.id.page_title)
-        recyclerView?.adapter = adapter
-        recyclerView?.layoutManager = LinearLayoutManager(this.context)
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        select_recycler_view.adapter = adapter
+        select_recycler_view.layoutManager = LinearLayoutManager(this.context)
         initView()
     }
 
@@ -102,11 +97,7 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     override fun onSelectClick(element: SelectViewModel) {
-        if(selectedElement != null) {
-            productManageFilterExpandSelectViewModel.updateSelectedItem(selectedElement, element)
-        } else {
-            productManageFilterExpandSelectViewModel.updateSelectedItem(element)
-        }
+        productManageFilterExpandSelectViewModel.updateSelectedItem(element)
         if(flag == SORT_CACHE_MANAGER_KEY) {
             cacheManager?.put(SORT_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     SORT_CACHE_MANAGER_KEY,
@@ -147,38 +138,26 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun configToolbar() {
-        toolbar?.setNavigationIcon(com.tokopedia.product.manage.R.drawable.product_manage_arrow_back)
+        select_toolbar.setNavigationIcon(R.drawable.product_manage_arrow_back)
         flag.let {
             if(it == SORT_CACHE_MANAGER_KEY) {
-                title?.text = SORT_TITLE
+                page_title.text = SORT_TITLE
             } else {
-                title?.text = ETALASE_TITLE
+                page_title.text = ETALASE_TITLE
             }
         }
         activity?.let {
             (it as? AppCompatActivity)?.let { appCompatActivity ->
-                appCompatActivity.setSupportActionBar(toolbar)
+                appCompatActivity.setSupportActionBar(select_toolbar)
                 appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
                 appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
             }
         }
     }
 
-    private fun findSelectedData(selectViewModels: List<SelectViewModel>): SelectViewModel? {
-        val selectedData = selectViewModels.filter {
-            it.isSelected
-        }
-        return if(selectedData.isNotEmpty()) {
-            selectedData.first()
-        } else {
-            null
-        }
-    }
-
     private fun observeFilterViewModel() {
         productManageFilterExpandSelectViewModel.selectData.observe(this, Observer {
             adapter?.updateSelectData(it)
-            selectedElement = findSelectedData(it)
         })
     }
 }

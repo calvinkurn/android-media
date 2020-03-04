@@ -3,7 +3,7 @@ package com.tokopedia.product.manage.feature.filter.domain
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase.Companion.PARAM_FILTER
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
-import com.tokopedia.product.manage.feature.filter.data.model.FilterMetaDataEtalaseCategoryResponse
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaResponse
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase.Companion.PARAM_SHOP_ID
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
@@ -19,18 +19,18 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ProductManageFilterCombinedUseCase @Inject constructor(
+class GetProductManageFilterOptionsUseCase @Inject constructor(
         private val getProductListMetaUseCase: GetProductListMetaUseCase,
         private val getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
         private val getCategoryListUseCase: GetCategoryListUseCase
-        ) : UseCase<FilterMetaDataEtalaseCategoryResponse>() {
+        ) : UseCase<FilterOptionsResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     companion object {
         const val DEFAULT_HIDE_NO_COUNT = true
         const val DEFAULT_HIDE_SHOWCASE_GROUP = false
-        const val DEFAULT_CATEGORIES_FILTER = "seller"
+        private const val DEFAULT_CATEGORIES_FILTER = "seller"
 
         fun createRequestParams(shopId: String, isOwner: Boolean): RequestParams {
             return RequestParams.create().apply {
@@ -43,11 +43,11 @@ class ProductManageFilterCombinedUseCase @Inject constructor(
         }
     }
 
-    override suspend fun executeOnBackground(): FilterMetaDataEtalaseCategoryResponse = withContext(Dispatchers.IO) {
+    override suspend fun executeOnBackground(): FilterOptionsResponse = withContext(Dispatchers.IO) {
         val productListMetaData = executeProductListMetaDataUseCaseAsync()
         val shopEtalase = executeEtalaseUseCaseAsync()
         val categories = executeCategoriesUseCaseAsync()
-        return@withContext FilterMetaDataEtalaseCategoryResponse(productListMetaData.await(), shopEtalase.await(), categories.await())
+        return@withContext FilterOptionsResponse(productListMetaData.await(), shopEtalase.await(), categories.await())
     }
 
     private suspend fun executeProductListMetaDataUseCaseAsync(): Deferred<ProductListMetaResponse> {

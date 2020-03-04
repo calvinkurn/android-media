@@ -5,10 +5,13 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.decorator.SpacingItemDecoration
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.*
+import kotlinx.android.synthetic.main.item_filter.view.*
+import kotlinx.android.synthetic.main.partial_layout_chips.view.*
 import kotlinx.android.synthetic.main.widget_header.view.*
 
 
@@ -18,15 +21,15 @@ class FilterViewHolder(view: View,
                        private val showChipsListener: ShowChipsListener) : AbstractViewHolder<FilterViewModel>(view) {
 
     companion object {
-        val LAYOUT = com.tokopedia.product.manage.R.layout.item_filter
+        val LAYOUT = R.layout.item_filter
         private const val NO_ROTATION = 0f
         private const val FLIPPED_ROTATION = 180f
     }
 
-    private val recyclerView: RecyclerView = itemView.findViewById(com.tokopedia.product.manage.R.id.chips_recycler_view)
+    private val recyclerView: RecyclerView = itemView.chips_recycler_view
     private var adapter: ChipsAdapter? = null
-    private val headerWidget: HeaderWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.filter_header)
-    private val seeAllWidget: SeeAllWidget = itemView.findViewById(com.tokopedia.product.manage.R.id.filter_see_all)
+    private val headerWidget: HeaderWidget = itemView.filter_header
+    private val seeAllWidget: SeeAllWidget = itemView.filter_see_all
 
 
     init {

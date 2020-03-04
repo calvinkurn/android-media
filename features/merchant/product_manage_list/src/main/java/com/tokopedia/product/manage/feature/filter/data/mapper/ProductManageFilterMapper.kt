@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.filter.data.mapper
 
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
-import com.tokopedia.product.manage.feature.filter.data.model.FilterMetaDataEtalaseCategoryResponse
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.*
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
@@ -17,12 +17,13 @@ class ProductManageFilterMapper {
         private const val SHOW_CHIPS = true
         private const val HIDE_CHIPS = false
 
-        fun mapCombinedResultToFilterViewModels(filterMetaDataEtalaseCategoryData: FilterMetaDataEtalaseCategoryResponse): List<FilterViewModel> {
+        fun mapCombinedResultToFilterViewModels(filterOptionsResponse: FilterOptionsResponse): List<FilterViewModel> {
             val filterViewModels = mutableListOf<FilterViewModel>()
-            filterViewModels.add(mapMetaResponseToSortOptions(filterMetaDataEtalaseCategoryData.productListMetaResponse.productListMetaWrapper.productListMetaData))
-            filterViewModels.add(mapEtalaseResponseToEtalaseOptions(filterMetaDataEtalaseCategoryData.shopEtalase))
-            filterViewModels.add(mapCategoryResponseToCategoryOptions(filterMetaDataEtalaseCategoryData.categoriesResponse))
-            filterViewModels.add(mapMetaResponseToFilterOptions(filterMetaDataEtalaseCategoryData.productListMetaResponse.productListMetaWrapper.productListMetaData))
+            val metaData = filterOptionsResponse.productListMetaResponse.productListMetaWrapper.productListMetaData
+            filterViewModels.add(mapMetaResponseToSortOptions(metaData))
+            filterViewModels.add(mapEtalaseResponseToEtalaseOptions(filterOptionsResponse.shopEtalase))
+            filterViewModels.add(mapCategoryResponseToCategoryOptions(filterOptionsResponse.categoriesResponse))
+            filterViewModels.add(mapMetaResponseToFilterOptions(metaData))
             return filterViewModels
         }
 

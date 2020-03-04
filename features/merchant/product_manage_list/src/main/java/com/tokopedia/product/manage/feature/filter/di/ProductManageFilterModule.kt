@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.core.common.category.domain.interactor.GetCategoryListUseCase
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
-import com.tokopedia.product.manage.feature.filter.domain.ProductManageFilterCombinedUseCase
+import com.tokopedia.product.manage.feature.filter.domain.GetProductManageFilterOptionsUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -42,5 +42,5 @@ class ProductManageFilterModule {
     fun provideProductManageFilterCombinedUseCase(getProductListMetaUseCase: GetProductListMetaUseCase,
                                                   getShopEtalaseByShopUseCase: GetShopEtalaseByShopUseCase,
                                                   getCategoryListUseCase: GetCategoryListUseCase) =
-            ProductManageFilterCombinedUseCase(getProductListMetaUseCase, getShopEtalaseByShopUseCase, getCategoryListUseCase)
+            GetProductManageFilterOptionsUseCase(getProductListMetaUseCase, getShopEtalaseByShopUseCase, getCategoryListUseCase)
 }

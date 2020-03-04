@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
+import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
 import com.tokopedia.product.manage.feature.filter.di.DaggerProductManageFilterComponent
 import com.tokopedia.product.manage.feature.filter.di.ProductManageFilterComponent
@@ -55,7 +56,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
         fun createInstance(context: Context) : ProductManageFilterFragment {
             return ProductManageFilterFragment().apply{
-                val view = View.inflate(context, com.tokopedia.product.manage.R.layout.fragment_filter,null)
+                val view = View.inflate(context, R.layout.fragment_filter,null)
                 setChild(view)
                 setTitle(BOTTOMSHEET_TITLE)
                 clearClose(true)
@@ -71,7 +72,6 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
     private var filterAdapter: FilterAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
-    private var recyclerView: RecyclerView? = null
     private var savedInstanceManager: SaveInstanceCacheManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,11 +88,10 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         productManageFilterViewModel.getData(userSession.shopId)
         layoutManager = LinearLayoutManager(this.context)
-        recyclerView = view.findViewById(com.tokopedia.product.manage.R.id.filter_recycler_view)
         val adapterTypeFactory = FilterAdapterTypeFactory(this, this, this)
         filterAdapter = FilterAdapter(adapterTypeFactory)
-        recyclerView?.layoutManager = layoutManager
-        recyclerView?.adapter = filterAdapter
+        filter_recycler_view.layoutManager = layoutManager
+        filter_recycler_view.adapter = filterAdapter
         observeCombinedResponse()
         observeFilterData()
         initView()
@@ -186,7 +185,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     }
 
     private fun observeCombinedResponse() {
-        productManageFilterViewModel.filterMetaDataEtalaseCategoryResponse.observe(this, Observer {
+        productManageFilterViewModel.filterOptionsResponse.observe(this, Observer {
             when(it) {
                 is Success -> {
                     val mappedResult = ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data)

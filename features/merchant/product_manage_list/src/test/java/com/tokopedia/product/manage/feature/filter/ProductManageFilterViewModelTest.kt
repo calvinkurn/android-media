@@ -1,7 +1,7 @@
 package com.tokopedia.product.manage.feature.filter
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.product.manage.feature.filter.domain.ProductManageFilterCombinedUseCase
+import com.tokopedia.product.manage.feature.filter.domain.GetProductManageFilterOptionsUseCase
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -14,7 +14,7 @@ import org.junit.Test
 class ProductManageFilterViewModelTest {
 
     @RelaxedMockK
-    lateinit var getProductManageFilterCombinedUseCase: ProductManageFilterCombinedUseCase
+    lateinit var getGetProductManageFilterOptionsUseCase: GetProductManageFilterOptionsUseCase
 
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -27,7 +27,7 @@ class ProductManageFilterViewModelTest {
     }
 
     private val viewModel by lazy {
-        ProductManageFilterViewModel(getProductManageFilterCombinedUseCase, userSession, dispatchers)
+        ProductManageFilterViewModel(getGetProductManageFilterOptionsUseCase, userSession, dispatchers)
     }
 
     @Before
@@ -37,13 +37,13 @@ class ProductManageFilterViewModelTest {
 
     @Test
     fun `getCombined should execute expected use case`() {
-        mockkObject(getProductManageFilterCombinedUseCase)
+        mockkObject(getGetProductManageFilterOptionsUseCase)
         coEvery {
-            getProductManageFilterCombinedUseCase.executeOnBackground()
+            getGetProductManageFilterOptionsUseCase.executeOnBackground()
         }
         viewModel.getData("0")
         coVerify {
-            getProductManageFilterCombinedUseCase.executeOnBackground()
+            getGetProductManageFilterOptionsUseCase.executeOnBackground()
         }
     }
 }

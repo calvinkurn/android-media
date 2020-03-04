@@ -4,8 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
-import com.tokopedia.product.manage.feature.filter.data.model.FilterMetaDataEtalaseCategoryResponse
-import com.tokopedia.product.manage.feature.filter.domain.ProductManageFilterCombinedUseCase
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
+import com.tokopedia.product.manage.feature.filter.domain.GetProductManageFilterOptionsUseCase
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -17,13 +17,13 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class ProductManageFilterViewModel @Inject constructor(
-        private val productManageFilterCombinedUseCase: ProductManageFilterCombinedUseCase,
+        private val getProductManageFilterOptionsUseCase: GetProductManageFilterOptionsUseCase,
         private val userSession: UserSessionInterface,
         dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
-    private val _combinedResponse = MutableLiveData<Result<FilterMetaDataEtalaseCategoryResponse>>()
-    val filterMetaDataEtalaseCategoryResponse: LiveData<Result<FilterMetaDataEtalaseCategoryResponse>>
+    private val _combinedResponse = MutableLiveData<Result<FilterOptionsResponse>>()
+    val filterOptionsResponse: LiveData<Result<FilterOptionsResponse>>
         get() = _combinedResponse
 
     private val _filterData = MutableLiveData<MutableList<FilterViewModel>>()
@@ -34,9 +34,9 @@ class ProductManageFilterViewModel @Inject constructor(
     private var selectedEtalase: FilterDataViewModel? = null
 
     fun getData(shopId: String) {
-        productManageFilterCombinedUseCase.params = ProductManageFilterCombinedUseCase.createRequestParams(shopId, isMyShop(shopId))
+        getProductManageFilterOptionsUseCase.params = GetProductManageFilterOptionsUseCase.createRequestParams(shopId, isMyShop(shopId))
         launchCatchError(block = {
-            val combinedResponse = productManageFilterCombinedUseCase.executeOnBackground()
+            val combinedResponse = getProductManageFilterOptionsUseCase.executeOnBackground()
             combinedResponse.let {
                 _combinedResponse.postValue(Success(it))
             }

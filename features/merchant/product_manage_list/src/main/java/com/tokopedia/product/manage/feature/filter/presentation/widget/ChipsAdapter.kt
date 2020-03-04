@@ -25,6 +25,8 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
             if(element.data.size > MAXIMUM_CHIPS) {
                 dataToDisplay = element.data.subList(0, MAXIMUM_CHIPS)
             }
+        } else {
+            dataToDisplay = element.data.subList(0, numSelected)
         }
         data = dataToDisplay
         notifyDataSetChanged()

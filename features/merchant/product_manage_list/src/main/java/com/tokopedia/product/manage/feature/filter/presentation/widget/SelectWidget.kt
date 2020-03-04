@@ -33,20 +33,11 @@ class SelectWidget : BaseCustomView {
         if(element.isSelected) {
             this.check.visibility = View.VISIBLE
             isVisible = true
+        } else {
+            this.check.visibility = View.GONE
         }
         this.setOnClickListener {
-            toggleVisibility()
             selectClickListener.onSelectClick(element)
-        }
-    }
-
-    private fun toggleVisibility() {
-        if(isVisible) {
-            this.check.visibility = View.GONE
-            isVisible = false
-        } else {
-            this.check.visibility = View.VISIBLE
-            isVisible = true
         }
     }
 }
