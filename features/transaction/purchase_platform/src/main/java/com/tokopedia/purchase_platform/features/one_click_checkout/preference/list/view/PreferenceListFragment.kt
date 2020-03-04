@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.view
 
-import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Rect
 import android.os.Bundle
@@ -64,7 +63,13 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_EDIT_PREFERENCE) {
+        if (requestCode == REQUEST_EDIT_PREFERENCE || requestCode == REQUEST_CREATE_PREFERENCE) {
+            val message = data?.getStringExtra(PreferenceEditActivity.EXTRA_RESULT_MESSAGE)
+            if (message != null && message.isNotBlank()) {
+                view?.let {
+                    Toaster.make(it, message)
+                }
+            }
             viewModel.getAllPreference()
         }
     }

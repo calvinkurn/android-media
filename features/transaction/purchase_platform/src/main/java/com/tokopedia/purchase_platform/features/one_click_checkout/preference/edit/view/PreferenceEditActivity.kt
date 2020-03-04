@@ -135,5 +135,7 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
         const val EXTRA_SHIPPING_PARAM = "shipping_param"
         const val EXTRA_LIST_SHOP_SHIPMENT = "list_shop_shipment"
+
+        const val EXTRA_RESULT_MESSAGE = "RESULT_MESSAGE"
     }
 }

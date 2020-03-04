@@ -32,8 +32,8 @@ object ApplinkConstInternalMarketplace {
     val DISCOVERY_CATEGORY_DETAIL_QUERY = "$INTERNAL_MARKETPLACE/category/{DEPARTMENT_ID}/?{query_param}"
 
     // CheckoutVariantActivity, "EXTRA_ATC_REQUEST" = AtcRequestParam
-    @JvmField
-    val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
+//    @JvmField
+//    val EXPRESS_CHECKOUT = "$INTERNAL_MARKETPLACE/checkout-variant"
     // CartActivity
     @JvmField
     val CART = "$INTERNAL_MARKETPLACE/cart"

@@ -106,7 +106,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             when (it) {
                 is OccState.Success -> {
                     progressDialog?.dismiss()
-                    activity?.setResult(RESULT_OK, Intent().putExtra("RESULT_MESSAGE", it.data))
+                    activity?.setResult(RESULT_OK, Intent().putExtra(PreferenceEditActivity.EXTRA_RESULT_MESSAGE, it.data))
                     activity?.finish()
                 }
                 is OccState.Fail -> {
