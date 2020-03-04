@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceEditUseCase
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetShippingDurationUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -21,5 +22,11 @@ class PreferenceEditModule {
     @Provides
     fun providesGetPreferenceEditUseCase(graphqlRepository: GraphqlRepository): GetPreferenceEditUseCase {
         return GetPreferenceEditUseCase(GraphqlUseCase(graphqlRepository))
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideGetShippingDurationUseCase(graphqlRepository: GraphqlRepository): GetShippingDurationUseCase {
+        return GetShippingDurationUseCase(GraphqlUseCase(graphqlRepository))
     }
 }

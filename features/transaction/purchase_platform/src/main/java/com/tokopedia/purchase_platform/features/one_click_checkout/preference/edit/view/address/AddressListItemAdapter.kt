@@ -12,27 +12,18 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.model.AddressListModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import kotlinx.android.synthetic.main.card_address_list.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import kotlin.math.log
 
 class AddressListItemAdapter : RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
-    companion object {
-        val DIFF_CALLBACK = object: DiffUtil.ItemCallback<Preference>(){
-            override fun areItemsTheSame(oldItem: Preference, newItem: Preference): Boolean {
-                return oldItem.id == newItem.id
-            }
-
-            override fun areContentsTheSame(oldItem: Preference, newItem: Preference): Boolean {
-                return oldItem == newItem
-            }
-
-        }
-    }
-
     var addressList = mutableListOf<RecipientAddressModel>()
     var lastCheckedPosition = -1
 //    private val listAddressList = listOf(Preference(), Preference(), Preference(), Preference(), Preference())
-    private val listener: ActionListener? = null
+    val listener: ActionListener? = null
 
     interface ActionListener{
         fun onSelect(selection: RecipientAddressModel)
@@ -62,12 +53,12 @@ class AddressListItemAdapter : RecyclerView.Adapter<AddressListItemAdapter.Addre
                 item_address_radio.isChecked = lastCheckedPosition == adapterPosition
 
                 card_address_list.setOnClickListener {
+                    val position = lastCheckedPosition
                     lastCheckedPosition = adapterPosition
-                    notifyDataSetChanged()
+                    if(position > -1) notifyItemChanged(position)
+                    notifyItemChanged(lastCheckedPosition)
 
                     listener?.onSelect(data)
-                    item_address_radio.isChecked = !item_address_radio.isChecked
-
                 }
             }
         }

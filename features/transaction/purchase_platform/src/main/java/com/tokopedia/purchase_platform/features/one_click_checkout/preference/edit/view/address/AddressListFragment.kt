@@ -1,9 +1,10 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -117,6 +118,12 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
         loadMore()
         initSearchView()
         onSearchReset()
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
     }
 
     private fun loadMore(){
@@ -159,11 +166,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
     }
 
     private fun openSoftKeyboard(){
-        val inputMethodManager = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if(inputMethodManager != null){
-            inputMethodManager.showSoftInput(
-                    searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
-        }
+        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)?.showSoftInput(
+                searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
     }
 
     private fun onSearchViewTouchListener(): View.OnTouchListener {
