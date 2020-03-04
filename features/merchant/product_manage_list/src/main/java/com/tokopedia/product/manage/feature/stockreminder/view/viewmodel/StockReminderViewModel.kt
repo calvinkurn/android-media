@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -15,17 +16,21 @@ import javax.inject.Inject
 
 class StockReminderViewModel @Inject constructor(private val stockReminderDataUseCase: StockReminderDataUseCase, coroutineDispatcher: CoroutineDispatcher): BaseViewModel(coroutineDispatcher) {
 
-    val getStockReminderLiveData = MutableLiveData<Result<GetStockReminderResponse>>()
-    val createStockReminderLiveData = MutableLiveData<Result<CreateStockReminderResponse>>()
-    val updateStockReminderLiveData = MutableLiveData<Result<UpdateStockReminderResponse>>()
+    private val getStockReminderMutableLiveData = MutableLiveData<Result<GetStockReminderResponse>>()
+    private val createStockReminderMutableLiveData = MutableLiveData<Result<CreateStockReminderResponse>>()
+    private val updateStockReminderMutableLiveData = MutableLiveData<Result<UpdateStockReminderResponse>>()
+
+    val getStockReminderLiveData : LiveData<Result<GetStockReminderResponse>> get() = getStockReminderMutableLiveData
+    val createStockReminderLiveData : LiveData<Result<CreateStockReminderResponse>> get() = createStockReminderMutableLiveData
+    val updateStockReminderLiveData : LiveData<Result<UpdateStockReminderResponse>> get() = updateStockReminderMutableLiveData
 
     fun getStockReminder(productId: String) {
         launchCatchError(block = {
             stockReminderDataUseCase.setGetStockParams(productId)
             val getStockReminder = stockReminderDataUseCase.executeGetStockReminder()
-            getStockReminderLiveData.postValue(Success(getStockReminder))
+            getStockReminderMutableLiveData.postValue(Success(getStockReminder))
         }, onError = { errorThrowable ->
-            getStockReminderLiveData.postValue(Fail(errorThrowable))
+            getStockReminderMutableLiveData.postValue(Fail(errorThrowable))
             errorThrowable.printStackTrace()
         })
     }
@@ -34,9 +39,9 @@ class StockReminderViewModel @Inject constructor(private val stockReminderDataUs
         launchCatchError(block = {
             stockReminderDataUseCase.setCreateStockParams(shopId, productId, wareHouseId, threshold)
             val createStockReminder = stockReminderDataUseCase.executeCreateStockReminder()
-            createStockReminderLiveData.postValue(Success(createStockReminder))
+            createStockReminderMutableLiveData.postValue(Success(createStockReminder))
         }, onError = { errorThrowable ->
-            createStockReminderLiveData.postValue(Fail(errorThrowable))
+            createStockReminderMutableLiveData.postValue(Fail(errorThrowable))
             errorThrowable.printStackTrace()
         })
     }
@@ -45,13 +50,11 @@ class StockReminderViewModel @Inject constructor(private val stockReminderDataUs
         launchCatchError(block = {
             stockReminderDataUseCase.setUpdateStockParams(shopId, productId, wareHouseId, threshold)
             val updateStockReminder = stockReminderDataUseCase.executeUpdateStockReminder()
-            updateStockReminderLiveData.postValue(Success(updateStockReminder))
+            updateStockReminderMutableLiveData.postValue(Success(updateStockReminder))
         }, onError = { errorThrowable ->
-            updateStockReminderLiveData.postValue(Fail(errorThrowable))
+            updateStockReminderMutableLiveData.postValue(Fail(errorThrowable))
             errorThrowable.printStackTrace()
         })
     }
-
-
 
 }

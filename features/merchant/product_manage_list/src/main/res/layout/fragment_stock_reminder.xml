@@ -127,4 +127,37 @@
 
     </com.tokopedia.unifycomponents.ContainerUnify>
 
+    <RelativeLayout
+        android:id="@+id/loadingStockReminder"
+        android:visibility="gone"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/ivLoadingStockReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:contentDescription="@string/product_stock_reminder_loading_content_desc"
+            app:srcCompat="@drawable/ic_loading_indeterminate"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/globalErrorStockReminder"
+        android:background="@color/white"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/geStockReminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@color/white" />
+
+    </RelativeLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

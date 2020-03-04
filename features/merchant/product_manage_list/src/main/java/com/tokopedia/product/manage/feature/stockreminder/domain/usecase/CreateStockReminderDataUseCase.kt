@@ -11,12 +11,15 @@ import javax.inject.Inject
 class CreateStockReminderDataUseCase @Inject constructor(
         repository: GraphqlRepository
 ): GraphqlUseCase<CreateStockReminderResponse>(repository) {
+
+    companion object{
+        private const val PARAM_INPUT = "input"
+    }
+
     init {
         val query = StockReminderQuery.CREATE_QUERY
-        if(query.isNotEmpty()) {
-            setGraphqlQuery(query)
-            setTypeClass(CreateStockReminderResponse::class.java)
-        }
+        setGraphqlQuery(query)
+        setTypeClass(CreateStockReminderResponse::class.java)
     }
 
     fun setParams(shopId: String, productId: String, warehouseId: String, threshold: String) {
@@ -34,7 +37,4 @@ class CreateStockReminderDataUseCase @Inject constructor(
 
     }
 
-    companion object{
-        private const val PARAM_INPUT = "input"
-    }
 }

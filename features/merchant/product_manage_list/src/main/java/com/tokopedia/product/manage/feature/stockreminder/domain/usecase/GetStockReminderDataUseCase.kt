@@ -10,12 +10,14 @@ class GetStockReminderDataUseCase @Inject constructor(
         repository: GraphqlRepository
 ): GraphqlUseCase<GetStockReminderResponse>(repository) {
 
+    companion object{
+        private const val PARAMS_PRODUCT_IDS = "productIds"
+    }
+
     init {
         val query = StockReminderQuery.GET_QUERY
-        if(query.isNotEmpty()) {
-            setGraphqlQuery(query)
-            setTypeClass(GetStockReminderResponse::class.java)
-        }
+        setGraphqlQuery(query)
+        setTypeClass(GetStockReminderResponse::class.java)
     }
 
     fun setParams(productIds: String) {
@@ -23,9 +25,5 @@ class GetStockReminderDataUseCase @Inject constructor(
             PARAMS_PRODUCT_IDS to productIds
         )
         setRequestParams(params)
-    }
-
-    companion object{
-        private const val PARAMS_PRODUCT_IDS = "productIds"
     }
 }
