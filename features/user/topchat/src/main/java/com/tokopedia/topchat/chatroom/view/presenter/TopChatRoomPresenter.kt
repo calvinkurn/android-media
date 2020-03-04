@@ -58,8 +58,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import okhttp3.Interceptor
-import okhttp3.MediaType
-import okhttp3.RequestBody
 import okhttp3.WebSocket
 import okio.ByteString
 import rx.Subscriber
@@ -90,7 +88,7 @@ class TopChatRoomPresenter @Inject constructor(
         private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
         private var addWishListUseCase: AddWishListUseCase,
         private var removeWishListUseCase: RemoveWishListUseCase,
-        private var uploadImageUseCase2: TopchatUploadImageUseCase
+        private var uploadImageUseCase: TopchatUploadImageUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
         TopChatContract.Presenter {
 
@@ -300,7 +298,7 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun startUploadImages(image: ImageUploadViewModel) {
         processDummyMessage(image)
-        uploadImageUseCase2.upload(image, ::onSuccessUploadImage, ::onErrorUploadImage)
+        uploadImageUseCase.upload(image, ::onSuccessUploadImage, ::onErrorUploadImage)
     }
 
     private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
@@ -351,11 +349,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun isUploading(): Boolean {
-        return uploadImageUseCase2.isUploading
-    }
-
-    private fun createRequestBody(content: String): RequestBody {
-        return RequestBody.create(MediaType.parse("text/plain"), content)
+        return uploadImageUseCase.isUploading
     }
 
     private fun processDummyMessage(it: Visitable<*>) {
