@@ -31,8 +31,6 @@ import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.mediauploader.data.state.UploadResult
-import com.tokopedia.mediauploader.domain.UploaderUseCase
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.purchase_platform.common.constant.ATC_AND_BUY
@@ -46,7 +44,10 @@ import com.tokopedia.topchat.chatroom.domain.subscriber.*
 import com.tokopedia.topchat.chatroom.domain.usecase.*
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
 import com.tokopedia.topchat.chatroom.view.listener.TopChatContract
-import com.tokopedia.topchat.chatroom.view.viewmodel.*
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
+import com.tokopedia.topchat.chatroom.view.viewmodel.SendableVoucherPreview
 import com.tokopedia.topchat.chattemplate.view.viewmodel.GetTemplateUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -56,10 +57,6 @@ import com.tokopedia.websocket.WebSocketSubscriber
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.MediaType
 import okhttp3.RequestBody
@@ -69,7 +66,6 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 /**
  * @author : Steven 11/12/18
@@ -79,7 +75,6 @@ class TopChatRoomPresenter @Inject constructor(
         tkpdAuthInterceptor: TkpdAuthInterceptor,
         fingerprintInterceptor: FingerprintInterceptor,
         userSession: UserSessionInterface,
-        private var dispatchers: TopchatCoroutineContextProvider,
         private var getChatUseCase: GetChatUseCase,
         private var topChatRoomWebSocketMessageMapper: TopChatRoomWebSocketMessageMapper,
         private var getTemplateChatRoomUseCase: GetTemplateChatRoomUseCase,
@@ -95,13 +90,9 @@ class TopChatRoomPresenter @Inject constructor(
         private var getChatRoomSettingUseCase: GetChatRoomSettingUseCase,
         private var addWishListUseCase: AddWishListUseCase,
         private var removeWishListUseCase: RemoveWishListUseCase,
-        private var uploadImageUseCase: UploaderUseCase,
-        private var chatImageServerUseCase: ChatImageServerUseCase
+        private var uploadImageUseCase2: TopchatUploadImageUseCase
 ) : BaseChatPresenter<TopChatContract.View>(userSession, topChatRoomWebSocketMessageMapper),
-        TopChatContract.Presenter, CoroutineScope {
-
-    override val coroutineContext: CoroutineContext
-        get() = dispatchers.Main + SupervisorJob()
+        TopChatContract.Presenter {
 
     var thisMessageId: String = ""
 
@@ -111,7 +102,6 @@ class TopChatRoomPresenter @Inject constructor(
     private var listInterceptor: ArrayList<Interceptor>
     private lateinit var webSocketUrl: String
     private lateinit var addToCardSubscriber: Subscriber<AddToCartDataModel>
-    private var isUploading: Boolean = false
     private var dummyList: ArrayList<Visitable<*>>
 
     init {
@@ -310,50 +300,28 @@ class TopChatRoomPresenter @Inject constructor(
 
     override fun startUploadImages(image: ImageUploadViewModel) {
         processDummyMessage(image)
-        isUploading = true
-        chatImageServerUseCase.getSourceId(
-                { sourceId ->
-                    uploadImageWithSourceId(sourceId, image)
-                },
-                {
-                    view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, it), image)
-                }
-        )
+        uploadImageUseCase2.upload(image, ::onSuccessUploadImage, ::onErrorUploadImage)
     }
 
-    private fun uploadImageWithSourceId(sourceId: String, image: ImageUploadViewModel) {
-        launch(dispatchers.IO) {
-            val requestParams = uploadImageUseCase.createParams(sourceId, File(image.imageUrl))
-            val result = uploadImageUseCase(requestParams)
-            isUploading = false
-            withContext(dispatchers.Main) {
-                when (result) {
-                    is UploadResult.Success -> onSuccessUploadImage(result, image)
-                    is UploadResult.Error -> onErrorUploadImage(image)
-                }
-            }
-        }
-    }
-
-    private fun onSuccessUploadImage(result: UploadResult.Success, image: ImageUploadViewModel) {
+    private fun onSuccessUploadImage(uploadId: String, image: ImageUploadViewModel) {
         when (networkMode) {
-            MODE_WEBSOCKET -> sendImageByWebSocket(result, image)
-            MODE_API -> sendImageByApi(result, image)
+            MODE_WEBSOCKET -> sendImageByWebSocket(uploadId, image)
+            MODE_API -> sendImageByApi(uploadId, image)
         }
     }
 
-    private fun sendImageByWebSocket(result: UploadResult.Success, image: ImageUploadViewModel) {
-        val requestParams = TopChatWebSocketParam.generateParamSendImage(thisMessageId, result.uploadId, image.startTime)
+    private fun onErrorUploadImage(throwable: Throwable, image: ImageUploadViewModel) {
+        view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, throwable), image)
+    }
+
+    private fun sendImageByWebSocket(uploadId: String, image: ImageUploadViewModel) {
+        val requestParams = TopChatWebSocketParam.generateParamSendImage(thisMessageId, uploadId, image.startTime)
         sendMessageWebSocket(requestParams)
     }
 
-    private fun sendImageByApi(result: UploadResult.Success, image: ImageUploadViewModel) {
-        val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, result.uploadId)
+    private fun sendImageByApi(uploadId: String, image: ImageUploadViewModel) {
+        val requestParams = ReplyChatUseCase.generateParamAttachImage(thisMessageId, uploadId)
         sendByApi(requestParams, image)
-    }
-
-    private fun onErrorUploadImage(image: ImageUploadViewModel) {
-        view.onErrorUploadImage(ErrorHandler.getErrorMessage(view.context, Throwable("Something went wrong")), image)
     }
 
     private fun validateImageAttachment(uri: String?): Boolean {
@@ -383,7 +351,7 @@ class TopChatRoomPresenter @Inject constructor(
     }
 
     override fun isUploading(): Boolean {
-        return isUploading
+        return uploadImageUseCase2.isUploading
     }
 
     private fun createRequestBody(content: String): RequestBody {
