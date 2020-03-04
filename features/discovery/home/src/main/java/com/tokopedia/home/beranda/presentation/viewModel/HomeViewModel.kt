@@ -784,20 +784,13 @@ open class HomeViewModel @Inject constructor(
             }
 
             if (findRecommendationModel != null) return@launchCatchError
-            val visitableMutableList: MutableList<Visitable<*>> = mutableListOf()
 
             val homeRecommendationFeedViewModel = HomeRecommendationFeedViewModel()
             homeRecommendationFeedViewModel.feedTabModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
-            visitableMutableList.add(homeRecommendationFeedViewModel)
-            visitableMutableList.addAll(0, _homeLiveData.value?.list?.toMutableList() ?: listOf())
-            visitableMutableList.remove(findLoadingModel)
-            visitableMutableList.remove(findRetryModel)
-            val newHomeViewModel = _homeLiveData.value?.copy(
-                    list = visitableMutableList)
-            withContext(homeDispatcher.ui()){
-                _homeLiveData.value = newHomeViewModel
-            }
+            channel.send(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
+            channel.send(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
+            channel.send(UpdateLiveDataModel(ACTION_ADD, homeRecommendationFeedViewModel))
 
         }){
             val visitableMutableList: MutableList<Visitable<*>> = mutableListOf()
@@ -810,14 +803,9 @@ open class HomeViewModel @Inject constructor(
             }
             visitableMutableList.add(HomeRetryModel())
 
-            val newHomeViewModel = _homeLiveData.value?.copy(
-                    list = visitableMutableList)
-            visitableMutableList.addAll(0, _homeLiveData.value?.list?.toMutableList() ?: listOf())
-            visitableMutableList.remove(findLoadingModel)
-            visitableMutableList.remove(findRetryModel)
-            withContext(homeDispatcher.ui()){
-                _homeLiveData.value = newHomeViewModel
-            }
+            channel.send(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
+            channel.send(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
+            channel.send(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }
     }
 
