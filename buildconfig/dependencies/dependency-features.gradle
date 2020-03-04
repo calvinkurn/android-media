@@ -117,6 +117,7 @@ ext {
             kyc                             : ":features:kyc",
             scanner                         : ":features:scanner",
             ovop2p                          : ":features:ovop2p",
+            productAddEdit                  : ":features:merchant:product_add_edit",
             productManageItem               : ":features:merchant:product_manage_item",
             productManageList               : ":features:merchant:product_manage_list",
             productShare                    : ":features:merchant:product_share",
