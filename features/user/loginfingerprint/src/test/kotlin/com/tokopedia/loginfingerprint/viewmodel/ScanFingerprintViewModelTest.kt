@@ -7,11 +7,11 @@ package com.tokopedia.loginfingerprint.viewmodel
 
 import androidx.lifecycle.Observer
 import com.tokopedia.loginfingerprint.data.model.ValidateFingerprintResult
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
+import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.ValidateFingerprintUseCase
 import com.tokopedia.loginfingerprint.util.InstantTaskExecutorRule
-import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.loginfingerprint.utils.TestDispatcherProvider
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.sessioncommon.data.LoginToken
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.domain.usecase.LoginTokenUseCase
@@ -32,8 +32,8 @@ class ScanFingerprintViewModelTest : Spek({
     val loginTokenUseCase = mockk<LoginTokenUseCase>(relaxed = true)
 
     val userSession = mockk<UserSessionInterface>(relaxed = true)
-    val preferenceHelper = mockk<FingerprintPreferenceHelper>(relaxed = true)
-    val cryptographyUtils = mockk<CryptographyUtils>(relaxed = true)
+    val fingerprintSetting = mockk<FingerprintSetting>(relaxed = true)
+    val cryptographyUtils = mockk<Cryptography>(relaxed = true)
 
     val dispatcher = TestDispatcherProvider()
 
@@ -41,7 +41,7 @@ class ScanFingerprintViewModelTest : Spek({
             dispatcher = dispatcher,
             userSession = userSession,
             cryptographyUtils = cryptographyUtils,
-            fingerprintPreferenceHelper = preferenceHelper,
+            fingerprintSetting = fingerprintSetting,
             loginTokenUseCase = loginTokenUseCase,
             validateFingerprintUseCase = validateFingerprintUseCase
     )

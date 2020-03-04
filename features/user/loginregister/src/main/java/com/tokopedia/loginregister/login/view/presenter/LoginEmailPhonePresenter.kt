@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
-import com.tokopedia.loginfingerprint.utils.CryptographyUtils
+import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
@@ -50,8 +50,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val tickerInfoUseCase: TickerInfoUseCase,
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
-                                                   private val cryptographyUtils: CryptographyUtils,
-                                                   private val fingerprintPreferenceHelper: FingerprintPreferenceHelper,
+                                                   private val cryptographyUtils: Cryptography,
+                                                   private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
@@ -239,7 +239,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     view.onSuccessGetUserInfoAddPin(),
-                    view.onErrorGetUserInfo()))
+                    view.onErrorGetUserInfo())
+            )
         }
     }
 
@@ -247,7 +248,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     { checkStatusFingerprint() },
-                    view.onErrorGetUserInfo()))
+                    view.onErrorGetUserInfo())
+            )
         }
     }
 
@@ -265,7 +267,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         statusFingerprintUseCase.executeCoroutines({
             onCheckStatusFingerprintSuccess(it)
         }, {
-            view.onErrorCheckStatusFingerprint(it)
             view.onSuccessLogin()
         }, signature)
     }

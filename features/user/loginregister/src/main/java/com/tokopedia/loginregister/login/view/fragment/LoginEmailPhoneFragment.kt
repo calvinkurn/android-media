@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Intent
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.hardware.fingerprint.FingerprintManager
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.TextPaint
@@ -49,7 +50,7 @@ import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.model.UserData
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
+import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginregister.R
@@ -119,7 +120,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     lateinit var presenter: LoginEmailPhonePresenter
 
     @Inject
-    lateinit var fingerprintPreferenceHelper: FingerprintPreferenceHelper
+    lateinit var fingerprintPreferenceHelper: FingerprintSetting
 
     @field:Named(SessionModule.SESSION_MODULE)
     @Inject
@@ -1302,12 +1303,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     override fun onErrorCheckStatusFingerprint(e: Throwable) {
         dismissLoadingLogin()
         e.printStackTrace()
-        view?.run {
-            val errorMessage = ErrorHandlerSession.getErrorMessage(context, e)
-            Toaster.showError(this, errorMessage, Snackbar.LENGTH_LONG)
-        }
     }
-
 
     override fun onSuccessCheckStatusFingerprint(data: StatusFingerprint) {
         dismissLoadingLogin()
@@ -1479,11 +1475,13 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
-    override fun onFingerprintValid() {
-        Toaster.make(parent_container, "SUKSES", Toaster.LENGTH_LONG, type = Toaster.TYPE_NORMAL)
-    }
+    override fun onFingerprintValid() {}
 
     override fun onFingerprintError(msg: String, errCode: Int) {
-        Toaster.make(parent_container, msg, Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR)
+        if(errCode == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT){
+            view?.run {
+                Toaster.showError(this, msg, Snackbar.LENGTH_LONG)
+            }
+        }
     }
 }

@@ -74,9 +74,9 @@
                   />
             </RelativeLayout>
 
-            <com.tokopedia.design.component.ButtonCompat
-                android:drawableLeft="@drawable/ic_fingerprint"
-                android:drawableStart="@drawable/ic_fingerprint"
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:drawableLeft="@drawable/ic_fingerprint_thumb"
+                android:drawableStart="@drawable/ic_fingerprint_thumb"
                 android:id="@+id/fingerprint_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -86,11 +86,11 @@
                 android:text="@string/fingerprint_login"
                 android:textAllCaps="false"
                 android:visibility="gone"
-                android:layout_marginBottom="@dimen/dp_8"
-                app:buttonCompatType="white"
-                />
+                app:unifyButtonVariant="ghost"
+                app:unifyButtonType="alternate"
+                android:layout_marginBottom="@dimen/dp_8" />
 
-            <com.tokopedia.design.component.ButtonCompat
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/socmed_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -99,7 +99,8 @@
                 android:layout_marginRight="@dimen/dp_24"
                 android:text="@string/social_media"
                 android:textAllCaps="false"
-                app:buttonCompatType="white"/>
+                app:unifyButtonVariant="ghost"
+                app:unifyButtonType="alternate"/>
 
             <TextView
                 android:id="@+id/register_button"

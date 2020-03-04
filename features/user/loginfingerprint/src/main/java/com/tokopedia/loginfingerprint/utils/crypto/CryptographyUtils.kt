@@ -1,4 +1,4 @@
-package com.tokopedia.loginfingerprint.utils
+package com.tokopedia.loginfingerprint.utils.crypto
 
 import android.annotation.TargetApi
 import android.os.Build
@@ -11,12 +11,10 @@ import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.FingerprintSignature
 import java.io.IOException
-import java.io.UnsupportedEncodingException
 import java.security.*
 import java.security.cert.CertificateException
 import java.security.spec.InvalidKeySpecException
 import java.security.spec.X509EncodedKeySpec
-import java.util.*
 
 /**
  * Created by Yoris Prayogo on 2020-02-05.
@@ -24,13 +22,14 @@ import java.util.*
  */
 
 @TargetApi(Build.VERSION_CODES.M)
-class CryptographyUtils {
+class CryptographyUtils: Cryptography {
 
     private var signature: Signature? = null
     private var keyStore: KeyStore? = null
 
     private var _cryptoObject: FingerprintManagerCompat.CryptoObject? = null
-    val cryptoObject = _cryptoObject
+
+    override fun getCryptoObject(): FingerprintManagerCompat.CryptoObject? = _cryptoObject
 
     init {
         initKeyStore()
@@ -46,7 +45,7 @@ class CryptographyUtils {
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
-    fun generatePublicKey(): PublicKey? {
+    override fun generatePublicKey(): PublicKey? {
         var publicKey: PublicKey? = null
         try {
             val keyStore = KeyStore.getInstance(BiometricConstant.ANDROID_KEY_STORE)
@@ -76,7 +75,7 @@ class CryptographyUtils {
     }
 
     @Throws(KeyStoreException::class, NoSuchAlgorithmException::class, NoSuchProviderException::class, InvalidAlgorithmParameterException::class)
-    protected fun generateKeyPair(keyStore: KeyStore?) {
+    override fun generateKeyPair(keyStore: KeyStore?) {
         //check if key is stored already, if null, create new key
         if (keyStore?.getCertificate(BiometricConstant.FINGERPRINT) == null || keyStore.getCertificate(BiometricConstant.FINGERPRINT).publicKey == null) {
             val keyPairGenerator = KeyPairGenerator.getInstance(KeyProperties.KEY_ALGORITHM_RSA, BiometricConstant.ANDROID_KEY_STORE)
@@ -134,18 +133,18 @@ class CryptographyUtils {
         }
     }
 
-    fun getPublicKey(): String {
+    override fun getPublicKey(): String {
         val encoded = Base64.encodeToString(generatePublicKey()?.encoded, Base64.NO_WRAP)
         val publicKeyString = "-----BEGIN PUBLIC KEY-----\n$encoded\n-----END PUBLIC KEY-----"
         return publicKeyString
     }
 
-    fun generateFingerprintSignature(userId: String, deviceId: String): FingerprintSignature {
+    override fun generateFingerprintSignature(userId: String, deviceId: String): FingerprintSignature {
         val datetime = (System.currentTimeMillis()/1000).toString()
         return FingerprintSignature(signature = getSignature(userId + datetime + deviceId), datetime = datetime)
     }
 
-    fun getSignature(textToEncrypt: String): String {
+    override fun getSignature(textToEncrypt: String): String {
         var signText = ""
         try {
             keyStore?.load(null)

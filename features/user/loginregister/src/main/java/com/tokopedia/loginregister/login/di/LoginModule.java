@@ -5,7 +5,9 @@ import android.content.Context;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper;
-import com.tokopedia.loginfingerprint.utils.CryptographyUtils;
+import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting;
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography;
+import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils;
 
 import javax.inject.Named;
 
@@ -36,13 +38,13 @@ public class LoginModule {
 
     @LoginScope
     @Provides
-    CryptographyUtils provideCryptographyUtils(){
+    Cryptography provideCryptographyUtils(){
         return new CryptographyUtils();
     }
 
     @LoginScope
     @Provides
-    FingerprintPreferenceHelper providePreferenceHelper(@ApplicationContext Context context){
+    FingerprintSetting provideFingerprintSetting(@ApplicationContext Context context){
         return new FingerprintPreferenceHelper(context);
     }
 

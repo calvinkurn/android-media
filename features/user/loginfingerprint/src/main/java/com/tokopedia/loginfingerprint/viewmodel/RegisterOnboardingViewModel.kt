@@ -6,10 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.RegisterFingerprintResult
-import com.tokopedia.loginfingerprint.data.preference.FingerprintPreferenceHelper
+import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.domain.usecase.RegisterFingerprintUseCase
-import com.tokopedia.loginfingerprint.utils.CryptographyUtils
 import com.tokopedia.loginfingerprint.utils.DispatcherProvider
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -24,8 +24,8 @@ import javax.inject.Inject
 
 class RegisterOnboardingViewModel @Inject constructor(dispatcher: DispatcherProvider,
                                                       private val userSession: UserSessionInterface,
-                                                      private val cryptographyUtils: CryptographyUtils,
-                                                      private val fingerprintPreferenceHelper: FingerprintPreferenceHelper,
+                                                      private val cryptographyUtils: Cryptography,
+                                                      private val fingerprintSetting: FingerprintSetting,
                                                       private val registerFingerprintUseCase: RegisterFingerprintUseCase)
     : BaseViewModel(dispatcher.io()){
 
@@ -46,8 +46,8 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: DispatcherProv
 
             if (errorMessage.isBlank() && isSuccess) {
                 mutableRegisterFingerprintResult.value = Success(it.data)
-                fingerprintPreferenceHelper.registerFingerprint()
-                fingerprintPreferenceHelper.saveUserId(userSession.userId)
+                fingerprintSetting.registerFingerprint()
+                fingerprintSetting.saveUserId(userSession.userId)
             } else if (!errorMessage.isBlank()) {
                 mutableRegisterFingerprintResult.value = Fail(MessageErrorException(errorMessage,
                         ErrorHandlerSession.ErrorCode.WS_ERROR.toString()))
@@ -65,6 +65,6 @@ class RegisterOnboardingViewModel @Inject constructor(dispatcher: DispatcherProv
     }
 
     fun unregisterFP(){
-        fingerprintPreferenceHelper.unregisterFingerprint()
+        fingerprintSetting.unregisterFingerprint()
     }
 }

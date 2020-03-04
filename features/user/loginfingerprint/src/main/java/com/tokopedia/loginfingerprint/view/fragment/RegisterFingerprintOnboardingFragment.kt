@@ -13,11 +13,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.loginfingerprint.R
 import com.tokopedia.loginfingerprint.di.LoginFingerprintComponent
 import com.tokopedia.loginfingerprint.listener.ScanFingerprintInterface
-import com.tokopedia.loginfingerprint.utils.CryptographyUtils
+import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginfingerprint.view.ScanFingerprintDialog
 import com.tokopedia.loginfingerprint.viewmodel.RegisterOnboardingViewModel
-import com.tokopedia.sessioncommon.ErrorHandlerSession
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_register_fingerprint_onboarding.*
@@ -111,8 +109,6 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
 
     private fun onErrorRegisterFP(throwable: Throwable) {
         hideProgressBar()
-        scanFingerprintDialog?.dismiss()
-        Toaster.make(activity?.findViewById(android.R.id.content)!!, ErrorHandlerSession.getErrorMessage(context, throwable), type = Toaster.TYPE_ERROR, duration = Toaster.LENGTH_LONG)
     }
 
     private fun showProgressBar(){
