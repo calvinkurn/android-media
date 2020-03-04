@@ -160,6 +160,7 @@
                         tools:text="Hotel Murah Meriah Sangat Muurahasdafd yayayayaaaaaaaaaa lalala yeyeyea"
                         android:lines="1"
                         android:maxLines="1"
+                        android:singleLine="true"
                         android:ellipsize="end"
                         android:gravity="end"
                         android:layout_marginLeft="@dimen/dp_8"
