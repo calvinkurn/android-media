@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.user_identification_common.KycUrl;
 import com.tokopedia.kyc_centralized.R;
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity;
@@ -53,10 +54,12 @@ public class UserIdentificationFormFaceFragment extends
             @Override
             public void onClick(View v) {
                 analytics.eventClickNextSelfiePage();
-                Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
-                        PARAM_VIEW_MODE_FACE);
-                intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
-                startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
+                if(GlobalConfig.isSellerApp()){
+                    Intent intent = UserIdentificationCameraActivity.createIntent(getContext(),
+                            PARAM_VIEW_MODE_FACE);
+                    intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId);
+                    startActivityForResult(intent, REQUEST_CODE_CAMERA_FACE);
+                }
             }
         });
         ImageHandler.LoadImage(correctImage, KycUrl.SELFIE_OK);
