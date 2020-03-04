@@ -113,8 +113,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
         }
 
         if ((accountModel.getSaldoModel() != null &&
-                accountModel.getSaldoModel().getSaldo() != null &&
-                accountModel.getSaldoModel().getSaldo().getDepositLong() > 10000) ||
+                accountModel.getSaldoModel().getSaldo() != null) ||
                 (accountModel.getVccUserStatus() != null && accountModel.getVccUserStatus().getStatus() != null &&
                         accountModel.getVccUserStatus().getStatus().equalsIgnoreCase((AccountConstants.VccStatus.REJECTED)))) {
 
@@ -122,53 +121,11 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
             tokopediaPayViewModel.setLabelRight(context.getString(R.string.label_tokopedia_pay_deposit));
             tokopediaPayViewModel.setRightSaldo(true);
             tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat
-                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), false));
+                    (accountModel.getSaldoModel().getSaldo().getDepositLong(), true));
 
             tokopediaPayViewModel.setApplinkRight(ApplinkConstInternalGlobal.SALDO_DEPOSIT);
             items.add(tokopediaPayViewModel);
 
-        } else {
-            TokopediaPayBSModel bsDataRight = new TokopediaPayBSModel();
-            tokopediaPayViewModel.setLabelRight(accountModel.getVccUserStatus() == null ? "" : accountModel.getVccUserStatus().getTitle());
-            tokopediaPayViewModel.setRightSaldo(false);
-            tokopediaPayViewModel.setIconUrlRight(accountModel.getVccUserStatus().getIcon());
-            tokopediaPayViewModel.setVccUserStatus(accountModel.getVccUserStatus().getStatus());
-            if (accountModel.getVccUserStatus().getStatus().equalsIgnoreCase(AccountConstants.VccStatus.ACTIVE)) {
-                tokopediaPayViewModel.setAmountRight(CurrencyFormatUtil.convertPriceValueToIdrFormat(Long.parseLong(accountModel.getVccUserStatus().getBody()), true));
-            } else {
-                tokopediaPayViewModel.setAmountRight(accountModel.getVccUserStatus().getBody());
-            }
-
-            switch (accountModel.getVccUserStatus().getStatus()) {
-                case AccountConstants.VccStatus.BLOCKED:
-                case AccountConstants.VccStatus.ELIGIBLE:
-                case AccountConstants.VccStatus.DEACTIVATED:
-                    tokopediaPayViewModel.setRightImportant(true);
-                    break;
-            }
-
-            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getRedirectionUrl())) {
-                tokopediaPayViewModel.setApplinkRight(accountModel.getVccUserStatus().getRedirectionUrl());
-            }
-
-            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageHeader())) {
-                bsDataRight.setTitle(accountModel.getVccUserStatus().getMessageHeader());
-            }
-
-            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageBody())) {
-                bsDataRight.setBody(accountModel.getVccUserStatus().getMessageBody());
-            }
-
-            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageButtonName())) {
-                bsDataRight.setButtonText(accountModel.getVccUserStatus().getMessageButtonName());
-            }
-
-            if (!"".equalsIgnoreCase(accountModel.getVccUserStatus().getMessageUrl())) {
-                bsDataRight.setButtonRedirectionUrl(accountModel.getVccUserStatus().getMessageUrl());
-            }
-
-            tokopediaPayViewModel.setBsDataRight(bsDataRight);
-            items.add(tokopediaPayViewModel);
         }
 
         if (accountModel.getVccUserStatus() != null &&
@@ -197,7 +154,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
                     tokopediaPayViewModel.setLabelCentre(vccUserStatus.getTitle());
                     String oplLimit;
                     try {
-                        oplLimit = CurrencyFormatUtil.convertPriceValueToIdrFormat(Long.parseLong(vccUserStatus.getBody()), false);
+                        oplLimit = CurrencyFormatUtil.convertPriceValueToIdrFormat(Long.parseLong(vccUserStatus.getBody()), true);
                     } catch (Exception e) {
                         oplLimit = vccUserStatus.getBody();
                     }
@@ -257,7 +214,7 @@ public class BuyerAccountMapper implements Func1<AccountModel, BuyerViewModel> {
 
         buyerCardViewModel.setImageUrl(accountModel.getProfile().getProfilePicture());
         if (accountModel.getProfile().getCompletion() != null) {
-            buyerCardViewModel.setProgress(accountModel.getProfile().getCompletion());
+            buyerCardViewModel.setProgress(accountModel.getUserProfileCompletion().getCompletionScore());
         }
         buyerCardViewModel.setAffiliate(accountModel.isAffiliate());
 

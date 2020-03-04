@@ -4,8 +4,8 @@ import android.os.Bundle;
 
 import com.tokopedia.core.network.apiservices.accounts.apis.AccountsApi;
 import com.tokopedia.core.network.core.OkHttpFactory;
-import com.tokopedia.core.network.core.OkHttpRetryPolicy;
 import com.tokopedia.core.network.core.RetrofitFactory;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 import com.tokopedia.url.TokopediaUrl;
 
 import retrofit2.Retrofit;

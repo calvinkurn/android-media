@@ -24,14 +24,4 @@ public interface ShippingCourierContract {
         void hideLoading();
     }
 
-    interface Presenter extends CustomerPresenter<View> {
-        void setData(List<ShippingCourierViewModel> shippingCourierViewModels);
-
-        List<ShippingCourierViewModel> getShippingCourierViewModels();
-
-        CourierItemData getCourierItemData(ShippingCourierViewModel shippingCourierViewModel);
-
-        void updateSelectedCourier(ShippingCourierViewModel shippingCourierViewModel);
-    }
-
 }

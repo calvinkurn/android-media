@@ -77,6 +77,28 @@ public class Point extends ChartEntry {
 		mDrawable = null;
 	}
 
+	/**
+	 * Constructor.
+	 *
+	 * @param label
+	 * @param value
+	 * @param customValue
+	 */
+	public Point(String label, float value, String customValue) {
+
+		super(label, value, customValue);
+
+		isVisible = false;
+
+		mRadius = Tools.fromDpToPx(DOTS_THICKNESS);
+
+		mHasStroke = false;
+		mStrokeThickness = Tools.fromDpToPx(DOTS_RADIUS);
+		mStrokeColor = DEFAULT_COLOR;
+
+		mDrawable = null;
+	}
+
 
 	/**
 	 * Whether the Point has stroke defined or not.

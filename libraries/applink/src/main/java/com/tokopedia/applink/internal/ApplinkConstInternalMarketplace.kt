@@ -75,7 +75,7 @@ object ApplinkConstInternalMarketplace {
 
     // CreateReviewActivity
     @JvmField
-    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/?rating={rating}"
+    val CREATE_REVIEW = "$INTERNAL_MARKETPLACE/product-review/create/{reputation_id}/{product_id}/"
 
     @JvmField
     val HOME_RECOMMENDATION = "$INTERNAL_MARKETPLACE/rekomendasi/{id}/?ref={ref}"
@@ -90,6 +90,14 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val SHOP_PAGE_DOMAIN = "$INTERNAL_MARKETPLACE/shop-page/?domain={domain}"
+
+    //ShopInfoActivity
+    @JvmField
+    val SHOP_INFO = "$INTERNAL_MARKETPLACE/shop-info/{shop_id}/"
+
+    //ShopPageActivity
+    @JvmField
+    val SHOP_PAGE = "$INTERNAL_MARKETPLACE/shop-page/{shop_id}/"
 
     // GmSubscribeHomeActivity
     @JvmField
@@ -128,6 +136,9 @@ object ApplinkConstInternalMarketplace {
     //ShopSettingsAddressActivity
     @JvmField
     val SHOP_SETTINGS_ADDRESS = "$SHOP_SETTINGS_BASE-address"
+
+    @JvmField
+    val SHOP_EDIT_SCHEDULE = "$SHOP_SETTINGS_BASE-edit-schedule"
 
     //DistrictRecommendationShopSettingsActivity
     @JvmField
@@ -178,5 +189,53 @@ object ApplinkConstInternalMarketplace {
     // AttachInvoiceActivity
     @JvmField
     val ATTACH_INVOICE = "$INTERNAL_MARKETPLACE/user-attach-invoice"
+
+    @JvmField
+    val SHOP_PAGE_SETTING = "$INTERNAL_MARKETPLACE/shop-page-setting"
+    // AttachVoucherActivity
+    @JvmField
+    val ATTACH_VOUCHER = "$INTERNAL_MARKETPLACE/user-attach-voucher"
+
+    // DashboardActivity
+    @JvmField
+    val SELLER_APP_DASHBOARD = "$INTERNAL_MARKETPLACE/sellerapp-dashboard"
+
+    // EtalaseDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/etalase-dynamic-picker
+    @JvmField
+    val ETALASE_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/etalase-dynamic-picker"
+
+
+    // CategoryDynamicPickerActivity
+    // tokopedia-android-internal://marketplace/category-dynamic-picker
+    @JvmField
+    val CATEGORY_DYNAMIC_PICKER = "$INTERNAL_MARKETPLACE/category-dynamic-picker"
+    // ActivitySellingTransaction
+    @JvmField
+    val SELLING_TRANSACTION = "$INTERNAL_MARKETPLACE/selling-transaction/{tab_position}/"
+
+    // ProductDraftListActivity
+    @JvmField
+    val PRODUCT_DRAFT_LIST = "$INTERNAL_MARKETPLACE/product-draft-list"
+
+    // GMStatisticDashboardActivity
+    @JvmField
+    val GOLD_MERCHANT_STATISTIC_DASHBOARD = "$INTERNAL_MARKETPLACE/gold-merchant-statistic-dashboard"
+
+    //MitraToppersDashboardActivity
+    @JvmField
+    val MITRA_TOPPERS_DASHBOARD = "$INTERNAL_MARKETPLACE/mitra-toppers-dashboard"
+
+    //GMFeaturedProductActivity
+    @JvmField
+    val GOLD_MERCHANT_FEATURED_PRODUCT = "$INTERNAL_MARKETPLACE/gold-merchant-featured-product"
+
+    //SellerInfoActivity
+    @JvmField
+    val SELLER_INFO = "$INTERNAL_MARKETPLACE/seller-info"
+
+    //SellerHomeActivity
+    @JvmField
+    val SELLER_HOME = "$INTERNAL_MARKETPLACE/sellerhome"
 
 }

@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -30,6 +31,7 @@ import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_chatroom.view.*
 import java.net.URLEncoder
 import java.util.*
 
@@ -263,6 +265,10 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         return false
     }
 
+    fun addVoucherAttachmentMenu() {
+        view?.rv_attachment_menu?.addVoucherAttachmentMenu()
+    }
+
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         return emptyList()
     }
@@ -273,7 +279,13 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
 
     override fun onClickAttachInvoice(menu: AttachmentMenu) { }
 
+    override fun onClickAttachVoucher(voucherMenu: VoucherMenu) { }
+
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
 
     override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) { }
+
+    override fun onClickAddToWishList(productId: String, success: () -> Unit) { }
+
+    override fun onClickRemoveFromWishList(productId: String, success: () -> Unit) { }
 }

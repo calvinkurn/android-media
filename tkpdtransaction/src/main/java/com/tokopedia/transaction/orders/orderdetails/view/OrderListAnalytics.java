@@ -40,7 +40,10 @@ public class OrderListAnalytics {
     private static final String EVENT_ACTION_CLICK_HELP = "click disini for help";
     private static final String EVENT_ACTION_LIHAT_INVOICE = "click lihat on invoice";
     private static final String EVENT_ACTION_LIHAT_STATUS = "click lihat on status order";
-
+    private static final String EVENT_TICKER_CLICK_ACTION = "click see more on ticker";
+    private static final String EVENT_TICKER_CLICK_LINK_ACTION = "click link on ticker";
+    private static final String EVENT_ACTION_DOWNLOAD_INVOICE = "click button download invoice";
+    private static final String TEVENT_TICKER_CLOSE_ACTION = "click x on ticker";
 
     private static final String SEARCH_EVENT_ACTION = "submit search";
     private static final String SEARCH_EVENT_CANCEL_ACTION = "click cancel search";
@@ -115,6 +118,8 @@ public class OrderListAnalytics {
     private static final String CLICK = "click";
     private static final String IMPRESSIONS = "impressions";
     private static final String BUY_AGAIN_OPTION_PRODUCT = "product";
+    private static final String TICKER_EVENT_ACTION = "view ticker";
+    private static final String TICKER_EVENT_NAME = "viewPurchaseList";
 
     @Inject
     public OrderListAnalytics() {
@@ -122,6 +127,15 @@ public class OrderListAnalytics {
 
     private void sendGtmData(String action, String eventLable) {
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_CATEGORY, action, eventLable));
+    }
+
+    private void sendGtmDataDetails(String eventAction, String eventLabel) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_DETAIL, eventAction, eventLabel));
+
+    }
+
+    public void sendDownloadEventData(String eventLabel){
+        sendGtmDataDetails(EVENT_ACTION_DOWNLOAD_INVOICE, eventLabel);
     }
 
     public void sendHelpEventData(String eventLabel) {
@@ -154,7 +168,6 @@ public class OrderListAnalytics {
         sendGtmData(DATE_EVENT_ACTION, "");
     }
 
-
     public void sendSearchFilterClickEvent(String keyword) {
 
         sendGtmData(SEARCH_EVENT_ACTION, keyword);
@@ -185,16 +198,29 @@ public class OrderListAnalytics {
         sendGtmData(eventAction, eventLabel);
     }
 
-    private void sendGtmDataDetails(String eventAction, String eventLabel) {
-        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(PRODUCT_EVENT_NAME, PRODUCT_EVENT_DETAIL, eventAction, eventLabel));
-
-    }
-
     public void sendLoadMoreEvent(String eventLabel) {
 
         sendGtmData(LOAD_MORE_EVENT_ACTION, eventLabel);
     }
 
+
+    public void sendViewTickerEvent() {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(TICKER_EVENT_NAME, PRODUCT_EVENT_CATEGORY, TICKER_EVENT_ACTION, ""));
+    }
+
+
+    public void sendClickTickerEvent(String tickerId) {
+        sendGtmData(EVENT_TICKER_CLICK_ACTION, tickerId);
+    }
+
+    public void sendClickLinkTickerEvent(String link) {
+        sendGtmData(EVENT_TICKER_CLICK_LINK_ACTION, link);
+    }
+
+    public void sendClickCloseTickerEvent() {
+        sendGtmData(TEVENT_TICKER_CLOSE_ACTION, "");
+
+    }
     public void sendThankYouEvent(int entityProductId, String entityProductName, int totalTicketPrice, int quantity, String brandName, String orderId, int categoryType, String paymentType, String paymentStatus) {
         Map<String, Object> products = new HashMap<>();
         Map<String, Object> purchase = new HashMap<>();

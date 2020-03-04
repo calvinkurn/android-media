@@ -1,11 +1,15 @@
 package com.tokopedia.home.beranda.data.mapper.factory
 
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.home.beranda.domain.model.Ticker
 import com.tokopedia.home.beranda.domain.model.banner.BannerDataModel
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.TickerViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.HeaderViewModel
+import com.tokopedia.stickylogin.internal.StickyLoginConstant
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.ArrayList
 
 class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) : HomeVisitableFactory {
     val DEFAULT_BANNER_APPLINK_1 = "tokopedia://category-explore?type=2&tab=1"

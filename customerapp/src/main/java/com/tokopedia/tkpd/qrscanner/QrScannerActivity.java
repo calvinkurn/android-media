@@ -37,8 +37,6 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.tkpd.R;
-import com.tokopedia.tkpd.campaign.di.CampaignComponent;
-import com.tokopedia.tkpd.campaign.di.DaggerCampaignComponent;
 import com.tokopedia.user.session.UserSession;
 
 import org.jetbrains.annotations.NotNull;
@@ -48,7 +46,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 public class QrScannerActivity extends BaseScannerQRActivity implements QrScannerContract.View,
-        HasComponent<CampaignComponent> {
+        HasComponent<QRComponent> {
 
     public static final int RESULT_CODE_HOME = 1;
     private static final int REQUEST_CODE_NOMINAL = 211;
@@ -62,7 +60,7 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     private static String QR_NEED_RESULT = "qr_need_result";
     @Inject
     QrScannerPresenter presenter;
-    private CampaignComponent campaignComponent;
+    private QRComponent qrComponent;
     private boolean isTorchOn;
     private ProgressBar progressBar;
     private PermissionCheckerHelper permissionCheckerHelper;
@@ -312,16 +310,16 @@ public class QrScannerActivity extends BaseScannerQRActivity implements QrScanne
     }
 
     @Override
-    public CampaignComponent getComponent() {
-        if (campaignComponent == null) initInjector();
-        return campaignComponent;
+    public QRComponent getComponent() {
+        if (qrComponent == null) initInjector();
+        return qrComponent;
     }
 
     private void initInjector() {
-        campaignComponent = DaggerCampaignComponent.builder()
+        qrComponent = DaggerQRComponent.builder()
                 .baseAppComponent(((BaseMainApplication) getApplication()).getBaseAppComponent())
                 .build();
-        campaignComponent.inject(this);
+        qrComponent.inject(this);
     }
 
     @Override

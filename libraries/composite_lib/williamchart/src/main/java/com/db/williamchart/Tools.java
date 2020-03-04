@@ -23,12 +23,12 @@ import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+
 import androidx.annotation.IntRange;
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 
-import com.db.williamchart.R;
 import com.db.williamchart.base.BaseWilliamChartConfig;
 import com.db.williamchart.base.BaseWilliamChartModel;
 import com.db.williamchart.config.GrossGraphChartConfig;
@@ -36,6 +36,8 @@ import com.db.williamchart.config.GrossGraphDataSetConfig;
 import com.db.williamchart.renderer.StringFormatRenderer;
 import com.db.williamchart.renderer.XRenderer;
 import com.db.williamchart.tooltip.Tooltip;
+import com.db.williamchart.util.AnimationGraphConfiguration;
+import com.db.williamchart.util.BasicGraphConfiguration;
 import com.db.williamchart.util.DataSetConfiguration;
 import com.db.williamchart.util.DefaultTooltipConfiguration;
 import com.db.williamchart.util.GMStatisticUtil;
@@ -137,18 +139,20 @@ public class Tools {
 
     public static BaseWilliamChartConfig getCommonWilliamChartConfig(LineChartView lineChartView,
                                                                      final BaseWilliamChartModel baseWilliamChartModel) {
+        // resize line chart according to data
+        GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), lineChartView);
         return getCommonWilliamChartConfig(lineChartView, baseWilliamChartModel,
-                new GrossGraphDataSetConfig(), getTooltip(lineChartView.getContext(), getTooltipResLayout()), new DefaultTooltipConfiguration());
+                new GrossGraphDataSetConfig(), getTooltip(lineChartView.getContext(), getTooltipResLayout()),
+                new DefaultTooltipConfiguration(), new GrossGraphChartConfig());
     }
 
     public static BaseWilliamChartConfig getCommonWilliamChartConfig(LineChartView lineChartView,
                                                                      final BaseWilliamChartModel baseWilliamChartModel,
                                                                      DataSetConfiguration dataSetConfiguration,
                                                                      Tooltip tooltip,
-                                                                     TooltipConfiguration tooltipConfiguration) {
+                                                                     TooltipConfiguration tooltipConfiguration,
+                                                                     BasicGraphConfiguration graphConfiguration) {
         lineChartView.dismissAllTooltips();
-        // resize linechart according to data
-        GMStatisticUtil.resizeChart(baseWilliamChartModel.size(), lineChartView);
         // get index to display
         final List<Integer> indexToDisplay = GMStatisticUtil.indexToDisplay(baseWilliamChartModel.getValues());
         Drawable oval2Copy6 = ResourcesCompat.getDrawable(lineChartView.getResources(), R.drawable.oval_2_copy_6, null);
@@ -157,7 +161,7 @@ public class Tools {
                 .reset()
                 .addBaseWilliamChartModels(baseWilliamChartModel, dataSetConfiguration)
                 .setDotDrawable(oval2Copy6)
-                .setBasicGraphConfiguration(new GrossGraphChartConfig())
+                .setBasicGraphConfiguration(graphConfiguration)
                 .setTooltip(tooltip, tooltipConfiguration)
                 .setxRendererListener(new XRenderer.XRendererListener() {
                     @Override

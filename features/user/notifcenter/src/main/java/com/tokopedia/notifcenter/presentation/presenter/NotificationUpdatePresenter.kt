@@ -72,11 +72,15 @@ class NotificationUpdatePresenter @Inject constructor(
 
     override fun markAllReadNotificationUpdate(onSuccessMarkAllReadNotificationUpdate: () -> Unit) {
         markAllReadNotificationUpdateUseCase.execute(
+                MarkAllReadNotificationUpdateUseCase.params(),
                 NotificationUpdateActionSubscriber(onSuccessMarkAllReadNotificationUpdate))
     }
 
     override fun getTotalUnreadCounter(onSuccessGetTotalUnreadCounter: (NotificationUpdateTotalUnread) -> Unit) {
-        getNotificationTotalUnreadUseCase.execute(GetNotificationTotalUnreadSubscriber(onSuccessGetTotalUnreadCounter))
+        getNotificationTotalUnreadUseCase.execute(
+                GetNotificationTotalUnreadUseCase.getRequestParams(),
+                GetNotificationTotalUnreadSubscriber(onSuccessGetTotalUnreadCounter)
+        )
     }
 
     override fun addProductToCart(product: ProductData, onSuccessAddToCart: () -> Unit) {

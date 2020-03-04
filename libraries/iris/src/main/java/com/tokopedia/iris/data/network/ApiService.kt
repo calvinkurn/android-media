@@ -29,7 +29,6 @@ class ApiService(private val context: Context) {
             apiInterface = Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(StringResponseConverter())
-                .addCallAdapterFactory(CoroutineCallAdapterFactory())
                 .client(createClient())
                 .build().create(ApiInterface::class.java)
         return apiInterface!!

@@ -41,7 +41,7 @@ import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.update.NotificationUpdateTypeFactoryImpl
-import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.BaseNotificationItemViewHolder
+import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseNotificationItemViewHolder
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.contract.NotificationUpdateContract
 import com.tokopedia.notifcenter.presentation.presenter.NotificationUpdatePresenter
@@ -53,23 +53,23 @@ import javax.inject.Inject
 /**
  * @author : Steven 10/04/19
  */
-class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
+open class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         BaseAdapterTypeFactory>(),
         NotificationUpdateContract.View,
         NotificationItemListener,
         NotificationUpdateFilterAdapter.FilterAdapterListener,
         NotificationUpdateLongerTextFragment.LongerContentListener {
 
-    private var cursor = ""
+    var cursor = ""
+    private var isFirstLoaded = true
     private var lastItem = 0
     private var markAllReadCounter = 0L
-    private var _isFirstLoaded = true
 
     private lateinit var bottomActionView: BottomActionView
 
     private lateinit var filterRecyclerView: RecyclerView
     private lateinit var longerTextDialog: BottomSheetDialogFragment
-    private var filterAdapter: NotificationUpdateFilterAdapter? = null
+    var filterAdapter: NotificationUpdateFilterAdapter? = null
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return NotificationUpdateTypeFactoryImpl(this)
@@ -79,8 +79,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     @Inject lateinit var analytics: NotificationUpdateAnalytics
 
     private var notificationUpdateListener: NotificationUpdateListener? = null
-
-    private val _adapter by lazy { adapter as NotificationUpdateAdapter }
+    private val notificationUpdateAdapter by lazy { adapter as NotificationUpdateAdapter }
 
     interface NotificationUpdateListener {
         fun onSuccessLoadNotifUpdate()
@@ -217,15 +216,15 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     private fun onSuccessInitiateData(): (NotificationViewData) -> Unit {
         return {
             hideLoading()
-            _adapter.removeEmptyState()
+            notificationUpdateAdapter.removeEmptyState()
 
-            if (_isFirstLoaded && it.list.isEmpty()) {
+            if (isFirstLoaded && it.list.isEmpty()) {
                 filterRecyclerView.hide()
             }
 
             if (it.list.isEmpty()) {
                 updateScrollListenerState(false)
-                _adapter.addElement(EmptyDataStateProvider.emptyData())
+                notificationUpdateAdapter.addElement(EmptyDataStateProvider.emptyData())
             } else {
                 val canLoadMore = it.paging.hasNext
                 if (canLoadMore && !it.list.isEmpty()) {
@@ -235,26 +234,25 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
                     notificationUpdateListener?.onSuccessLoadNotifUpdate()
                 }
 
-                _isFirstLoaded = false
+                isFirstLoaded = false
                 filterRecyclerView.show()
 
-                _adapter.addElement(it.list)
+                notificationUpdateAdapter.addElement(it.list)
                 updateScrollListenerState(canLoadMore)
 
-                if (_adapter.dataSize < minimumScrollableNumOfItems
+                if (notificationUpdateAdapter.dataSize < minimumScrollableNumOfItems
                         && endlessRecyclerViewScrollListener != null && canLoadMore) {
                     endlessRecyclerViewScrollListener.loadMoreNextPage()
                 }
             }
         }
     }
-
-    private fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
+          
+    open fun onSuccessGetFilter(): (ArrayList<NotificationUpdateFilterViewBean>) -> Unit {
         return {
             filterAdapter?.updateData(it)
         }
     }
-
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(getRecyclerView(view).layoutManager) {
@@ -274,6 +272,11 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
             updateMarkAllReadCounter()
             notifyBottomActionView()
         }
+    }
+
+    override fun addProductToCheckout(notification: NotificationItemViewBean) {
+        RouteManager.route(context, notification.dataNotification.checkoutUrl)
+        analytics.trackProductCheckoutBuyClick(notification)
     }
 
     private fun updateMarkAllReadCounter() {
@@ -360,7 +363,7 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
         bundle.putString(PARAM_CONTENT_IMAGE, element.contentUrl)
         bundle.putString(PARAM_CONTENT_IMAGE_TYPE, element.typeLink.toString())
         bundle.putString(PARAM_CTA_APPLINK, element.appLink)
-        bundle.putString(PARAM_CONTENT_TEXT, element.body)
+        bundle.putString(PARAM_CONTENT_TEXT, element.bodyHtml)
         bundle.putString(PARAM_CONTENT_TITLE, element.title)
         bundle.putString(PARAM_BUTTON_TEXT, element.btnText)
         bundle.putString(PARAM_TEMPLATE_KEY, element.templateKey)
@@ -383,6 +386,8 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     override fun trackOnClickCtaButton(templateKey: String) {
         analytics.trackOnClickLongerContentBtn(templateKey)
     }
+
+    override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 
     companion object {
         const val PARAM_CONTENT_TITLE = "content title"

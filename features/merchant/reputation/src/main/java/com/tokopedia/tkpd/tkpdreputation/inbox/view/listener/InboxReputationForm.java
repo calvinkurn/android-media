@@ -2,8 +2,8 @@ package com.tokopedia.tkpd.tkpdreputation.inbox.view.listener;
 
 import android.app.Activity;
 
-import com.tokopedia.core.base.presentation.CustomerPresenter;
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
+import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
@@ -48,7 +48,7 @@ public interface InboxReputationForm {
         void sendReview(String reviewId, String reputationId, String productId, String shopId,
                         String review, float rating, ArrayList<ImageUpload> list,
                         List<ImageUpload> deletedList, boolean shareFb, boolean anonymous,
-                        String productName, String productAvatar, String productUrl);
+                        String productName, String productAvatar, String productUrl, String utmSource);
 
         void setFormToCache(int position, SendReviewPass sendReviewPass);
 
@@ -61,6 +61,6 @@ public interface InboxReputationForm {
         void editReview(String reviewId, String reputationId, String productId, String shopId,
                         String review, float rating, ArrayList<ImageUpload> list,
                         List<ImageUpload> deletedList, boolean shareFb, boolean anonymous,
-                        String productName, String productAvatar, String productUrl);
+                        String productName, String productAvatar, String productUrl, String utmSource);
     }
 }

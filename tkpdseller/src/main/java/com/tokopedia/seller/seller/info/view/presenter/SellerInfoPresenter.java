@@ -1,6 +1,5 @@
 package com.tokopedia.seller.seller.info.view.presenter;
 
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.seller.seller.info.data.model.DataList;
 import com.tokopedia.seller.seller.info.data.model.NotificationUpdateActionResponse;
@@ -16,6 +15,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 import static com.tokopedia.seller.seller.info.domain.interactor.MarkReadNotificationUseCase.SELLER_TYPE_ID;
 
@@ -46,7 +46,7 @@ public class SellerInfoPresenter extends BaseDaggerPresenter<SellerInfoView> {
 
                     @Override
                     public void onError(Throwable e) {
-                        CommonUtils.dumper(e);
+                        Timber.d(e);
                         if (isViewAttached()) {
                             getView().onLoadSearchError(e);
                         }

@@ -405,7 +405,7 @@ open class DynamicPostViewHolder(v: View,
             }
             else -> {
                 itemView.likeIcon.loadImageWithoutPlaceholder(R.drawable.ic_feed_thumb)
-                val text : String  = if (like.fmt.isNotEmpty()) like.fmt else getString(R.string.kol_action_like)
+                val text : String  = if (like.fmt.isNotEmpty() && !like.fmt.equals("0")) like.fmt else getString(R.string.kol_action_like)
                 itemView.likeText.text = text
                 itemView.likeText.setTextColor(
                         MethodChecker.getColor(itemView.likeIcon.context, R.color.black_54)

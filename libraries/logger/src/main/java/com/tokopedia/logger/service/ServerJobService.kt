@@ -8,15 +8,15 @@ import android.net.ConnectivityManager
 import android.os.Build
 import com.tokopedia.logger.LogManager
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 class ServerJobService : JobService() {
 
     override fun onStartJob(params: JobParameters?): Boolean {
-        runBlocking {
-            launch(Dispatchers.IO) {
+        GlobalScope.launch(Dispatchers.IO) {
+            try {
                 when {
                     // When there is network connection and there is data in DB then we send logs to server
                     isNetworkAvailable(application) and (LogManager.getCount() > 0) -> {
@@ -33,6 +33,9 @@ class ServerJobService : JobService() {
                         jobFinished(params,false)
                     }
                 }
+            }
+            catch (throwable: Throwable) {
+                throwable.printStackTrace()
             }
         }
         return false

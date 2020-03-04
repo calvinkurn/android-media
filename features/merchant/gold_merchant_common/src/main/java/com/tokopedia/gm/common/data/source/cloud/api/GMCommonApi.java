@@ -1,14 +1,9 @@
 package com.tokopedia.gm.common.data.source.cloud.api;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
 import com.tokopedia.gm.common.constant.GMCommonUrl;
-import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct;
-import com.tokopedia.gm.common.data.source.cloud.model.GMGetCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.RequestCashbackModel;
-import com.tokopedia.gm.common.data.source.cloud.model.RequestGetCashbackModel;
 import com.tokopedia.gm.common.data.source.cloud.model.ShopScoreResult;
-
-import java.util.List;
+import com.tokopedia.network.data.model.response.DataResponse;
 
 import retrofit2.Response;
 import retrofit2.http.Body;

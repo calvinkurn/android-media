@@ -8,9 +8,12 @@ import java.util.Map;
 public interface AnalyticsLogger {
     void save(String name, Map<String, Object> data);
 
+    void saveError(String errorData);
+
     void wipe();
 
     void openActivity();
+    void openErrorActivity();
 
     void enableNotification(boolean status);
 
