@@ -5,8 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/product_manage_list_padding_top"
-    android:paddingBottom="@dimen/product_manage_list_padding_bottom">
+    android:background="@color/white"
+    android:paddingTop="@dimen/product_manage_list_padding_top">
 
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkBoxSelect"
