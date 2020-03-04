@@ -4,16 +4,16 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.autocomplete.R
-import kotlinx.android.synthetic.main.layout_title_auto_complete.view.*
+import kotlinx.android.synthetic.main.layout_title_suggestion.view.*
 
 class SuggestionTitleViewHolder(itemView: View) : AbstractViewHolder<SuggestionTitleViewModel>(itemView) {
 
     override fun bind(element: SuggestionTitleViewModel) {
-        itemView.titleTextView?.text = element.title
+        itemView.suggestionTitleTextView?.text = element.title
     }
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.layout_title_auto_complete
+        val LAYOUT = R.layout.layout_title_suggestion
     }
 }
