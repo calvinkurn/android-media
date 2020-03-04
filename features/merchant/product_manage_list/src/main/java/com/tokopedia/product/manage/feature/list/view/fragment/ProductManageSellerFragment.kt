@@ -56,6 +56,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        checkLogin()
         super.onViewCreated(view, savedInstanceState)
         tvDraftProduct.visibility = View.GONE
     }
@@ -124,4 +125,14 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
     }
 
     override fun callInitialLoadAutomatically() = false
+
+    private fun checkLogin() {
+        if (!userSession.isLoggedIn) {
+            RouteManager.route(activity, ApplinkConst.LOGIN)
+            activity?.finish()
+        } else if (!userSession.hasShop()) {
+            RouteManager.route(activity, ApplinkConst.HOME)
+            activity?.finish()
+        }
+    }
 }

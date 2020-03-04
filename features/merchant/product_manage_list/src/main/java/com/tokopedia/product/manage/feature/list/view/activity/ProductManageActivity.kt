@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
@@ -41,24 +40,9 @@ class ProductManageActivity : BaseSellerReceiverDrawerActivity(), HasComponent<P
         SplitCompat.installActivity(this)
     }
 
-    public override fun onStart() {
-        super.onStart()
-        checkLogin()
-    }
-
     override fun onBackPressed() {
         goToSellerAppDashboard()
         super.onBackPressed()
-    }
-
-    private fun checkLogin() {
-        if (!userSession.isLoggedIn) {
-            RouteManager.route(this, ApplinkConst.LOGIN)
-            finish()
-        } else if (!userSession.hasShop()) {
-            RouteManager.route(this, ApplinkConst.HOME)
-            finish()
-        }
     }
 
     override fun setDrawerPosition(): Int {
