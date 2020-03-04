@@ -20,6 +20,7 @@ import javax.inject.Named
 class ChatSettingModule(val context: Context) {
 
     @Provides
+    @ChatSettingScope
     fun provideContext(): Context = context
 
     @ChatSettingScope

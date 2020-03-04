@@ -57,19 +57,20 @@ public class TemplateChatModule {
     }
 
     @Provides
+    @TemplateChatScope
     Context provideContext() {
         return mContext;
     }
 
     @TemplateChatScope
     @Provides
-    UserSessionInterface provideUserSessionInterface(Context context) {
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
     @TemplateChatScope
     @Provides
-    UserSession provideUserSession(Context context) {
+    UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
@@ -81,7 +82,7 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    ChuckerInterceptor provideChuckerInterceptor(Context context) {
+    ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
         return new ChuckerInterceptor(context);
     }
 
@@ -92,14 +93,14 @@ public class TemplateChatModule {
     }
 
     @Provides
-    public XUserIdInterceptor provideXUserIdInterceptor(Context context,
+    public XUserIdInterceptor provideXUserIdInterceptor(@ApplicationContext Context context,
                                                         NetworkRouter networkRouter,
                                                         UserSession userSession) {
         return new XUserIdInterceptor(context, networkRouter, userSession);
     }
 
     @Provides
-    public TkpdAuthInterceptor provideChatTkpdAuthInterceptor(Context context,
+    public TkpdAuthInterceptor provideChatTkpdAuthInterceptor(@ApplicationContext Context context,
                                                               NetworkRouter networkRouter,
                                                               UserSessionInterface userSessionInterface) {
         return new TkpdAuthInterceptor(context, networkRouter, userSessionInterface);
@@ -108,7 +109,7 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    OkHttpClient provideOkHttpClient(Context context,
+    OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
                                      ChuckerInterceptor chuckInterceptor,

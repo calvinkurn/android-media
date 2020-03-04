@@ -59,7 +59,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideUserSession(context: Context): UserSession {
+    fun provideUserSession(@ApplicationContext context: Context): UserSession {
         return UserSession(context)
     }
 
@@ -99,13 +99,13 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideChuckerInterceptor(context: Context): ChuckerInterceptor {
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
     @ChatListScope
     @Provides
-    fun provideXUserIdInterceptor(context: Context,
+    fun provideXUserIdInterceptor(@ApplicationContext context: Context,
                                   networkRouter: NetworkRouter,
                                   userSession: UserSession):
             XUserIdInterceptor {
@@ -122,7 +122,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideTkpdAuthInterceptor(context: Context,
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
                                    networkRouter: NetworkRouter,
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
@@ -131,7 +131,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideOkHttpClient(context: Context,
+    fun provideOkHttpClient(@ApplicationContext context: Context,
                             retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,

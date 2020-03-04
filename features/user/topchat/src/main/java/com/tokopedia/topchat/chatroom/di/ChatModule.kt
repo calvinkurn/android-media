@@ -65,7 +65,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideUserSessionInterface(context: Context): UserSessionInterface {
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
@@ -115,13 +115,13 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideChuckerInterceptor(context: Context): ChuckerInterceptor {
+    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
     @ChatScope
     @Provides
-    fun provideXUserIdInterceptor(context: Context,
+    fun provideXUserIdInterceptor(@ApplicationContext context: Context,
                                   networkRouter: NetworkRouter,
                                   userSession: UserSession):
             XUserIdInterceptor {
@@ -138,7 +138,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideTkpdAuthInterceptor(context: Context,
+    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
                                    networkRouter: NetworkRouter,
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
@@ -147,7 +147,7 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    fun provideOkHttpClient(context: Context,
+    fun provideOkHttpClient(@ApplicationContext context: Context,
                             @InboxQualifier retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,

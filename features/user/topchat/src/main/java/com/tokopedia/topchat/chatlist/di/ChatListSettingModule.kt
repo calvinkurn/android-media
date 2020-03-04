@@ -1,6 +1,7 @@
 package com.tokopedia.topchat.chatlist.di
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
@@ -26,6 +27,6 @@ class ChatListSettingModule {
 
     @Provides
     @ChatListScope
-    fun provideUserSessionInterface(context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
 }
