@@ -2,7 +2,6 @@
 package com.tokopedia.productcard.utils
 
 import android.content.Context
-import android.util.Log
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import kotlinx.coroutines.CoroutineDispatcher
@@ -15,21 +14,12 @@ suspend fun List<ProductCardModel>?.getMaxHeightForGridView(context: Context?, c
     return withContext(coroutineDispatcher) {
         val productCardHeightList = mutableListOf<Int>()
 
-        var i = 0
         forEach { productCardModel ->
-            i++
             val imageHeight = productImageWidth
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
             val contentMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_content_margin)
             val contentHeight = productCardModel.getContentHeight(context)
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
-
-            Log.d("ProductCardHeightCalc", "grid position $i," +
-                    " imageHeight $imageHeight " +
-                    "cardpaddingbottom $cardPaddingBottom " +
-                    "contentmargintop $contentMarginTop " +
-                    "contentHeight $contentHeight" +
-                    "button atc $buttonAddToCartSectionHeight")
 
             productCardHeightList.add(imageHeight + cardPaddingBottom + contentMarginTop + contentHeight + buttonAddToCartSectionHeight)
         }
@@ -44,9 +34,7 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
     return withContext(coroutineDispatcher) {
         val productCardHeightList = mutableListOf<Int>()
 
-        var i = 0
         forEach { productCardModel ->
-            i++
             val cardPaddingTop = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_top)
             val cardPaddingBottom = context.resources.getDimensionPixelSize(R.dimen.product_card_padding_bottom)
 
@@ -55,14 +43,6 @@ suspend fun List<ProductCardModel>?.getMaxHeightForListView(context: Context?, c
             val buttonAddToCartSectionHeight = productCardModel.getButtonAddToCartSectionHeight(context)
 
             val totalHeight = cardPaddingTop + cardPaddingBottom + max(imageSize, contentHeight) + buttonAddToCartSectionHeight
-
-            Log.d("ProductCardHeightCalc", "list position $i," +
-                    " imageSize $imageSize " +
-                    "cardPaddingTop $cardPaddingTop" +
-                    "cardpaddingbottom $cardPaddingBottom " +
-                    "contentHeight $contentHeight" +
-                    "button atc $buttonAddToCartSectionHeight" +
-                    "total height $totalHeight")
 
             productCardHeightList.add(totalHeight)
         }
