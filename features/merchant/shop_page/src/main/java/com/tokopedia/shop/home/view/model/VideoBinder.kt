@@ -17,7 +17,7 @@ import java.lang.NullPointerException
  * Created by rizqiaryansa on 2020-02-27.
  */
 
-class VideoBinder(private var widgetModel: DisplayWidgetUiModel) {
+class VideoBinder(private var widgetModelShopHome: ShopHomeDisplayWidgetUiModel) {
 
     private var selectedIndex: Int = 0
 
@@ -37,14 +37,14 @@ class VideoBinder(private var widgetModel: DisplayWidgetUiModel) {
     fun bind(context: Context, viewHolder: ShopHomeVideoViewHolder,
              fragmentManager: IFragmentManager) {
 
-        setValueVideo(widgetModel)
+        setValueVideo(widgetModelShopHome)
 
         bindVideo(context, viewHolder, fragmentManager)
         bindTitle(viewHolder)
     }
 
-    private fun setValueVideo(widgetModel: DisplayWidgetUiModel) {
-        youtubeVideoUrl = widgetModel.data?.get(selectedIndex)?.videoUrl
+    private fun setValueVideo(widgetModelShopHome: ShopHomeDisplayWidgetUiModel) {
+        youtubeVideoUrl = widgetModelShopHome.data?.get(selectedIndex)?.videoUrl
         try {
             idYoutubeVideo = Uri.parse(youtubeVideoUrl).lastPathSegment
         } catch (e: NullPointerException) {
@@ -62,7 +62,7 @@ class VideoBinder(private var widgetModel: DisplayWidgetUiModel) {
     }
 
     private fun bindTitle(viewHolder: ShopHomeVideoViewHolder) {
-        viewHolder.titleVideoYoutube?.text = widgetModel.header?.title
+        viewHolder.titleVideoYoutube?.text = widgetModelShopHome.header?.title
     }
 
     private fun handleClick(context: Context, videoViewHolder: ShopHomeVideoViewHolder, fragmentManager: IFragmentManager) {
@@ -72,7 +72,7 @@ class VideoBinder(private var widgetModel: DisplayWidgetUiModel) {
                 if (YouTubeIntents.canResolvePlayVideoIntent(view.context)) {
                     fragmentManager.getSupportFragment()?.startActivity(
                             YouTubeIntents.createPlayVideoIntent(view.context,
-                                    widgetModel.data?.get(selectedIndex)?.videoUrl))
+                                    widgetModelShopHome.data?.get(selectedIndex)?.videoUrl))
                     return@setOnClickListener
                 }
                 val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(youtubeVideoUrl))
@@ -117,7 +117,7 @@ class VideoBinder(private var widgetModel: DisplayWidgetUiModel) {
                     YouTubePlayer.OnInitializedListener {
                 override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
                     youtubePlayer = player
-                    youtubePlayer?.loadVideo(widgetModel.data?.get(selectedIndex)?.videoUrl)
+                    youtubePlayer?.loadVideo(widgetModelShopHome.data?.get(selectedIndex)?.videoUrl)
                     youtubePlayer?.fullscreenControlFlags = 0
                     youtubePlayer?.setOnFullscreenListener {
                         isFullScreen = it
@@ -130,7 +130,7 @@ class VideoBinder(private var widgetModel: DisplayWidgetUiModel) {
                         fragmentManager.getSupportFragment()
                                 ?.startActivity(YouTubeIntents.createPlayVideoIntent(
                                         fragmentManager.getSupportFragment()?.context,
-                                        widgetModel.data?.get(selectedIndex)?.videoUrl))
+                                        widgetModelShopHome.data?.get(selectedIndex)?.videoUrl))
                         return
                     }
                     val viewIntent = Intent(Intent.ACTION_VIEW, Uri.parse(youtubeVideoUrl))

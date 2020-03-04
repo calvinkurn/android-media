@@ -2,10 +2,9 @@ package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetType.DISPLAY
-import com.tokopedia.shop.home.WidgetType.VOUCHER
 import com.tokopedia.shop.home.data.model.ShopLayoutWidget
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.product.data.model.ShopProduct
@@ -47,8 +46,8 @@ object ShopPageHomeMapper {
         }
     }
 
-    private fun mapToDisplayWidget(widgetResponse: ShopLayoutWidget.Widget): DisplayWidgetUiModel {
-        return DisplayWidgetUiModel(
+    private fun mapToDisplayWidget(widgetResponse: ShopLayoutWidget.Widget): ShopHomeDisplayWidgetUiModel {
+        return ShopHomeDisplayWidgetUiModel(
                 widgetResponse.widgetID,
                 widgetResponse.layoutOrder,
                 widgetResponse.name,
@@ -60,16 +59,16 @@ object ShopPageHomeMapper {
 
     private fun mapToListDisplayWidgetItem(
             data: List<ShopLayoutWidget.Widget.Data>
-    ): List<DisplayWidgetUiModel.DisplayWidgetItem>? {
-        return mutableListOf<DisplayWidgetUiModel.DisplayWidgetItem>().apply {
+    ): List<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem>? {
+        return mutableListOf<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem>().apply {
             data.onEach {
                 add(mapToDisplayWidgetItem(it))
             }
         }
     }
 
-    private fun mapToDisplayWidgetItem(data: ShopLayoutWidget.Widget.Data): DisplayWidgetUiModel.DisplayWidgetItem {
-        return DisplayWidgetUiModel.DisplayWidgetItem(
+    private fun mapToDisplayWidgetItem(data: ShopLayoutWidget.Widget.Data): ShopHomeDisplayWidgetUiModel.DisplayWidgetItem {
+        return ShopHomeDisplayWidgetUiModel.DisplayWidgetItem(
                 data.imageUrl,
                 data.appLink,
                 data.webLink,

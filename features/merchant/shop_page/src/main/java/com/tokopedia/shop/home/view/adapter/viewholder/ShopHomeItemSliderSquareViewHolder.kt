@@ -5,7 +5,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.R
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 /**
  * Created by rizqiaryansa on 2020-02-24.
@@ -15,7 +15,7 @@ class ShopHomeItemSliderSquareViewHolder(itemView: View): RecyclerView.ViewHolde
 
     private val ivSliderSquare: AppCompatImageView = itemView.findViewById(R.id.ivSliderSquare)
 
-    fun bind(element: DisplayWidgetUiModel.DisplayWidgetItem) {
+    fun bind(element: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         ImageHandler.LoadImage(ivSliderSquare, element.imageUrl)
     }
 }

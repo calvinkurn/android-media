@@ -10,6 +10,7 @@ import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
+import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.viewholder.*
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductEtalaseTitleViewHolder
@@ -27,6 +28,7 @@ class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome
             SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
             VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT
+//            VOUCHER -> return ShopHomeVoucherViewHolder.LAYOUT
         }
         return -1
     }

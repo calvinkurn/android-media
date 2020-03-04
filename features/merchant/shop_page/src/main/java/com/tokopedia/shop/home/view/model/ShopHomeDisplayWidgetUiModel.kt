@@ -5,7 +5,7 @@ import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 /**
  * Created by rizqiaryansa on 2020-02-21.
  */
-data class DisplayWidgetUiModel(
+data class ShopHomeDisplayWidgetUiModel(
         override val widgetId: Int = -1,
         override val layoutOrder: Int = -1,
         override val name: String = "",

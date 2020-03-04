@@ -5,9 +5,9 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeItemImageColumnViewHolder
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
-class ShopHomeMultipleImageColumnAdapter: ListAdapter<DisplayWidgetUiModel.DisplayWidgetItem, ShopHomeItemImageColumnViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
+class ShopHomeMultipleImageColumnAdapter: ListAdapter<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, ShopHomeItemImageColumnViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeItemImageColumnViewHolder {
         val view = LayoutInflater

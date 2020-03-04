@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.model
 
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 
 /**
@@ -11,15 +12,8 @@ data class ShopHomeVoucherUiModel(
         override val name: String = "",
         override val type: String = "",
         override val header: BaseShopHomeWidgetUiModel.Header = BaseShopHomeWidgetUiModel.Header(),
-        val data: List<DisplayWidgetItem>? = null
+        val data: List<MerchantVoucherViewModel>? = null
 ) : BaseShopHomeWidgetUiModel {
-
-    data class DisplayWidgetItem(
-            val imageUrl: String? = null,
-            val appLink: String? = null,
-            val webLinkL: String? = null,
-            val videoUrl: String? = null
-    )
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)

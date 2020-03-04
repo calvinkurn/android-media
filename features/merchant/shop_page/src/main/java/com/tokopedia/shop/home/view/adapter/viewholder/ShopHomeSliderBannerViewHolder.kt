@@ -7,13 +7,13 @@ import com.tokopedia.banner.BannerView
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.BannerShopPage
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 /**
  * Created by rizqiaryansa on 2020-02-25.
  */
 
-class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<DisplayWidgetUiModel>(view),
+class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoLoadedListener{
@@ -24,7 +24,7 @@ class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<DisplayWid
         banner = view?.findViewById(R.id.banner_shop_page)
     }
 
-    override fun bind(element: DisplayWidgetUiModel) {
+    override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         banner?.setPromoList(dataWidgetToString(element))
         banner?.onPromoAllClickListener = this
         banner?.onPromoScrolledListener = this
@@ -48,7 +48,7 @@ class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<DisplayWid
 
     override fun onPromoScrolled(p0: Int) {}
 
-    private fun dataWidgetToString(element: DisplayWidgetUiModel): List<String>? {
+    private fun dataWidgetToString(element: ShopHomeDisplayWidgetUiModel): List<String>? {
         val mutableString: MutableList<String>? = mutableListOf()
         element.data?.map {
             it.imageUrl?.let { img ->

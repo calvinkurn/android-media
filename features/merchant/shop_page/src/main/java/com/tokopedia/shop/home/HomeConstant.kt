@@ -7,14 +7,14 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetType.DISPLAY
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel.DisplayWidgetItem
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel.DisplayWidgetItem
 
 
 object HomeConstant {
     const val YOUTUBE_BASE_URL = "https://www.youtube.com/watch?v="
 
-    val singleItemImage = DisplayWidgetUiModel(
+    val singleItemImage = ShopHomeDisplayWidgetUiModel(
             name = DISPLAY,
             type = DISPLAY_SINGLE_COLUMN,
             data = mutableListOf(DisplayWidgetItem(
@@ -22,7 +22,7 @@ object HomeConstant {
             ))
     )
 
-    val doubleItemImage = DisplayWidgetUiModel(
+    val doubleItemImage = ShopHomeDisplayWidgetUiModel(
             name = DISPLAY,
             type = DISPLAY_DOUBLE_COLUMN,
             data = mutableListOf<DisplayWidgetItem>().apply {
@@ -35,7 +35,7 @@ object HomeConstant {
             }
     )
 
-    val tripleItemImage = DisplayWidgetUiModel(
+    val tripleItemImage = ShopHomeDisplayWidgetUiModel(
             name = DISPLAY,
             type = DISPLAY_TRIPLE_COLUMN,
             data = mutableListOf<DisplayWidgetItem>().apply {
@@ -51,7 +51,7 @@ object HomeConstant {
             }
     )
 
-    val sliderSquareWidget = DisplayWidgetUiModel(
+    val sliderSquareWidget = ShopHomeDisplayWidgetUiModel(
             name = DISPLAY ,
             type = SLIDER_SQUARE_BANNER,
             data = mutableListOf<DisplayWidgetItem>().apply {
@@ -70,7 +70,7 @@ object HomeConstant {
             }
     )
 
-    val sliderBannerWidget = DisplayWidgetUiModel(
+    val sliderBannerWidget = ShopHomeDisplayWidgetUiModel(
             name = SLIDER_BANNER,
             data = mutableListOf<DisplayWidgetItem>().apply {
                 add(DisplayWidgetItem(
@@ -89,7 +89,7 @@ object HomeConstant {
     )
 
     //TODO data static video
-    val videoWidget = DisplayWidgetUiModel(
+    val videoWidget = ShopHomeDisplayWidgetUiModel(
             name = VIDEO,
             data = mutableListOf<DisplayWidgetItem>().apply {
                 add(DisplayWidgetItem(

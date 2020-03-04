@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
-import com.tokopedia.shop.home.view.model.DisplayWidgetUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import java.util.regex.Pattern
@@ -25,7 +25,7 @@ import java.util.regex.Pattern
  * Created by rizqiaryansa on 2020-02-26.
  */
 
-class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiModel>(view),
+class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
     YouTubeThumbnailView.OnInitializedListener, View.OnClickListener{
 
     companion object {
@@ -49,7 +49,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<DisplayWidgetUiMo
         youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
-    override fun bind(element: DisplayWidgetUiModel) {
+    override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         val regex = "v=([^\\s&#]*)"
         videoUrl = element.data?.first()?.videoUrl ?: ""
         val pattern = Pattern.compile(regex, Pattern.MULTILINE)
