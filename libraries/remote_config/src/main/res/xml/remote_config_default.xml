@@ -360,7 +360,7 @@
         <value>true</value>
     </entry>
     <entry>
-        <key>android_main_app_enable_cache_pdp</key>
+        <key>android_main_app_enabled_cache_pdp</key>
         <value>true</value>
     </entry>
 </defaultsMap>
