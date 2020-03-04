@@ -38,6 +38,15 @@ class NotificationTransactionAdapter(
         notifyDataSetChanged()
     }
 
+    fun markAllAsRead() {
+        for (data in visitables) {
+            if(data is NotificationItemViewBean) {
+                data.isRead = true
+            }
+            notifyItemChanged(visitables.indexOf(data))
+        }
+    }
+
     private fun purchaseCounterBadge(
             data: NotificationsModel,
             child: DrawerNotification.ChildDrawerNotification) {

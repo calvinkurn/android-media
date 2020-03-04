@@ -267,7 +267,6 @@ class HotlistNavActivity : BaseActivity(),
         }
         hotlistFragment.applyFilterToSearchParameter(filterParameter)
         hotlistFragment.setSelectedFilter(HashMap(filterParameter))
-        hotlistFragment.clearDataFilterSort()
         hotlistFragment.reloadData()
     }
 

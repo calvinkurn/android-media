@@ -47,17 +47,11 @@ public interface ShippingDurationContract {
                                        List<Product> products, String cartString, boolean isTradeInDropOff,
                                        RecipientAddressModel recipientAddressModel);
 
-        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList, int codHistory, boolean isCorner, boolean isLeasing);
+        void loadCourierRecommendation(ShippingParam shippingParam, int selectedServiceId, List<ShopShipment> shopShipmentList);
 
         CourierItemData getCourierItemData(List<ShippingCourierViewModel> shippingCourierViewModels);
 
         CourierItemData getCourierItemDataById(int spId, List<ShippingCourierViewModel> shippingCourierViewModels);
-
-        void setRecipientAddressModel(RecipientAddressModel recipientAddressModel);
-
-        RecipientAddressModel getRecipientAddressModel();
-
-        CourierItemData convertToCourierModel(LogisticPromoViewModel promoModel);
 
     }
 

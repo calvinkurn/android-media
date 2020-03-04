@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel
 
+import com.tokopedia.discovery.common.State
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.search.InstantTaskExecutorRuleSpek
 import com.tokopedia.search.TestException
-import com.tokopedia.search.result.common.State
 import com.tokopedia.search.result.isExecuted
 import com.tokopedia.search.result.isNeverExecuted
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
@@ -185,6 +185,22 @@ internal class HandleViewLoadMoreTest: Spek({
                 productPreviewImpressionTracking?.size shouldBe moreShopItemList.size * shopItemProductList.size
             }
 
+            Then("should NOT post shop recommendation item impression tracking event") {
+                val shopRecommendationItemImpressionTrackingEventLiveData = searchShopViewModel.getShopRecommendationItemImpressionTrackingEventLiveData().value
+
+                val shopRecommendationItemImpressionTracking = shopRecommendationItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopRecommendationItemImpressionTracking shouldBe null
+            }
+
+            Then("should NOT post shop recommendation product preview impression tracking event") {
+                val shopRecommendationProductPreviewImpressionTrackingEventLiveData =
+                        searchShopViewModel.getShopRecommendationProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking =
+                        shopRecommendationProductPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking shouldBe null
+            }
+
             Then("assert has next page is true") {
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
@@ -240,6 +256,22 @@ internal class HandleViewLoadMoreTest: Spek({
                 productPreviewImpressionTracking?.size shouldBe moreShopItemList.size * shopItemProductList.size
             }
 
+            Then("should NOT post shop recommendation item impression tracking event") {
+                val shopRecommendationItemImpressionTrackingEventLiveData = searchShopViewModel.getShopRecommendationItemImpressionTrackingEventLiveData().value
+
+                val shopRecommendationItemImpressionTracking = shopRecommendationItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopRecommendationItemImpressionTracking shouldBe null
+            }
+
+            Then("should NOT post shop recommendation product preview impression tracking event") {
+                val shopRecommendationProductPreviewImpressionTrackingEventLiveData =
+                        searchShopViewModel.getShopRecommendationProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking =
+                        shopRecommendationProductPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking shouldBe null
+            }
+
             Then("assert has next page is false") {
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
@@ -265,6 +297,11 @@ internal class HandleViewLoadMoreTest: Spek({
                 searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
             }
 
+            Given("impression tracking already consumed by the View") {
+                searchShopViewModel.getShopItemImpressionTrackingEventLiveData().value?.getContentIfNotHandled()
+                searchShopViewModel.getProductPreviewImpressionTrackingEventLiveData().value?.getContentIfNotHandled()
+            }
+
             Given("search more shop API call will fail") {
                 searchShopLoadMoreUseCase.stubExecute().throws(exception)
             }
@@ -286,10 +323,110 @@ internal class HandleViewLoadMoreTest: Spek({
                 exception.isStackTracePrinted shouldBe true
             }
 
+            Then("should NOT post shop recommendation item impression tracking event") {
+                val shopRecommendationItemImpressionTrackingEventLiveData = searchShopViewModel.getShopRecommendationItemImpressionTrackingEventLiveData().value
+
+                val shopRecommendationItemImpressionTracking = shopRecommendationItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopRecommendationItemImpressionTracking shouldBe null
+            }
+
+            Then("should NOT post shop recommendation product preview impression tracking event") {
+                val shopRecommendationProductPreviewImpressionTrackingEventLiveData =
+                        searchShopViewModel.getShopRecommendationProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking =
+                        shopRecommendationProductPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking shouldBe null
+            }
+
+            Then("should NOT post shop item impression tracking event") {
+                val shopItemImpressionTrackingEventLiveData = searchShopViewModel.getShopItemImpressionTrackingEventLiveData().value
+
+                val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopItemImpressionTracking shouldBe null
+            }
+
+            Then("should NOT post product preview impression tracking event") {
+                val productPreviewImpressionTrackingEventLiveData = searchShopViewModel.getProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking shouldBe null
+            }
+
             Then("assert has next page is false") {
                 val hasNextPage = searchShopViewModel.getHasNextPage()
 
                 hasNextPage shouldBe false
+            }
+        }
+
+        Scenario("Search Shop has Empty Result with Recommendation with next page, and Search Shop Load More Successful") {
+            val searchShopFirstPageUseCase by memoized<UseCase<SearchShopModel>>()
+            val getDynamicFilterUseCase by memoized<UseCase<DynamicFilterModel>>()
+            val searchShopLoadMoreUseCase by memoized<UseCase<SearchShopModel>>()
+
+            lateinit var searchShopViewModel: SearchShopViewModel
+
+            Given("search shop view model") {
+                searchShopViewModel = createSearchShopViewModel()
+            }
+
+            Given("view search shop first page successfully") {
+                searchShopFirstPageUseCase.stubExecute().returns(searchShopModelEmptyWithRecommendationHasNextPage)
+                getDynamicFilterUseCase.stubExecute().returns(dynamicFilterModel)
+                searchShopViewModel.onViewVisibilityChanged(isViewVisible = true, isViewAdded = true)
+            }
+
+            Given("search more shop API call will be successful and return search shop data in recommendation") {
+                searchShopLoadMoreUseCase.stubExecute().returns(searchMoreShopWithRecommendationHasNextPage)
+            }
+
+            When("handle view load more and visible") {
+                searchShopViewModel.onViewLoadMore(true)
+            }
+
+            Then("assert search shop state is success and contains shop recommendation data from search shop and search more shop") {
+                val searchShopState = searchShopViewModel.getSearchShopLiveData().value
+
+                searchShopState.shouldBeInstanceOf<State.Success<*>>()
+                searchShopState.shouldHaveEmptySearchWithRecommendationAndLoadMore()
+                searchShopState.shouldHaveShopItemCount(shopItemList.size + moreShopItemList.size)
+            }
+
+            Then("should post shop recommendation item impression tracking event") {
+                val shopRecommendationItemImpressionTrackingEventLiveData = searchShopViewModel.getShopRecommendationItemImpressionTrackingEventLiveData().value
+
+                val shopRecommendationItemImpressionTracking = shopRecommendationItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopRecommendationItemImpressionTracking?.size shouldBe moreShopItemList.size
+            }
+
+            Then("should post shop recommendation product preview impression tracking event") {
+                val shopRecommendationProductPreviewImpressionTrackingEventLiveData =
+                        searchShopViewModel.getShopRecommendationProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking =
+                        shopRecommendationProductPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking?.size shouldBe moreShopItemList.size * shopItemProductList.size
+            }
+
+            Then("should NOT post shop item impression tracking event") {
+                val shopItemImpressionTrackingEventLiveData = searchShopViewModel.getShopItemImpressionTrackingEventLiveData().value
+
+                val shopItemImpressionTracking = shopItemImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                shopItemImpressionTracking shouldBe null
+            }
+
+            Then("should NOT post product preview impression tracking event") {
+                val productPreviewImpressionTrackingEventLiveData = searchShopViewModel.getProductPreviewImpressionTrackingEventLiveData().value
+
+                val productPreviewImpressionTracking = productPreviewImpressionTrackingEventLiveData?.getContentIfNotHandled()
+                productPreviewImpressionTracking shouldBe null
+            }
+
+            Then("assert has next page is true") {
+                val hasNextPage = searchShopViewModel.getHasNextPage()
+
+                hasNextPage shouldBe true
             }
         }
     }

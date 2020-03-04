@@ -67,11 +67,6 @@ public class Product extends BaseAnalyticsModel {
         return extraAttr;
     }
 
-    @Override
-    public void setExtraAttr(Map<String, String> extraAttr) {
-        this.extraAttr = extraAttr;
-    }
-
     public String getCategoryName() {
         return categoryName;
     }

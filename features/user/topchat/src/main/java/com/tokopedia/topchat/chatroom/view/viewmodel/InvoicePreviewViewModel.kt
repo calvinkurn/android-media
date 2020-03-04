@@ -28,6 +28,10 @@ class InvoicePreviewViewModel(
         status,
         totalPriceAmount), SendablePreview {
 
+    fun enoughRequiredData(): Boolean {
+        return !notEnoughRequiredData()
+    }
+
     override fun notEnoughRequiredData(): Boolean {
         return id == INVALID_ID ||
                 invoiceCode.isEmpty() ||

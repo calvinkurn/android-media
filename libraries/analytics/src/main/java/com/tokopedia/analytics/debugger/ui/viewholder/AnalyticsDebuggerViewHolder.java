@@ -1,6 +1,8 @@
 package com.tokopedia.analytics.debugger.ui.viewholder;
 
 import androidx.annotation.LayoutRes;
+
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -32,8 +34,21 @@ public class AnalyticsDebuggerViewHolder extends AbstractViewHolder<AnalyticsDeb
 
     @Override
     public void bind(AnalyticsDebuggerViewModel element) {
-        eventName.setText(element.getName());
-        eventCategory.setText(element.getCategory());
+        String name = element.getName();
+        if (TextUtils.isEmpty(name)) {
+            eventName.setVisibility(View.GONE);
+        } else {
+            eventName.setText(name);
+            eventName.setVisibility(View.VISIBLE);
+        }
+
+        String category = element.getCategory();
+        if (TextUtils.isEmpty(category)) {
+            eventCategory.setVisibility(View.GONE);
+        } else {
+            eventCategory.setText(category);
+            eventCategory.setVisibility(View.VISIBLE);
+        }
         data.setText(element.getDataExcerpt());
         timestamp.setText(element.getTimestamp());
     }

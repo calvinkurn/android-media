@@ -32,6 +32,9 @@ public abstract class ChartEntry implements Comparable<ChartEntry> {
 	/** Input from user */
 	final private String mLabel;
 
+	/** Input from user */
+	private String mCustomValue;
+
 	/** Defines if entry is visible */
 	boolean isVisible;
 
@@ -74,6 +77,27 @@ public abstract class ChartEntry implements Comparable<ChartEntry> {
 		mShadowColor = new int[4];
 	}
 
+	/**
+	 * Constructor.
+	 *
+	 * @param label
+	 * @param value
+	 * @param customValue
+	 */
+	ChartEntry(String label, float value, String customValue) {
+
+		mLabel = label;
+		mValue = value;
+		mCustomValue = customValue;
+
+		mColor = DEFAULT_COLOR;
+
+		mShadowRadius = 0;
+		mShadowDx = 0;
+		mShadowDy = 0;
+		mShadowColor = new int[4];
+	}
+
 
 	public boolean isVisible() {
 
@@ -106,6 +130,9 @@ public abstract class ChartEntry implements Comparable<ChartEntry> {
 		return mValue;
 	}
 
+	public String getmCustomValue() {
+		return mCustomValue;
+	}
 
 	public float getX() {
 

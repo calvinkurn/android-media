@@ -1,9 +1,6 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.presenter;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.presentation.BaseDaggerPresenter;
-import com.tokopedia.core.util.ImageUploadHandler;
-import com.tokopedia.core.util.SessionHandler;
+import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.EditReviewValidateUseCase;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.sendreview.GetSendReviewFormUseCase;
@@ -20,6 +17,8 @@ import com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber.SkipReviewSubscri
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ImageUpload;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.inboxdetail.ShareModel;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.viewmodel.sendreview.SendReviewPass;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +40,10 @@ public class InboxReputationFormPresenter
     private final GetSendReviewFormUseCase getSendReviewFormUseCase;
     private final SendReviewValidateUseCase sendReviewValidateUseCase;
     private final SkipReviewUseCase skipReviewUseCase;
-    private final SessionHandler sessionHandler;
+    private final UserSessionInterface userSession;
     private final EditReviewUseCase editReviewUseCase;
     private final EditReviewValidateUseCase editReviewValidateUseCase;
     private InboxReputationForm.View viewListener;
-    private ImageUploadHandler imageUploadHandler;
     private String cameraFileLoc;
 
     @Inject
@@ -56,7 +54,7 @@ public class InboxReputationFormPresenter
                                  SkipReviewUseCase skipReviewUseCase,
                                  EditReviewUseCase editReviewUseCase,
                                  EditReviewValidateUseCase editReviewValidateUseCase,
-                                 SessionHandler sessionHandler) {
+                                 UserSessionInterface userSession) {
         this.sendReviewValidateUseCase = sendReviewValidateUseCase;
         this.sendReviewUseCase = sendReviewUseCase;
         this.setReviewFormCacheUseCase = setReviewFormCacheUseCase;
@@ -64,15 +62,13 @@ public class InboxReputationFormPresenter
         this.skipReviewUseCase = skipReviewUseCase;
         this.editReviewUseCase = editReviewUseCase;
         this.editReviewValidateUseCase = editReviewValidateUseCase;
-        this.sessionHandler = sessionHandler;
+        this.userSession = userSession;
     }
 
     @Override
     public void attachView(InboxReputationForm.View view) {
         super.attachView(view);
         this.viewListener = view;
-        imageUploadHandler = ImageUploadHandler.createInstance(viewListener.getActivity());
-
     }
 
     @Override
@@ -90,14 +86,14 @@ public class InboxReputationFormPresenter
     public void sendReview(String reviewId, String reputationId, String productId, String shopId,
                            String review, float rating, ArrayList<ImageUpload> list,
                            List<ImageUpload> deletedList, boolean shareFb, boolean anonymous,
-                           String productName, String productAvatar, String productUrl) {
+                           String productName, String productAvatar, String productUrl, String utmSource) {
         viewListener.showLoadingProgress();
         if (list.isEmpty()) {
             sendReviewWithoutImage(reviewId, reputationId, productId, shopId, review, rating,
-                    shareFb, anonymous, productName, productAvatar, productUrl);
+                    shareFb, anonymous, productName, productAvatar, productUrl, utmSource);
         } else {
             sendReviewWithImage(reviewId, reputationId, productId, shopId, review, rating, list,
-                    deletedList, shareFb, anonymous, productName, productAvatar, productUrl);
+                    deletedList, shareFb, anonymous, productName, productAvatar, productUrl, utmSource);
         }
 
     }
@@ -106,7 +102,7 @@ public class InboxReputationFormPresenter
                                      String shopId, String review, float rating,
                                      ArrayList<ImageUpload> list, List<ImageUpload> deletedList,
                                      boolean shareFb, boolean isAnonymous,
-                                     String productName, String productAvatar, String productUrl) {
+                                     String productName, String productAvatar, String productUrl, String utmSource) {
         sendReviewUseCase.execute(SendReviewUseCase.getParam(reviewId,
                 productId,
                 reputationId,
@@ -115,7 +111,8 @@ public class InboxReputationFormPresenter
                 review,
                 list,
                 deletedList,
-                isAnonymous),
+                isAnonymous,
+                utmSource),
                 new SendReviewSubscriber(viewListener, shareFb, new ShareModel(
                         productName,
                         review,
@@ -127,7 +124,8 @@ public class InboxReputationFormPresenter
     private void sendReviewWithoutImage(String reviewId, String reputationId, String productId,
                                         String shopId, String review, float rating, boolean shareFb,
                                         boolean isAnonymous, String productName, String
-                                                productAvatar, String productUrl) {
+                                                productAvatar, String productUrl,
+                                        String utmSource) {
         sendReviewValidateUseCase.execute(SendReviewValidateUseCase.getParam(
                 reviewId,
                 productId,
@@ -135,7 +133,8 @@ public class InboxReputationFormPresenter
                 shopId,
                 String.valueOf(rating),
                 review,
-                isAnonymous
+                isAnonymous,
+                utmSource
         ), new SendReviewWithoutImageSubscriber(viewListener, shareFb, new ShareModel(
                 productName,
                 review,
@@ -180,7 +179,7 @@ public class InboxReputationFormPresenter
     public void skipReview(String reputationId, String shopId, String productId) {
         viewListener.showLoadingProgress();
         skipReviewUseCase.execute(SkipReviewUseCase.getParam(reputationId, shopId, productId,
-                sessionHandler.getLoginID()), new SkipReviewSubscriber(viewListener));
+                userSession.getUserId()), new SkipReviewSubscriber(viewListener));
     }
 
     @Override
@@ -188,17 +187,17 @@ public class InboxReputationFormPresenter
                            String shopId, String review, float rating,
                            ArrayList<ImageUpload> list, List<ImageUpload> deletedList,
                            boolean shareFb, boolean isAnonymous, String productName, String
-                                   productAvatar, String productUrl) {
+                                   productAvatar, String productUrl, String utmSource) {
         viewListener.showLoadingProgress();
         if (list.isEmpty() && deletedList.isEmpty()) {
             editReviewWithoutImage(reviewId, reputationId, productId, shopId, review, rating,
-                    shareFb, productName, productAvatar, productUrl, isAnonymous);
+                    shareFb, productName, productAvatar, productUrl, isAnonymous, utmSource);
         } else if (list.isEmpty() && !deletedList.isEmpty()) {
             editReviewRemoveImage(reviewId, reputationId, productId, shopId, review, rating, list,
-                    deletedList, shareFb, isAnonymous, productName, productAvatar, productUrl);
+                    deletedList, shareFb, isAnonymous, productName, productAvatar, productUrl, utmSource);
         } else {
             editReviewWithImage(reviewId, reputationId, productId, shopId, review, rating, list,
-                    deletedList, shareFb, isAnonymous, productName, productAvatar, productUrl);
+                    deletedList, shareFb, isAnonymous, productName, productAvatar, productUrl, utmSource);
         }
     }
 
@@ -206,13 +205,15 @@ public class InboxReputationFormPresenter
                                        String shopId, String review, float rating,
                                        ArrayList<ImageUpload> list, List<ImageUpload> deletedList,
                                        boolean shareFb, boolean isAnonymous,
-                                       String productName, String productAvatar, String productUrl) {
+                                       String productName, String productAvatar, String productUrl,
+                                       String utmSource) {
         editReviewValidateUseCase.execute(EditReviewValidateUseCase.getParamWithImage(
                 reviewId, productId,
                 reputationId, shopId,
                 String.valueOf(rating),
                 review, list,
-                deletedList, isAnonymous
+                deletedList, isAnonymous,
+                utmSource
                 ),
                 new EditReviewWithoutImageSubscriber(viewListener, shareFb, new ShareModel(
                         productName,
@@ -228,11 +229,12 @@ public class InboxReputationFormPresenter
                                      List<ImageUpload> deletedList,
                                      boolean shareFb, boolean isAnonymous,
                                      String productName, String
-                                             productAvatar, String productUrl) {
+                                             productAvatar, String productUrl,
+                                     String utmSource) {
         editReviewUseCase.execute(EditReviewUseCase.getParam(
                 reviewId, productId, reputationId, shopId,
                 String.valueOf(rating), review, list, deletedList,
-                isAnonymous), new EditReviewSubscriber(viewListener, shareFb, new ShareModel(
+                isAnonymous, utmSource), new EditReviewSubscriber(viewListener, shareFb, new ShareModel(
                 productName,
                 review,
                 productUrl,
@@ -244,11 +246,12 @@ public class InboxReputationFormPresenter
     private void editReviewWithoutImage(String reviewId, String reputationId,
                                         String productId, String shopId,
                                         String review, float rating, boolean shareFb,
-                                        String productName, String productAvatar, String productUrl, boolean isAnonymous) {
+                                        String productName, String productAvatar, String productUrl, boolean isAnonymous,
+                                        String utmSource) {
         editReviewValidateUseCase.execute(EditReviewValidateUseCase.getParam(
                 reviewId, productId,
                 reputationId, shopId,
-                String.valueOf(rating), review, isAnonymous
+                String.valueOf(rating), review, isAnonymous, utmSource
                 ),
                 new EditReviewWithoutImageSubscriber(viewListener, shareFb, new ShareModel(
                         productName,

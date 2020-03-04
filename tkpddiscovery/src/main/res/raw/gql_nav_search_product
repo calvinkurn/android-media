@@ -4,6 +4,8 @@ query SearchProduct($params: String) {
     totalData: count
     count_text
     additionalParams: additional_params
+    errorMessage
+    lite_url
     redirection {
       redirectionURL: redirect_url
       departmentID: department_id

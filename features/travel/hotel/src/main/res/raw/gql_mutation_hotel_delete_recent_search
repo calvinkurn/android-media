@@ -1,0 +1,7 @@
+mutation {
+    travelRecentSearchDelete(
+      dataType : HOTEL
+    ){
+    Result
+  }
+}

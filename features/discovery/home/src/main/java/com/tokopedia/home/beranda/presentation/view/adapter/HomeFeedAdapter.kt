@@ -30,4 +30,8 @@ class HomeFeedAdapter : BaseListAdapter<Visitable<HomeFeedTypeFactory>, HomeFeed
         layoutParams.isFullSpan = getItemViewType(position) !in layoutList
         super.onBindViewHolder(holder, position, payloads)
     }
+
+    override fun onViewRecycled(holder: AbstractViewHolder<out Visitable<*>>) {
+        super.onViewRecycled(holder)
+    }
 }

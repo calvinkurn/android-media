@@ -22,6 +22,7 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import timber.log.Timber;
 
 /**
  * Created by normansyahputa on 8/9/17.
@@ -87,6 +88,7 @@ public class CacheApiInterceptor implements Interceptor {
             return originalResponse;
         } else {
             CacheApiLoggingUtils.dumper(String.format("Data exist, return data from db: %s", request.url().toString()));
+            Timber.w("P1#CACHE_API#datafromdb %s", request.url().toString());
             Response.Builder builder = new Response.Builder();
             builder.request(request);
             builder.protocol(Protocol.HTTP_1_1);

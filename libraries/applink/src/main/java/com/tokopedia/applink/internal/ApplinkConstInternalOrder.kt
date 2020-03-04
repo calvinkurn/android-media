@@ -38,5 +38,33 @@ object ApplinkConstInternalOrder {
     val OPPORTUNITY = "$INTERNAL_SELLER/opportunity"
 
     @JvmField
-    val HISTORY_ORDER = "$INTERNAL_ORDER/history"
+    val TRACK = "$INTERNAL_ORDER/track"
+
+    @JvmField
+    val CANCELLED = "$INTERNAL_SELLER/cancelled"
+
+    @JvmField
+    val WAITING_PICKUP = "$INTERNAL_SELLER/waiting-pickup"
+
+    @JvmField
+    val WAITING_AWB = "$INTERNAL_SELLER/waiting-awb"
+
+    @JvmField
+    val AWB_INVALID = "$INTERNAL_SELLER/awb-invalid"
+
+    @JvmField
+    val AWB_CHANGE = "$INTERNAL_SELLER/awb-change"
+
+    @JvmField
+    val RETUR = "$INTERNAL_SELLER/retur"
+
+    @JvmField
+    val COMPLAINT = "$INTERNAL_SELLER/complaint"
+
+    @JvmField
+    val FINISHED = "$INTERNAL_SELLER/finished"
+
+    @JvmField
+    val ORDER_DETAIL = "$INTERNAL_SELLER/order/{order_id}"
+
 }

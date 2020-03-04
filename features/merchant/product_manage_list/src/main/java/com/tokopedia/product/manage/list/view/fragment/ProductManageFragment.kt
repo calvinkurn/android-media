@@ -25,14 +25,14 @@ import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.appbar.AppBarLayout
-import com.tkpd.library.utils.CommonUtils
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -43,7 +43,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog
 import com.tokopedia.design.button.BottomActionView
 import com.tokopedia.design.component.ToasterError
@@ -56,6 +55,9 @@ import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -99,8 +101,7 @@ import com.tokopedia.product.manage.list.view.model.ProductManageViewModel
 import com.tokopedia.product.manage.list.view.presenter.ProductManagePresenter
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
-import com.tokopedia.seller.common.utils.KMNumbers
-import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity
+import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -156,7 +157,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
     private var itemsChecked: MutableList<ProductManageViewModel> = mutableListOf()
 
-
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
     lateinit var prefs: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -171,15 +172,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         context?.let {
             prefs = it.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
         }
+        permissionCheckerHelper = PermissionCheckerHelper()
         setHasOptionsMenu(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (GlobalConfig.isCustomerApp()) {
-            inflater.inflate(R.menu.menu_product_manage_dark, menu)
-        } else {
-            inflater.inflate(R.menu.menu_product_manage, menu)
-        }
+        var menuViewId = R.menu.menu_product_manage_dark
+        if (GlobalConfig.isSellerApp()) menuViewId = R.menu.menu_product_manage
+        inflater.inflate(menuViewId, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -595,9 +595,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        if (GlobalConfig.isSellerApp()) {
-            DrawerGetNotificationService.startService(context, true, true)
-        }
         bulkCheckBox.isChecked = false
         productManageListAdapter.resetCheckedItemSet()
         itemsChecked.clear()
@@ -731,7 +728,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private fun showActionProductDialog(productManageViewModel: ProductManageViewModel) {
 
         activity?.let {
-            CommonUtils.hideKeyboard(it, it.currentFocus)
+            KeyboardHandler.hideSoftKeyboard(it)
         }
 
         val bottomSheetBuilder = BottomSheetBuilder(activity)
@@ -801,7 +798,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                         },
 
                         DialogInterface.OnClickListener { dialog, _ ->
-                            ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.core2.R.string.title_cancel))
+                            ProductManageTracking.eventProductManageOverflowMenu(it.title.toString() + " - " + getString(com.tokopedia.product.manage.item.R.string.label_cancel))
                             dialog.dismiss()
                         })
 
@@ -812,7 +809,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     showDialogChangeProductPrice(productManageViewModel.productId, productManageViewModel.productPricePlain, productManageViewModel.productCurrencyId)
                 }
             } else if (itemId == com.tokopedia.product.manage.list.R.id.share_product_menu) {
-                downloadBitmap(productManageViewModel)
+                onShareProductClicked(productManageViewModel)
             } else if (itemId == com.tokopedia.product.manage.list.R.id.set_cashback_product_menu) {
                 onSetCashbackClicked(productManageViewModel)
             } else if (itemId == com.tokopedia.product.manage.list.R.id.set_promo_ads_product_menu) {
@@ -828,6 +825,33 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
 //                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
 //            }
         }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(PERMISSION_READ_EXTERNAL_STORAGE, PERMISSION_WRITE_EXTERNAL_STORAGE)
+    }
+
+    private fun onShareProductClicked(productManageViewModel: ProductManageViewModel) {
+        permissionCheckerHelper.checkPermissions(
+                this,
+                getPermissions(),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        context?.let {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                        context?.let {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
+                    }
+
+                    override fun onPermissionGranted() {
+                        downloadBitmap(productManageViewModel)
+                    }
+                })
     }
 
     private fun onSetFeaturedProductClicked(productManageViewModel: ProductManageViewModel, setFeaturedType: Int) {
@@ -977,9 +1001,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         activity?.let {
             val alertDialog = AlertDialog.Builder(it)
             alertDialog.setTitle(com.tokopedia.product.manage.item.R.string.label_delete)
-            alertDialog.setMessage(com.tokopedia.core2.R.string.dialog_delete_product)
+            alertDialog.setMessage(R.string.product_manage_dialog_delete_product)
             alertDialog.setPositiveButton(com.tokopedia.product.manage.item.R.string.label_delete, onClickListener)
-            alertDialog.setNegativeButton(com.tokopedia.core2.R.string.title_cancel, onCancelListener)
+            alertDialog.setNegativeButton(com.tokopedia.product.manage.item.R.string.label_cancel, onCancelListener)
             alertDialog.show()
         }
     }
@@ -1064,7 +1088,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     val imageUrls = it.getStringArrayListExtra(PICKER_RESULT_PATHS)
                     val imageDescList = it.getStringArrayListExtra(RESULT_IMAGE_DESCRIPTION_LIST)
                     if (imageUrls != null && imageUrls.size > 0) {
-                        ProductDraftListActivity.startInstagramSaveBulkFromLocal(context, imageUrls, imageDescList)
+                        openProductDraftList(imageUrls, imageDescList)
                     }
                 }
                 REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
@@ -1097,4 +1121,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        context?.let {
+            permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
+        }
+    }
+
+    private fun openProductDraftList(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
+        val intent = RouteManager.getIntent(activity, ApplinkConst.PRODUCT_DRAFT)
+        intent.putStringArrayListExtra(LOCAL_PATH_IMAGE_LIST, imageUrls)
+        intent.putStringArrayListExtra(DESC_IMAGE_LIST, imageDescList)
+        startActivity(intent)
+    }
+
+    companion object {
+        private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
+        private const val DESC_IMAGE_LIST = "desc_img_list"
+    }
 }

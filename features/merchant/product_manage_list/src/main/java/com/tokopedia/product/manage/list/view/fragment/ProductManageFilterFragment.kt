@@ -14,25 +14,29 @@ import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickList
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
-import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.list.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
 import com.tokopedia.product.manage.list.constant.option.CatalogProductOption
 import com.tokopedia.product.manage.list.constant.option.ConditionProductOption
 import com.tokopedia.product.manage.list.constant.option.PictureStatusProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageFilterModel
-import com.tokopedia.seller.product.category.view.activity.CategoryDynamicPickerActivity
-import com.tokopedia.seller.product.category.view.activity.CategoryPickerActivity
-import com.tokopedia.seller.product.etalase.view.activity.EtalaseDynamicPickerActivity
-import com.tokopedia.seller.product.etalase.view.model.MyEtalaseItemViewModel
-import com.tokopedia.seller.product.manage.view.model.ProductManageCategoryViewModel
+import com.tokopedia.product.manage.item.etalase.view.model.MyEtalaseItemViewModel
+import com.tokopedia.product.manage.item.category.view.model.ProductManageCategoryViewModel
 import kotlinx.android.synthetic.main.fragment_product_manage_filter.*
 import java.util.*
 
 class ProductManageFilterFragment : BaseDaggerFragment() {
 
     companion object {
+        const val CATEGORY_RESULT_ID = "CATEGORY_RESULT_ID"
+        const val CATEGORY_RESULT_NAME = "CATEGORY_RESULT_NAME"
+        const val CATEGORY_ID_INIT_SELECTED = "CATEGORY_ID_INIT_SELECTED"
+        const val ADDITIONAL_OPTION = "additional_option"
+        const val SELECTED_ETALASE_ID = "SELECTED_ETALASE_ID"
+
         fun createInstance(productManageFilterModel: ProductManageFilterModel) = ProductManageFilterFragment().also {
             it.arguments = Bundle().apply {
                 putParcelable(EXTRA_FILTER_SELECTED, productManageFilterModel)
@@ -149,7 +153,9 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_PREORDER, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_preorder)))
         myEtalaseItemViewModels.add(MyEtalaseItemViewModel(ProductManageListConstant.FILTER_ALL_SHOWCASE, getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_all_showcase)))
         productManageFilterModel?.let {
-            val intent = EtalaseDynamicPickerActivity.createInstance(activity, it.etalaseProductOption.toLong(), myEtalaseItemViewModels)
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.ETALASE_DYNAMIC_PICKER)
+            intent.putExtra(SELECTED_ETALASE_ID, it.etalaseProductOption.toLong())
+            intent.putParcelableArrayListExtra(ADDITIONAL_OPTION, myEtalaseItemViewModels)
             startActivityForResult(intent, ProductManageListConstant.REQUEST_CODE_ETALASE)
         }
     }
@@ -166,7 +172,10 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
 
         val categoryViewModels = ArrayList<ProductManageCategoryViewModel>()
         categoryViewModels.add(ProductManageCategoryViewModel(getString(com.tokopedia.product.manage.list.R.string.product_manage_filter_menu_category_all), ProductManageListConstant.FILTER_ALL_CATEGORY, false))
-        val intent = CategoryDynamicPickerActivity.createIntent(activity, categoryId, categoryViewModels)
+
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.CATEGORY_DYNAMIC_PICKER)
+        intent.putExtra(CATEGORY_ID_INIT_SELECTED, categoryId)
+        intent.putParcelableArrayListExtra(ADDITIONAL_OPTION, categoryViewModels)
         startActivityForResult(intent, ProductManageListConstant.REQUEST_CODE_CATEGORY)
     }
 
@@ -235,8 +244,8 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         when (requestCode) {
             ProductManageListConstant.REQUEST_CODE_CATEGORY -> if (resultCode == Activity.RESULT_OK) {
                 data?.run {
-                    val categoryId = getLongExtra(CategoryPickerActivity.CATEGORY_RESULT_ID, -1)
-                    val categoryName = getStringExtra(CategoryPickerActivity.CATEGORY_RESULT_NAME)
+                    val categoryId = getLongExtra(CATEGORY_RESULT_ID, -1)
+                    val categoryName = getStringExtra(CATEGORY_RESULT_NAME)
                     productManageFilterModel?.let {
                         it.categoryId = categoryId.toString()
                         it.categoryName = categoryName

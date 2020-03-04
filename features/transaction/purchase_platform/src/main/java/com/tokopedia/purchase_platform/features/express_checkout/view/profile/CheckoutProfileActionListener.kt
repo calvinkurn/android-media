@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.profile
 
-import com.tokopedia.purchase_platform.features.express_checkout.view.profile.viewmodel.ProfileViewModel
+import com.tokopedia.purchase_platform.features.express_checkout.view.profile.uimodel.ProfileUiModel
 
 /**
  * Created by Irfan Khoirul on 01/01/19.
@@ -8,5 +8,5 @@ import com.tokopedia.purchase_platform.features.express_checkout.view.profile.vi
 
 interface CheckoutProfileActionListener {
 
-    fun onItemSelected(profileViewModel: ProfileViewModel)
+    fun onItemSelected(profileUiModel: ProfileUiModel)
 }

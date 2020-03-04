@@ -14,6 +14,8 @@ internal interface ShopListTypeFactory {
 
     fun type(shopEmptySearchViewModel: ShopEmptySearchViewModel): Int
 
+    fun type(shopRecommendationTitleViewModel: ShopRecommendationTitleViewModel): Int
+
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 
 }

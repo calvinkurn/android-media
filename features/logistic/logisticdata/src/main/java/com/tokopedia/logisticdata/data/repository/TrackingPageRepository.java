@@ -1,6 +1,6 @@
 package com.tokopedia.logisticdata.data.repository;
 
-import com.tokopedia.abstraction.common.network.constant.ErrorNetMessage;
+import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.logisticdata.data.apiservice.TrackingOrderApi;
 import com.tokopedia.logisticdata.data.entity.trackingshipment.TrackingResponse;
 

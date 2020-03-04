@@ -41,7 +41,7 @@ dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.opportunity)
-    implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation project(rootProject.ext.features.sellerHomeDrawer)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.tkpddesign)

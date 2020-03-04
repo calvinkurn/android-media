@@ -4,16 +4,16 @@ ext {
     tkpdInternalLibDependencies = [
             authentication          : "com.tokopedia.authentication:authentication:1.0.8",
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24",
-            cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.1",
+            cacheapi                : "com.tokopedia.cacheapi:cache_api:0.0.2",
             globalconfig            : "com.tokopedia.config:global_config:1.0.3",
-            graphql                 : "com.tokopedia.graphql:graphql:1.0.20",
-            network                 : "com.tokopedia.network:network:1.0.13",
-            url                     : "com.tokopedia.url:url:1.0.2",
+            graphql                 : "com.tokopedia.graphql:graphql:1.0.28",
+            network                 : "com.tokopedia.network:network:1.0.15",
+            url                     : "com.tokopedia.url:url:1.0.3",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             usersession             : "com.tokopedia.user.session:user_session:1.0.6",
-            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.7-test",
+            akamaiBotLib            : "com.tokopedia.akamai:akamai_bot_lib:1.0.9",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.2",
-            williamchart            : "com.tokopedia.williamchart:williamchart:0.0.1"
+            williamchart            : "com.tokopedia.williamchart:williamchart:0.0.6"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -33,6 +33,7 @@ ext {
             core_legacy             : ":libraries:core_legacy",
             coreNetwork             : ":libraries:core_network",
             datePickerRange         : ":libraries:date_picker_range",
+            deviceInfo              : ":libraries:device_info",
             dynamicFeatures         : ":libraries:dynamic_features",
             fingerprint             : ":libraries:fingerprint",
             graphView               : ":libraries:graph_view",
@@ -53,6 +54,8 @@ ext {
             pushNotification        : ":libraries:push_notification",
             reactNative             : ":libraries:react_native",
             remoteConfig            : ":libraries:remote_config",
+            remoteResourceRequest   : ":libraries:remoteresourcerequest",
+            shakeDetect             : ":libraries:shake_detect",
             sharedata               : ":libraries:sharedata",
             track                   : ":libraries:track",
             trackingOptimizer       : ":libraries:tracking_optimizer",
@@ -60,6 +63,7 @@ ext {
             twitterShare            : ":libraries:twitter_share",
             videoRecorder           : ":libraries:video_recorder",
             videoUploader           : ":libraries:videouploader",
+            weaver                  : ":libraries:weaver",
             webview                 : ":libraries:webview",
             websocket               : ":libraries:websocket",
             williamchart            : ":libraries:williamchart",
@@ -70,6 +74,7 @@ ext {
             tkpdabstraction         : ":tkpdabstraction",
             tkpddesign              : ":tkpddesign",
             translator              : ":libraries:translator",
-            traceroute              : ":libraries:traceroute"
+            traceroute              : ":libraries:traceroute",
+            imagePreviewSlider      : ":libraries:imagepreviewslider",
     ]
 }

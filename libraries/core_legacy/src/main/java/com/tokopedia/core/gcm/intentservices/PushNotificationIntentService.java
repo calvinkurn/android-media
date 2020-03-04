@@ -3,13 +3,13 @@ package com.tokopedia.core.gcm.intentservices;
 import android.app.IntentService;
 import android.content.Intent;
 
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.gcm.FCMCacheManager;
 import com.tokopedia.core.gcm.data.PushNotificationDataInteractor;
 import com.tokopedia.core.gcm.data.entity.FCMTokenUpdateEntity;
 import com.tokopedia.core.gcm.model.FCMTokenUpdate;
 
 import rx.Subscriber;
+import timber.log.Timber;
 
 /**
  * @author by alvarisi on 12/8/16.
@@ -60,7 +60,7 @@ public class PushNotificationIntentService extends IntentService {
 
         @Override
         public void onNext(FCMTokenUpdateEntity entity) {
-            CommonUtils.dumper(entity.toString());
+            Timber.d(entity.toString());
             if (entity.getSuccess()) {
                 FCMCacheManager.storeFcmTimestamp(getApplicationContext());
                 FCMCacheManager.storeRegId(entity.getToken(), getBaseContext());

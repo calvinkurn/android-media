@@ -109,7 +109,18 @@
         <activity
             android:name="com.tokopedia.core.ManageGeneral"
             android:label="@string/title_activity_manage_general"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:path="@string/path_manage_general"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name="com.tokopedia.core.invoice.activity.InvoiceRendererActivity"
             android:label="@string/title_activity_download_invoice" />

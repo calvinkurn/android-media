@@ -22,12 +22,11 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.network.exception.UserNotLoginException
+import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
@@ -65,7 +64,7 @@ import com.tokopedia.shop.common.view.adapter.MembershipStampAdapter
 import com.tokopedia.shop.common.widget.MembershipBottomSheetSuccess
 import com.tokopedia.shop.common.widget.RecyclerViewPadding
 import com.tokopedia.shop.etalase.view.model.ShopEtalaseViewModel
-import com.tokopedia.shop.page.view.activity.ShopPageActivity
+import com.tokopedia.shop.oldpage.view.activity.ShopPageActivity
 import com.tokopedia.shop.product.di.component.DaggerShopProductComponent
 import com.tokopedia.shop.product.di.module.ShopProductModule
 import com.tokopedia.shop.product.util.ShopProductOfficialStoreUtils
@@ -75,6 +74,7 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductEtalaseListViewHolder
 import com.tokopedia.shop.product.view.adapter.viewholder.ShopProductViewHolder
+import com.tokopedia.shop.product.view.listener.OnShopProductListFragmentListener
 import com.tokopedia.shop.product.view.listener.ShopCarouselSeeAllClickedListener
 import com.tokopedia.shop.product.view.listener.ShopProductClickedListener
 import com.tokopedia.shop.product.view.model.*
@@ -111,7 +111,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     private var shopInfo: ShopInfo? = null
     private var shopModuleRouter: ShopModuleRouter? = null
 
-    private var onShopProductListFragmentListener: ShopProductListFragment.OnShopProductListFragmentListener? = null
+    private var onShopProductListFragmentListener: OnShopProductListFragmentListener? = null
 
     private val sortName = Integer.toString(Integer.MIN_VALUE)
     private var recyclerView: RecyclerView? = null
@@ -951,26 +951,25 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {
-        if (context == null) {
-            return
+        context?.let {
+            shopPageTracking?.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, shopId, position)
+            //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
+            /*if (!merchantVoucherListPresenter.isLogin()) {
+                if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
+                    Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
+                    startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
+                }
+            } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
+                showUseMerchantVoucherLoading();
+                merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
+                        merchantVoucherViewModel.getVoucherId());
+            }*/
+            //TOGGLE_MVC_OFF
+            showSnackBarClose(getString(R.string.title_voucher_code_copied))
         }
-        shopPageTracking!!.clickUseMerchantVoucher(isOwner, merchantVoucherViewModel, position)
-        //TOGGLE_MVC_ON use voucher is not ready, so we use copy instead. Keep below code for future release
-        /*if (!merchantVoucherListPresenter.isLogin()) {
-            if (RouteManager.isSupportApplink(getContext(), ApplinkConst.LOGIN)) {
-                Intent intent = RouteManager.getIntent(getContext(), ApplinkConst.LOGIN);
-                startActivityForResult(intent, REQUEST_CODE_LOGIN_USE_VOUCHER);
-            }
-        } else if (!merchantVoucherListPresenter.isMyShop(shopInfo.getInfo().getShopId())) {
-            showUseMerchantVoucherLoading();
-            merchantVoucherListPresenter.useMerchantVoucher(merchantVoucherViewModel.getVoucherCode(),
-                    merchantVoucherViewModel.getVoucherId());
-        }*/
-        //TOGGLE_MVC_OFF
-        showSnackBarClose(getString(R.string.title_voucher_code_copied))
     }
 
-    fun showSnackBarClose(stringToShow: String) {
+    private fun showSnackBarClose(stringToShow: String) {
         activity?.let {
             val snackbar = Snackbar.make(it.findViewById(android.R.id.content), stringToShow,
                     Snackbar.LENGTH_LONG)
@@ -981,7 +980,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
-        shopPageTracking?.clickDetailMerchantVoucher(isOwner)
+        shopPageTracking?.clickDetailMerchantVoucher(isOwner, merchantVoucherViewModel.voucherId.toString())
 
         context?.let {
             val intent = MerchantVoucherDetailActivity.createIntent(it, merchantVoucherViewModel.voucherId,
@@ -1037,7 +1036,7 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     }
 
     override fun onSuccessGetMerchantVoucherList(merchantVoucherViewModelList: ArrayList<MerchantVoucherViewModel>) {
-        shopPageTracking?.impressionUseMerchantVoucher(isOwner, merchantVoucherViewModelList)
+        shopPageTracking?.impressionUseMerchantVoucher(isOwner, merchantVoucherViewModelList, shopId)
 
         shopProductAdapter.setShopMerchantVoucherViewModel(ShopMerchantVoucherViewModel(merchantVoucherViewModelList))
         shopProductAdapter.refreshSticky()
@@ -1089,12 +1088,12 @@ class ShopProductListLimitedFragment : BaseListFragment<BaseShopProductViewModel
     override fun onAttachActivity(context: Context) {
         super.onAttachActivity(context)
         shopModuleRouter = context.applicationContext as ShopModuleRouter
-        onShopProductListFragmentListener = context as? ShopProductListFragment.OnShopProductListFragmentListener
+        onShopProductListFragmentListener = context as? OnShopProductListFragmentListener
 
     }
 
 
-    override fun onSuccessGetShopInfo(shopInfo: com.tokopedia.shop.common.data.source.cloud.model.ShopInfo) {
+    override fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         // NO-Op
     }
 
