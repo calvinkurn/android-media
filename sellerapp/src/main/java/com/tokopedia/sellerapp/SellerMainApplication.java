@@ -54,6 +54,8 @@ import timber.log.Timber;
 public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
 
+    public static final String ANDROID_TOKOFIX_ENABLE = "android_tokofix_enable";
+
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
@@ -149,7 +151,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         TimberWrapper.init(this);
         super.onCreate();
-        TokoFix.init(this, BuildConfig.VERSION_NAME);
+        if(remoteConfig.getBoolean(ANDROID_TOKOFIX_ENABLE, true)) {
+            TokoFix.init(this, BuildConfig.VERSION_NAME);
+        }
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
         InAppManager.getInstance().setInAppListener(this);
         initCacheApi();
