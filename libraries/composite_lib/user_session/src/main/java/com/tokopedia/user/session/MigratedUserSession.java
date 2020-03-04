@@ -9,6 +9,7 @@ import static com.tokopedia.user.session.Constants.ACCESS_TOKEN;
 import static com.tokopedia.user.session.Constants.LOGIN_SESSION;
 
 public class MigratedUserSession {
+    public static final boolean IS_ENABLE = false;
 
     protected Context context;
 
@@ -22,6 +23,11 @@ public class MigratedUserSession {
     }
 
     protected void cleanKey(String prefName, String keyName){
+        if(!IS_ENABLE){
+            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        }
+
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.remove(keyName).apply();
@@ -32,6 +38,11 @@ public class MigratedUserSession {
     }
 
     protected void setString(String prefName, String keyName, String value) {
+        if(!IS_ENABLE){
+            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        }
+
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putString(keyName, value);
@@ -45,6 +56,9 @@ public class MigratedUserSession {
 
         String oldValue = getString(oldprefName, oldKeyName, defValue);
 
+        if(!IS_ENABLE)
+            return oldValue;
+
         if(oldValue != null && !oldValue.equals(defValue)){
             cleanKey(oldprefName, oldKeyName);
             setString(prefName, keyName, oldValue);
@@ -56,11 +70,19 @@ public class MigratedUserSession {
     }
 
     protected boolean getBoolean(String prefName, String keyName, boolean defValue) {
+        if(!IS_ENABLE){
+            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        }
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         return sharedPrefs.getBoolean(keyName, defValue);
     }
 
     protected void setBoolean(String prefName, String keyName, boolean value) {
+        if(!IS_ENABLE){
+            prefName = EncoderDecoder.Decrypt(prefName, UserSession.KEY_IV);
+            keyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
+        }
         SharedPreferences sharedPrefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();
         editor.putBoolean(keyName, value);
@@ -73,6 +95,9 @@ public class MigratedUserSession {
         String oldKeyName = EncoderDecoder.Decrypt(keyName, UserSession.KEY_IV);
 
         boolean oldValue = getBoolean(oldprefName, oldKeyName, defValue);
+
+        if(!IS_ENABLE)
+            return oldValue;
 
         if( oldValue != defValue){
             cleanKey(oldprefName, oldKeyName);
