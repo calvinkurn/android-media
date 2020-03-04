@@ -52,7 +52,7 @@ import timber.log.Timber;
 public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
 
-    public static final String ANDROID_ROBUST_ENABLE = "android_robust_enable";
+    public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
