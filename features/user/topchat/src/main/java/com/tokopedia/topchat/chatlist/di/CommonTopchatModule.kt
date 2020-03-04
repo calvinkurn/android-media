@@ -1,17 +1,19 @@
 package com.tokopedia.topchat.chatlist.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import dagger.Module
 import dagger.Provides
 
 @Module
-class CommonTopchatModule {
+class CommonTopchatModule(val context: Context) {
 
     @Provides
-    fun provideRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
+    fun provideContext(): Context = context
+
+    @Provides
+    fun provideRemoteConfig(context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
     }
 

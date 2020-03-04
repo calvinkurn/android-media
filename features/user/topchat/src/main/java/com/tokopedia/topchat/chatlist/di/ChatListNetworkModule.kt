@@ -3,20 +3,18 @@ package com.tokopedia.topchat.chatlist.di
 import android.content.Context
 import android.content.res.Resources
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.chat_common.network.ChatUrl
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
 import com.tokopedia.topchat.common.chat.api.ChatApi
-import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,8 +31,10 @@ import javax.inject.Named
  */
 
 @Module
-class ChatListNetworkModule {
+class ChatListNetworkModule(val context: Context) {
 
+    @Provides
+    fun provideContext(): Context = context
 
     private val NET_READ_TIMEOUT = 60
     private val NET_WRITE_TIMEOUT = 60
@@ -43,7 +43,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideChatRetrofit(@ApplicationContext context: Context, userSession: UserSession): Retrofit {
+    fun provideChatRetrofit(context: Context, userSession: UserSession): Retrofit {
         if ((context is NetworkRouter).not()) {
             throw IllegalStateException("Application must implement "
                     .plus(NetworkRouter::class.java.simpleName)
@@ -61,19 +61,19 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSession {
+    fun provideUserSession(context: Context): UserSession {
         return UserSession(context)
     }
 
     @ChatListScope
     @Provides
-    fun provideResources(@ApplicationContext context: Context): Resources {
+    fun provideResources(context: Context): Resources {
         return context.resources
     }
 
     @ChatListScope
     @Provides
-    fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
+    fun provideNetworkRouter(context: Context): NetworkRouter {
         return (context as NetworkRouter)
     }
 
@@ -101,13 +101,13 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
+    fun provideChuckerInterceptor(context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
     @ChatListScope
     @Provides
-    fun provideXUserIdInterceptor(@ApplicationContext context: Context,
+    fun provideXUserIdInterceptor(context: Context,
                                   networkRouter: NetworkRouter,
                                   userSession: UserSession):
             XUserIdInterceptor {
@@ -124,7 +124,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideTkpdAuthInterceptor(@ApplicationContext context: Context,
+    fun provideTkpdAuthInterceptor(context: Context,
                                    networkRouter: NetworkRouter,
                                    userSessionInterface: UserSessionInterface):
             TkpdAuthInterceptor {
@@ -133,7 +133,7 @@ class ChatListNetworkModule {
 
     @ChatListScope
     @Provides
-    fun provideOkHttpClient(@ApplicationContext context: Context,
+    fun provideOkHttpClient(context: Context,
                             retryPolicy: OkHttpRetryPolicy,
                             errorResponseInterceptor: ErrorResponseInterceptor,
                             chuckInterceptor: ChuckerInterceptor,

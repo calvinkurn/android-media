@@ -1,7 +1,6 @@
 package com.tokopedia.topchat.chatlist.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.user.session.UserSession
@@ -17,7 +16,10 @@ import kotlinx.coroutines.Dispatchers
 
 @ChatListScope
 @Module
-class ChatListSettingModule {
+class ChatListSettingModule(val context: Context) {
+
+    @Provides
+    fun provideContext(): Context = context
 
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
@@ -27,6 +29,6 @@ class ChatListSettingModule {
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSessionInterface(context: Context): UserSessionInterface = UserSession(context)
 
 }

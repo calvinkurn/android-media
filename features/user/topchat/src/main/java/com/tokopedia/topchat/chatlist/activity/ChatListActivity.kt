@@ -29,8 +29,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatlist.adapter.ChatListPagerAdapter
 import com.tokopedia.topchat.chatlist.analytic.ChatListAnalytic
 import com.tokopedia.topchat.chatlist.data.ChatListQueriesConstant
-import com.tokopedia.topchat.chatlist.di.ChatListComponent
-import com.tokopedia.topchat.chatlist.di.DaggerChatListComponent
+import com.tokopedia.topchat.chatlist.di.*
 import com.tokopedia.topchat.chatlist.fragment.ChatListFragment
 import com.tokopedia.topchat.chatlist.listener.ChatListContract
 import com.tokopedia.topchat.chatlist.model.BaseIncomingItemWebSocketModel.Companion.ROLE_BUYER
@@ -447,8 +446,14 @@ class ChatListActivity : BaseTabActivity()
     }
 
     override fun getComponent(): ChatListComponent {
-        return DaggerChatListComponent.builder().baseAppComponent(
-                (application as BaseMainApplication).baseAppComponent).build()
+        return DaggerChatListComponent.builder()
+                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .chatListNetworkModule(ChatListNetworkModule(this))
+                .chatListQueryModule(ChatListQueryModule(this))
+                .chatListSettingModule(ChatListSettingModule(this))
+                .chatNotificationsQueryModule(ChatNotificationsQueryModule(this))
+                .commonTopchatModule(CommonTopchatModule(this))
+                .build()
     }
 
     companion object {
