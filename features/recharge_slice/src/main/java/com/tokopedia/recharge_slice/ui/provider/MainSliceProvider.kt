@@ -140,7 +140,6 @@ class MainSliceProvider : SliceProvider() {
         val deviceId = 0
         val params = mapOf(RECHARGE_SLICE_DEVICE_ID to deviceId)
         val graphqlRequest = GraphqlRequest(gqlQuery, Data::class.java, params)
-        alreadyGetData = true
         GraphqlClient.init(contextNonNull)
         DaggerRechargeSliceComponent.builder().build().inject(this)
         GlobalScope.launch(Dispatchers.IO) {
