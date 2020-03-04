@@ -84,6 +84,7 @@ class ProductManageActivity : BaseSellerReceiverDrawerActivity(), HasComponent<P
             val intent = Intent(this, ProductManageActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
+            finish()
         }
     }
 }
