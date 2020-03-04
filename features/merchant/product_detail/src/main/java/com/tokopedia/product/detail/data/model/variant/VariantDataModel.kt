@@ -30,9 +30,10 @@ data class VariantCategory(
         var variantGuideline: String = "",
         var hasCustomImage: Boolean = false,
         var selectedValue: String = "",
+        var isLeaf: Boolean = false,
         var variantOptions: MutableList<VariantOptionWithAttribute> = arrayListOf()
 ) {
-    fun getSelectedOption(): Int? {
-        return variantOptions.find { it.currentState == ProductDetailConstant.STATE_SELECTED }?.variantId
+    fun getSelectedOption(): VariantOptionWithAttribute? {
+        return variantOptions.find { it.currentState == ProductDetailConstant.STATE_SELECTED }
     }
 }

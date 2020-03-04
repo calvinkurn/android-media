@@ -35,7 +35,6 @@ import com.crashlytics.android.Crashlytics
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
-import com.google.gson.Gson
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -54,6 +53,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
+import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
@@ -83,14 +84,15 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.spesification.Specification
+import com.tokopedia.product.detail.data.model.variant.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
@@ -100,6 +102,7 @@ import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDe
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductVariantListener
 import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
 import com.tokopedia.product.detail.view.util.ErrorHelper
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
@@ -139,11 +142,10 @@ import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
-import com.tokopedia.common_tradein.utils.TradeInUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener {
+class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener {
 
     companion object {
         fun newInstance(productId: String? = null,
@@ -184,7 +186,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     //Listener function
     private lateinit var initToolBarMethod: () -> Unit
-
+    private var cacheFragmentManager: FragmentManager? = null
     //Data
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
@@ -218,7 +220,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private lateinit var topAdsDetailSheet: TopAdsDetailSheet
     private var shouldShowCartAnimation = false
     private var loadingProgressDialog: ProgressDialog? = null
-    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this) }
+    private val adapterFactory by lazy { DynamicProductDetailAdapterFactoryImpl(this, this) }
     private val dynamicAdapter by lazy { DynamicProductDetailAdapter(adapterFactory, this) }
     private var menu: Menu? = null
     private val errorBottomsheets: ErrorBottomsheets by lazy {
@@ -227,7 +229,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
     private val irisSessionId by lazy {
-        context?.let{ IrisSession(it).getSessionId() } ?: ""
+        context?.let { IrisSession(it).getSessionId() } ?: ""
     }
 
     //Performance Monitoring
@@ -303,6 +305,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
         context?.let {
+            cacheFragmentManager = childFragmentManager
             pdpHashMapUtil = DynamicProductDetailHashMap(it, mapOf(ProductDetailConstant.PRODUCT_SNAPSHOT to ProductSnapshotDataModel()))
         }
         setHasOptionsMenu(true)
@@ -940,7 +943,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun getProductFragmentManager(): FragmentManager {
-        return childFragmentManager
+        return cacheFragmentManager!!
     }
 
     override fun showAlertCampaignEnded() {
@@ -1362,6 +1365,32 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             DynamicProductDetailTracking.Click.trackTradeinBeforeDiagnotics(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
     }
 
+    override fun onVariantGuideLineClicked(url: String) {
+        Log.e("guideline", "guideline clicked $url")
+    }
+
+    override fun getStockWording(): String {
+        return if (VariantMapper.selectedOptionId.size != viewModel.variantData?.variant?.size) {
+            ""
+        } else {
+            viewModel.variantData?.children?.find {
+                it.optionIds == VariantMapper.selectedOptionId
+            }?.stock?.stockWording ?: ""
+        }
+    }
+
+    override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
+        pdpHashMapUtil?.productNewVariantDataModel?.let {
+            it.mapOfSelectedVariant[variantOptions.variantOptionIdentifier] = variantOptions.variantId
+        }
+        val variantData = VariantMapper.processVariant(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, variantOptions.level)
+        pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
+        pdpHashMapUtil?.snapShotMap?.media = listOf(ProductMediaDataModel(type = "image",urlOriginal = "https://ecs7.tokopedia.net/img/cache/700/product-1/2015/8/13/194971/194971_3f93a0e8-4199-11e5-bfa9-295e87772fba.jpg"))
+        pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
+        dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel)
+        adapter.notifyItemChanged(0)
+    }
+
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
         if (data == null || !data.hasChildren) {
             dynamicAdapter.clearElement(pdpHashMapUtil?.productVariantInfoMap)
@@ -1372,7 +1401,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantMapper.mapVariantIdentifierToHashMap(data)
         val variantData = VariantMapper.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
         pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
-        Log.e("variantnya", Gson().toJson(VariantMapper.processVariant(data)).toString())
 
         // defaulting selecting variant
         if (userInputVariant == data.parentId.toString() && data.defaultChild > 0) {

@@ -8,18 +8,22 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.common_tradein.model.TradeInParams
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
-import com.tokopedia.product.detail.data.model.*
+import com.tokopedia.product.detail.data.model.ProductInfoP2General
+import com.tokopedia.product.detail.data.model.ProductInfoP2Login
+import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
+import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
@@ -28,7 +32,6 @@ import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
-import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.util.DynamicProductDetailDispatcherProvider
 import com.tokopedia.purchase_platform.common.data.model.request.helpticket.SubmitHelpTicketRequest
@@ -120,6 +123,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var shopInfo: ShopInfo? = null
     var installmentData: FinancingDataResponse? = null
     var tradeInParams: TradeInParams = TradeInParams()
+    var variantData: ProductVariant? = null
 
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
@@ -248,7 +252,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 tradeInParams.widgetString = tradeInResponse.widgetString
             }
 
-            _p2General.value = p2GeneralAsync.await()
+            _p2General.value = p2GeneralAsync.await().also {
+                variantData = it.variantResp
+            }
             p2LoginDeferred?.let {
                 _p2Login.value = it.await()
             }

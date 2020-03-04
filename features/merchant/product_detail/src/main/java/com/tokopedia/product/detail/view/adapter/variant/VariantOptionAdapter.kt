@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.detail.data.model.variant.VariantCategory
 import com.tokopedia.product.detail.data.model.variant.VariantOptionWithAttribute
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductVariantListener
 import com.tokopedia.product.detail.view.viewholder.variant.BaseVariantViewHolder
 import com.tokopedia.product.detail.view.viewholder.variant.VariantChipViewHolder
 import com.tokopedia.product.detail.view.viewholder.variant.VariantColorViewHolder
@@ -14,7 +14,7 @@ import com.tokopedia.product.detail.view.viewholder.variant.VariantImageViewHold
 /**
  * Created by Yehezkiel on 2020-02-28
  */
-class VariantOptionAdapter(val listener: DynamicProductDetailListener) : RecyclerView.Adapter<BaseVariantViewHolder<VariantOptionWithAttribute>>() {
+class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.Adapter<BaseVariantViewHolder<VariantOptionWithAttribute>>() {
 
     private val TYPE_IMAGE = 1
     private val TYPE_COLOR = 2
@@ -27,12 +27,17 @@ class VariantOptionAdapter(val listener: DynamicProductDetailListener) : Recycle
         this.variantCategory = data
     }
 
+    fun setDataWithPayload(data: VariantCategory) {
+        this.variantCategory = data
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseVariantViewHolder<VariantOptionWithAttribute> {
         when (viewType) {
             TYPE_CHIP -> {
                 val view = LayoutInflater.from(parent.context)
                         .inflate(VariantChipViewHolder.LAYOUT, parent, false)
-                return VariantChipViewHolder(view)
+                return VariantChipViewHolder(view, listener)
             }
             TYPE_COLOR -> {
                 val view = LayoutInflater.from(parent.context)
@@ -52,6 +57,15 @@ class VariantOptionAdapter(val listener: DynamicProductDetailListener) : Recycle
 
     override fun onBindViewHolder(holder: BaseVariantViewHolder<VariantOptionWithAttribute>, position: Int) {
         holder.bind(variantCategory.variantOptions[position])
+    }
+
+    override fun onBindViewHolder(holder: BaseVariantViewHolder<VariantOptionWithAttribute>, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) {
+            holder.bind(variantCategory.variantOptions[position], payloads.firstOrNull() as? Int
+                    ?: 0)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
     }
 
     override fun getItemViewType(position: Int): Int {

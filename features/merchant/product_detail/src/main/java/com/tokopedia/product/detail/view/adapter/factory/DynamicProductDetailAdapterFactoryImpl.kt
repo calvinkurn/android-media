@@ -7,9 +7,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductVariantListener
 import com.tokopedia.product.detail.view.viewholder.*
 
-class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProductDetailListener,
+                                             private val variantListener: ProductVariantListener) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductLastSeenDataModel): Int {
         return ProductLastSeenViewHolder.LAYOUT
     }
@@ -91,7 +93,7 @@ class DynamicProductDetailAdapterFactoryImpl(private val listener: DynamicProduc
             ProductValuePropositionViewHolder.LAYOUT -> ProductValuePropositionViewHolder(view, listener)
             ProductShimmeringViewHolder.LAYOUT -> ProductShimmeringViewHolder(view)
             PageErrorViewHolder.LAYOUT -> PageErrorViewHolder(view, listener)
-            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, listener)
+            ProductVariantViewHolder.LAYOUT -> ProductVariantViewHolder(view, variantListener)
             else -> super.createViewHolder(view, type)
         }
     }

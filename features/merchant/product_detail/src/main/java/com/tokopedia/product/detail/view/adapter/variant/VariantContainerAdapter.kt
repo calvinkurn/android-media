@@ -8,18 +8,26 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantCategory
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductVariantListener
 import kotlinx.android.synthetic.main.item_variant_container_view_holder.view.*
 
 /**
  * Created by Yehezkiel on 2020-02-27
  */
-class VariantContainerAdapter(val listener: DynamicProductDetailListener) : RecyclerView.Adapter<VariantContainerAdapter.VariantContainerViewHolder>() {
+class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerView.Adapter<VariantContainerAdapter.VariantContainerViewHolder>() {
 
     private var variantContainerData: List<VariantCategory> = listOf()
+    private var variantOptionAdapter: VariantOptionAdapter? = null
 
     fun setData(data: List<VariantCategory>) {
         variantContainerData = data
+        notifyDataSetChanged()
+    }
+
+    fun setDataWithPayload(data: List<VariantCategory>?) {
+        data?.let {
+            variantContainerData = it
+        }
         notifyDataSetChanged()
     }
 
@@ -33,27 +41,51 @@ class VariantContainerAdapter(val listener: DynamicProductDetailListener) : Recy
         holder.bind(variantContainerData[position])
     }
 
+    override fun onBindViewHolder(holder: VariantContainerViewHolder, position: Int, payloads: MutableList<Any>) {
+        if (payloads.isNotEmpty()) {
+            holder.bind(variantContainerData[position], payloads.firstOrNull() as? Int ?: 0)
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
+    }
+
     override fun getItemCount(): Int = variantContainerData.size
 
     inner class VariantContainerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(data: VariantCategory) = with(view) {
-            val variantOptionAdapter =  VariantOptionAdapter(listener)
+            variantOptionAdapter = VariantOptionAdapter(listener)
             txtVariantCategoryName.text = context.getString(R.string.variant_option_builder_1, data.name)
+
+            if (data.getSelectedOption() == null) {
+                txtVariantSelectedOption.text = context.getString(R.string.variant_option_builder_2, data.variantOptions.size)
+            } else {
+                txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
+            }
+
+            if (data.isLeaf) {
+                txtVariantStockWording.show()
+                txtVariantStockWording.text = listener.getStockWording()
+            } else {
+                txtVariantStockWording.hide()
+            }
 
             if (data.variantGuideline.isNotEmpty()) {
                 txtVariantGuideline.show()
+                txtVariantGuideline.setOnClickListener {
+                    listener.onVariantGuideLineClicked(data.variantGuideline)
+                }
             } else {
                 txtVariantGuideline.hide()
             }
 
-            if (data.selectedValue.isNotEmpty()) {
-                txtVariantSelectedOption.text = data.selectedValue
-            } else {
-                txtVariantSelectedOption.text = context.getString(R.string.variant_option_builder_2, data.variantOptions.size)
-            }
-
+            rv_variant.itemAnimator = null
             rv_variant.adapter = variantOptionAdapter
-            variantOptionAdapter.setData(data)
+            variantOptionAdapter?.setData(data)
+        }
+
+        fun bind(data: VariantCategory, payload: Int) = with(view) {
+            rv_variant.itemAnimator = null
+            variantOptionAdapter?.setDataWithPayload(data)
         }
     }
 }

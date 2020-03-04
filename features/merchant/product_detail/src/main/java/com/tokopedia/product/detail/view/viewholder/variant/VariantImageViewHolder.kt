@@ -8,21 +8,29 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductVariantListener
 import kotlinx.android.synthetic.main.item_variant_image_view_holder.view.*
 
 /**
  * Created by Yehezkiel on 2020-02-27
  */
 class VariantImageViewHolder(val view: View,
-                             val listener: DynamicProductDetailListener) : BaseVariantViewHolder<VariantOptionWithAttribute>(view) {
+                             val listener: ProductVariantListener) : BaseVariantViewHolder<VariantOptionWithAttribute>(view) {
 
     companion object {
         val LAYOUT = R.layout.item_variant_image_view_holder
     }
 
+    override fun bind(element: VariantOptionWithAttribute, payload: Int) {
+        setState(element)
+    }
+
     override fun bind(element: VariantOptionWithAttribute) = with(view) {
-        ImageHandler.loadImage(view.context, variantImg, element.image, R.drawable.ic_loading_placeholder)
+        ImageHandler.LoadImage(variantImg, element.image)
+        setState(element)
+    }
+
+    private fun setState(element: VariantOptionWithAttribute) = with(view) {
         when (element.currentState) {
             ProductDetailConstant.STATE_EMPTY -> {
                 overlayVariantImgContainer.show()
@@ -39,7 +47,7 @@ class VariantImageViewHolder(val view: View,
         }
 
         view.setOnClickListener {
-            //TO DO
+            listener.onVariantClicked(element)
         }
     }
 }

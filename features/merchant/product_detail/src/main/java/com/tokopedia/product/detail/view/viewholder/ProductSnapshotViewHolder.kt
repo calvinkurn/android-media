@@ -72,7 +72,7 @@ class ProductSnapshotViewHolder(private val view: View,
         })
     }
 
-    override fun bind(element: ProductSnapshotDataModel?, payloads: MutableList<Any>) {
+    override fun bind(element: ProductSnapshotDataModel?, payloads: MutableList<Any>) = with(view){
         super.bind(element, payloads)
         if (element == null || payloads.isEmpty()) {
             return
@@ -86,6 +86,7 @@ class ProductSnapshotViewHolder(private val view: View,
             }
             ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
             ProductDetailConstant.PAYLOAD_CONFIGURATION_CHANGED -> changeImageHeight(element.screenHeight)
+//            ProductDetailConstant.PAYLOAD_VARIANT_SELECTED -> view_picture_search_bar.changeMedia(element.media ?: listOf())
         }
     }
 

@@ -8,4 +8,5 @@ import androidx.recyclerview.widget.RecyclerView
  */
 abstract class BaseVariantViewHolder<VariantOptionWithAttribute>(view: View) : RecyclerView.ViewHolder(view) {
     abstract fun bind(element: VariantOptionWithAttribute)
+    abstract fun bind(element: VariantOptionWithAttribute, payload: Int)
 }

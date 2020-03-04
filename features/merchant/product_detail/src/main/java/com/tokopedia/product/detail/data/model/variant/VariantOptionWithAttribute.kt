@@ -10,5 +10,8 @@ data class VariantOptionWithAttribute(
         var variantName: String = "",
         var image: String = "",
         var isBuyable: Boolean = false,
-        var stock: Int = 0
+        var stock: Int = 0,
+        var variantOptionIdentifier: String = "",
+        var selectedStockWording: String = "",
+        var level: Int = -1
 )

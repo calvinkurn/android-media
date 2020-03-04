@@ -11,6 +11,8 @@ import com.tokopedia.product.detail.data.model.variant.VariantOptionWithAttribut
  */
 object VariantMapper {
 
+    var selectedOptionId = listOf<Int>()
+
     fun mapVariantIdentifierToHashMap(variantData: ProductVariant?): MutableMap<String, Int> {
         return variantData?.variant?.associateBy({
             it.identifier ?: ""
@@ -19,45 +21,70 @@ object VariantMapper {
         })?.toMutableMap() ?: mutableMapOf()
     }
 
-    fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf()): MutableList<VariantCategory>? {
+    fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1): MutableList<VariantCategory>? {
         if (variantData == null) return null
+         
         val listOfVariant: MutableList<VariantCategory> = arrayListOf()
+        var updatedSelectedOptionsId: List<Int>
+        val isSelectedLevelOne = level < 1
 
-        val mapOfSelectedVariantTest:MutableMap<String,Int> = mutableMapOf()
-//        mapOfSelectedVariantTest["colour"] = 45903582
-//        mapOfSelectedVariantTest["size"] = 45903584
+        //Means if variant level has 2 level and user partialy select only 1 variant
+        val isPartialySelected = mapOfSelectedVariant?.any {
+            it.value == 0
+        } ?: false
 
-
-        val selectedOptionIds: List<Int> = mapOfSelectedVariant?.map { //[Merah,S]
+        //Parse selectedOptionsId Map to List<Int>
+        val selectedOptionIds: List<Int> = mapOfSelectedVariant?.map {
+            //[Merah,S]
             it.value
         } ?: listOf()
 
-        //Check wether selected product is buyable , if not get another  siblings that buyable
-        var selectedProductData = getSelectedProductData(selectedOptionIds, variantData)
-        if (selectedProductData != null && !selectedProductData.isBuyable) {
-            selectedProductData = getOtherSiblingProduct(variantData, selectedOptionIds)
+        // If user selected only 1 level, we have to filter and generate only 1 list
+        // If not we will get [0,SizeId] or [WarnaId,0]
+        updatedSelectedOptionsId = selectedOptionIds.filterNot {
+            it == 0
         }
 
+        //Check wether selected product is buyable , if not get another  siblings that buyable
+        val selectedProductData = getSelectedProductData(updatedSelectedOptionsId, variantData)
+
+        //If selectedProductIds is not buyable choose another buyable child
+        if (selectedProductData != null && !selectedProductData.isBuyable) {
+            updatedSelectedOptionsId = getOtherSiblingProduct(variantData, selectedOptionIds)?.optionIds
+                    ?: listOf()
+            updateSelectedOptionsIds(variantData, updatedSelectedOptionsId, mapOfSelectedVariant)
+        }
         val isSelectedProductBuyable = selectedProductData?.isBuyable ?: false
-        val updatedSelectedOptionIds = selectedProductData?.optionIds ?: listOf()
+
+        selectedOptionId = updatedSelectedOptionsId
 
         for ((level, variant: Variant) in variantData.variant.withIndex()) {
-            listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionIds, (level + 1) == variantData.variant.size,
-                    isSelectedProductBuyable))
+            listOfVariant.add(convertVariantViewModel(variant, variantData, level, updatedSelectedOptionsId, (level + 1) == variantData.variant.size,
+                    isSelectedProductBuyable, isPartialySelected, isSelectedLevelOne))
         }
 
         return listOfVariant
-
     }
 
-    fun convertVariantViewModel(variant: Variant, variantData: ProductVariant, level: Int, selectedOptionIds: List<Int>, isParentBranch: Boolean,
-                                isSelectedProductBuyable: Boolean): VariantCategory {
+    private fun updateSelectedOptionsIds(variantData: ProductVariant, updatedSelectedOptionsId: List<Int>, mapOfSelectedVariant: MutableMap<String, Int>?) {
+        variantData.variant.forEachIndexed { index, variant ->
+            mapOfSelectedVariant?.set(variant.identifier ?: "", updatedSelectedOptionsId[index])
+        }
+    }
+
+    private fun convertVariantViewModel(variant: Variant, variantData: ProductVariant, level: Int, selectedOptionIds: List<Int>, isLeaf: Boolean,
+                                        isSelectedProductBuyable: Boolean,
+                                        partialySelected: Boolean,
+                                        selectedLevelOne: Boolean): VariantCategory {
         val variantDataModel = VariantCategory(variant.name ?: "", variant.identifier ?: "")
         variantDataModel.variantGuideline = if (variant.isSizeIdentifier && variantData.sizeChart.isNotEmpty()) {
             variantData.sizeChart
         } else {
             ""
         }
+        variantDataModel.isLeaf = isLeaf
+
+        //If all options has images, show images, if not show colour type / chip type
         variantDataModel.hasCustomImage = variant.options.all {
             it.picture?.thumbnail?.isNotEmpty() == true
         }
@@ -78,32 +105,52 @@ object VariantMapper {
             optionVariantDataModel.currentState = ProductDetailConstant.STATE_EMPTY
 
             if (selectedOptionIds.isNotEmpty() && option.id in selectedOptionIds) {
-                if (isSelectedProductBuyable)
+                if (isSelectedProductBuyable) {
                     optionVariantDataModel.currentState = ProductDetailConstant.STATE_SELECTED
+                } else {
+                    for (child: Child in variantData.children) {
+                        if (child.isBuyable && selectedOptionIds.first() in child.optionIds) {
+                            optionVariantDataModel.currentState = ProductDetailConstant.STATE_SELECTED
+                            break
+                        }
+                    }
+                }
             } else {
-                variantData.children.forEach { child ->
+                for (child: Child in variantData.children) {
+                    //child.optionIds[1] means variant lvl2
+                    //child.optionIds[0] means variant lvl1
+                    //Check one by one wether childId is match with another Id
                     if (child.isBuyable && child.optionIds[level] == option.id) {
-
+                        //|| (partialySelected && !isLeaf)
                         if (partialSelectedListByLevel.isEmpty()) {
+                            // if not lvl 1, should not go to this if , so have to check if not leaf
                             optionVariantDataModel.currentState = ProductDetailConstant.STATE_UNSELECTED
                         } else {
                             val childOptionId = child.optionIds.getOrNull(level)
                             childOptionId?.let {
                                 if (child.optionIds.subList(0, level) == partialSelectedListByLevel) {
                                     //User selecting 2+ level variant
-                                    optionVariantDataModel.stock = child.stock?.stock ?: 0
                                     optionVariantDataModel.currentState = ProductDetailConstant.STATE_UNSELECTED
+                                    // || (partialySelected && isLeaf)
                                 } else if (selectedOptionIds.isEmpty()) {
-                                    //Means first time, and the variant is not selected at all
                                     optionVariantDataModel.currentState = ProductDetailConstant.STATE_UNSELECTED
                                 }
+
+                                // This code is works if user only select 1 level and its leaf
+                                if (partialySelected) {
+                                    if (selectedLevelOne) return@let
+                                    if (isLeaf)
+                                        optionVariantDataModel.currentState = ProductDetailConstant.STATE_UNSELECTED
+                                }
+
                             }
                         }
                     }
+                    optionVariantDataModel.stock = child.stock?.stock ?: 0
                 }
             }
-
-
+            optionVariantDataModel.level = level
+            optionVariantDataModel.variantOptionIdentifier = variant.identifier ?: ""
             variantDataModel.variantOptions.add(optionVariantDataModel)
         }
 

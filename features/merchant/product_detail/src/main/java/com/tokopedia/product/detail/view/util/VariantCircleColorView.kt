@@ -85,7 +85,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun drawInnerCircle(canvas: Canvas?) {
-        if (innerCirclePaint.color == Color.parseColor("#fffff")) {
+        if (innerCirclePaint.color == Color.parseColor("#ffffff")) {
             canvas?.drawCircle(
                     width.toFloat() / 2,
                     height.toFloat() / 2,
@@ -112,12 +112,6 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun drawCircle(canvas: Canvas?) {
-        if (!isSelectedCircle) {
-            outerBorderPaint.color = MethodChecker.getColor(context, R.color.border_circle_grey)
-        } else {
-            outerBorderPaint.color = MethodChecker.getColor(context, R.color.tkpd_main_green)
-        }
-
         canvas?.drawCircle(
                 width.toFloat() / 2,
                 height.toFloat() / 2,
@@ -140,8 +134,8 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     fun setColorSelected() {
-        setSelected()
         clearOverlay()
+        setSelected()
         invalidate()
     }
 

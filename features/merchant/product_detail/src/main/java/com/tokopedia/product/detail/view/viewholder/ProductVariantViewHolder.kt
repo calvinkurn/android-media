@@ -5,14 +5,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.view.adapter.variant.VariantContainerAdapter
-import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
+import com.tokopedia.product.detail.view.listener.ProductVariantListener
 import kotlinx.android.synthetic.main.item_product_variant_view_holder.view.*
 
 /**
  * Created by Yehezkiel on 2020-02-26
  */
 class ProductVariantViewHolder(val view: View,
-                               val listener: DynamicProductDetailListener) : AbstractViewHolder<VariantDataModel>(view) {
+                               val listener: ProductVariantListener) : AbstractViewHolder<VariantDataModel>(view) {
+
+    private var containerAdapter: VariantContainerAdapter? = null
 
     companion object {
         val LAYOUT = R.layout.item_product_variant_view_holder
@@ -20,13 +22,12 @@ class ProductVariantViewHolder(val view: View,
 
     override fun bind(element: VariantDataModel) {
         with(view) {
-            val containerAdapter = VariantContainerAdapter(listener)
+            containerAdapter = VariantContainerAdapter(listener)
+            rvContainerVariant.itemAnimator = null
             rvContainerVariant.adapter = containerAdapter
             element.listOfVariantCategory?.let {
-                containerAdapter.setData(it)
+                containerAdapter?.setData(it)
             }
         }
     }
-
-
 }
