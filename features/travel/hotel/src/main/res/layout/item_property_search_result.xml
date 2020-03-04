@@ -188,7 +188,6 @@
                 app:typographyType="body_3"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
-                android:layout_marginTop="@dimen/dp_4"
                 tools:text=""
                 tools:visibility="visible" />
 

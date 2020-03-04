@@ -51,15 +51,14 @@ class SearchPropertyViewHolder(view: View) : AbstractViewHolder<Property>(view) 
             } else {
                 price_origin.visibility = View.GONE
             }
-
             if (propertyPrice.deals.tagging.isNotEmpty()) {
                 hotel_property_item_tag.visibility = View.VISIBLE
                 hotel_property_item_tag.text = propertyPrice.deals.tagging
-                price_origin_shadow.visibility = if (price_origin.isVisible) View.GONE else View.INVISIBLE
             } else {
                 hotel_property_item_tag.visibility = if (!element.isDirectPayment) View.GONE else View.INVISIBLE
-                price_origin_shadow.visibility = View.GONE
             }
+            price_origin_shadow.visibility = if (price_origin.isVisible) View.GONE else View.INVISIBLE
+            if (!element.isDirectPayment) price_origin_shadow.hide()
 
             if (!element.isDirectPayment) {
                 container_pay_at_hotel.show()
