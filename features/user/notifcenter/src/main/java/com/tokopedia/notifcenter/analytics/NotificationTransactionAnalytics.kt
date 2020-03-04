@@ -5,7 +5,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
 
-class NotificationTransactionAnalytics @Inject constructor() {
+class NotificationTransactionAnalytics @Inject constructor(): NotificationAnalytics() {
 
     private val seenNotifications = HashSet<String>()
 
@@ -67,7 +67,7 @@ class NotificationTransactionAnalytics @Inject constructor() {
 
     //10D
     fun trackNotificationClick(notification: NotificationItemViewBean) {
-        val label = notification.getImpressionTrackLabel(LABEL_LOCATION)
+        val label = getImpressionTrackLabel(LABEL_LOCATION, notification)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT,
                 EVENT_CATEGORY,
@@ -87,7 +87,7 @@ class NotificationTransactionAnalytics @Inject constructor() {
     }
 
     private fun trackNotificationImpression(notification: NotificationItemViewBean) {
-        val label = notification.getImpressionTrackLabel(LABEL_LOCATION)
+        val label = getImpressionTrackLabel(LABEL_LOCATION, notification)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_IMPRESSION_IRIS,
                 EVENT_CATEGORY,
