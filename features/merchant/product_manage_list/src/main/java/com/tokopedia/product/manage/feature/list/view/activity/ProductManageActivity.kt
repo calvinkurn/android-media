@@ -24,8 +24,8 @@ class ProductManageActivity : BaseSellerReceiverDrawerActivity(), HasComponent<P
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        goToOldProductManageIfEnabled()
         super.onCreate(savedInstanceState)
+        goToOldProductManageIfEnabled()
         if (!GlobalConfig.isSellerApp()) {
             setupLayout(savedInstanceState)
         }
