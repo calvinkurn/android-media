@@ -15,6 +15,7 @@ import com.tokopedia.autocomplete.AutoCompleteActivity
 import com.tokopedia.autocomplete.OnScrollListenerAutocomplete
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AppScreen
+import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionComponent
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -124,9 +125,90 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         presenter.search(searchParameter)
     }
 
-    override fun onItemClicked(applink: String, webUrl: String) {
+    override fun onItemClicked(item: BaseSuggestionViewModel) {
+        when {
+            item.type.equals(SuggestionData.TYPE_KEYWORD, ignoreCase = true) -> {
+                AutocompleteTracking.eventClickKeyword(getKeywordEventLabelForTracking(item))
+            }
+            item.type.equals(SuggestionData.TYPE_CURATED, ignoreCase = true) -> {
+                AutocompleteTracking.eventClickCurated(getCuratedEventLabelForTracking(item))
+            }
+            item.type.equals(SuggestionData.TYPE_SHOP, ignoreCase = true) -> {
+                AutocompleteTracking.eventClickShop(getShopEventLabelForTracking(item))
+            }
+            item.type.equals(SuggestionData.TYPE_PROFILE, ignoreCase = true) -> {
+                AutocompleteTracking.eventClickProfile(getProfileEventLabelForTracking(item))
+            }
+        }
         dropKeyBoard()
-        startActivityFromAutoComplete(applink)
+        startActivityFromAutoComplete(item.applink)
+    }
+
+    private fun getKeywordEventLabelForTracking(item: BaseSuggestionViewModel): String {
+        return String.format(
+                "keyword: %s - value: %s - po: %s - applink: %s",
+                item.title,
+                item.searchTerm,
+                item.position,
+                item.applink
+        )
+    }
+
+    private fun getCuratedEventLabelForTracking(item: BaseSuggestionViewModel): String {
+        return String.format(
+                "keyword: %s - product: %s - po: %s - page: %s",
+                item.searchTerm,
+                item.title,
+                item.position,
+                item.applink
+        )
+    }
+
+    private fun getProfileEventLabelForTracking(item: BaseSuggestionViewModel): String {
+        return String.format(
+                "keyword: %s - profile: %s - profile id: %s - po: %s",
+                item.searchTerm,
+                item.title,
+                getProfileIdFromApplink(item.applink),
+                item.position.toString()
+        )
+    }
+
+    private fun getProfileIdFromApplink(applink: String): String {
+        val prefix = "tokopedia://people/"
+
+        return try {
+            if (applink.startsWith(prefix)) {
+                applink.substring(prefix.length)
+            } else {
+                ""
+            }
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    private fun getShopEventLabelForTracking(item: BaseSuggestionViewModel): String {
+        return String.format(
+                "%s - keyword: %s - shop: %s",
+                getShopIdFromApplink(item.applink),
+                item.searchTerm,
+                item.title
+        )
+    }
+
+    private fun getShopIdFromApplink(applink: String): String {
+        val prefix = "tokopedia://shop/"
+
+        return try {
+            if (applink.startsWith(prefix)) {
+                applink.substring(prefix.length, applink.indexOf("?"))
+            } else {
+                ""
+            }
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     private fun dropKeyBoard() {
@@ -150,7 +232,7 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
         this.searchParameter = searchParameter
     }
 
-    fun setSuggestionViewUpdateListener(suggestionViewUpdateListener: SuggestionViewUpdateListener){
+    fun setSuggestionViewUpdateListener(suggestionViewUpdateListener: SuggestionViewUpdateListener) {
         this.suggestionViewUpdateListener = suggestionViewUpdateListener
     }
 }

@@ -27,25 +27,46 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                         userSession.deviceId,
                         userSession.userId
                 ),
-                object : Subscriber<SuggestionData>(){
+                object : Subscriber<SuggestionData>() {
                     override fun onNext(suggestionData: SuggestionData) {
                         listVisitable.clear()
-                        for(item in suggestionData.items){
+                        val typePosition = HashMap<String, Int?>()
+                        for (item in suggestionData.items) {
                             if (suggestionData.items.isNotEmpty()) {
-                                when(item.template){
+                                when (item.template) {
                                     SuggestionData.SUGGESTION_HEADER -> listVisitable.add(
                                             item.convertToTitleHeader()
                                     )
-                                    SuggestionData.SUGGESTION_SINGLE_LINE -> listVisitable.add(
-                                            item.convertSuggestionItemToSingleLineVisitableList(querySearch)
-                                    )
-                                    SuggestionData.SUGGESTION_DOUBLE_LINE -> listVisitable.add(
-                                            item.convertSuggestionItemToDoubleLineVisitableList(querySearch)
-                                    )
+                                    SuggestionData.SUGGESTION_SINGLE_LINE -> {
+                                        typePosition.setPosition(item.type)
+                                        typePosition[item.type]?.let {
+                                            item.convertSuggestionItemToSingleLineVisitableList(querySearch, position = it)
+                                        }?.let {
+                                            listVisitable.add(
+                                                    it
+                                            )
+                                        }
+                                    }
+                                    SuggestionData.SUGGESTION_DOUBLE_LINE -> {
+                                        typePosition.setPosition(item.type)
+                                        typePosition[item.type]?.let { item.convertSuggestionItemToDoubleLineVisitableList(querySearch, position = it) }?.let {
+                                            listVisitable.add(
+                                                    it
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
                         view.showSuggestionResult(listVisitable)
+                    }
+
+                    private fun HashMap<String, Int?>.setPosition(key: String){
+                        if(this.containsKey(key)) {
+                            this[key] = this[key]?.plus(1)
+                        } else {
+                            this[key] = 1
+                        }
                     }
 
                     override fun onCompleted() {}

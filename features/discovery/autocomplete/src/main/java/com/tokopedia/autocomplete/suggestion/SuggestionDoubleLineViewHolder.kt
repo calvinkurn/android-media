@@ -121,18 +121,7 @@ class SuggestionDoubleLineViewHolder(
 
     private fun bindListener(item: SuggestionDoubleLineViewModel) {
         itemView.autocompleteDoubleLineItem?.setOnClickListener {
-            //            AutocompleteTracking.eventClickAutoCompleteSearch(
-//                    itemView.context,
-//                    String.format(
-//                            "keyword: %s - value: %s - po: %s - applink: %s",
-//                            item.title,
-//                            item.searchTerm,
-//                            (adapterPosition + 1).toString(),
-//                            item.applink
-//                    ),
-//                    ""
-//            )
-            clickListener.onItemClicked(item.applink, item.url)
+            clickListener.onItemClicked(item)
         }
     }
 

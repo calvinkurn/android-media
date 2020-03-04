@@ -1,6 +1,6 @@
 package com.tokopedia.autocomplete.suggestion
 
-fun SuggestionItem.convertSuggestionItemToDoubleLineVisitableList(searchTerm: String): SuggestionDoubleLineViewModel {
+fun SuggestionItem.convertSuggestionItemToDoubleLineVisitableList(searchTerm: String, position: Int = -1): SuggestionDoubleLineViewModel {
     val item = SuggestionDoubleLineViewModel()
     item.template = this.template
     item.type = this.type
@@ -16,5 +16,6 @@ fun SuggestionItem.convertSuggestionItemToDoubleLineVisitableList(searchTerm: St
     item.label = this.label
     item.labelType = this.labelType
     item.searchTerm = searchTerm
+    item.position = position
     return item
 }

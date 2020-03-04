@@ -64,18 +64,7 @@ class SuggestionSingleLineViewHolder(
 
     private fun bindListener(item: SuggestionSingleLineViewModel){
         itemView.autocompleteSingleLineItem?.setOnClickListener {
-//            AutocompleteTracking.eventClickAutoCompleteSearch(
-//                    itemView.context,
-//                    String.format(
-//                            "keyword: %s - value: %s - po: %s - applink: %s",
-//                            item.title,
-//                            item.searchTerm,
-//                            (adapterPosition + 1).toString(),
-//                            item.applink
-//                    ),
-//                    ""
-//            )
-            clickListener.onItemClicked(item.applink, item.url)
+            clickListener.onItemClicked(item)
         }
 
         itemView.actionShortcutButton?.setOnClickListener {
