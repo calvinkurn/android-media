@@ -236,7 +236,6 @@ ext {
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
-            stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
 
             slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion"
     ]
