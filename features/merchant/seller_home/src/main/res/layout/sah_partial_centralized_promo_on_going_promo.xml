@@ -3,14 +3,14 @@
     android:id="@+id/layoutCentralizedPromoOnGoingPromo"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/Neutral_N50"
     android:orientation="vertical"
-    android:background="@color/transparent"
-    android:layout_marginBottom="@dimen/layout_lvl1">
+    android:paddingBottom="@dimen/layout_lvl1">
 
     <include layout="@layout/sah_partial_centralized_promo_on_going_promo_success" />
 
     <include layout="@layout/sah_partial_centralized_promo_on_going_promo_shimmering" />
 
-    <include layout="@layout/sah_partial_centralized_promo_on_going_promo_error"/>
+    <include layout="@layout/sah_partial_centralized_promo_on_going_promo_error" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

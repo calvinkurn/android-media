@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
 
 data class RecommendedPromotionListUiModel(
-        val promotions: List<RecommendedPromotionUiModel>
+        val promotions: ArrayList<RecommendedPromotionUiModel>
 ): BaseUiModel()
 
 data class RecommendedPromotionUiModel(

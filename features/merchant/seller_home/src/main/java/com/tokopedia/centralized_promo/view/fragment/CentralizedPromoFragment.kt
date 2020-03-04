@@ -8,10 +8,12 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.centralized_promo.view.LayoutType
+import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralized_promo.view.fragment.partialview.PartialCentralizedPromoOnGoingPromoView
 import com.tokopedia.centralized_promo.view.fragment.partialview.PartialCentralizedPromoPostView
 import com.tokopedia.centralized_promo.view.fragment.partialview.PartialCentralizedPromoRecommendationView
@@ -31,11 +33,13 @@ import javax.inject.Inject
 
 class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener {
 
+    private val adapterTypeFactory by lazy { CentralizedPromoAdapterTypeFactory() }
+
     private val partialViews by lazy {
         return@lazy mapOf(
-                LayoutType.ON_GOING_PROMO to PartialCentralizedPromoOnGoingPromoView(layoutCentralizedPromoOnGoingPromo, this),
-                LayoutType.RECOMMENDED_PROMO to PartialCentralizedPromoRecommendationView(layoutCentralizedPromoRecommendation),
-                LayoutType.POST to PartialCentralizedPromoPostView(layoutCentralizedPromoPostList)
+                LayoutType.ON_GOING_PROMO to PartialCentralizedPromoOnGoingPromoView(layoutCentralizedPromoOnGoingPromo, this, adapterTypeFactory),
+                LayoutType.RECOMMENDED_PROMO to PartialCentralizedPromoRecommendationView(layoutCentralizedPromoRecommendation, adapterTypeFactory),
+                LayoutType.POST to PartialCentralizedPromoPostView(layoutCentralizedPromoPostList, adapterTypeFactory)
         )
     }
 
@@ -98,7 +102,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         centralizedPromoViewModel.getLayoutResultLiveData.observe(viewLifecycleOwner, Observer {
             it.forEach { entry ->
                 when (val value = entry.value) {
-                    is Success -> value.onSuccessGetLayoutData<BaseUiModel, PartialView<BaseUiModel, BaseAdapterTypeFactory>>(entry.key)
+                    is Success -> value.onSuccessGetLayoutData<BaseUiModel, PartialView<BaseUiModel, BaseAdapterTypeFactory, Visitable<BaseAdapterTypeFactory>>>(entry.key)
                     is Fail -> value.onFailedGetLayoutData(entry.key)
                 }
             }
@@ -107,7 +111,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         })
     }
 
-    private inline fun <reified D : BaseUiModel, reified V : PartialView<D, BaseAdapterTypeFactory>> Success<BaseUiModel>.onSuccessGetLayoutData(layoutType: LayoutType) {
+    private inline fun <reified D : BaseUiModel, reified V : PartialView<D, BaseAdapterTypeFactory, Visitable<BaseAdapterTypeFactory>>> Success<BaseUiModel>.onSuccessGetLayoutData(layoutType: LayoutType) {
         partialViews.forEach {
             if (it.key == layoutType) {
                 (it.value as V).renderData(data as D)

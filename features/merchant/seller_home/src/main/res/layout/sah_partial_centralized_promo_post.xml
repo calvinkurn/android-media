@@ -4,7 +4,7 @@
     android:id="@+id/layoutCentralizedPromoPostList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/transparent">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -12,6 +12,7 @@
         android:layout_margin="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:layout_marginBottom="@dimen/spacing_lvl1"
+        android:background="@color/transparent"
         android:descendantFocusability="blocksDescendants"
         app:cardCornerRadius="@dimen/layout_lvl1">
 

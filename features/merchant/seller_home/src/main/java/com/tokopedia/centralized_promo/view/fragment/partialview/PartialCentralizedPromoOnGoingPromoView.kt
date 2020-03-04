@@ -1,10 +1,14 @@
 package com.tokopedia.centralized_promo.view.fragment.partialview
 
 import android.view.View
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
+import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoDiffUtil
+import com.tokopedia.centralized_promo.view.adapter.DiffUtilHelper
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoListUiModel
+import com.tokopedia.centralized_promo.view.model.OnGoingPromoUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
@@ -12,8 +16,11 @@ import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_pro
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_shimmering.view.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_success.view.*
 
-class PartialCentralizedPromoOnGoingPromoView(private val view: View, private val refreshButtonClickListener: RefreshButtonClickListener)
-    : PartialView<OnGoingPromoListUiModel, CentralizedPromoAdapterTypeFactory>(CentralizedPromoAdapterTypeFactory()) {
+class PartialCentralizedPromoOnGoingPromoView(
+        private val view: View,
+        private val refreshButtonClickListener: RefreshButtonClickListener,
+        adapterTypeFactory: CentralizedPromoAdapterTypeFactory
+) : PartialView<OnGoingPromoListUiModel, CentralizedPromoAdapterTypeFactory, OnGoingPromoUiModel>(adapterTypeFactory) {
 
     init {
         setupOnGoingPromo()
@@ -24,6 +31,7 @@ class PartialCentralizedPromoOnGoingPromoView(private val view: View, private va
             rvCentralizedPromoOnGoingPromo.apply {
                 layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = this@PartialCentralizedPromoOnGoingPromoView.adapter
+                setHasFixedSize(true)
             }
         }
     }
@@ -34,8 +42,7 @@ class PartialCentralizedPromoOnGoingPromoView(private val view: View, private va
                 if (data.promotions.isNotEmpty()) {
                     show()
                     tvOnGoingPromo.text = data.title
-                    adapter.setElements(data.promotions)
-                    adapter.notifyDataSetChanged()
+                    DiffUtilHelper.calculate(adapter.data, data.promotions, adapter)
                 } else {
                     hide()
                 }

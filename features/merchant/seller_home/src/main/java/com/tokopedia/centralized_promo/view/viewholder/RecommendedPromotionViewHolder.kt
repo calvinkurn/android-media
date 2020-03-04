@@ -36,8 +36,7 @@ class RecommendedPromotionViewHolder(view: View?) : AbstractViewHolder<Recommend
 
     private fun openApplink(url: String) {
         with(itemView) {
-            val intent = RouteManager.getIntent(context, url)
-            context.startActivity(intent)
+            RouteManager.route(context, url)
         }
     }
 }

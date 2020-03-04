@@ -7,7 +7,7 @@ import com.tokopedia.sellerhome.R
 
 object RecommendedPromotionStaticData {
     fun provideStaticData(): RecommendedPromotionListUiModel = RecommendedPromotionListUiModel(
-            listOf(
+            arrayListOf(
                     RecommendedPromotionUiModel(
                             R.drawable.sh_ic_top_ads_color,
                             "TopAds",

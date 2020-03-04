@@ -43,8 +43,7 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
 
     private fun openApplink(url: String) {
         with(itemView) {
-            val intent = RouteManager.getIntent(context, url)
-            context.startActivity(intent)
+            RouteManager.route(context, url)
         }
     }
 }

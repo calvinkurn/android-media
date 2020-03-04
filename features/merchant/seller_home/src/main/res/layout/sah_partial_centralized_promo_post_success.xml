@@ -65,6 +65,7 @@
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/spacing_lvl1"
+        android:background="@color/transparent"
         app:layout_constraintBottom_toBottomOf="@+id/tvCentralizedPromoPostListSeeDetails"
         app:layout_constraintLeft_toRightOf="@id/tvCentralizedPromoPostListSeeDetails"
         app:layout_constraintTop_toTopOf="@+id/tvCentralizedPromoPostListSeeDetails"

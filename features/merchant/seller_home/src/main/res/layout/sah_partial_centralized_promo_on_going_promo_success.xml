@@ -21,7 +21,6 @@
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_marginEnd="@dimen/layout_lvl1"
         android:layout_marginRight="@dimen/layout_lvl1"
-        android:background="@color/transparent"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

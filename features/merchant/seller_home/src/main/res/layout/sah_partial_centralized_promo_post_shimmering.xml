@@ -4,6 +4,7 @@
     android:id="@+id/layoutCentralizedPromoPostListShimmering"
     android:layout_width="match_parent"
     android:layout_height="@dimen/sah_large_widget_height"
+    android:background="@color/transparent"
     android:padding="@dimen/layout_lvl2">
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -21,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sah_dimen_26dp"
+        android:background="@color/transparent"
         app:layout_constraintTop_toBottomOf="@id/shimmering_card_title" />
 
     <include
@@ -29,6 +31,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/transparent"
         app:layout_constraintTop_toBottomOf="@id/shimmering_first_info_seller_item" />
 
     <include
@@ -37,6 +40,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:background="@color/transparent"
         app:layout_constraintTop_toBottomOf="@id/shimmering_second_info_seller_item" />
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView

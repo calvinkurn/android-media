@@ -26,8 +26,7 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
 
     private fun openApplink(url: String) {
         with(itemView) {
-            val intent = RouteManager.getIntent(context, url)
-            context.startActivity(intent)
+            RouteManager.route(context, url)
         }
     }
 }
