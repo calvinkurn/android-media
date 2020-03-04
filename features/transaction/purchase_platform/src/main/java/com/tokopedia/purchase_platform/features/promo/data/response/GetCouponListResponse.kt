@@ -97,7 +97,7 @@ data class CouponSection(
         @SerializedName("tags")
         val tags: List<String> = emptyList(),
         @SerializedName("sub_sections")
-        val subSection: SubSection = SubSection()
+        val subSections: List<SubSection> = emptyList()
 )
 
 data class SubSection(

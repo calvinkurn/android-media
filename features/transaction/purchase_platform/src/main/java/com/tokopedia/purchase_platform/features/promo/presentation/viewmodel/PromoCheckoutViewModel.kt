@@ -2,14 +2,19 @@ package com.tokopedia.purchase_platform.features.promo.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendation
+import com.tokopedia.purchase_platform.features.promo.data.response.GqlResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.*
+import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispatcher)
+class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispatcher,
+                                                 val uiModelMapper: PromoCheckoutUiModelMapper)
     : BaseViewModel(dispatcher) {
 
     // Fragment UI Model
@@ -66,6 +71,15 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         _fragmentUiModel.value = fragmentUiModel
 
         // Init Data
+//        mockData()
+        val couponListRecommendation = Gson().fromJson(MOCK_RESPONSE, GqlResponse::class.java)
+        if (couponListRecommendation.couponListRecommendation.data.promoRecommendation.codes.isNotEmpty()) {
+            _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(couponListRecommendation.couponListRecommendation)
+        }
+
+    }
+
+    private fun mockData() {
         _promoRecommendationUiModel.value = mockPromoRecommendation()
         _promoInputUiModel.value = mockPromoInput()
 
@@ -85,7 +99,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             _promoListUiModel.value = promoListUiModel
         }
 
-//        _promoEmptyStateUiModel.value = mockEmptyState()
+        //        _promoEmptyStateUiModel.value = mockEmptyState()
     }
 
     fun updateHeightPromoInputView(height: Int) {

@@ -6,8 +6,8 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 fun mockPromoRecommendation(): PromoRecommendationUiModel {
     return PromoRecommendationUiModel(
             uiData = PromoRecommendationUiModel.UiData().apply {
-                title = "Title aaaaaa"
-                subTitle = "Sub title aaaa"
+                promoCount = 10
+                promoTotalBenefit = 150000
             },
             uiState = PromoRecommendationUiModel.UiState().apply {
                 isButtonSelectEnabled = true
@@ -319,3 +319,244 @@ fun mockEmptyState(): PromoEmptyStateUiModel {
             }
     )
 }
+
+val MOCK_RESPONSE = """
+    {
+    "coupon_list_recommendation": {
+      "message": [],
+      "error_code": "200",
+      "status": "OK",
+      "data": {
+        "result_status": {
+          "code": "200",
+          "message": [
+            "Success"
+          ],
+          "reason": "OK"
+        },
+        "empty_state": {
+          "title": "Kuponnya tidak ada",
+          "description": "Banyakin belanja ya biar dapet kupon",
+          "image_url": "www.tokopedia.com"
+        },
+        "title": "Pilih Promo",
+        "sub_title": "Kamu bisa gabungkan promo!",
+        "promo_recommendation": {
+          "codes": [
+            "PROMO1",
+            "PROMO2",
+            "PROMO3"
+          ],
+          "message": "Kamu bisa hemat 1000 rupiah"
+        },
+        "coupon_sections": [
+          {
+            "title": "Pilih Promo",
+            "sub_title": "Kamu bisa gabungkan promo biar makin hemat!",
+            "icon_url": "",
+            "is_enabled": true,
+            "is_collapsed": true,
+            "tags": [],
+            "coupons": [],
+            "sub_sections": [
+              {
+                "title": "Kupon Saya",
+                "sub_title": "Promo dipilih",
+                "icon_url": "www.tokopedia.com",
+                "is_enabled": true,
+                "is_collapsed": true,
+                "tags": [],
+                "coupons": [
+                  {
+                    "code": "XXXXX",
+                    "title": "Gratis Ongkir 20rb",
+                    "message": "",
+                    "expiry_info": "berakhir 3 hari lagi",
+                    "expiry_count_down": 100000,
+                    "coupon_url": "www.tokopedia.com",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 0,
+                    "tag_image_urls": [
+                      "www.tokopedia.com",
+                      "www.tokopedia.com"
+                    ],
+                    "benefit_amount": 20000,
+                    "is_recommended": false,
+                    "is_selected": false,
+                    "is_attempted": false,
+                    "radio_check_state": "disabled",
+                    "clashing_infos": [
+                      {
+                        "code": "PROMO2",
+                        "message": "Kupon ini ga bisa dipake bersamaan dengan Promo PROMO2"
+                      },
+                      {
+                        "code": "PROMO3",
+                        "message": "Kupon ini ga bisa dipake bersamaan dengan Promo PROMO3"
+                      }
+                    ]
+                  },
+                  {
+                    "code": "PROMO1",
+                    "title": "Cashback 10rb",
+                    "message": "",
+                    "expiry_info": "berakhir 6 hari lagi",
+                    "expiry_count_down": 200000,
+                    "coupon_url": "www.tokopedia.com",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 0,
+                    "tag_image_urls": [
+                      "www.tokopedia.com",
+                      "www.tokopedia.com"
+                    ],
+                    "benefit_amount": 50000,
+                    "is_recommended": true,
+                    "is_selected": true,
+                    "is_attempted": false,
+                    "radio_check_state": "enabled",
+                    "clashing_infos": []
+                  }
+                ]
+              },
+              {
+                "title": "Apple Store",
+                "sub_title": "Toko Apel",
+                "icon_url": "www.tokopedia.com",
+                "is_enabled": true,
+                "is_collapsed": true,
+                "tags": [
+                  "Promo dipilih"
+                ],
+                "coupons": [
+                  {
+                    "code": "PROMO2",
+                    "title": "Gratis Ongkir 30rb",
+                    "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                    "expiry_info": "berakhir 10 jam lagi",
+                    "expiry_count_down": 10001,
+                    "coupon_url": "www.tokopedia.com",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 102,
+                    "tag_image_urls": [
+                      "www.tokopedia.com",
+                      "www.tokopedia.com"
+                    ],
+                    "benefit_amount": 30000,
+                    "is_recommended": true,
+                    "is_selected": true,
+                    "is_attempted": false,
+                    "radio_check_state": "enabled",
+                    "clashing_infos": [
+                      {
+                        "code": "XXXXX",
+                        "message": "Kupon ini ga bisa dipake bersamaan dengan Promo XXXXX"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Banana Store",
+                "sub_title": "Toko Pisang",
+                "icon_url": "www.tokopedia.com",
+                "is_enabled": true,
+                "is_collapsed": true,
+                "tags": [],
+                "coupons": [
+                  {
+                    "code": "PROMO3",
+                    "title": "Gratis Ongkir 60rb",
+                    "message": "Kupon ini berlaku untuk pembelian mainan",
+                    "expiry_info": "berakhir 3 jam lagi",
+                    "expiry_count_down": 2345,
+                    "coupon_url": "www.tokopedia.com",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 103,
+                    "tag_image_urls": [
+                      "www.tokopedia.com",
+                      "www.tokopedia.com"
+                    ],
+                    "benefit_amount": 60000,
+                    "is_recommended": true,
+                    "is_selected": true,
+                    "is_attempted": false,
+                    "radio_check_state": "enabled",
+                    "clashing_infos": [
+                      {
+                        "code": "XXXXX",
+                        "message": "Kupon ini ga bisa dipake bersamaan dengan Promo XXXXX"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "title": "Kupon yang tidak bisa dipakai",
+            "sub_title": "kuponnya ga bisa dipake ya",
+            "icon_url": "www.tokopedia.com",
+            "is_enabled": false,
+            "is_collapsed": false,
+            "tags": [],
+            "coupons": [],
+            "sub_sections": [
+              {
+                "title": "Kupon Saya",
+                "sub_title": "Promo dipilih",
+                "icon_url": "www.tokopedia.com",
+                "is_enabled": false,
+                "is_collapsed": false,
+                "tags": [],
+                "coupons": [
+                  {
+                    "code": "YYYYYY",
+                    "title": "Gratis Ongkir 20rb",
+                    "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                    "expiry_info": "berakhir 3 hari lagi",
+                    "expiry_count_down": 100000,
+                    "coupon_url": "www.tokopedia.com",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 0,
+                    "tag_image_urls": [
+                      "www.tokopedia.com",
+                      "www.tokopedia.com"
+                    ],
+                    "benefit_amount": 20000,
+                    "is_recommended": false,
+                    "is_selected": false,
+                    "is_attempted": false,
+                    "radio_check_state": "hidden",
+                    "clashing_infos": []
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "additional_message": "Kamu bisa hemat",
+        "reward_points_info": {
+          "message": "Transaksi pakai promo ga bisa dapet tokopoints",
+          "gain_reward_points_tnc": {
+            "title": "Syarat dapat point",
+            "tnc_details": [
+              {
+                "icon_image_url": "www.tokopedia.com",
+                "description": "peraturan pertama"
+              },
+              {
+                "icon_image_url": "www.tokopedia.com",
+                "description": "peraturan kedua"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+""".trimIndent()

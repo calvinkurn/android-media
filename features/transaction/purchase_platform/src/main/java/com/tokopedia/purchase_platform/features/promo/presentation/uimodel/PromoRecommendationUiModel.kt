@@ -31,8 +31,8 @@ data class PromoRecommendationUiModel(
     }
 
     data class UiData(
-            var title: String = "",
-            var subTitle: String = ""
+            var promoCount: Int = 0,
+            var promoTotalBenefit: Int = 0
     )
 
     data class UiState(

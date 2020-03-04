@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -36,13 +37,13 @@
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
             android:ellipsize="end"
-            android:text="Ada 3 promo terbaik untukmu"
             android:textColor="@color/white"
             app:layout_constraintEnd_toStartOf="@+id/button_apply_promo_recommendation"
             app:layout_constraintStart_toEndOf="@+id/image_check_promo_recommendation"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
-            app:typographyWeight="bold" />
+            app:typographyWeight="bold"
+            tools:text="Ada 3 promo terbaik untukmu" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_promo_recommendation_sub_title"
@@ -50,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
-            android:text="Kamu bisa hemat Rp45.000"
+            tools:text="Kamu bisa hemat Rp45.000"
             android:textColor="@color/white"
             app:layout_constraintEnd_toStartOf="@+id/button_apply_promo_recommendation"
             app:layout_constraintStart_toEndOf="@+id/image_check_promo_recommendation"
