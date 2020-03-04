@@ -98,6 +98,8 @@ class PlayCardViewHolder(
             handlingTracker(model)
             title.setValue(model.channel.name)
 
+            seeAll.visibility = if (model.channel.name.isNotEmpty()) View.VISIBLE else View.GONE
+
             thumbnailView.show()
             thumbnailView.loadImageNoRounded(playChannel.coverUrl)
 
