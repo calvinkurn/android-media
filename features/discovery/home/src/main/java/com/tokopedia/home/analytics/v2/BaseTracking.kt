@@ -152,10 +152,10 @@ abstract class BaseTracking {
             val map = HashMap<String, String>()
             map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
-            map[KEY_BRAND] = product.brand
-            map[KEY_VARIANT] = product.variant
+            map[KEY_BRAND] = if(product.brand.isNotBlank()) product.brand else NONE
+            map[KEY_VARIANT] = if(product.brand.isNotBlank()) product.variant else NONE
             map[KEY_PRICE] = product.productPrice
-            map[KEY_CATEGORY] = product.category
+            map[KEY_CATEGORY] = if(product.brand.isNotBlank()) product.category else NONE
             map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
