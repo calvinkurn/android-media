@@ -157,7 +157,7 @@ class AddBankFragment : BaseDaggerFragment() {
 
                     }
                     btnPeriksa.isEnabled = false
-                }else{
+                } else {
                     isFragmentRestored = false
                 }
             } ?: kotlin.run {
@@ -278,14 +278,16 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun onClickAddBankAccount() {
-        val request = builder.build()
-        if (request.isManual) {
-            bankSettingAnalytics.eventOnManualNameSimpanClick()
-            accountHolderNameViewModel.onValidateAccountName(etManualAccountHolderName.text.toString())
-        } else {
-            bankSettingAnalytics.eventOnAutoNameSimpanClick()
-            openPinVerification()
-        }
+        try {
+            val request = builder.build()
+            if (request.isManual) {
+                bankSettingAnalytics.eventOnManualNameSimpanClick()
+                accountHolderNameViewModel.onValidateAccountName(etManualAccountHolderName.text.toString())
+            } else {
+                bankSettingAnalytics.eventOnAutoNameSimpanClick()
+                openPinVerification()
+            }
+        }catch (e : Exception){}
     }
 
     private fun checkAccountNumber() {
@@ -490,7 +492,10 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun requestAddBankAccount() {
-        addAccountViewModel.addBank(builder.build())
+        try {
+            addAccountViewModel.addBank(builder.build())
+        } catch (e: Exception) {
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
