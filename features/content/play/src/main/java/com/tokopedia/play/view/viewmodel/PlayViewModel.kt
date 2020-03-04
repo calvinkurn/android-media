@@ -66,8 +66,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableQuickReply
     val observableEvent: LiveData<EventUiModel>
         get() = _observableEvent
-    val observableKeyboardState: LiveData<KeyboardState>
-        get() = _observableKeyboardState
+    val observableBottomInsetsState: LiveData<BottomInsetsState>
+        get() = _observableBottomInsetsState
     val observablePinned: LiveData<PinnedUiModel>
         get() = _observablePinned
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
@@ -85,11 +85,11 @@ class PlayViewModel @Inject constructor(
     private val _observablePartnerInfo: MutableLiveData<PartnerInfoUiModel> = MutableLiveData()
     private val _observableQuickReply = MutableLiveData<QuickReplyUiModel>()
     private val _observableEvent = MutableLiveData<EventUiModel>()
-    private val _observableKeyboardState = MutableLiveData<KeyboardState>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableProductSheetContent = MutableLiveData<ProductSheetUiModel>()
+    private val _observableBottomInsetsState = MutableLiveData<BottomInsetsState>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
@@ -180,15 +180,38 @@ class PlayViewModel @Inject constructor(
         return playManager.getDurationVideo()
     }
 
+    //region bottom insets
     fun onKeyboardShown(estimatedKeyboardHeight: Int) {
-        _observableKeyboardState.value =
-                if (_observableVideoStream.value?.channelType?.isLive == true) KeyboardState.Shown(estimatedKeyboardHeight, _observableKeyboardState.value?.isHidden == false)
-                else KeyboardState.Hidden(observableKeyboardState.value?.isShown == false)
+        _observableBottomInsetsState.value =
+                if (_observableVideoStream.value?.channelType?.isLive == true) BottomInsetsState.Shown(
+                        type = BottomInsetsType.Keyboard,
+                        estimatedInsetsHeight = estimatedKeyboardHeight,
+                        isPreviousStateSame = observableBottomInsetsState.value?.isHidden == false)
+                else BottomInsetsState.Hidden(
+                        type = BottomInsetsType.Keyboard,
+                        isPreviousStateSame = observableBottomInsetsState.value?.isShown == false)
     }
 
     fun onKeyboardHidden() {
-        _observableKeyboardState.value = KeyboardState.Hidden(observableKeyboardState.value?.isShown == false)
+        _observableBottomInsetsState.value = BottomInsetsState.Hidden(
+                type = BottomInsetsType.Keyboard,
+                isPreviousStateSame = observableBottomInsetsState.value?.isShown == false)
     }
+
+    fun onProductSheetShown(estimatedProductSheetHeight: Int) {
+        _observableBottomInsetsState.value = BottomInsetsState.Shown(
+                type = BottomInsetsType.BottomSheet,
+                estimatedInsetsHeight = estimatedProductSheetHeight,
+                isPreviousStateSame = observableBottomInsetsState.value?.isHidden == false
+        )
+    }
+
+    fun onProductSheetHidden() {
+        _observableBottomInsetsState.value = BottomInsetsState.Hidden(
+                type = BottomInsetsType.BottomSheet,
+                isPreviousStateSame = observableBottomInsetsState.value?.isShown == false)
+    }
+    //end region
 
     fun getChannelInfo(channelId: String) {
 

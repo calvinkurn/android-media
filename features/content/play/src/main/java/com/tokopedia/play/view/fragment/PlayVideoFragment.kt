@@ -106,7 +106,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         observeVOD()
         observeVideoProperty()
         observeOneTapOnboarding()
-        observeKeyboardState()
+        observableBottomInsetsState()
         observeEventUserInfo()
     }
 
@@ -136,8 +136,8 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
         viewModel.observableOneTapOnboarding.observe(viewLifecycleOwner, EventObserver { showOneTapOnboarding() })
     }
 
-    private fun observeKeyboardState() {
-        playViewModel.observableKeyboardState.observe(viewLifecycleOwner, Observer {
+    private fun observableBottomInsetsState() {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             if (::containerVideo.isInitialized) {
                 if (it.isShown) containerVideo.setCornerRadius(cornerRadius)
                 else containerVideo.setCornerRadius(0f)
@@ -145,7 +145,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
 
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(BottomInsetsType.Keyboard, it.isShown))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(it.type, it.isShown))
             }
         })
     }
