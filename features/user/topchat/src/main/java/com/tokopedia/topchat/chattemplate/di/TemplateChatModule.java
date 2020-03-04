@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.chuckerteam.chucker.api.ChuckerInterceptor;
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
@@ -74,7 +75,7 @@ public class TemplateChatModule {
 
     @TemplateChatScope
     @Provides
-    NetworkRouter provideNetworkRouter(Context context) {
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         return (NetworkRouter) context;
     }
 
