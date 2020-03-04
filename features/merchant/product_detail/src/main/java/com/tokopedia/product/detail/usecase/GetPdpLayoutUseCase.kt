@@ -42,7 +42,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
             gqlUseCase.setCacheStrategy(CacheStrategyUtil.getCacheStrategy(forceRefresh))
         } else {
             gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                    .Builder(if (forceRefresh) CacheType.ALWAYS_CLOUD else CacheType.CACHE_FIRST).build())
+                    .Builder(CacheType.ALWAYS_CLOUD).build())
         }
 
         val productId = requestParams.getString(ProductDetailCommonConstant.PARAM_PRODUCT_ID, "")
@@ -55,7 +55,8 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
 
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error: List<GraphqlError>? = gqlResponse.getError(ProductDetailLayout::class.java)
-        val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data ?: PdpGetLayout()
+        val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data
+                ?: PdpGetLayout()
         val blacklistMessage = data.basicInfo.blacklistMessage
 
         if (error != null && error.isNotEmpty()) {
