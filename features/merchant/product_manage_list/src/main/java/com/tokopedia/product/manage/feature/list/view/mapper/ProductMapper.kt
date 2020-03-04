@@ -4,12 +4,11 @@ import com.tokopedia.product.manage.common.extension.getCurrencyFormatted
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductList
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 
 object ProductMapper {
-    fun mapToViewModels(productListResponse: ProductList?): List<ProductViewModel> {
-        val productList = productListResponse?.data
+    fun mapToViewModels(productList: List<Product>?): List<ProductViewModel> {
 
         return productList?.map {
             val price = it.price?.min
@@ -26,13 +25,12 @@ object ProductMapper {
                 isVariant = it.isVariant,
                 isFeatured = it.featured == 1,
                 url = it.url,
-                cashBack = 100
+                cashBack = 0 // waiting confirmation from backend team, new query doesn't return cashback response
             )
         } ?: emptyList()
     }
 
-    fun mapToProductFilters(productListResponse: ProductList?): List<FilterViewModel> {
-        val productList = productListResponse?.data
+    fun mapToProductFilters(productList: List<Product>?): List<FilterViewModel> {
         val productFilters = mutableListOf<FilterViewModel>(Default)
 
         val availableFilters = productList
