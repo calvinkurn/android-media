@@ -25,7 +25,7 @@ class PreferenceListViewModel @Inject constructor(private val getPreferenceListU
     fun changeDefaultPreference(preference: ProfilesItemModel) {
         _setDefaultPreference.value = OccState.Loading
         setDefaultPreferenceUseCase.execute(preference.profileId!!, { response: SetDefaultPreferenceGqlResponse ->
-            _setDefaultPreference.value = OccState.Success(response.data.data)
+            _setDefaultPreference.value = OccState.Success(response.response.data)
             getAllPreference()
         }, { throwable: Throwable ->
             _setDefaultPreference.value = OccState.Fail(false, throwable, "")

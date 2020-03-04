@@ -12,15 +12,13 @@ import android.webkit.WebResourceResponse
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 import rx.Observable
@@ -141,10 +139,19 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             if (isSuccess != null && isSuccess.equals("true", true)) {
                 val gatewayCode = uri.getQueryParameter("gateway_code")
                 if (gatewayCode != null) {
-                    goToNextStep(gatewayCode)
+                    goToNextStep(gatewayCode, generateMetadata(uri))
                 }
             }
             return super.shouldInterceptRequest(view, url)
+        }
+
+        private fun generateMetadata(uri: Uri): String {
+            val map: HashMap<String, String> = HashMap()
+            for (key in uri.queryParameterNames) {
+                map[key] = uri.getQueryParameter(key) ?: ""
+            }
+            val metadata = Gson().toJson(map)
+            return metadata
         }
     }
 
@@ -173,10 +180,11 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 //        showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
     }
 
-    private fun goToNextStep(gatewayCode: String) {
+    private fun goToNextStep(gatewayCode: String, metadata: String) {
         val parent = activity
         if (parent is PreferenceEditActivity) {
             parent.gatewayCode = gatewayCode
+            parent.paymentQuery = metadata
             if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                 parent.onBackPressed()
             } else {

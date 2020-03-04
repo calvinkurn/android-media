@@ -119,7 +119,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     }
                 }
                 is OccState.Fail -> {
-                    if (!it.isConsumed) {
+//                    if (!it.isConsumed) {
                         progressDialog?.dismiss()
                         view?.let { view ->
                             if (it.throwable != null) {
@@ -132,8 +132,8 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                                 Toaster.make(view, "Failed", type = Toaster.TYPE_ERROR)
                             }
                         }
-                        viewModel.consumeSetDefaultPreferenceFail()
-                    }
+//                        viewModel.consumeSetDefaultPreferenceFail()
+//                    }
                 }
                 else -> {
                     if (progressDialog == null) {

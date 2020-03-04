@@ -20,6 +20,8 @@ import kotlinx.android.synthetic.main.activity_preference_edit.*
 
 class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent> {
 
+    var preferenceIndex = -1
+    var profileId = -1
     var addressId = -1
     var shippingId = -1
     var gatewayCode = ""
@@ -44,6 +46,8 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
             onBackPressed()
         }
 
+        preferenceIndex = intent.getIntExtra(EXTRA_PREFERENCE_INDEX, -1)
+        profileId = intent.getIntExtra(EXTRA_PROFILE_ID, -1)
         addressId = intent.getIntExtra(EXTRA_ADDRESS_ID, -1)
         shippingId = intent.getIntExtra(EXTRA_SHIPPING_ID, -1)
         gatewayCode = intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
@@ -123,6 +127,8 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
     companion object {
 
+        const val EXTRA_PREFERENCE_INDEX = "preference_index"
+        const val EXTRA_PROFILE_ID = "profile_id"
         const val EXTRA_ADDRESS_ID = "address_id"
         const val EXTRA_SHIPPING_ID = "shipping_id"
         const val EXTRA_GATEWAY_CODE = "gateway_code"

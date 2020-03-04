@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.model
+package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.delete.model
 
 import com.google.gson.annotations.SerializedName
 

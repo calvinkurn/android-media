@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import kotlinx.android.synthetic.main.card_preference.view.*
 

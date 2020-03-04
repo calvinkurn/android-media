@@ -1,0 +1,91 @@
+package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get
+
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get.model.GetPreferenceByIdGqlResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get.model.GetPreferenceData
+import javax.inject.Inject
+
+class GetPreferenceByIdUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase<GetPreferenceByIdGqlResponse>, val mapper: PreferenceModelMapper) {
+
+    fun execute(param: Int, onSuccess: (GetPreferenceData) -> Unit, onError: (Throwable) -> Unit) {
+        graphqlUseCase.setGraphqlQuery(QUERY)
+        graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to param))
+        graphqlUseCase.setTypeClass(GetPreferenceByIdGqlResponse::class.java)
+        graphqlUseCase.execute({ response: GetPreferenceByIdGqlResponse ->
+            if (response.response.status.equals("OK", true)) {
+                if (response.response.data.success == 1) {
+                    val data = mapper.convertToDomainModel(response)
+                    onSuccess(data)
+                } else if (response.response.data.messages.isNotEmpty()) {
+                    onError(MessageErrorException(response.response.data.messages[0]))
+                } else {
+                    onError(MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi"))
+                }
+            } else if (response.response.errorMessage.isNotEmpty()) {
+                onError(MessageErrorException(response.response.errorMessage[0]))
+            } else {
+                onError(MessageErrorException("Terjadi kesalahan pada server. Ulangi beberapa saat lagi"))
+            }
+        }, { throwable: Throwable ->
+            onError(throwable)
+        })
+    }
+
+    companion object {
+        const val PARAM_KEY = "profileId"
+        val QUERY = """
+        query get_profile_by_id_occ(${"$"}profileId: Int) {
+          get_profile_by_id_occ(profile_id: ${"$"}profileId, dummy: 1){
+                error_message
+                status
+                data {
+                    messages
+                    success
+                    profile{
+                        profile_id
+                        status
+                        address {
+                                address_id
+                                receiver_name
+                                address_name
+                                address_street
+                                district_id
+                                district_name
+                                city_id
+                                city_name
+                                province_id
+                                province_name
+                                phone
+                                longitude
+                                latitude
+                                geolocation
+                                postal_code
+                        }
+                        payment {
+                                enable
+                                active
+                                gateway_code
+                                gateway_name
+                                image
+                                description
+                                url
+                                fee
+                                minimum_amount
+                                maximum_amount
+                                flags {
+                                    pin
+                                }
+                        }
+                        shipment {
+                                service_id
+                                service_duration
+                                service_name
+                        }
+                    }
+                }
+            }
+        }
+        """.trimIndent()
+    }
+}

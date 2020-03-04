@@ -12,12 +12,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.PreferenceListBottomSheet
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.SpecificErrorBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
@@ -26,7 +24,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.math.BigInteger
 import javax.inject.Inject
 
 class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderProductCardListener {
