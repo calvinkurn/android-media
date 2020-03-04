@@ -1,6 +1,5 @@
 package com.tokopedia.sellerapp;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,7 +17,6 @@ import com.moengage.inapp.InAppManager;
 import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.pushbase.push.MoEPushCallBacks;
-import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
 import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -54,7 +52,7 @@ import timber.log.Timber;
 public class SellerMainApplication extends SellerRouterApplication implements MoEPushCallBacks.OnMoEPushNavigationAction,
         InAppManager.InAppMessageListener {
 
-    public static final String ANDROID_TOKOFIX_ENABLE = "android_tokofix_enable";
+    public static final String ANDROID_ROBUST_ENABLE = "android_robust_enable";
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -151,7 +149,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         }
         TimberWrapper.init(this);
         super.onCreate();
-        if(remoteConfig.getBoolean(ANDROID_TOKOFIX_ENABLE, true)) {
+        if(remoteConfig.getBoolean(ANDROID_ROBUST_ENABLE, true)) {
             TokoFix.init(this, BuildConfig.VERSION_NAME);
         }
         MoEPushCallBacks.getInstance().setOnMoEPushNavigationAction(this);
