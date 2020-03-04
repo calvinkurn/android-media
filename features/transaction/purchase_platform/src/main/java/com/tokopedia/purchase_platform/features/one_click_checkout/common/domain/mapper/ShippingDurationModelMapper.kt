@@ -1,33 +1,27 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper
 
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.shipping.Response
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.shipping.ServicesItem
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ShippingDataModel
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Data
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.Services
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.ShippingNoPriceResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ServicesItemModelNoPrice
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
 import javax.inject.Inject
 
 class ShippingDurationModelMapper @Inject constructor() : ShippingDurationDataMapper{
-    override fun convertToDomainModel(response: Response): ShippingDataModel {
-        val shippingDataModel = ShippingDataModel()
-        shippingDataModel.id = response.id
-        shippingDataModel.ratesId = response.ratesId
 
-        val servicesModules = ArrayList<ServicesItemModel?>()
-        for (services: ServicesItem in response.services) {
-            servicesModules.add(getServicesShipping(services))
+    override fun convertToDomainModel(response: ShippingNoPriceResponse): ShippingListModel {
+
+        return ShippingListModel().apply {
+            this.services = response.response.services.map(servicesItemModel)
         }
-
-        shippingDataModel.services = servicesModules
-
-        return shippingDataModel
 
     }
 
-    private fun getServicesShipping(servicesItem: ServicesItem): ServicesItemModel {
-        val servicesItemModel = ServicesItemModel()
-        servicesItemModel.serviceId = servicesItem.serviceId
-        servicesItemModel.serviceName = servicesItem.serviceName
-
-        return servicesItemModel
+    private val servicesItemModel: (Services) -> ServicesItemModelNoPrice = {
+        ServicesItemModelNoPrice().apply {
+            this.serviceId = it.serviceId
+            this.servicesDuration = it.serviceDuration
+            this.serviceCode = it.serviceCode
+        }
     }
 }

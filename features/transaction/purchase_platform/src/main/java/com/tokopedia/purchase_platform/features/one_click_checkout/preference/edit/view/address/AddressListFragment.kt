@@ -1,24 +1,44 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
+import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.model.AddressListModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import kotlinx.android.synthetic.main.fragment_choose_address.*
 import javax.inject.Inject
 
-class AddressListFragment : BaseDaggerFragment() {
+class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, SearchInputView.ResetListener {
+
+    override fun onSearchSubmitted(text: String) {
+        performSearch(text)
+    }
+
+    override fun onSearchTextChanged(text: String?) {
+        openSoftKeyboard()
+    }
+
+    override fun onSearchReset() {
+        viewModel.getAddress()
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -32,6 +52,10 @@ class AddressListFragment : BaseDaggerFragment() {
     }
 
     val adapter = AddressListItemAdapter()
+    private var maxItemPosition: Int = 0
+    private var isLoading: Boolean = false
+    private lateinit var inputMethodManager: InputMethodManager
+    private lateinit var searchAddress: SearchInputView
 
     override fun getScreenName(): String = ""
 
@@ -40,18 +64,39 @@ class AddressListFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_choose_address, container, false)
+        val view = inflater.inflate(R.layout.fragment_choose_address, container, false)
+        searchAddress = view.findViewById(R.id.search_input_view)
+        return view
     }
 
     private fun initViewModel(){
         viewModel.addressList.observe(this, Observer {
-            adapter.submitList(it)
+            when(it){
+                is AddressListModel -> {
+                    if(it.listAddress.isEmpty()){
+                        empty_state_order_list.visibility = View.VISIBLE
+                        address_list_rv.visibility = View.GONE
+                    } else {
+                        renderData(it.listAddress)
+                    }
+
+                }
+
+            }
         })
+
+    }
+
+    private fun renderData(data: List<RecipientAddressModel>) {
+        adapter.addressList.clear()
+        adapter.addressList.addAll(data)
+        adapter.notifyDataSetChanged()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
+        viewModel.getAddress()
 
         if(empty_state_order_list.visibility == View.GONE){
             btn_save_address.text = getString(R.string.label_button_input_address)
@@ -70,6 +115,74 @@ class AddressListFragment : BaseDaggerFragment() {
         address_list_rv.adapter = adapter
         address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
+        loadMore()
+        initSearchView()
+        onSearchReset()
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+    }
+
+    private fun loadMore(){
+        address_list_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val adapter = recyclerView.adapter
+                val totalItemCount = adapter!!.itemCount
+                val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
+                        .findLastVisibleItemPosition()
+
+                if (maxItemPosition < lastVisibleItemPosition) {
+                    maxItemPosition = lastVisibleItemPosition
+                }
+
+                if (maxItemPosition + 1 == totalItemCount && !isLoading && dy > 0) {
+                    viewModel.loadMore()
+                }
+            }
+        })
+
+    }
+
+    private fun initSearchView(){
+        searchAddress.searchTextView.setOnClickListener(onSearchViewClickListener())
+        searchAddress.searchTextView.setOnTouchListener(onSearchViewTouchListener())
+
+        searchAddress.setListener(this)
+        searchAddress.setResetListener(this)
+        searchAddress.setSearchHint(getString(R.string.label_hint_search_address))
+    }
+
+
+    private fun performSearch(query: String){
+        if(query.isNotEmpty()){
+            viewModel.searchAddress(query)
+        } else {
+            viewModel.getAddress()
+        }
+    }
+
+    private fun openSoftKeyboard(){
+        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)?.showSoftInput(
+                searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun onSearchViewTouchListener(): View.OnTouchListener {
+        return View.OnTouchListener { view, motionEvent ->
+            searchAddress.searchTextView.isCursorVisible = true
+            openSoftKeyboard()
+            false
+        }
+    }
+
+    private fun onSearchViewClickListener(): View.OnClickListener {
+        return View.OnClickListener { view ->
+            searchAddress.searchTextView.isCursorVisible = true
+            openSoftKeyboard()
+        }
     }
 
     private fun goToPickLocation(){

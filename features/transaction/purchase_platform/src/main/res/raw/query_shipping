@@ -1,5 +1,0 @@
-query get_shipping_item {
-  get_shipping_item {
-
-  }
-}

@@ -287,6 +287,7 @@
     <string name="text_shipping_desc">Pembelian di atas 14:00 WIB berpotensi dikirim besok</string>
     <string name="activity_title_shipping_duration">Pilih Durasi Pengiriman</string>
     <string name="activity_subtitle_shipping_address">Langkah 2 dari 3</string>
+    <string name="ticker_label_text">Perkiraan tiba dihitung sejak pesanan dikirim</string>
 
     <string name="one_click_checkout">Express Checkout</string>
     <string name="pay">Bayar</string>
