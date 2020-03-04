@@ -9,5 +9,6 @@ interface OtherSettingTypeFactory {
     fun type(settingTitleUiModel: SettingTitleUiModel): Int
     fun type(menuItemUiModel: MenuItemUiModel): Int
     fun type(shopInfoUiModel: ShopInfoUiModel): Int
+    fun type(shopStatusUiModel: ShopStatusUiModel): Int
 
 }

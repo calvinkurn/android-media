@@ -1,13 +1,15 @@
-package com.tokopedia.sellerhome.settings.view.uimodel.base
+package com.tokopedia.sellerhome.settings.view.viewholder.base
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherSettingTypeFactory
+import com.tokopedia.sellerhome.settings.view.uimodel.base.Loadable
+import com.tokopedia.sellerhome.settings.view.uimodel.base.LoadableUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.state.BaseUiModelState
 
 abstract class LoadableViewHolder<T : Visitable<OtherSettingTypeFactory>>(itemView: View) :
-        AbstractViewHolder<T>(itemView), Loadable<T>{
+        AbstractViewHolder<T>(itemView), Loadable<T> {
 
     inline fun <reified R : LoadableUiModel>observeUiState(element: T) {
         if (element is R) {
