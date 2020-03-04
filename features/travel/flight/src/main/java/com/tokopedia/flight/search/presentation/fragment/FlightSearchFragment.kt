@@ -820,10 +820,14 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         // setup state
         if (::flightFilterModel.isInitialized) {
             flightFilterModel.let {
-                if (it.transitTypeList != null && it.transitTypeList.contains(TransitEnum.DIRECT)) filterItems[QUICK_FILTER_DIRECT_ORDER].toggle()
-                if (it.facilityList != null && it.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) filterItems[QUICK_FILTER_BAGGAGE_ORDER].toggle()
-                if (it.facilityList != null && it.facilityList.contains(FlightFilterFacilityEnum.MEAL)) filterItems[QUICK_FILTER_MEAL_ORDER].toggle()
-                if (it.transitTypeList != null && it.transitTypeList.contains(TransitEnum.ONE)) filterItems[QUICK_FILTER_TRANSIT_ORDER].toggle()
+                if (it.transitTypeList != null && it.transitTypeList.contains(TransitEnum.DIRECT))
+                    filterItems[QUICK_FILTER_DIRECT_ORDER].toggle()
+                if (it.facilityList != null && it.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE))
+                    filterItems[QUICK_FILTER_BAGGAGE_ORDER].toggle()
+                if (it.facilityList != null && it.facilityList.contains(FlightFilterFacilityEnum.MEAL))
+                    filterItems[QUICK_FILTER_MEAL_ORDER].toggle()
+                if (it.transitTypeList != null && it.transitTypeList.contains(TransitEnum.ONE))
+                    filterItems[QUICK_FILTER_TRANSIT_ORDER].toggle()
             }
         }
 
