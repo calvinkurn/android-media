@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
+import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.domain.GetChannelInfoUseCase
 import com.tokopedia.play.domain.GetIsLikeUseCase
 import com.tokopedia.play.domain.GetPartnerInfoUseCase
@@ -51,6 +52,8 @@ class PlayViewModel @Inject constructor(
         get() = playManager.getObservableVideoPlayer()
     val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
+    val observableSocketInfo: LiveData<PlaySocketInfo>
+        get() = _observableSocketInfo
     val observableVideoStream: LiveData<VideoStreamUiModel>
         get() = _observableVideoStream
     val observableNewChat: LiveData<PlayChatUiModel>
@@ -75,6 +78,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
 
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
+    private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableNewChat = MutableLiveData<PlayChatUiModel>()
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
@@ -333,7 +337,10 @@ class PlayViewModel @Inject constructor(
                     }
                 }
             }
+        }, onReconnect = {
+            _observableSocketInfo.value = PlaySocketInfo.Reconnect
         }, onError = {
+            _observableSocketInfo.value = PlaySocketInfo.Error(it)
             startWebSocket(channelId, gcToken, settings)
         })
     }
