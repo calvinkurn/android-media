@@ -70,7 +70,6 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
     private static final int REQUEST_CODE_OTP = 1001;
 
     public static final int OTP_TYPE_CHECKOUT_DIGITAL = 16;
-    public static final String MODE_SMS = "sms";
 
     protected CartDigitalInfoData cartDigitalInfoData;
     protected CheckoutDataParameter.Builder checkoutDataParameterBuilder;
@@ -461,8 +460,7 @@ public abstract class DigitalBaseCartFragment<P extends DigitalBaseContract.Pres
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber);
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "");
         bundle.putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_CHECKOUT_DIGITAL);
-        bundle.putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, MODE_SMS);
-        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false);
+        bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, true);
 
         intent.putExtras(bundle);
         startActivityForResult(intent, REQUEST_CODE_OTP);
