@@ -6,11 +6,13 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubeThumbnailLoader
 import com.google.android.youtube.player.YouTubeThumbnailView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
@@ -33,9 +35,10 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<ShopHomeDisplayWi
         val LAYOUT_RES = R.layout.widget_shop_page_video_youtube
     }
 
-    private val selectedIndex: Int = 0
     private var videoUrl: String = ""
     private var youTubeThumbnailShopPage: YouTubeThumbnailView? = null
+    private var loaderImageView: LoaderImageView? = null
+    private var errorImageView: AppCompatImageView? = null
 
     var btnYoutubePlayer: AppCompatImageView? = null
     var titleVideoYoutube: Typography? = null
@@ -46,6 +49,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<ShopHomeDisplayWi
         btnYoutubePlayer = view.findViewById(R.id.btn_youtube_player)
         btnYoutubePlayer?.hide()
         titleVideoYoutube = view.findViewById(R.id.titleVideoYoutube)
+        loaderImageView = view.findViewById(R.id.loaderVideoYoutube)
         youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
@@ -70,6 +74,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<ShopHomeDisplayWi
                 childYouTubeThumbnailView?.visible()
                 youTubeThumbnailShopPage?.visible()
                 btnYoutubePlayer?.visible()
+                loaderImageView?.gone()
                 youTubeThumbnailLoader.release()
             }
 
