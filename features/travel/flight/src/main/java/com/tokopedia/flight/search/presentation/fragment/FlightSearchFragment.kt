@@ -843,23 +843,31 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             flightFilterModel.let {
                 if (it.transitTypeList.contains(TransitEnum.DIRECT)) {
                     flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].refChipUnify.select()
                 } else {
                     flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].refChipUnify.unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
                     flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].refChipUnify.select()
                 } else {
                     flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].refChipUnify.unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
                     flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].refChipUnify.select()
                 } else {
                     flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].refChipUnify.unselect()
                 }
                 if (it.transitTypeList.contains(TransitEnum.ONE)) {
                     flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].refChipUnify.select()
                 } else {
                     flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].refChipUnify.unselect()
                 }
             }
         }

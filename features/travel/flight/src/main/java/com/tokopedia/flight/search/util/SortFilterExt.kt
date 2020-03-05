@@ -1,15 +1,24 @@
 package com.tokopedia.flight.search.util
 
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
 
 /**
  * @author by furqan on 05/03/2020
  */
 
 fun SortFilterItem.select() {
-    type = com.tokopedia.unifycomponents.ChipsUnify.TYPE_SELECTED
+    type = ChipsUnify.TYPE_SELECTED
 }
 
 fun SortFilterItem.unselect() {
-    type = com.tokopedia.unifycomponents.ChipsUnify.TYPE_NORMAL
+    type = ChipsUnify.TYPE_NORMAL
+}
+
+fun ChipsUnify.select() {
+    chipType = ChipsUnify.TYPE_SELECTED
+}
+
+fun ChipsUnify.unselect() {
+    chipType = ChipsUnify.TYPE_NORMAL
 }
