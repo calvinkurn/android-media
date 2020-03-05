@@ -368,7 +368,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             // Update header sub total
             var header: PromoListHeaderUiModel? = null
             promoListUiModel.value?.forEach {
-                if (it is PromoListHeaderUiModel && it.uiData.identifierId == promoItem.uiData.parentIdentifierId) {
+                if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.identifierId == promoItem.uiData.parentIdentifierId) {
                     header = it
                     return@forEach
                 }
@@ -392,6 +392,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                             if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSellected) {
                                 tmpPromoItem.uiState.isSellected = false
                                 _tmpUiModel.value = Update(tmpPromoItem)
+                                calculateClash(tmpPromoItem)
                                 break
                             }
                         }
