@@ -111,4 +111,26 @@
         app:layout_constraintEnd_toEndOf="@id/settingShopGuidelineRight"
         app:layout_constraintGuide_percent="0.3"/>
 
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmerShopName"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintTop_toTopOf="@id/shopInfoView"
+        app:layout_constraintBottom_toTopOf="@id/shopBadges"
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
+        android:visibility="gone"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        app:layout_constraintWidth_percent="0.3"
+        app:layout_constraintHeight_percent="0.3"
+        app:layout_constraintTop_toTopOf="@id/shopBadges"
+        app:layout_constraintBottom_toBottomOf="@id/innerCircle"
+        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
+        android:visibility="gone"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

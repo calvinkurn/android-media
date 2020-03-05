@@ -18,13 +18,13 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/statusCard"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/setting_card_height"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Official Store"
+                android:text="@string/official_store"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
                 app:typographyType="body_2"

@@ -11,4 +11,10 @@
     <string name="sah_reload">Muat ulang</string>
 
     <string name="sah_ticker_warning">#ecdb77</string>
+
+    <string name="official_store">Official Store</string>
+    <string name="power_merchant">Power Merchant:&#160;</string>
+    <string name="regular_merchant">Regular Merchant</string>
+    <string name="setting_upgrade">Upgrade</string>
+    <string name="setting_verifikasi">Verifikasi</string>
 </resources>
