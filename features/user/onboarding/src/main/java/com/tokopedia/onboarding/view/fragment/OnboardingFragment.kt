@@ -273,7 +273,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     private fun finishOnBoarding() {
         activity?.let {
             userSession.setFirstTimeUserOnboarding(false)
-            DFInstaller().uninstallOnBackground(it.application, listOf(DeeplinkDFMapper.DFM_ONBOARDING))
             it.finish()
         }
     }
