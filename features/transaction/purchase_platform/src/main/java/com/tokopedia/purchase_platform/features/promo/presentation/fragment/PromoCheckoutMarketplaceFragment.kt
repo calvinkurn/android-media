@@ -106,75 +106,14 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             button_apply_no_promo.isLoading = !button_apply_promo.isLoading
         }
 
-        var lastHeaderUiModel: PromoListHeaderUiModel? = null
+        val lastHeaderUiModel: PromoListHeaderUiModel? = null
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
 
             }
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-                val lastData = adapter.data[topItemPosition]
-
-                var isShow = false
-                if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
-                    lastHeaderUiModel = lastData
-                    isShow = true
-                } else if (lastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == lastHeaderUiModel?.uiData?.identifierId) {
-                    isShow = true
-                } else if (lastData is PromoListItemUiModel) {
-                    if (lastHeaderUiModel != null && lastData.uiData.parentIdentifierId == lastHeaderUiModel?.uiData?.identifierId) {
-                        isShow = true
-                    } else {
-                        var foundHeader = false
-                        adapter.data.forEach {
-                            if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
-                                lastHeaderUiModel = it
-                                foundHeader = true
-                                return@forEach
-                            }
-                        }
-                        isShow = foundHeader
-                    }
-                } else {
-                    isShow = false
-                }
-
-                if (lastHeaderUiModel != null) {
-
-                    if (lastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
-                        ImageHandler.loadImageRounded2(context, section_image_promo_list_header, lastHeaderUiModel?.uiData?.iconUrl)
-                        section_image_promo_list_header.show()
-                    } else {
-                        section_image_promo_list_header.gone()
-                    }
-
-                    section_label_promo_list_header_title.text = lastHeaderUiModel?.uiData?.title
-                    section_label_promo_list_header_sub_title.text = lastHeaderUiModel?.uiData?.subTitle
-
-                    if (lastHeaderUiModel?.uiState?.isCollapsed == false) {
-                        section_image_chevron.rotation = 180f
-                    } else {
-                        section_image_chevron.rotation = 0f
-                    }
-
-                    setImageFilterNormal(section_image_promo_list_header)
-                    section_label_promo_list_header_sub_title.show()
-                    section_image_chevron.show()
-                    section_image_chevron.setOnClickListener {
-                        if (lastHeaderUiModel != null) {
-                            onClickPromoListHeader(lastHeaderUiModel!!)
-                        }
-                    }
-                }
-
-                if (isShow) {
-                    header_promo_section.show()
-                    setToolbarShadowVisibility(false)
-                } else {
-                    header_promo_section.gone()
-                    setToolbarShadowVisibility(true)
-                }
+                handleStickyPromoHeader(recyclerView, lastHeaderUiModel)
             }
         })
 
@@ -185,6 +124,72 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
         observeEmptyStateUiModel()
+    }
+
+    private fun handleStickyPromoHeader(recyclerView: RecyclerView, lastHeaderUiModel: PromoListHeaderUiModel?) {
+        var tmpLastHeaderUiModel = lastHeaderUiModel
+        val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        val lastData = adapter.data[topItemPosition]
+
+        var isShow = false
+        if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
+            tmpLastHeaderUiModel = lastData
+            isShow = true
+        } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel?.uiData?.identifierId) {
+            isShow = true
+        } else if (lastData is PromoListItemUiModel) {
+            if (tmpLastHeaderUiModel != null && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel?.uiData?.identifierId) {
+                isShow = true
+            } else {
+                var foundHeader = false
+                adapter.data.forEach {
+                    if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
+                        tmpLastHeaderUiModel = it
+                        foundHeader = true
+                        return@forEach
+                    }
+                }
+                isShow = foundHeader
+            }
+        } else {
+            isShow = false
+        }
+
+        if (tmpLastHeaderUiModel != null) {
+
+            if (tmpLastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
+                ImageHandler.loadImageRounded2(context, section_image_promo_list_header, tmpLastHeaderUiModel?.uiData?.iconUrl)
+                section_image_promo_list_header.show()
+            } else {
+                section_image_promo_list_header.gone()
+            }
+
+            section_label_promo_list_header_title.text = tmpLastHeaderUiModel?.uiData?.title
+            section_label_promo_list_header_sub_title.text = tmpLastHeaderUiModel?.uiData?.subTitle
+
+            if (tmpLastHeaderUiModel?.uiState?.isCollapsed == false) {
+                section_image_chevron.rotation = 180f
+            } else {
+                section_image_chevron.rotation = 0f
+            }
+
+            setImageFilterNormal(section_image_promo_list_header)
+            section_label_promo_list_header_sub_title.show()
+            section_image_chevron.show()
+            section_image_chevron.setOnClickListener {
+                if (tmpLastHeaderUiModel != null) {
+                    onClickPromoListHeader(tmpLastHeaderUiModel!!)
+                }
+            }
+        }
+
+        if (isShow) {
+            header_promo_section.show()
+            setToolbarShadowVisibility(false)
+        } else {
+            header_promo_section.gone()
+            setToolbarShadowVisibility(true)
+        }
     }
 
     private fun setToolbarShadowVisibility(show: Boolean) {

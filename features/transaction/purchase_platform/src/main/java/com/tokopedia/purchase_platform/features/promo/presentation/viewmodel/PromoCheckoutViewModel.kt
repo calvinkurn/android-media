@@ -57,19 +57,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         get() = _tmpListUiModel
 
     fun loadData() {
-        // Init fragment ui model
-        val fragmentUiModel = FragmentUiModel(
-                uiData = FragmentUiModel.UiData().apply {
-                    promoInputViewHeight = 0
-                },
-                uiState = FragmentUiModel.UiState().apply {
-                    hasPresellectedPromo = false
-                    hasAnyPromoSelected = false
-                    hasFailedToLoad = false
-                }
-        )
-        _fragmentUiModel.value = fragmentUiModel
-
 //        mockData()
 
         launch { getCouponRecommendation() }
@@ -132,8 +119,32 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             }
             _promoListUiModel.value = couponList
 
+            // Init fragment ui model
+            val fragmentUiModel = FragmentUiModel(
+                    uiData = FragmentUiModel.UiData().apply {
+                        promoInputViewHeight = 0
+                    },
+                    uiState = FragmentUiModel.UiState().apply {
+                        hasPresellectedPromo = promoListUiModel.value?.isNotEmpty() == true
+                        hasAnyPromoSelected = promoListUiModel.value?.isNotEmpty() == true
+                        hasFailedToLoad = false
+                    }
+            )
+            _fragmentUiModel.value = fragmentUiModel
+
         }) {
-            // Todo : Show error state
+            // Init fragment ui model
+            val fragmentUiModel = FragmentUiModel(
+                    uiData = FragmentUiModel.UiData().apply {
+                        promoInputViewHeight = 0
+                    },
+                    uiState = FragmentUiModel.UiState().apply {
+                        hasPresellectedPromo = false
+                        hasAnyPromoSelected = false
+                        hasFailedToLoad = true
+                    }
+            )
+            _fragmentUiModel.value = fragmentUiModel
         }
     }
 
