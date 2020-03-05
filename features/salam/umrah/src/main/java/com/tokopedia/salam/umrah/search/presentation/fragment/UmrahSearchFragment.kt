@@ -295,7 +295,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         }
         umrah_search_bottom_action_view.visible()
         renderList(data, data.size >= searchParam.limit)
-        if((adapter.data.size/searchParam.limit)==1)
+        if((adapter.data.size/searchParam.limit.toFloat()==1.0f))
         emptyState(isPassingEmpty)
     }
 
