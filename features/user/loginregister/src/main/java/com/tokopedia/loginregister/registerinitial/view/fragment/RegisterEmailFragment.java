@@ -262,7 +262,7 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         registerInitialViewModel.getRegisterRequestResponse().observe(this, registerRequestDataResult -> {
             if(registerRequestDataResult instanceof Success){
                 RegisterRequestData data = ((Success<RegisterRequestData>) registerRequestDataResult).getData();
-                onSuccessRegister(data.getUserId(), name.getText().toString(), email.getText().toString());
+                onSuccessRegister();
                 userSession.clearToken();
                 userSession.setToken(data.getAccessToken(), data.getTokenType(), data.getRefreshToken());
                 if(getActivity() != null){
@@ -634,14 +634,13 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             NetworkErrorHelper.showSnackbar(getActivity(), errorMessage);
     }
 
-    public void onSuccessRegister(int uid, String name, String email) {
+    public void onSuccessRegister() {
         if (getActivity() != null) {
             dismissLoadingProgress();
             setActionsEnabled(true);
             lostViewFocus();
             registerAnalytics.trackSuccessClickSignUpButtonEmail();
             registerAnalytics.trackSuccessClickEmailSignUpButton();
-            analytics.eventSuccessRegisterEmail(getActivity().getApplicationContext(), uid, name, email);
         }
     }
 

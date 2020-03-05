@@ -4,6 +4,10 @@ import android.content.Context
 import com.tokopedia.analytics.TrackAnalytics
 import com.tokopedia.analytics.firebase.FirebaseEvent
 import com.tokopedia.analytics.firebase.FirebaseParams
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.model.UserData
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
@@ -432,9 +436,9 @@ class RegisterAnalytics @Inject constructor() {
 
     }
 
-    fun trackSuccessRegister(loginMethod: String) {
+    fun trackSuccessRegister(loginMethod: String, userId: Int, name: String, email: String) {
         when (loginMethod) {
-            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail()
+            UserSessionInterface.LOGIN_METHOD_EMAIL -> onSuccessRegisterEmail(userId, name, email)
             UserSessionInterface.LOGIN_METHOD_PHONE -> onSuccessRegisterPhone()
             UserSessionInterface.LOGIN_METHOD_GOOGLE -> onSuccessRegisterGoogle()
             UserSessionInterface.LOGIN_METHOD_FACEBOOK -> onSuccessRegisterFacebook()
@@ -485,8 +489,24 @@ class RegisterAnalytics @Inject constructor() {
 
     }
 
-    private fun onSuccessRegisterEmail() {
+    private fun onSuccessRegisterEmail(userId: Int, name: String, email: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                EVENT_REGISTER_SUCCESS,
+                CATEGORY_REGISTER,
+                ACTION_REGISTER_SUCCESS,
+                LABEL_EMAIL
+        ))
 
+        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), "Email")
+        TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, "")
+        sendBranchRegisterEvent(email)
+    }
+
+    private fun sendBranchRegisterEvent(email: String) {
+        val userData = UserData()
+        userData.email = email
+        userData.phoneNumber = ""
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.EVENT_USER_REGISTRATION_VAL, userData))
     }
 
     fun trackClickTicker() {
@@ -619,6 +639,7 @@ class RegisterAnalytics @Inject constructor() {
         val LABEL_EMAIL_EXIST = "email exist"
         val LABEL_PHONE_EXIST = "phone number exist"
         private val LABEL_BEBAS_ONGKIR = "bebas ongkir"
+        private val LABEL_EMAIL = "Email"
 
         val GOOGLE = "google"
         val FACEBOOK = "facebook"
