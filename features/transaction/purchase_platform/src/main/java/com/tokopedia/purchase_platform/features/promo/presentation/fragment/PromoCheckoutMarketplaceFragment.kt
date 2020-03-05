@@ -64,7 +64,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     companion object {
-        private val HAS_ELEVATION = 12
+        private val HAS_ELEVATION = 6
         private val NO_ELEVATION = 0
     }
 
