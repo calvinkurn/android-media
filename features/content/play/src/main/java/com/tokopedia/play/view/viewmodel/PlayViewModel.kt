@@ -101,10 +101,27 @@ class PlayViewModel @Inject constructor(
             _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type ?: PlayChannelType.Unknown, it)
         }
         addSource(observablePartnerInfo) {
-            val currentValue = _observablePinnedMessage.value
-            if (currentValue != null) _observablePinnedMessage.value = currentValue.copy(
-                    partnerName = it.name
-            )
+            val currentMessageValue = _observablePinnedMessage.value
+            if (currentMessageValue != null) {
+                _observablePinnedMessage.value = currentMessageValue.copy(
+                        partnerName = it.name
+                )
+            }
+
+            val currentProductValue = _observablePinnedProduct.value
+            if (currentProductValue != null) {
+                _observablePinnedProduct.value = currentProductValue.copy(
+                        partnerName = it.name
+                )
+            }
+        }
+        addSource(observableProductSheetContent) {
+            if (it.productList.isNullOrEmpty()) {
+                val pinnedMessage = _observablePinnedMessage.value
+                if (pinnedMessage != null) _observablePinnedMessage.value = _observablePinnedMessage.value
+                else _observablePinned.value = PinnedRemoveUiModel
+            }
+            else _observablePinnedProduct.value = _observablePinnedProduct.value
         }
         addSource(observableEvent) {
             if (it.isFreeze) doOnChannelFreeze()
@@ -160,11 +177,23 @@ class PlayViewModel @Inject constructor(
     init {
         stateHandler.observeForever(stateHandlerObserver)
 
-        _observablePinned.addSource(_observablePinnedMessage) { _observablePinned.value = it }
-        _observablePinned.addSource(_observablePinnedProduct) { _observablePinned.value = it }
+        _observablePinned.addSource(_observablePinnedMessage) {
+            if (_observablePinnedProduct.value == null) {
+                if (it == null) _observablePinned.value = PinnedRemoveUiModel
+                else _observablePinned.value = it
+            }
+        }
+        _observablePinned.addSource(_observablePinnedProduct) {
+            if (_observableProductSheetContent.value?.productList.isNullOrEmpty() || it == null) {
+                val pinnedMessage = _observablePinnedMessage.value
+                if (pinnedMessage != null) _observablePinnedMessage.value = _observablePinnedMessage.value
+                else _observablePinned.value = PinnedRemoveUiModel
+            } else _observablePinned.value = it
+        }
 
 //        startMockFreeze()
         setMockProductSheetContent()
+        setMockProductPinned()
     }
 
     override fun onCleared() {
@@ -410,6 +439,7 @@ class PlayViewModel @Inject constructor(
                     _observablePartnerInfo.value?.name.orEmpty(),
                     channel.pinnedMessage
             ),
+            pinnedProduct = mapPinnedProduct(_observablePartnerInfo.value?.name.orEmpty(), 2),
             quickReply = mapQuickReply(channel.quickReply),
             totalView = mapTotalViews(channel.totalViews),
             event = mapEvent(channel)
@@ -429,12 +459,19 @@ class PlayViewModel @Inject constructor(
             isShowCart = channel.isShowCart
     )
 
-    private fun mapPinnedMessage(partnerName: String, pinnedMessage: PinnedMessage) = PinnedMessageUiModel(
-            applink = pinnedMessage.redirectUrl,
+    private fun mapPinnedMessage(partnerName: String, pinnedMessage: PinnedMessage) = if (pinnedMessage.pinnedMessageId > 0 && pinnedMessage.title.isNotEmpty()) {
+        PinnedMessageUiModel(
+                applink = pinnedMessage.redirectUrl,
+                partnerName = partnerName,
+                title = pinnedMessage.title
+        )
+    } else null
+
+    private fun mapPinnedProduct(partnerName: String, productCount: Int) = if (productCount > 0) PinnedProductUiModel(
             partnerName = partnerName,
-            title = pinnedMessage.title,
-            shouldRemove = pinnedMessage.pinnedMessageId <= 0 || pinnedMessage.title.isEmpty()
-    )
+            title = "",
+            isPromo = true
+    ) else null
 
     private fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
@@ -542,6 +579,19 @@ class PlayViewModel @Inject constructor(
                                     }
                             )
                         }
+                )
+            }
+        }
+    }
+
+    private fun setMockProductPinned() {
+        launch(dispatchers.io) {
+            delay(3000)
+            withContext(dispatchers.main) {
+                _observablePinnedProduct.value = PinnedProductUiModel(
+                        partnerName = "GSK Official Store",
+                        title = "Ayo belanja barang pilihan kami sebelum kehabisan!",
+                        isPromo = true
                 )
             }
         }

@@ -8,6 +8,8 @@ import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.PinnedProductUiModel
+import com.tokopedia.play.view.uimodel.PinnedRemoveUiModel
 import com.tokopedia.play.view.uimodel.PinnedUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -69,16 +71,20 @@ open class PinnedComponent(
     }
 
     private fun setPinned(pinnedUiModel: PinnedUiModel) {
-        when (pinnedUiModel) {
+       shouldShow = when (pinnedUiModel) {
             is PinnedMessageUiModel -> {
-                shouldShow = if (pinnedUiModel.shouldRemove) {
-                    uiView.hide()
-                    false
-                } else {
-                    uiView.setPinnedMessage(pinnedUiModel)
-                    if (!isKeyboardShown) uiView.show()
-                    true
-                }
+                uiView.setPinnedMessage(pinnedUiModel)
+                if (!isKeyboardShown) uiView.show()
+                true
+            }
+            is PinnedProductUiModel -> {
+                uiView.setPinnedProduct(pinnedUiModel)
+                if (!isKeyboardShown) uiView.show()
+                true
+            }
+            is PinnedRemoveUiModel -> {
+                uiView.hide()
+                false
             }
         }
     }
