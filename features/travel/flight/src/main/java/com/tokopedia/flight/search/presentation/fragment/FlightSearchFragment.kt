@@ -835,24 +835,24 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         if (::flightFilterModel.isInitialized) {
             flightFilterModel.let {
                 if (it.transitTypeList.contains(TransitEnum.DIRECT)) {
-                    filterItems[QUICK_FILTER_DIRECT_ORDER].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].select()
                 } else {
-                    filterItems[QUICK_FILTER_DIRECT_ORDER].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_DIRECT_ORDER].unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.BAGGAGE)) {
-                    filterItems[QUICK_FILTER_BAGGAGE_ORDER].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].select()
                 } else {
-                    filterItems[QUICK_FILTER_BAGGAGE_ORDER].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_BAGGAGE_ORDER].unselect()
                 }
                 if (it.facilityList.contains(FlightFilterFacilityEnum.MEAL)) {
-                    filterItems[QUICK_FILTER_MEAL_ORDER].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].select()
                 } else {
-                    filterItems[QUICK_FILTER_MEAL_ORDER].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_MEAL_ORDER].unselect()
                 }
                 if (it.transitTypeList.contains(TransitEnum.ONE)) {
-                    filterItems[QUICK_FILTER_TRANSIT_ORDER].select()
+                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].select()
                 } else {
-                    filterItems[QUICK_FILTER_TRANSIT_ORDER].unselect()
+                    flight_sort_filter.chipItems[QUICK_FILTER_TRANSIT_ORDER].unselect()
                 }
             }
         }
