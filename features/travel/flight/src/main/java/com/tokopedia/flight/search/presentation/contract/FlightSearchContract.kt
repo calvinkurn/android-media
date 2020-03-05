@@ -17,6 +17,8 @@ interface FlightSearchContract {
 
         fun getFilterModel(): FlightFilterModel
 
+        fun getPriceStatisticPair(): Pair<Int, Int>
+
         fun getAirportCombineModelList(): FlightAirportCombineModelList
 
         fun isStatusCombineDone(): Boolean
@@ -109,6 +111,8 @@ interface FlightSearchContract {
         fun fireAndForgetReturnFlight(passDataViewModel: FlightSearchPassDataViewModel, airportCombineModel: FlightAirportCombineModel)
 
         fun unsubscribeAll()
+
+        fun recountFilterCounter(): Int
 
     }
 }

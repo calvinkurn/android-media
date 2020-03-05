@@ -418,6 +418,23 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         flightSearchUseCase.unsubscribe()
     }
 
+    override fun recountFilterCounter(): Int {
+        var counter = 0
+
+        counter += if (view.getFilterModel().transitTypeList != null) view.getFilterModel().transitTypeList.size else 0
+        counter += if (view.getFilterModel().airlineList != null) view.getFilterModel().airlineList.size else 0
+        counter += if (view.getFilterModel().departureTimeList != null) view.getFilterModel().departureTimeList.size else 0
+        counter += if (view.getFilterModel().arrivalTimeList != null) view.getFilterModel().arrivalTimeList.size else 0
+        counter += if (view.getFilterModel().refundableTypeList != null) view.getFilterModel().refundableTypeList.size else 0
+        counter += if (view.getFilterModel().facilityList != null) view.getFilterModel().facilityList.size else 0
+
+        if (view.getFilterModel().priceMin > view.getPriceStatisticPair().first || view.getFilterModel().priceMax < view.getPriceStatisticPair().second) {
+            counter++
+        }
+
+        return counter
+    }
+
     private fun countProgress(): Int = FlightSearchFragment.MAX_PROGRESS / maxCall
 
     private fun deleteAllSearchData(subscriber: Subscriber<Boolean>) {

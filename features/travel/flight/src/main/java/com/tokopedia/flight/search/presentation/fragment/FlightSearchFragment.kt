@@ -42,9 +42,10 @@ import com.tokopedia.flight.search.presentation.model.*
 import com.tokopedia.flight.search.presentation.model.filter.FlightFilterModel
 import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
+import com.tokopedia.flight.search.util.select
+import com.tokopedia.flight.search.util.unselect
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
 import kotlinx.android.synthetic.main.include_flight_quick_filter.*
@@ -74,6 +75,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     protected var isCombineDone: Boolean = false
 
     private lateinit var flightFilterModel: FlightFilterModel
+    private lateinit var priceFilterStatistic: Pair<Int, Int>
 
     private lateinit var performanceMonitoringP1: PerformanceMonitoring
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
@@ -95,6 +97,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             flightAirportCombineModelList = savedInstanceState.getParcelable(SAVED_AIRPORT_COMBINE)
             progress = savedInstanceState.getInt(SAVED_PROGRESS, 0)
             isCombineDone = savedInstanceState.getBoolean(SAVED_IS_COMBINE_DONE, false)
+            priceFilterStatistic = Pair(
+                    savedInstanceState.getInt(SAVED_PRICE_MIN_STATISTIC),
+                    savedInstanceState.getInt(SAVED_PRICE_MAX_STATISTIC))
         }
 
         performanceMonitoringP1 = PerformanceMonitoring.start(FLIGHT_SEARCH_P1_TRACE)
@@ -128,6 +133,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         outState.putParcelable(SAVED_AIRPORT_COMBINE, flightAirportCombineModelList)
         outState.putInt(SAVED_PROGRESS, progress)
         outState.putBoolean(SAVED_IS_COMBINE_DONE, isCombineDone)
+        outState.putInt(SAVED_PRICE_MIN_STATISTIC, priceFilterStatistic.first)
+        outState.putInt(SAVED_PRICE_MAX_STATISTIC, priceFilterStatistic.second)
     }
 
     override fun onResume() {
@@ -261,6 +268,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     override fun isDoneLoadData(): Boolean = progress >= MAX_PROGRESS
 
     override fun getFilterModel(): FlightFilterModel = flightFilterModel
+
+    override fun getPriceStatisticPair(): Pair<Int, Int> = priceFilterStatistic
 
     override fun getAirportCombineModelList(): FlightAirportCombineModelList = flightAirportCombineModelList
 
@@ -533,8 +542,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         return emptyResultViewModel
     }
 
-    override fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?) {
+    override fun onSaveFilter(sortOption: Int, flightFilterModel: FlightFilterModel?, statisticPricePair: Pair<Int, Int>) {
         this.selectedSortOption = sortOption
+        this.priceFilterStatistic = statisticPricePair
         if (flightFilterModel != null) {
             this.flightFilterModel = flightFilterModel
         }
@@ -847,34 +857,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             }
         }
 
-        recountIndicatorCount()
-    }
-
-    private fun recountIndicatorCount() {
-        var counter = 0
-
-        if (::flightFilterModel.isInitialized) {
-            counter += if (flightFilterModel.transitTypeList != null) flightFilterModel.transitTypeList.size else 0
-            counter += if (flightFilterModel.airlineList != null) flightFilterModel.airlineList.size else 0
-            counter += if (flightFilterModel.departureTimeList != null) flightFilterModel.departureTimeList.size else 0
-            counter += if (flightFilterModel.arrivalTimeList != null) flightFilterModel.arrivalTimeList.size else 0
-            counter += if (flightFilterModel.refundableTypeList != null) flightFilterModel.refundableTypeList.size else 0
-            counter += if (flightFilterModel.facilityList != null) flightFilterModel.facilityList.size else 0
-        }
-
-        flight_sort_filter.indicatorCounter = counter
+        flight_sort_filter.indicatorCounter = flightSearchPresenter.recountFilterCounter()
     }
 
     private fun setInFilterMode() {
         inFilterMode = flightFilterModel.hasFilter()
-    }
-
-    private fun SortFilterItem.select() {
-        type = ChipsUnify.TYPE_SELECTED
-    }
-
-    private fun SortFilterItem.unselect() {
-        type = ChipsUnify.TYPE_NORMAL
     }
 
     interface OnFlightSearchFragmentListener {
@@ -892,6 +879,8 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         private const val REQUEST_CODE_SEARCH_FILTER = 1
         private const val REQUEST_CODE_SEE_DETAIL_FLIGHT = 2
         private const val SAVED_FILTER_MODEL = "svd_filter_model"
+        private const val SAVED_PRICE_MIN_STATISTIC = "svd_price_min_statistic"
+        private const val SAVED_PRICE_MAX_STATISTIC = "svd_price_max_statistic"
         private const val SAVED_SORT_OPTION = "svd_sort_option"
         private const val SAVED_AIRPORT_COMBINE = "svd_airport_combine"
         private const val SAVED_PROGRESS = "svd_progress"
