@@ -76,5 +76,3 @@ val ONE_LABEL = "1"
 val TWO_LABEL = "2"
 
 val REGION_LABEL = "region"
-val VIEW_ITEM = "view_item"
-val SELECT_CONTENT = "select_content"
