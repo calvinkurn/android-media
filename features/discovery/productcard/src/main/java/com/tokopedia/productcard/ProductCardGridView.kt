@@ -15,7 +15,7 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
 
-class ProductCardGridView: BaseCustomView {
+class ProductCardGridView: BaseCustomView, IProductCardView {
 
     constructor(context: Context): super(context) {
         init()
@@ -33,7 +33,7 @@ class ProductCardGridView: BaseCustomView {
         View.inflate(context, R.layout.product_card_grid_layout, this)
     }
 
-    fun setProductModel(productCardModel: ProductCardModel) {
+    override fun setProductModel(productCardModel: ProductCardModel) {
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
@@ -59,9 +59,9 @@ class ProductCardGridView: BaseCustomView {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
     }
 
-    fun getMaxCardElevation() = cardViewProductCard?.maxCardElevation ?: 0f
+    override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
-    fun getRadius() = cardViewProductCard?.radius ?: 0f
+    override fun getCardRadius() = cardViewProductCard?.radius ?: 0f
 
     fun applyCarousel() {
         setCardHeightMatchParent()
@@ -73,7 +73,7 @@ class ProductCardGridView: BaseCustomView {
         cardViewProductCard?.layoutParams = layoutParams
     }
 
-    fun recycle() {
+    override fun recycle() {
         imageProduct?.glideClear(context)
         imageFreeOngkirPromo?.glideClear(context)
     }

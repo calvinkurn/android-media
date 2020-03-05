@@ -4,13 +4,11 @@ import android.graphics.Rect;
 import android.view.View;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.tokopedia.productcard.ProductCardGridView;
-import com.tokopedia.productcard.ProductCardListView;
+import com.tokopedia.productcard.IProductCardView;
 import com.tokopedia.search.R;
 
 import java.util.Arrays;
@@ -86,45 +84,29 @@ public class ProductItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private int getHorizontalCardViewOffset(View view) {
-        float maxElevation;
-        float radius;
+        if (view instanceof IProductCardView) {
+            IProductCardView cardView = (IProductCardView) view;
 
-        if(view instanceof ProductCardGridView) {
-            ProductCardGridView cardView = (ProductCardGridView)view;
-            maxElevation = cardView.getMaxCardElevation();
-            radius = cardView.getRadius();
-        }
-        else if (view instanceof ProductCardListView) {
-            ProductCardListView cardView = (ProductCardListView)view;
-            maxElevation = cardView.getMaxCardElevation();
-            radius = cardView.getRadius();
-        }
-        else {
-            return 0;
+            float maxElevation = cardView.getCardMaxElevation();
+            float radius = cardView.getCardRadius();
+
+            return Math.round((float) (maxElevation + (1 - Math.cos(45)) * radius)) / 2;
         }
 
-        return Math.round((float)(maxElevation + (1 - Math.cos(45)) * radius)) / 2;
+        return 0;
     }
 
     private int getVerticalCardViewOffset(View view) {
-        float maxElevation;
-        float radius;
+        if (view instanceof IProductCardView) {
+            IProductCardView cardView = (IProductCardView)view;
 
-        if(view instanceof ProductCardGridView) {
-            ProductCardGridView cardView = (ProductCardGridView)view;
-            maxElevation = cardView.getMaxCardElevation();
-            radius = cardView.getRadius();
-        }
-        else if (view instanceof ProductCardListView) {
-            ProductCardListView cardView = (ProductCardListView)view;
-            maxElevation = cardView.getMaxCardElevation();
-            radius = cardView.getRadius();
-        }
-        else {
-            return 0;
+            float maxElevation = cardView.getCardMaxElevation();
+            float radius = cardView.getCardRadius();
+
+            return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius)) / 2;
         }
 
-        return Math.round((float)(maxElevation * 1.5 + (1 - Math.cos(45)) * radius)) / 2;
+        return 0;
     }
 
     private int getLeftOffset(int relativePos, int totalSpanCount) {
