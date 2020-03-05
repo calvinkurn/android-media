@@ -5,13 +5,12 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
-import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -19,13 +18,12 @@ import kotlinx.android.synthetic.main.layout_template_footer_business.view.*
 import kotlinx.android.synthetic.main.layout_template_icon_business_widget.view.*
 import kotlinx.android.synthetic.main.layout_template_small_business.view.*
 
-
 open class SizeSmallBusinessViewHolder (
-        itemView: View?,
-        private val listener: BusinessUnitItemView
-) : AbstractViewHolder<BusinessUnitItemDataModel>(itemView) {
-    override fun bind(element: BusinessUnitItemDataModel) {
-        element.content?.let {
+        itemView: View,
+        private val listener: BusinessUnitItemViewListener
+) : RecyclerView.ViewHolder(itemView) {
+    fun bind(element: BusinessUnitItemDataModel) {
+        element.content.let {
             renderImage(it)
             renderProduct(it)
             renderTitle(it)

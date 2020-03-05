@@ -457,23 +457,11 @@ open class HomeViewModel @Inject constructor(
     private fun evaluateBuWidgetData(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { homeViewModel ->
             val findBuWidgetViewModel =
-                    _homeLiveData.value?.list?.find { visitable -> visitable is BusinessUnitViewModel }
+                    _homeLiveData.value?.list?.find { visitable -> visitable is NewBusinessUnitWidgetDataModel }
             findBuWidgetViewModel?.let { findBu->
-                if (findBu is BusinessUnitViewModel) {
-                    val shouldForceRefresh = TimeUnit.MILLISECONDS.toMinutes(
-                            (System.currentTimeMillis()-findBu.updatedTime)) >= 3
-                    findBu.forceRefresh = shouldForceRefresh
-                    if (!shouldForceRefresh) {
-                        if (findBu.updatedTime == 0L) findBu.updatedTime = System.currentTimeMillis()
-                    } else {
-                        findBu.updatedTime = System.currentTimeMillis()
-                    }
-                }
-
                 val currentList = homeViewModel.list.toMutableList()
-
                 currentList.let {list ->
-                    val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
+                    val buwidgetIndex = list.indexOfFirst { visitable -> visitable is NewBusinessUnitWidgetDataModel }
                     if(buwidgetIndex != -1) {
                         list[buwidgetIndex] = findBu
                         return homeViewModel.copy(list = list)
@@ -483,16 +471,11 @@ open class HomeViewModel @Inject constructor(
 
             if (findBuWidgetViewModel == null) {
                 val findCurrentBuWidgetViewModel =
-                        homeViewModel.list.find { visitable -> visitable is BusinessUnitViewModel }
+                        homeViewModel.list.find { visitable -> visitable is NewBusinessUnitWidgetDataModel }
                 findCurrentBuWidgetViewModel?.let {
-                    if (findCurrentBuWidgetViewModel is BusinessUnitViewModel) {
-                        findCurrentBuWidgetViewModel.forceRefresh = false
-                        findCurrentBuWidgetViewModel.updatedTime = System.currentTimeMillis()
-                    }
                     val currentList = homeViewModel.list.toMutableList()
-
                     currentList.let {list ->
-                        val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
+                        val buwidgetIndex = list.indexOfFirst { visitable -> visitable is NewBusinessUnitWidgetDataModel }
                         if(buwidgetIndex != -1) {
                             list[buwidgetIndex] = findCurrentBuWidgetViewModel
                             return homeViewModel.copy(list = list)
