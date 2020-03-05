@@ -1,4 +1,4 @@
-package com.tokopedia.travelhomepage.homepage
+package com.tokopedia.travelhomepage
 
 import com.tokopedia.usecase.coroutines.UseCase
 import io.mockk.*
