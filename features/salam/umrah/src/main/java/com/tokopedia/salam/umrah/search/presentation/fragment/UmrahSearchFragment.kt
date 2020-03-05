@@ -24,8 +24,6 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
@@ -33,7 +31,6 @@ import com.tokopedia.salam.umrah.common.data.DefaultOption
 import com.tokopedia.salam.umrah.common.data.UmrahOption
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
 import com.tokopedia.salam.umrah.pdp.presentation.activity.UmrahPdpActivity
-import com.tokopedia.salam.umrah.search.data.UmrahSearchEmpty
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProduct
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.search.data.model.ParamFilter
@@ -63,7 +60,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_search_sort.view.*
 import kotlinx.android.synthetic.main.fragment_umrah_search.*
-import kotlinx.android.synthetic.main.partial_umrah_search_empty.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -435,7 +431,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         super.onDestroyView()
     }
     private fun showEmptyState() {
-        adapter.addElement(0,UmrahSearchEmpty())
+        adapter.addElement(0,EmptyModel())
     }
 
     private fun emptyState(isPasssingEmpty:Boolean){
