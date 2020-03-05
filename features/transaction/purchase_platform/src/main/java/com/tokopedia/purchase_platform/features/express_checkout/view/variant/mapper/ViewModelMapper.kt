@@ -3,10 +3,10 @@ package com.tokopedia.purchase_platform.features.express_checkout.view.variant.m
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.purchase_platform.features.express_checkout.data.constant.MAX_QUANTITY
 import com.tokopedia.purchase_platform.features.express_checkout.data.entity.response.atc.Message
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.*
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_AVAILABLE
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_NOT_SELECTED
-import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewmodel.OptionVariantViewModel.Companion.STATE_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.*
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_NOT_AVAILABLE
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_NOT_SELECTED
+import com.tokopedia.purchase_platform.features.express_checkout.view.variant.uimodel.OptionVariantUiModel.Companion.STATE_SELECTED
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.purchase_platform.features.express_checkout.domain.model.atc.*
@@ -22,7 +22,7 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
     override fun convertToViewModels(atcResponseModel: AtcResponseModel, productData: ProductData?): ArrayList<Visitable<*>> {
         val dataList: ArrayList<Visitable<*>> = ArrayList()
 
-        val variantViewModelList = ArrayList<TypeVariantViewModel>()
+        val variantViewModelList = ArrayList<TypeVariantUiModel>()
         val productVariantDataModels = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels
         if (productVariantDataModels != null && productVariantDataModels.isNotEmpty()) {
             val variantCombinationValidation = validateVariantCombination(productVariantDataModels[0])
@@ -60,8 +60,8 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
         return dataList
     }
 
-    override fun convertToNoteViewModel(atcResponseModel: AtcResponseModel): NoteViewModel {
-        val noteViewModel = NoteViewModel()
+    override fun convertToNoteViewModel(atcResponseModel: AtcResponseModel): NoteUiModel {
+        val noteViewModel = NoteUiModel()
         noteViewModel.noteCharMax = atcResponseModel.atcDataModel?.maxCharNote ?: 144
         noteViewModel.note = ""
 
@@ -69,9 +69,9 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
     }
 
     override fun convertToProductViewModel(atcResponseModel: AtcResponseModel,
-                                           typeVariantViewModels: ArrayList<TypeVariantViewModel>): ProductViewModel {
+                                           typeVariantUiModels: ArrayList<TypeVariantUiModel>): ProductUiModel {
         val productModel: ProductModel? = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
-        val productViewModel = ProductViewModel()
+        val productViewModel = ProductUiModel()
         productViewModel.parentId = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productId ?: 0
         productViewModel.productImageUrl = productModel?.productImageSrc200Square ?: ""
         productViewModel.productName = productModel?.productName ?: ""
@@ -86,7 +86,7 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
         productViewModel.productPrice = productModel?.productPrice ?: 0
         val productChildList = ArrayList<ProductChild>()
         var hasSelectedDefaultVariant = false
-        if (typeVariantViewModels.size > 0) {
+        if (typeVariantUiModels.size > 0) {
             val childrenModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)?.productVariantDataModels?.get(0)?.childModels
             if (childrenModel != null) {
                 for (childModel: ChildModel in childrenModel) {
@@ -171,14 +171,14 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
                 }
             }
 
-            for (variantTypeViewModel: TypeVariantViewModel in typeVariantViewModels) {
-                if (variantTypeViewModel.variantId != firstVariantId) {
-                    for (optionViewModel: OptionVariantViewModel in variantTypeViewModel.variantOptions) {
+            for (variantTypeUiModel: TypeVariantUiModel in typeVariantUiModels) {
+                if (variantTypeUiModel.variantId != firstVariantId) {
+                    for (optionUiModel: OptionVariantUiModel in variantTypeUiModel.variantOptions) {
 
                         // Get other variant type selected option id
                         val otherVariantSelectedOptionIds = ArrayList<Int>()
                         for ((key, value) in productViewModel.selectedVariantOptionsIdMap) {
-                            if (key != firstVariantId && key != variantTypeViewModel.variantId) {
+                            if (key != firstVariantId && key != variantTypeUiModel.variantId) {
                                 otherVariantSelectedOptionIds.add(value)
                             }
                         }
@@ -186,17 +186,17 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
                         // Look for available child
                         var hasAvailableChild = false
                         for (productChild: ProductChild in productViewModel.productChildrenList) {
-                            hasAvailableChild = checkChildAvailable(productChild, optionViewModel.optionId, firstOptionId, otherVariantSelectedOptionIds)
+                            hasAvailableChild = checkChildAvailable(productChild, optionUiModel.optionId, firstOptionId, otherVariantSelectedOptionIds)
                             if (hasAvailableChild) break
                         }
 
                         // Set option id state with checking result
                         if (!hasAvailableChild) {
-                            optionViewModel.hasAvailableChild = false
-                            optionViewModel.currentState == STATE_NOT_AVAILABLE
-                        } else if (optionViewModel.currentState != STATE_SELECTED) {
-                            optionViewModel.hasAvailableChild = true
-                            optionViewModel.currentState == STATE_NOT_SELECTED
+                            optionUiModel.hasAvailableChild = false
+                            optionUiModel.currentState == STATE_NOT_AVAILABLE
+                        } else if (optionUiModel.currentState != STATE_SELECTED) {
+                            optionUiModel.hasAvailableChild = true
+                            optionUiModel.currentState == STATE_NOT_SELECTED
                         }
                     }
                 }
@@ -227,9 +227,9 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
         return productChild.isAvailable && currentChangedOptionIdAvailable && optionViewModelIdAvailable && otherSelectedOptionIdCountEqual
     }
 
-    override fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileViewModel {
+    override fun convertToProfileViewModel(atcResponseModel: AtcResponseModel): ProfileUiModel {
         val userProfileModel: ProfileModel? = atcResponseModel.atcDataModel?.userProfileModelDefaultModel
-        val profileViewModel = ProfileViewModel()
+        val profileViewModel = ProfileUiModel()
         profileViewModel.profileId = userProfileModel?.id ?: 0
         profileViewModel.addressId = userProfileModel?.addressModel?.addressId ?: 0
         profileViewModel.districtName = userProfileModel?.addressModel?.districtName ?: ""
@@ -253,8 +253,8 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
     }
 
     override fun convertToQuantityViewModel(atcResponseModel: AtcResponseModel,
-                                            productViewModel: ProductViewModel): QuantityViewModel {
-        val quantityViewModel = QuantityViewModel()
+                                            productUiModel: ProductUiModel): QuantityUiModel {
+        val quantityViewModel = QuantityUiModel()
         val messagesModel = atcResponseModel.atcDataModel?.messagesModel
         quantityViewModel.errorFieldBetween = messagesModel?.get(Message.ERROR_FIELD_BETWEEN) ?: ""
         quantityViewModel.errorFieldMaxChar = messagesModel?.get(Message.ERROR_FIELD_MAX_CHAR) ?: ""
@@ -265,16 +265,16 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
         quantityViewModel.errorProductMinQuantity = messagesModel?.get(Message.ERROR_PRODUCT_MIN_QUANTITY) ?: ""
         quantityViewModel.isStateError = false
 
-        quantityViewModel.maxOrderQuantity = productViewModel.maxOrderQuantity
-        quantityViewModel.minOrderQuantity = productViewModel.minOrderQuantity
-        quantityViewModel.orderQuantity = productViewModel.minOrderQuantity
+        quantityViewModel.maxOrderQuantity = productUiModel.maxOrderQuantity
+        quantityViewModel.minOrderQuantity = productUiModel.minOrderQuantity
+        quantityViewModel.orderQuantity = productUiModel.minOrderQuantity
         quantityViewModel.stockWording = ""
 
         return quantityViewModel
     }
 
-    override fun convertToSummaryViewModel(atcResponseModel: AtcResponseModel): SummaryViewModel {
-        val summaryViewModel = SummaryViewModel(null)
+    override fun convertToSummaryViewModel(atcResponseModel: AtcResponseModel): SummaryUiModel {
+        val summaryViewModel = SummaryUiModel(null)
         val productModel = atcResponseModel.atcDataModel?.cartModel?.groupShopModels?.get(0)?.productModels?.get(0)
         summaryViewModel.itemPrice = productModel?.productQuantity?.times(productModel?.productPrice?.toLong()
                 ?: 0)?.toLong() ?: 0
@@ -282,10 +282,10 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
         return summaryViewModel
     }
 
-    override fun convertToTypeVariantViewModel(variantModel: VariantModel, childrenModel: ArrayList<ChildModel>): TypeVariantViewModel {
-        val typeVariantViewModel = TypeVariantViewModel(null)
+    override fun convertToTypeVariantViewModel(variantModel: VariantModel, childrenModel: ArrayList<ChildModel>): TypeVariantUiModel {
+        val typeVariantViewModel = TypeVariantUiModel(null)
 
-        val optionVariantViewModels = ArrayList<OptionVariantViewModel>()
+        val optionVariantViewModels = ArrayList<OptionVariantUiModel>()
         val optionModels = variantModel.optionModels
         if (optionModels != null) {
             for (optionModel: OptionModel in optionModels) {
@@ -302,8 +302,8 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
         return typeVariantViewModel
     }
 
-    override fun convertToOptionVariantViewModel(optionModel: OptionModel, variantId: Int, childrenModel: ArrayList<ChildModel>): OptionVariantViewModel {
-        val optionVariantViewModel = OptionVariantViewModel(null)
+    override fun convertToOptionVariantViewModel(optionModel: OptionModel, variantId: Int, childrenModel: ArrayList<ChildModel>): OptionVariantUiModel {
+        val optionVariantViewModel = OptionVariantUiModel(null)
         optionVariantViewModel.variantId = variantId
         optionVariantViewModel.optionId = optionModel.id
         optionVariantViewModel.variantHex = optionModel.hex ?: ""
@@ -368,8 +368,8 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
     }
 
     override fun convertToInsuranceViewModel(productData: ProductData,
-                                             summaryViewModel: SummaryViewModel?): InsuranceViewModel {
-        val insuranceViewModel = InsuranceViewModel()
+                                             summaryUiModel: SummaryUiModel?): InsuranceUiModel {
+        val insuranceViewModel = InsuranceUiModel()
         insuranceViewModel.insuranceLongInfo = productData.insurance.insuranceUsedInfo
         insuranceViewModel.insurancePrice = productData.insurance.insurancePrice
         insuranceViewModel.insuranceType = productData.insurance.insuranceType
@@ -381,10 +381,10 @@ open class ViewModelMapper @Inject constructor() : DataMapper {
                 productData.insurance.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST
         insuranceViewModel.isVisible = true
 
-        summaryViewModel?.isUseInsurance = insuranceViewModel.isChecked
-        summaryViewModel?.shippingPrice = productData.price.price
-        summaryViewModel?.insurancePrice = if (insuranceViewModel.isChecked) productData.insurance.insurancePrice else 0
-        summaryViewModel?.insuranceInfo = productData.insurance.insuranceUsedInfo
+        summaryUiModel?.isUseInsurance = insuranceViewModel.isChecked
+        summaryUiModel?.shippingPrice = productData.price.price
+        summaryUiModel?.insurancePrice = if (insuranceViewModel.isChecked) productData.insurance.insurancePrice else 0
+        summaryUiModel?.insuranceInfo = productData.insurance.insuranceUsedInfo
 
         return insuranceViewModel
     }

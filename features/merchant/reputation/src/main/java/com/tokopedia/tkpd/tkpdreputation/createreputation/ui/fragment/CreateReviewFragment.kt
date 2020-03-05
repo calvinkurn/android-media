@@ -13,7 +13,6 @@ import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,29 +21,26 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieDrawable
 import com.airbnb.lottie.LottieCompositionFactory
-import com.airbnb.lottie.LottieListener
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieTask
+import com.airbnb.lottie.LottieDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.device.info.DevicePerformanceInfo
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.DeviceChecker
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.reputation.common.view.AnimatedReputationView
 import com.tokopedia.tkpd.tkpdreputation.R
@@ -74,6 +70,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         const val REVIEW_CLICK_AT = "REVIEW_CLICK_AT"
         const val REVIEW_NOTIFICATION_ID = "REVIEW_NOTIFICATION_ID"
         const val REVIEW_ORDER_ID = "REVIEW_ORDER_ID"
+        const val UTM_SOURCE = "UTM_SOURCE"
 
         private const val IMAGE_REVIEW_GREY_BG = "https://ecs7.tokopedia.net/android/others/1_2reviewbg.png"
         private const val IMAGE_REVIEW_GREEN_BG = "https://ecs7.tokopedia.net/android/others/3reviewbg.png"
@@ -92,11 +89,12 @@ class CreateReviewFragment : BaseDaggerFragment() {
         private const val IMAGE_PEDIE_4 = "https://ecs7.tokopedia.net/android/pedie/4star.png"
         private const val IMAGE_PEDIE_5 = "https://ecs7.tokopedia.net/android/pedie/5star.png"
 
-        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0) = CreateReviewFragment().also {
+        fun createInstance(productId: String, reviewId: String, reviewClickAt: Int = 0, utmSource: String) = CreateReviewFragment().also {
             it.arguments = Bundle().apply {
                 putString(PRODUCT_ID_REVIEW, productId)
                 putString(REVIEW_ID, reviewId)
                 putInt(REVIEW_CLICK_AT, reviewClickAt)
+                putString(UTM_SOURCE, utmSource)
             }
         }
     }
@@ -124,6 +122,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     private var productRevGetForm: ProductRevGetForm = ProductRevGetForm()
     private var shopId: String = ""
     private var orderId: String = ""
+    private var utmSource: String = ""
 
     private var reviewUserName: String = ""
     lateinit var imgAnimationView: LottieAnimationView
@@ -138,7 +137,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             DaggerReputationComponent
                     .builder()
                     .reputationModule(ReputationModule())
-                    .appComponent(getComponent(AppComponent::class.java))
+                    .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
                     .build()
                     .inject(this)
         }
@@ -156,6 +155,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
             orderId = it.getString(REVIEW_ORDER_ID) ?: ""
             reviewClickAt = it.getInt(REVIEW_CLICK_AT, 0)
             reviewId = it.getString(REVIEW_ID, "").toIntOrNull() ?: 0
+            utmSource = it.getString(UTM_SOURCE, "")
         }
 
         if (reviewClickAt > CreateReviewActivity.DEFAULT_PRODUCT_RATING || reviewClickAt < 0) {
@@ -194,7 +194,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         reviewUserName = createReviewViewModel.userSessionInterface.name
-        isLowDevice = DeviceChecker.isLowPerformingDevice(context)
+        isLowDevice = DevicePerformanceInfo.isLow(context)
 
         getReviewData()
         anonymous_text.text = generateAnonymousText()
@@ -307,7 +307,7 @@ class CreateReviewFragment : BaseDaggerFragment() {
         )
 
         createReviewViewModel.submitReview(DEFAULT_REVIEW_ID, reviewId.toString(), productId.toString(),
-                shopId, reviewMessage, reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked)
+                shopId, reviewMessage, reviewClickAt.toFloat(), selectedImage, anonymous_cb.isChecked, utmSource)
     }
 
     private fun onSuccessGetReviewForm(data: ProductRevGetForm) {

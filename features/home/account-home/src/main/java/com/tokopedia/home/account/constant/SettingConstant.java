@@ -39,8 +39,8 @@ public class SettingConstant {
 
     public static class Url {
         public static final String BASE_MOBILE = "https://m.tokopedia.com/";
-        public static final String PATH_TERM_CONDITION = "terms.pl";
-        public static final String PATH_PRIVACY_POLICY = "privacy.pl";
+        public static final String PATH_TERM_CONDITION = "terms.pl?isBack=true";
+        public static final String PATH_PRIVACY_POLICY = "privacy.pl?isBack=true";
         public static final String PATH_CHECKOUT_TEMPLATE = "user/settings/template-pembelian";
         public static final String BASE_WEBVIEW_APPLINK = "tokopedia://webview?url=";
     }

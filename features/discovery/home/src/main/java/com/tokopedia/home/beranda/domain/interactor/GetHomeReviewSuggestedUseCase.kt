@@ -15,7 +15,7 @@ class GetHomeReviewSuggestedUseCase @Inject constructor(private val graphqlUseCa
                                                         @Named("suggested_review") private val rawQuery: String) : UseCase<SuggestedProductReview>() {
 
     override fun createObservable(requestParams: RequestParams): Observable<SuggestedProductReview> {
-        val graphqlRequest = GraphqlRequest(rawQuery, SuggestedProductReview::class.java, RequestParams.EMPTY.parameters, true)
+        val graphqlRequest = GraphqlRequest(rawQuery, SuggestedProductReview::class.java, RequestParams.EMPTY.parameters)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 

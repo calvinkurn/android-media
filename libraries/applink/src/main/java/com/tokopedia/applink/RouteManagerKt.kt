@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
-import com.tokopedia.applink.constant.DeeplinkConstant.SCHEME_HTTP
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalOrderDetail
 
@@ -59,6 +58,9 @@ object RouteManagerKt{
             DeepLinkChecker.HOT -> {
                 return DeepLinkChecker.openHot(url, activity)
             }
+            DeepLinkChecker.FIND -> {
+                return DeepLinkChecker.openFind(url, activity)
+            }
             DeepLinkChecker.CATALOG -> {
                 //TODO still use className
                 return DeepLinkChecker.openCatalog(url, activity)
@@ -85,6 +87,9 @@ object RouteManagerKt{
             DeepLinkChecker.ORDER_LIST -> {
                 RouteManager.route(activity, ApplinkConstInternalOrderDetail.ORDER_LIST_URL, url)
                 return true
+            }
+            DeepLinkChecker.TRAVEL_HOMEPAGE -> {
+                return RouteManager.route(activity, url)
             }
         }
         return false

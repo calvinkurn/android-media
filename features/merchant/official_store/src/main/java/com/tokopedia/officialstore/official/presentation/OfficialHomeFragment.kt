@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -180,6 +181,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBannersResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    removeLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                     setLoadMoreListener()
@@ -575,6 +577,15 @@ class OfficialHomeFragment :
         }
     }
 
+    private fun removeLoading() {
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is LoadingModel
+            }
+            adapter?.notifyDataSetChanged()
+        }
+    }
+
     override fun onShopImpression(categoryName: String, position: Int, shopData: Shop) {
         tracking?.eventImpressionFeatureBrand(
                 categoryName,
@@ -601,7 +612,6 @@ class OfficialHomeFragment :
         )
         RouteManager.route(context, shopData.url)
     }
-
 
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.slug.orEmpty()

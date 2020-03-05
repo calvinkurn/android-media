@@ -30,8 +30,8 @@ import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
-import com.tokopedia.logisticaddaddress.common.AddressConstants.MONAS_LAT
-import com.tokopedia.logisticaddaddress.common.AddressConstants.MONAS_LONG
+import com.tokopedia.logisticaddaddress.common.AddressConstants.DEFAULT_LAT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.DEFAULT_LONG
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressComponent
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
@@ -111,8 +111,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         fun newInstance(extra: Bundle): PinpointMapFragment {
             return PinpointMapFragment().apply {
                 arguments = Bundle().apply {
-                    putDouble(AddressConstants.EXTRA_LAT, extra.getDouble(AddressConstants.EXTRA_LAT, MONAS_LAT))
-                    putDouble(AddressConstants.EXTRA_LONG, extra.getDouble(AddressConstants.EXTRA_LONG, MONAS_LONG))
+                    putDouble(AddressConstants.EXTRA_LAT, extra.getDouble(AddressConstants.EXTRA_LAT, DEFAULT_LAT))
+                    putDouble(AddressConstants.EXTRA_LONG, extra.getDouble(AddressConstants.EXTRA_LONG, DEFAULT_LONG))
                     putBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, extra.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true))
                     putParcelable(AddressConstants.KERO_TOKEN, extra.getParcelable(AddressConstants.KERO_TOKEN))
                     putBoolean(AddressConstants.EXTRA_IS_POLYGON, extra.getBoolean(AddressConstants.EXTRA_IS_POLYGON))
@@ -129,8 +129,8 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            currentLat = it.getDouble(AddressConstants.EXTRA_LAT, MONAS_LAT)
-            currentLong = it.getDouble(AddressConstants.EXTRA_LONG, MONAS_LONG)
+            currentLat = it.getDouble(AddressConstants.EXTRA_LAT, DEFAULT_LAT)
+            currentLong = it.getDouble(AddressConstants.EXTRA_LONG, DEFAULT_LONG)
             isShowingAutocomplete = it.getBoolean(AddressConstants.EXTRA_SHOW_AUTOCOMPLETE, true)
             token = it.getParcelable(AddressConstants.KERO_TOKEN)
             isPolygon = it.getBoolean(AddressConstants.EXTRA_IS_POLYGON, false)
@@ -152,7 +152,9 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
         prepareMap(savedInstanceState)
         prepareLayout()
         setViewListener()
-        presenter.autofill(currentLat, currentLong)
+
+        val zoom = googleMap?.cameraPosition?.zoom ?: 0f
+        presenter.autofill(currentLat, currentLong, zoom)
     }
 
     private fun prepareMap(savedInstanceState: Bundle?) {
@@ -271,11 +273,12 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     private fun getAutofill() {
         if (!isGetDistrict) {
             val target: LatLng? = this.googleMap?.cameraPosition?.target
+            val zoomLevel = this.googleMap?.cameraPosition?.zoom ?: 0f
             val latTarget = target?.latitude ?: 0.0
             val longTarget = target?.longitude ?: 0.0
 
             presenter.clearCacheAutofill()
-            presenter.autofill(latTarget, longTarget)
+            presenter.autofill(latTarget, longTarget, zoomLevel)
         } else {
             whole_loading_container?.visibility = View.GONE
             invalid_container?.visibility = View.GONE
@@ -291,20 +294,21 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
             }, 500)
         }
 
+        var zoomLevel = 16f
         if (lat == 0.0 && long == 0.0) {
-            currentLat = MONAS_LAT
-            currentLong = MONAS_LONG
+            currentLat = DEFAULT_LAT
+            currentLong = DEFAULT_LONG
         } else {
             currentLat = lat
             currentLong = long
         }
-        moveMap(getLatLng(currentLat, currentLong))
+        moveMap(getLatLng(currentLat, currentLong), zoomLevel)
     }
 
-    private fun moveMap(latLng: LatLng) {
+    private fun moveMap(latLng: LatLng, zoomLevel: Float = 16f) {
         val cameraPosition = CameraPosition.Builder()
                 .target(latLng)
-                .zoom(16f)
+                .zoom(zoomLevel)
                 .build()
 
         googleMap?.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
@@ -313,7 +317,7 @@ class PinpointMapFragment : BaseDaggerFragment(), PinpointMapListener, OnMapRead
     override fun onResume() {
         super.onResume()
         map_view?.onResume()
-        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == MONAS_LAT && currentLong == MONAS_LONG) {
+        if ((currentLat == 0.0 && currentLong == 0.0) || currentLat == DEFAULT_LAT && currentLong == DEFAULT_LONG) {
             presenter.requestLocation(requireActivity())
         }
         if (AddNewAddressUtils.isGpsEnabled(context)) {

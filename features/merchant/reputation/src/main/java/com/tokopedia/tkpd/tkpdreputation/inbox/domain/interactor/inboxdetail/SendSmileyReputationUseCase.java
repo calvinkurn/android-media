@@ -1,11 +1,9 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.domain.interactor.inboxdetail;
 
-import com.tokopedia.core.base.domain.RequestParams;
-import com.tokopedia.core.base.domain.UseCase;
-import com.tokopedia.core.base.domain.executor.PostExecutionThread;
-import com.tokopedia.core.base.domain.executor.ThreadExecutor;
 import com.tokopedia.tkpd.tkpdreputation.inbox.data.repository.ReputationRepository;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
+import com.tokopedia.usecase.RequestParams;
+import com.tokopedia.usecase.UseCase;
 
 import rx.Observable;
 
@@ -24,10 +22,8 @@ public class SendSmileyReputationUseCase extends UseCase<SendSmileyReputationDom
 
     private ReputationRepository reputationRepository;
 
-    public SendSmileyReputationUseCase(ThreadExecutor threadExecutor,
-                                       PostExecutionThread postExecutionThread,
-                                       ReputationRepository reputationRepository) {
-        super(threadExecutor, postExecutionThread);
+    public SendSmileyReputationUseCase(ReputationRepository reputationRepository) {
+        super();
         this.reputationRepository = reputationRepository;
     }
 

@@ -132,7 +132,7 @@ public class TokopediaPayCardView extends BaseCustomView {
         if (isImportant) {
             this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), R.color.tkpd_main_green));
         } else {
-            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), android.R.color.primary_text_light));
+            this.textAmountRight.setTextColor(ContextCompat.getColor(getContext(), R.color.font_black_primary_70));
         }
 
         this.textAmountRight.setText(text);

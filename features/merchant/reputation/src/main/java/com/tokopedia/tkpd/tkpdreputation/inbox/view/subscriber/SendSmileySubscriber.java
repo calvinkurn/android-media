@@ -1,10 +1,8 @@
 package com.tokopedia.tkpd.tkpdreputation.inbox.view.subscriber;
 
-import com.tokopedia.core.app.MainApplication;
-import com.tokopedia.core.network.retrofit.response.ErrorHandler;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.tkpd.tkpdreputation.R;
 import com.tokopedia.tkpd.tkpdreputation.inbox.domain.model.inboxdetail.SendSmileyReputationDomain;
-import com.tokopedia.tkpd.tkpdreputation.inbox.view.adapter.ReputationAdapter;
 import com.tokopedia.tkpd.tkpdreputation.inbox.view.listener.InboxReputationDetail;
 
 import rx.Subscriber;
@@ -32,7 +30,7 @@ public class SendSmileySubscriber extends Subscriber<SendSmileyReputationDomain>
     @Override
     public void onError(Throwable e) {
         viewListener.finishLoadingDialog();
-        viewListener.onErrorSendSmiley(ErrorHandler.getErrorMessage(e));
+        viewListener.onErrorSendSmiley(ErrorHandler.getErrorMessage(viewListener.getContext().getApplicationContext(), e));
     }
 
     @Override
@@ -41,7 +39,7 @@ public class SendSmileySubscriber extends Subscriber<SendSmileyReputationDomain>
         if (sendSmileyReputationDomain.isSuccess()) {
             viewListener.onSuccessSendSmiley(Integer.parseInt(score));
         } else {
-            viewListener.onErrorSendSmiley(MainApplication.getAppContext().getString(R.string
+            viewListener.onErrorSendSmiley(viewListener.getContext().getApplicationContext().getString(R.string
                     .default_request_error_unknown));
         }
     }

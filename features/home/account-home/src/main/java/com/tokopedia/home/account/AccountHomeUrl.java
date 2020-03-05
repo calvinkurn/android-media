@@ -44,4 +44,6 @@ public class AccountHomeUrl {
     public static String BASE_MOBILE_URL = TokopediaUrl.Companion.getInstance().getMOBILEWEB();
     public final static String URL_TOKOPEDIA_CORNER = BASE_MOBILE_URL + "tokopedia-corner";
     public final static String APPLINK_TOKOPEDIA_CORNER = String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TOKOPEDIA_CORNER);
+
+    public static String LOCALSERVICE_TX_URL = BASE_MOBILE_URL + "order-list?tab=LSPRINT";
 }

@@ -5,6 +5,8 @@ import androidx.cardview.widget.CardView
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.productcard.R
+import com.tokopedia.productcard.utils.loadProductImageRounded
+import com.tokopedia.productcard.utils.shouldShowWithAction
 
 /**
  * ProductCardView with List layout.
@@ -36,5 +38,11 @@ class ProductCardViewList: ProductCardView {
     override fun setLocationConstraintEnd() {
         // Do nothing
         // Top Ads icon constraints do not need to be realigned
+    }
+
+    override fun initProductImage(productImageUrl: String) {
+        imageProduct?.shouldShowWithAction(productImageUrl.isNotEmpty()) {
+            it.loadProductImageRounded(productImageUrl)
+        }
     }
 }

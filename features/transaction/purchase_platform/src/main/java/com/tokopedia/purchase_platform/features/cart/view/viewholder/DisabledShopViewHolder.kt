@@ -3,7 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.view.viewholder
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.cart.view.viewmodel.DisabledShopHolderData
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.DisabledShopHolderData
 import kotlinx.android.synthetic.main.item_cart_disabled_shop.view.*
 
 /**

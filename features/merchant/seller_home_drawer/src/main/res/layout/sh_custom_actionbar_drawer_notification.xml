@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_below="@+id/count_notif"
+        android:layout_below="@+id/toggle_count_notif"
         android:layout_gravity="center"
         android:contentDescription=""
         android:paddingBottom="5dp"

@@ -139,6 +139,50 @@
             android:text="View Analytics Log"
             android:textColor="@color/white" />
 
+        <TextView
+            android:id="@+id/goto_analytics_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View Analytics Error Log"
+            android:textColor="@color/white" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_small"
+            android:orientation="horizontal" >
+            <TextView
+                android:id="@+id/goto_iris_save_log"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@drawable/btn_share"
+                android:gravity="center"
+                android:padding="@dimen/margin_small"
+                android:text="View Iris Save Log"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:id="@+id/goto_iris_send_log"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/margin_small"
+                android:background="@drawable/btn_share"
+                android:gravity="center"
+                android:padding="@dimen/margin_small"
+                android:text="View Iris Send Log"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
         <CheckBox
             android:id="@+id/toggle_ui_block_debugger"
             android:layout_width="match_parent"
