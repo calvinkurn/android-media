@@ -44,6 +44,7 @@ import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
 import com.tokopedia.flight.search.util.select
 import com.tokopedia.flight.search.util.unselect
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -372,7 +373,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun showGetListError(throwable: Throwable?) {
         super.showGetListError(throwable)
-        horizontal_progress_bar.visibility = View.GONE
+        horizontal_progress_bar.hide()
         removeBottomPaddingForSortAndFilterActionButton()
         hideLoading()
         // Note: add element should be the last in line
@@ -382,7 +383,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     override fun hideHorizontalProgress() {
-        horizontal_progress_bar.visibility = View.INVISIBLE
+        horizontal_progress_bar.show()
     }
 
     override fun removeToolbarElevation() {
@@ -685,9 +686,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         onFlightSearchFragmentListener!!.changeDate(flightSearchPassData)
 
         setUpCombinationAirport()
-        horizontal_progress_bar.visibility = View.VISIBLE
+        horizontal_progress_bar.show()
         progress = 0
-        flight_sort_filter.visibility = View.GONE
+        flight_sort_filter.hide()
 
         flightSearchPresenter.attachView(this)
         clearAllData()
@@ -759,11 +760,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     private fun showQuickFilter() {
-        flight_sort_filter.visibility = View.VISIBLE
+        flight_sort_filter.show()
     }
 
     private fun hideQuickFilter() {
-        flight_sort_filter.visibility = View.GONE
+        flight_sort_filter.hide()
     }
 
     private fun showFilterSortBottomSheet() {
