@@ -639,7 +639,7 @@ class RegisterAnalytics @Inject constructor() {
         val LABEL_EMAIL_EXIST = "email exist"
         val LABEL_PHONE_EXIST = "phone number exist"
         private val LABEL_BEBAS_ONGKIR = "bebas ongkir"
-        private val LABEL_EMAIL = "Email"
+        private const val LABEL_EMAIL = "Email"
 
         val GOOGLE = "google"
         val FACEBOOK = "facebook"
