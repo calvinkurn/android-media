@@ -8,11 +8,19 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.tokopedia.akamai_bot_lib.Json4Kotlin_Base;
 import com.tokopedia.akamai_bot_lib.UtilsKt;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -67,5 +75,23 @@ public class ExampleInstrumentedTest {
         Log.d(this.getClass().getName(), any.toString());
         assertEquals(1,any.size());
         assertTrue(any.get(0).equalsIgnoreCase("register"));
+    }
+
+    @Test
+    public void asshole() {
+
+        String input = "[\n  {\r\n    \"operationName\": null,\r\n    \"query\": \"mutation login_email($grant_type: String!, $username: String!, $password: String!, $supported:String!) {\\\n  login_token(input: {grant_type: $grant_type, username: $username, password: $password, supported: $supported}) {\\\n    acc_sid\\\n    access_token\\\n    expires_in\\\n    refresh_token\\\n    sid\\\n    token_type\\\n    sq_check\\\n    errors {\\\n      name\\\n      message\\\n    }\\\n    event_code\\\n  }\\\n}\\\n\",\r\n    \"variables\": {\r\n      \"password\": \"am9rYW0zNTQ=d09e\",\r\n      \"grant_type\": \"cGFzc3dvcmQ=3594\",\r\n      \"username\": \"ZWxseWt1c0BnbWFpbC5jb20=15ab\",\r\n      \"supported\": \"true\"\r\n    }\r\n  }\r\n]";
+
+        try {
+            JSONArray jsonArray = new JSONArray(input);
+            JSONObject jsonObject = jsonArray.getJSONObject(0);
+            String query = jsonObject.getString("query");
+            List<String> any = UtilsKt.getAny(query);
+            Log.d(this.getClass().getName(), any.toString());
+            assertEquals(1, any.size());
+            assertTrue(any.get(0).equalsIgnoreCase("login_token"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

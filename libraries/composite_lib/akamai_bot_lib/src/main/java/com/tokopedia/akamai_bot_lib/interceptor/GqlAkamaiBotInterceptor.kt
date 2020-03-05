@@ -1,13 +1,16 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
+import android.util.Log
 import com.akamai.botman.CYFMonitor
 import com.tokopedia.akamai_bot_lib.getAny
-import com.tokopedia.akamai_bot_lib.getMutation
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.Charset
@@ -35,7 +38,16 @@ class GqlAkamaiBotInterceptor : Interceptor {
                 charset?.let {
                     readFromBuffer(buffer, it).let {
 
-                        val functionNames = getAny(it)
+                        var functionNames: List<String> = mutableListOf();
+                        try {
+                            val jsonArray = JSONArray(it)
+                            val jsonObject: JSONObject = jsonArray.getJSONObject(0)
+                            val query = jsonObject.getString("query")
+                            functionNames = getAny(query)
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+
                         for(functionName in functionNames){
 
                             if (functionName.equals("login_token")) {

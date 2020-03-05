@@ -3,6 +3,9 @@ package com.tokopedia.akamai_bot_lib
 import android.app.Application
 import android.os.Build
 import com.akamai.botman.CYFMonitor
+import com.google.gson.Gson
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.config.GlobalConfig
 import java.util.regex.Matcher
 import java.util.regex.Pattern
@@ -32,6 +35,7 @@ fun getMutation(input: String, match:String) : Boolean{
 }
 
 fun getAny(input:String) : MutableList<String>{
+
     val p = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_]+)(?=\\().*")
     val m = p.matcher(input.replace("\n"," "))
     val any = mutableListOf<String>()
@@ -42,6 +46,20 @@ fun getAny(input:String) : MutableList<String>{
     }
     return any;
 }
+
+data class Json4Kotlin_Base(
+        @SerializedName("\"operationName\"") val operationName: String,
+        @SerializedName("query") val query: String,
+        @SerializedName("variables") val variables: Variables
+)
+
+data class Variables(
+
+        @SerializedName("password") val password: String,
+        @SerializedName("grant_type") val grant_type: String,
+        @SerializedName("username") val username: String,
+        @SerializedName("supported") val supported: Boolean
+)
 
 
 val p: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
