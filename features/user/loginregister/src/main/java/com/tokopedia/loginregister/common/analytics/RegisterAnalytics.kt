@@ -497,7 +497,7 @@ class RegisterAnalytics @Inject constructor() {
                 LABEL_EMAIL
         ))
 
-        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), "Email")
+        TrackApp.getInstance().appsFlyer.sendAppsflyerRegisterEvent(userId.toString(), EMAIL_METHOD)
         TrackApp.getInstance().moEngage.sendMoengageRegisterEvent(name, "")
         sendBranchRegisterEvent(email)
     }
@@ -643,5 +643,7 @@ class RegisterAnalytics @Inject constructor() {
 
         val GOOGLE = "google"
         val FACEBOOK = "facebook"
+
+        private const val EMAIL_METHOD = "Email"
     }
 }
