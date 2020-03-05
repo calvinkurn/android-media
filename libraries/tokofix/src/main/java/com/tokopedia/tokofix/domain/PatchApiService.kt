@@ -12,7 +12,7 @@ import retrofit2.http.*
 interface PatchApiService {
 
     @FormUrlEncoded
-    @POST("/")
+    @POST("patch)
     fun getPatch(@Field(value = "version") version: String): Call<DataResponse>
 
     @GET
