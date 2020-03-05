@@ -123,10 +123,12 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val listItem = generateListAllButton()
 
             onboardingViewPagerAdapter = OnboardingViewPagerAdapter(it, listItem)
-            screenViewpager.adapter = onboardingViewPagerAdapter
+            if (::screenViewpager.isInitialized) {
+                screenViewpager.adapter = onboardingViewPagerAdapter
+                if(onboardingViewPagerAdapter.count > 1)
+                    screenViewpager.offscreenPageLimit = onboardingViewPagerAdapter.count - 1
+            }
             tabIndicator.setupWithViewPager(screenViewpager)
-
-            screenViewpager.offscreenPageLimit = 2
 
             skipAction.setOnClickListener(skipActionClickListener())
             nextAction.setOnClickListener(nextActionClickListener())
