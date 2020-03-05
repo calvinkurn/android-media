@@ -55,11 +55,6 @@ class MixTopBannerViewHolder(
         private const val CTA_TYPE_FILLED = "filled"
         private const val CTA_TYPE_GHOST = "ghost"
         private const val CTA_TYPE_TEXT = "text_only"
-
-        private const val BLUE = "blue"
-        private const val YELLOW = "yellow"
-        private const val RED = "red"
-        private const val GREEN = "green"
     }
 
     override fun setupContent(channel: DynamicHomeChannel.Channels) {

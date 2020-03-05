@@ -63,7 +63,7 @@ class MixTopTrackerTest : Spek({
                     cta = DynamicHomeChannel.CtaData(
                             type = "ghost",
                             mode = "inverted",
-                            text = "",
+                            text = "Cek Sekarang",
                             couponCode = ""
                     )
             )
@@ -76,12 +76,29 @@ class MixTopTrackerTest : Spek({
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
-                        "eventAction", "click view all on list carousel product",
+                        "eventAction", "click view all on dynamic channel coupon",
                         "eventLabel", channel.header.name
                 )
             }
             Then("must true") {
                 val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopSeeAllClick(channel.header.name))
+                Assert.assertEquals(result, true)
+            }
+        }
+    }
+
+    Feature("Click button tracker"){
+        Scenario("Click on button"){
+            Given("the real data"){
+                every { testTracker.getTracker() } returns DataLayer.mapOf(
+                        "event", "clickHomepage",
+                        "eventCategory", "homepage",
+                        "eventAction", "click Cek Sekarang on dynamic channel coupon",
+                        "eventLabel", channel.header.name
+                )
+            }
+            Then("must true") {
+                val result = areEqualKeyValues(testTracker.getTracker(), MixTopTracking.getMixTopButtonClick(channel.header.name, channel.banner.cta.text))
                 Assert.assertEquals(result, true)
             }
         }
@@ -93,14 +110,14 @@ class MixTopTrackerTest : Spek({
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
                         "event", "productClick",
                         "eventCategory", "homepage",
-                        "eventAction", "click on list carousel product",
+                        "eventAction", "click on product dynamic channel coupon",
                         "eventLabel", "Testing Top",
                         "channelId", "21370",
                         "ecommerce", DataLayer.mapOf(
                             "currencyCode","IDR",
                             "click", DataLayer.mapOf(
                                 "actionField", DataLayer.mapOf(
-                                "list", "/ - p5 - list carousel product - Testing Top"
+                                "list", "/ - p5 - dynamic channel coupon - Testing Top"
                             ),
                         "products", DataLayer.listOf(
                             DataLayer.mapOf(
@@ -154,7 +171,7 @@ class MixTopTrackerTest : Spek({
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
                 "event", "productView",
                 "eventCategory", "homepage",
-                "eventAction", "impression on list carousel product",
+                "eventAction", "impression on product dynamic channel coupon",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                     "currencyCode","IDR",
@@ -169,7 +186,7 @@ class MixTopTrackerTest : Spek({
                                 "position", "0",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - list carousel product - Testing Top"
+                                "list", "/ - p5 - dynamic channel coupon - Testing Top"
                         ),
                         DataLayer.mapOf(
                                 "name", "Monster Mass Iron Labs 90 Capsules IronLabs MonsterMass 90Caps 90 Caps",
@@ -181,7 +198,7 @@ class MixTopTrackerTest : Spek({
                                 "position", "1",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - list carousel product - Testing Top"
+                                "list", "/ - p5 - dynamic channel coupon - Testing Top"
                         ),
                         DataLayer.mapOf(
                                 "name", "Samsung Galaxy A30S [4GB/64GB] - Garansi Resmi Indonesia",
@@ -193,7 +210,7 @@ class MixTopTrackerTest : Spek({
                                 "position", "2",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - list carousel product - Testing Top"
+                                "list", "/ - p5 - dynamic channel coupon - Testing Top"
                         )
                     )
                 )

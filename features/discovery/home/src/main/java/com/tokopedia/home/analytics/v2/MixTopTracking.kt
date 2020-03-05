@@ -9,15 +9,16 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 object MixTopTracking : BaseTracking() {
     private class CustomAction{
         companion object {
-            val IMPRESSION_ON_CAROUSEL_PRODUCT = Action.IMPRESSION_ON.format("list carousel product")
-            val CLICK_ON_CAROUSEL_PRODUCT = Action.CLICK_ON.format("list carousel product")
-            const val CLICK_VIEW_ALL_CAROUSEL_PRODUCT = "click view all on list carousel product"
+            val IMPRESSION_ON_CAROUSEL_PRODUCT = Action.IMPRESSION_ON.format("product dynamic channel coupon")
+            val CLICK_ON_CAROUSEL_PRODUCT = Action.CLICK_ON.format("product dynamic channel coupon")
+            const val CLICK_VIEW_ALL_CAROUSEL = "click view all on dynamic channel coupon"
+            const val CLICK_BUTTON_CAROUSEL = "click %s on dynamic channel coupon"
         }
     }
 
     private class CustomActionField{
         companion object {
-            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "list carousel product", "%s")
+            val LIST_CAROUSEL_PRODUCT = LIST.format("%s", "dynamic channel coupon", "%s")
         }
     }
 
@@ -43,7 +44,14 @@ object MixTopTracking : BaseTracking() {
     fun getMixTopSeeAllClick(headerName: String) = DataLayer.mapOf(
             Event.KEY, Event.CLICK_HOMEPAGE,
             Category.KEY, Category.HOMEPAGE,
-            Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL_PRODUCT,
+            Action.KEY, CustomAction.CLICK_VIEW_ALL_CAROUSEL,
+            Label.KEY, headerName
+    )
+
+    fun getMixTopButtonClick(headerName: String, buttonName: String) = DataLayer.mapOf(
+            Event.KEY, Event.CLICK_HOMEPAGE,
+            Category.KEY, Category.HOMEPAGE,
+            Action.KEY, CustomAction.CLICK_BUTTON_CAROUSEL.format(buttonName),
             Label.KEY, headerName
     )
 
