@@ -52,7 +52,7 @@ class ProductCardGridView: BaseCustomView {
     }
 
     fun setThreeDotsOnClickListener(threeDotsClickListener: (View) -> Unit) {
-        imageThreeDots.setOnClickListener(threeDotsClickListener)
+        imageThreeDots?.setOnClickListener(threeDotsClickListener)
     }
 
     fun setAddToCartOnClickListener(addToCartClickListener: (View) -> Unit) {
