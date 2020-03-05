@@ -49,5 +49,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(rootProject.ext.app.sellerapp)
+
+    implementation project(rootProject.ext.features.paymentSetting)
+    implementation project(rootProject.ext.features.productManageList)
     implementation project(rootProject.ext.features.shopSettings)
+    implementation project(rootProject.ext.features.kyccentralized)
 }
