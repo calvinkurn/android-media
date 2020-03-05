@@ -19,6 +19,4 @@ interface PromoCheckoutActionListener {
 
     fun onClickPromoEligibilityHeader(position: Int, element: PromoEligibilityHeaderUiModel)
 
-    fun updateHeightPromoInputView(height: Int)
-
 }

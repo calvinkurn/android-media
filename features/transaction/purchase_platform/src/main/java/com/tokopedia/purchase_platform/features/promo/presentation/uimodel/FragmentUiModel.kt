@@ -9,7 +9,8 @@ data class FragmentUiModel(
 ) {
 
     data class UiData(
-            var promoInputViewHeight: Int = 0
+            var totalBenefit: Int = 0,
+            var usedPromoCount: Int = 0
     )
 
     data class UiState(

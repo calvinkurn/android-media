@@ -274,4 +274,5 @@
     <string name="cart_empty_with_promo_btn">Belanja Pakai Promo</string>
     <string name="promo_checkout_label_promo_recommendation_title">Ada %d promo terbaik untukmu</string>
     <string name="promo_checkout_label_recommendation_benefit">Kamu bisa hemat %s</string>
+    <string name="promo_checkout_label_button_apply_promo">Pakai Promo (%d)</string>
 </resources>

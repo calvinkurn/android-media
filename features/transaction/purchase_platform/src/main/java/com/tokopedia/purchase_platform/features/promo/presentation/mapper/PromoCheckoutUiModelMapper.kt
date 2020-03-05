@@ -89,6 +89,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 uiData = PromoListItemUiModel.UiData().apply {
                     title = couponItem.title
                     subTitle = couponItem.expiryInfo
+                    benefitAmount = couponItem.benefitAmount
                     val tmpErrorMessage = StringBuilder()
                     if (couponItem.clashingInfos.isNotEmpty()) {
                         for ((index, data) in couponItem.clashingInfos.withIndex()) {

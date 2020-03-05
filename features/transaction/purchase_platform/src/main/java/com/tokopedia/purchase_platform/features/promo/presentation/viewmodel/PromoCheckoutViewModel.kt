@@ -122,7 +122,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             // Init fragment ui model
             val fragmentUiModel = FragmentUiModel(
                     uiData = FragmentUiModel.UiData().apply {
-                        promoInputViewHeight = 0
+
                     },
                     uiState = FragmentUiModel.UiState().apply {
                         hasPresellectedPromo = promoListUiModel.value?.isNotEmpty() == true
@@ -131,12 +131,12 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                     }
             )
             _fragmentUiModel.value = fragmentUiModel
-
+            calculateAndRenderTotalBenefit()
         }) {
             // Init fragment ui model
             val fragmentUiModel = FragmentUiModel(
                     uiData = FragmentUiModel.UiData().apply {
-                        promoInputViewHeight = 0
+
                     },
                     uiState = FragmentUiModel.UiState().apply {
                         hasPresellectedPromo = false
@@ -241,13 +241,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         //        _promoEmptyStateUiModel.value = mockEmptyState()
     }
 
-    fun updateHeightPromoInputView(height: Int) {
-        fragmentUiModel.value?.let {
-            it.uiData.promoInputViewHeight = height
-            _fragmentUiModel.value = it
-        }
-    }
-
     fun isPromoScopeHasAnySelectedItem(parentIdentifierId: Int): Boolean {
         var hasAnyPromoSellected = false
         promoListUiModel.value?.forEach {
@@ -301,8 +294,12 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
     fun setFragmentStateHasPromoSelected(hasAnyPromoSelected: Boolean) {
         // Set fragment state
-        fragmentUiModel.value?.let {
+        val fragmentUiModel = fragmentUiModel.value
+        fragmentUiModel?.let {
             it.uiState.hasAnyPromoSelected = hasAnyPromoSelected
+            it.uiData.usedPromoCount = 0
+            it.uiData.totalBenefit = 0
+
             _fragmentUiModel.value = it
         }
     }
@@ -416,6 +413,27 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                     updateResetButtonState()
                 }
             }
+
+            calculateAndRenderTotalBenefit()
+        }
+    }
+
+    private fun calculateAndRenderTotalBenefit() {
+        var totalBenefit = 0
+        var usedPromoCount = 0
+        promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty() && it.uiState.isSellected) {
+                totalBenefit += it.uiData.benefitAmount
+                usedPromoCount++
+            }
+        }
+
+        val fragmentUiModel = fragmentUiModel.value
+        fragmentUiModel?.let {
+            it.uiData.totalBenefit = totalBenefit
+            it.uiData.usedPromoCount = usedPromoCount
+
+            _fragmentUiModel.value = it
         }
     }
 }

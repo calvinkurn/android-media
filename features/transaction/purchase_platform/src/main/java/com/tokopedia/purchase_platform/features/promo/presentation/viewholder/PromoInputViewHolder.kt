@@ -48,9 +48,6 @@ class PromoInputViewHolder(private val view: View,
                 listener.onClickApplyManualInputPromo(promoCode)
             }
         }
-
-        val height = itemView.height * itemView.context.resources.displayMetrics.density.toInt()
-        listener.updateHeightPromoInputView(height)
     }
 
     private fun renderPromoInputError(element: PromoInputUiModel) {

@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -272,11 +273,15 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     private fun renderFragmentState(fragmentUiModel: FragmentUiModel) {
         if (fragmentUiModel.uiState.hasAnyPromoSelected) {
             toolbar?.enableResetButton()
-            label_total_promo_info.show()
-            label_total_promo_amount.show()
-            button_apply_promo.show()
-            button_apply_no_promo.gone()
-            container_action_bottom.show()
+            activity?.let {
+                label_total_promo_info.show()
+                label_total_promo_amount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
+                label_total_promo_amount.show()
+                button_apply_promo.text = String.format(it.resources.getString(R.string.promo_checkout_label_button_apply_promo), fragmentUiModel.uiData.usedPromoCount)
+                button_apply_promo.show()
+                button_apply_no_promo.gone()
+                container_action_bottom.show()
+            }
         } else {
             toolbar?.disableResetButton()
             if (fragmentUiModel.uiState.hasPresellectedPromo) {
@@ -339,10 +344,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
         return false
-    }
-
-    override fun updateHeightPromoInputView(height: Int) {
-        viewModel.updateHeightPromoInputView(height)
     }
 
     fun showToastMessage(message: String) {
