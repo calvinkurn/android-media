@@ -3,14 +3,17 @@
     android:id="@+id/layoutCentralizedPromoOnGoingPromo"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Neutral_N50"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/layout_lvl1">
+    android:orientation="vertical">
 
     <include layout="@layout/sah_partial_centralized_promo_on_going_promo_success" />
 
     <include layout="@layout/sah_partial_centralized_promo_on_going_promo_shimmering" />
 
     <include layout="@layout/sah_partial_centralized_promo_on_going_promo_error" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/Neutral_N50" />
 
 </LinearLayout>

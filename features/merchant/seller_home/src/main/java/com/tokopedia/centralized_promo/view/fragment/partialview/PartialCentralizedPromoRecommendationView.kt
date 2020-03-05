@@ -3,7 +3,6 @@ package com.tokopedia.centralized_promo.view.fragment.partialview
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
-import com.tokopedia.centralized_promo.view.adapter.DiffUtilHelper
 import com.tokopedia.centralized_promo.view.item_decoration.OnGoingPromotionItemDecoration
 import com.tokopedia.centralized_promo.view.model.RecommendedPromotionListUiModel
 import com.tokopedia.centralized_promo.view.model.RecommendedPromotionUiModel
@@ -27,7 +26,7 @@ class PartialCentralizedPromoRecommendationView(
             rvCentralizedPromoRecommendation.apply {
                 layoutManager = GridLayoutManager(context, 2)
                 adapter = this@PartialCentralizedPromoRecommendationView.adapter
-                addItemDecoration(OnGoingPromotionItemDecoration(4.dpToPx(context.resources.displayMetrics)))
+                addItemDecoration(OnGoingPromotionItemDecoration(context.dpToPx(4).toInt()))
             }
         }
     }
@@ -41,9 +40,7 @@ class PartialCentralizedPromoRecommendationView(
         }
     }
 
-    override fun renderError(cause: Throwable) {
-        // Static data cannot pruduce error ._.
-    }
+    override fun renderError(cause: Throwable) {}
 
     override fun onRefresh() {
         with(view) {

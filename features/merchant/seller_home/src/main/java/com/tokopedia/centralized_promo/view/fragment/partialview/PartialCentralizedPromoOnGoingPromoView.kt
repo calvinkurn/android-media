@@ -4,7 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
-import com.tokopedia.centralized_promo.view.adapter.DiffUtilHelper
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoListUiModel
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoUiModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -22,15 +21,6 @@ class PartialCentralizedPromoOnGoingPromoView(
 
     init {
         setupOnGoingPromo()
-    }
-
-    private fun setupOnGoingPromo() {
-        with(view) {
-            rvCentralizedPromoOnGoingPromo.apply {
-                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-                adapter = this@PartialCentralizedPromoOnGoingPromoView.adapter
-            }
-        }
     }
 
     override fun renderData(data: OnGoingPromoListUiModel) {
@@ -83,6 +73,15 @@ class PartialCentralizedPromoOnGoingPromoView(
             layoutCentralizedPromoOnGoingPromoSuccess.hide()
             layoutCentralizedPromoOnGoingPromoError.hide()
             layoutCentralizedPromoOnGoingPromoShimmering.show()
+        }
+    }
+
+    private fun setupOnGoingPromo() {
+        with(view) {
+            rvCentralizedPromoOnGoingPromo.apply {
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+                adapter = this@PartialCentralizedPromoOnGoingPromoView.adapter
+            }
         }
     }
 

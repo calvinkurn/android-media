@@ -20,9 +20,9 @@
 
                 <data android:scheme="tkpd" />
                 <data
-                    android:scheme="@string/internal_scheme"
                     android:host="@string/host_marketplace"
-                    android:path="@string/path_sellerhome"/>
+                    android:path="@string/path_sellerhome"
+                    android:scheme="@string/internal_scheme" />
             </intent-filter>
             <meta-data
                 android:name="APPS_HOME"
@@ -34,7 +34,7 @@
             android:label="Promotion"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"/>
+            android:theme="@style/Theme.White.Background"/>
     </application>
 
 </manifest>

@@ -4,8 +4,6 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoUiModel
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R.layout.sah_item_centralized_promo_on_going_promo
 import kotlinx.android.synthetic.main.sah_item_centralized_promo_on_going_promo.view.*
 

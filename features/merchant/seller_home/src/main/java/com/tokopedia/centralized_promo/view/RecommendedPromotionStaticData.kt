@@ -16,7 +16,7 @@ object RecommendedPromotionStaticData {
                             "tokopedia://topads/dashboard"
                     ),
                     RecommendedPromotionUiModel(
-                            R.drawable.ic_broadcastchat,
+                            R.drawable.ic_broadcast_chat,
                             "Broadcast Chat",
                             "Lorem ipsum dolor sit amet consectetur",
                             "Promo Gratis",

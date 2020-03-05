@@ -4,7 +4,6 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
-import com.tokopedia.centralized_promo.view.adapter.DiffUtilHelper
 import com.tokopedia.centralized_promo.view.model.PostListUiModel
 import com.tokopedia.centralized_promo.view.model.PostUiModel
 import com.tokopedia.kotlin.extensions.view.gone
