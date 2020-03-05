@@ -78,7 +78,7 @@ public class ExampleInstrumentedTest {
     }
 
     @Test
-    public void asshole() {
+    public void getQueryTest() {
 
         String input = "[\n  {\r\n    \"operationName\": null,\r\n    \"query\": \"mutation login_email($grant_type: String!, $username: String!, $password: String!, $supported:String!) {\\\n  login_token(input: {grant_type: $grant_type, username: $username, password: $password, supported: $supported}) {\\\n    acc_sid\\\n    access_token\\\n    expires_in\\\n    refresh_token\\\n    sid\\\n    token_type\\\n    sq_check\\\n    errors {\\\n      name\\\n      message\\\n    }\\\n    event_code\\\n  }\\\n}\\\n\",\r\n    \"variables\": {\r\n      \"password\": \"am9rYW0zNTQ=d09e\",\r\n      \"grant_type\": \"cGFzc3dvcmQ=3594\",\r\n      \"username\": \"ZWxseWt1c0BnbWFpbC5jb20=15ab\",\r\n      \"supported\": \"true\"\r\n    }\r\n  }\r\n]";
 
