@@ -6,17 +6,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
-import com.tokopedia.play.domain.GetChannelInfoUseCase
-import com.tokopedia.play.domain.GetIsLikeUseCase
-import com.tokopedia.play.domain.GetPartnerInfoUseCase
-import com.tokopedia.play.domain.GetTotalLikeUseCase
+import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
@@ -24,13 +20,11 @@ import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
-import rx.Subscriber
 import javax.inject.Inject
 
 /**
@@ -42,7 +36,7 @@ class PlayViewModel @Inject constructor(
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
-        private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+        private val getCartCountUseCase: GetCartCountUseCase,
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
@@ -338,30 +332,21 @@ class PlayViewModel @Inject constructor(
             getPartnerInfoUseCase.executeOnBackground()
     }
 
-    private fun getBadgeCart(isShowCart: Boolean) {
+    private suspend fun getBadgeCart(isShowCart: Boolean) {
         if (isShowCart) {
-            updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
-                    .subscribe(object : Subscriber<Int>() {
-                        override fun onCompleted() {}
-
-                        override fun onError(e: Throwable) {
-                            e.printStackTrace() // TODO ("remove")
-                        }
-
-                        override fun onNext(count: Int) {
-                            _observableBadgeCart.postValue(count)
-                        }
-                    })
+            try {
+                val countCart = withContext(dispatchers.io) {
+                    getCartCountUseCase.executeOnBackground()
+                }
+                _observableBadgeCart.value = countCart
+            } catch (e: Exception) {}
         }
     }
 
-    /**
-     * To update badge icon cart
-     */
     fun udpateBadgetCart() {
         val channelInfo = _observableGetChannelInfo.value
         if (channelInfo != null && channelInfo is Success) {
-            getBadgeCart(channelInfo.data.isShowCart)
+            launch { getBadgeCart(channelInfo.data.isShowCart) }
         }
     }
 
