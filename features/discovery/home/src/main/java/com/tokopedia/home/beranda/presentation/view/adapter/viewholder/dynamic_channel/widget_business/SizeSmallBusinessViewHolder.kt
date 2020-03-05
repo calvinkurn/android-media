@@ -12,7 +12,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
 import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
-import com.tokopedia.home.util.perfromance.BusinessWidgetPerformance
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -26,7 +25,6 @@ open class SizeSmallBusinessViewHolder (
         private val listener: BusinessUnitItemView
 ) : AbstractViewHolder<BusinessUnitItemDataModel>(itemView) {
     override fun bind(element: BusinessUnitItemDataModel) {
-        BusinessWidgetPerformance.stop()
         element.content?.let {
             renderImage(it)
             renderProduct(it)

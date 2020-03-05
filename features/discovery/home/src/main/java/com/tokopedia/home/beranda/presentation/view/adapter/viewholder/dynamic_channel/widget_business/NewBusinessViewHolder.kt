@@ -19,12 +19,11 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel.Companion.ERROR_BUNDLE_TAB_LAYOUT
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel.Companion.UPDATE_BUNDLE_CONTENT_LAYOUT
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.NewBusinessUnitWidgetDataModel.Companion.UPDATE_BUNDLE_TAB_LAYOUT
-import com.tokopedia.home.util.perfromance.BusinessWidgetPerformance
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ContainerUnify
 import com.tokopedia.unifycomponents.LocalLoad
-import java.util.HashMap
+import java.util.*
 
 @SuppressLint("SyntheticAccessor")
 class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListener) : AbstractViewHolder<NewBusinessUnitWidgetDataModel>(view){
@@ -75,7 +74,6 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     }
 
     override fun bind(element: NewBusinessUnitWidgetDataModel?) {
-        BusinessWidgetPerformance.start()
         loadingView.show()
         errorBuWidget.hide()
         tabLayout.show()
