@@ -7,7 +7,6 @@ import com.tokopedia.home.R
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.presentation.view.adapter.BusinessUnitItemAdapter
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitDataModel
-import com.tokopedia.home.util.performance.BusinessWidgetPerformance
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.LocalLoad
@@ -39,7 +38,6 @@ class NewBusinessUnitViewHolder (view: View, private val listener: BusinessUnitL
     }
 
     fun onBind(model: BusinessUnitDataModel?, positionWidget: Int){
-        BusinessWidgetPerformance.start()
         loadingView.hide()
         recyclerView.hide()
         errorView.hide()
