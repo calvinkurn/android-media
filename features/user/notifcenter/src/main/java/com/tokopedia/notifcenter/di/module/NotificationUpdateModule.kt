@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.notifcenter.R
-import com.tokopedia.notifcenter.di.scope.NotificationUpdateScope
+import com.tokopedia.notifcenter.di.scope.NotificationScope
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -13,7 +13,7 @@ import javax.inject.Named
 
     @Provides
     @Named("atcMutation")
-    @NotificationUpdateScope
+    @NotificationScope
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_product_to_cart)
     }
