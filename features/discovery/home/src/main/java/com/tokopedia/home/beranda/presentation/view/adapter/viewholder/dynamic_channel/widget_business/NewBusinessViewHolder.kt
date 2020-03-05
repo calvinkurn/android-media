@@ -35,8 +35,8 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
     private var model: NewBusinessUnitWidgetDataModel? = null
     private val adapterBusinessWidget = BusinessUnitAdapter(object: NewBusinessUnitViewHolder.BusinessUnitListener{
         override fun getBusinessUnit(position: Int) {
-            if(model?.tabList != null && (model?.tabList?.size ?: -1) > tabLayout.selectedTabPosition){
-                model?.tabList?.get(tabLayout.selectedTabPosition)?.id?.let{
+            if(model?.tabList != null && (model?.tabList?.size ?: -1) > position){
+                model?.tabList?.get(position)?.id?.let{
                     listener.getBusinessUnit(it, position)
                 }
             }
