@@ -1,8 +1,5 @@
 package com.google.firebase.perf.metrics;
 
-import android.content.Context;
-
-import java.util.Map;
 import androidx.annotation.NonNull;
 
 public class Trace {

@@ -431,7 +431,7 @@ dependencies {
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
 
-    implementation 'com.newrelic.agent.android:android-agent:5.23.0'
+    implementation rootProject.ext.analyticsDependencies.newRelic
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
