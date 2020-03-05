@@ -12,6 +12,7 @@ public class AccountConstants {
     public static final String RC_LOCALSERVICE_ENABLE = "enable_local_service_transaction_history_entry";
     public static final String TOP_SELLER_APPLICATION_PACKAGE = "com.tokopedia.sellerapp";
     public static final String SALDO_QUERY = "saldo_query";
+    public static final String SHOP_LOCATION_QUERY = "query_shop_location";
     public static final String ACCOUNT_TAB = "ACCOUNT_TAB";
     public static final String ACCOUNT_TAB_SELLER = "ACCOUNT_TAB_SELLER";
 
@@ -82,7 +83,7 @@ public class AccountConstants {
         public static final String SCREEN_NAME_ACCOUNT = "/account";
         public static final String MY_ACCOUNT = "my account page";
         public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
-        public static final String CLICK_KYC_SETTING = "click on dokumen data diri";
+        public static final String CLICK_KYC_SETTING = "click dokumen data diri";
         public static final String CLICK_KYC_REJECTED = "click on verifikasi ulang";
         public static final String CLICK_KYC_NOT_VERIFIED = "click on verifikasi sekarang";
         public static final String CLICK_KYC_PENDING = "click on lihat status";

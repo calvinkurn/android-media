@@ -21,7 +21,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebView
 import com.tokopedia.abstraction.base.view.webview.TkpdWebViewClient
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -254,7 +254,7 @@ class PlayWebviewDialogFragment : BottomSheetDialogFragment(), View.OnKeyListene
             override fun onProgressChanged(view: WebView, newProgress: Int) {
                 //  progressBar.setProgress(newProgress);
                 if (newProgress == 100) {
-                    progressBar.visibility = View.GONE
+                    progressBar?.visibility = View.GONE
                 }
                 super.onProgressChanged(view, newProgress)
             }

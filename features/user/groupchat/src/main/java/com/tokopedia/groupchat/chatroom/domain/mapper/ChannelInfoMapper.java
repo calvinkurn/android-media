@@ -16,11 +16,13 @@ import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BackgroundViewMo
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.BanViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerChildViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChannelPartnerViewModel;
+import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.ChatPermitModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.GroupChatQuickReplyItemViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.KickViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.PinnedMessageViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleProductViewModel;
 import com.tokopedia.groupchat.chatroom.view.viewmodel.chatroom.SprintSaleViewModel;
+import com.tokopedia.groupchat.room.view.viewmodel.ChatPermitViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteInfoViewModel;
 import com.tokopedia.groupchat.vote.view.model.VoteViewModel;
 import com.tokopedia.network.data.model.response.DataResponse;
@@ -85,8 +87,13 @@ public class ChannelInfoMapper implements Func1<Response<DataResponse<ChannelInf
                 pojo.getChannel().getSettingGroupChat(),
                 pojo.getChannel().getOverlayMessage(),
                 mapToBackgroundViewModel(pojo.getChannel().getBackgroundDefault(), pojo.getChannel().getBackgroundUrl()),
-                pojo.getChannel().getFreezeState()
+                pojo.getChannel().getFreezeState(),
+                mapToChatPermitViewModel(pojo.getChannel().getChatPermit())
         );
+    }
+
+    private ChatPermitViewModel mapToChatPermitViewModel(ChatPermitModel chatPermit) {
+        return new ChatPermitViewModel(chatPermit.isChatDisabled(), chatPermit.getErrorMessage());
     }
 
     private BackgroundViewModel mapToBackgroundViewModel(String backgroundDefault, String backgroundUrl) {

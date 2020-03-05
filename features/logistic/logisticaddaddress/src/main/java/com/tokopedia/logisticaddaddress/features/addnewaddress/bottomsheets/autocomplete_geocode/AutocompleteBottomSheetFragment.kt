@@ -11,16 +11,16 @@ import android.widget.RelativeLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.design.component.BottomSheets
 import com.tokopedia.logisticaddaddress.R
+import com.tokopedia.logisticaddaddress.common.AddressConstants.LOGISTIC_LABEL
 import com.tokopedia.logisticaddaddress.di.addnewaddress.AddNewAddressModule
 import com.tokopedia.logisticaddaddress.di.addnewaddress.DaggerAddNewAddressComponent
 import com.tokopedia.logisticaddaddress.features.addnewaddress.AddNewAddressUtils
 import com.tokopedia.logisticaddaddress.features.addnewaddress.analytics.AddNewAddressAnalytics
 import com.tokopedia.logisticaddaddress.features.addnewaddress.bottomsheets.location_info.LocationInfoBottomSheetFragment
-import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete.AutocompleteDataUiModel
 import com.tokopedia.logisticaddaddress.features.addnewaddress.uimodel.autocomplete_geocode.AutocompleteGeocodeDataUiModel
+import com.tokopedia.logisticaddaddress.features.autocomplete.model.SuggestedPlace
 import javax.inject.Inject
 
 /**
@@ -124,7 +124,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
         etSearch.run {
             setOnClickListener {
-                AddNewAddressAnalytics.eventClickFieldCariLokasi()
+                AddNewAddressAnalytics.eventClickFieldCariLokasi(eventLabel = LOGISTIC_LABEL)
             }
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(s: CharSequence, start: Int, count: Int,
@@ -157,7 +157,7 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
         rlCurrentLocation.setOnClickListener {
             actionListener.useCurrentLocation()
-            dismiss()
+            hideKeyboardAndDismiss()
         }
     }
 
@@ -180,8 +180,8 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         super.configView(parentView)
         parentView?.findViewById<View>(R.id.layout_title)?.setOnClickListener(null)
         parentView?.findViewById<View>(R.id.btn_close)?.setOnClickListener {
-            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress()
-            onCloseButtonClick()
+            AddNewAddressAnalytics.eventClickBackArrowOnInputAddress(eventLabel = LOGISTIC_LABEL)
+            hideKeyboardAndDismiss()
         }
     }
 
@@ -207,8 +207,6 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
 
     private fun loadAutocomplete(input: String) {
         showLoadingList()
-
-        presenter.clearCacheAutocomplete()
         presenter.getAutocomplete(input)
     }
 
@@ -230,37 +228,40 @@ class AutocompleteBottomSheetFragment : BottomSheets(), AutocompleteBottomSheetL
         }
     }
 
-    override fun onSuccessGetAutocomplete(dataUiModel: AutocompleteDataUiModel) {
+    override fun onSuccessGetAutocomplete(suggestedPlaces: List<SuggestedPlace>) {
         llLoading.visibility = View.GONE
         llSubtitle.visibility = View.GONE
         rvPoiList.visibility = View.VISIBLE
         mDisabledGps.visibility = View.GONE
-        if (dataUiModel.listPredictions.isNotEmpty()) {
+        if (suggestedPlaces.isNotEmpty()) {
             llPoi.visibility = View.VISIBLE
             adapter.isAutocompleteGeocode = false
-            adapter.dataAutocomplete = dataUiModel.listPredictions.toMutableList()
-            adapter.notifyDataSetChanged()
+            adapter.addAutoComplete(suggestedPlaces)
         }
-    }
-
-    override fun onPause() {
-        KeyboardHandler.hideSoftKeyboard(activity)
-        super.onPause()
     }
 
     override fun onPoiListClicked(placeId: String) {
         placeId.run {
             actionListener.onGetPlaceId(placeId)
-            dismiss()
+            hideKeyboardAndDismiss()
         }
-        AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList()
+        AddNewAddressAnalytics.eventClickAddressSuggestionFromSuggestionList(eventLabel = LOGISTIC_LABEL)
     }
 
     private fun showLocationInfoBottomSheet() {
-        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance()
+        val locationInfoBottomSheetFragment = LocationInfoBottomSheetFragment.newInstance(isFullFlow = true)
         fragmentManager?.run {
             locationInfoBottomSheetFragment.show(this, "")
         }
+        dismiss()
+    }
+
+    /**
+     * Hiding keyboard is called before the dismiss in each of necessary funnel, calling it onDismiss
+     * won't work probably due to some API changes from Google
+     */
+    private fun hideKeyboardAndDismiss() {
+        AddNewAddressUtils.hideKeyboard(etSearch, context)
         dismiss()
     }
 

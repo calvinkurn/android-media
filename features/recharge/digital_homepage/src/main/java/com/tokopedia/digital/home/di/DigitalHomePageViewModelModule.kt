@@ -5,11 +5,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageViewModel
-import com.tokopedia.vouchergame.list.view.viewmodel.DigitalHomePageSearchViewModel
+import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
-import javax.inject.Scope
 
 @Module
 @DigitalHomePageScope
@@ -23,7 +22,7 @@ abstract class DigitalHomePageViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(DigitalHomePageViewModel::class)
-    internal abstract fun travelHomepageViewModel(viewModel: DigitalHomePageViewModel): ViewModel
+    internal abstract fun digitalHomepageViewModel(viewModel: DigitalHomePageViewModel): ViewModel
 
     @Binds
     @IntoMap

@@ -3,7 +3,7 @@ package com.tokopedia.iris.data
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import com.tokopedia.analytics.debugger.IrisLogger
+import com.tokopedia.analyticsdebugger.debugger.IrisLogger
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
@@ -58,15 +58,16 @@ class TrackingRepository(
                 if (dbCount >= getLineDBFlush()) {
                     Timber.e("P1#IRIS#dbCountFlush %d lines", dbCount)
                     trackingDao.flush()
-                }
-                if (dbCount >= getLineDBSend()) {
+                } else if (dbCount >= getLineDBSend()) {
                     // if the line is big, send it
-                    val i = Intent(context, IrisService::class.java)
-                    i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
-                    IrisService.enqueueWork(context, i)
+                    if (dbCount % 5 == 0) {
+                        val i = Intent(context, IrisService::class.java)
+                        i.putExtra(MAX_ROW, DEFAULT_MAX_ROW)
+                        IrisService.enqueueWork(context, i)
 
-                    IrisAnalytics.getInstance(context).setAlarm(true, force = true)
-                    Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                        IrisAnalytics.getInstance(context).setAlarm(true, force = true)
+                        Timber.w("P1#IRIS#dbCountSend %d lines", dbCount)
+                    }
                 }
             } catch (e: Throwable) {
                 Timber.e("P1#IRIS#saveEvent %s", e.toString())
@@ -147,9 +148,7 @@ class TrackingRepository(
             val requestBody = ApiService.parse(request)
             val response = apiService.sendMultiEventAsync(requestBody)
             if (response.isSuccessful && response.code() == 200) {
-                IrisLogger.getInstance(context).putSendIrisEvent(data.size.toString() +
-                    " - " +
-                    request)
+                IrisLogger.getInstance(context).putSendIrisEvent(request, data.size)
                 delete(data)
                 totalSentData += data.size
 

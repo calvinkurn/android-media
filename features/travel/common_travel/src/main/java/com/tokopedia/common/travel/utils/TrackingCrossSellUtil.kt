@@ -1,6 +1,6 @@
 package com.tokopedia.common.travel.utils
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*

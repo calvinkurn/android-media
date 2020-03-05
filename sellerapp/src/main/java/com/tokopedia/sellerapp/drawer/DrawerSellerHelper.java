@@ -350,11 +350,11 @@ public class DrawerSellerHelper extends DrawerHelper
                     }
                     break;
                 case TkpdState.DrawerPosition.MANAGE_PAYMENT_AND_TOPUP:
-                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, DIGITAL_PATH_MITRA)
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, DIGITAL_PATH_MITRA);
                     eventClickPaymentAndTopupOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.MANAGE_TRANSACTION_DIGITAL:
-                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, DIGITAL_PATH_MITRA)
+                    RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, DIGITAL_PATH_MITRA);
                     eventClickDigitalTransactionListOnDrawer();
                     break;
                 case TkpdState.DrawerPosition.DRAFT_PRODUCT:
