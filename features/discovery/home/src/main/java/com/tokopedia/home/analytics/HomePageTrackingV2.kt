@@ -64,9 +64,9 @@ object HomePageTrackingV2 : BaseTracking() {
     }
 
     object RecommendationList{
-        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "carousel product"
-        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on carousel product"
-        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on carousel product"
+        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "dynamic channel list"
+        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on dynamic channel list"
+        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list"
 
         fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,

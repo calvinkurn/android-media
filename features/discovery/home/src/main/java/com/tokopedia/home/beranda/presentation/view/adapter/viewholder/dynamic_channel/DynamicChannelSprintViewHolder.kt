@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DynamicLinkHelper
 import com.tokopedia.home.beranda.helper.glide.loadImage
 import com.tokopedia.home.beranda.helper.glide.loadImageCenterCrop
+import com.tokopedia.home.beranda.helper.glide.loadImageWithoutPlaceholder
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.GridSpacingItemDecoration
@@ -62,13 +63,13 @@ class DynamicChannelSprintViewHolder(sprintView: View,
         recyclerView.setHasFixedSize(true)
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
                 GridSpacingItemDecoration(defaultSpanCount,
-                        itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_8),
-                        true))
+                        itemView.getContext().getResources().getDimensionPixelSize(R.dimen.dp_4),
+                        false))
         recyclerView.layoutManager = GridLayoutManager(
                 itemView.context,
                 defaultSpanCount,
                 GridLayoutManager.VERTICAL, false)
-        backgroundThematic.loadImage(channel.header.backImage)
+        backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
         mappingHeader(channel)
         mappingGrid(channel)
     }
@@ -80,7 +81,7 @@ class DynamicChannelSprintViewHolder(sprintView: View,
             payloads.forEach { payload->
                 if (payload == DynamicChannelViewModel.HOME_RV_SPRINT_BG_IMAGE_URL) {
                     channel?.let {
-                        backgroundThematic.loadImageCenterCrop(channel.header.backImage)
+                        backgroundThematic.loadImageWithoutPlaceholder(channel.header.backImage)
                     }
                 }
             }
