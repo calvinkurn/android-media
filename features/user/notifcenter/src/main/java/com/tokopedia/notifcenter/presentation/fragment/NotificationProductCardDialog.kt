@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
+import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.BaseBottomSheetDialog
@@ -24,7 +25,10 @@ class NotificationProductCardDialog(
     private val lstProducts = container?.findViewById<RecyclerView>(R.id.lst_products)
 
     private val productCardAdapter by lazy {
-        val factory = MultipleProductCardFactoryImpl(listener)
+        val factory = MultipleProductCardFactoryImpl(
+                sourceView = SourceMultipleProductView.BottomSheetDetail,
+                listener = listener
+        )
         MultipleProductCardAdapter(factory)
     }
 
@@ -35,11 +39,6 @@ class NotificationProductCardDialog(
     override fun show(element: NotificationItemViewBean) {
         txtTitle?.text = element.title
         txtDescription?.text = element.body
-
-        //tracker
-        listener.getAnalytic().trackProductListImpression(
-                LABEL_BOTTOM_SHEET_LOCATION, element
-        )
 
         //product list item
         lstProducts?.adapter = productCardAdapter

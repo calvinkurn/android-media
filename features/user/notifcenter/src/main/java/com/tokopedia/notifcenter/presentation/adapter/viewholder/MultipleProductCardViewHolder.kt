@@ -12,7 +12,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.MultipleProductCardViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.widget.CampaignRedView
@@ -21,6 +23,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 
 class MultipleProductCardViewHolder(
         itemView: View,
+        private val sourceView: SourceMultipleProductView,
         val listener: NotificationItemListener
 ): AbstractViewHolder<MultipleProductCardViewBean>(itemView) {
 
@@ -36,7 +39,7 @@ class MultipleProductCardViewHolder(
     override fun bind(element: MultipleProductCardViewBean?) {
         if (element == null) return
         val product = element.product
-        listener.getAnalytic().trackProductListImpression(notification = element)
+        impressionTracker(element)
         productCheckoutClicked(element)
         isCampaignActive(product)
 
@@ -46,6 +49,20 @@ class MultipleProductCardViewHolder(
             productVariant.setupVariant(variant)
             productPrice.text = priceFormat
             productName.text = name
+        }
+    }
+
+    private fun impressionTracker(element: MultipleProductCardViewBean) {
+        when(sourceView) {
+            is SourceMultipleProductView.NotificationCenter -> {
+                listener.getAnalytic().trackProductListImpression(notification = element)
+            }
+            is SourceMultipleProductView.BottomSheetDetail -> {
+                listener.getAnalytic().trackProductListImpression(
+                        location = LABEL_BOTTOM_SHEET_LOCATION,
+                        notification = element
+                )
+            }
         }
     }
 

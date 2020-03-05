@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
+import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.presentation.adapter.MultipleProductCardAdapter
@@ -32,7 +33,10 @@ class ProductCheckoutViewHolder(
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
 
     private val multiProductAdapter by lazy {
-        val factory = MultipleProductCardFactoryImpl(listener)
+        val factory = MultipleProductCardFactoryImpl(
+                sourceView = SourceMultipleProductView.NotificationCenter,
+                listener = listener
+        )
         MultipleProductCardAdapter(factory, true)
     }
 
