@@ -28,6 +28,7 @@ import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditPriceUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
@@ -143,13 +144,23 @@ class ProductManageViewModel(
                 productListResponse?.data
             }
 
-            if(productList?.isNotEmpty() == true) {
-                _productListResult.value = Success(mapToViewModels(productList))
-                _productFilters.value = mapToProductFilters(productList)
-            }
+            showProductList(productList)
+            showTabFilters(productList)
         }, onError = {
             _productListResult.value = Fail(it)
         })
+    }
+
+    private fun showProductList(products: List<Product>?) {
+        val productList = mapToViewModels(products)
+        _productListResult.value = Success(productList)
+    }
+
+    private fun showTabFilters(products: List<Product>?) {
+        if (products?.isNotEmpty() == true) {
+            val tabFilters = mapToProductFilters(products)
+            _productFilters.value = tabFilters
+        }
     }
 
     fun editPrice(productId: String, price: String) {
