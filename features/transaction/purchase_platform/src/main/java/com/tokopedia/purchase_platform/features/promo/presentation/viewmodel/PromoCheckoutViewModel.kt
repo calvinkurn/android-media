@@ -135,49 +135,73 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         }
     }
 
-    fun calculateClash(selectedItem: PromoListItemUiModel) {
+    private fun calculateClash(selectedItem: PromoListItemUiModel) {
         if (selectedItem.uiState.isSellected) {
+            // Calculate clash on selection event
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                    // Calculate clash on expanded promo item
                     if (it.uiData.clashingInfo.isNotEmpty()) {
-                        if (it.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
-                            if (!it.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
-                                it.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
-                                val errorMessageBuilder = StringBuilder(it.uiData.errorMessage)
-                                errorMessageBuilder.append(it.uiData.clashingInfo[selectedItem.uiData.promoCode])
-                                it.uiData.errorMessage = errorMessageBuilder.toString()
-                                it.uiState.isEnabled = false
-                            }
-                        }
+                        setClashOnSelectionEvent(it, selectedItem)
                         _tmpUiModel.value = Update(it)
                     }
+                } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    // Calculate clash on collapsed promo item
+                    it.uiData.tmpPromoItemList.forEach {
+                        setClashOnSelectionEvent(it, selectedItem)
+                    }
+                    _tmpUiModel.value = Update(it)
                 }
             }
         } else {
+            // Calculate clash on un selection event
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
                     if (it.uiData.clashingInfo.isNotEmpty()) {
-                        if (it.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
-                            if (it.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
-                                it.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
-                                if (it.uiData.currentClashingPromo.isNotEmpty()) {
-                                    val errorMessageBuilder = StringBuilder()
-                                    it.uiData.currentClashingPromo.forEach { string ->
-                                        if (it.uiData.clashingInfo.containsKey(string)) {
-                                            errorMessageBuilder.append(it.uiData.clashingInfo[string])
-                                        }
-                                    }
-                                    it.uiData.errorMessage = errorMessageBuilder.toString()
-                                    it.uiState.isEnabled = false
-                                } else {
-                                    it.uiData.errorMessage = ""
-                                    it.uiState.isEnabled = true
-                                }
-                            }
-                        }
+                        setClashOnUnSelectionEvent(it, selectedItem)
                         _tmpUiModel.value = Update(it)
                     }
+                } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    it.uiData.tmpPromoItemList.forEach {
+                        if (it.uiData.clashingInfo.isNotEmpty()) {
+                            setClashOnUnSelectionEvent(it, selectedItem)
+                        }
+                    }
+                    _tmpUiModel.value = Update(it)
                 }
+            }
+        }
+    }
+
+    private fun setClashOnUnSelectionEvent(it: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
+        if (it.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
+            if (it.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
+                it.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
+                if (it.uiData.currentClashingPromo.isNotEmpty()) {
+                    val errorMessageBuilder = StringBuilder()
+                    it.uiData.currentClashingPromo.forEach { string ->
+                        if (it.uiData.clashingInfo.containsKey(string)) {
+                            errorMessageBuilder.append(it.uiData.clashingInfo[string])
+                        }
+                    }
+                    it.uiData.errorMessage = errorMessageBuilder.toString()
+                    it.uiState.isEnabled = false
+                } else {
+                    it.uiData.errorMessage = ""
+                    it.uiState.isEnabled = true
+                }
+            }
+        }
+    }
+
+    private fun setClashOnSelectionEvent(it: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
+        if (it.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
+            if (!it.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
+                it.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
+                val errorMessageBuilder = StringBuilder(it.uiData.errorMessage)
+                errorMessageBuilder.append(it.uiData.clashingInfo[selectedItem.uiData.promoCode])
+                it.uiData.errorMessage = errorMessageBuilder.toString()
+                it.uiState.isEnabled = false
             }
         }
     }
@@ -306,11 +330,14 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
     fun updatePromoListAfterClickPromoItem(element: PromoListItemUiModel) {
         // Set to selected / un selected
         promoListUiModel.value?.indexOf(element)?.let {
+            // Get the promo item data and set inverted collapsed value
             val promoItem = promoListUiModel.value?.get(it) as PromoListItemUiModel
-
             promoItem.uiState.isSellected = !promoItem.uiState.isSellected
+
+            // Update view
             _tmpUiModel.value = Update(promoItem)
 
+            // Perform clash calculation
             calculateClash(promoItem)
 
             // Update header sub total
@@ -330,8 +357,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 _tmpUiModel.value = Update(it)
 
                 if (headerIndex != 0) {
-                    // Un check other
-//                    var unCheckIndex = 0
+                    // Un check other item on current header if previously selected
                     val promoListSize = promoListUiModel.value?.size ?: 0
                     for (index in headerIndex + 1 until promoListSize) {
                         if (promoListUiModel.value?.get(index) !is PromoListItemUiModel) {
@@ -340,7 +366,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                             val tmpPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
                             if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSellected) {
                                 tmpPromoItem.uiState.isSellected = false
-//                                unCheckIndex = index
                                 _tmpUiModel.value = Update(tmpPromoItem)
                                 break
                             }

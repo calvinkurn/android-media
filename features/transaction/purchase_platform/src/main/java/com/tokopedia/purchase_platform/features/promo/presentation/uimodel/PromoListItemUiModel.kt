@@ -37,7 +37,9 @@ data class PromoListItemUiModel(
             var imageResourceUrls: List<String> = emptyList(),
             var parentIdentifierId: Int = 0,
             var promoCode: String = "",
+            // Store clashing info data from backend. This should not be changed
             var clashingInfo: MutableMap<String, String> = mutableMapOf(),
+            // Store current clashed promo based on data from #clashingInfo
             var currentClashingPromo: MutableList<String> = mutableListOf()
     )
 
