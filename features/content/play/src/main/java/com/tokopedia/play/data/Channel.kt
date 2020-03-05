@@ -83,7 +83,10 @@ data class Channel(
         val exitMsg: ExitMsg = ExitMsg(),
 
         @SerializedName("freeze_channel_state")
-        val freezeChannelState: FreezeChannelState = FreezeChannelState()
+        val freezeChannelState: FreezeChannelState = FreezeChannelState(),
+
+        @SerializedName("is_show_cart")
+        val isShowCart: Boolean = true // TODO("please make sure with backend")
 
 ) {
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.play.data.*
@@ -24,11 +25,13 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play_common.player.TokopediaPlayManager
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import rx.Subscriber
 import javax.inject.Inject
 
 /**
@@ -40,6 +43,7 @@ class PlayViewModel @Inject constructor(
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
+        private val updateCartCounterUseCase: UpdateCartCounterUseCase,
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
@@ -73,6 +77,8 @@ class PlayViewModel @Inject constructor(
         get() = _observablePinnedMessage
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
         get() = _observableVideoProperty
+    val observableBadgeCart: LiveData<Int>
+        get() = _observableBadgeCart
 
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
@@ -87,6 +93,7 @@ class PlayViewModel @Inject constructor(
     private val _observableKeyboardState = MutableLiveData<KeyboardState>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    private val _observableBadgeCart = MutableLiveData<Int>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
             _observableVideoProperty.value = VideoPropertyUiModel(it.channelType, _observableVideoProperty.value?.state
@@ -193,6 +200,7 @@ class PlayViewModel @Inject constructor(
 
             launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
+            launch { getBadgeCart(channel.isShowCart) }
 
             /**
              * If Live => start web socket
@@ -296,7 +304,34 @@ class PlayViewModel @Inject constructor(
     private suspend fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = withContext(dispatchers.io) {
             getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(partnerId.toInt(), partnerType)
             getPartnerInfoUseCase.executeOnBackground()
+    }
+
+    private fun getBadgeCart(isShowCart: Boolean) {
+        if (isShowCart) {
+            updateCartCounterUseCase.createObservable(RequestParams.EMPTY)
+                    .subscribe(object : Subscriber<Int>() {
+                        override fun onCompleted() {}
+
+                        override fun onError(e: Throwable) {
+                            e.printStackTrace() // TODO ("remove")
+                        }
+
+                        override fun onNext(count: Int) {
+                            _observableBadgeCart.postValue(count)
+                        }
+                    })
         }
+    }
+
+    /**
+     * To update badge icon cart
+     */
+    fun udpateBadgetCart() {
+        val channelInfo = _observableGetChannelInfo.value
+        if (channelInfo != null && channelInfo is Success) {
+            getBadgeCart(channelInfo.data.isShowCart)
+        }
+    }
 
     private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
         playSocket.channelId = channelId
@@ -373,7 +408,8 @@ class PlayViewModel @Inject constructor(
             partnerType = PartnerType.getTypeByValue(channel.partnerType),
             contentId = channel.contentId,
             contentType = channel.contentType,
-            likeType = channel.likeType
+            likeType = channel.likeType,
+            isShowCart = channel.isShowCart
     )
 
     private fun mapPinnedMessage(partnerName: String, pinnedMessage: PinnedMessage) = PinnedMessageUiModel(
