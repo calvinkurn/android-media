@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Handler
 import android.view.FrameMetrics
 import android.view.Window
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import java.lang.StringBuilder
 
 /**
@@ -14,16 +15,21 @@ import java.lang.StringBuilder
 class JankyFrameMonitoringUtil(val activity: Activity, val keyScreen: String) {
 
     private lateinit var performanceData: PerformanceData
+    private lateinit var performanceMonitoring: PerformanceMonitoring
+    private var isPerformanceMonitoringActive: Boolean = false
+
     private var onFrameMetricAvailableListener: Window.OnFrameMetricsAvailableListener? = null
-    private val KEYSCREEN_FRAMES_ALL: String = StringBuilder().append(keyScreen).append("_all_frames").toString()
-    private val KEYSCREEN_FRAMES_JANKY: String = StringBuilder().append(keyScreen).append("_janky_frames").toString()
-    private val KEYSCREEN_FRAMES_PERCENTAGES: String = StringBuilder().append(keyScreen).append("_janky_frames_percentages").toString()
+    private val KEYSCREEN_FRAMES_ALL: String = "all_frames"
+    private val KEYSCREEN_FRAMES_JANKY: String = "janky_frames"
+    private val KEYSCREEN_FRAMES_PERCENTAGES: String = "janky_frames_percentages"
     private val DEFAULT_WARNING_LEVEL_MS = 17f
 
 
     @TargetApi(Build.VERSION_CODES.N)
     fun startFrameMetrics() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && !isPerformanceMonitoringActive) {
+            isPerformanceMonitoringActive = true
+            performanceMonitoring = PerformanceMonitoring.start(keyScreen)
             setupMetrics()
             onFrameMetricAvailableListener = Window.OnFrameMetricsAvailableListener { window, frameMetrics, dropCountSinceLastInvocation ->
                 val frameMetricsCopy = FrameMetrics(frameMetrics)
@@ -36,14 +42,18 @@ class JankyFrameMonitoringUtil(val activity: Activity, val keyScreen: String) {
     }
 
     @TargetApi(Build.VERSION_CODES.N)
-    fun stopFrameMetrics(): PerformanceData {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+    fun stopFrameMetrics() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && isPerformanceMonitoringActive) {
+            isPerformanceMonitoringActive= false
             onFrameMetricAvailableListener?.let {
                 activity.window.removeOnFrameMetricsAvailableListener(it)
             }
             onFrameMetricAvailableListener = null
         }
-        return performanceData
+        performanceMonitoring.putMetric(performanceData.allFramesTag, performanceData.allFrames.toLong())
+        performanceMonitoring.putMetric(performanceData.jankyFramesTag, performanceData.jankyFrames.toLong())
+        performanceMonitoring.putMetric(performanceData.jankyFramesPercentageTag, performanceData.jankyFramePercentage.toLong())
+        performanceMonitoring.stopTrace()
     }
 
     private fun setupMetrics() {

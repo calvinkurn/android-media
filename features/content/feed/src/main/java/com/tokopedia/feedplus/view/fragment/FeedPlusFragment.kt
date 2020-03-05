@@ -167,7 +167,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var feedScrollJankyFramePM: PerformanceMonitoring
     private lateinit var jankyFrameMonitoringUtil: JankyFrameMonitoringUtil
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
     private lateinit var createPostBottomSheet: CloseableBottomSheetDialog
@@ -177,7 +176,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private var isLoadedOnce: Boolean = false
     private var afterPost: Boolean = false
     private var afterRefresh: Boolean = false
-    private var isFeedJankyFramePMActive: Boolean = false
 
     private var isUserEventTrackerDoneTrack = false
 
@@ -589,9 +587,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
                             }
                             RecyclerView.SCROLL_STATE_DRAGGING -> {
-                                if (!isFeedJankyFramePMActive) {
-                                    startFeedScrollJankyFrameCounter()
-                                }
+                                startFeedScrollJankyFrameCounter()
                             }
 
                         }
@@ -2003,17 +1999,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun startFeedScrollJankyFrameCounter() {
-        feedScrollJankyFramePM = PerformanceMonitoring.start(KEY_JANKY_FRAME_SCROLL)
-        isFeedJankyFramePMActive = true
         jankyFrameMonitoringUtil.startFrameMetrics()
     }
 
     private fun stopFeedScrollJankyFrameCounter() {
-        isFeedJankyFramePMActive = false
-        val data = jankyFrameMonitoringUtil.stopFrameMetrics()
-        feedScrollJankyFramePM.putMetric(data.allFramesTag, data.allFrames.toLong())
-        feedScrollJankyFramePM.putMetric(data.jankyFramesTag, data.jankyFrames.toLong())
-        feedScrollJankyFramePM.putMetric(data.jankyFramesPercentageTag, data.jankyFramePercentage.toLong())
-        feedScrollJankyFramePM.stopTrace()
+        jankyFrameMonitoringUtil.stopFrameMetrics()
     }
 }

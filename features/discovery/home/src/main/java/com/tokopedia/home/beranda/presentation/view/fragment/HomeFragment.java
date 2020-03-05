@@ -233,9 +233,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
     private JankyFramesMonitoringListener jankyFramesMonitoringListener;
-    private PerformanceMonitoring performanceMonitoring;
     private JankyFrameMonitoringUtil homeScrollJankyMonitoringUtil;
-    private boolean isHomeJankyFramePMActive = false;
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
@@ -370,9 +368,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                     evaluateInheritScrollForHomeRecommendation();
                     stopHomeScrollingJankyFrameCount();
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    if (!isHomeJankyFramePMActive) {
-                        startHomeScrollingJankyFrameCount();
-                    }
+                    startHomeScrollingJankyFrameCount();
                 }
             }
         });
@@ -1846,19 +1842,12 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void startHomeScrollingJankyFrameCount() {
-        performanceMonitoring = PerformanceMonitoring.start(KEY_JANKY_FRAME_SCROLL);
-        isHomeJankyFramePMActive = true;
         homeScrollJankyMonitoringUtil.startFrameMetrics();
 
     }
 
     private void stopHomeScrollingJankyFrameCount() {
-        isHomeJankyFramePMActive = false;
-        PerformanceData data = homeScrollJankyMonitoringUtil.stopFrameMetrics();
-        performanceMonitoring.putMetric(data.getAllFramesTag(), data.getAllFrames());
-        performanceMonitoring.putMetric(data.getJankyFramesTag(), data.getJankyFrames());
-        performanceMonitoring.putMetric(data.getJankyFramesPercentageTag(), data.getJankyFramePercentage());
-        performanceMonitoring.stopTrace();
+        homeScrollJankyMonitoringUtil.stopFrameMetrics();
     }
 
 }
