@@ -7,7 +7,6 @@ import com.tokopedia.flight.filter.presentation.FlightFilterFacilityEnum;
 import com.tokopedia.flight.search.presentation.model.resultstatistics.FlightSearchStatisticModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by User on 11/1/2017.
@@ -19,12 +18,12 @@ public class FlightFilterModel implements Parcelable, Cloneable {
     private int priceMax = Integer.MAX_VALUE;
     private int durationMin = 0;
     private int durationMax = Integer.MAX_VALUE;
-    private List<TransitEnum> transitTypeList = new ArrayList<>();
-    private List<String> airlineList = new ArrayList<>();
-    private List<DepartureTimeEnum> departureTimeList = new ArrayList<>();
-    private List<DepartureTimeEnum> arrivalTimeList = new ArrayList<>();
-    private List<RefundableEnum> refundableTypeList = new ArrayList<>();
-    private List<FlightFilterFacilityEnum> facilityList = new ArrayList<>();
+    private ArrayList<TransitEnum> transitTypeList = new ArrayList<>();
+    private ArrayList<String> airlineList = new ArrayList<>();
+    private ArrayList<DepartureTimeEnum> departureTimeList = new ArrayList<>();
+    private ArrayList<DepartureTimeEnum> arrivalTimeList = new ArrayList<>();
+    private ArrayList<RefundableEnum> refundableTypeList = new ArrayList<>();
+    private ArrayList<FlightFilterFacilityEnum> facilityList = new ArrayList<>();
     private boolean isHasFilter = false;
     private boolean isSpecialPrice = false;
     private boolean isBestPairing = false;
@@ -125,51 +124,51 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         this.durationMax = durationMax;
     }
 
-    public List<String> getAirlineList() {
+    public ArrayList<String> getAirlineList() {
         return airlineList;
     }
 
-    public void setAirlineList(List<String> airlineList) {
+    public void setAirlineList(ArrayList<String> airlineList) {
         this.airlineList = airlineList;
     }
 
-    public List<TransitEnum> getTransitTypeList() {
+    public ArrayList<TransitEnum> getTransitTypeList() {
         return transitTypeList;
     }
 
-    public void setTransitTypeList(List<TransitEnum> transitTypeList) {
+    public void setTransitTypeList(ArrayList<TransitEnum> transitTypeList) {
         this.transitTypeList = transitTypeList;
     }
 
-    public List<DepartureTimeEnum> getDepartureTimeList() {
+    public ArrayList<DepartureTimeEnum> getDepartureTimeList() {
         return departureTimeList;
     }
 
-    public void setDepartureTimeList(List<DepartureTimeEnum> departureTimeList) {
+    public void setDepartureTimeList(ArrayList<DepartureTimeEnum> departureTimeList) {
         this.departureTimeList = departureTimeList;
     }
 
-    public List<DepartureTimeEnum> getArrivalTimeList() {
+    public ArrayList<DepartureTimeEnum> getArrivalTimeList() {
         return arrivalTimeList;
     }
 
-    public void setArrivalTimeList(List<DepartureTimeEnum> arrivalTimeList) {
+    public void setArrivalTimeList(ArrayList<DepartureTimeEnum> arrivalTimeList) {
         this.arrivalTimeList = arrivalTimeList;
     }
 
-    public List<RefundableEnum> getRefundableTypeList() {
+    public ArrayList<RefundableEnum> getRefundableTypeList() {
         return refundableTypeList;
     }
 
-    public void setRefundableTypeList(List<RefundableEnum> refundableTypeList) {
+    public void setRefundableTypeList(ArrayList<RefundableEnum> refundableTypeList) {
         this.refundableTypeList = refundableTypeList;
     }
 
-    public List<FlightFilterFacilityEnum> getFacilityList() {
+    public ArrayList<FlightFilterFacilityEnum> getFacilityList() {
         return facilityList;
     }
 
-    public void setFacilityList(List<FlightFilterFacilityEnum> facilityList) {
+    public void setFacilityList(ArrayList<FlightFilterFacilityEnum> facilityList) {
         this.facilityList = facilityList;
     }
 
@@ -220,8 +219,8 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         return flightFilterModel;
     }
 
-    private List<TransitEnum> getCopyOfTransitList() {
-        List<TransitEnum> transitEnumList = new ArrayList<>();
+    private ArrayList<TransitEnum> getCopyOfTransitList() {
+        ArrayList<TransitEnum> transitEnumList = new ArrayList<>();
         if (getTransitTypeList() != null) {
             for (int i = 0, sizei = getTransitTypeList().size(); i < sizei; i++) {
                 transitEnumList.add(getTransitTypeList().get(i));
@@ -230,8 +229,8 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         return transitEnumList;
     }
 
-    private List<DepartureTimeEnum> getCopyOfDepartureList() {
-        List<DepartureTimeEnum> departureTimeEnumList = new ArrayList<>();
+    private ArrayList<DepartureTimeEnum> getCopyOfDepartureList() {
+        ArrayList<DepartureTimeEnum> departureTimeEnumList = new ArrayList<>();
         if (getDepartureTimeList() != null) {
             for (int i = 0, sizei = getDepartureTimeList().size(); i < sizei; i++) {
                 departureTimeEnumList.add(getDepartureTimeList().get(i));
@@ -240,8 +239,8 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         return departureTimeEnumList;
     }
 
-    private List<DepartureTimeEnum> getCopyOfArrivalList() {
-        List<DepartureTimeEnum> arrivalTimeEnumList = new ArrayList<>();
+    private ArrayList<DepartureTimeEnum> getCopyOfArrivalList() {
+        ArrayList<DepartureTimeEnum> arrivalTimeEnumList = new ArrayList<>();
         if (getArrivalTimeList() != null) {
             for (int i = 0, sizei = getArrivalTimeList().size(); i < sizei; i++) {
                 arrivalTimeEnumList.add(getArrivalTimeList().get(i));
@@ -250,8 +249,8 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         return arrivalTimeEnumList;
     }
 
-    private List<FlightFilterFacilityEnum> getCopyOfFacilityList() {
-        List<FlightFilterFacilityEnum> facilityEnumList = new ArrayList<>();
+    private ArrayList<FlightFilterFacilityEnum> getCopyOfFacilityList() {
+        ArrayList<FlightFilterFacilityEnum> facilityEnumList = new ArrayList<>();
         if (getFacilityList() != null) {
             for (int i = 0, sizei = getFacilityList().size(); i < sizei; i++) {
                 facilityEnumList.add(getFacilityList().get(i));
@@ -260,8 +259,8 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         return facilityEnumList;
     }
 
-    private List<String> getCopyOfAirlineList() {
-        List<String> airlineList = new ArrayList<>();
+    private ArrayList<String> getCopyOfAirlineList() {
+        ArrayList<String> airlineList = new ArrayList<>();
         if (getAirlineList() != null) {
             for (int i = 0, sizei = getAirlineList().size(); i < sizei; i++) {
                 airlineList.add(getAirlineList().get(i));
@@ -270,8 +269,8 @@ public class FlightFilterModel implements Parcelable, Cloneable {
         return airlineList;
     }
 
-    private List<RefundableEnum> getCopyOfRefundableList() {
-        List<RefundableEnum> refundableEnumList = new ArrayList<>();
+    private ArrayList<RefundableEnum> getCopyOfRefundableList() {
+        ArrayList<RefundableEnum> refundableEnumList = new ArrayList<>();
         if (getRefundableTypeList() != null) {
             for (int i = 0, sizei = getRefundableTypeList().size(); i < sizei; i++) {
                 refundableEnumList.add(getRefundableTypeList().get(i));
