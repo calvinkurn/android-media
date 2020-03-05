@@ -6,12 +6,10 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiType
 import com.tokopedia.sellerhome.settings.view.uimodel.state.BaseUiModelState
 
-class ShopInfoUiModel(var shopName: String,
-                      var shopAvatarUrl: String,
-                      var shopBadgeUrl: String,
-                      var followerCount: Int) : SettingUiModel, LoadableUiModel {
-
-    constructor() : this("", "", "", 0)
+class ShopInfoUiModel(var shopName: String = "",
+                      var shopAvatarUrl: String = "",
+                      var shopBadgeUrl: String = "",
+                      var followerCount: Int = 0) : SettingUiModel, LoadableUiModel {
 
     override fun type(typeFactory: OtherSettingTypeFactory): Int =
             typeFactory.type(this)
@@ -22,5 +20,5 @@ class ShopInfoUiModel(var shopName: String,
     override val settingUiType: SettingUiType
         get() = SettingUiType.SHOP_INFO
 
-    override var uiState: BaseUiModelState = BaseUiModelState.Loading
+    override var uiState: BaseUiModelState = BaseUiModelState.Success
 }

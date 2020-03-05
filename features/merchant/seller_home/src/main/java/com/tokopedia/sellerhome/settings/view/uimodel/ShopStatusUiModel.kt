@@ -6,12 +6,12 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiType
 import com.tokopedia.sellerhome.settings.view.uimodel.state.BaseUiModelState
 
-class ShopStatusUiModel() : SettingUiModel, LoadableUiModel {
+class ShopStatusUiModel : SettingUiModel, LoadableUiModel {
 
     override fun type(typeFactory: OtherSettingTypeFactory): Int =
             typeFactory.type(this)
 
-    override var uiState: BaseUiModelState = BaseUiModelState.Loading
+    override var uiState: BaseUiModelState = BaseUiModelState.Success
 
     override val onClickApplink: String?
         get() = null

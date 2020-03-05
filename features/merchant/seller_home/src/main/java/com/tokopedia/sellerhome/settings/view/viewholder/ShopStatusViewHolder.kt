@@ -16,6 +16,7 @@ class ShopStatusViewHolder(itemView: View) : LoadableViewHolder<ShopStatusUiMode
     }
 
     override fun renderSuccessLayout(uiModel: ShopStatusUiModel) {
+
     }
 
     override fun renderLoadingLayout() {

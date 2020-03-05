@@ -20,11 +20,18 @@ class DividerViewHolder(itemView: View) : AbstractViewHolder<DividerUiModel>(ite
             when(element.dividerType) {
                 DividerType.THICK -> {
                     thickDivider.visibility = View.VISIBLE
-                    thinDivider.visibility = View.GONE
+                    thinPartialDivider.visibility = View.GONE
+                    thinFullDivider.visibility = View.GONE
                 }
-                DividerType.THIN -> {
+                DividerType.THIN_PARTIAL -> {
                     thickDivider.visibility = View.GONE
-                    thinDivider.visibility = View.VISIBLE
+                    thinPartialDivider.visibility = View.VISIBLE
+                    thinFullDivider.visibility = View.GONE
+                }
+                DividerType.THIN_FULL -> {
+                    thickDivider.visibility = View.GONE
+                    thinPartialDivider.visibility = View.GONE
+                    thinFullDivider.visibility = View.VISIBLE
                 }
             }
         }

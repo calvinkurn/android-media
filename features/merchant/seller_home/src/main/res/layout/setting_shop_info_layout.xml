@@ -47,6 +47,7 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:textColor="@color/setting_black_text"
+        android:gravity="center_vertical"
         app:layout_constraintTop_toTopOf="@id/shopInfoView"
         app:layout_constraintBottom_toTopOf="@id/shopBadges"
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
@@ -68,15 +69,21 @@
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:textColor="@color/setting_grey_text"
+        android:gravity="center_vertical"
+        app:typographyType="small"
+        app:typographyWeight="reguler"
         app:layout_constraintTop_toTopOf="@id/shopBadges"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/innerCircle"
         app:layout_constraintStart_toEndOf="@id/shopBadges"
         tools:text="11 Followers"/>
 
     <ImageView
         android:id="@+id/settingShopNext"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:srcCompat="@drawable/ic_sah_arrow_right"
+        app:layout_constraintHeight_percent="0.2"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toStartOf="@id/settingShopGuidelineRight"
         app:layout_constraintTop_toTopOf="@id/shopInfoView"
         app:layout_constraintBottom_toBottomOf="parent"/>

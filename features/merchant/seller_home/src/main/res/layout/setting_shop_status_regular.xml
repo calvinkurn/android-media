@@ -1,82 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:card_type="border">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/statusCard"
+    <com.tokopedia.unifycomponents.CardUnify
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:card_type="border">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Regular Merchant"
-            android:gravity="center_vertical"
-            android:textColor="@color/setting_black_text"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/statusCard"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <View
-            android:id="@+id/rightRectangle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            app:layout_constraintWidth_percent="0.3"
-            android:background="@drawable/setting_shop_regular_rectangle"
-            app:layout_constraintRight_toRightOf="parent" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Regular Merchant"
+                android:gravity="center_vertical"
+                android:textColor="@color/setting_black_text"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
 
-        <View
-            android:id="@+id/triangle"
-            android:layout_width="20dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/setting_triangle"
-            app:layout_constraintStart_toStartOf="@id/rightRectangle"/>
+            <View
+                android:id="@+id/rightRectangle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                app:layout_constraintWidth_percent="0.3"
+                android:background="@drawable/setting_shop_regular_rectangle"
+                app:layout_constraintRight_toRightOf="parent" />
 
-        <View
-            android:id="@+id/badgeBorder"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintWidth_percent="0.05"
-            app:layout_constraintStart_toStartOf="@id/triangle"
-            app:layout_constraintEnd_toEndOf="@id/triangle"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="1:1"
-            android:background="@drawable/setting_image_circular"/>
+            <View
+                android:id="@+id/triangle"
+                android:layout_width="20dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/setting_triangle"
+                app:layout_constraintStart_toStartOf="@id/rightRectangle"/>
 
-        <ImageView
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_margin="@dimen/setting_shop_badge_border_margin"
-            app:layout_constraintTop_toTopOf="@id/badgeBorder"
-            app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
-            app:layout_constraintStart_toStartOf="@id/badgeBorder"
-            app:layout_constraintEnd_toEndOf="@id/badgeBorder"
-            app:srcCompat="@drawable/ic_power_merchant"/>
+            <View
+                android:id="@+id/badgeBorder"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintWidth_percent="0.05"
+                app:layout_constraintStart_toStartOf="@id/triangle"
+                app:layout_constraintEnd_toEndOf="@id/triangle"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="1:1"
+                android:background="@drawable/setting_image_circular"/>
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/regularMerchantStatus"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:text="Verifikasi"
-            android:textColor="@color/setting_shop_status_green"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            app:layout_constraintStart_toEndOf="@id/triangle"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="@dimen/setting_shop_badge_border_margin"
+                app:layout_constraintTop_toTopOf="@id/badgeBorder"
+                app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
+                app:layout_constraintStart_toStartOf="@id/badgeBorder"
+                app:layout_constraintEnd_toEndOf="@id/badgeBorder"
+                app:srcCompat="@drawable/ic_power_merchant"/>
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/leftGuideline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_percent="0.05"/>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/regularMerchantStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:text="Verifikasi"
+                android:textColor="@color/setting_shop_status_green"
+                app:typographyType="body_2"
+                app:typographyWeight="bold"
+                app:layout_constraintStart_toEndOf="@id/triangle"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/leftGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.05"/>
 
-</com.tokopedia.unifycomponents.CardUnify>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.tokopedia.unifycomponents.CardUnify>
+</androidx.constraintlayout.widget.ConstraintLayout>

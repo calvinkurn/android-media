@@ -9,9 +9,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiType
 import com.tokopedia.sellerhome.settings.view.uimodel.state.BaseUiModelState
 
 class BalanceUiModel(var balanceTitle: String,
-                     var balanceValue: String): SettingUiModel, LoadableUiModel {
-
-    constructor(balanceTitle: String) : this(balanceTitle, "")
+                     var balanceValue: String = ""): SettingUiModel, LoadableUiModel {
 
     private val _balanceLiveData = MutableLiveData<String>()
 

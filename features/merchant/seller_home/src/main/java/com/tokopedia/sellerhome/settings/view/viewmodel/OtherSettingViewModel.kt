@@ -44,9 +44,11 @@ class OtherSettingViewModel @Inject constructor(
 
     fun populateAdapterList() {
         val settingList = listOf(
-                ShopInfoUiModel(),
-                BalanceUiModel(SALDO),
-                BalanceUiModel(KREDIT_TOPADS),
+                ShopInfoUiModel("Vishal Gupta", "", "", 10),
+                ShopStatusUiModel(),
+                DividerUiModel(DividerType.THIN_FULL),
+                BalanceUiModel(SALDO, "Rp532.000.000"),
+                BalanceUiModel(KREDIT_TOPADS, "Rp0"),
                 DividerUiModel(),
                 SettingTitleUiModel(TINGKATKAN_PENJUALAN),
                 MenuItemUiModel(STATISTIK_TOKO, R.drawable.ic_statistic_setting),
@@ -59,7 +61,7 @@ class OtherSettingViewModel @Inject constructor(
                 MenuItemUiModel(LAYANAN_KEUANGAN, R.drawable.ic_finance),
                 MenuItemUiModel(PUSAT_EDUKASI_SELLER, R.drawable.ic_seller_edu),
                 MenuItemUiModel(TOKOPEDIA_CARE, R.drawable.ic_tokopedia_care),
-                DividerUiModel(DividerType.THIN),
+                DividerUiModel(DividerType.THIN_PARTIAL),
                 MenuItemUiModel(PENGATURAN, R.drawable.ic_setting)
         )
         _settingListLiveData.value = settingList
