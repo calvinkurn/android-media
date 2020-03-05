@@ -1,7 +1,6 @@
 package com.tokopedia.loginfingerprint.di
 
 import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -20,7 +19,11 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
 @Module
-class LoginFingerprintSettingModule {
+class LoginFingerprintSettingModule(val context: Context) {
+
+    @Provides
+    @LoginFingerprintContext
+    fun provideContext(): Context = context
 
     @LoginFingerprintSettingScope
     @Provides
@@ -32,11 +35,11 @@ class LoginFingerprintSettingModule {
 
     @LoginFingerprintSettingScope
     @Provides
-    fun providePreferenceHelper(@ApplicationContext context: Context): FingerprintSetting = FingerprintPreferenceHelper(context)
+    fun providePreferenceHelper(@LoginFingerprintContext context: Context): FingerprintSetting = FingerprintPreferenceHelper(context)
 
     @LoginFingerprintSettingScope
     @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
+    fun provideUserSessionInterface(@LoginFingerprintContext context: Context): UserSessionInterface = UserSession(context)
 
     @LoginFingerprintSettingScope
     @Provides
