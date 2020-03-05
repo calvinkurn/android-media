@@ -44,5 +44,5 @@ internal val live = Url(
         SELLER = "https://seller.tokopedia.com/",
         PLAY = "https://chat.tokopedia.com",
         WS_PLAY = "wss://groupchat.tokopedia.com",
-        HUB = "hub.tokopedia.com"
+        HUB = "https://hub.tokopedia.com/"
 )
