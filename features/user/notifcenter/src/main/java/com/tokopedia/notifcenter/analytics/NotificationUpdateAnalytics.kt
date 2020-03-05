@@ -59,19 +59,53 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     }
 
     // #11A
-    fun trackProductListImpression(notification: NotificationItemViewBean) {
-        val eventLabel = getImpressionTrackLabel(LABEL_LOCATION, notification)
+    fun trackProductListImpression(
+            location: String = LABEL_LOCATION,
+            notification: MultipleProductCardViewBean
+    ) {
+        trackProductListImpression(
+                location = location,
+                templateKey = notification.templateKey,
+                notificationId = notification.notificationId,
+                products = listOf(notification.product)
+        )
+    }
+
+    fun trackProductListImpression(
+            location: String = LABEL_LOCATION,
+            notification: NotificationItemViewBean
+    ) {
+        trackProductListImpression(
+                location = location,
+                templateKey = notification.templateKey,
+                notificationId = notification.notificationId,
+                products = notification.products
+        )
+    }
+
+    private fun trackProductListImpression(
+            location: String,
+            templateKey: String,
+            notificationId: String,
+            products: List<ProductData?>
+    ) {
+        val eventLabel = getImpressionTrackLabel(
+                location,
+                templateKey,
+                notificationId,
+                products.first()?.productId
+        )
         val impressions = arrayListOf<Map<String, Any>>()
-        for ((index, product) in notification.products.withIndex()) {
+        for ((index, product) in products.withIndex()) {
             impressions.add(
                     DataLayer.mapOf(
-                            "name", product.name,
-                            "id", product.productId,
-                            "price", product.price,
+                            "name", product?.name,
+                            "id", product?.productId,
+                            "price", product?.price,
                             "brand", "",
                             "category", "",
                             "variant", "",
-                            "list", notification.products.map { it.name },
+                            "list", products.map { it?.name },
                             "position", index
                     )
             )

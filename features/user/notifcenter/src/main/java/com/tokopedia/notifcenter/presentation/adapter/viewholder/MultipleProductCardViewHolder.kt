@@ -36,6 +36,7 @@ class MultipleProductCardViewHolder(
     override fun bind(element: MultipleProductCardViewBean?) {
         if (element == null) return
         val product = element.product
+        listener.getAnalytic().trackProductListImpression(notification = element)
         productCheckoutClicked(element)
         isCampaignActive(product)
 

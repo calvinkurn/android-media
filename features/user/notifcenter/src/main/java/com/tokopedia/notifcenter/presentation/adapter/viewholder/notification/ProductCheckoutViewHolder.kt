@@ -38,7 +38,7 @@ class ProductCheckoutViewHolder(
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
-        listener.getAnalytic().trackProductListImpression(element)
+        listener.getAnalytic().trackProductListImpression(notification = element)
         onProductCheckoutClick(element)
         productCardItemView(element)
 
