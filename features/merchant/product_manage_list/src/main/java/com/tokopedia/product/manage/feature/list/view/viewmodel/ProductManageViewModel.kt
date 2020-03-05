@@ -58,19 +58,6 @@ class ProductManageViewModel(
     mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
 
-    private val _viewState = MutableLiveData<ViewState>()
-
-    private val _productFilters = MutableLiveData<List<FilterViewModel>>()
-    private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
-    private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
-    private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
-    private val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
-    private val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
-    private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
-    private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
-
     val viewState : LiveData<ViewState>
         get() = _viewState
     val productFilters : LiveData<List<FilterViewModel>>
@@ -93,6 +80,18 @@ class ProductManageViewModel(
         get() = _getPopUpResult
     val setFeaturedProductResult : LiveData<Result<SetFeaturedProductResult>>
         get() = _setFeaturedProductResult
+
+    private val _viewState = MutableLiveData<ViewState>()
+    private val _productFilters = MutableLiveData<List<FilterViewModel>>()
+    private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
+    private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
+    private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
+    private val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
+    private val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
+    private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
+    private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
