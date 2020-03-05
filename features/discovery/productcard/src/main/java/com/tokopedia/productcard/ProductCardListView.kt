@@ -67,6 +67,10 @@ class ProductCardListView: BaseCustomView {
         buttonAddToCart?.setOnClickListener(addToCartClickListener)
     }
 
+    fun getMaxCardElevation() = cardViewProductCard?.maxCardElevation ?: 0f
+
+    fun getRadius() = cardViewProductCard?.radius ?: 0f
+
     fun applyCarousel() {
         setCardHeightMatchParent()
         resizeImageProductSize()
