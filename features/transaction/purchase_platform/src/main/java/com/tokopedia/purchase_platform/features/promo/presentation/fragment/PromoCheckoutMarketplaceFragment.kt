@@ -378,7 +378,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     override fun onClickResetPromo() {
-        viewModel.resetSelectedPromo()
+        viewModel.resetPromo()
     }
 
     // --- END OF FRAGMENT LEVEL ACTION

@@ -261,14 +261,16 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         setFragmentStateHasPromoSelected(hasAnyPromoSellected)
     }
 
-    fun resetSelectedPromo() {
+    fun resetPromo() {
         val promoList = ArrayList<Visitable<*>>()
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel) {
+                // Reset promo on expanded item
                 it.uiState.isSellected = false
                 it.uiData.currentClashingPromo.clear()
                 promoList.add(it)
             } else if (it is PromoListHeaderUiModel) {
+                // Reset promo on collapsed item
                 it.uiState.hasSelectedPromoItem = false
                 it.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
                     promoListItemUiModel.uiState.isSellected = false
@@ -278,6 +280,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             }
         }
 
+        // Update view
         promoList.forEach {
             _tmpUiModel.value = Update(it)
         }
@@ -286,6 +289,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
     }
 
     fun setFragmentStateHasPromoSelected(hasAnyPromoSelected: Boolean) {
+        // Set fragment state
         fragmentUiModel.value?.let {
             it.uiState.hasAnyPromoSelected = hasAnyPromoSelected
             _fragmentUiModel.value = it
