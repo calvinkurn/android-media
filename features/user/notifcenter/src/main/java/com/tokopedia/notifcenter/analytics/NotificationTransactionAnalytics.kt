@@ -5,7 +5,7 @@ import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
 
-class NotificationTransactionAnalytics @Inject constructor(): NotificationAnalytics() {
+class NotificationTransactionAnalytics: NotificationAnalytics(), NotificationTracker {
 
     private val seenNotifications = HashSet<String>()
 
@@ -27,7 +27,7 @@ class NotificationTransactionAnalytics @Inject constructor(): NotificationAnalyt
     }
 
     // #NC5
-    fun trackMarkAllAsRead(markAllReadCounter: String) {
+    override fun trackMarkAllAsRead(markAllReadCounter: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT,
                 EVENT_CATEGORY_NOTIF_CENTER,
@@ -37,7 +37,7 @@ class NotificationTransactionAnalytics @Inject constructor(): NotificationAnalyt
     }
 
     //10A
-    fun sendTrackTransactionTab(parent: String, child: String) {
+    override fun sendTrackTransactionTab(parent: String, child: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT,
                 EVENT_CATEGORY,
@@ -47,7 +47,7 @@ class NotificationTransactionAnalytics @Inject constructor(): NotificationAnalyt
     }
 
     //10B
-    fun trackClickFilterRequest(filter: String) {
+    override fun trackClickFilterRequest(filter: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT,
                 EVENT_CATEGORY,
@@ -57,7 +57,7 @@ class NotificationTransactionAnalytics @Inject constructor(): NotificationAnalyt
     }
 
     //10C
-    fun saveNotificationImpression(notification: NotificationItemViewBean) {
+    override fun saveNotificationImpression(notification: NotificationItemViewBean) {
         val notificationId = notification.notificationId
         val isNotAlreadyTracked = seenNotifications.add(notificationId)
         if (isNotAlreadyTracked) {
@@ -66,7 +66,7 @@ class NotificationTransactionAnalytics @Inject constructor(): NotificationAnalyt
     }
 
     //10D
-    fun trackNotificationClick(notification: NotificationItemViewBean) {
+    override fun trackNotificationClick(notification: NotificationItemViewBean) {
         val label = getImpressionTrackLabel(LABEL_LOCATION, notification)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT,
@@ -77,12 +77,12 @@ class NotificationTransactionAnalytics @Inject constructor(): NotificationAnalyt
     }
 
     //10E
-    fun trackScrollBottom(notifItemPosition: String) {
+    override fun trackScrollBottom(notificationSize: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT,
                 EVENT_CATEGORY,
                 EVENT_TRANSACTION_SCROLL_ACTION,
-                notifItemPosition
+                notificationSize
         ))
     }
 

@@ -7,15 +7,15 @@ import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.text.Spanned
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
 import android.widget.ImageView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.data.consts.Resources.BottomSheetDialogTheme
 import com.tokopedia.notifcenter.data.consts.Resources.designBottomSheet
+import com.tokopedia.notifcenter.presentation.BaseNotificationFragment
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
@@ -152,13 +153,13 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
 
     private fun setupViewModel(savedInstanceState: Bundle?) {
         activity?.run {
-            contentText = getParamString(NotificationUpdateFragment.PARAM_CONTENT_TEXT, arguments, null, "")
-            contentImageUrl = getParamString(NotificationUpdateFragment.PARAM_CONTENT_IMAGE, arguments, null, "")
-            contentImageViewType = getParamString(NotificationUpdateFragment.PARAM_CONTENT_IMAGE_TYPE, arguments, null, "")
-            contentTitle = getParamString(NotificationUpdateFragment.PARAM_CONTENT_TITLE, arguments, null, "")
-            btnText = getParamString(NotificationUpdateFragment.PARAM_BUTTON_TEXT, arguments, null, DEFAULT_CTA_BUTTON)
-            appLink = getParamString(NotificationUpdateFragment.PARAM_CTA_APPLINK, arguments, null, "")
-            templateKey = getParamString(NotificationUpdateFragment.PARAM_TEMPLATE_KEY, arguments, null, "")
+            contentText = getParamString(BaseNotificationFragment.PARAM_CONTENT_TEXT, arguments, null, "")
+            contentImageUrl = getParamString(BaseNotificationFragment.PARAM_CONTENT_IMAGE, arguments, null, "")
+            contentImageViewType = getParamString(BaseNotificationFragment.PARAM_CONTENT_IMAGE_TYPE, arguments, null, "")
+            contentTitle = getParamString(BaseNotificationFragment.PARAM_CONTENT_TITLE, arguments, null, "")
+            btnText = getParamString(BaseNotificationFragment.PARAM_BUTTON_TEXT, arguments, null, DEFAULT_CTA_BUTTON)
+            appLink = getParamString(BaseNotificationFragment.PARAM_CTA_APPLINK, arguments, null, "")
+            templateKey = getParamString(BaseNotificationFragment.PARAM_TEMPLATE_KEY, arguments, null, "")
         }
     }
 
@@ -177,6 +178,6 @@ class NotificationLongerTextDialog : BottomSheetDialogFragment() {
             return fragment
         }
 
-        val DEFAULT_CTA_BUTTON = "Klik disini"
+        private const val DEFAULT_CTA_BUTTON = "Klik disini"
     }
 }

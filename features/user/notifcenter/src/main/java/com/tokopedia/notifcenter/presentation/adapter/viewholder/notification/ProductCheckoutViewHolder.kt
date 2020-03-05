@@ -59,6 +59,7 @@ class ProductCheckoutViewHolder(
     private fun productCardItemView(element: NotificationItemViewBean) {
         if (element.products.isSingleItem()) {
             cardContainer.show()
+            lstProduct.hide()
         } else {
             cardContainer.hide()
             lstProduct.adapter = multiProductAdapter

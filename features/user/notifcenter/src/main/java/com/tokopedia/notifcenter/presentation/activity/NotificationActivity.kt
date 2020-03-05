@@ -26,6 +26,7 @@ import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
 import com.tokopedia.notifcenter.di.DaggerNotificationComponent
 import com.tokopedia.notifcenter.di.NotificationComponent
 import com.tokopedia.notifcenter.di.module.CommonModule
+import com.tokopedia.notifcenter.listener.NotificationUpdateListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
@@ -42,7 +43,7 @@ import javax.inject.Inject
 
 class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         NotificationActivityContract.View,
-        NotificationUpdateFragment.NotificationUpdateListener {
+        NotificationUpdateListener {
 
     val notificationComponent by lazy { initInjector() }
 
@@ -130,7 +131,7 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         }
     }
 
-    override fun onSuccessLoadNotifUpdate() {
+    override fun onSuccessLoadNotificationUpdate() {
         clearTabCounter(INDEX_NOTIFICATION_UPDATE)
     }
 
