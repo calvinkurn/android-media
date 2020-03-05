@@ -6,8 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import kotlinx.coroutines.CoroutineScope
-import kotlin.coroutines.CoroutineContext
 
 import java.util.HashMap
 
@@ -40,6 +38,8 @@ interface HomeCategoryListener {
     fun onPromoClick(position: Int, slidesModel: BannerSlidesModel)
 
     fun openShop()
+
+    fun onOpenPlayChannelList()
 
     fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 

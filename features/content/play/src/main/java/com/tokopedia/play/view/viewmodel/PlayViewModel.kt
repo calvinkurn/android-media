@@ -12,10 +12,7 @@ import com.tokopedia.play.data.*
 import com.tokopedia.play.data.mapper.PlaySocketMapper
 import com.tokopedia.play.data.websocket.PlaySocket
 import com.tokopedia.play.data.websocket.PlaySocketInfo
-import com.tokopedia.play.domain.GetChannelInfoUseCase
-import com.tokopedia.play.domain.GetIsLikeUseCase
-import com.tokopedia.play.domain.GetPartnerInfoUseCase
-import com.tokopedia.play.domain.GetTotalLikeUseCase
+import com.tokopedia.play.domain.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
@@ -39,6 +36,7 @@ class PlayViewModel @Inject constructor(
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
+        private val getCartCountUseCase: GetCartCountUseCase,
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
@@ -74,6 +72,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
     val observableProductSheetContent: LiveData<ProductSheetUiModel>
         get() = _observableProductSheetContent
+    val observableBadgeCart: LiveData<CartUiModel>
+        get() = _observableBadgeCart
 
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
@@ -91,6 +91,7 @@ class PlayViewModel @Inject constructor(
     private val _observableProductSheetContent = MutableLiveData<ProductSheetUiModel>()
     private val _observableBottomInsetsState = MutableLiveData<BottomInsetsState>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
+    private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
             _observableVideoProperty.value = VideoPropertyUiModel(it.channelType, _observableVideoProperty.value?.state
@@ -254,6 +255,7 @@ class PlayViewModel @Inject constructor(
 
             launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
+            launch { getBadgeCart(channel.isShowCart) }
 
             /**
              * If Live => start web socket
@@ -357,7 +359,25 @@ class PlayViewModel @Inject constructor(
     private suspend fun getPartnerInfo(partnerId: Long, partnerType: PartnerType) = withContext(dispatchers.io) {
             getPartnerInfoUseCase.params = GetPartnerInfoUseCase.createParam(partnerId.toInt(), partnerType)
             getPartnerInfoUseCase.executeOnBackground()
+    }
+
+    private suspend fun getBadgeCart(isShowCart: Boolean) {
+        if (isShowCart) {
+            try {
+                val countCart = withContext(dispatchers.io) {
+                    getCartCountUseCase.executeOnBackground()
+                }
+                _observableBadgeCart.value = CartUiModel(true, countCart)
+            } catch (e: Exception) {}
         }
+    }
+
+    fun udpateBadgetCart() {
+        val channelInfo = _observableGetChannelInfo.value
+        if (channelInfo != null && channelInfo is Success) {
+            launch { getBadgeCart(channelInfo.data.isShowCart) }
+        }
+    }
 
     private fun startWebSocket(channelId: String, gcToken: String, settings: Channel.Settings) {
         playSocket.channelId = channelId
@@ -435,7 +455,8 @@ class PlayViewModel @Inject constructor(
             partnerType = PartnerType.getTypeByValue(channel.partnerType),
             contentId = channel.contentId,
             contentType = channel.contentType,
-            likeType = channel.likeType
+            likeType = channel.likeType,
+            isShowCart = channel.isShowCart
     )
 
     private fun mapPinnedMessage(partnerName: String, pinnedMessage: PinnedMessage) = if (pinnedMessage.pinnedMessageId > 0 && pinnedMessage.title.isNotEmpty()) {

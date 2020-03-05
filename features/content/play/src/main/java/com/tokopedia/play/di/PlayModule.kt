@@ -2,12 +2,15 @@ package com.tokopedia.play.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
+import com.tokopedia.play.R
 import com.tokopedia.play.data.network.PlayApi
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.DefaultCoroutineDispatcherProvider
@@ -19,12 +22,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
+import javax.inject.Named
 
 /**
  * Created by jegul on 29/11/19
  */
 @Module
-class PlayModule {
+class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
@@ -85,5 +89,12 @@ class PlayModule {
     @Provides
     fun provideLocalCacheHandler(@ApplicationContext context: Context): LocalCacheHandler {
         return LocalCacheHandler(context, KEY_GROUPCHAT_PREFERENCES)
+    }
+
+    @PlayScope
+    @Provides
+    @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
+    fun provideUpdateCartCounterMutation(): String {
+        return GraphqlHelper.loadRawString(mContext.resources, R.raw.gql_update_cart_counter)
     }
 }

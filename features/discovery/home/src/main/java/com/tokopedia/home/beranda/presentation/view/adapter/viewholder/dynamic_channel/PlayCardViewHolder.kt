@@ -36,6 +36,7 @@ class PlayCardViewHolder(
     private val viewer = view.findViewById<TextView>(R.id.viewer)
     private val live = view.findViewById<View>(R.id.live)
     private val titlePlay = view.findViewById<TextView>(R.id.title_play)
+    private val seeAll = view.findViewById<TextView>(R.id.play_txt_see_all)
     private val broadcasterName = view.findViewById<TextView>(R.id.title_description)
     private val title = view.findViewById<TextView>(R.id.title)
     private var isClickable = false
@@ -97,6 +98,8 @@ class PlayCardViewHolder(
             handlingTracker(model)
             title.setValue(model.channel.name)
 
+            seeAll.visibility = if (model.channel.name.isNotEmpty()) View.VISIBLE else View.GONE
+
             thumbnailView.show()
             thumbnailView.loadImageNoRounded(playChannel.coverUrl)
 
@@ -117,6 +120,10 @@ class PlayCardViewHolder(
 
             container.setSafeOnClickListener {
                 goToPlayChannel(model)
+            }
+
+            seeAll.setSafeOnClickListener {
+                goToChannelList()
             }
 
             itemView.setSafeOnClickListener {
@@ -145,6 +152,10 @@ class PlayCardViewHolder(
             listener.onOpenPlayActivity(frameLayout, model.playCardHome?.channelId)
             HomePageTracking.eventClickPlayBanner(model)
         }
+    }
+
+    private fun goToChannelList() {
+        listener.onOpenPlayChannelList()
     }
 
     fun resume(){

@@ -3,7 +3,6 @@ package com.tokopedia.play.view.activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -12,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play_common.util.PlayLifecycleObserver
@@ -64,6 +64,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
                 .baseAppComponent(
                         (applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(this))
                 .build()
                 .inject(this)
     }
