@@ -490,6 +490,7 @@ public class TopChatAnalytics {
         payload.put(EVENT_ACTION, Action.CLICK_REPLY_BUTTON);
         payload.put(EVENT_LABEL, "");
         payload.put("userId", userId);
+        payload.put("source", "sellerapp_push_notif");
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(payload);
     }
