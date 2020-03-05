@@ -32,8 +32,8 @@
         android:id="@+id/fingerprint_progressbar"
         android:layout_gravity="center"
         android:visibility="gone"
-        android:layout_width="48dp"
-        android:layout_height="48dp"/>
+        android:layout_width="@dimen/dp_48"
+        android:layout_height="@dimen/dp_48"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/fingerprint_body_text"
@@ -41,7 +41,7 @@
         android:layout_marginBottom="@dimen/dp_24"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#f531353b"
+        android:textColor="@color/body_text_color"
         android:gravity="center_horizontal"
         app:typographyType="body_2"
         app:typographyWeight="reguler"
