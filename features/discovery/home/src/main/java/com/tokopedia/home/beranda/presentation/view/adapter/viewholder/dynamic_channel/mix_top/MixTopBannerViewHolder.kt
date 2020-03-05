@@ -41,7 +41,7 @@ class MixTopBannerViewHolder(
     private val bannerUnifyButton = itemView.findViewById<UnifyButton>(R.id.banner_button)
     private val recyclerView = itemView.findViewById<RecyclerView>(R.id.dc_banner_rv)
     private val startSnapHelper: GravitySnapHelper by lazy { GravitySnapHelper(Gravity.START) }
-    private val background = itemView
+    private val background = itemView.findViewById<View>(R.id.background)
     private var adapter: MixTopAdapter? = null
     companion object{
         @LayoutRes
