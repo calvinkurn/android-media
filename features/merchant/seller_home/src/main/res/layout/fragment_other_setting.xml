@@ -5,6 +5,13 @@
     android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
+    <View
+        android:id="@+id/shopStatusHeader"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/setting_regular_header"
+        app:layout_constraintTop_toTopOf="parent"/>
+    
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"

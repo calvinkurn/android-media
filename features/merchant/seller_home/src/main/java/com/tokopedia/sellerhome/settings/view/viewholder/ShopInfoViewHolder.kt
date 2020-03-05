@@ -23,7 +23,7 @@ class ShopInfoViewHolder(itemView: View) : LoadableViewHolder<ShopInfoUiModel>(i
     override fun renderSuccessLayout(uiModel: ShopInfoUiModel) {
         with(itemView) {
             shopName.text = uiModel.shopName
-            shopFollowing.text = "${uiModel.followerCount}$FOLLOWERS"
+            shopFollowing.text = "${uiModel.followerCount} $FOLLOWERS"
         }
     }
 

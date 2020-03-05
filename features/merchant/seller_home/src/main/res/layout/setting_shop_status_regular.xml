@@ -2,13 +2,18 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="@dimen/setting_status_margin"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.CardUnify
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintWidth_percent="0.95"
         app:card_type="border">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,7 +51,7 @@
                 android:id="@+id/badgeBorder"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                app:layout_constraintWidth_percent="0.05"
+                app:layout_constraintWidth_percent="0.06"
                 app:layout_constraintStart_toStartOf="@id/triangle"
                 app:layout_constraintEnd_toEndOf="@id/triangle"
                 app:layout_constraintTop_toTopOf="parent"
