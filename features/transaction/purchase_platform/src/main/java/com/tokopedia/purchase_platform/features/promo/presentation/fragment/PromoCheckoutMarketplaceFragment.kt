@@ -427,6 +427,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         // Set sellected / un sellected
         element.uiState.isSellected = !element.uiState.isSellected
         adapter.modifyData(position)
+        viewModel.calculateClash(element)
 
         // Update header sub total
         var oldData: PromoListHeaderUiModel? = null

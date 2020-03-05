@@ -36,7 +36,9 @@ data class PromoListItemUiModel(
             var errorMessage: String = "",
             var imageResourceUrls: List<String> = emptyList(),
             var parentIdentifierId: Int = 0,
-            var promoCode: String = ""
+            var promoCode: String = "",
+            var clashingInfo: MutableMap<String, String> = mutableMapOf(),
+            var currentClashingPromo: MutableList<String> = mutableListOf()
     )
 
     data class UiState(

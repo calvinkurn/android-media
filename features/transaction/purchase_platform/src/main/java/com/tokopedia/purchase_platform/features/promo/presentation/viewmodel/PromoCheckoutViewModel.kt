@@ -9,8 +9,6 @@ import com.tokopedia.purchase_platform.features.promo.domain.usecase.GetCouponLi
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel.UiState.Companion.STATE_IS_DISABLED
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel.UiState.Companion.STATE_IS_ENABLED
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -95,11 +93,23 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             val promoInputUiModel = uiModelMapper.mapPromoInputUiModel()
             _promoInputUiModel.value = promoInputUiModel
 
-            // Initialize coupon section
-            val couponSection = response.couponListRecommendation.data.couponSections
-            val couponList = ArrayList<Visitable<*>>()
-            couponSection.forEach { couponSectionItem ->
+            // Get all sellected promo
+            val selectedPromoList = ArrayList<String>()
+            response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
+                if (couponSectionItem.isEnabled) {
+                    couponSectionItem.subSections.forEach {
+                        it.coupons.forEach {
+                            if (it.isSelected) {
+                                selectedPromoList.add(it.code)
+                            }
+                        }
+                    }
+                }
+            }
 
+            // Initialize coupon section
+            val couponList = ArrayList<Visitable<*>>()
+            response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
                 // Initialize eligibility header
                 val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
                 couponList.add(eligibilityHeader)
@@ -112,7 +122,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
                     // Initialize promo list item
                     couponSubSection.coupons.forEach { couponItem ->
-                        val promoItem = uiModelMapper.mapPromoListItemUiModel(couponItem, promoHeader.uiData.identifierId)
+                        val promoItem = uiModelMapper.mapPromoListItemUiModel(couponItem, promoHeader.uiData.identifierId, selectedPromoList)
                         couponList.add(promoItem)
                     }
                 }
@@ -121,6 +131,56 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
         }) {
             // Todo : Show error state
+        }
+    }
+
+    fun calculateClash(selectedItem: PromoListItemUiModel) {
+        if (selectedItem.uiState.isSellected) {
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                    if (it.uiData.clashingInfo.isNotEmpty()) {
+                        if (it.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
+                            if (!it.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
+                                it.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
+                                val errorMessageBuilder = StringBuilder(it.uiData.errorMessage)
+                                errorMessageBuilder.append(it.uiData.clashingInfo[selectedItem.uiData.promoCode])
+                                it.uiData.errorMessage = errorMessageBuilder.toString()
+                                it.uiState.isEnabled = false
+                            }
+                        }
+                        _tmpUiModel.value = Update(it)
+                    }
+                }
+            }
+        } else {
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                    if (it.uiData.clashingInfo.isNotEmpty()) {
+                        if (it.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
+                            if (it.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
+                                it.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
+                                if (it.uiData.currentClashingPromo.isNotEmpty()) {
+                                    val errorMessageBuilder = StringBuilder()
+                                    it.uiData.currentClashingPromo.forEach { string ->
+                                        if (it.uiData.clashingInfo.containsKey(string)) {
+                                            if (errorMessageBuilder.isNotBlank()) {
+                                                errorMessageBuilder.append("\n")
+                                            }
+                                            errorMessageBuilder.append(it.uiData.clashingInfo[string])
+                                        }
+                                    }
+                                    it.uiData.errorMessage = errorMessageBuilder.toString()
+                                    it.uiState.isEnabled = false
+                                } else {
+                                    it.uiData.errorMessage = ""
+                                    it.uiState.isEnabled = true
+                                }
+                            }
+                        }
+                        _tmpUiModel.value = Update(it)
+                    }
+                }
+            }
         }
     }
 

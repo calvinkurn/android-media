@@ -5,7 +5,6 @@ import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRe
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponSection
 import com.tokopedia.purchase_platform.features.promo.data.response.SubSection
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
-import java.lang.StringBuilder
 import javax.inject.Inject
 
 class PromoCheckoutUiModelMapper @Inject constructor() {
@@ -77,7 +76,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int): PromoListItemUiModel {
+    fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int, selectedPromo: List<String>): PromoListItemUiModel {
         return PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
                     title = couponItem.title
@@ -97,6 +96,18 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     imageResourceUrls = couponItem.tagImageUrls
                     parentIdentifierId = headerIdentifierId
                     promoCode = couponItem.code
+                    val clashingInfoMap = HashMap<String, String>()
+                    couponItem.clashingInfos.forEach {
+                        clashingInfoMap[it.code] = it.message
+                    }
+                    clashingInfo = clashingInfoMap
+                    val tmpCurrentClashingPromoList = ArrayList<String>()
+                    selectedPromo.forEach {
+                        if (clashingInfo.containsKey(it)) {
+                            tmpCurrentClashingPromoList.add(it)
+                        }
+                    }
+                    currentClashingPromo = tmpCurrentClashingPromoList
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isEnabled = couponItem.radioCheckState == PromoListItemUiModel.UiState.STATE_IS_ENABLED
