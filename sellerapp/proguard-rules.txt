@@ -181,7 +181,7 @@
 # this is retrofit
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
--keepattributes Signature
+-keepattributes Signature,SourceFile,LineNumberTable
 -keepattributes Exceptions
 # this is retrofit
 
@@ -407,3 +407,7 @@
 -dontwarn com.google.j2objc.annotations.**
 -dontwarn com.google.errorprone.annotations.**
 -dontwarn java.lang.ClassValue
+
+
+# -- robust
+-optimizations !class/unboxing/enum,!code/simplification/arithmetic

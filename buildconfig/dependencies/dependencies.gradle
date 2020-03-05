@@ -230,7 +230,8 @@ ext {
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
-            stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion"
+            stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
+            robust                : "com.meituan.robust:robust:0.4.91"
     ]
 
     testDependencies = [
