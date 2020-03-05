@@ -155,12 +155,12 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
 
         if (fingerprintManager?.isHardwareDetected == true) {
             if (fingerprintManager?.hasEnrolledFingerprints() == false) {
-                listener?.onFingerprintError(context.getString(R.string.error_no_fp_enrolled), 112)
+                listener?.onFingerprintError(context.getString(R.string.error_no_fp_enrolled), FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS)
                         ?: Toaster.make(fingerprint_main_layout, context.getString(R.string.error_no_fp_enrolled), Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR)
                 dismiss()
             }
         } else {
-            listener?.onFingerprintError(context.getString(R.string.error_no_fp_hardware), 111)
+            listener?.onFingerprintError(context.getString(R.string.error_no_fp_hardware), FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE)
                     ?: Toaster.make(fingerprint_main_layout, context.getString(R.string.error_no_fp_hardware), Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR)
             dismiss()
         }

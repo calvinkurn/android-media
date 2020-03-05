@@ -1,6 +1,6 @@
 package com.tokopedia.loginfingerprint.view.fragment
 
-
+import android.hardware.fingerprint.FingerprintManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -92,7 +92,11 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
             }
 
             override fun onFingerprintError(msg: String, errCode: Int) {
-                onErrorRegisterFP(Throwable(message = msg))
+                if(errCode == FingerprintManager.FINGERPRINT_ERROR_HW_UNAVAILABLE || errCode == FingerprintManager.FINGERPRINT_ERROR_UNABLE_TO_PROCESS){
+                    activity?.finish()
+                }else{
+                    onErrorRegisterFP(Throwable(message = msg))
+                }
             }
         })
 
