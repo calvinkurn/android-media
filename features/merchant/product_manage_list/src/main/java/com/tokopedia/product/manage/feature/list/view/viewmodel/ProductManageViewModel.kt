@@ -6,10 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToProductFilters
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
@@ -60,8 +58,6 @@ class ProductManageViewModel(
 
     val viewState : LiveData<ViewState>
         get() = _viewState
-    val productFilters : LiveData<List<FilterViewModel>>
-        get() = _productFilters
     val productListResult : LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
     val shopInfoResult : LiveData<Result<ShopInfoResult>>
@@ -82,7 +78,6 @@ class ProductManageViewModel(
         get() = _setFeaturedProductResult
 
     private val _viewState = MutableLiveData<ViewState>()
-    private val _productFilters = MutableLiveData<List<FilterViewModel>>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
     private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
@@ -144,7 +139,6 @@ class ProductManageViewModel(
             }
 
             showProductList(productList)
-            showTabFilters(productList)
         }, onError = {
             _productListResult.value = Fail(it)
         })
@@ -153,13 +147,6 @@ class ProductManageViewModel(
     private fun showProductList(products: List<Product>?) {
         val productList = mapToViewModels(products)
         _productListResult.value = Success(productList)
-    }
-
-    private fun showTabFilters(products: List<Product>?) {
-        if (products?.isNotEmpty() == true) {
-            val tabFilters = mapToProductFilters(products)
-            _productFilters.value = tabFilters
-        }
     }
 
     fun editPrice(productId: String, price: String) {

@@ -26,8 +26,6 @@ import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -62,14 +60,13 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
-import com.tokopedia.product.manage.feature.list.view.adapter.ProductFilterAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
-import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductFilterItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
+import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
 import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
@@ -159,7 +156,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
-    private val productFilterAdapter by lazy { ProductFilterAdapter(this) }
 
     private var productList: MutableList<ProductViewModel> = mutableListOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
@@ -191,15 +187,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun initView() {
         setupSearchBar()
         setupProductList()
-        setupProductFilters()
+        setupTabFilters()
         setupBottomSheet()
         renderCheckedView()
 
         observeShopInfo()
         observeUpdateProduct()
         observeDeleteProduct()
-
-        observeProductFilters()
         observeProductList()
 
         observeEditPrice()
@@ -340,13 +334,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         recycler_view.addItemDecoration(ProductListItemDecoration())
     }
 
-    private fun setupProductFilters() {
-        with(tabFilters) {
-            adapter = productFilterAdapter
-            layoutManager = LinearLayoutManager(this@ProductManageFragment.context, HORIZONTAL, false)
-            addItemDecoration(ProductFilterItemDecoration())
-            isNestedScrollingEnabled = false
-        }
+    private fun setupTabFilters() {
+        tabFilters.init(this)
     }
 
     private val addProductReceiver = object : BroadcastReceiver() {
@@ -411,10 +400,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun setProductList(products: List<ProductViewModel>) {
-        if (products.isNotEmpty()) {
-            productList = products.toMutableList()
-        }
+    private fun showTabFilters() {
+        val tabFilterList = mapToTabFilters(productList)
+        tabFilters.setData(tabFilterList)
+    }
+
+    private fun addProductList(products: List<ProductViewModel>) {
+        productList.addAll(products)
     }
 
     private fun onErrorEditPrice(productId: String, price: String, t: Throwable?) {
@@ -615,6 +607,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         super.onSwipeRefresh()
         productManageListAdapter.resetCheckedItemSet()
         itemsChecked.clear()
+        productList.clear()
         renderCheckedView()
     }
 
@@ -1094,18 +1087,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         observe(viewModel.productListResult) {
             when (it) {
                 is Success -> {
-                    setProductList(it.data)
+                    addProductList(it.data)
                     showProductList(it.data)
+                    showTabFilters()
                 }
                 is Fail -> loadEmptyList()
             }
-        }
-    }
-
-    private fun observeProductFilters() {
-        observe(viewModel.productFilters) {
-            productFilterAdapter.clearAllElements()
-            productFilterAdapter.addElement(it)
         }
     }
 
