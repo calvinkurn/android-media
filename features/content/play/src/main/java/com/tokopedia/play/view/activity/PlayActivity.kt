@@ -1,9 +1,7 @@
 package com.tokopedia.play.view.activity
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
-import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -82,13 +80,13 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     override fun onBackPressed() {
         if (isTaskRoot) {
             val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-            val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
-            if (fragment != null && fragment is PlayFragment) {
-                fragment.setResult()
-            }
             startActivity(intent)
             finish()
         } else {
+            val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
+            if (fragment != null && fragment is PlayFragment) {
+                fragment.setResultBeforeFinish()
+            }
             supportFinishAfterTransition()
         }
     }

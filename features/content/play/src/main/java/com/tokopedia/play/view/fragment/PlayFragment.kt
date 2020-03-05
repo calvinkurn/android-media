@@ -299,7 +299,7 @@ class PlayFragment : BaseDaggerFragment() {
         }.start()
     }
 
-    fun setResult() {
+    fun setResultBeforeFinish() {
         activity?.setResult(Activity.RESULT_OK, Intent().apply {
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
