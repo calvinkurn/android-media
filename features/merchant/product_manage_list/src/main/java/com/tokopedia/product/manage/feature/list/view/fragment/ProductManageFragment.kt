@@ -162,7 +162,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var goldMerchant: Boolean = false
     private var isOfficialStore: Boolean = false
     private var manageProductBottomSheet: ManageProductBottomSheet? = null
-    private var savedInstanceManager: SaveInstanceCacheManager? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
 
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
@@ -182,12 +181,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        savedInstanceManager = this.context?.let { SaveInstanceCacheManager(it, true) }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        savedInstanceManager?.onSave(outState)
     }
 
     open fun getLayoutRes(): Int = R.layout.fragment_product_manage
@@ -276,6 +269,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder) {
         filterProductList(filter)
         resetProductFilters(viewHolder)
+        val savedInstanceManager = this.context?.let { SaveInstanceCacheManager(it, true) }
         savedInstanceManager?.let { cacheManager ->
             filterProductBottomSheet = context?.let { cacheManager.id?.let { id -> ProductManageFilterFragment.createInstance(it, id) } }
             setupFilterProductBottomSheet()
@@ -285,11 +279,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun setupFilterProductBottomSheet() {
         filterProductBottomSheet?.setOnDismissListener {
-            val filterOptionWrapper: FilterOptionWrapper? = savedInstanceManager?.get(
-                    ProductManageFilterFragment.SELECTED_FILTER, FilterOptionWrapper::class.java
-            )
-            filterOptionWrapper?.let {
-                viewModel.getProductList(userSession.shopId, filterOptionWrapper.filterOptions, filterOptionWrapper.sortOption)
+            if (filterProductBottomSheet != null && filterProductBottomSheet!!.isResultReady) {
+                filterProductBottomSheet!!.isResultReady = false
+//                val cacheManager = context?.let { SaveInstanceCacheManager(it, filterProductBottomSheet!!.resultCacheManagerId) }
+//                val filterOptionWrapper: FilterOptionWrapper? = cacheManager?.get(
+//                        ProductManageFilterFragment.SELECTED_FILTER, FilterOptionWrapper::class.java)
+//                filterOptionWrapper?.let {
+//                    viewModel.getProductList(userSession.shopId, filterOptionWrapper.filterOptions, filterOptionWrapper.sortOption)
+//                }
+                viewModel.getProductList(userSession.shopId, filterProductBottomSheet!!.selectedFilterOptions?.filterOptions, filterProductBottomSheet!!.selectedFilterOptions?.sortOption)
             }
         }
     }

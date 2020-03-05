@@ -37,8 +37,8 @@
 
                 <ImageView
                     android:id="@+id/filter_loader_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/layout_lvl4"
+                    android:layout_height="@dimen/layout_lvl4"
                     android:layout_centerInParent="true"
                     app:srcCompat="@drawable/ic_loading_indeterminate"/>
 

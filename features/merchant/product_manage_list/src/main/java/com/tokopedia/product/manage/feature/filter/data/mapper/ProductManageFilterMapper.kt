@@ -21,11 +21,10 @@ class ProductManageFilterMapper {
         private const val SHOW_CHIPS = true
         private const val HIDE_CHIPS = false
         private const val SORT_ASC = "ASC"
-        private const val SORT_DEFAULT = "DEFAULT"
+        private const val SORT_NAME = "NAME"
         private const val SORT_UPDATE_TIME = "UPDATE_TIME"
         private const val SORT_SOLD = "SOLD"
         private const val SORT_PRICE = "PRICE"
-        private const val PAGE = "page"
         private const val NEW_ONLY = "isNewOnly"
         private const val USED_ONLY = "isUsedOnly"
         private const val EMPTY_STOCK_ONLY = "isEmptyStockOnly"
@@ -33,7 +32,6 @@ class ProductManageFilterMapper {
         private const val CASH_BACK_ONLY = "isCashbackOnly"
         private const val WHOLESALE_ONLY = "isWholesaleOnly"
         private const val PRE_ORDER_ONLY = "isPreorderOnly"
-        private const val FEATURED_ONLY = "isFeaturedOnly"
 
         fun mapCombinedResultToFilterViewModels(filterOptionsResponse: FilterOptionsResponse): List<FilterViewModel> {
             val filterViewModels = mutableListOf<FilterViewModel>()
@@ -105,22 +103,12 @@ class ProductManageFilterMapper {
             selectedData?.let {
                 if(it.value == SORT_ASC) sortOrderOption = SortOrderOption.ASC
             }
-            when(selectedData?.id) {
-                SORT_DEFAULT -> {
-                    return SortOption.SortByDefault(sortOrderOption)
-                }
-                SORT_UPDATE_TIME -> {
-                    return SortOption.SortByUpdateTime(sortOrderOption)
-                }
-                SORT_SOLD -> {
-                    return SortOption.SortBySold(sortOrderOption)
-                }
-                SORT_PRICE -> {
-                    return SortOption.SortByPrice(sortOrderOption)
-                }
-                else -> {
-                    return SortOption.SortByName(sortOrderOption)
-                }
+            return when(selectedData?.id) {
+                SORT_NAME -> SortOption.SortByName(sortOrderOption)
+                SORT_UPDATE_TIME -> SortOption.SortByUpdateTime(sortOrderOption)
+                SORT_SOLD -> SortOption.SortBySold(sortOrderOption)
+                SORT_PRICE -> SortOption.SortByPrice(sortOrderOption)
+                else -> SortOption.SortByDefault(sortOrderOption)
             }
         }
 
@@ -144,7 +132,10 @@ class ProductManageFilterMapper {
                     selectedCategoryIds.add(it.id)
                 }
             }
-            return listOf(FilterOption.FilterByCategory(selectedCategoryIds))
+            if(selectedCategoryIds.isNotEmpty()) {
+                return listOf(FilterOption.FilterByCategory(selectedCategoryIds))
+            }
+            return listOf()
         }
 
         private fun mapFiltersToFilterOptions(filterViewModel: FilterViewModel): List<FilterOption> {
@@ -152,30 +143,14 @@ class ProductManageFilterMapper {
             filterViewModel.data.forEach {
                 if(it.select) {
                     val mappedData = when(it.id) {
-                        NEW_ONLY -> {
-                            FilterOption.FilterByCondition.NewOnly
-                        }
-                        USED_ONLY -> {
-                            FilterOption.FilterByCondition.UsedOnly
-                        }
-                        EMPTY_STOCK_ONLY -> {
-                            FilterOption.FilterByCondition.EmptyStockOnly
-                        }
-                        VARIANT_ONLY -> {
-                            FilterOption.FilterByCondition.VariantOnly
-                        }
-                        CASH_BACK_ONLY -> {
-                            FilterOption.FilterByCondition.CashBackOnly
-                        }
-                        WHOLESALE_ONLY -> {
-                            FilterOption.FilterByCondition.WholesaleOnly
-                        }
-                        PRE_ORDER_ONLY -> {
-                            FilterOption.FilterByCondition.PreorderOnly
-                        }
-                        else -> {
-                            FilterOption.FilterByCondition.FeaturedOnly
-                        }
+                        NEW_ONLY -> FilterOption.FilterByCondition.NewOnly
+                        USED_ONLY -> FilterOption.FilterByCondition.UsedOnly
+                        EMPTY_STOCK_ONLY -> FilterOption.FilterByCondition.EmptyStockOnly
+                        VARIANT_ONLY -> FilterOption.FilterByCondition.VariantOnly
+                        CASH_BACK_ONLY -> FilterOption.FilterByCondition.CashBackOnly
+                        WHOLESALE_ONLY -> FilterOption.FilterByCondition.WholesaleOnly
+                        PRE_ORDER_ONLY -> FilterOption.FilterByCondition.PreorderOnly
+                        else -> FilterOption.FilterByCondition.FeaturedOnly
                     }
                     selectedData.add(mappedData)
                 }
