@@ -357,7 +357,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item?.itemId) {
+        return when (item.itemId) {
             android.R.id.home -> {
                 activity?.onBackPressed(); true
             }
@@ -1385,10 +1385,22 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
         val variantData = VariantMapper.processVariant(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, variantOptions.level)
         pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
-        pdpHashMapUtil?.snapShotMap?.media = listOf(ProductMediaDataModel(type = "image",urlOriginal = "https://ecs7.tokopedia.net/img/cache/700/product-1/2015/8/13/194971/194971_3f93a0e8-4199-11e5-bfa9-295e87772fba.jpg"))
-        pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
-        dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel)
-        adapter.notifyItemChanged(0)
+
+        if (isPartialySelected) {
+            //If user select partialy and its colour type, only update image in snapshot
+            if (variantOptions.variantOptionIdentifier == "colour" && variantOptions.hasCustomImages) {
+                viewModel.addPartialImage(variantOptions.image)
+            }
+        } else {
+            val selectedChild = VariantMapper.selectedProductData(viewModel.variantData
+                    ?: ProductVariant())
+            val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
+            if (selectedChild?.hasPicture == true &&
+                    updatedDynamicProductInfo?.data?.media?.firstOrNull()?.uRLOriginal != pdpHashMapUtil?.snapShotMap?.media?.firstOrNull()?.urlOriginal) pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
+            pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo, viewModel.imageHeight)
+            viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
+            adapter.notifyDataSetChanged()
+        }
     }
 
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {

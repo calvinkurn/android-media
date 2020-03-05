@@ -137,6 +137,12 @@ object DynamicProductDetailMapper {
         }
     }
 
+    fun convertMediaToDataModel(media: MutableList<Media>): List<ProductMediaDataModel> {
+        return media.map { it ->
+            ProductMediaDataModel(it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
+        }
+    }
+
     private fun mapToProductInfoContent(listOfData: List<ComponentData>): List<ProductInfoContent>? {
         return if (listOfData.isEmpty()) {
             null

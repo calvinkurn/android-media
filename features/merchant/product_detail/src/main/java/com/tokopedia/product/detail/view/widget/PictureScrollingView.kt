@@ -26,7 +26,7 @@ class PictureScrollingView @JvmOverloads constructor(
     lateinit var pagerAdapter: VideoPicturePagerAdapter
 
     val position: Int
-        get() = view_pager?.currentItem ?: 0
+        get() = pdp_view_pager?.currentItem ?: 0
 
     init {
         instantiateView()
@@ -57,46 +57,50 @@ class PictureScrollingView @JvmOverloads constructor(
         if (!::pagerAdapter.isInitialized || forceRefresh) {
             pagerAdapter = VideoPicturePagerAdapter(context, mediaList, onPictureClickListener, fragmentManager, componentTrackData
                     ?: ComponentTrackDataModel(), onPictureClickTrackListener)
-            view_pager.adapter = pagerAdapter
-
-            view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                var lastPosition = 0
-                override fun onPageSelected(position: Int) {
-                    val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
-                    onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
-                    (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
-                    (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
-                    lastPosition = position
-                }
-
-                override fun onPageScrollStateChanged(b: Int) {
-
-                }
-
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-                }
-            })
-
-            indicator_picture.setViewPager(view_pager)
-            indicator_picture.notifyDataSetChanged()
+            pdp_view_pager.offscreenPageLimit = 3
+            pdp_view_pager.adapter = pagerAdapter
         }
-        pagerAdapter.notifyDataSetChanged()
+
+        pdp_view_pager.clearOnPageChangeListeners()
+        pdp_view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            var lastPosition = 0
+            override fun onPageSelected(position: Int) {
+                val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
+                onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
+                (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
+                (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
+                lastPosition = position
+            }
+
+            override fun onPageScrollStateChanged(b: Int) {
+
+            }
+
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+
+            }
+        })
+
+        indicator_picture.setViewPager(pdp_view_pager)
+        indicator_picture.notifyDataSetChanged()
     }
 
     fun renderShopStatus(shopInfo: ShopInfo.StatusInfo, productStatus: String, productStatusTitle: String = "",
                          productStatusMessage: String = "") {
-        if (shopInfo.shopStatus != SHOP_STATUS_ACTIVE) {
-            error_product_container.visible()
-            error_product_title.text = MethodChecker.fromHtml(shopInfo.statusTitle)
-            error_product_descr.text = MethodChecker.fromHtml(shopInfo.statusMessage)
-        } else if (productStatus != ProductStatusTypeDef.ACTIVE) {
-            // TODO ASK PRODUCT STATUS DETAIL
-            error_product_container.visible()
-            error_product_title.text = productStatusTitle
-            error_product_descr.text = productStatusMessage
-        } else {
-            error_product_container.gone()
+        when {
+            shopInfo.shopStatus != SHOP_STATUS_ACTIVE -> {
+                error_product_container.visible()
+                error_product_title.text = MethodChecker.fromHtml(shopInfo.statusTitle)
+                error_product_descr.text = MethodChecker.fromHtml(shopInfo.statusMessage)
+            }
+            productStatus != ProductStatusTypeDef.ACTIVE -> {
+                error_product_container.visible()
+                error_product_title.text = productStatusTitle
+                error_product_descr.text = productStatusMessage
+            }
+            else -> {
+                error_product_container.gone()
+            }
         }
     }
 

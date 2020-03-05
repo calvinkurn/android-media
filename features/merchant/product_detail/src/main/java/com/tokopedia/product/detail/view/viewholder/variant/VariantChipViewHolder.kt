@@ -28,14 +28,20 @@ class VariantChipViewHolder(val view: View,
     }
 
     private fun setState(element: VariantOptionWithAttribute) = with(view) {
+        view.setOnClickListener {
+            listener.onVariantClicked(element)
+        }
+
         when (element.currentState) {
             ProductDetailConstant.STATE_EMPTY -> {
                 txtChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_disabled)
                 view.isEnabled = false
+                view.setOnClickListener(null)
             }
             ProductDetailConstant.STATE_SELECTED -> {
                 txtChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_selected)
                 view.isEnabled = true
+                view.setOnClickListener(null)
             }
             ProductDetailConstant.STATE_UNSELECTED -> {
                 txtChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_unselected)
@@ -43,8 +49,5 @@ class VariantChipViewHolder(val view: View,
             }
         }
 
-        view.setOnClickListener {
-            listener.onVariantClicked(element)
-        }
     }
 }

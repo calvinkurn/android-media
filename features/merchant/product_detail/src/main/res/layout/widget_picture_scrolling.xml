@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <com.tokopedia.design.component.ticker.TouchViewPager
-        android:id="@id/view_pager"
+        android:id="@+id/pdp_view_pager"
         app:default_measure="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

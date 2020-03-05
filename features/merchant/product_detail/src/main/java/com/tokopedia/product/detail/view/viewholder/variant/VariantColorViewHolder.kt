@@ -35,7 +35,7 @@ class VariantColorViewHolder(val view: View,
             }
             ProductDetailConstant.STATE_SELECTED -> {
                 variantColorItem.setColorSelected()
-                view.isEnabled = true
+                view.isEnabled = false
             }
             ProductDetailConstant.STATE_UNSELECTED -> {
                 variantColorItem.setColorAvailable()

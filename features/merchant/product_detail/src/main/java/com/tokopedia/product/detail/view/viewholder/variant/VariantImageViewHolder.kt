@@ -35,14 +35,17 @@ class VariantImageViewHolder(val view: View,
             ProductDetailConstant.STATE_EMPTY -> {
                 overlayVariantImgContainer.show()
                 variantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
+                view.isEnabled = false
             }
             ProductDetailConstant.STATE_SELECTED -> {
                 overlayVariantImgContainer.hide()
                 variantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_selected)
+                view.isEnabled = false
             }
             ProductDetailConstant.STATE_UNSELECTED -> {
                 overlayVariantImgContainer.hide()
                 variantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
+                view.isEnabled = true
             }
         }
 

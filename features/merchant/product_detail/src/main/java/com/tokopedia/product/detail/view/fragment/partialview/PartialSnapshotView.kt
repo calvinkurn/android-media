@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -88,6 +89,12 @@ class PartialSnapshotView(private val view: View,
             }
             label_prescription.showWithCondition(basic.needPrescription)
             divider.visible()
+
+            if (product.data.variant.isVariant) {
+                text_stock_available.gone()
+            } else {
+                text_stock_available.hide()
+            }
         }
     }
 
@@ -152,7 +159,7 @@ class PartialSnapshotView(private val view: View,
             renderTxtIcon(labelIc, colorIc, imageIc)
             view.layout_guarantee.visible()
             view.layout_guarantee.setOnClickListener {
-            listener.onValuePropositionClicked(R.id.layout_guarantee)
+                listener.onValuePropositionClicked(R.id.layout_guarantee)
             }
         } else {
             view.layout_guarantee.gone()
