@@ -123,7 +123,9 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
                     // Initialize promo list item
                     couponSubSection.coupons.forEach { couponItem ->
-                        val promoItem = uiModelMapper.mapPromoListItemUiModel(couponItem, promoHeader.uiData.identifierId, selectedPromoList)
+                        val promoItem = uiModelMapper.mapPromoListItemUiModel(
+                                couponItem, promoHeader.uiData.identifierId, couponSubSection.isEnabled, selectedPromoList
+                        )
                         couponList.add(promoItem)
                     }
                 }
@@ -187,10 +189,8 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                         }
                     }
                     it.uiData.errorMessage = errorMessageBuilder.toString()
-                    it.uiState.isEnabled = false
                 } else {
                     it.uiData.errorMessage = ""
-                    it.uiState.isEnabled = true
                 }
             }
         }
@@ -203,7 +203,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 val errorMessageBuilder = StringBuilder(it.uiData.errorMessage)
                 errorMessageBuilder.append(it.uiData.clashingInfo[selectedItem.uiData.promoCode])
                 it.uiData.errorMessage = errorMessageBuilder.toString()
-                it.uiState.isEnabled = false
             }
         }
     }

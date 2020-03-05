@@ -52,16 +52,15 @@ class PromoListItemViewHolder(private val view: View,
         itemView.label_promo_item_title.text = element.uiData.title
         formatSubTitle(element)
 
-        if (element.uiData.currentClashingPromo.isNullOrEmpty()) {
+        if (element.uiState.isParentEnabled && element.uiData.currentClashingPromo.isNullOrEmpty()) {
             renderEnablePromoItem(element)
         } else {
             renderDisablePromoItem(element)
         }
 
         itemView.card_promo_item.setOnClickListener {
-            val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty()) {
-                listener.onClickPromoListItem(position, element)
+            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty()) {
+                listener.onClickPromoListItem(element)
             }
         }
 

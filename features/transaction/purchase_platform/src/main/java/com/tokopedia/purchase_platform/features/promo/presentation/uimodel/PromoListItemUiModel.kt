@@ -44,7 +44,7 @@ data class PromoListItemUiModel(
     )
 
     data class UiState(
-            var isEnabled: Boolean = false,
+            var isParentEnabled: Boolean = false,
             var isSellected: Boolean = false,
             var isAttempted: Boolean = false
     ) {

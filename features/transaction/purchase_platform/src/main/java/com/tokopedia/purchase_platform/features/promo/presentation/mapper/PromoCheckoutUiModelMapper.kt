@@ -84,7 +84,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int, selectedPromo: List<String>): PromoListItemUiModel {
+    fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int, parentEnabled: Boolean, selectedPromo: List<String>): PromoListItemUiModel {
         return PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
                     title = couponItem.title
@@ -118,7 +118,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     currentClashingPromo = tmpCurrentClashingPromoList
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
-                    isEnabled = couponItem.radioCheckState == PromoListItemUiModel.UiState.STATE_IS_ENABLED
+                    isParentEnabled = parentEnabled
                     isSellected = couponItem.isSelected
                     isAttempted = couponItem.isAttempted
                 }

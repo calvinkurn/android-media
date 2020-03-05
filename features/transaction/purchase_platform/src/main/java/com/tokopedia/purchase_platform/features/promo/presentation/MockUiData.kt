@@ -64,7 +64,7 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
                 promoCode = "TOKOPEDIACASHBACK"
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = true
+
             }
     )
     dataList.add(promoListItemUiModel)
@@ -77,7 +77,7 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
                 errorMessage = "Kena Error"
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel1)
@@ -90,7 +90,7 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
                 imageResourceUrls = listOf("https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg")
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = true
+
             }
     )
     dataList.add(promoListItemUiModel2)
@@ -107,7 +107,7 @@ fun mockEligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 subTitle = "Berakhir 2 jam lagi"
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = true
+
             }
     )
     val promoListHeaderUiModel1 = PromoListHeaderUiModel(
@@ -138,7 +138,7 @@ fun mockEligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 errorMessage = "Kena Error"
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     val promoListHeaderUiModel2 = PromoListHeaderUiModel(
@@ -196,7 +196,7 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
                 imageResourceUrls = listOf("https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg")
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel)
@@ -209,7 +209,7 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
                 errorMessage = "Tambah Rp10.000 untuk pakai promo."
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel1)
@@ -222,7 +222,7 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
                 errorMessage = "Belanja di kategori fashion wanita, kecantikan atau fashion pria untuk pakai promo ini. "
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel2)
@@ -255,7 +255,7 @@ fun mockIneligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 errorMessage = "Tambah Rp27.500 untuk pakai promo."
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel3)
@@ -288,7 +288,7 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 errorMessage = "Tambah Rp27.500 untuk pakai promo."
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel4)

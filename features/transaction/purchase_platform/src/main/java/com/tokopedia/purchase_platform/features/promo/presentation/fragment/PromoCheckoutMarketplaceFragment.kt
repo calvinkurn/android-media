@@ -163,7 +163,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     section_image_chevron.show()
                     section_image_chevron.setOnClickListener {
                         if (lastHeaderUiModel != null) {
-                            onClickPromoListHeader(adapter.data.indexOf(lastHeaderUiModel), lastHeaderUiModel!!)
+                            onClickPromoListHeader(lastHeaderUiModel!!)
                         }
                     }
                 }
@@ -400,11 +400,11 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     }
 
-    override fun onClickPromoListHeader(itemPosition: Int, element: PromoListHeaderUiModel) {
+    override fun onClickPromoListHeader(element: PromoListHeaderUiModel) {
         viewModel.updatePromoListAfterClickPromoHeader(element)
     }
 
-    override fun onClickPromoListItem(position: Int, element: PromoListItemUiModel) {
+    override fun onClickPromoListItem(element: PromoListItemUiModel) {
         viewModel.updatePromoListAfterClickPromoItem(element)
     }
 

@@ -11,9 +11,9 @@ interface PromoCheckoutActionListener {
 
     fun onClickApplyManualInputPromo(promoCode: String)
 
-    fun onClickPromoListHeader(itemPosition: Int, element: PromoListHeaderUiModel)
+    fun onClickPromoListHeader(element: PromoListHeaderUiModel)
 
-    fun onClickPromoListItem(position: Int, element: PromoListItemUiModel)
+    fun onClickPromoListItem(element: PromoListItemUiModel)
 
     fun onClickPromoItemDetail(element: PromoListItemUiModel)
 

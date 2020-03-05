@@ -54,8 +54,7 @@ class PromoListHeaderViewHolder(private val view: View,
         itemView.label_promo_list_header_sub_title.show()
         itemView.image_chevron.show()
         itemView.setOnClickListener {
-            val position = adapterPosition
-            if (position != RecyclerView.NO_POSITION) listener.onClickPromoListHeader(adapterPosition, element)
+            if (adapterPosition != RecyclerView.NO_POSITION) listener.onClickPromoListHeader(element)
         }
     }
 
