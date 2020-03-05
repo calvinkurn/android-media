@@ -78,7 +78,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     protected var isCombineDone: Boolean = false
 
     private lateinit var flightFilterModel: FlightFilterModel
-    private lateinit var priceFilterStatistic: Pair<Int, Int>
+    private var priceFilterStatistic: Pair<Int, Int> = Pair(0, Int.MAX_VALUE)
 
     private lateinit var performanceMonitoringP1: PerformanceMonitoring
     private lateinit var performanceMonitoringP2: PerformanceMonitoring
