@@ -10,8 +10,6 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibilityHeaderUiModel
 import kotlinx.android.synthetic.main.item_promo_eligibility_header.view.*
-import kotlinx.android.synthetic.main.item_promo_eligibility_header.view.image_chevron
-import kotlinx.android.synthetic.main.item_promo_list_header.view.*
 
 class PromoEligibilityHeaderViewHolder(private val view: View,
                                        private val listener: PromoCheckoutActionListener
@@ -23,14 +21,17 @@ class PromoEligibilityHeaderViewHolder(private val view: View,
 
     override fun bind(element: PromoEligibilityHeaderUiModel) {
         itemView.label_promo_eligibility_header_title.text = element.uiData.title
-
-        if (element.uiState.isEnabled) {
+        if (element.uiData.subTitle.isNotBlank()) {
             itemView.label_promo_eligibility_header_subtitle.text = element.uiData.subTitle
             itemView.label_promo_eligibility_header_subtitle.show()
+        } else {
+            itemView.label_promo_eligibility_header_subtitle.hide()
+        }
+
+        if (element.uiState.isEnabled) {
             itemView.image_chevron.gone()
             itemView.setOnClickListener { }
         } else {
-            itemView.label_promo_eligibility_header_subtitle.hide()
             if (!element.uiState.isCollapsed) {
                 itemView.image_chevron.rotation = 180f
             } else {
