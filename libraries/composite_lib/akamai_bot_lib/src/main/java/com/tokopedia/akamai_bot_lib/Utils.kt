@@ -2,11 +2,13 @@ package com.tokopedia.akamai_bot_lib
 
 import android.app.Application
 import android.os.Build
+import android.text.TextUtils
 import com.akamai.botman.CYFMonitor
 import com.google.gson.Gson
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.config.GlobalConfig
+import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -34,15 +36,20 @@ fun getMutation(input: String, match:String) : Boolean{
     return false
 }
 
-fun getAny(input:String) : MutableList<String>{
+val map = ConcurrentHashMap<String, String>()
 
-    val p = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_]+)(?=\\().*")
+fun getAny(input:String) : MutableList<String>{
+    if(map.get(input)?.isEmpty()?:false )
+        return map.get(input)?.let { mutableListOf(it) } ?: mutableListOf()
+
+    val p = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_\\s]+)((?=\\()|(?=\\{)).*(?=\\{)")
     val m = p.matcher(input.replace("\n"," "))
     val any = mutableListOf<String>()
     while (m.find()) {
 
         println(m.group(1))
         any.add(m.group(1))
+        map.putIfAbsent(input, m.group(1))
     }
     return any;
 }

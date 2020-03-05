@@ -3,16 +3,13 @@ package com.example.akamai_bot_lib;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
+import android.util.Pair;
 
-import androidx.test.InstrumentationRegistry;
 import androidx.test.runner.AndroidJUnit4;
 
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import com.tokopedia.akamai_bot_lib.Json4Kotlin_Base;
 import com.tokopedia.akamai_bot_lib.UtilsKt;
+import com.tokopedia.akamai_bot_lib.test.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -20,7 +17,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
+import java.lang.reflect.Field;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -46,7 +43,7 @@ public class ExampleInstrumentedTest {
         Context context = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext();
         Resources resources = context.getResources();
 
-        String input = GraphqlHelper.loadRawString(resources, com.tokopedia.akamai_bot_lib.test.R.raw.mutation_af_register_username);
+        String input = GraphqlHelper.loadRawString(resources, R.raw.mutation_af_register_username);
         assertTrue(UtilsKt.getMutation(input, "RegisterUsername"));
     }
 
@@ -56,7 +53,7 @@ public class ExampleInstrumentedTest {
         Context context = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext();
         Resources resources = context.getResources();
 
-        String input = GraphqlHelper.loadRawString(resources, com.tokopedia.akamai_bot_lib.test.R.raw.mutation_af_register_username);
+        String input = GraphqlHelper.loadRawString(resources, R.raw.mutation_af_register_username);
         List<String> any = UtilsKt.getAny(input);
         Log.d(this.getClass().getName(), any.toString());
         assertTrue(UtilsKt.getMutation(input, "RegisterUsername"));
@@ -70,7 +67,7 @@ public class ExampleInstrumentedTest {
         Context context = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext();
         Resources resources = context.getResources();
 
-        String input = GraphqlHelper.loadRawString(resources, com.tokopedia.akamai_bot_lib.test.R.raw.mutation_register);
+        String input = GraphqlHelper.loadRawString(resources, R.raw.mutation_register);
         List<String> any = UtilsKt.getAny(input);
         Log.d(this.getClass().getName(), any.toString());
         assertEquals(1,any.size());
@@ -93,5 +90,59 @@ public class ExampleInstrumentedTest {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public Pair<String[], String[]> listRaw(){
+        Context context = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext();
+        Resources resources = context.getResources();
+
+
+        Field[] fields=R.raw.class.getFields();
+        String[] names = new String[fields.length];
+        String[] allResourcesIds = new String[fields.length];
+        for(int count=0; count < fields.length; count++){
+            try {
+                int resourceID=fields[count].getInt(fields[count]);
+                String input = GraphqlHelper.loadRawString(resources, resourceID);
+                allResourcesIds[count] = input;
+                names[count] = fields[count].getName();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return new Pair<>(allResourcesIds, names) ;
+    }
+
+    @Test
+    public void getAllQueryTest() {
+
+        String whatitget = null;
+        Pair<String[], String[]> pair = listRaw();
+
+        for (int i = 0; i < pair.first.length; i++) {
+            String input = pair.first[i];
+            String name = pair.second[i];
+            try {
+                List<String> any = UtilsKt.getAny(input);
+                System.out.println(any.toString()+" ][ name ][ "+name+" [size] "+any.size());
+                Log.d(this.getClass().getName(), any.toString()+" ][ name ][ "+name+" [size] "+any.size());
+//                assertEquals(1, any.size());
+                whatitget = any.get(0);
+            } catch (Exception e) {
+                Log.e("EIT", e.toString()+ " ][ "+whatitget);
+            }
+        }
+    }
+
+    @Test
+    public void staticTest2(){
+        Context context = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext();
+        Resources resources = context.getResources();
+        String input = GraphqlHelper.loadRawString(resources, R.raw.tp_gql_user_info);
+        List<String> any = UtilsKt.getAny(input);
+        System.out.println(any.toString()+" ][ name ][ "+"empty"+" [size] "+any.size());
+        Log.d(this.getClass().getName(), any.toString()+" ][ name ][ "+"empty"+" [size] "+any.size());
+                assertEquals(1, any.size());
+//        whatitget = any.get(0);
     }
 }

@@ -1,0 +1,14 @@
+query OrderTickers($input:OrderTickersArgs!) {
+ orderTickers(input:$input) {
+    user_id
+        request_by
+        client
+        total
+        tickers {
+      id
+      body
+      short_desc
+      is_active
+    }
+  }
+}
