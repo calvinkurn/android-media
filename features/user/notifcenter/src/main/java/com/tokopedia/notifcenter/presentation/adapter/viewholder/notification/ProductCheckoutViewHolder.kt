@@ -57,11 +57,13 @@ class ProductCheckoutViewHolder(
             cardContainer.show()
         } else {
             cardContainer.hide()
-            ProductCardSnapHelper().attachToRecyclerView(lstProduct)
             lstProduct.adapter = multiProductAdapter
             multiProductAdapter.insertData(
                     MultipleProductCardMapper.map(element)
             )
+            if (lstProduct.onFlingListener == null) {
+                ProductCardSnapHelper().attachToRecyclerView(lstProduct)
+            }
         }
     }
 
