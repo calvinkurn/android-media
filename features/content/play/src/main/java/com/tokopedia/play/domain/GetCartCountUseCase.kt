@@ -18,5 +18,4 @@ class GetCartCountUseCase @Inject constructor(private val updateCartCounterUseCa
                .toBlocking()
                .single()
     }
-
 }
