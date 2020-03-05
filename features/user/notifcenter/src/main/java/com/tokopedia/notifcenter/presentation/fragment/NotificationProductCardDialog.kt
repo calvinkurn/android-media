@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
@@ -15,7 +16,7 @@ import com.tokopedia.unifyprinciples.Typography
 class NotificationProductCardDialog(
         context: Context,
         fragmentManager: FragmentManager,
-        listener: NotificationItemListener
+        val listener: NotificationItemListener
 ): BaseBottomSheetDialog<NotificationItemViewBean>(context, fragmentManager) {
 
     private val txtTitle = container?.findViewById<Typography>(R.id.txt_title)
@@ -35,6 +36,12 @@ class NotificationProductCardDialog(
         txtTitle?.text = element.title
         txtDescription?.text = element.body
 
+        //tracker
+        listener.getAnalytic().trackProductListImpression(
+                LABEL_BOTTOM_SHEET_LOCATION, element
+        )
+
+        //product list item
         lstProducts?.adapter = productCardAdapter
         productCardAdapter.insertData(
                 MultipleProductCardMapper.map(element)

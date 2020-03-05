@@ -53,6 +53,7 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
         const val LABEL_UPDATE_NOTIF_CENTER = "tab update / recomm page from notif center"
         const val LABEL_LOCATION_UPDATE = "tab notif center page"
         const val LABEL_LOCATION = "lonceng"
+        const val LABEL_BOTTOM_SHEET_LOCATION = "bottom_sheet"
 
         // Other
         const val ECOMMERCE = "ecommerce"
