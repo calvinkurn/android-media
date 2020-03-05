@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:parentTag="android.widget.FrameLayout">
 
     <ImageView
         android:id="@+id/media_thumbnail"
@@ -19,7 +20,8 @@
         android:textColor="@android:color/white"
         android:textSize="12sp"
         style="@style/TextView.Micro"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <View
         android:id="@+id/iv_check"

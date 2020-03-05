@@ -37,6 +37,7 @@ import com.tokopedia.imagepicker.picker.gallery.model.MediaItem;
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType;
 import com.tokopedia.imagepicker.picker.gallery.widget.MediaGridInset;
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerInterface;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -156,7 +157,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             if (resultCode == Activity.RESULT_OK && data != null) {
                 selectedAlbumItem = data.getParcelableExtra(EXTRA_ALBUM_ITEM);
                 selectedAlbumPosition = data.getIntExtra(EXTRA_ALBUM_POSITION, 0);
-                getLoaderManager().restartLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+                LoaderManager.getInstance(this).restartLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
             }
         }
     }
@@ -169,11 +170,11 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
             String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
             if (ActivityCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED) {
                 showLoading();
-                getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+                LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
             }
         } else {
             showLoading();
-            getLoaderManager().initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
+            LoaderManager.getInstance(this).initLoader(ALBUM_LOADER_ID, null, ImagePickerGalleryFragment.this);
         }
     }
 
@@ -193,8 +194,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getLoaderManager().destroyLoader(ALBUM_LOADER_ID);
-        getLoaderManager().destroyLoader(MEDIA_LOADER_ID);
+        LoaderManager.getInstance(this).destroyLoader(ALBUM_LOADER_ID);
+        LoaderManager.getInstance(this).destroyLoader(MEDIA_LOADER_ID);
     }
 
     @Override
@@ -271,7 +272,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         if (albumItem.isAll() && albumItem.isEmpty()) {
             NetworkErrorHelper.showEmptyState(getContext(), getView(), getString(R.string.error_no_media_storage), null);
         } else {
-            getLoaderManager().restartLoader(MEDIA_LOADER_ID, null, this);
+            LoaderManager.getInstance(this).restartLoader(MEDIA_LOADER_ID, null, this);
         }
     }
 
@@ -294,8 +295,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         // check if file exists
         File file = new File(item.getRealPath());
         if (!file.exists()) {
-            NetworkErrorHelper.showRedCloseSnackbar(getView(),
-                    galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
+            showToastError(galleryType == GalleryType.VIDEO_ONLY ? getString(R.string.video_not_found) :
                             getString(R.string.image_not_found));
             return false;
         }
@@ -303,24 +303,35 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         if (item.isVideo() && item.getDuration() > 0) { // it is video
             int minVideoResolution = item.getMinimumVideoResolution();
             if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_size_reached));
+                showToastError(getString(R.string.max_video_size_reached));
                 return false;
             }
             if (item.getDuration() > MAX_VIDEO_DURATION_MS) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_video_duration_reached));
+                showToastError(getString(R.string.max_video_duration_reached));
                 return false;
             }
         } else {
             if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.max_file_size_reached));
+                showToastError(getString(R.string.max_file_size_reached));
                 return false;
             }
             if (item.getWidth() < minImageResolution || item.getHeight() < minImageResolution) {
-                NetworkErrorHelper.showRedCloseSnackbar(getView(), getString(R.string.image_under_x_resolution, minImageResolution));
+                showToastError(getString(R.string.image_under_x_resolution, minImageResolution));
                 return false;
             }
         }
         return true;
+    }
+
+    private void showToastError(String message){
+        if (getView()!= null){
+            Toaster.INSTANCE.make(getView(),
+                    message, Toaster.LENGTH_LONG,
+                    Toaster.TYPE_ERROR,
+                    getString(R.string.close), v -> {
+                        // no-op
+                    });
+        }
     }
 
     @Override
