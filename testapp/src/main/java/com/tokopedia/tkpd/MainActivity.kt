@@ -198,6 +198,6 @@ class MainActivity : AppCompatActivity() {
          * or, you can use route like this:
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS) */
 
-        RouteManager.route(this, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+        RouteManager.route(this, ApplinkConstInternalMarketplace.CHECKOUT)
     }
 }

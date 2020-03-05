@@ -31,6 +31,8 @@ import com.tokopedia.tkpd.BuildConfig;
 import com.tokopedia.tkpd.network.DataSource;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.url.Env;
+import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 
 import java.io.IOException;
@@ -70,9 +72,9 @@ public class MyApplication extends BaseMainApplication
         com.tokopedia.config.GlobalConfig.ENABLE_DISTRIBUTION = BuildConfig.ENABLE_DISTRIBUTION;
 
         // for staging-only
-        /*TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
+        TokopediaUrl.Companion.setEnvironment(this, Env.STAGING);
         TokopediaUrl.Companion.deleteInstance();
-        TokopediaUrl.Companion.init(this);*/
+        TokopediaUrl.Companion.init(this);
 
         upgradeSecurityProvider();
 
