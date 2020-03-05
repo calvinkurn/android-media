@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">product_add_edit</string>
+    <string name="product_subtitle_product_information">Yuk, lengkapi informasi produk kamu</string>
+    <string name="label_add_product_photo">Foto Produk</string>
+    <string name="label_add_product_detail">Detail Produk</string>
+    <string name="label_add_product_description">Deskripsi Produk</string>
+    <string name="label_add_product_shipment">Detail Pengiriman</string>
+    <string name="action_start">Mulai</string>
+    <string name="action_change">Ubah</string>
+    <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
+    <string name="label_product_name">Nama Produk</string>
+    <string name="label_product_price">Harga</string>
+    <string name="label_product_stock">Stok</string>
 </resources>
