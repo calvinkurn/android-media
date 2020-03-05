@@ -6,7 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.view.uimodel.*
+import com.tokopedia.sellerhome.settings.view.uimodel.BalanceUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -46,11 +49,9 @@ class OtherSettingViewModel @Inject constructor(
 
     fun populateAdapterList() {
         val settingList = listOf(
-                ShopInfoUiModel("Achmad Zaky", "", "", 10),
-                ShopStatusUiModel(),
                 DividerUiModel(DividerType.THIN_FULL),
-                BalanceUiModel(SALDO, "Rp532.000.000"),
-                BalanceUiModel(KREDIT_TOPADS, "Rp0"),
+                BalanceUiModel(SALDO),
+                BalanceUiModel(KREDIT_TOPADS),
                 DividerUiModel(),
                 SettingTitleUiModel(TINGKATKAN_PENJUALAN),
                 MenuItemUiModel(

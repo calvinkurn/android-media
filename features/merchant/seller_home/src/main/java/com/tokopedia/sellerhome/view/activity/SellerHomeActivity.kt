@@ -125,7 +125,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
         sellerDrawerAdapter?.isGoldMerchant = isGoldMerchant
         sellerDrawerAdapter?.isOfficialStore = isOfficialStore
         userSession.setIsGoldMerchant(isGoldMerchant)
-//        setShopStatus(shopStatusModel)
+        setShopStatus(shopStatusModel)
     }
 
     private fun setShopStatus(shopStatus: ShopStatusModel) {

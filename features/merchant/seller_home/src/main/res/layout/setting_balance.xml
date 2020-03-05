@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/setting_balance_height"
     android:background="@color/white"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -12,8 +11,7 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         app:typographyType="body_2"
-        app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"
-        tools:text="Saldo"/>
+        app:layout_constraintStart_toStartOf="@id/guidelineVerticalLeft"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/balanceValue"
@@ -23,8 +21,18 @@
         android:textColor="@color/setting_black_text"
         app:typographyType="body_1"
         app:typographyWeight="bold"
-        app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"
-        tools:text="Rp.532.299.490"/>
+        app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"/>
+
+    <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmeringBalanceValue"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center_vertical"
+        app:layout_constraintWidth_percent="0.3"
+        app:layout_constraintHeight_percent="0.5"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineVerticalLeft"
