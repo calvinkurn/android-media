@@ -30,12 +30,30 @@ data class HotelRoomData(
 
         @SerializedName("isEnabled")
         @Expose
-        val isEnabled: Boolean = false
+        val isEnabled: Boolean = false,
+
+        @SerializedName("deals")
+        @Expose
+        val deals: PriceDeals = PriceDeals()
 ) {
-        data class Response(
-                @SerializedName("propertySearchRoom")
-                @Expose
-                val response: HotelRoomData = HotelRoomData()
-        )
+    data class Response(
+            @SerializedName("propertySearchRoom")
+            @Expose
+            val response: HotelRoomData = HotelRoomData()
+    )
+
+    data class PriceDeals(
+            @SerializedName("tagging")
+            @Expose
+            val tagging: String = "",
+
+            @SerializedName("price")
+            @Expose
+            val price: String = "",
+
+            @SerializedName("priceAmount")
+            @Expose
+            val priceAmount: Int = 0
+    )
 }
 

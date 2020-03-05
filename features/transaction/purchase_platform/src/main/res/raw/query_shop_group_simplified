@@ -1,4 +1,5 @@
 query shop_group_simplified($lang: String, $selected_cart_id: String) {
+  status
   shop_group_simplified(lang: $lang, selected_cart_id: $selected_cart_id) {
     status
     error_message

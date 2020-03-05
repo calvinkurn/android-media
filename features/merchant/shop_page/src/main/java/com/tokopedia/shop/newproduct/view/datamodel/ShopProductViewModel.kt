@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.newproduct.view.adapter.ShopProductAdapterTypeFactory
 import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 
@@ -11,7 +12,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
  * Created by nathan on 2/6/18.
  */
 
-class ShopProductViewModel : BaseShopProductViewModel {
+class ShopProductViewModel : BaseShopProductViewModel, ImpressHolder {
 
     var id: String? = null
     var name: String? = null
@@ -34,6 +35,7 @@ class ShopProductViewModel : BaseShopProductViewModel {
     var isShowFreeOngkir: Boolean = false
     var freeOngkirPromoIcon: String? = null
     var isCarousel = false
+    var etalaseId = ""
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory): Int {
         return typeFactory.type(this)
