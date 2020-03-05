@@ -24,19 +24,19 @@ class DigitalHomePageViewModel @Inject constructor(
         private val digitalHomePageUseCase: DigitalHomePageUseCase)
     : BaseViewModel(dispatcher) {
 
-    private val _digitalHomePageList = MutableLiveData<List<DigitalHomePageItemModel>>()
+    private val mutableDigitalHomePageList = MutableLiveData<List<DigitalHomePageItemModel>>()
     val digitalHomePageList: LiveData<List<DigitalHomePageItemModel>>
-        get() = _digitalHomePageList
-    private val _isAllError = MutableLiveData<Boolean>()
+        get() = mutableDigitalHomePageList
+    private val mutableIsAllError = MutableLiveData<Boolean>()
     val isAllError: LiveData<Boolean>
-        get() = _isAllError
+        get() = mutableIsAllError
 
     fun initialize(queryList: Map<String, String>) {
         val list: List<DigitalHomePageItemModel> = digitalHomePageUseCase.getEmptyList()
         digitalHomePageUseCase.queryList = queryList
         digitalHomePageUseCase.sectionOrdering = SECTION_ORDERING
-        _digitalHomePageList.value = list
-        _isAllError.value = false
+        mutableDigitalHomePageList.value = list
+        mutableIsAllError.value = false
     }
 
     fun getData(isLoadFromCloud: Boolean) {
@@ -44,9 +44,9 @@ class DigitalHomePageViewModel @Inject constructor(
         launch(Dispatchers.IO) {
             val data = digitalHomePageUseCase.executeOnBackground()
             if (data.isEmpty() || checkError(data)) {
-                _isAllError.postValue(true)
+                mutableIsAllError.postValue(true)
             } else {
-                _digitalHomePageList.postValue(data)
+                mutableDigitalHomePageList.postValue(data)
             }
         }
     }
@@ -56,6 +56,7 @@ class DigitalHomePageViewModel @Inject constructor(
     }
 
     companion object {
+        const val CATEGORY_SECTION_ORDER: Int = 7
         val SECTION_ORDERING = mapOf(
                 BANNER_ORDER to 0,
                 FAVORITES_ORDER to 1,
@@ -64,9 +65,8 @@ class DigitalHomePageViewModel @Inject constructor(
                 NEW_USER_ZONE_ORDER to 4,
                 SPOTLIGHT_ORDER to 5,
                 SUBSCRIPTION_ORDER to 6,
-                CATEGORY_ORDER to 7,
+                CATEGORY_ORDER to CATEGORY_SECTION_ORDER,
                 PROMO_ORDER to 8
         )
-        val CATEGORY_SECTION_ORDER: Int = SECTION_ORDERING[CATEGORY_ORDER] ?: 0
     }
 }

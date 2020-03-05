@@ -14,7 +14,7 @@ buildscript {
 project.ext {
     artifactId = 'akamai_bot_lib'
     groupId = 'com.tokopedia.akamai'
-    versionName = "1.0.11"
+    versionName = "test-1.0.12"
     artifactName = "akamai_bot_lib-debug"
 }
 
