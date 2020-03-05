@@ -157,7 +157,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         NetworkClient.init(this);
         initializeAbTestVariant();
         NewRelic.withApplicationToken(
-                "AA15db6a8bcd89dcd7647c74a18e777e9190f9057b-NRMA"
+                "AAf63ea1389b0e576285d1d782cdde48c9fcb385f0-NRMA"
         ).start(this);
     }
 
