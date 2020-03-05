@@ -59,6 +59,7 @@ class ProductManageFilterExpandSelectFragment :
     private var adapter: SelectAdapter? = null
     private var flag: String = ""
     private var cacheManagerId: String = ""
+    private var isChipsShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +72,7 @@ class ProductManageFilterExpandSelectFragment :
         cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
         val filterViewModel: FilterViewModel? = flag.let { cacheManager?.get(it, FilterViewModel::class.java) }
         filterViewModel?.let {
+            isChipsShown = it.isChipsShown
             val dataToDisplay = ProductManageFilterMapper.mapFilterViewModelsToSelectViewModels(filterViewModel)
             productManageFilterExpandSelectViewModel.updateData(dataToDisplay)
         }
@@ -98,16 +100,20 @@ class ProductManageFilterExpandSelectFragment :
 
     override fun onSelectClick(element: SelectViewModel) {
         productManageFilterExpandSelectViewModel.updateSelectedItem(element)
+        productManageFilterExpandSelectViewModel.selectData.value?.sortByDescending { it.isSelected }
+        val dataToSave = productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
         if(flag == SORT_CACHE_MANAGER_KEY) {
             cacheManager?.put(SORT_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     SORT_CACHE_MANAGER_KEY,
-                    productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
+                    dataToSave,
+                    isChipsShown
             ))
             this.activity?.setResult(ProductManageFilterFragment.UPDATE_SORT_SUCCESS_RESPONSE)
         } else {
             cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     ETALASE_CACHE_MANAGER_KEY,
-                    productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
+                    dataToSave,
+                    isChipsShown
             ))
             this.activity?.setResult(ProductManageFilterFragment.UPDATE_ETALASE_SUCCESS_RESPONSE)
         }

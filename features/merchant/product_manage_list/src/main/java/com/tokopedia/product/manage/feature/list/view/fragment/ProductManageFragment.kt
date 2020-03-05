@@ -47,6 +47,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
@@ -60,6 +61,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
+import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductFilterAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
@@ -121,7 +124,9 @@ import com.tokopedia.product.manage.oldlist.view.fragment.ProductManageEditPrice
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByPage
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -155,6 +160,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var goldMerchant: Boolean = false
     private var isOfficialStore: Boolean = false
     private var manageProductBottomSheet: ManageProductBottomSheet? = null
+    private var savedInstanceManager: SaveInstanceCacheManager? = null
+    private var filterProductBottomSheet: ProductManageFilterFragment? = null
 
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
@@ -173,6 +180,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        savedInstanceManager = this.context?.let { SaveInstanceCacheManager(it, true) }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        savedInstanceManager?.onSave(outState)
     }
 
     open fun getLayoutRes(): Int = R.layout.fragment_product_manage
@@ -261,6 +274,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder) {
         filterProductList(filter)
         resetProductFilters(viewHolder)
+        savedInstanceManager?.let { cacheManager ->
+            filterProductBottomSheet = context?.let { cacheManager.id?.let { id -> ProductManageFilterFragment.createInstance(it, id) } }
+            setupFilterProductBottomSheet()
+            this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
+        }
+    }
+
+    private fun setupFilterProductBottomSheet() {
+        filterProductBottomSheet?.setOnDismissListener {
+            val filterOptionWrapper: FilterOptionWrapper? = savedInstanceManager?.get(
+                    ProductManageFilterFragment.SELECTED_FILTER, FilterOptionWrapper::class.java
+            )
+            filterOptionWrapper?.let {
+                viewModel.getProductList(userSession.shopId, filterOptionWrapper.filterOptions, filterOptionWrapper.sortOption)
+            }
+        }
     }
 
     private fun filterProductList(filter: FilterViewModel) {

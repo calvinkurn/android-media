@@ -101,8 +101,6 @@ class ProductManageFilterFragment : BaseDaggerFragment() {
         btn_submit_manage.setOnClickListener {
             onSubmitFilter()
         }
-        val bottomSheet = context?.let { com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment.createInstance(it) }
-        this.childFragmentManager.let { bottomSheet?.show(it,"BottomSheetTag") }
     }
 
     private fun onSubmitFilter() {

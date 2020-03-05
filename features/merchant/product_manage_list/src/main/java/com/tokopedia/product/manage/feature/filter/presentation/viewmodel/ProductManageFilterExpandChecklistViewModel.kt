@@ -26,22 +26,30 @@ class ProductManageFilterExpandChecklistViewModel @Inject constructor(): ViewMod
     }
 
     fun updateSelectedItem(element: ChecklistViewModel) {
-        _checklistData.value?.remove(element)
-        if(element.isSelected) {
-            element.isSelected = false
-            updateDataSize(-1)
-        } else {
-            element.isSelected = true
-            updateDataSize(1)
+        val currentData = _checklistData.value
+        val index = currentData?.indexOf(element)
+        index?.let {
+            currentData[it].let { data ->
+                if(data.isSelected) {
+                    updateDataSize(-1)
+                } else {
+                    updateDataSize(1)
+                }
+                data.isSelected = !data.isSelected
+                data.value = data.isSelected.toString()
+            }
+            currentData[it]
         }
-        element.value = element.isSelected.toString()
-        _checklistData.value?.add(0, element)
+        _checklistData.postValue(currentData)
     }
 
     fun clearAllChecklist() {
-        _checklistData.value?.forEach {
+        val currentData = _checklistData.value
+        currentData?.forEach {
             it.isSelected = false
+            it.value = it.isSelected.toString()
         }
+        _checklistData.postValue(currentData)
         _dataSize.postValue(0)
     }
 

@@ -208,11 +208,13 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun initButtons() {
         btn_submit.setOnClickListener {
+            productManageFilterExpandChecklistViewModel.checklistData.value?.sortByDescending { it.isSelected }
+            val dataToSave = productManageFilterExpandChecklistViewModel.checklistData.value?.toList() ?: listOf()
             if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
                 cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY,
                         ProductManageFilterMapper.mapChecklistViewModelsToFilterViewModel(
                                 CATEGORIES_CACHE_MANAGER_KEY,
-                                productManageFilterExpandChecklistViewModel.checklistData.value ?: listOf(),
+                                dataToSave,
                                 isChipsShown
                         ))
                 this.activity?.setResult(ProductManageFilterFragment.UPDATE_CATEGORIES_SUCCESS_RESPONSE)
@@ -220,7 +222,7 @@ class ProductManageFilterExpandChecklistFragment :
                 cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY,
                         ProductManageFilterMapper.mapChecklistViewModelsToFilterViewModel(
                                 OTHER_FILTER_CACHE_MANAGER_KEY,
-                                productManageFilterExpandChecklistViewModel.checklistData.value ?: listOf(),
+                                dataToSave,
                                 isChipsShown
                         ))
                 this.activity?.setResult(ProductManageFilterFragment.UPDATE_OTHER_FILTER_SUCCESS_RESPONSE)
