@@ -58,6 +58,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String USER_ID = "userId";
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
+    public static final String OPEN_SCREEN = "openScreen";
     private final Iris iris;
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
@@ -754,6 +755,7 @@ public class GTMAnalytics extends ContextAnalytics {
         Bundle bundle = new Bundle();
         bundle.putString("screenName", screenName);
         bundle.putString("appsflyerId", afUniqueId);
+        bundle.putString(KEY_EVENT, OPEN_SCREEN);
         if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
             bundle.putString("userId", sessionHandler.getLoginID());
         }else{
