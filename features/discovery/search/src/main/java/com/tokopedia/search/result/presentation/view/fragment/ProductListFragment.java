@@ -852,6 +852,27 @@ public class ProductListFragment
         }
     }
 
+    @Override
+    public void onThreeDotsClick(@NotNull RecommendationItem item, @NotNull int... position) {
+        if (getSearchParameter() == null || getActivity() == null) return;
+
+        ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(item));
+    }
+
+    private ProductCardOptionsModel createProductCardOptionsModel(RecommendationItem item) {
+        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
+
+        productCardOptionsModel.setHasWishlist(true);
+        productCardOptionsModel.setWishlisted(item.isWishlist());
+        productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
+        productCardOptionsModel.setProductId(String.valueOf(item.getProductId()));
+        productCardOptionsModel.setTopAds(item.isTopAds());
+        productCardOptionsModel.setTopAdsWishlistUrl(item.getWishlistUrl());
+        productCardOptionsModel.setRecommendation(true);
+
+        return productCardOptionsModel;
+    }
+
     private Intent getProductIntent(String productId, String warehouseId) {
         if (getContext() == null) {
             return null;

@@ -375,4 +375,9 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private void onClickOrganic(RecommendationItem item) {
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
+
+    @Override
+    public void onThreeDotsClick(@NotNull RecommendationItem item, @NotNull int... position) {
+        // Three dots not shown for Recommendation in Inbox
+    }
 }

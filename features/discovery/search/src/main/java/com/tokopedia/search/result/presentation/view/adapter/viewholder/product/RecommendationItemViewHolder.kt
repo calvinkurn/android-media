@@ -21,12 +21,12 @@ class RecommendationItemViewHolder (
         val LAYOUT = R.layout.search_result_recommendation_card_small_grid
     }
 
-    private val productCardViewHintListener: ProductCardGridView? by lazy{
+    private val productCardView: ProductCardGridView? by lazy{
         itemView.findViewById<ProductCardGridView>(R.id.productCardView)
     }
 
     override fun bind(recommendationItemViewModel: RecommendationItemViewModel) {
-        val view = productCardViewHintListener ?: return
+        val view = productCardView ?: return
         val recommendationItem = recommendationItemViewModel.recommendationItem
         view.setProductModel(
                 ProductCardModel(
@@ -57,7 +57,12 @@ class RecommendationItemViewHolder (
         view.setOnClickListener {
             listener.onProductClick(recommendationItem, "", adapterPosition)
         }
+
         view.setImageProductViewHintListener(recommendationItemViewModel, createImageProductViewHintListener(recommendationItemViewModel))
+
+        view.setThreeDotsOnClickListener {
+            listener.onThreeDotsClick(recommendationItemViewModel.recommendationItem, adapterPosition)
+        }
     }
 
     private fun createImageProductViewHintListener(recommendationItemViewModel: RecommendationItemViewModel): ViewHintListener {
@@ -65,6 +70,14 @@ class RecommendationItemViewHolder (
             override fun onViewHint() {
                 listener.onProductImpression(recommendationItemViewModel.recommendationItem)
             }
+        }
+    }
+
+    override fun bind(recommendationItemViewModel: RecommendationItemViewModel, payloads: MutableList<Any>) {
+        payloads.getOrNull(0) ?: return
+
+        productCardView?.setThreeDotsOnClickListener {
+            listener.onThreeDotsClick(recommendationItemViewModel.recommendationItem, adapterPosition)
         }
     }
 }
