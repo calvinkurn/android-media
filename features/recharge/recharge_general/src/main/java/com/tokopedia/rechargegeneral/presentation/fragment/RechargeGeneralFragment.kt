@@ -157,7 +157,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             when(it) {
                 is Success -> {
                     loading_view.hide()
-                    renderInitialData(it.data)
+                    renderInitialData()
                 }
                 is Fail -> {
                     var throwable = it.throwable
@@ -200,7 +200,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 operatorId = it.operatorId
                 selectedProduct = RechargeGeneralProductSelectData(it.productId.toString(), it.title, it.description)
                 inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
-                renderInitialData(operatorClusters.data)
+                renderInitialData()
                 // Enquire & navigate to checkout
                 enquire()
             }
@@ -279,18 +279,21 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun renderInitialData(cluster: RechargeGeneralOperatorCluster) {
-        cluster.operatorGroups?.let { groups ->
-            if (operatorId == 0) operatorId = getFirstOperatorId(cluster)
-            if (operatorId > 0) {
-                operatorCluster = getClusterOfOperatorId(cluster, operatorId)?.name ?: ""
-                renderOperatorCluster(cluster)
+    private fun renderInitialData() {
+        if (viewModel.operatorCluster.value is Success) {
+            val operatorClusters = (viewModel.operatorCluster.value as Success).data
+            operatorClusters.operatorGroups?.let { groups ->
+                if (operatorId == 0) operatorId = getFirstOperatorId(operatorClusters)
+                if (operatorId > 0) {
+                    operatorCluster = getClusterOfOperatorId(operatorClusters, operatorId)?.name ?: ""
+                    renderOperatorCluster(operatorClusters)
 
-                val operatorGroup = groups.first { it.name == operatorCluster }
-                val isOperatorHidden = cluster.style == OPERATOR_TYPE_HIDDEN
-                renderOperatorList(operatorGroup, isOperatorHidden, cluster.text)
+                    val operatorGroup = groups.first { it.name == operatorCluster }
+                    val isOperatorHidden = operatorClusters.style == OPERATOR_TYPE_HIDDEN
+                    renderOperatorList(operatorGroup, isOperatorHidden, operatorClusters.text)
 
-                if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
+                    if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
+                }
             }
         }
     }
@@ -553,8 +556,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     inputData[PARAM_CLIENT_NUMBER] = clientNumber
                 }
             }
-
-            renderInitialData(operatorClusters.data)
+            renderInitialData()
         }
     }
 
@@ -663,6 +665,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
                 adapter.notifyItemChanged(adapter.data.indexOf(clientNumberInput))
             }
+            renderInitialData()
         }
     }
 

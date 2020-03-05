@@ -955,6 +955,8 @@ public class GTMAnalytics extends ContextAnalytics {
                 keyEvent = FirebaseAnalytics.Event.ECOMMERCE_PURCHASE;
                 break;
         }
+        //
+        bundle.putString(KEY_EVENT, keyEvent);
         pushEventV5(keyEvent, bundle, context);
     }
 
@@ -997,6 +999,7 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString(KEY_CATEGORY, params.get(KEY_CATEGORY) + "");
         bundle.putString(KEY_ACTION, params.get(KEY_ACTION) + "");
         bundle.putString(KEY_LABEL, params.get(KEY_LABEL) + "");
+        bundle.putString(KEY_EVENT, params.get(KEY_EVENT)+"");
 
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             if (!Arrays.asList(GENERAL_EVENT_KEYS).contains(entry.getKey()))

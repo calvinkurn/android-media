@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,14 +15,12 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.imagepreviewslider.presentation.activity.ImagePreviewSliderActivity
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
-import com.tokopedia.salam.umrah.travel.data.UmrahGalleriesEntity
 import com.tokopedia.salam.umrah.travel.data.UmrahGalleriesInput
 import com.tokopedia.salam.umrah.travel.data.UmrahGallery
 import com.tokopedia.salam.umrah.travel.data.UmrahGalleryImageMapper
@@ -157,6 +154,13 @@ class UmrahTravelAgentGalleryFragment : BaseListFragment<UmrahGallery, UmrahTrav
         renderList(data, true)
     }
 
+    fun firstTracking(){
+        val layoutManager = rv_umrah_travel_galleries.layoutManager
+        val firstVisibleItem = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+        val dataList = (adapter as BaseListAdapter<*, *>).data
+        trackImpression(firstVisibleItem, lastVisibleItem, dataList)
+    }
 
     private fun trackImpression(startIndex: Int, lastIndex: Int, data: MutableList<out Any>) {
         for (i in startIndex..lastIndex) {
