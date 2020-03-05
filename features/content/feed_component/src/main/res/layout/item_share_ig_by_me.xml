@@ -6,14 +6,14 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.tkpd.remoteresourcerequest.view.DeferredImageView
         android:id="@+id/iv_background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:scaleType="centerCrop"
-        app:srcCompat="@drawable/bg_gradient_profile_by_me"
+        app:remoteFileName="bg_gradient_profile_by_me.png"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/gl_bg_top" />
