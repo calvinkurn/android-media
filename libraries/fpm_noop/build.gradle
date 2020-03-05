@@ -1,4 +1,6 @@
-apply plugin: 'java-library'
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+
 
 project.ext {
     artifactId = 'fpm-noop'
