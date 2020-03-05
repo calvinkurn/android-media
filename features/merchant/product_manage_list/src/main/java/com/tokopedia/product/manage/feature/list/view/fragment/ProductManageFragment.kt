@@ -105,10 +105,12 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ERROR_CODE_LIMIT_CASHBACK
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
+import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_SORT_SELECTED
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.INSTAGRAM_SELECT_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_FILTER
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_SORT
+import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.STOCK_EDIT_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.oldlist.constant.option.CashbackOption
@@ -686,9 +688,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         when(menu) {
             is Preview -> goToPDP(productId)
             is Duplicate -> clickDuplicateProduct(productId, menuTitle)
-            is StockReminder -> {
-                //handle stock reminder here
-            }
+            is StockReminder -> { onSetStockReminderClicked(product)}
             is Delete -> clickDeleteProductMenu(productId, menuTitle)
             is SetTopAds -> onPromoTopAdsClicked(product)
             is SetCashBack -> onSetCashbackClicked(product)
@@ -746,7 +746,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun onSetFeaturedProductClicked(productManageViewModel: ProductViewModel, setFeaturedType: Int) {
         viewModel.setFeaturedProduct(productManageViewModel.id, setFeaturedType)
+    }
 
+    private fun onSetStockReminderClicked(productManageViewModel: ProductViewModel) {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.STOCK_REMINDER, productManageViewModel.id, productManageViewModel.title)
+        startActivityForResult(intent, REQUEST_CODE_STOCK_REMINDER)
     }
 
     private fun onPromoTopAdsClicked(productManageViewModel: ProductViewModel) {
@@ -998,6 +1002,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     val productManageSortModel: ProductManageSortModel = it.getParcelableExtra(EXTRA_SORT_SELECTED)
                     loadInitialData()
                     ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
+                }
+                REQUEST_CODE_STOCK_REMINDER -> if(resultCode == Activity.RESULT_OK) {
+                    val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
+                    Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
