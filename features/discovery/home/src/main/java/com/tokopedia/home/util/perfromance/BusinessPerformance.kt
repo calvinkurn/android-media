@@ -12,6 +12,9 @@ object BusinessWidgetPerformance {
     }
 
     fun stop(){
-        performanceMonitoring?.stopTrace()
+        if(performanceMonitoring != null){
+            performanceMonitoring?.stopTrace()
+            performanceMonitoring = null
+        }
     }
 }
