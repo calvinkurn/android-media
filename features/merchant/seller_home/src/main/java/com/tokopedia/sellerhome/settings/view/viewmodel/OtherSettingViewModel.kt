@@ -3,6 +3,8 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.*
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
@@ -44,21 +46,38 @@ class OtherSettingViewModel @Inject constructor(
 
     fun populateAdapterList() {
         val settingList = listOf(
-                ShopInfoUiModel("Vishal Gupta", "", "", 10),
+                ShopInfoUiModel("Achmad Zaky", "", "", 10),
                 ShopStatusUiModel(),
                 DividerUiModel(DividerType.THIN_FULL),
                 BalanceUiModel(SALDO, "Rp532.000.000"),
                 BalanceUiModel(KREDIT_TOPADS, "Rp0"),
                 DividerUiModel(),
                 SettingTitleUiModel(TINGKATKAN_PENJUALAN),
-                MenuItemUiModel(STATISTIK_TOKO, R.drawable.ic_statistic_setting),
-                MenuItemUiModel(IKLAN_DAN_PROMOSI_TOKO, R.drawable.ic_ads_promotion),
+                MenuItemUiModel(
+                        STATISTIK_TOKO,
+                        R.drawable.ic_statistic_setting,
+                        ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
+                MenuItemUiModel(
+                        IKLAN_DAN_PROMOSI_TOKO,
+                        R.drawable.ic_ads_promotion,
+                        null /* TODO("Masukkin applink lw di sini cup, ganti nullnya. Utk saat ini hanya support applink") */),
                 SettingTitleUiModel(KABAR_PEMBELI),
-                MenuItemUiModel(ULASAN, R.drawable.ic_star_setting),
-                MenuItemUiModel(DISKUSI, R.drawable.ic_setting_discussion),
-                MenuItemUiModel(KOMPLAIN, R.drawable.ic_complaint),
+                MenuItemUiModel(
+                        ULASAN,
+                        R.drawable.ic_star_setting,
+                        "tokopedia://review"),
+                MenuItemUiModel(
+                        DISKUSI,
+                        R.drawable.ic_setting_discussion,
+                        ApplinkConst.TALK),
+                MenuItemUiModel(
+                        KOMPLAIN,
+                        R.drawable.ic_complaint,
+                        ""),
                 DividerUiModel(),
-                MenuItemUiModel(LAYANAN_KEUANGAN, R.drawable.ic_finance),
+                MenuItemUiModel(
+                        LAYANAN_KEUANGAN,
+                        R.drawable.ic_finance),
                 MenuItemUiModel(PUSAT_EDUKASI_SELLER, R.drawable.ic_seller_edu),
                 MenuItemUiModel(TOKOPEDIA_CARE, R.drawable.ic_tokopedia_care),
                 DividerUiModel(DividerType.THIN_PARTIAL),
