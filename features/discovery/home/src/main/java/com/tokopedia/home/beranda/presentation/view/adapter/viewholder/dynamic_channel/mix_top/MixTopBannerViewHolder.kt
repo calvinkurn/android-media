@@ -104,7 +104,9 @@ class MixTopBannerViewHolder(
         val backColor = if (bannerItem.backColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.backColor)
 
         bannerTitle.text = bannerItem.title
+        bannerTitle.visibility = if(bannerItem.title.isEmpty()) View.GONE else View.VISIBLE
         bannerDescription.text = bannerItem.description
+        bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
 
         background.setBackgroundColor(backColor)
         bannerTitle.setTextColor(textColor)
