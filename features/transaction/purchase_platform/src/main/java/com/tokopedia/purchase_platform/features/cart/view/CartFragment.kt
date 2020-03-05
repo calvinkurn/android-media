@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
+import AdditionalInfoUiModel
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Canvas
@@ -64,6 +65,7 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
 import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CartConstant.ACTION_OK
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_DEFAULT_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_WITH_PROMO_IMG_URL
 import com.tokopedia.purchase_platform.common.data.api.CartApiInterceptor
@@ -73,6 +75,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
@@ -97,6 +100,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
@@ -1286,8 +1290,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderCartEmpty(cartListData: CartListData) {
         FLAG_IS_CART_EMPTY = true
 
-        // check here whether show default empty cart or empty cart with promo
-        renderCartEmptyWithPromo()
+        cartListData.lastApplyData?.emptyCartInfoMsg?.let {
+            if (it.isNotEmpty()) {
+                renderCartEmptyWithPromo(cartListData.lastApplyData!!)
+            } else {
+                renderCartEmptyDefault()
+            }
+        }
         enableSwipeRefresh()
         sendAnalyticsOnDataCartIsEmpty()
         showEmptyCartContainer()
@@ -1309,9 +1318,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderPromoCheckout(cartListData: CartListData) {
         cartListData.lastApplyData?.let { lastApply ->
             if (lastApply.errorDetailMsg.isNotEmpty()) {
-                promoCheckoutBtn.state = ButtonPromoCheckoutView.State.INACTIVE
-                promoCheckoutBtn.title = lastApply.errorDetailMsg
-
+                showToaster(lastApply.errorDetailMsg)
             } else {
                 promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
                 promoCheckoutBtn.title = lastApply.additionalInfoMsg
@@ -1377,11 +1384,18 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.addCartEmptyData(cartEmptyHolderData)
     }
 
-    private fun renderCartEmptyWithPromo() {
+    private fun renderCartEmptyWithPromo(lastApplyData: LastApplyData) {
+        var title = getString(R.string.cart_empty_with_promo_title)
+        var desc = getString(R.string.cart_empty_with_promo_desc)
+        var imgUrl = CART_EMPTY_WITH_PROMO_IMG_URL
+
+        if (lastApplyData.emptyCartInfoMsg.isNotEmpty()) title = lastApplyData.emptyCartInfoMsg
+        if (lastApplyData.emptyCartInfoDetail.isNotEmpty()) desc = lastApplyData.emptyCartInfoDetail
+        if (lastApplyData.emptyCartInfoImgUrl.isNotEmpty()) imgUrl = lastApplyData.emptyCartInfoImgUrl
         val cartEmptyWithPromoHolderData = CartEmptyHolderData(
-                title = getString(R.string.cart_empty_with_promo_title),
-                desc = getString(R.string.cart_empty_with_promo_desc),
-                imgUrl = CART_EMPTY_WITH_PROMO_IMG_URL,
+                title = title,
+                desc = desc,
+                imgUrl = imgUrl,
                 btnText = getString(R.string.cart_empty_with_promo_btn)
         )
         cartAdapter.addCartEmptyData(cartEmptyWithPromoHolderData)
@@ -2489,5 +2503,38 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onDetach() {
         compositeSubscription.unsubscribe()
         super.onDetach()
+    }
+
+    override fun updatePromoCheckoutStickyButton(additionalInfoUiModel: AdditionalInfoUiModel) {
+        var errorDetailMsg = ""
+        var additionalInfoMsg = ""
+        var additionalInfoDesc = ""
+
+        additionalInfoUiModel.errorDetailUiModel?.message?.let {
+            errorDetailMsg = it
+        }
+
+        additionalInfoUiModel.messageInfoUiModel?.message?.let {
+            additionalInfoMsg = it
+        }
+
+        additionalInfoUiModel.messageInfoUiModel?.detail?.let {
+            additionalInfoDesc = it
+        }
+
+        if (errorDetailMsg.isNotEmpty()) {
+            showToaster(errorDetailMsg)
+        } else {
+            promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
+            promoCheckoutBtn.title = additionalInfoMsg
+            promoCheckoutBtn.desc = additionalInfoDesc
+        }
+    }
+
+    private fun showToaster(msg: String) {
+        val toasterInfo = Toaster
+        view?.let { v ->
+            toasterInfo.make(v, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ACTION_OK)
+        }
     }
 }

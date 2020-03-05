@@ -9,16 +9,28 @@ import android.os.Parcelable
 data class LastApplyData (
     var additionalInfoMsg: String = "",
     var additionalInfoDetailMsg: String = "",
-    var errorDetailMsg: String = ""): Parcelable {
+    var errorDetailMsg: String = "",
+    var emptyCartInfoImgUrl: String = "",
+    var emptyCartInfoMsg: String = "",
+    var emptyCartInfoDetail: String = "",
+    var listLastApply: List<String> = listOf()) : Parcelable {
     constructor(parcel: Parcel) : this(
-            parcel.readString()?: "",
-            parcel.readString()?: "",
-            parcel.readString()?: "")
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.createStringArrayList() ?: listOf())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(additionalInfoMsg)
         parcel.writeString(additionalInfoDetailMsg)
         parcel.writeString(errorDetailMsg)
+        parcel.writeString(emptyCartInfoImgUrl)
+        parcel.writeString(emptyCartInfoMsg)
+        parcel.writeString(emptyCartInfoDetail)
+        parcel.writeStringList(listLastApply)
     }
 
     override fun describeContents(): Int {

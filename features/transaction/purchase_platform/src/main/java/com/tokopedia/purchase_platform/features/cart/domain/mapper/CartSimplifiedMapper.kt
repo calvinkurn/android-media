@@ -517,7 +517,10 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         return LastApplyData(
                 additionalInfoMsg = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.messageInfo.message,
                 additionalInfoDetailMsg = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.messageInfo.detail,
-                errorDetailMsg = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.errorDetail.message
+                errorDetailMsg = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.errorDetail.message,
+                emptyCartInfoImgUrl = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl,
+                emptyCartInfoMsg = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.message,
+                emptyCartInfoDetail = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.detail
         )
     }
 }

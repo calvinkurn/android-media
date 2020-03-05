@@ -14,6 +14,7 @@ import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentView
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistItemHolderData
+import com.tokopedia.purchase_platform.features.promo.data.request.varidate_use.PromoRequest
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*
@@ -109,4 +110,6 @@ interface ICartListPresenter {
     fun redirectToLite(url: String)
 
     fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo
+
+    fun processUpdateCartAndValidateUse(promoRequest: PromoRequest)
 }
