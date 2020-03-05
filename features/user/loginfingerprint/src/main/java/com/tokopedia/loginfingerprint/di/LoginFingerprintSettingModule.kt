@@ -19,11 +19,10 @@ import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 
-
-@LoginFingerprintSettingScope
 @Module
 class LoginFingerprintSettingModule {
 
+    @LoginFingerprintSettingScope
     @Provides
     fun provideGraphQlRepository(): GraphqlRepository = GraphqlInteractor.getInstance().graphqlRepository
 
@@ -31,20 +30,24 @@ class LoginFingerprintSettingModule {
     @Provides
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
+    @LoginFingerprintSettingScope
     @Provides
     fun providePreferenceHelper(@ApplicationContext context: Context): FingerprintSetting = FingerprintPreferenceHelper(context)
 
+    @LoginFingerprintSettingScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface = UserSession(context)
 
+    @LoginFingerprintSettingScope
     @Provides
     fun provideRegisterFingerprintUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<RegisterFingerprintPojo> = GraphqlUseCase(graphqlRepository)
 
+    @LoginFingerprintSettingScope
     @Provides
     fun provideCryptographyUtils(): Cryptography = CryptographyUtils()
 
+    @LoginFingerprintSettingScope
     @Provides
     fun provideDispatchers(): DispatcherProvider = AppDispatcherProvider()
-
 }

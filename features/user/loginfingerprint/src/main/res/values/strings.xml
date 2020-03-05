@@ -1,7 +1,7 @@
 <resources>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_main">Masuk dengan Sidik Jari</string>
     <string name="login_fingerprint_aktivasi_title">Aktifkan Sidik Jari</string>
     <string name="login_fingerprint_aktivasi_body">Caranya mudah! Kamu hanya perlu sidik jari untuk login lebih cepat.</string>
     <string name="login_fingerprint_aktivasi_heading">Yuk, masuk pakai sidik jari!</string>

@@ -15,7 +15,6 @@ import dagger.multibindings.IntoMap
 import dagger.multibindings.StringKey
 
 
-@LoginFingerprintSettingScope
 @Module
 class LoginFingerprintQueryModule {
 
@@ -33,14 +32,17 @@ class LoginFingerprintQueryModule {
     fun provideRawQueryValidateFingerprint(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.query_validate_fingerprint)
 
+    @LoginFingerprintSettingScope
     @Provides
     fun provideRegisterFingerprintUsecase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<RegisterFingerprintPojo> = GraphqlUseCase(graphqlRepository)
 
+    @LoginFingerprintSettingScope
     @Provides
     fun provideValidateFingerprintUsecase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<ValidateFingerprintPojo> = GraphqlUseCase(graphqlRepository)
 
+    @LoginFingerprintSettingScope
     @Provides
     fun provideLoginTokenUseCase(graphqlRepository: GraphqlRepository)
             : GraphqlUseCase<LoginTokenPojo> = GraphqlUseCase(graphqlRepository)

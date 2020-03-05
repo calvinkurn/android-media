@@ -11,7 +11,6 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 
 @Module
-@LoginFingerprintSettingScope
 abstract class LoginFingerprintViewModelsModule {
     @Binds
     @LoginFingerprintSettingScope
@@ -19,11 +18,13 @@ abstract class LoginFingerprintViewModelsModule {
 
     @Binds
     @IntoMap
+    @LoginFingerprintSettingScope
     @ViewModelKey(ScanFingerprintViewModel::class)
     internal abstract fun fingerprintViewModel(viewModelScan: ScanFingerprintViewModel): ViewModel
 
     @Binds
     @IntoMap
+    @LoginFingerprintSettingScope
     @ViewModelKey(RegisterOnboardingViewModel::class)
     internal abstract fun registerFingerprintViewModel(viewModel: RegisterOnboardingViewModel): ViewModel
 }
