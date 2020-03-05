@@ -32,8 +32,10 @@ class CryptographyUtils: Cryptography {
     override fun getCryptoObject(): FingerprintManagerCompat.CryptoObject? = _cryptoObject
 
     init {
-        initKeyStore()
-        initCryptoObject()
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            initKeyStore()
+            initCryptoObject()
+        }
     }
 
     private fun initCryptoObject() {

@@ -64,8 +64,10 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
         var FP_MODE = MODE_LOGIN
 
         fun isFingerprintAvailable(mContext: FragmentActivity?): Boolean {
-            val fingerprintManager = mContext?.getSystemService(FingerprintManager::class.java)
-            return fingerprintManager?.isHardwareDetected == true && fingerprintManager.hasEnrolledFingerprints() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                val fingerprintManager = mContext?.getSystemService(FingerprintManager::class.java)
+                return fingerprintManager?.isHardwareDetected == true && fingerprintManager.hasEnrolledFingerprints()
+            }else return false
         }
     }
 
