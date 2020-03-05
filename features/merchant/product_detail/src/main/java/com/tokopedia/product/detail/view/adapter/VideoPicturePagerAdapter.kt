@@ -12,7 +12,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.view.fragment.VideoPictureFragment
 
 class VideoPicturePagerAdapter(val context: Context,
-                               private val media: MutableList<ProductMediaDataModel> = mutableListOf(),
+                               val media:List<ProductMediaDataModel>,
                                private val onPictureClickListener: ((Int) -> Unit)?,
                                fragmentManager: FragmentManager,
                                private val componentTrackData: ComponentTrackDataModel,

@@ -25,17 +25,12 @@ object VariantMapper {
         })?.toMutableMap() ?: mutableMapOf()
     }
 
-    fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1): MutableList<VariantCategory>? {
+    fun processVariant(variantData: ProductVariant?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): MutableList<VariantCategory>? {
         if (variantData == null) return null
 
         val listOfVariant: MutableList<VariantCategory> = arrayListOf()
         var updatedSelectedOptionsId: List<Int>
         val isSelectedLevelOne = level < 1
-
-        //Means if variant level has 2 level and user partialy select only 1 variant
-        val isPartialySelected = mapOfSelectedVariant?.any {
-            it.value == 0
-        } ?: false
 
         //Parse selectedOptionsId Map to List<Int>
         val selectedOptionIds: List<Int> = mapOfSelectedVariant?.map {
@@ -89,9 +84,11 @@ object VariantMapper {
         variantDataModel.isLeaf = isLeaf
 
         //If all options has images, show images, if not show colour type / chip type
-        variantDataModel.hasCustomImage = variant.options.all {
+        val hasCustomImage = variant.options.all {
             it.picture?.thumbnail?.isNotEmpty() == true
         }
+
+        variantDataModel.hasCustomImage = hasCustomImage
 
         val partialSelectedListByLevel = if (selectedOptionIds.isNotEmpty()) {
             selectedOptionIds.subList(0, level)
@@ -153,6 +150,7 @@ object VariantMapper {
                     optionVariantDataModel.stock = child.stock?.stock ?: 0
                 }
             }
+            optionVariantDataModel.hasCustomImages = hasCustomImage
             optionVariantDataModel.level = level
             optionVariantDataModel.variantOptionIdentifier = variant.identifier ?: ""
             variantDataModel.variantOptions.add(optionVariantDataModel)

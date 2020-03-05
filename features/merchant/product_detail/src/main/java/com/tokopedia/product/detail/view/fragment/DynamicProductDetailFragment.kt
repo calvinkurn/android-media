@@ -87,7 +87,6 @@ import com.tokopedia.product.detail.data.model.ProductInfoP3
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
@@ -1087,6 +1086,18 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeMoveToWarehouse()
         observeMoveToEtalase()
         observeRecommendationProduct()
+        observeImageVariantPartialyChanged()
+    }
+
+    private fun observeImageVariantPartialyChanged() {
+        viewModel.updatedImageVariant.observe(viewLifecycleOwner, Observer {
+            if (viewModel.getDynamicProductInfoP1?.data?.media?.firstOrNull()?.uRLOriginal != it.firstOrNull()?.uRLOriginal) {
+                pdpHashMapUtil?.snapShotMap?.media = DynamicProductDetailMapper.convertMediaToDataModel(it)
+                viewModel.getDynamicProductInfoP1 = VariantMapper.updateMediaToCurrentP1Data(viewModel.getDynamicProductInfoP1, it)
+                pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
+                adapter.notifyDataSetChanged()
+            }
+        })
     }
 
     private fun observeP1() {
@@ -1198,6 +1209,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             updateProductId()
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
             pdpHashMapUtil?.updateDataP1(productInfo, viewModel.imageHeight)
+            viewModel.listOfParentMedia = productInfo.data.media.toMutableList()
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.isLeasing = productInfo.basic.isLeasing
             actionButtonView.renderData(!productInfo.basic.isActive(),
@@ -1383,7 +1395,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.productNewVariantDataModel?.let {
             it.mapOfSelectedVariant[variantOptions.variantOptionIdentifier] = variantOptions.variantId
         }
-        val variantData = VariantMapper.processVariant(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, variantOptions.level)
+
+        val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant?.any {
+            it.value == 0
+        } ?: false
+
+        val variantData = VariantMapper.processVariant(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, variantOptions.level, isPartialySelected)
         pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
 
         if (isPartialySelected) {

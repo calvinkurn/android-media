@@ -25,10 +25,7 @@ import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
+import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -117,7 +114,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val toggleFavoriteResult: LiveData<Result<Boolean>>
         get() = _toggleFavoriteResult
 
-    var imageHeight : Int = 0
+    private val _updatedImageVariant = MutableLiveData<MutableList<Media>>()
+    val updatedImageVariant: LiveData<MutableList<Media>>
+        get() = _updatedImageVariant
+
+    var imageHeight: Int = 0
 
     var multiOrigin: WarehouseInfo = WarehouseInfo()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -125,6 +126,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var installmentData: FinancingDataResponse? = null
     var tradeInParams: TradeInParams = TradeInParams()
     var variantData: ProductVariant? = null
+    var listOfParentMedia: MutableList<Media>? = null
 
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
@@ -154,6 +156,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         removeWishlistUseCase.unsubscribe()
         submitTicketSubscription?.unsubscribe()
         updateCartCounterSubscription?.unsubscribe()
+    }
+
+    fun addPartialImage(imageUrl: String) {
+        listOfParentMedia?.let {
+            if (imageUrl.isEmpty()) {
+                _updatedImageVariant.value = listOfParentMedia
+            } else {
+                val listOfUpdateImage = it.toMutableList()
+                listOfUpdateImage.add(0, Media(type = "image", uRL300 = imageUrl, uRLOriginal = imageUrl, uRLThumbnail = imageUrl))
+                _updatedImageVariant.value = listOfUpdateImage
+            }
+        }
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
@@ -245,7 +259,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
             _p2ShopDataResp.value = p2ShopDeferred.await().also {
                 shopInfo = it.shopInfo
-                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInResponse()
+                val tradeInResponse = it.tradeinResponse?.validateTradeInPDP
+                        ?: ValidateTradeInResponse()
                 tradeInParams.isEligible = if (tradeInResponse.isEligible) 1 else 0
                 tradeInParams.usedPrice = tradeInResponse.usedPrice
                 tradeInParams.remainingPrice = tradeInResponse.remainingPrice
