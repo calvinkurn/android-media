@@ -71,6 +71,14 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 },
                 uiState = PromoListHeaderUiModel.UiState().apply {
                     isEnabled = couponSubSection.isEnabled
+                    var tmpHasSellectedPromoItem = false
+                    couponSubSection.coupons.forEach {
+                        if (it.isSelected) {
+                            tmpHasSellectedPromoItem = true
+                            return@forEach
+                        }
+                    }
+                    hasSelectedPromoItem = tmpHasSellectedPromoItem
                     isCollapsed = false // Todo : baca dari backend
                 }
         )

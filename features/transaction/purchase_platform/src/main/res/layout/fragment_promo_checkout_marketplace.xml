@@ -51,7 +51,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/app_bar_layout"
-        android:background="@color/checkout_module_color_background">
+        android:background="@color/checkout_module_color_background"
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

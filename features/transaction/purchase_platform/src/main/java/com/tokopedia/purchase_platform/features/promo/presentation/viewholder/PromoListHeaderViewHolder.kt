@@ -30,7 +30,11 @@ class PromoListHeaderViewHolder(private val view: View,
         }
 
         itemView.label_promo_list_header_title.text = element.uiData.title
-        itemView.label_promo_list_header_sub_title.text = element.uiData.subTitle
+        if (element.uiState.hasSelectedPromoItem) {
+            itemView.label_promo_list_header_sub_title.text = "Promo dipilih"
+        } else {
+            itemView.label_promo_list_header_sub_title.text = element.uiData.subTitle
+        }
 
         if (!element.uiState.isCollapsed) {
             itemView.image_chevron.rotation = 180f

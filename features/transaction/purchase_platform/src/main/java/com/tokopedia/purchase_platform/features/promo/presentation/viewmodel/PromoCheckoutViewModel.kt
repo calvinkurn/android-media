@@ -115,10 +115,11 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 couponList.add(eligibilityHeader)
 
                 // Initialize promo list header
-                val headerIdentifierId = 0
+                var headerIdentifierId = 0
                 couponSectionItem.subSections.forEach { couponSubSection ->
                     val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId)
                     couponList.add(promoHeader)
+                    headerIdentifierId++
 
                     // Initialize promo list item
                     couponSubSection.coupons.forEach { couponItem ->
@@ -163,9 +164,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                                     val errorMessageBuilder = StringBuilder()
                                     it.uiData.currentClashingPromo.forEach { string ->
                                         if (it.uiData.clashingInfo.containsKey(string)) {
-                                            if (errorMessageBuilder.isNotBlank()) {
-                                                errorMessageBuilder.append("\n")
-                                            }
                                             errorMessageBuilder.append(it.uiData.clashingInfo[string])
                                         }
                                     }
@@ -245,7 +243,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         }
     }
 
-    fun updatePromoSectionList(element: PromoListHeaderUiModel) {
+    fun updatePromoListAfterClickPromoHeader(element: PromoListHeaderUiModel) {
         if (!element.uiState.isCollapsed) {
             promoListUiModel.value?.indexOf(element)?.let {
                 // Get the header data and set inverse collapsed value
@@ -302,6 +300,56 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 _tmpUiModel.value = Update(headerData)
             }
 
+        }
+    }
+
+    fun updatePromoListAfterClickPromoItem(element: PromoListItemUiModel) {
+        // Set to selected / un selected
+        promoListUiModel.value?.indexOf(element)?.let {
+            val promoItem = promoListUiModel.value?.get(it) as PromoListItemUiModel
+
+            promoItem.uiState.isSellected = !promoItem.uiState.isSellected
+            _tmpUiModel.value = Update(promoItem)
+
+            calculateClash(promoItem)
+
+            // Update header sub total
+            var header: PromoListHeaderUiModel? = null
+            promoListUiModel.value?.forEach {
+                if (it is PromoListHeaderUiModel && it.uiData.identifierId == promoItem.uiData.parentIdentifierId) {
+                    header = it
+                    return@forEach
+                }
+            }
+
+            header?.let {
+                val hasSelectPromo = isPromoScopeHasAnySelectedItem(it.uiData.identifierId)
+                it.uiState.hasSelectedPromoItem = hasSelectPromo
+
+                val headerIndex = promoListUiModel.value?.indexOf(it) ?: 0
+                _tmpUiModel.value = Update(it)
+
+                if (headerIndex != 0) {
+                    // Un check other
+//                    var unCheckIndex = 0
+                    val promoListSize = promoListUiModel.value?.size ?: 0
+                    for (index in headerIndex + 1 until promoListSize) {
+                        if (promoListUiModel.value?.get(index) !is PromoListItemUiModel) {
+                            break
+                        } else {
+                            val tmpPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
+                            if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSellected) {
+                                tmpPromoItem.uiState.isSellected = false
+//                                unCheckIndex = index
+                                _tmpUiModel.value = Update(tmpPromoItem)
+                                break
+                            }
+                        }
+                    }
+
+                    updateResetButtonState()
+                }
+            }
         }
     }
 }

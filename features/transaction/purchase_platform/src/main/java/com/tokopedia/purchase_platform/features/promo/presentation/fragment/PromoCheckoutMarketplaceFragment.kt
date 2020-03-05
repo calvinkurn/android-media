@@ -404,10 +404,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     override fun onClickApplyRecommendedPromo(element: PromoRecommendationUiModel) {
         element.uiState.isButtonSelectEnabled = false
         adapter.modifyData(adapter.data.indexOf(element))
-
-        // Todo : get recommendation promo from current list
-        // Todo : hit API
-        // Todo : if success >> update recommendation layout; if failed >> show toast error
     }
 
     // --- END OF RECOMMENDATION SECTION
@@ -420,53 +416,11 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     override fun onClickPromoListHeader(itemPosition: Int, element: PromoListHeaderUiModel) {
-        viewModel.updatePromoSectionList(element)
+        viewModel.updatePromoListAfterClickPromoHeader(element)
     }
 
     override fun onClickPromoListItem(position: Int, element: PromoListItemUiModel) {
-        // Set sellected / un sellected
-        element.uiState.isSellected = !element.uiState.isSellected
-        adapter.modifyData(position)
-        viewModel.calculateClash(element)
-
-        // Update header sub total
-        var oldData: PromoListHeaderUiModel? = null
-        adapter.data.forEach {
-            if (it is PromoListHeaderUiModel && it.uiData.identifierId == element.uiData.parentIdentifierId) {
-                oldData = it
-                return@forEach
-            }
-        }
-
-        oldData?.let {
-            val hasSelectPromo = isPromoScopeHasAnySelectedItem(it.uiData.identifierId)
-            if (hasSelectPromo) {
-                it.uiData.subTitle = "Promo dipilih"
-            } else {
-                it.uiData.subTitle = "Hanya bisa pilih 1"
-            }
-
-            val headerIndex = adapter.data.indexOf(oldData)
-            adapter.modifyData(headerIndex)
-
-            // Un check other
-            var unCheckIndex = 0
-            for (index in headerIndex + 1 until adapter.data.size) {
-                if (adapter.data[index] !is PromoListItemUiModel) {
-                    break
-                } else {
-                    val promoItem = adapter.data[index] as PromoListItemUiModel
-                    if (promoItem.uiData.promoCode != element.uiData.promoCode && promoItem.uiState.isSellected) {
-                        promoItem.uiState.isSellected = false
-                        unCheckIndex = index
-                        break
-                    }
-                }
-            }
-
-            adapter.modifyData(unCheckIndex)
-            updateResetButtonState()
-        }
+        viewModel.updatePromoListAfterClickPromoItem(element)
     }
 
     private fun updateResetButtonState() {
