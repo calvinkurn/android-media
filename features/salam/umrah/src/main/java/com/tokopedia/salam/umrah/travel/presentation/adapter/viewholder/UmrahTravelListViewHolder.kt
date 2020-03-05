@@ -2,6 +2,7 @@ package com.tokopedia.salam.umrah.travel.presentation.adapter.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.loadImageCircle
 import com.tokopedia.salam.umrah.R
@@ -16,10 +17,11 @@ import kotlinx.android.synthetic.main.item_umrah_travel_list.view.*
 class UmrahTravelListViewHolder (view: View): AbstractViewHolder<TravelAgent>(view){
     override fun bind(element: TravelAgent) {
         with(itemView){
-            iv_widget_umrah_travel_list_item.loadImage(element.imageUrl)
+            ImageHandler.loadImage(context,iv_widget_umrah_travel_list_item,element.imageUrl,null)
             tg_widget_umrah_travel_list_item_title.text = element.name
             tg_widget_umrah_travel_list_item_desc.text = element.permissionOfUmrah
             tg_widget_umrah_travel_list_item_founded.text = element.ui.establishedSince
+
         }
     }
 

@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.applink.ApplinkConst.SALAM_UMRAH_AGEN
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
@@ -33,6 +35,10 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
     override fun loadData(page: Int) {
         requestData(page)
     }
+
+    override fun hasInitialSwipeRefresh(): Boolean  = true
+
+    override fun getSwipeRefreshLayoutResourceId(): Int = R.id.swipe_refresh_umrah_travel_list
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_umrah_travel_list, container, false)
@@ -76,8 +82,8 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
 
     }
 
-    override fun onItemClicked(t: TravelAgent?) {
-
+    override fun onItemClicked(t: TravelAgent) {
+         RouteManager.route(context, SALAM_UMRAH_AGEN, t.slugName)
     }
 
     companion object{

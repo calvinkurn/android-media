@@ -17,6 +17,6 @@ class UmrahTravelListLoadingViewHolder (itemView: View): AbstractViewHolder<Load
     }
 
     companion object {
-        val LAYOUT = R.layout.item_umrah_search_shimmering
+        val LAYOUT = R.layout.partial_umrah_travel_list_shimmering
     }
 }

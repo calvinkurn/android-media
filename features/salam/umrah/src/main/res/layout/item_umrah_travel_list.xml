@@ -30,18 +30,16 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/iv_widget_umrah_travel_list_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:scaleType="centerInside"
+            android:layout_width="@dimen/dp_44"
+            android:layout_height="@dimen/dp_44"
+            android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:layout_marginTop="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tg_widget_umrah_travel_list_item_title"
             app:layout_constraintBottom_toBottomOf="@+id/tg_widget_umrah_travel_list_item_desc"
-            android:minHeight="@dimen/dp_24"
-            android:minWidth="@dimen/dp_24"
-            android:maxHeight="@dimen/dp_44"
-            android:maxWidth="@dimen/dp_44" />
+             />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:visibility="visible"
@@ -61,8 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_4"
-            android:layout_marginBottom="1dp"
-            android:textColor="@color/Neutral_N700_68"
+            android:textColor="@color/Neutral_N700"
             app:layout_constraintBottom_toTopOf="@+id/tg_widget_umrah_travel_list_item_desc"
             app:layout_constraintLeft_toRightOf="@+id/iv_umrah_verified_blue"
             app:layout_constraintTop_toTopOf="parent"
