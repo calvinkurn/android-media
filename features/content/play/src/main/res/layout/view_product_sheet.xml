@@ -17,35 +17,7 @@
         tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout"
         >
 
-        <LinearLayout
-            android:id="@+id/ll_header"
-            android:layout_width="@dimen/layout_lvl0"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            >
-
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_system_close_default"
-                />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/tv_sheet_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/play_product_sheet_title_margin_start"
-                android:layout_marginLeft="@dimen/play_product_sheet_title_margin_start"
-                android:textColor="@color/Neutral_N700_96"
-                app:typographyType="heading_3"
-                app:typographyWeight="bold"
-                tools:text="Barang &amp; Promo Pilihan"
-                />
-
-        </LinearLayout>
+        <include layout="@layout/bottomsheet_header"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_voucher_list"
