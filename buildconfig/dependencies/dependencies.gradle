@@ -80,7 +80,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyPrinciplesVersion = '1.1.1'
-    unifyComponentsVersion = '1.1.16'
+    unifyComponentsVersion = '1.1.18'
     unifyCoachMarkVersion = '1.2.0'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
@@ -88,6 +88,8 @@ ext {
     unifyDatePickerVersion = '1.0.2'
     unifyEmptyStateVersion = '1.0.2'
     unifyGlobalErrorVersion = '1.0.6'
+    unifyHeaderVersion = '1.0.0'
+    unifySortFilterVersion = '1.0.1'
 
     gradlePlugin = [
         crashlytics : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -201,7 +203,7 @@ ext {
             slidinguppanel        : "com.sothree.slidinguppanel:library:3.3.1",
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
             cardio                : "io.card:android-sdk:$cardioVersion",
-            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:1.5.0",
+            loaderviewlibrary     : "com.elyeproj.libraries:loaderviewlibrary:2.0.0",
             imagecropper          : "com.theartofdev.edmodo:android-image-cropper:2.5.1",
             reactNative           : "com.facebook.react:react-native:$reactNativeVersion@aar",
             codePushReactNative   : "com.microsoft.codepush:rn-codepush:5.6.0@aar",
@@ -302,6 +304,8 @@ ext {
        dialog       : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
        datepicker   : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
        empty_state  : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
-       global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar"
+       global_error : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
+       header       : "com.tokopedia.unify.compositions:header:${unifyHeaderVersion}@aar",
+       sort_filter  : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar"
     ]
 }

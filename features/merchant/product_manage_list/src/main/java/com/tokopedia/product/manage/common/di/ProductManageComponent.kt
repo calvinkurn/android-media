@@ -1,9 +1,11 @@
 package com.tokopedia.product.manage.common.di
 
 import android.content.Context
+import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.logging.HttpLoggingInterceptor
@@ -18,4 +20,6 @@ interface ProductManageComponent {
     fun getCoroutineDispatcher(): CoroutineDispatcher
     fun httpLoggingInterceptor(): HttpLoggingInterceptor
     fun retrofitBuilder(): Retrofit.Builder
+    fun abstractionRouter(): AbstractionRouter
+    fun graphqlRepository(): GraphqlRepository
 }

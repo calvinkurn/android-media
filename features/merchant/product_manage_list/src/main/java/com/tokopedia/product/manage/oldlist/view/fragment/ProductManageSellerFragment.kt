@@ -44,7 +44,7 @@ class ProductManageSellerFragment : ProductManageFragment(), ProductDraftListCou
         }
     }
 
-    override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller
+    override fun getLayoutRes(): Int = R.layout.fragment_product_manage_seller_old
 
     override fun getRecyclerViewResourceId(): Int = R.id.recycler_view
 

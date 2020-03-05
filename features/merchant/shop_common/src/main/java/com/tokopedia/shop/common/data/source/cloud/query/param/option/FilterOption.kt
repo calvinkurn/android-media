@@ -15,10 +15,12 @@ sealed class FilterOption(val id: String) {
 
     data class FilterByMenu(val menuIds: List<String>): FilterOption(MENU)
     data class FilterByCategory(val categoryIds: List<String>): FilterOption(CATEGORY)
+    data class FilterByPage(val page: Int): FilterOption(PAGE)
 
     companion object FilterId {
         private const val MENU = "menu"
         private const val CATEGORY = "category"
+        private const val PAGE = "page"
 
         private const val NEW_ONLY = "isNewOnly"
         private const val USED_ONLY = "isUsedOnly"

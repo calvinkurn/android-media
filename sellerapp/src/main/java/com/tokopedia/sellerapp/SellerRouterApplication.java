@@ -95,7 +95,7 @@ import com.tokopedia.product.manage.item.common.di.module.ProductModule;
 import com.tokopedia.product.manage.item.main.base.data.model.ProductPictureViewModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel;
-import com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity;
+import com.tokopedia.product.manage.feature.list.view.activity.ProductManageActivity;
 import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.data.factory.ProfileSourceFactory;
 import com.tokopedia.profilecompletion.data.mapper.GetUserInfoMapper;
@@ -167,6 +167,7 @@ import rx.Observable;
 import static com.tokopedia.core.analytics.AppEventTracking.Event.CLICK_PDP;
 import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP;
+import static com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_OLD_PRODUCT_MANAGE;
 
 /**
  * Created by normansyahputa on 12/15/16.
@@ -244,6 +245,11 @@ public abstract class SellerRouterApplication extends MainApplication
     @Override
     public void goToManageProduct(Context context) {
         Intent intent = new Intent(context, ProductManageActivity.class);
+
+        if(remoteConfig.getBoolean(ENABLE_OLD_PRODUCT_MANAGE)) {
+            intent = new Intent(context, com.tokopedia.product.manage.oldlist.view.activity.ProductManageActivity.class);
+        }
+
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

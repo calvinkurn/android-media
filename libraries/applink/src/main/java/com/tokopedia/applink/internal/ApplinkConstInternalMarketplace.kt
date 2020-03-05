@@ -50,6 +50,7 @@ object ApplinkConstInternalMarketplace {
     // ProductDetailActivity
     @JvmField
     val PRODUCT_ADD_ITEM = "$INTERNAL_MARKETPLACE/product-add-item"
+    // CategoryPickerActivity
     @JvmField
     val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
     @JvmField
@@ -72,6 +73,10 @@ object ApplinkConstInternalMarketplace {
     // ReviewProductActivity, "x_prd_nm" = productName
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
+
+    // StockReminderActivity
+    @JvmField
+    val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/"
 
     // CreateReviewActivity
     @JvmField

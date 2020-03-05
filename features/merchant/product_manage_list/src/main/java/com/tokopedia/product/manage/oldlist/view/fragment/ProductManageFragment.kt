@@ -161,7 +161,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         return inflater.inflate(getLayoutRes(), container, false)
     }
 
-    open fun getLayoutRes(): Int = R.layout.fragment_product_manage
+    open fun getLayoutRes(): Int = R.layout.fragment_product_manage_old
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
