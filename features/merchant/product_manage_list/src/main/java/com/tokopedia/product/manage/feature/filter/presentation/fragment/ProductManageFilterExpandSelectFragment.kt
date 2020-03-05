@@ -108,6 +108,9 @@ class ProductManageFilterExpandSelectFragment :
             ))
             this.activity?.setResult(ProductManageFilterFragment.UPDATE_SORT_SUCCESS_RESPONSE, Intent().putExtra(CACHE_MANAGER_KEY, cacheManagerId))
         } else {
+            cacheManager?.let {
+                cacheManagerId = it.id!!
+            }
             cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     ETALASE_CACHE_MANAGER_KEY,
                     dataToSave,
