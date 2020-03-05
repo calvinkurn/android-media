@@ -75,4 +75,13 @@ class SellerHomeUseCaseModule {
     ): GetNotificationUseCase {
         return GetNotificationUseCase(gqlRepository, mapper)
     }
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetShopInfoUseCase(
+            gqlRepository: GraphqlRepository,
+            mapper: ShopInfoMapper
+    ): GetShopInfoUseCase {
+        return GetShopInfoUseCase(gqlRepository, mapper)
+    }
 }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -73,6 +74,8 @@ class ContainerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
+        observeCurrentSelectedMenu()
+        observeToolbarTitle()
         setupDefaultPage()
     }
 
@@ -83,42 +86,44 @@ class ContainerFragment : Fragment() {
     }
 
     private fun setupDefaultPage() {
-        val title = context?.getString(R.string.sah_home).orEmpty()
         currentFragment = homeFragment
-        showFragment(FragmentType.HOME, title)
+        sharedViewModel?.setToolbarTitle(context?.getString(R.string.sah_home).orEmpty())
+        sharedViewModel?.setCurrentSelectedMenu(FragmentType.HOME)
     }
 
-    fun showFragment(@FragmentType type: Int, title: String) {
-        when (type) {
-            FragmentType.HOME -> {
-                if (!hasAttachHomeFragment) {
-                    addFragment(homeFragment)
-                    hasAttachHomeFragment = true
+    private fun observeCurrentSelectedMenu() {
+        sharedViewModel?.currentSelectedMenu?.observe(this, Observer { type ->
+            when (type) {
+                FragmentType.HOME -> {
+                    if (!hasAttachHomeFragment) {
+                        addFragment(homeFragment)
+                        hasAttachHomeFragment = true
+                    }
+                    showFragment(homeFragment)
                 }
-                showFragment(homeFragment, title)
-            }
-            FragmentType.PRODUCT -> {
-                if (!hasAttachHomeFragment) {
-                    addFragment(homeFragment)
-                    hasAttachHomeFragment = true
+                FragmentType.PRODUCT -> {
+                    if (!hasAttachHomeFragment) {
+                        addFragment(homeFragment)
+                        hasAttachHomeFragment = true
+                    }
+                    showFragment(homeFragment)
                 }
-                showFragment(homeFragment, title)
-            }
-            FragmentType.CHAT -> {
-                if (!hasAttachHomeFragment) {
-                    addFragment(homeFragment)
-                    hasAttachHomeFragment = true
+                FragmentType.CHAT -> {
+                    if (!hasAttachHomeFragment) {
+                        addFragment(homeFragment)
+                        hasAttachHomeFragment = true
+                    }
+                    showFragment(homeFragment)
                 }
-                showFragment(homeFragment, title)
-            }
-            FragmentType.ORDER -> somListFragment?.let {
-                if (!hasAttachSomFragment) {
-                    addFragment(it)
-                    hasAttachSomFragment = true
+                FragmentType.ORDER -> somListFragment?.let {
+                    if (!hasAttachSomFragment) {
+                        addFragment(it)
+                        hasAttachSomFragment = true
+                    }
+                    showFragment(it)
                 }
-                showFragment(it, title)
             }
-        }
+        })
     }
 
     fun showChatNotificationBadge(chat: NotificationChatUiModel) {
@@ -135,7 +140,7 @@ class ContainerFragment : Fragment() {
                 .commit()
     }
 
-    private fun showFragment(fragment: Fragment, title: String) {
+    private fun showFragment(fragment: Fragment) {
         currentFragment?.let {
             fragmentManger.beginTransaction()
                     .hide(it)
@@ -143,6 +148,11 @@ class ContainerFragment : Fragment() {
                     .commit()
             currentFragment = fragment
         }
-        view?.sahToolbar?.title = title
+    }
+
+    private fun observeToolbarTitle() {
+        sharedViewModel?.toolbarTitle?.observe(viewLifecycleOwner, Observer {
+            view?.sahToolbar?.title = it
+        })
     }
 }

@@ -11,15 +11,23 @@ import javax.inject.Inject
 
 class SharedViewModel @Inject constructor() : ViewModel() {
 
-    private val _currentSelectedMenuIndex = MutableLiveData<Int>()
+    private val _currentSelectedMenu = MutableLiveData<Int>()
+    private val _toolbarTitle = MutableLiveData<String>()
 
     /**
-     * this live data used for switching
+     * this live data used for switching menu/page
      * */
-    val currentSelectedMenuIndex: LiveData<Int>
-        get() = _currentSelectedMenuIndex
+    val currentSelectedMenu: LiveData<Int>
+        get() = _currentSelectedMenu
+
+    val toolbarTitle: LiveData<String>
+        get() = _toolbarTitle
 
     fun setCurrentSelectedMenu(position: Int) {
-        _currentSelectedMenuIndex.value = position
+        _currentSelectedMenu.value = position
+    }
+
+    fun setToolbarTitle(title: String) {
+        _toolbarTitle.value = title
     }
 }

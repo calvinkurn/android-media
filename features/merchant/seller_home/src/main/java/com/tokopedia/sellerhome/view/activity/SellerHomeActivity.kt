@@ -44,16 +44,21 @@ class SellerHomeActivity : BaseActivity() {
     private var currentFragment: Fragment? = null
     private val fragmentManger: FragmentManager by lazy { supportFragmentManager }
 
+    private var homeTitle = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
+
+        homeTitle = getString(R.string.sah_home)
 
         initInjector()
         setupView()
         setupDefaultFragment()
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
-        observeCurrentSelectedPage()
+        observeShopInfoLiveData()
+        observeCurrentSelectedPageLiveData()
     }
 
     override fun onResume() {
@@ -72,8 +77,8 @@ class SellerHomeActivity : BaseActivity() {
 
         fun showFragment(@FragmentType type: Int, title: String) {
             if (sahBottomNav.currentItem != type) {
-                containerFragment.showFragment(type, title)
                 sharedViewModel.setCurrentSelectedMenu(type)
+                sharedViewModel.setToolbarTitle(title)
             }
         }
 
@@ -81,10 +86,7 @@ class SellerHomeActivity : BaseActivity() {
         sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
             when (menu.itemId) {
-                R.id.menu_sah_home -> {
-                    val title = getString(R.string.sah_home)
-                    showFragment(FragmentType.HOME, title)
-                }
+                R.id.menu_sah_home -> showFragment(FragmentType.HOME, homeTitle)
                 R.id.menu_sah_product -> {
                     val title = getString(R.string.sah_product)
                     showFragment(FragmentType.PRODUCT, title)
@@ -129,8 +131,8 @@ class SellerHomeActivity : BaseActivity() {
         }
     }
 
-    private fun observeCurrentSelectedPage() {
-        sharedViewModel.currentSelectedMenuIndex.observe(this, Observer {
+    private fun observeCurrentSelectedPageLiveData() {
+        sharedViewModel.currentSelectedMenu.observe(this, Observer {
             sahBottomNav.currentItem = it
         })
     }
@@ -142,6 +144,17 @@ class SellerHomeActivity : BaseActivity() {
                 showOrderNotificationCounter(it.data.sellerOrderStatus)
             }
         })
+    }
+
+    private fun observeShopInfoLiveData() {
+        homeViewModel.shopInfo.observe(this, Observer {
+            if (it is Success) {
+                val shopName = it.data.shopName
+                homeTitle = if (shopName.isBlank()) homeTitle else shopName
+                println("shop info : ${it.data}")
+            }
+        })
+        homeViewModel.getShopInfo()
     }
 
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
