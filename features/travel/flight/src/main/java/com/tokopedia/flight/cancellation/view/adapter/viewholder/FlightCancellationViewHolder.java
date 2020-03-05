@@ -212,11 +212,15 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         @Override
         public void checkIfAllPassengerIsChecked() {
             boolean allChecked = true;
-            for (int index = 0; index < passengerViewHolderList.size(); index++) {
-                if (!passengerViewHolderList.get(index).isPassengerChecked() &&
-                        !(passengerViewHolderList.get(index).passengerViewModel.getStatusString() != null &&
-                                passengerViewHolderList.get(index).passengerViewModel.getStatusString().length() > 0)) {
-                    allChecked = false;
+            if (passengerViewHolderList.size() == 0) {
+                allChecked = false;
+            } else {
+                for (int index = 0; index < passengerViewHolderList.size(); index++) {
+                    if (!passengerViewHolderList.get(index).isPassengerChecked() &&
+                            !(passengerViewHolderList.get(index).passengerViewModel.getStatusString() != null &&
+                                    passengerViewHolderList.get(index).passengerViewModel.getStatusString().length() > 0)) {
+                        allChecked = false;
+                    }
                 }
             }
 
