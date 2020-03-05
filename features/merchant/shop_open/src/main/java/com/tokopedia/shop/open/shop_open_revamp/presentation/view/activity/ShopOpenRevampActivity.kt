@@ -7,6 +7,7 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.shop.open.R
@@ -16,7 +17,7 @@ import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInter
 import com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment.*
 import com.tokopedia.shop.open.shop_open_revamp.presentation.view.fragment.ShopOpenRevampInputShopFragment.Companion.FIRST_FRAGMENT_TAG
 
-class ShopOpenRevampActivity : AppCompatActivity(), FragmentNavigationInterface {
+class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

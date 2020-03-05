@@ -174,7 +174,11 @@ public class QrScannerPresenter extends BaseDaggerPresenter<QrScannerContract.Vi
 
             @Override
             public void onNext(BranchIOAndroidDeepLink branchIOAndroidDeepLink) {
-                openActivity("tokopedia://" + branchIOAndroidDeepLink.getAndroidDeeplinkPath());
+                String path = branchIOAndroidDeepLink.getAndroidDeeplinkPath();
+                if (!path.startsWith("tokopedia://")) {
+                    path = "tokopedia://" + path;
+                }
+                openActivity(path);
                 QRTracking.eventScanQRCode("success", "", branchIOAndroidDeepLink.getAndroidDeeplinkPath());
             }
         });
