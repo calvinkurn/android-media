@@ -300,6 +300,7 @@ public interface ApplinkConst {
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
     String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
+    String SALAM_UMRAH_LIST_AGEN = "tokopedia://s/umroh/agen";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
