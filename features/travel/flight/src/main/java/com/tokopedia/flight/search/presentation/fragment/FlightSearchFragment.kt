@@ -873,7 +873,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     private fun setInFilterMode() {
-        inFilterMode = flightFilterModel.hasFilter()
+        inFilterMode = flightFilterModel.isHasFilter
     }
 
     interface OnFlightSearchFragmentListener {
