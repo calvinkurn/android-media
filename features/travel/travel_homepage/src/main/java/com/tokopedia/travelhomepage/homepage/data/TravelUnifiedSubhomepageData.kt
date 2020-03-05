@@ -52,6 +52,10 @@ data class TravelUnifiedSubhomepageData(
         @Expose
         val imageUrl: String = "",
 
+        @SerializedName("webURL")
+        @Expose
+        val webUrl: String = "",
+
         @SerializedName("appURL")
         @Expose
         val appUrl: String = ""

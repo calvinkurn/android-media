@@ -222,9 +222,9 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         }
     }
 
-    override fun onItemBindViewHolder(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean?) {
+    override fun onItemBindViewHolder(travelLayoutSubhomepageMetaData: TravelLayoutSubhomepage.Data, isFromCloud: Boolean?) {
         travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
-                travelLayoutSubhomepage.dataType, travelLayoutSubhomepage.widgetType, travelLayoutSubhomepage.priority, true)
+                travelLayoutSubhomepageMetaData, true)
     }
 
     companion object {

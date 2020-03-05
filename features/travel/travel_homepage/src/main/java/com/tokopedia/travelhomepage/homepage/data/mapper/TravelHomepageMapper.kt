@@ -3,6 +3,7 @@ package com.tokopedia.travelhomepage.homepage.data.mapper
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.travelhomepage.homepage.data.*
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
 import com.tokopedia.travelhomepage.homepage.data.widgetmodel.ProductGridCardItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
@@ -59,22 +60,36 @@ class TravelHomepageMapper {
         return viewModel
     }
 
-    fun mapToViewModel(widgetType: String, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageItemModel {
-        return when (widgetType) {
-            ConstantWidgetType.SLIDER_PRODUCT_CARD -> mapToProductCardModel(unifiedModel)
-            ConstantWidgetType.DYNAMIC_ICON -> mapToCategoryListModel(unifiedModel)
-            ConstantWidgetType.DYNAMIC_BANNER -> mapToBannerModel(unifiedModel)
-            ConstantWidgetType.SLIDER_PRODUCT_CARD -> mapToHomepageSectionModel(unifiedModel)
-            ConstantWidgetType.DUAL_PRODUCT_CARD -> mapToDestinationModel(unifiedModel, 2)
-            ConstantWidgetType.SINGLE_BANNER -> mapToDestinationModel(unifiedModel, 1)
-            else -> mapToCategoryListModel(unifiedModel)
+    fun mapToViewModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageItemModel {
+        return when (layoutData.widgetType) {
+            ConstantWidgetType.DUAL_PRODUCT_CARD, ConstantWidgetType.QUAD_PRODUCT_CARD -> mapToProductCardModel(layoutData, unifiedModel)
+            ConstantWidgetType.DYNAMIC_ICON -> mapToCategoryListModel(layoutData, unifiedModel)
+            ConstantWidgetType.DYNAMIC_BANNER -> mapToBannerModel(layoutData, unifiedModel)
+            ConstantWidgetType.SLIDER_PRODUCT_CARD -> mapToHomepageSectionModel(layoutData, unifiedModel)
+            ConstantWidgetType.DUAL_BANNER -> mapToDestinationModel(layoutData, unifiedModel, 2)
+            ConstantWidgetType.SINGLE_BANNER -> mapToDestinationModel(layoutData, unifiedModel, 1)
+            ConstantWidgetType.LEGO_BANNER -> mapToLegoBannerModel(layoutData, unifiedModel)
+            else -> mapToCategoryListModel(layoutData, unifiedModel)
         }
     }
 
-    private fun mapToDestinationModel(unifiedModel: List<TravelUnifiedSubhomepageData>, spanSize: Int): TravelHomepageDestinationModel {
+    private fun mapToLegoBannerModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageLegoBannerModel {
+        val banners = mutableListOf<LegoBannerItemModel>()
+        for (item in unifiedModel) {
+            val banner = LegoBannerItemModel()
+            banner.appUrl = item.appUrl
+            banner.imageUrl = item.imageUrl
+            banner.webUrl = item.webUrl
+
+            banners.add(banner)
+        }
+        return TravelHomepageLegoBannerModel(bannerItem = banners)
+    }
+
+    private fun mapToDestinationModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>, spanSize: Int): TravelHomepageDestinationModel {
         val products = mutableListOf<TravelHomepageDestinationModel.Destination>()
         for (item in unifiedModel) {
-            var product = TravelHomepageDestinationModel.Destination()
+            val product = TravelHomepageDestinationModel.Destination()
             product.attributes.title = item.title
             product.attributes.appUrl = item.appUrl
             product.attributes.imageUrl = item.imageUrl
@@ -85,7 +100,7 @@ class TravelHomepageMapper {
         return TravelHomepageDestinationModel(destination = products, spanSize = spanSize)
     }
 
-    private fun mapToHomepageSectionModel(unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageSectionModel {
+    private fun mapToHomepageSectionModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageSectionModel {
         val sectionItems = mutableListOf<TravelHomepageSectionModel.Item>()
         for (item in unifiedModel) {
             var sectionItem = TravelHomepageSectionModel.Item()
@@ -102,7 +117,7 @@ class TravelHomepageMapper {
         return TravelHomepageSectionModel(list = sectionItems)
     }
 
-    private fun mapToBannerModel(unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageBannerModel {
+    private fun mapToBannerModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageBannerModel {
         val banners = mutableListOf<TravelCollectiveBannerModel.Banner>()
         for (item in unifiedModel) {
             var banner = TravelCollectiveBannerModel.Banner()
@@ -118,7 +133,7 @@ class TravelHomepageMapper {
         return TravelHomepageBannerModel(TravelCollectiveBannerModel(banners = banners))
     }
 
-    private fun mapToProductCardModel(unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageProductCardModel {
+    private fun mapToProductCardModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageProductCardModel {
         val productList = mutableListOf<ProductGridCardItemModel>()
         for (item in unifiedModel) {
             var product = ProductGridCardItemModel()
@@ -131,7 +146,7 @@ class TravelHomepageMapper {
         return TravelHomepageProductCardModel(productItem = productList)
     }
 
-    private fun mapToCategoryListModel(unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageCategoryListModel {
+    private fun mapToCategoryListModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageCategoryListModel {
         var icons = mutableListOf<TravelHomepageCategoryListModel.Category>()
         for (item in unifiedModel) {
             var category = TravelHomepageCategoryListModel.Category()

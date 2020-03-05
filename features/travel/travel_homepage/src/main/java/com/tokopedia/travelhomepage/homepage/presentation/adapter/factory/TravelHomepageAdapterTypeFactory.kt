@@ -21,6 +21,7 @@ open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemB
             TravelHomepageSectionViewHolder.LAYOUT -> return TravelHomepageSectionViewHolder(parent, onBindListener, onItemClickListener)
             TravelHomepageDestinationViewHolder.LAYOUT -> return TravelHomepageDestinationViewHolder(parent, onBindListener, onItemClickListener)
             TravelHomepageProductCardViewHolder.LAYOUT -> return TravelHomepageProductCardViewHolder(parent, onBindListener, onItemClickListener)
+            TravelHomepageLegoBannerViewHolder.LAYOUT -> return TravelHomepageLegoBannerViewHolder(parent, onBindListener, onItemClickListener)
         }
         return super.createViewHolder(parent, type)
     }
@@ -34,4 +35,6 @@ open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemB
     override fun type(model: TravelHomepageSectionModel): Int = TravelHomepageSectionViewHolder.LAYOUT
 
     override fun type(model: TravelHomepageProductCardModel): Int = TravelHomepageProductCardViewHolder.LAYOUT
+
+    override fun type(model: TravelHomepageLegoBannerModel): Int = TravelHomepageLegoBannerViewHolder.LAYOUT
 }

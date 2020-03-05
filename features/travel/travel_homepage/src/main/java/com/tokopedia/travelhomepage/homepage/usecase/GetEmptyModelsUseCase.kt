@@ -6,6 +6,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.travelhomepage.homepage.data.*
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
@@ -92,6 +93,10 @@ class GetEmptyModelsUseCase @Inject constructor(val useCase: MultiRequestGraphql
                 }
                 ConstantWidgetType.SINGLE_BANNER -> {
                     travelHomepageItems.add(TravelHomepageDestinationModel(spanSize = 1))
+                    travelHomepageItems.lastOrNull()?.layoutData = item
+                }
+                ConstantWidgetType.LEGO_BANNER -> {
+                    travelHomepageItems.add(TravelHomepageLegoBannerModel())
                     travelHomepageItems.lastOrNull()?.layoutData = item
                 }
                 else -> {

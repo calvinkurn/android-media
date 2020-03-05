@@ -216,12 +216,12 @@ class TravelHomepageViewModel @Inject constructor(
         }
     }
 
-    fun getTravelUnifiedData(rawQuery: String, dataType: String, widgetType: String, priority: String, isFromCloud: Boolean) {
+    fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, isFromCloud: Boolean) {
 
         launchCatchError(block = {
-            val position = (priority.toInt()) - 1
+            val position = (layoutData.priority.toInt()) - 1
             val data = withContext(dispatcherProvider.ui()) {
-                val param = mapOf("dataType" to dataType, "widgetType" to widgetType, "data" to ParamData())
+                val param = mapOf("dataType" to layoutData.dataType, "widgetType" to layoutData.widgetType, "data" to ParamData())
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelUnifiedSubhomepageData.Response::class.java, param)
                 var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
@@ -230,13 +230,13 @@ class TravelHomepageViewModel @Inject constructor(
 
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[position] = mapper.mapToViewModel(widgetType, data.response)
+                updatedList[position] = mapper.mapToViewModel(layoutData, data.response)
                 updatedList[position].isLoaded = true
                 updatedList[position].isSuccess = true
                 travelItemList.value = updatedList
             }
         }) {
-            val position = (priority.toInt()) - 1
+            val position = (layoutData.priority.toInt()) - 1
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
                 updatedList[position].isLoaded = true

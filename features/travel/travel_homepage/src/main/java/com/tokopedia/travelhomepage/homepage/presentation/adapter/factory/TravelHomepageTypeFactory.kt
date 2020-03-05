@@ -17,4 +17,6 @@ interface TravelHomepageTypeFactory : AdapterTypeFactory {
     fun type(model: TravelHomepageSectionModel): Int
 
     fun type(model: TravelHomepageProductCardModel): Int
+
+    fun type(model: TravelHomepageLegoBannerModel): Int
 }

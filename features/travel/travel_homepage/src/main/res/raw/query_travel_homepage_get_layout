@@ -5,6 +5,11 @@ query {
       dataType
       widgetType
       priority
+      title
+      subtitle
+      appURL
+      webURL
+      metaText
     }
     meta{
       templateID
