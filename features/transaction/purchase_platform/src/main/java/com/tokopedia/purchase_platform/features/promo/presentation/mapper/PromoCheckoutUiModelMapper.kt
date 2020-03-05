@@ -1,9 +1,11 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.mapper
 
+import com.tokopedia.purchase_platform.features.promo.data.response.Coupon
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendation
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponSection
 import com.tokopedia.purchase_platform.features.promo.data.response.SubSection
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
+import java.lang.StringBuilder
 import javax.inject.Inject
 
 class PromoCheckoutUiModelMapper @Inject constructor() {
@@ -37,10 +39,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
     fun mapPromoInputUiModel(): PromoInputUiModel {
         return PromoInputUiModel(
                 uiData = PromoInputUiModel.UiData().apply {
-
+                    promoCode = ""
                 },
                 uiState = PromoInputUiModel.UiState().apply {
-
+                    isButtonSelectEnabled = false
+                    isError = false
                 }
         )
     }
@@ -74,13 +77,31 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
         )
     }
 
-    fun mapPromoListItemUiModel(): PromoListItemUiModel {
+    fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int): PromoListItemUiModel {
         return PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
-
+                    title = couponItem.title
+                    subTitle = couponItem.expiryInfo
+                    val tmpErrorMessage = StringBuilder()
+                    if (couponItem.clashingInfos.isNotEmpty()) {
+                        for ((index, data) in couponItem.clashingInfos.withIndex()) {
+                            tmpErrorMessage.append(data.message)
+                            if (index < couponItem.clashingInfos.size - 1) {
+                                tmpErrorMessage.append("\n")
+                            }
+                        }
+                    } else {
+                        tmpErrorMessage.append(couponItem.message)
+                    }
+                    errorMessage = if (couponItem.radioCheckState == PromoListItemUiModel.UiState.STATE_IS_DISABLED) tmpErrorMessage.toString() else ""
+                    imageResourceUrls = couponItem.tagImageUrls
+                    parentIdentifierId = headerIdentifierId
+                    promoCode = couponItem.code
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
-
+                    isEnabled = couponItem.radioCheckState == PromoListItemUiModel.UiState.STATE_IS_ENABLED
+                    isSellected = couponItem.isSelected
+                    isAttempted = couponItem.isAttempted
                 }
         )
     }

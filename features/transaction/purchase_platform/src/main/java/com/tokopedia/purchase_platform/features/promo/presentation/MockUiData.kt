@@ -58,7 +58,6 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
 
     val promoListItemUiModel = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 0
                 parentIdentifierId = 1
                 title = "Promo pertama"
                 subTitle = "Berakhir 1 jam lagi"
@@ -72,7 +71,6 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
 
     val promoListItemUiModel1 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 1
                 parentIdentifierId = 1
                 title = "Promo kedua"
                 subTitle = "Berakhir 2 jam lagi"
@@ -86,11 +84,10 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
 
     val promoListItemUiModel2 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 2
                 parentIdentifierId = 1
                 title = "Promo ketiga"
                 subTitle = "Berakhir 3 jam lagi"
-                imageResourceUrl = "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                imageResourceUrls = listOf("https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg")
             },
             uiState = PromoListItemUiModel.UiState().apply {
                 isEnabled = true
@@ -105,7 +102,6 @@ fun mockEligiblePromoGoldMerchantSection(): List<Visitable<*>> {
     val dataList = ArrayList<Visitable<*>>()
     val promoListItemUiModel3 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 3
                 parentIdentifierId = 2
                 title = "Promo pertama stage 2"
                 subTitle = "Berakhir 2 jam lagi"
@@ -136,7 +132,6 @@ fun mockEligiblePromoOfficialStoreSection(): List<Visitable<*>> {
     val dataList = ArrayList<Visitable<*>>()
     val promoListItemUiModel4 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 4
                 parentIdentifierId = 3
                 title = "Promo kedua"
                 subTitle = "Berakhir 2 jam lagi"
@@ -194,12 +189,11 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
 
     val promoListItemUiModel = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 100
                 parentIdentifierId = 11
                 title = "Promo pertama"
                 subTitle = "Berakhir 1 jam lagi"
                 errorMessage = "Tambah Rp27.500 untuk pakai promo."
-                imageResourceUrl = "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                imageResourceUrls = listOf("https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg")
             },
             uiState = PromoListItemUiModel.UiState().apply {
                 isEnabled = false
@@ -209,7 +203,6 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
 
     val promoListItemUiModel1 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 101
                 parentIdentifierId = 11
                 title = "Promo kedua"
                 subTitle = "Berakhir 2 jam lagi"
@@ -223,7 +216,6 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
 
     val promoListItemUiModel2 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 102
                 parentIdentifierId = 11
                 title = "Promo ketiga"
                 subTitle = "Berakhir 3 jam lagi"
@@ -257,7 +249,6 @@ fun mockIneligiblePromoGoldMerchantSection(): List<Visitable<*>> {
 
     val promoListItemUiModel3 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 201
                 parentIdentifierId = 22
                 title = "Promo pertama stage 2"
                 subTitle = "Berakhir 2 jam lagi"
@@ -291,7 +282,6 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
 
     val promoListItemUiModel4 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 301
                 parentIdentifierId = 33
                 title = "Promo kedua"
                 subTitle = "Berakhir 2 jam lagi"
@@ -337,7 +327,7 @@ val MOCK_RESPONSE = """
         "empty_state": {
           "title": "Kuponnya tidak ada",
           "description": "Banyakin belanja ya biar dapet kupon",
-          "image_url": "www.tokopedia.com"
+          "image_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
         },
         "title": "Pilih Promo",
         "sub_title": "Kamu bisa gabungkan promo!",
@@ -362,7 +352,7 @@ val MOCK_RESPONSE = """
               {
                 "title": "Kupon Saya",
                 "sub_title": "Promo dipilih",
-                "icon_url": "www.tokopedia.com",
+                "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": true,
                 "is_collapsed": true,
                 "tags": [],
@@ -373,13 +363,13 @@ val MOCK_RESPONSE = """
                     "message": "",
                     "expiry_info": "berakhir 3 hari lagi",
                     "expiry_count_down": 100000,
-                    "coupon_url": "www.tokopedia.com",
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpgm",
                     "coupon_app_link": "//tokopedia",
                     "unique_id": "cart-string",
                     "shop_id": 0,
                     "tag_image_urls": [
-                      "www.tokopedia.com",
-                      "www.tokopedia.com"
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 20000,
                     "is_recommended": false,
@@ -403,13 +393,13 @@ val MOCK_RESPONSE = """
                     "message": "",
                     "expiry_info": "berakhir 6 hari lagi",
                     "expiry_count_down": 200000,
-                    "coupon_url": "www.tokopedia.com",
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                     "coupon_app_link": "//tokopedia",
                     "unique_id": "cart-string",
                     "shop_id": 0,
                     "tag_image_urls": [
-                      "www.tokopedia.com",
-                      "www.tokopedia.com"
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 50000,
                     "is_recommended": true,
@@ -423,7 +413,7 @@ val MOCK_RESPONSE = """
               {
                 "title": "Apple Store",
                 "sub_title": "Toko Apel",
-                "icon_url": "www.tokopedia.com",
+                "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": true,
                 "is_collapsed": true,
                 "tags": [
@@ -436,13 +426,13 @@ val MOCK_RESPONSE = """
                     "message": "Kupon ini berlaku untuk pembelian kategori fashion",
                     "expiry_info": "berakhir 10 jam lagi",
                     "expiry_count_down": 10001,
-                    "coupon_url": "www.tokopedia.com",
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                     "coupon_app_link": "//tokopedia",
                     "unique_id": "cart-string",
                     "shop_id": 102,
                     "tag_image_urls": [
-                      "www.tokopedia.com",
-                      "www.tokopedia.com"
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 30000,
                     "is_recommended": true,
@@ -461,7 +451,7 @@ val MOCK_RESPONSE = """
               {
                 "title": "Banana Store",
                 "sub_title": "Toko Pisang",
-                "icon_url": "www.tokopedia.com",
+                "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": true,
                 "is_collapsed": true,
                 "tags": [],
@@ -472,13 +462,13 @@ val MOCK_RESPONSE = """
                     "message": "Kupon ini berlaku untuk pembelian mainan",
                     "expiry_info": "berakhir 3 jam lagi",
                     "expiry_count_down": 2345,
-                    "coupon_url": "www.tokopedia.com",
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                     "coupon_app_link": "//tokopedia",
                     "unique_id": "cart-string",
                     "shop_id": 103,
                     "tag_image_urls": [
-                      "www.tokopedia.com",
-                      "www.tokopedia.com"
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 60000,
                     "is_recommended": true,
@@ -499,7 +489,7 @@ val MOCK_RESPONSE = """
           {
             "title": "Kupon yang tidak bisa dipakai",
             "sub_title": "kuponnya ga bisa dipake ya",
-            "icon_url": "www.tokopedia.com",
+            "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
             "is_enabled": false,
             "is_collapsed": false,
             "tags": [],
@@ -508,7 +498,7 @@ val MOCK_RESPONSE = """
               {
                 "title": "Kupon Saya",
                 "sub_title": "Promo dipilih",
-                "icon_url": "www.tokopedia.com",
+                "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": false,
                 "is_collapsed": false,
                 "tags": [],
@@ -519,13 +509,13 @@ val MOCK_RESPONSE = """
                     "message": "Kupon ini berlaku untuk pembelian kategori fashion",
                     "expiry_info": "berakhir 3 hari lagi",
                     "expiry_count_down": 100000,
-                    "coupon_url": "www.tokopedia.com",
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                     "coupon_app_link": "//tokopedia",
                     "unique_id": "cart-string",
                     "shop_id": 0,
                     "tag_image_urls": [
-                      "www.tokopedia.com",
-                      "www.tokopedia.com"
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 20000,
                     "is_recommended": false,
@@ -546,11 +536,11 @@ val MOCK_RESPONSE = """
             "title": "Syarat dapat point",
             "tnc_details": [
               {
-                "icon_image_url": "www.tokopedia.com",
+                "icon_image_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "description": "peraturan pertama"
               },
               {
-                "icon_image_url": "www.tokopedia.com",
+                "icon_image_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "description": "peraturan kedua"
               }
             ]

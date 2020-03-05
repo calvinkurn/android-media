@@ -31,11 +31,10 @@ data class PromoListItemUiModel(
     }
 
     data class UiData(
-            var promoId: Int = 0,
             var title: String = "",
             var subTitle: String = "",
             var errorMessage: String = "",
-            var imageResourceUrl: String = "",
+            var imageResourceUrls: List<String> = emptyList(),
             var parentIdentifierId: Int = 0,
             var promoCode: String = ""
     )
@@ -43,7 +42,12 @@ data class PromoListItemUiModel(
     data class UiState(
             var isEnabled: Boolean = false,
             var isSellected: Boolean = false,
-            var isVisible: Boolean = true
-    )
+            var isAttempted: Boolean = false
+    ) {
+        companion object {
+            const val STATE_IS_ENABLED = "enabled"
+            const val STATE_IS_DISABLED = "disabled"
+        }
+    }
 
 }

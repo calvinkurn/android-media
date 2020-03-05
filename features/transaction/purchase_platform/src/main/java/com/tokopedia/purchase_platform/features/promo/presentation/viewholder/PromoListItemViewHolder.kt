@@ -30,8 +30,8 @@ class PromoListItemViewHolder(private val view: View,
     }
 
     override fun bind(element: PromoListItemUiModel) {
-        if (element.uiData.imageResourceUrl.isNotBlank()) {
-            ImageHandler.loadImageRounded2(itemView.context, itemView.image_promo_item, element.uiData.imageResourceUrl)
+        if (element.uiData.imageResourceUrls.isNotEmpty()) {
+            ImageHandler.loadImageRounded2(itemView.context, itemView.image_promo_item, element.uiData.imageResourceUrls[0])
             itemView.label_promo_item_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
                     itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
             itemView.image_promo_item.show()
@@ -40,7 +40,7 @@ class PromoListItemViewHolder(private val view: View,
             itemView.image_promo_item.gone()
         }
 
-        if (element.uiData.promoCode.isNotBlank()) {
+        if (element.uiState.isAttempted) {
             itemView.label_promo_code_value.text = element.uiData.promoCode
             itemView.label_promo_code_value.show()
             itemView.label_promo_code_info.show()
@@ -61,9 +61,6 @@ class PromoListItemViewHolder(private val view: View,
         itemView.card_promo_item.setOnClickListener {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION && element.uiState.isEnabled) {
-//                element.uiState.isSellected = !element.uiState.isSellected
-//                renderEnablePromoItem(element)
-
                 listener.onClickPromoListItem(position, element)
             }
         }
@@ -86,8 +83,12 @@ class PromoListItemViewHolder(private val view: View,
 
     private fun renderDisablePromoItem(element: PromoListItemUiModel) {
         itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER_DISABLED
-        itemView.label_promo_item_error_message.text = element.uiData.errorMessage
-        itemView.label_promo_item_error_message.show()
+        if (element.uiData.errorMessage.isNotBlank()) {
+            itemView.label_promo_item_error_message.text = element.uiData.errorMessage
+            itemView.label_promo_item_error_message.show()
+        } else {
+            itemView.label_promo_item_error_message.gone()
+        }
         itemView.label_promo_item_sub_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
                 itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
         itemView.image_select_promo.gone()
@@ -95,27 +96,31 @@ class PromoListItemViewHolder(private val view: View,
     }
 
     private fun formatSubTitle(element: PromoListItemUiModel) {
-        val clickableText = " Lihat detail"
-        if (!element.uiData.subTitle.contains(clickableText)) element.uiData.subTitle += clickableText
+        if (!element.uiState.isAttempted) {
+            val clickableText = " Lihat detail"
+            if (!element.uiData.subTitle.contains(clickableText)) element.uiData.subTitle += clickableText
 
-        val startSpan = element.uiData.subTitle.indexOf(clickableText)
-        val endSpan = element.uiData.subTitle.indexOf(clickableText) + clickableText.length
-        val formattedClickableText = SpannableString(element.uiData.subTitle)
-        val clickableSpan = object : ClickableSpan() {
-            override fun onClick(textView: View) {
-                listener.onClickPromoItemDetail(element)
-            }
+            val startSpan = element.uiData.subTitle.indexOf(clickableText)
+            val endSpan = element.uiData.subTitle.indexOf(clickableText) + clickableText.length
+            val formattedClickableText = SpannableString(element.uiData.subTitle)
+            val clickableSpan = object : ClickableSpan() {
+                override fun onClick(textView: View) {
+                    listener.onClickPromoItemDetail(element)
+                }
 
-            override fun updateDrawState(textPaint: TextPaint) {
-                super.updateDrawState(textPaint)
-                textPaint.isUnderlineText = false
-                textPaint.color = ContextCompat.getColor(itemView.context, R.color.Green_G500)
+                override fun updateDrawState(textPaint: TextPaint) {
+                    super.updateDrawState(textPaint)
+                    textPaint.isUnderlineText = false
+                    textPaint.color = ContextCompat.getColor(itemView.context, R.color.Green_G500)
+                }
             }
+            formattedClickableText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+            itemView.label_promo_item_sub_title.movementMethod = LinkMovementMethod.getInstance()
+            itemView.label_promo_item_sub_title.text = formattedClickableText
+        } else {
+            itemView.label_promo_item_sub_title.text = element.uiData.subTitle
         }
-        formattedClickableText.setSpan(clickableSpan, startSpan, endSpan, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-        itemView.label_promo_item_sub_title.movementMethod = LinkMovementMethod.getInstance()
-        itemView.label_promo_item_sub_title.text = formattedClickableText
     }
 
 

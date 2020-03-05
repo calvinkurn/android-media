@@ -133,7 +133,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(private val gqlUseC
 //                .Builder(CacheType.ALWAYS_CLOUD).build())
 //
 //        val gqlResponse = gqlUseCase.executeOnBackground()
-//        val response = gqlResponse.getData<GqlCouponListRecommendationResponse>(GqlCouponListRecommendationResponse::class.java)
+//        val couponListRecommendation = gqlResponse.getData<GqlCouponListRecommendationResponse>(GqlCouponListRecommendationResponse::class.java)
 
         return couponListRecommendation
     }

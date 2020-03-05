@@ -122,17 +122,19 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     isShow = true
                 } else if (lastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == lastHeaderUiModel?.uiData?.identifierId) {
                     isShow = true
-                } else if (lastData is PromoListItemUiModel && lastData.uiState.isEnabled) {
+                } else if (lastData is PromoListItemUiModel) {
                     if (lastHeaderUiModel != null && lastData.uiData.parentIdentifierId == lastHeaderUiModel?.uiData?.identifierId) {
                         isShow = true
                     } else {
+                        var foundHeader = false
                         adapter.data.forEach {
-                            if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
+                            if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId && lastData.uiState.isEnabled) {
                                 lastHeaderUiModel = it
+                                foundHeader = true
                                 return@forEach
                             }
                         }
-                        isShow = true
+                        isShow = foundHeader
                     }
                 } else {
                     isShow = false
@@ -453,7 +455,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     break
                 } else {
                     val promoItem = adapter.data[index] as PromoListItemUiModel
-                    if (promoItem.uiData.promoId != element.uiData.promoId && promoItem.uiState.isSellected) {
+                    if (promoItem.uiData.promoCode != element.uiData.promoCode && promoItem.uiState.isSellected) {
                         promoItem.uiState.isSellected = false
                         unCheckIndex = index
                         break
@@ -476,7 +478,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
-            putExtra(EXTRA_KUPON_CODE, "FONSBBLIF29DDV9L51M")
+            putExtra(EXTRA_KUPON_CODE, element.uiData.promoCode)
             putExtra(EXTRA_IS_USE, true)
             putExtra(ONE_CLICK_SHIPMENT, false)
             putExtra(PAGE_TRACKING, FROM_CART)

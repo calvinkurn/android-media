@@ -9,7 +9,10 @@ import com.tokopedia.purchase_platform.features.promo.domain.usecase.GetCouponLi
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel.UiState.Companion.STATE_IS_DISABLED
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel.UiState.Companion.STATE_IS_ENABLED
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -70,44 +73,54 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         _fragmentUiModel.value = fragmentUiModel
 
 //        mockData()
+
+        launch { getCouponRecommendation() }
+    }
+
+    suspend fun getCouponRecommendation() {
         launchCatchError(block = {
+            // Get response
             val response = withContext(dispatcher) {
                 getCouponListRecommendationUseCase.params = HashMap()
                 getCouponListRecommendationUseCase.executeOnBackground()
             }
 
+            // Initialize promo recommendation
             val promoRecommendation = response.couponListRecommendation.data.promoRecommendation
             if (promoRecommendation.codes.isNotEmpty()) {
                 _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(response.couponListRecommendation)
             }
 
-            val promoInputUiModel = PromoInputUiModel(
-                    uiData = PromoInputUiModel.UiData().apply {
-                        promoCode = ""
-                    },
-                    uiState = PromoInputUiModel.UiState().apply {
-                        isButtonSelectEnabled = false
-                        isError = false
-                    }
-            )
+            // Initialize promo input model
+            val promoInputUiModel = uiModelMapper.mapPromoInputUiModel()
             _promoInputUiModel.value = promoInputUiModel
 
+            // Initialize coupon section
             val couponSection = response.couponListRecommendation.data.couponSections
             val couponList = ArrayList<Visitable<*>>()
             couponSection.forEach { couponSectionItem ->
+
+                // Initialize eligibility header
                 val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
                 couponList.add(eligibilityHeader)
 
+                // Initialize promo list header
                 val headerIdentifierId = 0
                 couponSectionItem.subSections.forEach { couponSubSection ->
                     val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId)
                     couponList.add(promoHeader)
+
+                    // Initialize promo list item
+                    couponSubSection.coupons.forEach { couponItem ->
+                        val promoItem = uiModelMapper.mapPromoListItemUiModel(couponItem, promoHeader.uiData.identifierId)
+                        couponList.add(promoItem)
+                    }
                 }
             }
             _promoListUiModel.value = couponList
 
         }) {
-
+            // Todo : Show error state
         }
     }
 
