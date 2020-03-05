@@ -50,7 +50,7 @@
         android:id="@+id/fingerprint_onboarding_aktivasi_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="dimen/dp_12"
+        android:layout_marginBottom="@dimen/dp_12"
         android:text="@string/login_fingerprint_aktivasi_title"
         android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/fingerprint_onboarding_skip_btn"
