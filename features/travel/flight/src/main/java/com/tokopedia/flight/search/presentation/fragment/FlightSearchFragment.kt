@@ -307,7 +307,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         }
 
         if (list.isNotEmpty()) {
-            setQuickFilterState()
+            setupQuickFilter()
             showQuickFilter()
         } else if (!adapter.isContainData) {
             hideQuickFilter()
@@ -706,7 +706,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightFilterModel = buildFilterModel(FlightFilterModel())
         adapter.clearAllNonDataElement()
         showLoading()
-        setQuickFilterState()
+        setupQuickFilter()
         fetchSortAndFilterData()
     }
 
@@ -779,6 +779,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flight_sort_filter.parentListener = {
             showFilterSortBottomSheet()
         }
+        flight_sort_filter.sortFilterHorizontalScrollView.scrollX = 0
 
         // setup items
         if (filterItems.size < FILTER_SORT_ITEM_SIZE) {
@@ -838,12 +839,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             flight_sort_filter.addItem(filterItems)
         }
 
-        setQuickFilterState()
-    }
-
-    private fun setQuickFilterState() {
         // setup state
-        flight_sort_filter.sortFilterHorizontalScrollView.scrollX = 0
         if (::flightFilterModel.isInitialized) {
             flightFilterModel.let {
                 if (it.transitTypeList.contains(TransitEnum.DIRECT)) {
