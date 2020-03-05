@@ -39,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_save_address"
+            android:id="@+id/btn_save_duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/sp_16"

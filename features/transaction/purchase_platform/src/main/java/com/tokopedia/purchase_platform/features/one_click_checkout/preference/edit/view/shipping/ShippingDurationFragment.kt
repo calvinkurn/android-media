@@ -11,13 +11,25 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ServicesItemModelNoPrice
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
 import kotlinx.android.synthetic.main.fragment_shipping_duration.*
 import javax.inject.Inject
 
 class ShippingDurationFragment : BaseDaggerFragment(){
+
+    companion object {
+        private const val ARG_IS_EDIT = "is_edit"
+
+        fun newInstance(isEdit: Boolean = false): ShippingDurationFragment {
+            val shippingDurationFragment = ShippingDurationFragment()
+            val bundle = Bundle()
+            bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            shippingDurationFragment.arguments = bundle
+            return shippingDurationFragment
+        }
+    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -52,6 +64,7 @@ class ShippingDurationFragment : BaseDaggerFragment(){
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initHeader()
         initViewModel()
         viewModel.getShippingDuration()
 
@@ -59,19 +72,41 @@ class ShippingDurationFragment : BaseDaggerFragment(){
         shipping_duration_rv.adapter = adapter
         shipping_duration_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
+        btn_save_duration.setOnClickListener {
+            goToNextStep()
+        }
     }
 
-    override fun onStart() {
-        super.onStart()
-        setStep()
-    }
-
-    private fun setStep(){
+    private fun goToNextStep() {
         val parent = activity
-        if(parent is PreferenceEditActivity) {
-            parent.setStepperValue(50, true)
-            parent.setHeaderTitle(getString(R.string.activity_title_shipping_duration))
-            parent.setHeaderSubtitle(getString(R.string.activity_subtitle_shipping_address))
+        if (parent is PreferenceEditActivity) {
+            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+                parent.goBack()
+            } else {
+                parent.addFragment(PaymentMethodFragment.newInstance())
+            }
+        }
+    }
+
+    private fun initHeader() {
+        if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+            val parent = activity
+            if (parent is PreferenceEditActivity) {
+                parent.hideStepper()
+                parent.setHeaderTitle(getString(R.string.activity_title_shipping_duration))
+                parent.hideDeleteButton()
+                parent.hideAddButton()
+            }
+        } else {
+            val parent = activity
+            if (parent is PreferenceEditActivity) {
+                parent.hideDeleteButton()
+                parent.hideAddButton()
+                parent.showStepper()
+                parent.setStepperValue(50, true)
+                parent.setHeaderTitle(getString(R.string.activity_title_shipping_duration))
+                parent.setHeaderSubtitle(getString(R.string.activity_subtitle_shipping_address))
+            }
         }
     }
 

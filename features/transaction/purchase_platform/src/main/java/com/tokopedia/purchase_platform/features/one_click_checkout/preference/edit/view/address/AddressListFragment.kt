@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +16,8 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.model.AddressListModel
@@ -49,6 +50,16 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
 
     companion object {
         const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
+
+        private const val ARG_IS_EDIT = "is_edit"
+
+        fun newInstance(isEdit: Boolean = false): AddressListFragment {
+            val addressListFragment = AddressListFragment()
+            val bundle = Bundle()
+            bundle.putBoolean(ARG_IS_EDIT, isEdit)
+            addressListFragment.arguments = bundle
+            return addressListFragment
+        }
     }
 
     val adapter = AddressListItemAdapter()
@@ -77,6 +88,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
                         empty_state_order_list.visibility = View.VISIBLE
                         address_list_rv.visibility = View.GONE
                     } else {
+                        empty_state_order_list.gone()
+                        address_list_rv.visible()
                         renderData(it.listAddress)
                     }
 
@@ -95,13 +108,18 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initHeader()
         initViewModel()
         viewModel.getAddress()
 
         if(empty_state_order_list.visibility == View.GONE){
             btn_save_address.text = getString(R.string.label_button_input_address)
             btn_save_address.setOnClickListener {
-                goToNextStep()
+                if (arguments?.getBoolean(ARG_IS_EDIT) == false) {
+                    goToNextStep()
+                } else {
+                    goBack()
+                }
             }
         } else {
             address_list_layout.visibility = View.GONE
@@ -119,6 +137,37 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
         initSearchView()
         onSearchReset()
 
+    }
+
+    private fun goBack() {
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            parent.goBack()
+        }
+    }
+
+    private fun initHeader() {
+        if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+            val parent = activity
+            if (parent is PreferenceEditActivity) {
+                parent.hideStepper()
+                parent.setHeaderTitle(getString(R.string.activity_title_choose_address))
+                parent.showAddButton()
+                parent.setAddButtonOnClickListener {
+                    goToPickLocation()
+                }
+            }
+        } else {
+            val parent = activity
+            if (parent is PreferenceEditActivity) {
+                parent.hideDeleteButton()
+                parent.hideAddButton()
+                parent.showStepper()
+                parent.setStepperValue(25, true)
+                parent.setHeaderTitle(getString(R.string.activity_title_choose_address))
+                parent.setHeaderSubtitle(getString(R.string.activity_subtitle_choose_address))
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -193,7 +242,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
 
     override fun onStart() {
         super.onStart()
-        setStep()
+//        setStep()
     }
 
     private fun setStep() {
@@ -209,7 +258,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
     private fun goToNextStep() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
-            parent.addFragment(ShippingDurationFragment())
+            parent.addFragment(ShippingDurationFragment.newInstance())
         }
     }
 

@@ -25,7 +25,7 @@
 
         <activity
             android:name=".features.one_click_checkout.preference.edit.view.PreferenceEditActivity"
-            android:label="@string/purchase_preference"
+            android:label="@string/occ_preference"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">
@@ -43,7 +43,7 @@
 
         <activity
             android:name=".features.one_click_checkout.preference.list.view.PreferenceListActivity"
-            android:label="@string/purchase_preference"
+            android:label="@string/occ_preference"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter android:autoVerify="true">

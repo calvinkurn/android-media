@@ -79,7 +79,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
             listener.onPreferenceSelected(preference)
         }
         ivEditPreference.setOnClickListener {
-            listener.onPreferenceEditClicked(preference)
+            listener.onPreferenceEditClicked(preference, adapterPosition + 1)
         }
     }
 }

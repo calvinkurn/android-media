@@ -90,13 +90,13 @@
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_24"
                 android:paddingRight="@dimen/dp_24"
+                android:text="@string/label_change_template"
                 android:textColor="@color/Green_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_address_receiver"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_address_receiver"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
-                tools:text="Ubah" />
+                app:typographyWeight="bold" />
 
             <View
                 android:id="@+id/divider"
@@ -148,13 +148,13 @@
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_24"
                 android:paddingRight="@dimen/dp_24"
+                android:text="@string/label_change_template"
                 android:textColor="@color/Green_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_shipping_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_shipping_name"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
-                tools:text="Ubah" />
+                app:typographyWeight="bold" />
 
             <View
                 android:id="@+id/divider2"
@@ -221,25 +221,25 @@
                 android:paddingLeft="@dimen/dp_8"
                 android:paddingEnd="@dimen/dp_24"
                 android:paddingRight="@dimen/dp_24"
+                android:text="@string/label_change_template"
                 android:textColor="@color/Green_G500"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_payment_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tv_payment_name"
                 app:typographyType="body_3"
-                app:typographyWeight="bold"
-                tools:text="Ubah" />
+                app:typographyWeight="bold" />
 
             <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/btn_save"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/dp_16"
+                android:text="@string/lbl_save"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
-                app:layout_constraintVertical_bias="1"
-                tools:text="Simpan Preferensi" />
+                app:layout_constraintVertical_bias="1" />
 
             <!--        <androidx.constraintlayout.widget.Group-->
             <!--            android:id="@+id/main_content"-->

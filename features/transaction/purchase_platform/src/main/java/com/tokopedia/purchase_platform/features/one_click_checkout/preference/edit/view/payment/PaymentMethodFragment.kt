@@ -21,18 +21,11 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_payment_method.*
-import rx.Observable
-import rx.Subscriber
-import rx.android.schedulers.AndroidSchedulers
-import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
-import java.util.concurrent.TimeUnit
 
 class PaymentMethodFragment : BaseDaggerFragment() {
 
     companion object {
-
-        const val FORCE_TIMEOUT = 90000L
 
         private const val ARG_IS_EDIT = "is_edit"
 
@@ -68,11 +61,11 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         if (parent is PreferenceEditActivity) {
             parent.hideAddButton()
             parent.hideDeleteButton()
-            parent.setHeaderTitle("Pilih Metode Pembayaran")
+            parent.setHeaderTitle(getString(R.string.lbl_choose_payment))
             if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
                 parent.hideStepper()
             } else {
-                parent.setHeaderSubtitle("Langkah 3 dari 3")
+                parent.setHeaderSubtitle(getString(R.string.step_choose_payment))
                 parent.showStepper()
                 parent.setStepperValue(75, true)
             }
@@ -128,13 +121,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             progress_bar?.gone()
         }
 
-        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-            return super.shouldOverrideUrlLoading(view, url)
-        }
-
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             val uri = Uri.parse(url)
-            val query = uri.query
             val isSuccess = uri.getQueryParameter("success")
             if (isSuccess != null && isSuccess.equals("true", true)) {
                 val gatewayCode = uri.getQueryParameter("gateway_code")
@@ -150,34 +138,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             for (key in uri.queryParameterNames) {
                 map[key] = uri.getQueryParameter(key) ?: ""
             }
-            val metadata = Gson().toJson(map)
-            return metadata
+            return Gson().toJson(map)
         }
-    }
-
-    private fun timerObservable(view: WebView) {
-        compositeSubscription.add(
-                Observable.timer(FORCE_TIMEOUT, TimeUnit.MILLISECONDS)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Subscriber<Long>() {
-                            override fun onCompleted() {}
-                            override fun onError(e: Throwable) {
-                                e.printStackTrace()
-                            }
-
-                            override fun onNext(aLong: Long) {
-                                if (!isUnsubscribed) {
-                                    showErrorTimeout(view)
-                                }
-                            }
-                        })
-        )
-    }
-
-    private fun showErrorTimeout(view: WebView) {
-//        view.stopLoading()
-//        showToastMessageWithForceCloseView(ErrorNetMessage.MESSAGE_ERROR_TIMEOUT)
     }
 
     private fun goToNextStep(gatewayCode: String, metadata: String) {
@@ -186,7 +148,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             parent.gatewayCode = gatewayCode
             parent.paymentQuery = metadata
             if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
-                parent.onBackPressed()
+                parent.goBack()
             } else {
                 parent.addFragment(PreferenceSummaryFragment.newInstance())
             }

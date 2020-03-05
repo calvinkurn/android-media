@@ -7,8 +7,8 @@ data class CreatePreferenceRequest(
         val addressId: Int,
         @SerializedName("service_id")
         val serviceId: Int,
-        @SerializedName("gatewayCode")
+        @SerializedName("gateway_code")
         val gatewayCode: String,
         @SerializedName("metadata")
-        val metadata: String? = null
+        val metadata: String
 )

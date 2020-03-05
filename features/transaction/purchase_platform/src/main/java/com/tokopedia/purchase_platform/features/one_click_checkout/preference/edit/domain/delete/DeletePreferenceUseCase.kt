@@ -34,7 +34,7 @@ class DeletePreferenceUseCase @Inject constructor(val graphqlUseCase: GraphqlUse
         const val PARAM_KEY = "profileId"
         val QUERY = """
             mutation delete_profile_occ(${"$"}profileId : Int) {
-              delete_profile_occ(profile_id: ${"$"}profileId){
+              delete_profile_occ(profile_id: ${"$"}profileId, dummy: 1){
                   error_message
                   status
                   data{

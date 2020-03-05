@@ -125,18 +125,20 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                 }
                 is OccState.Fail -> {
 //                    if (!it.isConsumed) {
-                        progressDialog?.dismiss()
-                        view?.let { view ->
-                            if (it.throwable != null) {
-                                if (it.throwable is MessageErrorException) {
-                                    Toaster.make(view, it.throwable.message ?: "Failed", type = Toaster.TYPE_ERROR)
-                                } else {
-                                    Toaster.make(view, it.throwable.localizedMessage ?: "Failed", type = Toaster.TYPE_ERROR)
-                                }
+                    progressDialog?.dismiss()
+                    view?.let { view ->
+                        if (it.throwable != null) {
+                            if (it.throwable is MessageErrorException) {
+                                Toaster.make(view, it.throwable.message
+                                        ?: "Failed", type = Toaster.TYPE_ERROR)
                             } else {
-                                Toaster.make(view, "Failed", type = Toaster.TYPE_ERROR)
+                                Toaster.make(view, it.throwable.localizedMessage
+                                        ?: "Failed", type = Toaster.TYPE_ERROR)
                             }
+                        } else {
+                            Toaster.make(view, "Failed", type = Toaster.TYPE_ERROR)
                         }
+                    }
 //                        viewModel.consumeSetDefaultPreferenceFail()
 //                    }
                 }
@@ -196,6 +198,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     private fun initViews() {
         btn_preference_list_action.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapter.itemCount + 1)
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
         rv_preference_list.adapter = adapter
@@ -220,12 +223,14 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
         viewModel.changeDefaultPreference(preference)
     }
 
-    override fun onPreferenceEditClicked(preference: ProfilesItemModel) {
+    override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
         intent.apply {
-            putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, 1)
-            putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, 1)
-            putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, "")
+            putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, position)
+            putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
+            putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
+            putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
+            putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode)
         }
         startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
     }

@@ -78,7 +78,7 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
             listener.onChangePreference(preference)
         }
 
-        override fun onPreferenceEditClicked(preference: ProfilesItemModel) {
+        override fun onPreferenceEditClicked(preference: ProfilesItemModel, adapterPosition: Int) {
             bottomSheet?.dismiss()
             listener.onEditPreference(preference)
         }

@@ -48,8 +48,8 @@
     <string name="save_setting_label">Simpan</string>
     <string name="header_privacy_account_setting">Keamanan</string>
     <string name="title_favorite_page">Favorit</string>
-    <string name="title_preference_setting">Preferensi Pembelanjaan</string>
-    <string name="subtitle_preference_setting">Preferensi Belanja</string>
+    <string name="title_preference_setting">Beli Langsung</string>
+    <string name="subtitle_preference_setting">Atur pengiriman &amp; pembayaranmu favoritmu</string>
 
     <string name="label_chat">Chat</string>
     <string name="label_chat_admin">Chat Tokopedia Administrator</string>

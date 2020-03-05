@@ -260,11 +260,13 @@
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
 
-    <string name="purchase_preference">Preferensi Pembelanjaan</string>
-    <string name="preference_list_empty_header">Pakai Preferensi Pembelanjaan agar transaksimu lebih cepat</string>
-    <string name="preference_list_empty_subtitle">Kamu bisa mempercepat proses transaksi kamu dengan membuat 1 preference alamat, pengiriman, dan pembayaran.</string>
-    <string name="button_create_preference">Buat Preferensi</string>
-    <string name="button_add_preference">Tambah Preferensi</string>
+    <string name="occ_preference">Pengaturan Beli Langsung</string>
+    <string name="preference_list_empty_header">Kamu belum punya pengaturan Beli Langsung</string>
+    <string name="preference_list_empty_subtitle">Atur kombinasi pengiriman dan pembayaran favoritmu untuk langsung dipakai setiap belanja.</string>
+    <string name="add_first_preference">Atur</string>
+    <string name="add_preference">Tambah Pilihan</string>
+    <string name="lbl_make_default_preference">Jadikan Pilihan Utama</string>
+    <string name="lbl_default_preference">Utama</string>
 
     <!--Choose Address-->
     <string name="hint_find_address">Cari alamat</string>
@@ -292,7 +294,16 @@
     <string name="one_click_checkout">Express Checkout</string>
     <string name="pay">Bayar</string>
     <string name="preference_number">Pilihan %1d</string>
-    <string name="add_first_preference">Atur</string>
-    <string name="add_preference">Tambah Pilihan</string>
-    <string name="lbl_make_default_preference">Jadikan Pilihan Utama</string>
+
+    <string name="lbl_summary_preference_title">Pengaturan Beli Langsung</string>
+    <string name="lbl_summary_preference_with_number_title">Atur pilihan %1d</string>
+    <string name="lbl_summary_preference_subtitle">Cek ringkasan pengaturanmu</string>
+
+    <string name="lbl_choose_payment">Pilih Metode Pembayaran</string>
+    <string name="step_choose_payment">Langkah 3 dari 3</string>
+    <string name="lbl_save">Simpan</string>
+
+    <string name="lbl_delete_preference_title">Hapus pilihan ini?</string>
+    <string name="lbl_delete_preference_desc">Pengaturan Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
+    <string name="lbl_delete_preference_ok">Ya, Hapus</string>
 </resources>

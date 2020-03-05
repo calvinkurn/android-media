@@ -54,10 +54,10 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
 
-        if (addressId == -1 || shippingId == -1 || gatewayCode.isNotBlank()) {
-            supportFragmentManager.beginTransaction().replace(R.id.container, PaymentMethodFragment.newInstance()).commit()
+        if (addressId == -1 || shippingId == -1 || gatewayCode.isBlank() || profileId == -1) {
+            supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment.newInstance()).commit()
         } else {
-            supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment.newInstance(true))
+            supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()
         }
     }
 
@@ -71,6 +71,10 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
 
     fun addFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().replace(R.id.container, fragment).addToBackStack(null).commit()
+    }
+
+    fun goBack() {
+        supportFragmentManager.popBackStack()
     }
 
     fun setStepperValue(value: Int, isSmooth: Boolean = true) {

@@ -72,6 +72,16 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         getPreferenceDetail()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        removeObserver()
+    }
+
+    private fun removeObserver() {
+        viewModel.preference.removeObservers(this)
+        viewModel.editResult.removeObservers(this)
+    }
+
     private fun getPreferenceDetail() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
@@ -111,17 +121,20 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
                 is OccState.Fail -> {
                     progressDialog?.dismiss()
-                    view?.let { view ->
-                        if (it.throwable != null) {
-                            if (it.throwable is MessageErrorException) {
-                                Toaster.make(view, it.throwable.message
-                                        ?: "Failed", type = Toaster.TYPE_ERROR)
+                    if (!it.isConsumed) {
+                        view?.let { view ->
+                            if (it.throwable != null) {
+                                if (it.throwable is MessageErrorException) {
+                                    Toaster.make(view, it.throwable.message
+                                            ?: "Failed", type = Toaster.TYPE_ERROR)
+                                } else {
+                                    Toaster.make(view, it.throwable.localizedMessage
+                                            ?: "Failed", type = Toaster.TYPE_ERROR)
+                                }
                             } else {
-                                Toaster.make(view, it.throwable.localizedMessage
-                                        ?: "Failed", type = Toaster.TYPE_ERROR)
+                                Toaster.make(view, "Failed", type = Toaster.TYPE_ERROR)
                             }
-                        } else {
-                            Toaster.make(view, "Failed", type = Toaster.TYPE_ERROR)
+                            viewModel.consumeEditResultFail()
                         }
                     }
                 }
@@ -139,12 +152,17 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     }
 
     private fun setupViews(data: GetPreferenceData) {
-        val parent = activity
-        if (parent is PreferenceEditActivity) {
-            val preferenceIndex = parent.preferenceIndex
-            if (preferenceIndex > 0) {
-                tv_preference_name.text = "Pilihan $preferenceIndex"
+        if (arguments?.getBoolean(ARG_IS_EDIT) == false) {
+            val parent = activity
+            if (parent is PreferenceEditActivity) {
+                val preferenceIndex = parent.preferenceIndex
+                if (preferenceIndex > 0) {
+                    tv_preference_name.text = getString(R.string.preference_number, preferenceIndex)
+                    tv_preference_name.visible()
+                }
             }
+        } else {
+            tv_preference_name.gone()
         }
 
         val addressModel = data.addressModel
@@ -210,7 +228,6 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                 }
             }
         }
-//        viewModel.consumePreferenceListFail()
     }
 
     private fun showGlobalError(type: Int) {
@@ -230,14 +247,14 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         btn_change_address.setOnClickListener {
             val parent = activity
             if (parent is PreferenceEditActivity) {
-                parent.addFragment(AddressListFragment())
+                parent.addFragment(AddressListFragment.newInstance(true))
             }
         }
 
         btn_change_duration.setOnClickListener {
             val parent = activity
             if (parent is PreferenceEditActivity) {
-                parent.addFragment(ShippingDurationFragment())
+                parent.addFragment(ShippingDurationFragment.newInstance(true))
             }
         }
 
@@ -266,16 +283,16 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
             parent.hideAddButton()
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+            if (arguments?.getBoolean(ARG_IS_EDIT) == true && parent.profileId > -1) {
                 parent.showDeleteButton()
                 parent.setDeleteButtonOnClickListener {
                     context?.let {
                         if (viewModel.preference.value is OccState.Success) {
                             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                                setTitle("Hapus pilihan ini?")
-                                setDescription("Pengaturan Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.")
-                                setPrimaryCTAText("Ya, Hapus")
-                                setSecondaryCTAText("Kembali")
+                                setTitle(getString(R.string.lbl_delete_preference_title))
+                                setDescription(getString(R.string.lbl_delete_preference_desc))
+                                setPrimaryCTAText(getString(R.string.lbl_delete_preference_ok))
+                                setSecondaryCTAText(getString(R.string.text_button_negative))
                                 setPrimaryCTAClickListener {
                                     dismiss()
                                     viewModel.deletePreference()
@@ -287,12 +304,12 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                         }
                     }
                 }
-                parent.setHeaderTitle("Atur pilihan 1")
+                parent.setHeaderTitle(getString(R.string.lbl_summary_preference_with_number_title, parent.preferenceIndex))
                 parent.hideStepper()
             } else {
                 parent.hideDeleteButton()
-                parent.setHeaderTitle("Atur Express Checkout")
-                parent.setHeaderSubtitle("Cek ringkasan pengaturanmu")
+                parent.setHeaderTitle(getString(R.string.lbl_summary_preference_title))
+                parent.setHeaderSubtitle(getString(R.string.lbl_summary_preference_subtitle))
                 parent.showStepper()
                 parent.setStepperValue(100, true)
             }

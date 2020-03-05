@@ -36,7 +36,7 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<AddToCartDataModel> {
-        val addToCartRequest = requestParams?.getObject(AddToCartOcsUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartOcsRequestParams
+        val addToCartRequest = requestParams?.getObject(REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST) as AddToCartOcsRequestParams
         val graphqlRequest = GraphqlRequest(queryString, AddToCartOcsGqlResponse::class.java, getParams(addToCartRequest))
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

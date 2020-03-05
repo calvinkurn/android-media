@@ -38,6 +38,15 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
         })
     }
 
+    fun getPreferenceDetail(addressId: Int, serviceId: Int, gatewayCode: String) {
+        _preference.value = OccState.Loading
+        getPreferenceByIdUseCase.execute(0, { getPreferenceData: GetPreferenceData ->
+            _preference.value = OccState.Success(getPreferenceData)
+        }, { throwable: Throwable ->
+            _preference.value = OccState.Fail(false, throwable, "")
+        })
+    }
+
     fun deletePreference() {
         val value = _preference.value
         if (value is OccState.Success) {
@@ -88,5 +97,12 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
                 { throwable: Throwable ->
                     _editResult.value = OccState.Fail(false, throwable, "")
                 })
+    }
+
+    fun consumeEditResultFail() {
+        val value = _editResult.value
+        if (value is OccState.Fail && !value.isConsumed) {
+            _editResult.value = value.copy(isConsumed = true)
+        }
     }
 }
