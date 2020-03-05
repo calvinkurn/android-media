@@ -29,14 +29,13 @@ class PartialCentralizedPromoOnGoingPromoView(
                 if (data.promotions.isNotEmpty()) {
                     tvOnGoingPromo.text = data.title
                     adapter.setElements(data.promotions)
-                    show()
+                    layoutCentralizedPromoOnGoingPromoSuccess.show()
                 } else {
-                    hide()
+                    layoutCentralizedPromoOnGoingPromoSuccess.hide()
                 }
                 localLoadOnGoingPromo.progressState = false
                 layoutCentralizedPromoOnGoingPromoShimmering.hide()
                 layoutCentralizedPromoOnGoingPromoError.hide()
-                layoutCentralizedPromoOnGoingPromoSuccess.show()
             }
         } else {
             renderError(MessageErrorException(data.errorMessage))

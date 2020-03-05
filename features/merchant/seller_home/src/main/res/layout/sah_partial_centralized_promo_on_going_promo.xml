@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layoutCentralizedPromoOnGoingPromo"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
     <include layout="@layout/sah_partial_centralized_promo_on_going_promo_success" />
 
     <include layout="@layout/sah_partial_centralized_promo_on_going_promo_shimmering" />
@@ -15,5 +10,4 @@
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:background="@color/Neutral_N50" />
-
-</LinearLayout>
+</merge>

@@ -31,6 +31,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_centralized_promo.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo.*
+import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_success.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_recommendation.*
 import java.util.ArrayList
@@ -54,7 +55,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
 
     private val partialViews by lazy {
         return@lazy mapOf(
-                LayoutType.ON_GOING_PROMO to PartialCentralizedPromoOnGoingPromoView(layoutCentralizedPromoOnGoingPromo, this, adapterTypeFactory),
+                LayoutType.ON_GOING_PROMO to PartialCentralizedPromoOnGoingPromoView(container, this, adapterTypeFactory),
                 LayoutType.RECOMMENDED_PROMO to PartialCentralizedPromoRecommendationView(layoutCentralizedPromoRecommendation, adapterTypeFactory),
                 LayoutType.POST to PartialCentralizedPromoPostView(layoutCentralizedPromoPostList, adapterTypeFactory)
         )
@@ -152,8 +153,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     private fun showCoachMark() = sharedPref?.run {
         val coachMark = CoachMarkBuilder().build()
         val coachMarkItem = ArrayList<CoachMarkItem>()
-        if (layoutCentralizedPromoOnGoingPromo.isShown && !getBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOION, false)) {
-            coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoOnGoingPromo,
+        if (layoutCentralizedPromoOnGoingPromoSuccess.isShown && !getBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOION, false)) {
+            coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoOnGoingPromoSuccess,
                     getString(R.string.sh_coachmark_title_on_going_promo),
                     getString(R.string.sh_coachmark_desc_on_going_promo)))
             edit().putBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOION, true).apply()
