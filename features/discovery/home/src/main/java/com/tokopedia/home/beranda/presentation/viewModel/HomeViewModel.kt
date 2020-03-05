@@ -79,6 +79,7 @@ open class HomeViewModel @Inject constructor(
         private const val ACTION_ADD = 1
         private const val ACTION_DELETE = 2
         private const val ACTION_UPDATE = 3
+        private const val ACTION_UPDATE_HOME_DATA = 4
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
@@ -555,23 +556,16 @@ open class HomeViewModel @Inject constructor(
 
     private fun initFlow() {
         launchCatchError(coroutineContext, block = {
-            homeFlowData.collect {
-                var homeData = evaluateGeolocationComponent(it)
-                if (it?.isCache == false) {
-                    homeData = evaluateAvailableComponent(homeData)
-                    withContext(homeDispatcher.ui()){
-                        _homeLiveData.value = homeData
-                    }
+            homeFlowData.collect { homeDataModel ->
+                if (homeDataModel?.isCache == false) {
+                    channel.send(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
-
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
-                    withContext(homeDispatcher.ui()){
-                        _homeLiveData.value = homeData
-                    }
+                    channel.send(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     refreshHomeData()
                 }
             }
@@ -816,7 +810,7 @@ open class HomeViewModel @Inject constructor(
     private suspend fun updateChannel(channel: Channel<UpdateLiveDataModel>){
         for(data in channel){
             val newList = _homeLiveData.value?.list?.toMutableList()
-            data.visitable?.let {homeVisitable ->
+            data.visitable?.let { homeVisitable ->
                 if(newList != null && newList.size >  data.position) {
                     when (data.action) {
                         ACTION_ADD -> newList.add(homeVisitable)
@@ -833,6 +827,16 @@ open class HomeViewModel @Inject constructor(
                     }
                     withContext(homeDispatcher.ui()) {
                         _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
+                    }
+                }
+            }
+            data.homeData?.let { homeData ->
+                if(data.action == ACTION_UPDATE_HOME_DATA){
+                    var homeData = evaluateGeolocationComponent(homeData)
+                    homeData = evaluateAvailableComponent(homeData)
+
+                    withContext(homeDispatcher.ui()) {
+                        _homeLiveData.value = homeData
                     }
                 }
             }
