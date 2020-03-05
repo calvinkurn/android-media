@@ -1,6 +1,7 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
 import com.akamai.botman.CYFMonitor
+import com.tokopedia.akamai_bot_lib.getAny
 import com.tokopedia.akamai_bot_lib.getMutation
 import okhttp3.Headers
 import okhttp3.Interceptor
@@ -34,33 +35,47 @@ class GqlAkamaiBotInterceptor : Interceptor {
                 charset?.let {
                     readFromBuffer(buffer, it).let {
 
-                        if (getMutation(it, "login_token")) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI","login")
-                        }else if (getMutation(it,"register") ){
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI","register")
-                        }else if (getMutation(it,"getPDPInfo") ) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI", "product_info")
-                        }else if (getMutation(it,"shopInfoByID") ) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI", "shop_info")
-                        } else if(getMutation(it,"followShop")){
-                            newRequest.addHeader("X-TKPD-AKAMAI", "followshop")
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                        } else if (getMutation(it,"add_to_cart") || getMutation(it,"atcOCS") || getMutation(it,"AddToCartTransactional")) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI", "atc")
-                        } else {
-                            // none
+                        val functionNames = getAny(it)
+                        for(functionName in functionNames){
+
+                            if (functionName.equals("login_token")) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI","login")
+                            }else if (functionName.equals("register") ){
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI","register")
+                            }else if (functionName.equals("pdpGetLayout") ){
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI","pdp")
+                            }else if (functionName.equals("checkout_general") ) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "checkout")
+                            }else if (functionName.equals("getPDPInfo") ) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "product_info")
+                            }else if (functionName.equals("shopInfoByID") ) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "shop_info")
+                            } else if(functionName.equals("followShop")){
+                                newRequest.addHeader("X-TKPD-AKAMAI", "followshop")
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                            } else if (functionName.equals("add_to_cart_transactional")) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "atc")
+                            } else {
+                                // none
+                            }
                         }
+
+
 
                     }
                 }
