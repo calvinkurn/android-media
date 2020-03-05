@@ -12,25 +12,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/powerMerchantText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Power Merchant: "
+            android:text="Official Store"
             android:gravity="center_vertical"
             android:textColor="@color/black"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="Aktif"
-            android:gravity="center_vertical"
-            android:textColor="@color/setting_shop_status_green"
-            app:typographyType="body_2"
-            app:typographyWeight="bold"
-            app:layout_constraintStart_toEndOf="@id/powerMerchantText"/>
 
         <View
             android:layout_width="0dp"
@@ -46,7 +35,7 @@
             android:layout_height="match_parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-            android:background="@drawable/setting_shop_pm_tip"/>
+            android:background="@drawable/setting_shop_os_tip"/>
 
         <View
             android:id="@+id/badgeBorder"
@@ -68,8 +57,7 @@
             app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
             app:layout_constraintStart_toStartOf="@id/badgeBorder"
             app:layout_constraintEnd_toEndOf="@id/badgeBorder"
-            app:srcCompat="@drawable/ic_power_merchant"/>
-
+            app:srcCompat="@drawable/ic_badge_shop_official"/>
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/leftGuideline"

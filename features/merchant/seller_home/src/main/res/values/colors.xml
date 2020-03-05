@@ -13,4 +13,6 @@
     <color name="setting_title_color">#AD31353B</color>
     <color name="setting_image_border">#E5E7E9</color>
     <color name="setting_shop_status_green">#03AC0E</color>
+    <color name="setting_black_text">#F531353B</color>
+    <color name="setting_grey_text">#AD31353B</color>
 </resources>

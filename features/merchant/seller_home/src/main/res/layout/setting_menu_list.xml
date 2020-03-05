@@ -12,7 +12,7 @@
         android:scaleType="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/settingMenuTitle"
-        app:layout_constraintWidth_percent="0.1"
+        app:layout_constraintWidth_percent="0.15"
         tools:src="@drawable/unify_wishlist_avd"/>
 
     <com.tokopedia.unifyprinciples.Typography
@@ -20,8 +20,10 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
+        android:textColor="@color/setting_black_text"
+        app:typographyType="body_2"
+        app:typographyWeight="reguler"
         app:layout_constraintStart_toEndOf="@id/settingMenuIcon"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Iklan &amp; Promosi Toko"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

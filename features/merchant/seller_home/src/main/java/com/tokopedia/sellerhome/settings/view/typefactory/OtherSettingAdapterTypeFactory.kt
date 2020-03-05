@@ -16,6 +16,7 @@ class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTyp
             SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
             MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent)
             ShopInfoViewHolder.LAYOUT -> ShopInfoViewHolder(parent)
+            ShopStatusViewHolder.LAYOUT -> ShopStatusViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -38,5 +39,9 @@ class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTyp
 
     override fun type(shopInfoUiModel: ShopInfoUiModel): Int {
         return ShopInfoViewHolder.LAYOUT
+    }
+
+    override fun type(shopStatusUiModel: ShopStatusUiModel): Int {
+        return ShopStatusViewHolder.LAYOUT
     }
 }
