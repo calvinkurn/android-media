@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.common.SellerHomeIntentHandler
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
@@ -64,6 +65,13 @@ class SellerHomeActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         homeViewModel.getNotifications()
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        SellerHomeIntentHandler.handleDeepLink(intent) { fragmentType, somTab ->
+            sharedViewModel.setCurrentSelectedMenu(fragmentType)
+        }
     }
 
     private fun initInjector() {

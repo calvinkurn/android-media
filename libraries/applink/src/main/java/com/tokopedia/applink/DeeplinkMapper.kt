@@ -98,6 +98,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.Gamification.CRACK, true) -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_ORDER_DETAIL, true) -> getRegisteredNavigationOrder(deeplink)
+                    deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> getRegisteredNavigationFromSellerapp(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -254,6 +255,12 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.CREATE_SHOP -> ApplinkConstInternalMarketplace.OPEN_SHOP
             ApplinkConst.PRODUCT_MANAGE -> ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
+            ApplinkConst.SELLER_NEW_ORDER -> {
+                if (GlobalConfig.isSellerApp())
+                    ApplinkConstInternalMarketplace.SELLER_HOME_SOM_NEW_ORDER
+                else
+                    ApplinkConstInternalOrder.NEW_ORDER
+            }
             else -> ""
         }
     }

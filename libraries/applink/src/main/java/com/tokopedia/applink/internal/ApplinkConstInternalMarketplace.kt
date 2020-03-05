@@ -238,4 +238,15 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SELLER_HOME = "$INTERNAL_MARKETPLACE/sellerhome"
 
+    @JvmField
+    val SELLER_HOME_PRODUCT = "$INTERNAL_MARKETPLACE/sellerhome-product"
+
+    @JvmField
+    val SELLER_HOME_CHAT = "$INTERNAL_MARKETPLACE/sellerhome-chat"
+
+    @JvmField
+    val SELLER_HOME_SOM_ALL = "$INTERNAL_MARKETPLACE/sellerhome-som-allorder"
+
+    @JvmField
+    val SELLER_HOME_SOM_NEW_ORDER = "$INTERNAL_MARKETPLACE/sellerhome-som-neworder"
 }
