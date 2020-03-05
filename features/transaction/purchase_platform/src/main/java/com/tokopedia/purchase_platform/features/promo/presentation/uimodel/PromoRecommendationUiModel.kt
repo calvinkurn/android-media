@@ -31,6 +31,7 @@ data class PromoRecommendationUiModel(
     }
 
     data class UiData(
+            var promoCodes: List<String> = emptyList(),
             var promoCount: Int = 0,
             var promoTotalBenefit: Int = 0
     )

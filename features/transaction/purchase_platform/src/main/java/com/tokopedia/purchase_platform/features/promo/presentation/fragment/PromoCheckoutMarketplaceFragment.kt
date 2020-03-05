@@ -392,9 +392,8 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     // --- RECOMMENDATION SECTION
 
-    override fun onClickApplyRecommendedPromo(element: PromoRecommendationUiModel) {
-        element.uiState.isButtonSelectEnabled = false
-        adapter.modifyData(adapter.data.indexOf(element))
+    override fun onClickApplyRecommendedPromo() {
+        viewModel.applyPromoSuggestion()
     }
 
     // --- END OF RECOMMENDATION SECTION

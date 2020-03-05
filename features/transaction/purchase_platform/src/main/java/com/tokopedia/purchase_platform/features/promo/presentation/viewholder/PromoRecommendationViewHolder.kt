@@ -23,7 +23,7 @@ class PromoRecommendationViewHolder(private val view: View,
         if (element.uiState.isButtonSelectEnabled) {
             itemView.button_apply_promo_recommendation.setOnClickListener {
                 itemView.button_apply_promo_recommendation.isLoading = true
-                listener.onClickApplyRecommendedPromo(element)
+                listener.onClickApplyRecommendedPromo()
             }
             itemView.image_check_promo_recommendation.gone()
             itemView.button_apply_promo_recommendation.isEnabled = true

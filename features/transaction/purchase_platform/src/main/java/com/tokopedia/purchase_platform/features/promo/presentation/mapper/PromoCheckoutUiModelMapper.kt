@@ -28,6 +28,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         }
                     }
                     promoTotalBenefit = totalBenefit
+                    promoCodes = couponListRecommendation.data.promoRecommendation.codes
                 },
                 uiState = PromoRecommendationUiModel.UiState().apply {
                     isButtonSelectEnabled = true

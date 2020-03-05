@@ -436,4 +436,23 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             _fragmentUiModel.value = it
         }
     }
+
+    fun applyPromoSuggestion() {
+        val promoRecommendation = promoRecommendationUiModel.value
+        promoRecommendation?.let {
+            it.uiState.isButtonSelectEnabled = false
+
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel) {
+                    if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
+                        it.uiState.isSellected = true
+                        _tmpUiModel.value = Update(it)
+                    }
+                }
+            }
+
+            _promoRecommendationUiModel.value = it
+            calculateAndRenderTotalBenefit()
+        }
+    }
 }

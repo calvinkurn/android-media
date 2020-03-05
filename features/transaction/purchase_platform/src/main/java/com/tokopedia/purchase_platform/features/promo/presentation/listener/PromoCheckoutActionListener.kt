@@ -7,7 +7,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.Promo
 
 interface PromoCheckoutActionListener {
 
-    fun onClickApplyRecommendedPromo(element: PromoRecommendationUiModel)
+    fun onClickApplyRecommendedPromo()
 
     fun onClickApplyManualInputPromo(promoCode: String)
 
