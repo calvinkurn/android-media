@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -707,38 +706,7 @@ public class ProductListFragment
     }
 
     private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
-        if (productCardOptionsModel == null || productCardOptionsModel.getWishlistResult() == null)
-            return;
-
-        if (productCardOptionsModel.getWishlistResult().isSuccess()) {
-            handleSuccessWishlistAction(productCardOptionsModel);
-        } else {
-            handleFailedWishlistAction(productCardOptionsModel);
-        }
-    }
-
-    private void handleSuccessWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
-        if (productCardOptionsModel.getWishlistResult() == null) return;
-
-        boolean isAddWishlist = productCardOptionsModel.getWishlistResult().isAddWishlist();
-
-        adapter.updateWishlistStatus(productCardOptionsModel.getProductId(), isAddWishlist);
-
-        if (isAddWishlist) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
-        }
-    }
-
-    private void handleFailedWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
-        if (productCardOptionsModel.getWishlistResult() == null) return;
-
-        if (productCardOptionsModel.getWishlistResult().isAddWishlist()) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist_failed));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
-        }
+        presenter.handleWishlistAction(productCardOptionsModel);
     }
 
     @Override
@@ -875,7 +843,6 @@ public class ProductListFragment
         }
     }
 
-    @Override
     public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
         presenter.handleWishlistButtonClicked(item);
         if (presenter.isUserLoggedIn()) {
@@ -898,7 +865,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onLongClick(ProductItemViewModel item, int adapterPosition) {
+    public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
         if (getSearchParameter() == null || getActivity() == null) return;
 
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
@@ -912,17 +879,14 @@ public class ProductListFragment
         productCardOptionsModel.setHasSimilarSearch(true);
         productCardOptionsModel.setWishlisted(item.isWishlisted());
         productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
-        productCardOptionsModel.setProductId(item.getProductID());
+        productCardOptionsModel.setProductId(item.getProductID() == null ? "" : item.getProductID());
         productCardOptionsModel.setTopAds(item.isTopAds());
+        productCardOptionsModel.setTopAdsWishlistUrl(item.getTopadsWishlistUrl() == null ? "" : item.getTopadsWishlistUrl());
+        productCardOptionsModel.setRecommendation(false);
         productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
         productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
 
         return productCardOptionsModel;
-    }
-
-    @Override
-    public void onWishlistButtonClicked(final ProductItemViewModel productItem) {
-        presenter.handleWishlistButtonClicked(productItem);
     }
 
     @Override
@@ -1677,5 +1641,43 @@ public class ProductListFragment
     @Override
     public RemoteConfig getABTestRemoteConfig() {
         return RemoteConfigInstance.getInstance().getABTestPlatform();
+    }
+
+    @Override
+    public void trackWishlistRecommendationProductLoginUser(boolean isAddWishlist) {
+        RecommendationTracking.Companion.eventUserClickProductToWishlistForUserLogin(isAddWishlist);
+    }
+
+    @Override
+    public void trackWishlistRecommendationProductNonLoginUser() {
+        RecommendationTracking.Companion.eventUserClickProductToWishlistForNonLogin();
+    }
+
+    @Override
+    public void trackWishlistProduct(WishlistTrackingModel wishlistTrackingModel) {
+        SearchTracking.eventSuccessWishlistSearchResultProduct(wishlistTrackingModel);
+    }
+
+    @Override
+    public void updateWishlistStatus(String productId, boolean isWishlisted) {
+        adapter.updateWishlistStatus(productId, isWishlisted);
+    }
+
+    @Override
+    public void showMessageSuccessWishlistAction(boolean isWishlisted) {
+        if (isWishlisted) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+        }
+    }
+
+    @Override
+    public void showMessageFailedWishlistAction(boolean isWishlisited) {
+        if (isWishlisited) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist_failed));
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
+        }
     }
 }

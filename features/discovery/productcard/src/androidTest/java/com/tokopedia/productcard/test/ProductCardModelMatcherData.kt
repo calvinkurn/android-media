@@ -46,7 +46,7 @@ private fun testOneLineProductName(): ProductCardModelMatcher {
             ratingString = "4.5",
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-            hasOptions = true
+            hasThreeDots = true
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
@@ -79,7 +79,7 @@ private fun testSlashPrice(): ProductCardModelMatcher {
             ratingString = "4.5",
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-            hasOptions = true
+            hasThreeDots = true
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
@@ -112,7 +112,7 @@ private fun testTwoLinesProductName(): ProductCardModelMatcher {
             ratingString = "4.5",
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
-            hasOptions = true
+            hasThreeDots = true
     )
 
     val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
@@ -148,7 +148,7 @@ private fun testMaximumInfoAndLabel(): ProductCardModelMatcher {
             reviewCount = 60,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             isTopAds = true,
-            hasOptions = true,
+            hasThreeDots = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
                 labelGroups.add(labelGimmick)
@@ -190,7 +190,7 @@ private fun testLabelGimmickNumberOfStock(): ProductCardModelMatcher {
             shopLocation = "DKI Jakarta",
             ratingString = "4.5",
             reviewCount = 60,
-            hasOptions = true,
+            hasThreeDots = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelPrice)
                 labelGroups.add(labelGimmick)
@@ -228,7 +228,7 @@ private fun testLabelSoldOut(): ProductCardModelMatcher {
             shopLocation = "DKI Jakarta",
             ratingString = "4.5",
             reviewCount = 60,
-            hasOptions = true,
+            hasThreeDots = true,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
@@ -266,7 +266,7 @@ private fun testLabelNewProduct(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            hasOptions = true,
+            hasThreeDots = true,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelPrice)
@@ -301,7 +301,7 @@ private fun testLabelIntegrity(): ProductCardModelMatcher {
                 badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
             },
             shopLocation = "DKI Jakarta",
-            hasOptions = true,
+            hasThreeDots = true,
             freeOngkir = FreeOngkir(isActive = true, imageUrl = freeOngkirImageUrl),
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelPrice)
@@ -338,7 +338,7 @@ private fun testLabelShippingInfo(): ProductCardModelMatcher {
             shopLocation = "DKI Jakarta",
             ratingString = "4.5",
             reviewCount = 60,
-            hasOptions = true,
+            hasThreeDots = true,
             labelGroupList = mutableListOf<LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelPrice)
                 labelGroups.add(labelShipping)

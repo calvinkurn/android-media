@@ -24,7 +24,7 @@ class SmallGridProductItemViewHolder(
         itemView.productCardView?.setProductModel(productItem.toProductCardModel(false))
 
         itemView.productCardView?.setThreeDotsOnClickListener {
-            productListener.onLongClick(productItem, adapterPosition)
+            productListener.onThreeDotsClick(productItem, adapterPosition)
         }
 
         itemView.productCardView?.setOnClickListener {
@@ -32,5 +32,13 @@ class SmallGridProductItemViewHolder(
         }
 
         itemView.productCardView?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem))
+    }
+
+    override fun bind(productItem: ProductItemViewModel?, payloads: MutableList<Any>) {
+        payloads.getOrNull(0) ?: return
+
+        itemView.productCardView?.setThreeDotsOnClickListener {
+            productListener.onThreeDotsClick(productItem, adapterPosition)
+        }
     }
 }

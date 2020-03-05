@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -1217,6 +1220,88 @@ final class ProductListPresenter
                 getView().renderDynamicFilter(dynamicFilterModel);
             }
         };
+    }
+
+    @Override
+    public void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
+        if (productCardOptionsModel == null) return;
+
+        if (productCardOptionsModel.isRecommendation()) {
+            handleWishlistRecommendationProduct(productCardOptionsModel);
+        }
+        else {
+            handleWishlistNonRecommendationProduct(productCardOptionsModel);
+        }
+    }
+
+    private void handleWishlistRecommendationProduct(ProductCardOptionsModel productCardOptionsModel) {
+        WishlistResult wishlistResult = productCardOptionsModel.getWishlistResult();
+
+        if (wishlistResult.isUserLoggedIn()) {
+            handleWishlistRecommendationProductWithLoggedInUser(productCardOptionsModel);
+        }
+        else {
+            handleWishlistRecommendationProductWithNotLoggedInUser(productCardOptionsModel);
+        }
+    }
+
+    private void handleWishlistRecommendationProductWithLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
+        WishlistResult wishlistResult = productCardOptionsModel.getWishlistResult();
+
+        if (!wishlistResult.isSuccess()) {
+            getView().showMessageFailedWishlistAction(wishlistResult.isAddWishlist());
+        } else {
+            getView().trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted());
+            getView().updateWishlistStatus(productCardOptionsModel.getProductId(), wishlistResult.isAddWishlist());
+            getView().showMessageSuccessWishlistAction(wishlistResult.isAddWishlist());
+        }
+    }
+
+    private void handleWishlistRecommendationProductWithNotLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
+        getView().trackWishlistRecommendationProductNonLoginUser();
+        getView().launchLoginActivity(productCardOptionsModel.getProductId());
+    }
+
+    private void handleWishlistNonRecommendationProduct(ProductCardOptionsModel productCardOptionsModel) {
+        WishlistResult wishlistResult = productCardOptionsModel.getWishlistResult();
+
+        if (wishlistResult.isUserLoggedIn()) {
+            handleWishlistNonRecommendationProductWithLoggedInUser(productCardOptionsModel);
+        }
+        else {
+            handleWishlistNonRecommendationProductWithNotLoggedInUser(productCardOptionsModel);
+        }
+    }
+
+    private void handleWishlistNonRecommendationProductWithLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
+        WishlistResult wishlistResult = productCardOptionsModel.getWishlistResult();
+
+        if (!wishlistResult.isSuccess()) {
+            getView().showMessageFailedWishlistAction(wishlistResult.isAddWishlist());
+        } else {
+            getView().trackWishlistProduct(createWishlistTrackingModel(productCardOptionsModel, productCardOptionsModel.getWishlistResult().isAddWishlist()));
+            getView().updateWishlistStatus(productCardOptionsModel.getProductId(), wishlistResult.isAddWishlist());
+            getView().showMessageSuccessWishlistAction(wishlistResult.isAddWishlist());
+        }
+    }
+
+    private WishlistTrackingModel createWishlistTrackingModel(ProductCardOptionsModel productCardOptionsModel, boolean isAddWishlist) {
+        if (productCardOptionsModel == null) return null;
+
+        WishlistTrackingModel wishlistTrackingModel = new WishlistTrackingModel();
+
+        wishlistTrackingModel.setProductId(productCardOptionsModel.getProductId());
+        wishlistTrackingModel.setTopAds(productCardOptionsModel.isTopAds());
+        wishlistTrackingModel.setKeyword(getView().getQueryKey());
+        wishlistTrackingModel.setUserLoggedIn(productCardOptionsModel.getWishlistResult().isUserLoggedIn());
+        wishlistTrackingModel.setAddWishlist(isAddWishlist);
+
+        return wishlistTrackingModel;
+    }
+
+    private void handleWishlistNonRecommendationProductWithNotLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
+        getView().trackWishlistProduct(createWishlistTrackingModel(productCardOptionsModel, !productCardOptionsModel.isWishlisted()));
+        getView().launchLoginActivity(productCardOptionsModel.getProductId());
     }
 
     @Override

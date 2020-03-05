@@ -66,7 +66,7 @@ private fun createProductCardMaxInfoAndLabel(): ProductCardModel {
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
             isTopAds = true,
-            hasOptions = true,
+            hasThreeDots = true,
             labelGroupList = mutableListOf<ProductCardModel.LabelGroup>().also { labelGroups ->
                 labelGroups.add(labelProductStatus)
                 labelGroups.add(labelGimmick)
@@ -89,7 +89,7 @@ private fun createProductCardTwoLinesProductName(): ProductCardModel {
             ratingString = "4.5",
             reviewCount = 60,
             freeOngkir = ProductCardModel.FreeOngkir(isActive = true, imageUrl = "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"),
-            hasOptions = true
+            hasThreeDots = true
     )
 }
 
@@ -106,7 +106,7 @@ private fun createProductCardWithSlashPrice(): ProductCardModel {
             shopLocation = "DKI Jakarta",
             ratingString = "4.5",
             reviewCount = 60,
-            hasOptions = true
+            hasThreeDots = true
     )
 }
 
@@ -121,7 +121,7 @@ private fun createProductCardOneLineProductName(): ProductCardModel {
                 badges.add(ProductCardModel.ShopBadge(isShown = true, imageUrl = "https://ecs7.tokopedia.net/img/official_store_badge.png"))
             },
             shopLocation = "DKI Jakarta",
-            hasOptions = true
+            hasThreeDots = true
     )
 }
 

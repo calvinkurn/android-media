@@ -30,7 +30,7 @@ data class ProductCardModel (
         val freeOngkir: FreeOngkir = FreeOngkir(),
         val isTopAds: Boolean = false,
         val ratingString: String = "",
-        val hasOptions: Boolean = false,
+        val hasThreeDots: Boolean = false,
         val labelGroupList: List<LabelGroup> = listOf(),
         val hasAddToCartButton: Boolean = false,
         val hasRemoveFromWishlistButton: Boolean = false

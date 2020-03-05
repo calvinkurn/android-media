@@ -49,7 +49,8 @@ class RecommendationItemViewHolder (
                         ),
                         labelGroupList = recommendationItem.labelGroupList.map {
                             ProductCardModel.LabelGroup(position = it.position, title = it.title, type = it.type)
-                        }
+                        },
+                        hasThreeDots = true
                 )
         )
 

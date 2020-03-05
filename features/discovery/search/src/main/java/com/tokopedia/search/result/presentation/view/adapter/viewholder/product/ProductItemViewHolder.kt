@@ -33,7 +33,7 @@ abstract class ProductItemViewHolder(
                 freeOngkir = freeOngkirViewModel.toProductCardModelFreeOngkir(),
                 isTopAds = isTopAds,
                 ratingString = ratingString,
-                hasOptions = true,
+                hasThreeDots = true,
                 labelGroupList = labelGroupList.toProductCardModelLabelGroup()
         )
     }

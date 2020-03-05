@@ -44,7 +44,7 @@ class ProductCardListView: BaseCustomView {
 
         renderProductCardContent(productCardModel)
 
-        imageThreeDots?.showWithCondition(productCardModel.hasOptions)
+        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonRemoveFromWishlist?.showWithCondition(productCardModel.hasRemoveFromWishlistButton)
 

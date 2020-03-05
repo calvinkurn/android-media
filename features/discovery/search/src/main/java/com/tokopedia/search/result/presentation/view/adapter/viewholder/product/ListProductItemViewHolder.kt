@@ -6,6 +6,8 @@ import com.tokopedia.search.R
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import kotlinx.android.synthetic.main.search_result_product_card_list.view.*
+import kotlinx.android.synthetic.main.search_result_product_card_list.view.productCardView
+import kotlinx.android.synthetic.main.search_result_product_card_small_grid.view.*
 
 class ListProductItemViewHolder(
     itemView: View,
@@ -24,7 +26,7 @@ class ListProductItemViewHolder(
         itemView.productCardView?.setProductModel(productItem.toProductCardModel(false))
 
         itemView.productCardView?.setThreeDotsOnClickListener {
-            productListener.onLongClick(productItem, adapterPosition)
+            productListener.onThreeDotsClick(productItem, adapterPosition)
         }
 
         itemView.productCardView?.setOnClickListener {
@@ -32,5 +34,13 @@ class ListProductItemViewHolder(
         }
 
         itemView.productCardView?.setImageProductViewHintListener(productItem, createImageProductViewHintListener(productItem))
+    }
+
+    override fun bind(productItem: ProductItemViewModel?, payloads: MutableList<Any>) {
+        payloads.getOrNull(0) ?: return
+
+        itemView.productCardView?.setThreeDotsOnClickListener {
+            productListener.onThreeDotsClick(productItem, adapterPosition)
+        }
     }
 }

@@ -125,6 +125,15 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
     }
 
     @Override
+    public void onBindViewHolder(@NotNull AbstractViewHolder holder, int position, @NonNull List<Object> payloads) {
+        if (!payloads.isEmpty()) {
+            holder.bind(list.get(position), payloads);
+        } else {
+            super.onBindViewHolder(holder, position, payloads);
+        }
+    }
+
+    @Override
     public int getItemViewType(int position) {
         return list.get(position).type(typeFactory);
     }
@@ -158,14 +167,13 @@ public final class ProductListAdapter extends RecyclerView.Adapter<AbstractViewH
                 ProductItemViewModel model = ((ProductItemViewModel) list.get(i));
                 if (productId.equals(model.getProductID())) {
                     model.setWishlisted(isWishlisted);
-                    notifyItemChanged(i);
+                    notifyItemChanged(i, "wishlist");
                 }
             } else if(list.get(i) instanceof RecommendationItemViewModel){
                 RecommendationItemViewModel model = (RecommendationItemViewModel) list.get(i);
                 if(productId.equals(String.valueOf(model.getRecommendationItem().getProductId()))){
                     model.getRecommendationItem().setWishlist(isWishlisted);
-                    notifyItemChanged(i);
-                    break;
+                    notifyItemChanged(i, "wishlist");
                 }
             }
         }
