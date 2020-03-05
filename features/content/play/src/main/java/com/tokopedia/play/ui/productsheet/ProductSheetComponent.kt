@@ -31,7 +31,7 @@ class ProductSheetComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.setStateHidden()
-                            is ScreenStateEvent.BottomInsetsView -> if (it.type is BottomInsetsType.BottomSheet) handleIfBottomSheet(it.type.height.orZero(), it.isShown)
+                            is ScreenStateEvent.BottomInsetsView -> if (it.type is BottomInsetsType.BottomSheet.Product) handleIfProductSheet(it.type.height.orZero(), it.isShown)
                             is ScreenStateEvent.SetProductSheet -> uiView.setProductSheet(it.productSheetModel)
                         }
                     }
@@ -52,10 +52,22 @@ class ProductSheetComponent(
         }
     }
 
+    override fun onBuyButtonClicked(view: ProductSheetView, productId: String) {
+        launch {
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnBuyProduct(productId))
+        }
+    }
+
+    override fun onAtcButtonClicked(view: ProductSheetView, productId: String) {
+        launch {
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnAtcProduct(productId))
+        }
+    }
+
     private fun initView(container: ViewGroup) =
             ProductSheetView(container, this)
 
-    private fun handleIfBottomSheet(height: Int, isShown: Boolean) {
+    private fun handleIfProductSheet(height: Int, isShown: Boolean) {
         if (isShown) uiView.showWithHeight(height) else uiView.hide()
     }
 }

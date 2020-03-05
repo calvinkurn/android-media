@@ -49,6 +49,8 @@ import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.ui.variantsheet.VariantSheetComponent
+import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.PlayFullScreenHelper
@@ -58,6 +60,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -127,11 +130,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
     private lateinit var productSheetComponent: UIComponent<*>
+    private lateinit var variantSheetComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
     private lateinit var clPlayInteraction: ConstraintLayout
 
-    private val productSheetMaxHeight: Int
+    private val bottomSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
 
     private val sendChatView: View
@@ -169,7 +173,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
-        initCoordinatorComponent(view as ViewGroup)
+        initCoordinatorComponents(view as ViewGroup)
         initComponents(view.findViewById(R.id.cl_play_interaction) as ViewGroup)
         return view
     }
@@ -412,8 +416,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     //region Component Initialization
-    private fun initCoordinatorComponent(container: ViewGroup) {
+    private fun initCoordinatorComponents(container: ViewGroup) {
         productSheetComponent = initProductSheetComponent(container)
+        variantSheetComponent = initVariantSheetComponent(container)
     }
 
     private fun initComponents(container: ViewGroup) {
@@ -627,11 +632,28 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
+                            is ProductSheetInteractionEvent.OnBuyProduct -> openVariantSheet(it.productId, ProductAction.Buy)
+                            is ProductSheetInteractionEvent.OnAtcProduct -> openVariantSheet(it.productId, ProductAction.AddToCart)
                         }
                     }
         }
 
         return productSheetComponent
+    }
+
+    private fun initVariantSheetComponent(container: ViewGroup): UIComponent<VariantSheetInteractionEvent> {
+        val variantSheetComponent = VariantSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            variantSheetComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            VariantSheetInteractionEvent.OnCloseVariantSheet -> closeVariantSheet()
+                        }
+                    }
+        }
+
+        return variantSheetComponent
     }
     //endregion
 
@@ -1123,11 +1145,19 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openProductSheet() {
-        playViewModel.onShowProductSheet(productSheetMaxHeight)
+        playViewModel.onShowProductSheet(bottomSheetMaxHeight)
     }
 
     private fun closeProductSheet() {
         playViewModel.onHideProductSheet()
+    }
+
+    private fun openVariantSheet(productId: String, action: ProductAction) {
+        playViewModel.onShowVariantSheet(bottomSheetMaxHeight, productId, action)
+    }
+
+    private fun closeVariantSheet() {
+        playViewModel.onHideVariantSheet()
     }
 
     private fun pushParentPlayByProductSheetHeight(productSheetHeight: Int) {

@@ -19,7 +19,7 @@ import com.tokopedia.unifycomponents.UnifyButton
 /**
  * Created by jegul on 03/03/20
  */
-class ProductLineViewHolder(itemView: View) : BaseViewHolder(itemView) {
+class ProductLineViewHolder(itemView: View, private val listener: Listener) : BaseViewHolder(itemView) {
 
     private val ivProductImage: ImageView = itemView.findViewById(R.id.iv_product_image)
     private val tvProductTitle: TextView = itemView.findViewById(R.id.tv_product_title)
@@ -54,11 +54,16 @@ class ProductLineViewHolder(itemView: View) : BaseViewHolder(itemView) {
         }
 
         btnProductBuy.setOnClickListener {
-            Toast.makeText(itemView.context, "Buy product ${item.title}", Toast.LENGTH_SHORT).show()
+            listener.onBuyProduct(item.id)
         }
 
         ivProductAtc.setOnClickListener {
-            Toast.makeText(itemView.context, "Atc product ${item.title}", Toast.LENGTH_SHORT).show()
+            listener.onAtcProduct(item.id)
         }
+    }
+
+    interface Listener {
+        fun onBuyProduct(productId: String)
+        fun onAtcProduct(productId: String)
     }
 }

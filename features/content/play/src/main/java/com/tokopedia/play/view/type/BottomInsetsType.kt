@@ -6,7 +6,13 @@ package com.tokopedia.play.view.type
 sealed class BottomInsetsType {
 
     object Keyboard : BottomInsetsType()
-    data class BottomSheet(val height: Int?) : BottomInsetsType()
+    sealed class BottomSheet : BottomInsetsType() {
+
+        abstract val height: Int?
+
+        data class Product(override val height: Int?) : BottomSheet()
+        data class Variant(override val height: Int?) : BottomSheet()
+    }
 
     val isKeyboard: Boolean
         get() = this is Keyboard

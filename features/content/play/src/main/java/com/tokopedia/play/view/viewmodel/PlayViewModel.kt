@@ -230,7 +230,7 @@ class PlayViewModel @Inject constructor(
 
     fun onShowProductSheet(estimatedProductSheetHeight: Int) {
         _observableBottomInsetsState.value = BottomInsetsState.Shown(
-                type = BottomInsetsType.BottomSheet(estimatedProductSheetHeight),
+                type = BottomInsetsType.BottomSheet.Product(estimatedProductSheetHeight),
                 estimatedInsetsHeight = estimatedProductSheetHeight,
                 isPreviousStateSame = observableBottomInsetsState.value?.isHidden == false
         )
@@ -238,7 +238,21 @@ class PlayViewModel @Inject constructor(
 
     fun onHideProductSheet() {
         _observableBottomInsetsState.value = BottomInsetsState.Hidden(
-                type = BottomInsetsType.BottomSheet(null),
+                type = BottomInsetsType.BottomSheet.Product(null),
+                isPreviousStateSame = observableBottomInsetsState.value?.isShown == false)
+    }
+
+    fun onShowVariantSheet(estimatedProductSheetHeight: Int, productId: String, action: ProductAction) {
+        _observableBottomInsetsState.value = BottomInsetsState.Shown(
+                type = BottomInsetsType.BottomSheet.Variant(estimatedProductSheetHeight),
+                estimatedInsetsHeight = estimatedProductSheetHeight,
+                isPreviousStateSame = observableBottomInsetsState.value?.isHidden == false
+        )
+    }
+
+    fun onHideVariantSheet() {
+        _observableBottomInsetsState.value = BottomInsetsState.Hidden(
+                type = BottomInsetsType.BottomSheet.Variant(null),
                 isPreviousStateSame = observableBottomInsetsState.value?.isShown == false)
     }
     //end region
