@@ -12,11 +12,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
+import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.activity_sah_seller_home.*
 import javax.inject.Inject
@@ -24,18 +26,19 @@ import javax.inject.Inject
 class SellerHomeActivity : BaseActivity() {
 
     companion object {
-        private const val MENU_ORDER_POSITION = 2
-
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, SellerHomeActivity::class.java)
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val homeViewModel: SellerHomeActivityViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(SellerHomeActivityViewModel::class.java)
+        viewModelProvider.get(SellerHomeActivityViewModel::class.java)
     }
-
+    private val sharedViewModel by lazy {
+        viewModelProvider.get(SharedViewModel::class.java)
+    }
     private val containerFragment by lazy { ContainerFragment.newInstance() }
 
     private var currentFragment: Fragment? = null
@@ -50,6 +53,7 @@ class SellerHomeActivity : BaseActivity() {
         setupDefaultFragment()
         UpdateCheckerHelper.checkAppUpdate(this)
         observeNotificationsLiveData()
+        observeCurrentSelectedPage()
     }
 
     override fun onResume() {
@@ -65,26 +69,37 @@ class SellerHomeActivity : BaseActivity() {
     }
 
     private fun setupView() {
+
+        fun showFragment(@FragmentType type: Int, title: String) {
+            if (sahBottomNav.currentItem != type) {
+                containerFragment.showFragment(type, title)
+                sharedViewModel.setCurrentSelectedMenu(type)
+            }
+        }
+
         sahBottomNav.itemIconTintList = null
         sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
             when (menu.itemId) {
                 R.id.menu_sah_home -> {
                     val title = getString(R.string.sah_home)
-                    containerFragment.showFragment(ContainerFragment.FRAGMENT_HOME, title)
+                    showFragment(FragmentType.HOME, title)
                 }
                 R.id.menu_sah_product -> {
                     val title = getString(R.string.sah_product)
-                    containerFragment.showFragment(ContainerFragment.FRAGMENT_PRODUCT, title)
+                    showFragment(FragmentType.PRODUCT, title)
                 }
-                //R.id.menu_sah_chat -> showFragment(sellerHomeFragment)
+                R.id.menu_sah_chat -> {
+                    val title = getString(R.string.sah_chat)
+                    showFragment(FragmentType.CHAT, title)
+                }
                 R.id.menu_sah_order -> {
                     val title = getString(R.string.sah_sale)
-                    containerFragment.showFragment(ContainerFragment.FRAGMENT_ORDER, title)
+                    showFragment(FragmentType.ORDER, title)
                 }
                 R.id.menu_sah_other -> {
-                    val title = getString(R.string.sah_others)
-                    containerFragment.showFragment(ContainerFragment.FRAGMENT_OTHER, title)
+                    //show other fragment
+                    //sharedViewModel.setCurrentSelectedMenu(type)
                 }
             }
             return@setOnNavigationItemSelectedListener true
@@ -114,15 +129,22 @@ class SellerHomeActivity : BaseActivity() {
         }
     }
 
+    private fun observeCurrentSelectedPage() {
+        sharedViewModel.currentSelectedMenuIndex.observe(this, Observer {
+            sahBottomNav.currentItem = it
+        })
+    }
+
     private fun observeNotificationsLiveData() {
         homeViewModel.notifications.observe(this, Observer {
             if (it is Success) {
+                containerFragment.showChatNotificationBadge(it.data.chat)
                 showOrderNotificationCounter(it.data.sellerOrderStatus)
             }
         })
     }
 
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
-        sahBottomNav.setNotification(orderStatus.newOrder.plus(10), MENU_ORDER_POSITION)
+        sahBottomNav.setNotification(orderStatus.newOrder.plus(orderStatus.readyToShip), FragmentType.ORDER)
     }
 }

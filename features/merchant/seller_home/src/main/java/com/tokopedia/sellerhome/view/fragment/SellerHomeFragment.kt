@@ -458,8 +458,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
             else -> Ticker.TYPE_ANNOUNCEMENT
         }
 
-        println("Tickers : ${tickers.size}")
-
         view?.relTicker?.visibility = if (tickers.isEmpty()) View.GONE else View.VISIBLE
         view?.tickerView?.run {
             val tickersData = tickers.map {

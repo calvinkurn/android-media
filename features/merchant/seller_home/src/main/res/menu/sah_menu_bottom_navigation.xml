@@ -13,12 +13,12 @@
         android:icon="@drawable/selector_sah_product"
         android:title="@string/sah_product"
         app:showAsAction="ifRoom" />
-    <!--<item
+    <item
         android:id="@+id/menu_sah_chat"
         android:enabled="true"
         android:icon="@drawable/selector_sah_chat"
         android:title="@string/sah_chat"
-        app:showAsAction="ifRoom" />-->
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_sah_order"
         android:enabled="true"

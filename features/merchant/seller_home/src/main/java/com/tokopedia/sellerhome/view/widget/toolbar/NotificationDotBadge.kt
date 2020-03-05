@@ -15,13 +15,13 @@ import kotlin.math.max
  * Created By @ilhamsuaib on 2020-03-04
  */
 
-class CountDrawable(private val context: Context) : Drawable() {
+class NotificationDotBadge(private val context: Context) : Drawable() {
 
     private val mBadgePaint: Paint = Paint()
     private var willDraw = false
 
     init {
-        mBadgePaint.color = ContextCompat.getColor(context.applicationContext, R.color.green_300)
+        mBadgePaint.color = ContextCompat.getColor(context.applicationContext, R.color.green_500)
         mBadgePaint.isAntiAlias = true
         mBadgePaint.style = Paint.Style.FILL
     }
@@ -29,14 +29,14 @@ class CountDrawable(private val context: Context) : Drawable() {
     override fun draw(canvas: Canvas) {
         if (!willDraw) return
 
-        val dp8 = context.dpToPx(8)
-        val width: Float = dp8
-        val height: Float = dp8
+        val dp16 = context.dpToPx(16)
+        val width: Float = dp16
+        val height: Float = dp16
 
         val radius = max(width, height) / 2 / 2
-        val centerX = width - radius
-        val centerY = width - radius
-        canvas.drawCircle(centerX, centerY, (radius + 4f), mBadgePaint)
+        val centerX = (bounds.right - bounds.left).toFloat().minus(radius)
+        val centerY = radius.minus(2)
+        canvas.drawCircle(centerX, centerY, radius, mBadgePaint)
     }
 
     fun showBadge() {
@@ -49,10 +49,10 @@ class CountDrawable(private val context: Context) : Drawable() {
         invalidateSelf()
     }
 
-    override fun setAlpha(alpha: Int) { // do nothing
+    override fun setAlpha(alpha: Int) {
     }
 
-    override fun setColorFilter(cf: ColorFilter?) { // do nothing
+    override fun setColorFilter(cf: ColorFilter?) {
     }
 
     override fun getOpacity(): Int {

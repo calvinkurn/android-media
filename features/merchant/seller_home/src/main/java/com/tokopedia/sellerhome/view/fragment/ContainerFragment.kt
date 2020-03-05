@@ -1,15 +1,22 @@
 package com.tokopedia.sellerhome.view.fragment
 
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
+import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
+import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.fragment_sah_container.view.*
+import javax.inject.Inject
 
 /**
  * Created By @ilhamsuaib on 2020-03-04
@@ -18,11 +25,6 @@ import kotlinx.android.synthetic.main.fragment_sah_container.view.*
 class ContainerFragment : Fragment() {
 
     companion object {
-        const val FRAGMENT_HOME = "home"
-        const val FRAGMENT_PRODUCT = "produk"
-        const val FRAGMENT_ORDER = "som"
-        const val FRAGMENT_OTHER = "lainnya"
-
         fun newInstance(): ContainerFragment {
             return ContainerFragment()
         }
@@ -36,17 +38,32 @@ class ContainerFragment : Fragment() {
             null
     }
     private val homeFragment: SellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
-    private val somListFragment: Fragment? by lazy {
-        sellerHomeRouter?.getSellerOrderManageFragment()
-    }
-
+    private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSellerOrderManageFragment() }
+    private var currentFragment: Fragment? = null
     private val fragmentManger: FragmentManager by lazy {
         childFragmentManager
     }
-    private var currentFragment: Fragment? = null
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val sharedViewModel: SharedViewModel? by lazy {
+        return@lazy if (null != activity) {
+            ViewModelProvider(activity!!, viewModelFactory).get(SharedViewModel::class.java)
+        } else
+            null
+    }
 
     private var hasAttachHomeFragment = false
     private var hasAttachSomFragment = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        DaggerSellerHomeComponent.builder()
+                .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+                .build()
+                .inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_sah_container, container, false)
@@ -61,40 +78,54 @@ class ContainerFragment : Fragment() {
 
     private fun setupView() = view?.run {
         sahToolbar.setOnNotificationClickListener {
-            println("setOnNotificationClickListener")
+            sharedViewModel?.setCurrentSelectedMenu(FragmentType.CHAT)
         }
-        sahToolbar.showBadge()
-
-        Handler().postDelayed({
-            sahToolbar.hideBadge()
-        }, 7000)
     }
 
     private fun setupDefaultPage() {
         val title = context?.getString(R.string.sah_home).orEmpty()
         currentFragment = homeFragment
-        showFragment(FRAGMENT_HOME, title)
+        showFragment(FragmentType.HOME, title)
     }
 
-    fun showFragment(fragmentType: String, title: String) {
-        when (fragmentType) {
-            FRAGMENT_HOME -> {
+    fun showFragment(@FragmentType type: Int, title: String) {
+        when (type) {
+            FragmentType.HOME -> {
                 if (!hasAttachHomeFragment) {
                     addFragment(homeFragment)
                     hasAttachHomeFragment = true
                 }
                 showFragment(homeFragment, title)
             }
-            FRAGMENT_PRODUCT -> showFragment(homeFragment, title)
-            FRAGMENT_ORDER -> somListFragment?.let {
+            FragmentType.PRODUCT -> {
+                if (!hasAttachHomeFragment) {
+                    addFragment(homeFragment)
+                    hasAttachHomeFragment = true
+                }
+                showFragment(homeFragment, title)
+            }
+            FragmentType.CHAT -> {
+                if (!hasAttachHomeFragment) {
+                    addFragment(homeFragment)
+                    hasAttachHomeFragment = true
+                }
+                showFragment(homeFragment, title)
+            }
+            FragmentType.ORDER -> somListFragment?.let {
                 if (!hasAttachSomFragment) {
                     addFragment(it)
                     hasAttachSomFragment = true
                 }
                 showFragment(it, title)
             }
-            FRAGMENT_OTHER -> showFragment(homeFragment, title)
         }
+    }
+
+    fun showChatNotificationBadge(chat: NotificationChatUiModel) {
+        if (chat.unreads > 0)
+            view?.sahToolbar?.showBadge()
+        else
+            view?.sahToolbar?.removeBadge()
     }
 
     private fun <T : Fragment> addFragment(fragment: T) {

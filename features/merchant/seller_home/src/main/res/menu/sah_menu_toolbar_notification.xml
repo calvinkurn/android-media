@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/menu_sah_notification"
-        android:icon="@drawable/actionbar_group_icon"
+        android:icon="@drawable/ic_sah_notif_actionbar_group"
         android:title="@string/sah_notification"
         app:showAsAction="always" />
 </menu>

@@ -6,7 +6,8 @@
         android:gravity="center" />
 
     <item
-        android:id="@+id/ic_group_count"
-        android:drawable="@color/transparent" />
+        android:id="@+id/ic_dot"
+        android:drawable="@color/transparent"
+        android:gravity="end" />
 
 </layer-list>

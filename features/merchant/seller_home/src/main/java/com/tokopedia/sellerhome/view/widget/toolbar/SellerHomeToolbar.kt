@@ -41,16 +41,16 @@ class SellerHomeToolbar(context: Context?, attrs: AttributeSet?) : Toolbar(conte
 
         badge.showBadge()
         icon?.mutate()
-        icon?.setDrawableByLayerId(R.id.ic_group_count, badge)
+        icon?.setDrawableByLayerId(R.id.ic_dot, badge)
     }
 
-    fun hideBadge() {
+    fun removeBadge() {
         val icon = getIcon()
         val badge = getBadgeDrawable()
 
         badge.removeBadge()
         icon?.mutate()
-        icon?.setDrawableByLayerId(R.id.ic_group_count, badge)
+        icon?.setDrawableByLayerId(R.id.ic_dot, badge)
     }
 
     private fun getIcon(): LayerDrawable? {
@@ -59,15 +59,15 @@ class SellerHomeToolbar(context: Context?, attrs: AttributeSet?) : Toolbar(conte
         return icon
     }
 
-    private fun getBadgeDrawable(): CountDrawable {
+    private fun getBadgeDrawable(): NotificationDotBadge {
         val icon = getIcon()
 
         // Reuse drawable if exist
-        val reuse: Drawable? = icon?.findDrawableByLayerId(R.id.ic_group_count)
-        return if (reuse != null && reuse is CountDrawable) {
+        val reuse: Drawable? = icon?.findDrawableByLayerId(R.id.ic_dot)
+        return if (reuse != null && reuse is NotificationDotBadge) {
             reuse
         } else {
-            CountDrawable(context)
+            NotificationDotBadge(context)
         }
     }
 }
