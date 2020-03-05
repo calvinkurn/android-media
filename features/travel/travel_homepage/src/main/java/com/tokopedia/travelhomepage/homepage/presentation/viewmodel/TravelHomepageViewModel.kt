@@ -1,6 +1,8 @@
 package com.tokopedia.travelhomepage.homepage.presentation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.constant.TravelType
 import com.tokopedia.common.travel.domain.GetTravelCollectiveBannerUseCase
@@ -52,7 +54,7 @@ class TravelHomepageViewModel @Inject constructor(
                 isAllError.value = false
             }
         }) {
-                isAllError.value = true
+            isAllError.value = true
         }
 
     }
@@ -214,6 +216,37 @@ class TravelHomepageViewModel @Inject constructor(
         }
     }
 
+    fun getTravelUnifiedData(rawQuery: String, dataType: String, widgetType: String, priority: String, isFromCloud: Boolean) {
+
+        launchCatchError(block = {
+            val position = (priority.toInt()) - 1
+            val data = withContext(dispatcherProvider.ui()) {
+                val param = mapOf("dataType" to dataType, "widgetType" to widgetType, "data" to ParamData())
+                val graphqlRequest = GraphqlRequest(rawQuery, TravelUnifiedSubhomepageData.Response::class.java, param)
+                var graphQlCacheStrategy = if (isFromCloud) GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
+                else GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build()
+                graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
+            }.getSuccessData<TravelUnifiedSubhomepageData.Response>()
+
+            travelItemList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[position] = mapper.mapToViewModel(widgetType, data.response)
+                updatedList[position].isLoaded = true
+                updatedList[position].isSuccess = true
+                travelItemList.value = updatedList
+            }
+        }) {
+            val position = (priority.toInt()) - 1
+            travelItemList.value?.let {
+                val updatedList = it.toMutableList()
+                updatedList[position].isLoaded = true
+                updatedList[position].isSuccess = false
+                travelItemList.value = updatedList
+            }
+            checkIfAllError()
+        }
+    }
+
     private fun checkIfAllError() {
         travelItemList.value?.let {
             var isSuccess = false
@@ -240,5 +273,19 @@ class TravelHomepageViewModel @Inject constructor(
         const val PARAM_FILTER_STATUS = "filterStatus"
         const val PARAM_PRODUCT = "product"
     }
+
+    data class ParamData(
+            @SerializedName("product")
+            @Expose
+            val product: String = "SUBHOMEPAGE",
+
+            @SerializedName("countryID")
+            @Expose
+            val countryID: String = "ID",
+
+            @SerializedName("platform")
+            @Expose
+            val platform: String = "SUBHOMEPAGE"
+    )
 
 }

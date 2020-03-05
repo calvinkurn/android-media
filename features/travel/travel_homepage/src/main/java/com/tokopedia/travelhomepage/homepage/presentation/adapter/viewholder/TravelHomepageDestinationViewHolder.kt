@@ -34,9 +34,7 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
 
                     val layoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
                     layoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int {
-                            return if (position == 0) 2 else 1
-                        }
+                        override fun getSpanSize(position: Int): Int = element.spanSize
                     }
                     list_recycler_view.layoutManager = layoutManager
                     list_recycler_view.addItemDecoration(TravelHomepageDestinationViewDecorator())
@@ -48,7 +46,7 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
         } else {
             itemView.section_layout.hide()
             itemView.shimmering.show()
-            onItemBindListener.onDestinationVHBind(element.isLoadFromCloud)
+            onItemBindListener.onItemBindViewHolder(element.layoutData, element.isLoadFromCloud)
         }
 
     }

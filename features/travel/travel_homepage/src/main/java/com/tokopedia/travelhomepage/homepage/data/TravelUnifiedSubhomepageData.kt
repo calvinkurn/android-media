@@ -59,6 +59,6 @@ data class TravelUnifiedSubhomepageData(
     data class Response(
             @SerializedName("TravelGetDynamicSubhomepage")
             @Expose
-            val response: List<TravelUnifiedSubhomepageData>
+            val response: List<TravelUnifiedSubhomepageData> = listOf()
     )
 }

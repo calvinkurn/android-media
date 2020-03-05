@@ -5,10 +5,10 @@ package com.tokopedia.travelhomepage.homepage.data.widgetmodel
  */
 
 data class ProductGridCardItemModel(
-        val title: String = "",
-        val tag: String = "",
-        val price: String = "",
-        val strikethroughPrice: String = "",
-        val imageUrl: String = "",
-        val appUrl: String = ""
+        var title: String = "",
+        var tag: String = "",
+        var price: String = "",
+        var strikethroughPrice: String = "",
+        var imageUrl: String = "",
+        var appUrl: String = ""
 )

@@ -70,17 +70,36 @@ class GetEmptyModelsUseCase @Inject constructor(val useCase: MultiRequestGraphql
         val travelHomepageItems = mutableListOf<TravelHomepageItemModel>()
         for (item in list) {
             when (item.widgetType) {
-                WIDGET_TYPE_SLIDER_BANNER -> travelHomepageItems.add(TravelHomepageProductCardModel())
-                WIDGET_TYPE_DUAL_BANNER -> travelHomepageItems.add(TravelHomepageCategoryListModel())
+                ConstantWidgetType.DYNAMIC_BANNER -> {
+                    travelHomepageItems.add(TravelHomepageBannerModel())
+                    travelHomepageItems.lastOrNull()?.layoutData = item
+                }
+                ConstantWidgetType.DUAL_PRODUCT_CARD, ConstantWidgetType.QUAD_PRODUCT_CARD -> {
+                    travelHomepageItems.add(TravelHomepageProductCardModel())
+                    travelHomepageItems.lastOrNull()?.layoutData = item
+                }
+                ConstantWidgetType.DYNAMIC_ICON -> {
+                    travelHomepageItems.add(TravelHomepageCategoryListModel())
+                    travelHomepageItems.lastOrNull()?.layoutData = item
+                }
+                ConstantWidgetType.SLIDER_PRODUCT_CARD -> {
+                    travelHomepageItems.add(TravelHomepageSectionModel())
+                    travelHomepageItems.lastOrNull()?.layoutData = item
+                }
+                ConstantWidgetType.DUAL_BANNER -> {
+                    travelHomepageItems.add(TravelHomepageDestinationModel(spanSize = 2))
+                    travelHomepageItems.lastOrNull()?.layoutData = item
+                }
+                ConstantWidgetType.SINGLE_BANNER -> {
+                    travelHomepageItems.add(TravelHomepageDestinationModel(spanSize = 1))
+                    travelHomepageItems.lastOrNull()?.layoutData = item
+                }
+                else -> {
+                    travelHomepageItems.add(TravelHomepageCategoryListModel())
+                    travelHomepageItems.lastOrNull()?.layoutData = item
+                }
             }
-            travelHomepageItems.lastOrNull()?.layoutData = item
         }
         return travelHomepageItems
-    }
-
-    companion object {
-        const val WIDGET_TYPE_SLIDER_BANNER = "SliderBanner"
-        const val WIDGET_TYPE_DYNAMIC_ICON = "DynamicIcon"
-        const val WIDGET_TYPE_DUAL_BANNER = "DualBanner"
     }
 }

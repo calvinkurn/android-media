@@ -20,10 +20,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
-import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
+import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.di.TravelHomepageComponent
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
@@ -37,9 +34,6 @@ import javax.inject.Inject
  * @author by furqan on 06/08/2019
  */
 class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, OnItemClickListener {
-    override fun onItemBindViewHolder(isFromCloud: Boolean?) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -175,33 +169,8 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun getScreenName(): String = ""
 
-    override fun onBannerVHItemBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getBanner(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_travel_collective_banner), isFromCloud
-                ?: true)
-    }
-
-    override fun onCategoryVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getCategories(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_category_list), isFromCloud
-                ?: true)
-    }
-
     override fun onDestinationVHBind(isFromCloud: Boolean?) {
         travelHomepageViewModel.getDestination(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_destination), isFromCloud
-                ?: true)
-    }
-
-    override fun onOrderListVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getOrderList(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_order_list), isFromCloud
-                ?: true)
-    }
-
-    override fun onRecentSearchVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getRecentSearch(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recent_search), isFromCloud
-                ?: true)
-    }
-
-    override fun onRecommendationVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getRecommendation(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_recommendation), isFromCloud
                 ?: true)
     }
 
@@ -251,6 +220,11 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         context?.let {
             RouteManager.route(context, appUrl)
         }
+    }
+
+    override fun onItemBindViewHolder(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean?) {
+        travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
+                travelLayoutSubhomepage.dataType, travelLayoutSubhomepage.widgetType, travelLayoutSubhomepage.priority, true)
     }
 
     companion object {

@@ -31,7 +31,7 @@ data class TravelLayoutSubhomepage(
 
             @SerializedName("priority")
             @Expose
-            val priority: String = ""
+            val priority: String = "1"
     )
 
     data class Meta(

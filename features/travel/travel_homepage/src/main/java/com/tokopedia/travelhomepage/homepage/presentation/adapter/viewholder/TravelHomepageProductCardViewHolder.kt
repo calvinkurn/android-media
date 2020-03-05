@@ -15,12 +15,23 @@ import kotlinx.android.synthetic.main.layout_travel_homepage_product_card.view.*
 class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBindListener: OnItemBindListener,
                                           private val onItemClickListener: OnItemClickListener) : AbstractViewHolder<TravelHomepageProductCardModel>(itemView) {
     override fun bind(element: TravelHomepageProductCardModel) {
-        with(itemView) {
-            productCardWidget.titleText = element.title
-            productCardWidget.subtitleText = element.subtitle
-            productCardWidget.hasSeeAllButton = element.clickSeeAllUrl.isEmpty()
-            productCardWidget.buildView(element.productItem)
+        if (element.isLoaded) {
+            if (element.productItem.isNotEmpty()) {
+                with(itemView) {
+                    productCardWidget.titleText = element.title
+                    productCardWidget.subtitleText = element.subtitle
+                    productCardWidget.hasSeeAllButton = element.clickSeeAllUrl.isEmpty()
+                    productCardWidget.buildView(element.productItem)
+                }
+            } else {
+                // hide shimmering and hide layout
+            }
+        } else {
+            // show shimmering hide layout
+            //
+            onItemBindListener.onItemBindViewHolder(element.layoutData, element.isLoadFromCloud)
         }
+
     }
 
     companion object {
