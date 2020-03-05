@@ -44,7 +44,6 @@ import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
 import com.tokopedia.flight.search.util.select
 import com.tokopedia.flight.search.util.unselect
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -373,7 +372,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     override fun showGetListError(throwable: Throwable?) {
         super.showGetListError(throwable)
-        horizontal_progress_bar.hide()
+        horizontal_progress_bar.visibility = View.GONE
         removeBottomPaddingForSortAndFilterActionButton()
         hideLoading()
         // Note: add element should be the last in line
@@ -383,7 +382,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     override fun hideHorizontalProgress() {
-        horizontal_progress_bar.show()
+        horizontal_progress_bar.visibility = View.INVISIBLE
     }
 
     override fun removeToolbarElevation() {
@@ -686,9 +685,9 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         onFlightSearchFragmentListener!!.changeDate(flightSearchPassData)
 
         setUpCombinationAirport()
-        horizontal_progress_bar.show()
+        horizontal_progress_bar.visibility = View.VISIBLE
         progress = 0
-        flight_sort_filter.hide()
+        flight_sort_filter.visibility = View.GONE
 
         flightSearchPresenter.attachView(this)
         clearAllData()
@@ -760,11 +759,11 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     }
 
     private fun showQuickFilter() {
-        flight_sort_filter.show()
+        flight_sort_filter.visibility = View.VISIBLE
     }
 
     private fun hideQuickFilter() {
-        flight_sort_filter.hide()
+        flight_sort_filter.visibility = View.GONE
     }
 
     private fun showFilterSortBottomSheet() {
