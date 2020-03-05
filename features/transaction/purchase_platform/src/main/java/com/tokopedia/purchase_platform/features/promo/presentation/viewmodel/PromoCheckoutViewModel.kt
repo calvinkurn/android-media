@@ -157,11 +157,13 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             // Calculate clash on un selection event
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
+                    // Calculate clash on expanded promo item
                     if (it.uiData.clashingInfo.isNotEmpty()) {
                         setClashOnUnSelectionEvent(it, selectedItem)
                         _tmpUiModel.value = Update(it)
                     }
                 } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    // Calculate clash on collapsed promo item
                     it.uiData.tmpPromoItemList.forEach {
                         if (it.uiData.clashingInfo.isNotEmpty()) {
                             setClashOnUnSelectionEvent(it, selectedItem)
@@ -258,6 +260,30 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         }
 
         setFragmentStateHasPromoSelected(hasAnyPromoSellected)
+    }
+
+    fun resetSelectedPromo() {
+        val promoList = ArrayList<Visitable<*>>()
+        promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel) {
+                it.uiState.isSellected = false
+                it.uiData.currentClashingPromo.clear()
+                promoList.add(it)
+            } else if (it is PromoListHeaderUiModel) {
+                it.uiState.hasSelectedPromoItem = false
+                it.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
+                    promoListItemUiModel.uiState.isSellected = false
+                    promoListItemUiModel.uiData.currentClashingPromo.clear()
+                }
+                promoList.add(it)
+            }
+        }
+
+        promoList.forEach {
+            _tmpUiModel.value = Update(it)
+        }
+
+        setFragmentStateHasPromoSelected(false)
     }
 
     fun setFragmentStateHasPromoSelected(hasAnyPromoSelected: Boolean) {

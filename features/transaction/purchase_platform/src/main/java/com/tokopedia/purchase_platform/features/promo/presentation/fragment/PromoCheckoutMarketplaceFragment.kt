@@ -128,7 +128,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
                     } else {
                         var foundHeader = false
                         adapter.data.forEach {
-                            if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId && lastData.uiState.isEnabled) {
+                            if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
                                 lastHeaderUiModel = it
                                 foundHeader = true
                                 return@forEach
@@ -378,22 +378,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     override fun onClickResetPromo() {
-        val promoIndexList = ArrayList<Int>()
-        adapter.data.forEach {
-            if (it is PromoListItemUiModel && it.uiState.isSellected) {
-                it.uiState.isSellected = false
-                promoIndexList.add(adapter.data.indexOf(it))
-            } else if (it is PromoListHeaderUiModel) {
-                it.uiData.subTitle = "Hanya bisa pilih 1"
-                it.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
-                    promoListItemUiModel.uiState.isSellected = false
-                }
-                promoIndexList.add(adapter.data.indexOf(it))
-            }
-        }
-        adapter.modifyDataList(promoIndexList)
-
-        viewModel.setFragmentStateHasPromoSelected(false)
+        viewModel.resetSelectedPromo()
     }
 
     // --- END OF FRAGMENT LEVEL ACTION
@@ -421,10 +406,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun onClickPromoListItem(position: Int, element: PromoListItemUiModel) {
         viewModel.updatePromoListAfterClickPromoItem(element)
-    }
-
-    private fun updateResetButtonState() {
-        viewModel.updateResetButtonState()
     }
 
     private fun isPromoScopeHasAnySelectedItem(parentIdentifierId: Int): Boolean {
