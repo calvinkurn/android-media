@@ -139,14 +139,6 @@ project.ext {
     groupId = 'com.tokopedia.merchant'
     versionName = "0.0.1"
     artifactName = "product_detail-release"
-    unitTestJavaIncludes = [
-            '**/UrlParamUtils.*'
-    ]
-    unitTestKotlinIncludes = [
-            '**/SearchShopViewModel.*',
-            '**/SearchViewModel.*',
-            '**/SearchKotlinExtKt.*',
-    ]
 }
 
 apply from: '../../../publish_local.gradle'

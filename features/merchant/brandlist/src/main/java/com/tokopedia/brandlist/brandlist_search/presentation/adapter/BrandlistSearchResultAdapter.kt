@@ -1,5 +1,6 @@
 package com.tokopedia.brandlist.brandlist_search.presentation.adapter
 
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.brandlist.brandlist_page.presentation.adapter.widget.StickyHeaderInterface
 import com.tokopedia.brandlist.brandlist_search.presentation.adapter.viewholder.BrandlistSearchAllBrandLabelViewHolder
@@ -12,6 +13,8 @@ class BrandlistSearchResultAdapter(
     companion object {
         private const val numberOfShimmeringCards = 5
     }
+
+    private var recyclerView: RecyclerView? = null
 
     fun updateSearchResultData(searchResultList: List<BrandlistSearchResultViewModel>) {
         visitables.clear()
@@ -56,5 +59,30 @@ class BrandlistSearchResultAdapter(
 
     override fun isHeader(itemPosition: Int): Boolean {
         return visitables[itemPosition].type(adapterTypeFactory) == BrandlistSearchAllBrandLabelViewHolder.LAYOUT
+    }
+
+    override fun showLoading() {
+        if (!isLoading) {
+            if (isShowLoadingMore) {
+                visitables.add(loadingMoreModel)
+            } else {
+                visitables.add(loadingModel)
+            }
+            recyclerView?.let {
+                it.post {
+                    notifyItemInserted(visitables.size)
+                }
+            }
+        }
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = recyclerView
+        super.onAttachedToRecyclerView(recyclerView)
+    }
+
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        this.recyclerView = null
+        super.onDetachedFromRecyclerView(recyclerView)
     }
 }
