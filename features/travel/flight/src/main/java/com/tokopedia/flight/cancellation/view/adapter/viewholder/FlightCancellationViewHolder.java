@@ -40,8 +40,6 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
 
         void onPassengerUnchecked(FlightCancellationPassengerViewModel passengerViewModel, int position);
 
-        boolean shouldCheckAll();
-
         boolean isChecked(FlightCancellationPassengerViewModel passengerViewModel);
     }
 
@@ -182,10 +180,6 @@ public class FlightCancellationViewHolder extends AbstractViewHolder<FlightCance
         public void onBindViewHolder(PassengerViewHolder passengerViewHolder, int position) {
             passengerViewHolder.bindData(passengerViewModelList.get(position), getAdapterPosition());
             passengerViewHolderList.add(passengerViewHolder);
-
-            if (listener.shouldCheckAll()) {
-                toggleCheckJourney(true);
-            }
         }
 
         @Override
