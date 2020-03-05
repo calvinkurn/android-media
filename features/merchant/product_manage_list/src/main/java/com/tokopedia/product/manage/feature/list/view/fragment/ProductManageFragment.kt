@@ -47,7 +47,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
@@ -266,12 +265,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 showFilterBottomSheet()
             }
             else -> {
-                val filterOption = filter.option
-                val isSelected = viewHolder.isSelected()
+                val selectedFilter = filter.status
+                val currentFilter = tabFilters.selectedFilter?.status
 
-                productFilterList.setSelectedFilter(filter)
-                clickTabFilter(filterOption, isSelected)
-                resetTabFilter(viewHolder)
+                if(selectedFilter == currentFilter) {
+                    renderList(productList)
+                    tabFilters.resetSelectedFilter()
+                } else {
+                    tabFilters.resetAllFilter(viewHolder)
+                    tabFilters.setSelectedFilter(filter)
+                    filterProductByStatus(selectedFilter)
+                }
             }
         }
     }
@@ -310,24 +314,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun clickTabFilter(filterOption: ProductStatus?, isSelected: Boolean) {
-        if(isSelected) {
-            showProductList(productList)
-            productFilterList.resetSelectedFilter()
-        } else {
-            filterProductList(filterOption)
-        }
-    }
-
-    private fun filterProductList(filterOption: ProductStatus?) {
+    private fun filterProductByStatus(status: ProductStatus?) {
         val productList = productList.filter {
-            it.status == filterOption
+            it.status == status
         }
         renderList(productList)
-    }
-
-    private fun resetTabFilter(selectedFilter: FilterViewHolder) {
-        productFilterList.resetTabFilter(selectedFilter)
     }
 
     private fun clearEtalaseAndStockData() {
@@ -350,7 +341,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun setupProductFilters() {
-        with(productFilterList) {
+        with(tabFilters) {
             adapter = productFilterAdapter
             layoutManager = LinearLayoutManager(this@ProductManageFragment.context, HORIZONTAL, false)
             addItemDecoration(ProductFilterItemDecoration())
@@ -411,9 +402,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun showProductList(productList: List<ProductViewModel>) {
-        if(productFilterList.isActive()) {
-            val filter = productFilterList.selectedFilter
-            filterProductList(filter?.option)
+        if(tabFilters.isActive()) {
+            val selectedFilter = tabFilters.selectedFilter?.status
+            filterProductByStatus(selectedFilter)
         } else {
             val hasNextPage = productList.isNotEmpty()
             renderList(productList, hasNextPage)

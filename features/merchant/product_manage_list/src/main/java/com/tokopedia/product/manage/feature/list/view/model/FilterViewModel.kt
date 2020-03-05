@@ -10,7 +10,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 sealed class FilterViewModel(
     @StringRes val titleId: Int,
     open val count: Int = 0,
-    val option: ProductStatus? = null,
+    val status: ProductStatus? = null,
     @DrawableRes val icon: Int? = null
 ) : Visitable<ProductFilterAdapterFactory> {
 

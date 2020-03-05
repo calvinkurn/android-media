@@ -30,7 +30,7 @@
             app:layout_scrollFlags="scroll|snap|enterAlways"/>
 
         <com.tokopedia.product.manage.feature.list.view.ui.ProductManageTabFilter
-            android:id="@+id/productFilterList"
+            android:id="@+id/tabFilters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingLeft="@dimen/product_manage_horizontal_spacing"

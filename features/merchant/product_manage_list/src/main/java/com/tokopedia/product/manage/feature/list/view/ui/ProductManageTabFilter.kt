@@ -24,15 +24,6 @@ class ProductManageTabFilter: RecyclerView {
     constructor(context: Context, attrs: AttributeSet): super(context, attrs)
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int): super(context, attrs, defStyleAttr)
 
-    fun resetTabFilter(selectedTab: FilterViewHolder) {
-        for(i in 0..adapter?.itemCount.orZero()) {
-            val viewHolder = findViewHolderForAdapterPosition(i)
-            if(viewHolder is FilterViewHolder && viewHolder != selectedTab) {
-                viewHolder.resetFilter()
-            }
-        }
-    }
-
     fun setSelectedFilter(selectedFilter: FilterViewModel) {
         this.selectedFilter = selectedFilter
     }
@@ -43,5 +34,12 @@ class ProductManageTabFilter: RecyclerView {
 
     fun isActive(): Boolean {
         return selectedFilter != null
+    }
+
+    fun resetAllFilter(selectedFilter: FilterViewHolder) {
+        for(i in 0..adapter?.itemCount.orZero()) {
+            val viewHolder = findViewHolderForAdapterPosition(i) as? FilterViewHolder
+            if(viewHolder != selectedFilter) viewHolder?.resetFilter()
+        }
     }
 }

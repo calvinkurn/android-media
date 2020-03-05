@@ -53,7 +53,7 @@ class FilterViewHolder(
 
     private fun toggleSelectFilter(filter: FilterViewModel) {
         if(filter !is Default) {
-            val chipType = if(isSelected()) {
+            val chipType = if(isFilterSelected()) {
                 ChipsUnify.TYPE_NORMAL
             } else {
                 ChipsUnify.TYPE_SELECTED
@@ -62,7 +62,7 @@ class FilterViewHolder(
         }
     }
 
-    fun isSelected(): Boolean {
+    private fun isFilterSelected(): Boolean {
         return chipFilter.chipType == ChipsUnify.TYPE_SELECTED
     }
 
