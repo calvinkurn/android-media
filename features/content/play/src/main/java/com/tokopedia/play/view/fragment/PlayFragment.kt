@@ -23,6 +23,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
@@ -84,6 +85,7 @@ class PlayFragment : BaseDaggerFragment() {
                 .baseAppComponent(
                         (requireContext().applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(requireContext()))
                 .build()
                 .inject(this)
     }

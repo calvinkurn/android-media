@@ -72,7 +72,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
     val observableProductSheetContent: LiveData<ProductSheetUiModel>
         get() = _observableProductSheetContent
-    val observableBadgeCart: LiveData<Int>
+    val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
 
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
@@ -91,7 +91,7 @@ class PlayViewModel @Inject constructor(
     private val _observableProductSheetContent = MutableLiveData<ProductSheetUiModel>()
     private val _observableBottomInsetsState = MutableLiveData<BottomInsetsState>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
-    private val _observableBadgeCart = MutableLiveData<Int>()
+    private val _observableBadgeCart = MutableLiveData<CartUiModel>()
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
             _observableVideoProperty.value = VideoPropertyUiModel(it.channelType, _observableVideoProperty.value?.state
@@ -338,7 +338,7 @@ class PlayViewModel @Inject constructor(
                 val countCart = withContext(dispatchers.io) {
                     getCartCountUseCase.executeOnBackground()
                 }
-                _observableBadgeCart.value = countCart
+                _observableBadgeCart.value = CartUiModel(true, countCart)
             } catch (e: Exception) {}
         }
     }

@@ -16,6 +16,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.ui.loading.VideoLoadingComponent
 import com.tokopedia.play.ui.onetap.OneTapComponent
 import com.tokopedia.play.ui.overlayvideo.OverlayVideoComponent
@@ -82,6 +83,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
                 .baseAppComponent(
                         (requireContext().applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(requireContext()))
                 .build()
                 .inject(this)
     }

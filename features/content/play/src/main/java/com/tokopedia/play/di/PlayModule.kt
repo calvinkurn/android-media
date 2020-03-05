@@ -28,7 +28,7 @@ import javax.inject.Named
  * Created by jegul on 29/11/19
  */
 @Module
-class PlayModule {
+class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
@@ -94,7 +94,7 @@ class PlayModule {
     @PlayScope
     @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
-    fun provideUpdateCartCounterMutation(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_update_cart_counter)
+    fun provideUpdateCartCounterMutation(): String {
+        return GraphqlHelper.loadRawString(mContext.resources, R.raw.gql_update_cart_counter)
     }
 }
