@@ -5,12 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.digital.home.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageSearchCategoryModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -18,8 +20,8 @@ import javax.inject.Inject
  */
 class DigitalHomePageSearchViewModel @Inject constructor(
         private val searchCategoryHomePageUseCase: SearchCategoryHomePageUseCase,
-        dispatcher: CoroutineDispatcher
-): BaseViewModel(dispatcher) {
+        private val dispatcher: DigitalHomePageDispatchersProvider
+): BaseViewModel(dispatcher.Main) {
 
     private val mutableSearchCategoryList = MutableLiveData<Result<List<DigitalHomePageSearchCategoryModel>>>()
     val searchCategoryList: LiveData<Result<List<DigitalHomePageSearchCategoryModel>>>
@@ -27,7 +29,9 @@ class DigitalHomePageSearchViewModel @Inject constructor(
 
     fun searchCategoryList(rawQuery: String, searchQuery: String, isLoadFromCloud: Boolean = false) {
         launchCatchError(block = {
-            val data = searchCategoryHomePageUseCase.searchCategoryList(rawQuery, isLoadFromCloud, searchQuery)
+            val data = withContext(dispatcher.IO) {
+                searchCategoryHomePageUseCase.searchCategoryList(rawQuery, isLoadFromCloud, searchQuery)
+            }
             mutableSearchCategoryList.postValue(Success(data))
         }) {
             mutableSearchCategoryList.postValue(Fail(it))
