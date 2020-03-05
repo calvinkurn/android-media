@@ -34,7 +34,7 @@ class GqlAkamaiBotInterceptor : Interceptor {
                 charset?.let {
                     readFromBuffer(buffer, it).let {
 
-                        if (getMutation(it, "login")) {
+                        if (getMutation(it, "login_token")) {
                             newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
                                     ?: "")
                             newRequest.addHeader("X-TKPD-AKAMAI","login")

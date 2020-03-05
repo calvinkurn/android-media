@@ -31,5 +31,17 @@ fun getMutation(input: String, match:String) : Boolean{
     return false
 }
 
+fun getAny(input:String) : MutableList<String>{
+    val p = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_]+)(?=\\().*")
+    val m = p.matcher(input.replace("\n"," "))
+    val any = mutableListOf<String>()
+    while (m.find()) {
+
+        println(m.group(1))
+        any.add(m.group(1))
+    }
+    return any;
+}
+
 
 val p: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
