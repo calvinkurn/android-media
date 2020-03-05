@@ -45,6 +45,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_BANNER = 6
         const val TYPE_BANNER_CAROUSEL = 7
         const val TYPE_GIF_BANNER = 8
+        const val TYPE_MIX_LEFT = 20
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
             when(channels.layout) {
@@ -57,6 +58,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> return TYPE_BANNER_CAROUSEL
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> return TYPE_GIF_BANNER
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT
 
             }
             return TYPE_CURATED
