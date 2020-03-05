@@ -65,7 +65,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
 
         fun isFingerprintAvailable(mContext: FragmentActivity?): Boolean {
             val fingerprintManager = mContext?.getSystemService(FingerprintManager::class.java)
-            return fingerprintManager?.isHardwareDetected == true && fingerprintManager.hasEnrolledFingerprints()
+            return fingerprintManager?.isHardwareDetected == true && fingerprintManager.hasEnrolledFingerprints() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
         }
     }
 
@@ -81,7 +81,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
 
     private var cancellationSignal: CancellationSignal? = CancellationSignal()
 
-    var fingerprintManager: FingerprintManagerCompat? = null
+    private var fingerprintManager: FingerprintManagerCompat? = null
 
     init {
         setChild(View.inflate(context, R.layout.fingerprint_scan_layout, null))
@@ -145,18 +145,19 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         fingerprintManager = FingerprintManagerCompat.from(context)
 
+        DaggerLoginFingerprintComponent
+                .builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .loginFingerprintSettingModule(LoginFingerprintSettingModule(context))
+                .loginFingerprintQueryModule(LoginFingerprintQueryModule())
+                .build()
+                .inject(this)
+
         if (fingerprintManager?.isHardwareDetected == true) {
-            if (fingerprintManager?.hasEnrolledFingerprints() == true) {
-                DaggerLoginFingerprintComponent
-                        .builder()
-                        .loginFingerprintSettingModule(LoginFingerprintSettingModule())
-                        .loginFingerprintQueryModule(LoginFingerprintQueryModule())
-                        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                        .build()
-                        .inject(this)
-            } else {
+            if (fingerprintManager?.hasEnrolledFingerprints() == false) {
                 listener?.onFingerprintError(context.getString(R.string.error_no_fp_enrolled), 112)
                         ?: Toaster.make(fingerprint_main_layout, context.getString(R.string.error_no_fp_enrolled), Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR)
+                dismiss()
             }
         } else {
             listener?.onFingerprintError(context.getString(R.string.error_no_fp_hardware), 111)
