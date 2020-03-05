@@ -115,7 +115,6 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void getAllQueryTest() {
-
         String whatitget = null;
         Pair<String[], String[]> pair = listRaw();
 
@@ -126,7 +125,6 @@ public class ExampleInstrumentedTest {
                 List<String> any = UtilsKt.getAny(input);
                 System.out.println(any.toString()+" ][ name ][ "+name+" [size] "+any.size());
                 Log.d(this.getClass().getName(), any.toString()+" ][ name ][ "+name+" [size] "+any.size());
-//                assertEquals(1, any.size());
                 whatitget = any.get(0);
             } catch (Exception e) {
                 Log.e("EIT", e.toString()+ " ][ "+whatitget);
@@ -135,14 +133,14 @@ public class ExampleInstrumentedTest {
     }
 
     @Test
-    public void staticTest2(){
+    public void performanceTest(){
         Context context = androidx.test.platform.app.InstrumentationRegistry.getInstrumentation().getContext();
         Resources resources = context.getResources();
         String input = GraphqlHelper.loadRawString(resources, R.raw.tp_gql_user_info);
-        List<String> any = UtilsKt.getAny(input);
-        System.out.println(any.toString()+" ][ name ][ "+"empty"+" [size] "+any.size());
-        Log.d(this.getClass().getName(), any.toString()+" ][ name ][ "+"empty"+" [size] "+any.size());
-                assertEquals(1, any.size());
-//        whatitget = any.get(0);
+        for (int i = 0; i < 1_000_000; i++) {
+            List<String> any = UtilsKt.getAny(input);
+            assertEquals(1, any.size());
+            assertTrue(any.get(0).equalsIgnoreCase("mf_get_user_info"));
+        }
     }
 }

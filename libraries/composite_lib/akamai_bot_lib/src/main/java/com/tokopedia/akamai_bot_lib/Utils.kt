@@ -46,27 +46,10 @@ fun getAny(input:String) : MutableList<String>{
     val m = p.matcher(input.replace("\n"," "))
     val any = mutableListOf<String>()
     while (m.find()) {
-
-        println(m.group(1))
         any.add(m.group(1))
         map.putIfAbsent(input, m.group(1))
     }
     return any;
 }
-
-data class Json4Kotlin_Base(
-        @SerializedName("\"operationName\"") val operationName: String,
-        @SerializedName("query") val query: String,
-        @SerializedName("variables") val variables: Variables
-)
-
-data class Variables(
-
-        @SerializedName("password") val password: String,
-        @SerializedName("grant_type") val grant_type: String,
-        @SerializedName("username") val username: String,
-        @SerializedName("supported") val supported: Boolean
-)
-
 
 val p: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
