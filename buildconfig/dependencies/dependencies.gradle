@@ -171,7 +171,7 @@ ext {
             installRef : "com.android.installreferrer:installreferrer:1.1",
             moengage   : "com.moengage:moe-android-sdk:9.7.02",
             moengageAmp: "com.moengage:push-amp-plus:0.3.00",
-            branch     : "io.branch.sdk.android:library:4.3.2",
+            branch     : "io.branch.sdk.android:library:4.1.1",
     ]
 
     deeplinkDispatchDependencies = [
@@ -231,7 +231,8 @@ ext {
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
-            stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion"
+            stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
+            liveness              : "ai.advance.liveness:guardian_core_v1.6@aar"
     ]
 
     testDependencies = [

@@ -14,23 +14,14 @@ public class TitleViewHolder extends AbstractViewHolder<TitleSearch> {
     public static final int LAYOUT = R.layout.layout_title_auto_complete;
 
     private final TextView titleTextView;
-    private View btnDelete;
 
-    public TitleViewHolder(View itemView, final ItemClickListener clickListener) {
+    public TitleViewHolder(View itemView) {
         super(itemView);
         titleTextView = itemView.findViewById(R.id.titleTextView);
-        btnDelete = itemView.findViewById(R.id.btnDelete);
-        btnDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickListener.onDeleteAllRecentSearch();
-            }
-        });
     }
 
     @Override
     public void bind(TitleSearch element) {
         titleTextView.setText(element.getTitle());
-        btnDelete.setVisibility(element.isVisible() ? View.VISIBLE : View.GONE);
     }
 }

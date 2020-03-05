@@ -10,15 +10,11 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.settingbank.banklist.v2.di.DaggerSettingBankComponent
 import com.tokopedia.settingbank.banklist.v2.di.SettingBankComponent
-import com.tokopedia.settingbank.banklist.v2.domain.Bank
 import com.tokopedia.settingbank.banklist.v2.util.SettingBankRemoteConfig
-import com.tokopedia.settingbank.banklist.v2.view.fragment.OnBankSelectedListener
 import com.tokopedia.settingbank.banklist.v2.view.fragment.SettingBankFragment
 
 
-class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>, OnBankSelectedListener {
-
-    val ADD_ACCOUNT_REQUEST_CODE = 101
+class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankComponent>, SettingBankCallback {
 
     override fun getComponent(): SettingBankComponent = DaggerSettingBankComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication)
@@ -42,13 +38,14 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
     }
 
     companion object {
+
+        const val ADD_ACCOUNT_REQUEST_CODE = 101
         const val REQUEST_ON_DOC_UPLOAD = 102
-        const val UPALOAD_DOCUMENT_MESSAGE = "UPALOAD_DOCUMENT_MESSAGE"
+        const val UPLOAD_DOCUMENT_MESSAGE = "UPLOAD_DOCUMENT_MESSAGE"
         fun createIntent(context: Context): Intent {
             return Intent(context, SettingBankActivity::class.java)
         }
     }
-
 
     override fun getTagFragment(): String {
         return SettingBankFragment::class.java.name
@@ -57,35 +54,40 @@ class SettingBankActivity : BaseSimpleActivity(), HasComponent<SettingBankCompon
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == ADD_ACCOUNT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            refreshBankList()
+        } else if (requestCode == REQUEST_ON_DOC_UPLOAD && resultCode == Activity.RESULT_OK) {
+            onAccountDocUploaded(data)
+        }
+    }
+
+    override fun onAddBankAccountClick() {
+        startActivityForResult(ChooseBankActivity.createIntent(this), ADD_ACCOUNT_REQUEST_CODE)
+    }
+
+    private fun refreshBankList() {
+        val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+        fragment?.let {
+            if (fragment is SettingBankFragment) {
+                fragment.loadUserBankAccountList()
+            }
+        }
+    }
+
+    private fun onAccountDocUploaded(data: Intent?) {
+        data?.let {
+            val message: String? = data.getStringExtra(UPLOAD_DOCUMENT_MESSAGE)
             val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
             fragment?.let {
                 if (fragment is SettingBankFragment) {
                     fragment.loadUserBankAccountList()
-                }
-            }
-        } else if (requestCode == REQUEST_ON_DOC_UPLOAD && resultCode == Activity.RESULT_OK) {
-            data?.let {
-                val message: String? = data.getStringExtra(UPALOAD_DOCUMENT_MESSAGE)
-                val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
-                fragment?.let {
-                    if (fragment is SettingBankFragment) {
-                        fragment.loadUserBankAccountList()
-                        fragment.showToasterOnUI(message)
-                    }
+                    fragment.showToasterOnUI(message)
                 }
             }
         }
     }
 
+}
 
-    override fun onBankSelected(bank: Bank) {
-        val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
-        fragment?.let {
-            if (fragment is SettingBankFragment) {
-                fragment.closeBottomSheet()
-            }
-        }
-        startActivityForResult(AddBankActivity.createIntent(this, bank), ADD_ACCOUNT_REQUEST_CODE)
-    }
-
+interface SettingBankCallback {
+    fun onAddBankAccountClick()
 }
