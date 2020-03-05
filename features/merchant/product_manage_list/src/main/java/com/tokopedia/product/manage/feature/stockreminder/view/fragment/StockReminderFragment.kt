@@ -23,6 +23,7 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.di.DaggerStockReminderComponent
 import com.tokopedia.product.manage.feature.stockreminder.view.viewmodel.StockReminderViewModel
+import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -208,7 +209,7 @@ class StockReminderFragment: BaseDaggerFragment() {
 
     private fun doResultIntent() {
         val resultIntent = Intent()
-        resultIntent.putExtra("extra_product_name", productName)
+        resultIntent.putExtra(EXTRA_PRODUCT_NAME, productName)
         activity?.setResult(Activity.RESULT_OK, resultIntent)
         activity?.finish()
     }

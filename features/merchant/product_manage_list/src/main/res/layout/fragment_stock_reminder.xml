@@ -2,22 +2,22 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:id="@+id/layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/typography"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginEnd="7dp"
-        android:layout_marginRight="7dp"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginEnd="@dimen/dp_7"
+        android:layout_marginRight="@dimen/dp_7"
         android:lineSpacingExtra="@dimen/sp_6"
         android:text="@string/product_stock_reminder_typography_title"
-        android:textColor="#f531353b"
+        android:textColor="@color/Neutral_N700_96"
         android:textSize="@dimen/sp_14"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/swStockReminder"
@@ -32,16 +32,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="23dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.unifycomponents.ContainerUnify
         android:id="@+id/containerStockReminder"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="14dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/layout_lvl0"
+        android:layout_marginTop="@dimen/dp_14"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,13 +62,13 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tvReminderDesc"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="15dp"
-                android:layout_marginRight="15dp"
+                android:layout_marginStart="@dimen/layout_lvl2"
+                android:layout_marginLeft="@dimen/layout_lvl2"
+                android:layout_marginTop="@dimen/dp_12"
+                android:layout_marginEnd="@dimen/dp_15"
+                android:layout_marginRight="@dimen/dp_15"
                 android:lineHeight="@dimen/sp_18"
                 android:text="@string/product_stock_reminder_typography_desc"
                 android:textSize="@dimen/sp_12"
@@ -79,10 +79,10 @@
 
             <com.tokopedia.unifycomponents.QuantityEditorUnify
                 android:id="@+id/qeStock"
-                android:layout_width="0dp"
+                android:layout_width="@dimen/layout_lvl0"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="18dp"
-                android:layout_marginRight="18dp"
+                android:layout_marginEnd="@dimen/dp_18"
+                android:layout_marginRight="@dimen/dp_18"
                 app:layout_constraintBottom_toBottomOf="@+id/tvReminderDesc"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/tvReminderDesc" />
@@ -91,7 +91,7 @@
                 android:id="@+id/cardSaveBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardElevation="@dimen/dp_16"
+                app:cardElevation="@dimen/layout_lvl2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent">
@@ -103,14 +103,14 @@
                     <com.tokopedia.unifycomponents.UnifyButton
                         android:id="@+id/btnSaveReminder"
                         style="@style/Button.Submit.Green.Full"
-                        android:layout_width="0dp"
+                        android:layout_width="@dimen/layout_lvl0"
                         android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_marginRight="16dp"
-                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="@dimen/layout_lvl2"
+                        android:layout_marginLeft="@dimen/layout_lvl2"
+                        android:layout_marginTop="@dimen/layout_lvl1"
+                        android:layout_marginEnd="@dimen/layout_lvl2"
+                        android:layout_marginRight="@dimen/layout_lvl2"
+                        android:layout_marginBottom="@dimen/layout_lvl1"
                         android:enabled="false"
                         android:text="@string/product_stock_reminder_button"
                         app:layout_constraintBottom_toBottomOf="parent"
@@ -129,10 +129,10 @@
 
     <RelativeLayout
         android:id="@+id/loadingStockReminder"
-        android:visibility="gone"
-        android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/ivLoadingStockReminder"
@@ -140,16 +140,16 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:contentDescription="@string/product_stock_reminder_loading_content_desc"
-            app:srcCompat="@drawable/ic_loading_indeterminate"/>
+            app:srcCompat="@drawable/ic_loading_indeterminate" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/globalErrorStockReminder"
-        android:background="@color/white"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:visibility="gone">
 
         <com.tokopedia.globalerror.GlobalError
             android:id="@+id/geStockReminder"
