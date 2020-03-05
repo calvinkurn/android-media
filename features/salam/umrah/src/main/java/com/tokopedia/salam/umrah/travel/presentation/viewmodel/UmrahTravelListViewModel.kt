@@ -23,13 +23,14 @@ class UmrahTravelListViewModel @Inject constructor(private val umrahTravelAgents
         val flags = listOf(FLAGS_TRAVEL)
         launch {
             val result = umrahTravelAgentsUseCase.executeUseCase(rawQuery,
-                    isLoadFromCloud, page,10, flags)
+                    isLoadFromCloud, page,LIMIT, flags)
             mutableTravelAgents.value = result
         }
     }
 
     companion object{
-        const val FLAGS_TRAVEL = "TRAVEL_AGENT_NORMAL"
+        const val FLAGS_TRAVEL = "TRAVEL_AGENT_FEATURED_ON_LIST"
+        const val LIMIT = 10
     }
 
 }

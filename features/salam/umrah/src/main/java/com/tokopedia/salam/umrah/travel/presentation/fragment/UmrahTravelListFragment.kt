@@ -65,7 +65,7 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
     }
 
     private fun onSuccessResult(data : UmrahTravelAgentsEntity){
-        renderList(data.umrahTravelAgents, true)
+        renderList(data.umrahTravelAgents, data.umrahTravelAgents.size >= 10)
     }
 
     override fun onEmptyButtonClicked() {
