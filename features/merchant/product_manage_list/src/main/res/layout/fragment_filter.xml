@@ -5,18 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/filter_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/bottomsheet_title_divider"
                 android:layout_width="match_parent"
+                android:layout_marginLeft="@dimen/dp_negative_8"
+                android:layout_marginRight="@dimen/dp_negative_8"
                 android:layout_height="@dimen/dp_1"
                 app:layout_constraintTop_toTopOf="parent"/>
 
@@ -41,13 +43,14 @@
                     android:layout_height="@dimen/layout_lvl4"
                     android:layout_centerInParent="true"
                     app:srcCompat="@drawable/ic_loading_indeterminate"/>
-
             </RelativeLayout>
 
             <com.tokopedia.unifycomponents.DividerUnify
                 android:id="@+id/bottomsheet_button_divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_1"
+                android:layout_marginLeft="@dimen/dp_negative_8"
+                android:layout_marginRight="@dimen/dp_negative_8"
                 android:layout_marginBottom="@dimen/layout_lvl2"
                 app:layout_constraintBottom_toTopOf="@id/btn_close_bottom_sheet" />
 
@@ -62,6 +65,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.core.widget.NestedScrollView>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

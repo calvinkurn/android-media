@@ -20,18 +20,10 @@ class ProductManageFilterMapper {
         const val OTHER_FILTER_HEADER = "Filter Lainnya"
         private const val SHOW_CHIPS = true
         private const val HIDE_CHIPS = false
-        private const val SORT_ASC = "ASC"
         private const val SORT_NAME = "NAME"
         private const val SORT_UPDATE_TIME = "UPDATE_TIME"
         private const val SORT_SOLD = "SOLD"
         private const val SORT_PRICE = "PRICE"
-        private const val NEW_ONLY = "isNewOnly"
-        private const val USED_ONLY = "isUsedOnly"
-        private const val EMPTY_STOCK_ONLY = "isEmptyStockOnly"
-        private const val VARIANT_ONLY = "isVariantOnly"
-        private const val CASH_BACK_ONLY = "isCashbackOnly"
-        private const val WHOLESALE_ONLY = "isWholesaleOnly"
-        private const val PRE_ORDER_ONLY = "isPreorderOnly"
 
         fun mapCombinedResultToFilterViewModels(filterOptionsResponse: FilterOptionsResponse): List<FilterViewModel> {
             val filterViewModels = mutableListOf<FilterViewModel>()
@@ -101,13 +93,13 @@ class ProductManageFilterMapper {
             }
             var sortOrderOption = SortOrderOption.DESC
             selectedData?.let {
-                if(it.value == SORT_ASC) sortOrderOption = SortOrderOption.ASC
+                if(it.value == SortOrderOption.ASC.name) sortOrderOption = SortOrderOption.ASC
             }
             return when(selectedData?.id) {
-                SORT_NAME -> SortOption.SortByName(sortOrderOption)
-                SORT_UPDATE_TIME -> SortOption.SortByUpdateTime(sortOrderOption)
-                SORT_SOLD -> SortOption.SortBySold(sortOrderOption)
-                SORT_PRICE -> SortOption.SortByPrice(sortOrderOption)
+                SortOption.SortId.NAME.name -> SortOption.SortByName(sortOrderOption)
+                SortOption.SortId.UPDATE_TIME.name -> SortOption.SortByUpdateTime(sortOrderOption)
+                SortOption.SortId.SOLD.name -> SortOption.SortBySold(sortOrderOption)
+                SortOption.SortId.PRICE.name -> SortOption.SortByPrice(sortOrderOption)
                 else -> SortOption.SortByDefault(sortOrderOption)
             }
         }
@@ -143,13 +135,13 @@ class ProductManageFilterMapper {
             filterViewModel.data.forEach {
                 if(it.select) {
                     val mappedData = when(it.id) {
-                        NEW_ONLY -> FilterOption.FilterByCondition.NewOnly
-                        USED_ONLY -> FilterOption.FilterByCondition.UsedOnly
-                        EMPTY_STOCK_ONLY -> FilterOption.FilterByCondition.EmptyStockOnly
-                        VARIANT_ONLY -> FilterOption.FilterByCondition.VariantOnly
-                        CASH_BACK_ONLY -> FilterOption.FilterByCondition.CashBackOnly
-                        WHOLESALE_ONLY -> FilterOption.FilterByCondition.WholesaleOnly
-                        PRE_ORDER_ONLY -> FilterOption.FilterByCondition.PreorderOnly
+                        FilterOption.FilterByCondition.NewOnly.id -> FilterOption.FilterByCondition.NewOnly
+                        FilterOption.FilterByCondition.UsedOnly.id -> FilterOption.FilterByCondition.UsedOnly
+                        FilterOption.FilterByCondition.EmptyStockOnly.id -> FilterOption.FilterByCondition.EmptyStockOnly
+                        FilterOption.FilterByCondition.VariantOnly.id -> FilterOption.FilterByCondition.VariantOnly
+                        FilterOption.FilterByCondition.CashBackOnly.id -> FilterOption.FilterByCondition.CashBackOnly
+                        FilterOption.FilterByCondition.WholesaleOnly.id -> FilterOption.FilterByCondition.WholesaleOnly
+                        FilterOption.FilterByCondition.PreorderOnly.id -> FilterOption.FilterByCondition.PreorderOnly
                         else -> FilterOption.FilterByCondition.FeaturedOnly
                     }
                     selectedData.add(mappedData)

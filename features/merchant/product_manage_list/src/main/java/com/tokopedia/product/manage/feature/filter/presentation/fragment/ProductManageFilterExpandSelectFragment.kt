@@ -94,7 +94,6 @@ class ProductManageFilterExpandSelectFragment :
 
     override fun onSelectClick(element: SelectViewModel) {
         productManageFilterExpandSelectViewModel.updateSelectedItem(element)
-        productManageFilterExpandSelectViewModel.selectData.value?.sortByDescending { it.isSelected }
         val dataToSave = productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         var cacheManagerId = ""
@@ -143,7 +142,7 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun configToolbar() {
-        select_toolbar.setNavigationIcon(R.drawable.product_manage_arrow_back)
+        select_toolbar.setNavigationIcon(R.drawable.ic_back)
         flag.let {
             if(it == SORT_CACHE_MANAGER_KEY) {
                 page_title.text = SORT_TITLE

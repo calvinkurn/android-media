@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
@@ -80,7 +81,6 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
     private var filterAdapter: FilterAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
-    private var savedInstanceManager: SaveInstanceCacheManager? = null
     private var cacheManagerId: String = ""
 
     var isResultReady: Boolean = false
@@ -94,12 +94,8 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             cacheManagerId = it.getString(CACHE_MANAGER_KEY) ?: ""
         }
         val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
-        savedInstanceManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        savedInstanceManager?.onSave(outState)
+        val savedInstanceManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
+        //TODO use this cache manager to get filters from product list page
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -132,25 +128,26 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
     override fun onSeeAll(element: FilterViewModel) {
         val intent = Intent(this.activity,ProductManageFilterExpandActivity::class.java)
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         when(element.title) {
             ProductManageFilterMapper.SORT_HEADER -> {
-                savedInstanceManager?.put(SORT_CACHE_MANAGER_KEY, element)
+                cacheManager?.put(SORT_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, SORT_CACHE_MANAGER_KEY)
             }
             ProductManageFilterMapper.ETALASE_HEADER -> {
-                savedInstanceManager?.put(ETALASE_CACHE_MANAGER_KEY, element)
+                cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, ETALASE_CACHE_MANAGER_KEY)
             }
             ProductManageFilterMapper.CATEGORY_HEADER -> {
-                savedInstanceManager?.put(CATEGORIES_CACHE_MANAGER_KEY, element)
+                cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, CATEGORIES_CACHE_MANAGER_KEY)
             }
             ProductManageFilterMapper.OTHER_FILTER_HEADER -> {
-                savedInstanceManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY, element)
+                cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, OTHER_FILTER_CACHE_MANAGER_KEY)
             }
         }
-        intent.putExtra(CACHE_MANAGER_KEY, savedInstanceManager?.id)
+        intent.putExtra(CACHE_MANAGER_KEY, cacheManager?.id)
         startActivityForResult(intent, EXPAND_FILTER_REQUEST)
     }
 
