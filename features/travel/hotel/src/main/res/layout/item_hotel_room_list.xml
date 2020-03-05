@@ -137,9 +137,9 @@
                     android:gravity="end"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintLeft_toRightOf="@id/room_facility_recycler_view"
+                    app:layout_constraintLeft_toRightOf="@+id/room_facility_recycler_view"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/room_facility_recycler_view"
+                    app:layout_constraintStart_toEndOf="@+id/room_facility_recycler_view"
                     app:layout_constraintTop_toTopOf="parent">
 
                     <com.tokopedia.unifyprinciples.Typography
