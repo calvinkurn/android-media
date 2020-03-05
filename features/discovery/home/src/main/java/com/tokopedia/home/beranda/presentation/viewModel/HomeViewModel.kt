@@ -832,11 +832,11 @@ open class HomeViewModel @Inject constructor(
             }
             data.homeData?.let { homeData ->
                 if(data.action == ACTION_UPDATE_HOME_DATA){
-                    var homeData = evaluateGeolocationComponent(homeData)
-                    homeData = evaluateAvailableComponent(homeData)
+                    var homeDataModel = evaluateGeolocationComponent(homeData)
+                    homeDataModel = evaluateAvailableComponent(homeDataModel)
 
                     withContext(homeDispatcher.ui()) {
-                        _homeLiveData.value = homeData
+                        _homeLiveData.value = homeDataModel
                     }
                 }
             }
