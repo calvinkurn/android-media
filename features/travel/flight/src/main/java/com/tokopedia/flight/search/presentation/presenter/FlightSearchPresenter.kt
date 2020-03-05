@@ -428,7 +428,8 @@ class FlightSearchPresenter @Inject constructor(private val flightSearchUseCase:
         counter += if (view.getFilterModel().refundableTypeList != null) view.getFilterModel().refundableTypeList.size else 0
         counter += if (view.getFilterModel().facilityList != null) view.getFilterModel().facilityList.size else 0
 
-        if (view.getFilterModel().priceMin > view.getPriceStatisticPair().first || view.getFilterModel().priceMax < view.getPriceStatisticPair().second) {
+        if (view.getFilterModel().priceMin > view.getPriceStatisticPair().first ||
+                view.getFilterModel().priceMax < view.getPriceStatisticPair().second) {
             counter++
         }
 

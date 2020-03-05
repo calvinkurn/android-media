@@ -44,11 +44,13 @@ import com.tokopedia.flight.search.presentation.model.filter.TransitEnum
 import com.tokopedia.flight.search.presentation.presenter.FlightSearchPresenter
 import com.tokopedia.flight.search.util.select
 import com.tokopedia.flight.search.util.unselect
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import kotlinx.android.synthetic.*
 import kotlinx.android.synthetic.main.fragment_search_flight.*
 import kotlinx.android.synthetic.main.include_flight_quick_filter.*
+import kotlinx.android.synthetic.main.include_flight_search_title_route.*
 import java.util.*
 import javax.inject.Inject
 
@@ -296,7 +298,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     override fun renderSearchList(list: List<FlightJourneyViewModel>, needRefresh: Boolean) {
         if (!flightSearchPassData.isOneWay && !adapter.isLoading
                 && !adapter.isContainData) {
-            adapter.addElement(FlightSearchTitleRouteViewModel(getSearchRouteTitle()))
+            showSearchRouteTitle()
         }
 
         if (!needRefresh || list.isNotEmpty()) {
@@ -304,7 +306,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         }
 
         if (list.isNotEmpty()) {
-            setupQuickFilter()
+            setQuickFilterState()
             showQuickFilter()
         } else if (!adapter.isContainData) {
             hideQuickFilter()
@@ -601,10 +603,15 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
     open fun getArrivalAirport(): FlightAirportViewModel =
             flightSearchPassData.arrivalAirport
 
-    private fun getSearchRouteTitle(): Int = if (isReturning()) {
-        R.string.flight_search_choose_return_flight
+    private fun showSearchRouteTitle() {
+        tv_flight_search_title_route.text = getSearchRouteTitle()
+        tv_flight_search_title_route.show()
+    }
+
+    private fun getSearchRouteTitle(): String = if (isReturning()) {
+        getString(R.string.flight_search_choose_return_flight)
     } else {
-        R.string.flight_search_choose_departure_flight
+        getString(R.string.flight_search_choose_departure_flight)
     }
 
     private fun setUpCombinationAirport() {
@@ -698,7 +705,7 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
         flightFilterModel = buildFilterModel(FlightFilterModel())
         adapter.clearAllNonDataElement()
         showLoading()
-        setupQuickFilter()
+        setQuickFilterState()
         fetchSortAndFilterData()
     }
 
@@ -768,7 +775,6 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
 
     private fun buildQuickFilterView() {
         flight_sort_filter.filterType = SortFilter.TYPE_ADVANCED
-        flight_sort_filter.sortFilterHorizontalScrollView.scrollX = 0
         flight_sort_filter.parentListener = {
             showFilterSortBottomSheet()
         }
@@ -831,7 +837,12 @@ open class FlightSearchFragment : BaseListFragment<FlightJourneyViewModel, Fligh
             flight_sort_filter.addItem(filterItems)
         }
 
+        setQuickFilterState()
+    }
+
+    private fun setQuickFilterState() {
         // setup state
+        flight_sort_filter.sortFilterHorizontalScrollView.scrollX = 0
         if (::flightFilterModel.isInitialized) {
             flightFilterModel.let {
                 if (it.transitTypeList.contains(TransitEnum.DIRECT)) {
