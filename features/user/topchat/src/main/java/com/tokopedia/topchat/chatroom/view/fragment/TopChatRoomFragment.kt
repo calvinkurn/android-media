@@ -53,6 +53,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -61,7 +62,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
-import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
@@ -156,10 +156,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
-            val chatComponent = DaggerChatComponent.builder().baseAppComponent(
-                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                    .build()
-            chatComponent.inject(this)
+            context?.let {
+                val chatComponent = DaggerChatComponent.builder()
+                        .baseAppComponent(((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                        .chatRoomContextModule(ChatRoomContextModule(it))
+                        .build()
+                chatComponent.inject(this)
+            }
             presenter.attachView(this)
         }
     }
