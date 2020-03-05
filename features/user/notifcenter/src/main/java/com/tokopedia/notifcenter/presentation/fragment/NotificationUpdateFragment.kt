@@ -41,6 +41,7 @@ import com.tokopedia.notifcenter.data.viewbean.NotificationUpdateFilterViewBean
 import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
 import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
+import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateAdapter
 import com.tokopedia.notifcenter.presentation.adapter.NotificationUpdateFilterAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.filter.NotificationUpdateFilterSectionTypeFactoryImpl
@@ -192,14 +193,9 @@ class NotificationUpdateFragment : BaseListFragment<Visitable<*>,
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        activity?.let {
-            (it.applicationContext as BaseMainApplication).baseAppComponent
-        }.let {
-            DaggerNotificationUpdateComponent.builder()
-                    .baseAppComponent(it)
-                    .build()
-                    .inject(this)
-        }
+        (activity as NotificationActivity)
+                .updateComponent
+                .inject(this)
         presenter.attachView(this)
     }
 

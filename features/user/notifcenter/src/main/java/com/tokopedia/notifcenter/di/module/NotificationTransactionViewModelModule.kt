@@ -10,15 +10,15 @@ import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
 
-@Module
-@NotificationTransactionScope
-abstract class NotificationTransactionViewModelModule {
+@Module abstract class NotificationTransactionViewModelModule {
 
     @Binds
+    @NotificationTransactionScope
     internal abstract fun bindViewModelFactory(viewModelFactory: ViewModelFactory): ViewModelProvider.Factory
 
     @Binds
     @IntoMap
+    @NotificationTransactionScope
     @ViewModelKey(NotificationTransactionViewModel::class)
     internal abstract fun notificationTransactionViewModel(viewModel: NotificationTransactionViewModel): ViewModel
 

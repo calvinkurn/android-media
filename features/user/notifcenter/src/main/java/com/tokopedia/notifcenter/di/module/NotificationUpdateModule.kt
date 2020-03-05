@@ -9,12 +9,11 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Named
 
-@Module
-class NotificationUpdateModule {
+@Module class NotificationUpdateModule {
 
-    @NotificationUpdateScope
     @Provides
     @Named("atcMutation")
+    @NotificationUpdateScope
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_product_to_cart)
     }

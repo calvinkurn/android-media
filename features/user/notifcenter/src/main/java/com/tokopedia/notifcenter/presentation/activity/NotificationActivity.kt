@@ -16,7 +16,6 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.util.getParamInt
 import com.tokopedia.notifcenter.R
@@ -24,7 +23,11 @@ import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics
 import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.data.entity.NotificationTabItem
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
+import com.tokopedia.notifcenter.di.DaggerNotificationTransactionComponent
 import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.di.NotificationTransactionComponent
+import com.tokopedia.notifcenter.di.NotificationUpdateComponent
+import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
@@ -43,6 +46,9 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         NotificationActivityContract.View,
         NotificationUpdateFragment.NotificationUpdateListener {
 
+    val transactionComponent by lazy { initTransactionInjector() }
+    val updateComponent by lazy { initUpdateInjector() }
+
     @Inject lateinit var presenter: NotificationActivityPresenter
     @Inject lateinit var analytics: NotificationUpdateAnalytics
     @Inject lateinit var cacheManager: CacheManager
@@ -59,11 +65,26 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         tabLayout.getTabAt(INDEX_NOTIFICATION_UPDATE)?.customView
     }
 
+    private fun initUpdateInjector(): NotificationUpdateComponent {
+        return DaggerNotificationUpdateComponent.builder()
+                .baseAppComponent(component)
+                .commonModule(CommonModule(this))
+                .build()
+    }
+
+    private fun initTransactionInjector(): NotificationTransactionComponent {
+        return DaggerNotificationTransactionComponent.builder()
+                .baseAppComponent(component)
+                .commonModule(CommonModule(this))
+                .build()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         initTabLayoutItem()
 
         super.onCreate(savedInstanceState)
-        initInjector()
+        updateComponent.inject(this)
+        presenter.attachView(this)
         initView(savedInstanceState)
 
         baseContext?.let {
@@ -101,12 +122,6 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
         return {
             presenter.getUpdateUnreadCounter(onSuccessGetUpdateUnreadCounter())
         }
-    }
-
-    private fun initInjector() {
-        DaggerNotificationUpdateComponent.builder()
-                .baseAppComponent(component).build().inject(this)
-        presenter.attachView(this)
     }
 
     private fun initView(savedInstanceState: Bundle?) {
