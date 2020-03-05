@@ -27,8 +27,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.design.base.BaseToaster
-import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -42,8 +40,6 @@ import com.tokopedia.shop.ShopComponentInstance
 import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
@@ -56,7 +52,6 @@ import com.tokopedia.shop.oldpage.view.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
-import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
@@ -589,7 +584,7 @@ class ShopPageFragment :
         val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution)
         val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
 //        val homeFragment = HomeProductFragment.createInstance()
-        val homeFragment = ShopPageHomeFragment.createInstance(shopId ?: "")
+        val homeFragment = ShopPageHomeFragment.createInstance(shopId ?: "", isOfficialStore, isGoldMerchant)
         val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
         getShopInfoData()?.let {
 //            homeFragment.setShopInfo(it)

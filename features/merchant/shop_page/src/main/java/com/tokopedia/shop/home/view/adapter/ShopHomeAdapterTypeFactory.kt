@@ -19,7 +19,9 @@ import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
-class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome {
+class ShopHomeAdapterTypeFactory(
+        private val shopHomeMultipleImageColumnListener: ShopHomeMultipleImageColumnViewHolder.ShopHomeMultipleImageColumnListener
+) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
         when(baseShopHomeWidgetUiModel.name) {
@@ -28,7 +30,7 @@ class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome
             SLIDER_BANNER -> return ShopHomeSliderBannerViewHolder.LAYOUT_RES
             VIDEO -> return ShopHomeVideoViewHolder.LAYOUT_RES
             PRODUCT -> return ShopHomeCarousellProductViewHolder.LAYOUT
-//            VOUCHER -> return ShopHomeVoucherViewHolder.LAYOUT
+            VOUCHER -> return ShopHomeVoucherViewHolder.LAYOUT
         }
         return -1
     }
@@ -44,7 +46,8 @@ class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnViewHolder(
-                    parent
+                    parent,
+                    shopHomeMultipleImageColumnListener
             )
             ShopHomeSliderSquareViewHolder.LAYOUT_RES -> ShopHomeSliderSquareViewHolder(
                     parent
@@ -63,6 +66,9 @@ class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome
             }
             ShopHomeCarousellProductViewHolder.LAYOUT -> {
                 ShopHomeCarousellProductViewHolder(parent)
+            }
+            ShopHomeVoucherViewHolder.LAYOUT -> {
+                ShopHomeVoucherViewHolder(parent)
             }
             else -> return super.createViewHolder(parent, type)
         }

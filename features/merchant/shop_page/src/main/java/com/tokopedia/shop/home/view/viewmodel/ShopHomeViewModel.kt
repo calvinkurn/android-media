@@ -14,6 +14,7 @@ import com.tokopedia.shop.home.util.asyncCatchError
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,9 +35,9 @@ class ShopHomeViewModel @Inject constructor(
         get() = _productListData
     private val _productListData = MutableLiveData<Result<Pair<Boolean, List<ShopHomeProductViewModel>>>>()
 
-    val shopHomeLayoutData: LiveData<Result<List<BaseShopHomeWidgetUiModel>>>
+    val shopHomeLayoutData: LiveData<Result<ShopPageHomeLayoutUiModel>>
         get() = _shopHomeLayoutData
-    private val _shopHomeLayoutData = MutableLiveData<Result<List<BaseShopHomeWidgetUiModel>>>()
+    private val _shopHomeLayoutData = MutableLiveData<Result<ShopPageHomeLayoutUiModel>>()
 
     private val userSessionShopId = userSession.shopId ?: ""
 
@@ -62,9 +63,9 @@ class ShopHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getShopPageHomeLayout(shopId: String): List<BaseShopHomeWidgetUiModel> {
+    private suspend fun getShopPageHomeLayout(shopId: String): ShopPageHomeLayoutUiModel {
         getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams("111")
-        return ShopPageHomeMapper.mapToListWidgetUiModel(
+        return ShopPageHomeMapper.mapToShopPageHomeLayoutUiModel(
                 getShopPageHomeLayoutUseCase.executeOnBackground(),
                 Util.isMyShop(shopId, userSessionShopId)
         )

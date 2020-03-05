@@ -120,8 +120,8 @@ public class ShopPageTrackingConstant {
     public static final String SEARCH_PRODUCT = "search product";
     public static final String SEARCH_PRODUCT_RESULT = "search result";
     public static final String SEARCH_PRODUCT_NO_RESULT = "no search result";
-
-
+    public static final String DISPLAY_WIDGET = "display widget";
+    public static final String HOME_DISPLAY_WIDGET = "home display widget";
 
     //key
     public static final String EVENT = "event";
@@ -181,6 +181,7 @@ public class ShopPageTrackingConstant {
     public static final String ETALASE_SHOPNAME = "etalase-%s";
     public static final String SRP_SHOPNAME = "srp-%s";
 
+    public static final String VERTICAL_POSITION = "p%1d";
 
 
 }

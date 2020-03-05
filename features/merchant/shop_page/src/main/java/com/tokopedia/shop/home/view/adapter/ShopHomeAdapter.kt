@@ -9,6 +9,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -25,7 +26,7 @@ class ShopHomeAdapter(
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         val layoutParams = holder.itemView.layoutParams
         if (layoutParams is StaggeredGridLayoutManager.LayoutParams) {
-            layoutParams.isFullSpan = getItemViewType(position) != ShopProductViewHolder.GRID_LAYOUT
+            layoutParams.isFullSpan = getItemViewType(position) != ShopHomeProductViewHolder.LAYOUT
         }
         super.onBindViewHolder(holder, position)
     }
