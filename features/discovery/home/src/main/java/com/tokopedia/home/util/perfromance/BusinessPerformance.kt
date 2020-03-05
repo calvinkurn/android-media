@@ -7,7 +7,7 @@ object BusinessWidgetPerformance {
 
     fun start(){
         if(performanceMonitoring == null){
-            performanceMonitoring = PerformanceMonitoring.start("old_business_widget_render_time")
+            performanceMonitoring = PerformanceMonitoring.start("new_business_widget_render_time")
         }
     }
 
