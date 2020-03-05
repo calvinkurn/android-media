@@ -169,7 +169,7 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
 
     private fun inflatingView(context: Context, id: Int, listBottomSheet: UmrahHomepageBottomSheetData,
                               title: String, adapter: UmrahHomepageBottomSheetAdapter): View? {
-        val view = LayoutInflater.from(context).inflate(id, null).apply {
+        return LayoutInflater.from(context).inflate(id, null).apply {
             tv_umrah_home_page_bottom_sheet_title.text = title
             adapter.setList(listBottomSheet)
             rv_umrah_home_page_bottom_sheet.adapter = adapter
@@ -178,7 +178,6 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
                     RecyclerView.VERTICAL, false
             )
         }
-        return view
     }
 
 

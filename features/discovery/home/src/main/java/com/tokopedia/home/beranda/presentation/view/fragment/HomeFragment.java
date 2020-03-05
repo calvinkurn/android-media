@@ -80,10 +80,12 @@ import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUti
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
@@ -113,6 +115,7 @@ import com.tokopedia.stickylogin.data.StickyLoginTickerPojo;
 import com.tokopedia.stickylogin.internal.StickyLoginConstant;
 import com.tokopedia.stickylogin.view.StickyLoginView;
 import com.tokopedia.tokopoints.notification.TokoPointsNotificationManager;
+import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -156,7 +159,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
         HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener,
-        HomeReviewListener {
+        HomeReviewListener, PopularKeywordViewHolder.PopularKeywordListener {
 
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int SCROLL_STATE_DRAG = 0;
@@ -274,6 +277,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         viewModel = viewModelProvider.get(HomeViewModel.class);
         setGeolocationPermission();
         needToShowGeolocationComponent();
+        getStickyContent();
     }
 
     @Override
@@ -579,9 +583,12 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void observeTrackingData(){
         viewModel.getTrackingLiveData().observe(this, trackingData-> {
-            List<Visitable> visitables = new ArrayList(trackingData.getContentIfNotHandled());
-            addImpressionToTrackingQueue(visitables);
-            setupViewportImpression(visitables);
+            List<HomeVisitable> homeVisitables = trackingData.getContentIfNotHandled();
+            if (homeVisitables != null) {
+                List<Visitable> visitables = new ArrayList(homeVisitables);
+                addImpressionToTrackingQueue(visitables);
+                setupViewportImpression(visitables);
+            }
         });
     }
 
@@ -775,7 +782,8 @@ public class HomeFragment extends BaseDaggerFragment implements
                 this,
                 this,
                 this,
-                homeRecyclerView.getRecycledViewPool()
+                homeRecyclerView.getRecycledViewPool(),
+                this
         );
         AsyncDifferConfig<HomeVisitable> asyncDifferConfig =
                 new AsyncDifferConfig.Builder<HomeVisitable>(new HomeVisitableDiffUtil())
@@ -1358,6 +1366,22 @@ public class HomeFragment extends BaseDaggerFragment implements
         return isLightThemeStatusBar;
     }
 
+    @Override
+    public void onPopularKeywordSectionReloadClicked(int position, @NotNull DynamicHomeChannel.Channels channel) {
+        viewModel.getPopularKeywordData();
+        TrackApp.getInstance().getGTM().sendGeneralEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickReload(channel));
+    }
+
+    @Override
+    public void onPopularKeywordItemImpressed(@NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
+        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordImpressionItem(channel, position, keyword));
+    }
+
+    @Override
+    public void onPopularKeywordItemClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
+        RouteManager.route(getContext(),applink);
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickItem(channel, position, keyword));
+    }
 
     protected void registerBroadcastReceiverTokoCash() {
         if (getActivity() == null)
@@ -1808,4 +1832,5 @@ public class HomeFragment extends BaseDaggerFragment implements
             index++;
         }
     }
+
 }

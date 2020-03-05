@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHold
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
@@ -85,6 +86,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     private val selectedFilter = ParamFilter()
     private var isRVInited = false
     private var isPassingEmpty = false
+    lateinit var performanceMonitoring: PerformanceMonitoring
 
     override fun onEmptyContentItemTextClicked() {}
 
@@ -133,6 +135,10 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_SEARCH_PAGE_PERFORMANCE)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         fab_umrah_search_message.bringToFront()
@@ -153,6 +159,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
+        initializePerformance()
         setHideFAB()
     }
 
@@ -166,6 +173,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         if (!isFilter) {
             getSearchParamFromBundle()
             setSelectedFilterFromBundle()
@@ -215,8 +223,10 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                 is Success -> {
                     onSuccessGetResult(it.data)
                     fab_umrah_search_message.show()
+                    performanceMonitoring.stopTrace()
                 }
                 is Fail -> {
+                    performanceMonitoring.stopTrace()
                     NetworkErrorHelper.showEmptyState(context, view?.rootView, null, null, null, R.drawable.img_umrah_pdp_empty_state) {
                         loadInitialData()
                     }
@@ -386,6 +396,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
     companion object {
         var isFilter = false
         const val REQUEST_CODE_LOGIN = 400
+        const val UMRAH_SEARCH_PAGE_PERFORMANCE = "sl_umrah_searchpage"
 
         fun getInstance(categorySlugName: String?, departureCityId: String?, departurePeriod: String?,
                         priceMin: Int?, priceMax: Int?, durationMin: Int,
@@ -419,6 +430,10 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         }
     }
 
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
+    }
     private fun showEmptyState() {
         adapter.addElement(0,UmrahSearchEmpty())
     }

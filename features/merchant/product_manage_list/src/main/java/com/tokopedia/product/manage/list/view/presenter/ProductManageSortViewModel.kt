@@ -3,14 +3,12 @@ package com.tokopedia.product.manage.list.view.presenter
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.product.manage.list.R
 import com.tokopedia.product.manage.list.constant.option.SortProductOption
 import com.tokopedia.product.manage.list.data.model.ProductManageSortModel
 import java.util.*
 import javax.inject.Inject
 
-class ProductManageSortViewModel @Inject constructor(@ApplicationContext val context: Context) : ViewModel() {
+class ProductManageSortViewModel @Inject constructor() : ViewModel() {
 
     /**
      * https://developer.android.com/topic/libraries/architecture/livedata#transform_livedata
@@ -18,7 +16,7 @@ class ProductManageSortViewModel @Inject constructor(@ApplicationContext val con
     private val listOfSort = MutableLiveData<List<ProductManageSortModel>>()
     val listOfSortData = listOfSort
 
-    fun getListSortManageProduct(stringArray: Array<String>) {
+    fun getListSortManageProduct(context: Context, stringArray: Array<String>) {
         val productManageSortModels = ArrayList<ProductManageSortModel>()
         productManageSortModels.addAll(
                 stringArray.map {

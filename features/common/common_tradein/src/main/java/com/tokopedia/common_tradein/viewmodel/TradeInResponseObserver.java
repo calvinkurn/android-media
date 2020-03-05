@@ -27,6 +27,8 @@ public class TradeInResponseObserver implements Observer<ValidateTradeInResponse
             if (response.getUsedPrice() > 0) {
                 tradeInTextView.priceTextView.setText(String.format(tradeInTextView.getContext().getResources().getString(R.string.text_price_holder),
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(response.getUsedPrice(), true)));
+            } else if (response.getWidgetString() != null && !response.getWidgetString().isEmpty()) {
+                tradeInTextView.priceTextView.setText(response.getWidgetString());
             } else {
                 tradeInTextView.priceTextView.setText(tradeInTextView.getContext().getResources().getString(R.string.trade_in_exchange));
             }
