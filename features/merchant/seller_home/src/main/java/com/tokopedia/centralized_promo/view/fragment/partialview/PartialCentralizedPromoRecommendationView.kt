@@ -2,10 +2,8 @@ package com.tokopedia.centralized_promo.view.fragment.partialview
 
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralized_promo.view.adapter.DiffUtilHelper
-import com.tokopedia.centralized_promo.view.fragment.CoachMarkListener
 import com.tokopedia.centralized_promo.view.item_decoration.OnGoingPromotionItemDecoration
 import com.tokopedia.centralized_promo.view.model.RecommendedPromotionListUiModel
 import com.tokopedia.centralized_promo.view.model.RecommendedPromotionUiModel
@@ -17,11 +15,8 @@ import kotlinx.android.synthetic.main.sah_partial_centralized_promo_recommendati
 
 class PartialCentralizedPromoRecommendationView(
         private val view: View,
-        adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
-        coachMarkListener: CoachMarkListener
-) : PartialView<RecommendedPromotionListUiModel, CentralizedPromoAdapterTypeFactory, RecommendedPromotionUiModel>(adapterTypeFactory, coachMarkListener) {
-
-    override var shouldShowCoachMark: Boolean = true
+        adapterTypeFactory: CentralizedPromoAdapterTypeFactory
+) : PartialView<RecommendedPromotionListUiModel, CentralizedPromoAdapterTypeFactory, RecommendedPromotionUiModel>(adapterTypeFactory) {
 
     init {
         setupPromoRecommendation()
@@ -30,15 +25,7 @@ class PartialCentralizedPromoRecommendationView(
     private fun setupPromoRecommendation() {
         with(view) {
             rvCentralizedPromoRecommendation.apply {
-                layoutManager = object : GridLayoutManager(context, 2) {
-                    override fun onLayoutCompleted(state: RecyclerView.State?) {
-                        post {
-                            isReadyToShowCoachMark = true
-                            coachMarkListener.onCoachMarkItemReady()
-                        }
-                        super.onLayoutCompleted(state)
-                    }
-                }
+                layoutManager = GridLayoutManager(context, 2)
                 adapter = this@PartialCentralizedPromoRecommendationView.adapter
                 addItemDecoration(OnGoingPromotionItemDecoration(4.dpToPx(context.resources.displayMetrics)))
             }
@@ -47,7 +34,7 @@ class PartialCentralizedPromoRecommendationView(
 
     override fun renderData(data: RecommendedPromotionListUiModel) {
         with(view) {
-            DiffUtilHelper.calculate(adapter.data, data.promotions, adapter)
+            adapter.setElements(data.promotions)
             partialSuccess.show()
             rvCentralizedPromoRecommendation.show()
             layoutCentralizedPromoRecommendationShimmering.hide()

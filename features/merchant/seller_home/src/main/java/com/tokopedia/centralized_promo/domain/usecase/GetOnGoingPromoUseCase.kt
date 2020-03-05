@@ -1,7 +1,7 @@
 package com.tokopedia.centralized_promo.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.centralized_promo.domain.mapper.PromotionMapper
+import com.tokopedia.centralized_promo.domain.mapper.OnGoingPromotionMapper
 import com.tokopedia.centralized_promo.domain.model.GetPromotionListResponseWrapper
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoListUiModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class GetOnGoingPromoUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
-        private val promotionMapper: PromotionMapper
+        private val onGoingPromotionMapper: OnGoingPromotionMapper
 ) : BaseGqlUseCase<OnGoingPromoListUiModel>() {
 
     override suspend fun executeOnBackground(): OnGoingPromoListUiModel {
@@ -22,7 +22,7 @@ class GetOnGoingPromoUseCase @Inject constructor(
         val errors = gqlResponse.getError(GetPromotionListResponseWrapper::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetPromotionListResponseWrapper>()
-            return promotionMapper.mapRemoteModelToUiModel(data.response)
+            return onGoingPromotionMapper.mapRemoteModelToUiModel(data.response)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

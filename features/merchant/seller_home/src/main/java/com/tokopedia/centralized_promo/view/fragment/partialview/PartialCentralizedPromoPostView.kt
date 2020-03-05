@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralized_promo.view.adapter.DiffUtilHelper
-import com.tokopedia.centralized_promo.view.fragment.CoachMarkListener
 import com.tokopedia.centralized_promo.view.model.PostListUiModel
 import com.tokopedia.centralized_promo.view.model.PostUiModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -19,11 +18,8 @@ import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view
 
 class PartialCentralizedPromoPostView(
         private val view: View,
-        adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
-        coachMarkListener: CoachMarkListener
-) : PartialView<PostListUiModel, CentralizedPromoAdapterTypeFactory, PostUiModel>(adapterTypeFactory, coachMarkListener) {
-
-    override var shouldShowCoachMark: Boolean = false
+        adapterTypeFactory: CentralizedPromoAdapterTypeFactory
+) : PartialView<PostListUiModel, CentralizedPromoAdapterTypeFactory, PostUiModel>(adapterTypeFactory) {
 
     init {
         setupPostRecycler()
@@ -42,7 +38,7 @@ class PartialCentralizedPromoPostView(
         with(view) {
             if (data.posts.isNotEmpty()) {
                 tvCentralizedPromoPostListTitle.text = context.getString(R.string.sah_label_tips_and_trick)
-                DiffUtilHelper.calculate(adapter.data, data.posts, adapter)
+                adapter.setElements(data.posts)
                 show()
             } else {
                 gone()

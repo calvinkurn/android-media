@@ -1,7 +1,7 @@
 package com.tokopedia.centralized_promo.domain.usecase
 
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.centralized_promo.domain.mapper.PromotionMapper
+import com.tokopedia.centralized_promo.domain.mapper.OnGoingPromotionMapper
 import com.tokopedia.centralized_promo.domain.model.GetPromotionListResponseWrapper
 import com.tokopedia.centralized_promo.view.model.Footer
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoListUiModel
@@ -29,7 +29,7 @@ class GetOnGoingPromoUseCaseTest {
 
         private val successResult = OnGoingPromoListUiModel(
                 title = "Track your promotion",
-                promotions = arrayListOf(
+                promotions = listOf(
                         OnGoingPromoUiModel(
                                 title = "Flash Sale",
                                 status = Status(
@@ -48,7 +48,7 @@ class GetOnGoingPromoUseCaseTest {
 
         private val errorResultWithMessage = OnGoingPromoListUiModel(
                 title = "Track your promotion",
-                promotions = ArrayList(),
+                promotions = emptyList(),
                 errorMessage = "Terjadi Kesalahan Pada Server"
         )
     }
@@ -59,7 +59,7 @@ class GetOnGoingPromoUseCaseTest {
     @RelaxedMockK
     lateinit var gqlRepository: GraphqlRepository
 
-    private val onGoingPromotionMapper: PromotionMapper = PromotionMapper()
+    private val onGoingPromotionMapper: OnGoingPromotionMapper = OnGoingPromotionMapper()
 
     private val usecase by lazy {
         GetOnGoingPromoUseCase(gqlRepository, onGoingPromotionMapper)

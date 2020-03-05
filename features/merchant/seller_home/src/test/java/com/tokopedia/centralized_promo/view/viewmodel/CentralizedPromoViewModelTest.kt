@@ -64,7 +64,7 @@ class CentralizedPromoViewModelTest : Spek({
         Scenario("Success get layout data for on going promotion") {
             val successResult = OnGoingPromoListUiModel(
                     title = "Track your promotion",
-                    promotions = arrayListOf(
+                    promotions = listOf(
                             OnGoingPromoUiModel(
                                     title = "Flash Sale",
                                     status = Status(

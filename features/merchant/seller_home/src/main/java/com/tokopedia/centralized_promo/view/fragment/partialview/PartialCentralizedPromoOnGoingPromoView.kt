@@ -2,11 +2,9 @@ package com.tokopedia.centralized_promo.view.fragment.partialview
 
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralized_promo.view.adapter.DiffUtilHelper
-import com.tokopedia.centralized_promo.view.fragment.CoachMarkListener
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoListUiModel
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoUiModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -19,11 +17,8 @@ import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_pro
 class PartialCentralizedPromoOnGoingPromoView(
         private val view: View,
         private val refreshButtonClickListener: RefreshButtonClickListener,
-        adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
-        coachMarkListener: CoachMarkListener
-) : PartialView<OnGoingPromoListUiModel, CentralizedPromoAdapterTypeFactory, OnGoingPromoUiModel>(adapterTypeFactory, coachMarkListener) {
-
-    override var shouldShowCoachMark: Boolean = true
+        adapterTypeFactory: CentralizedPromoAdapterTypeFactory
+) : PartialView<OnGoingPromoListUiModel, CentralizedPromoAdapterTypeFactory, OnGoingPromoUiModel>(adapterTypeFactory) {
 
     init {
         setupOnGoingPromo()
@@ -32,15 +27,7 @@ class PartialCentralizedPromoOnGoingPromoView(
     private fun setupOnGoingPromo() {
         with(view) {
             rvCentralizedPromoOnGoingPromo.apply {
-                layoutManager = object : LinearLayoutManager(context, HORIZONTAL, false) {
-                    override fun onLayoutCompleted(state: RecyclerView.State?) {
-                        post {
-                            isReadyToShowCoachMark = true
-                            coachMarkListener.onCoachMarkItemReady()
-                        }
-                        super.onLayoutCompleted(state)
-                    }
-                }
+                layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
                 adapter = this@PartialCentralizedPromoOnGoingPromoView.adapter
             }
         }
@@ -50,14 +37,11 @@ class PartialCentralizedPromoOnGoingPromoView(
         if (data.errorMessage.isBlank()) {
             with(view) {
                 if (data.promotions.isNotEmpty()) {
-                    shouldShowCoachMark = true
                     tvOnGoingPromo.text = data.title
-                    DiffUtilHelper.calculate(adapter.data, data.promotions, adapter)
+                    adapter.setElements(data.promotions)
                     show()
                 } else {
                     hide()
-                    shouldShowCoachMark = false
-                    coachMarkListener.onCoachMarkItemReady()
                 }
                 localLoadOnGoingPromo.progressState = false
                 layoutCentralizedPromoOnGoingPromoShimmering.hide()

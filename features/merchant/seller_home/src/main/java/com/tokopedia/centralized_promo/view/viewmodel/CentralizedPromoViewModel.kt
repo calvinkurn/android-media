@@ -64,9 +64,9 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getOnGoingPromotion(): Result<BaseUiModel> {
         return try {
-//            getOnGoingPromoUseCase.params = GetOnGoingPromoUseCase.getRequestParams(false)
-//            Success(getOnGoingPromoUseCase.executeOnBackground())
-            Success(OnGoingPromoStaticData.provideStaticData())
+            getOnGoingPromoUseCase.params = GetOnGoingPromoUseCase.getRequestParams(false)
+            Success(getOnGoingPromoUseCase.executeOnBackground())
+//            Success(OnGoingPromoStaticData.provideStaticData())
         } catch (t: Throwable) {
             Fail(t)
         }

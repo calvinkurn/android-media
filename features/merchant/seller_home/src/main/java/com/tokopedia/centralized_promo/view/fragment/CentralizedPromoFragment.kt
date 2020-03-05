@@ -36,14 +36,14 @@ import kotlinx.android.synthetic.main.sah_partial_centralized_promo_recommendati
 import java.util.ArrayList
 import javax.inject.Inject
 
-class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener, CoachMarkListener {
+class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener {
     private val adapterTypeFactory by lazy { CentralizedPromoAdapterTypeFactory() }
 
     private val partialViews by lazy {
         return@lazy mapOf(
-                LayoutType.ON_GOING_PROMO to PartialCentralizedPromoOnGoingPromoView(layoutCentralizedPromoOnGoingPromo, this, adapterTypeFactory, this),
-                LayoutType.RECOMMENDED_PROMO to PartialCentralizedPromoRecommendationView(layoutCentralizedPromoRecommendation, adapterTypeFactory, this),
-                LayoutType.POST to PartialCentralizedPromoPostView(layoutCentralizedPromoPostList, adapterTypeFactory, this)
+                LayoutType.ON_GOING_PROMO to PartialCentralizedPromoOnGoingPromoView(layoutCentralizedPromoOnGoingPromo, this, adapterTypeFactory),
+                LayoutType.RECOMMENDED_PROMO to PartialCentralizedPromoRecommendationView(layoutCentralizedPromoRecommendation, adapterTypeFactory),
+                LayoutType.POST to PartialCentralizedPromoPostView(layoutCentralizedPromoPostList, adapterTypeFactory)
         )
     }
 
@@ -124,6 +124,9 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             }
 
             swipeRefreshLayout.isRefreshing = false
+            view?.post {
+                showCoachMark()
+            }
         })
     }
 
@@ -176,11 +179,5 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             sharedPref.edit().putBoolean(SHARED_PREF_COACH_MARK_PROMOTION_CREATION, true).apply()
         }
         coachMark.show(activity, TAG_COACH_MARK, coachMarkItem)
-    }
-
-    override fun onCoachMarkItemReady() {
-        partialViews.forEach { if (it.value.shouldShowCoachMark && !it.value.isReadyToShowCoachMark) return }
-
-        showCoachMark()
     }
 }
