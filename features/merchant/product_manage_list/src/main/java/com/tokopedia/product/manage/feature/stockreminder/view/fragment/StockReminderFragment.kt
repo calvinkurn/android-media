@@ -91,9 +91,9 @@ class StockReminderFragment: BaseDaggerFragment() {
 
         checkLogin()
 
-        viewModel.getStockReminderLiveData.observe(viewLifecycleOwner, getStockReminderObserver)
-        viewModel.createStockReminderLiveData.observe(viewLifecycleOwner, createStockReminderObserver)
-        viewModel.updateStockReminderLiveData.observe(viewLifecycleOwner, updateStockReminderObserver)
+        viewModel.getStockReminderLiveData.observe(viewLifecycleOwner, getStockReminderObserver())
+        viewModel.createStockReminderLiveData.observe(viewLifecycleOwner, createStockReminderObserver())
+        viewModel.updateStockReminderLiveData.observe(viewLifecycleOwner, updateStockReminderObserver())
 
         getStockReminder()
 
@@ -120,49 +120,6 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
     }
 
-    private val getStockReminderObserver = Observer<Result<GetStockReminderResponse>> { stockReminderData ->
-        hideLoading()
-        when(stockReminderData) {
-            is Success -> {
-                warehouseId = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.wareHouseId
-                threshold = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.threshold
-
-                threshold?.let { qeStock.setValue(it) }
-                if (threshold != 0) swStockReminder.isChecked = true
-            }
-            is Fail -> {
-                globalErrorStockReminder.visibility = View.VISIBLE
-                geStockReminder.setType(GlobalError.SERVER_ERROR)
-                geStockReminder.setActionClickListener {
-                    globalErrorStockReminder.visibility = View.GONE
-                    getStockReminder()
-                }
-            }
-        }
-    }
-
-    private val createStockReminderObserver = Observer<Result<CreateStockReminderResponse>> { stockReminderData ->
-        hideLoading()
-        when(stockReminderData) {
-            is Success -> { doResultIntent() }
-            is Fail -> {
-                Toaster.make(layout, getString(R.string.product_stock_reminder_toaster_failed_desc), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text))
-                Toaster.onCTAClick = View.OnClickListener { createStockReminder() }
-            }
-        }
-    }
-
-    private val updateStockReminderObserver = Observer<Result<UpdateStockReminderResponse>> { stockReminderData ->
-        hideLoading()
-        when(stockReminderData) {
-            is Success -> { doResultIntent() }
-            is Fail -> {
-                Toaster.make(layout, getString(R.string.product_stock_reminder_toaster_failed_desc), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text))
-                Toaster.onCTAClick = View.OnClickListener { updateStockReminder() }
-            }
-        }
-    }
-
     private fun checkLogin() {
         if (!userSession.isLoggedIn) {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -171,6 +128,23 @@ class StockReminderFragment: BaseDaggerFragment() {
             RouteManager.route(context, ApplinkConst.HOME)
             activity?.finish()
         }
+    }
+
+    private fun showLoading() {
+        ImageHandler.loadGif(ivLoadingStockReminder, R.drawable.ic_loading_indeterminate, R.drawable.ic_loading_indeterminate)
+        loadingStockReminder.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        ImageHandler.clearImage(ivLoadingStockReminder)
+        loadingStockReminder.visibility = View.GONE
+    }
+
+    private fun doResultIntent() {
+        val resultIntent = Intent()
+        resultIntent.putExtra(EXTRA_PRODUCT_NAME, productName)
+        activity?.setResult(Activity.RESULT_OK, resultIntent)
+        activity?.finish()
     }
 
     private fun getStockReminder() {
@@ -197,21 +171,47 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun showLoading() {
-        ImageHandler.loadGif(ivLoadingStockReminder, R.drawable.ic_loading_indeterminate, R.drawable.ic_loading_indeterminate)
-        loadingStockReminder.visibility = View.VISIBLE
+    private fun getStockReminderObserver() = Observer<Result<GetStockReminderResponse>> { stockReminderData ->
+        hideLoading()
+        when(stockReminderData) {
+            is Success -> {
+                warehouseId = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.wareHouseId
+                threshold = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.threshold
+
+                threshold?.let { qeStock.setValue(it) }
+                if (threshold != 0) swStockReminder.isChecked = true
+            }
+            is Fail -> {
+                globalErrorStockReminder.visibility = View.VISIBLE
+                geStockReminder.setType(GlobalError.SERVER_ERROR)
+                geStockReminder.setActionClickListener {
+                    globalErrorStockReminder.visibility = View.GONE
+                    getStockReminder()
+                }
+            }
+        }
     }
 
-    private fun hideLoading() {
-        ImageHandler.clearImage(ivLoadingStockReminder)
-        loadingStockReminder.visibility = View.GONE
+    private fun createStockReminderObserver()= Observer<Result<CreateStockReminderResponse>> { stockReminderData ->
+        hideLoading()
+        when(stockReminderData) {
+            is Success -> { doResultIntent() }
+            is Fail -> {
+                Toaster.make(layout, getString(R.string.product_stock_reminder_toaster_failed_desc), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text))
+                Toaster.onCTAClick = View.OnClickListener { createStockReminder() }
+            }
+        }
     }
 
-    private fun doResultIntent() {
-        val resultIntent = Intent()
-        resultIntent.putExtra(EXTRA_PRODUCT_NAME, productName)
-        activity?.setResult(Activity.RESULT_OK, resultIntent)
-        activity?.finish()
+    private fun updateStockReminderObserver() = Observer<Result<UpdateStockReminderResponse>> { stockReminderData ->
+        hideLoading()
+        when(stockReminderData) {
+            is Success -> { doResultIntent() }
+            is Fail -> {
+                Toaster.make(layout, getString(R.string.product_stock_reminder_toaster_failed_desc), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, getString(R.string.product_stock_reminder_toaster_action_text))
+                Toaster.onCTAClick = View.OnClickListener { updateStockReminder() }
+            }
+        }
     }
 
 }

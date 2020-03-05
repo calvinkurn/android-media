@@ -16,13 +16,13 @@ import javax.inject.Inject
 
 class StockReminderViewModel @Inject constructor(private val stockReminderDataUseCase: StockReminderDataUseCase, coroutineDispatcher: CoroutineDispatcher): BaseViewModel(coroutineDispatcher) {
 
-    private val getStockReminderMutableLiveData = MutableLiveData<Result<GetStockReminderResponse>>()
-    private val createStockReminderMutableLiveData = MutableLiveData<Result<CreateStockReminderResponse>>()
-    private val updateStockReminderMutableLiveData = MutableLiveData<Result<UpdateStockReminderResponse>>()
-
     val getStockReminderLiveData : LiveData<Result<GetStockReminderResponse>> get() = getStockReminderMutableLiveData
     val createStockReminderLiveData : LiveData<Result<CreateStockReminderResponse>> get() = createStockReminderMutableLiveData
     val updateStockReminderLiveData : LiveData<Result<UpdateStockReminderResponse>> get() = updateStockReminderMutableLiveData
+
+    private val getStockReminderMutableLiveData = MutableLiveData<Result<GetStockReminderResponse>>()
+    private val createStockReminderMutableLiveData = MutableLiveData<Result<CreateStockReminderResponse>>()
+    private val updateStockReminderMutableLiveData = MutableLiveData<Result<UpdateStockReminderResponse>>()
 
     fun getStockReminder(productId: String) {
         launchCatchError(block = {
