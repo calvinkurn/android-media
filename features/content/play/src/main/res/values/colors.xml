@@ -19,4 +19,6 @@
     <color name="play_error_text_color">#AEFFFFFF</color>
 
     <color name="play_live_ended_title">#F5FFFFFF</color>
+
+    <color name="play_product_sheet_divider">#E0E0E0</color>
 </resources>

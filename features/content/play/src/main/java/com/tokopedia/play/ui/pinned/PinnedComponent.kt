@@ -7,8 +7,9 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
+import com.tokopedia.play.view.uimodel.PinnedUiModel
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -36,17 +37,8 @@ open class PinnedComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
-                            is ScreenStateEvent.SetPinned -> {
-                                shouldShow = if (it.pinnedMessage.shouldRemove) {
-                                    uiView.hide()
-                                    false
-                                } else {
-                                    uiView.setPinnedMessage(it.pinnedMessage)
-                                    if (!isKeyboardShown) uiView.show()
-                                    true
-                                }
-                            }
-                            is ScreenStateEvent.KeyboardStateChanged -> {
+                            is ScreenStateEvent.SetPinned -> setPinned(it.pinned)
+                            is ScreenStateEvent.BottomInsetsView -> {
                                 if (!it.isShown && shouldShow) uiView.show() else uiView.hide()
                                 isKeyboardShown = it.isShown
                             }
@@ -64,9 +56,30 @@ open class PinnedComponent(
         return bus.getSafeManagedFlow(PinnedInteractionEvent::class.java)
     }
 
-    override fun onPinnedActionClicked(view: PinnedView, applink: String, message: String) {
+    override fun onPinnedMessageActionClicked(view: PinnedView, applink: String, message: String) {
         launch {
-            bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedActionClicked(applink, message))
+            bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedMessageClicked(applink, message))
+        }
+    }
+
+    override fun onPinnedProductActionClicked(view: PinnedView) {
+        launch {
+            bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedProductClicked)
+        }
+    }
+
+    private fun setPinned(pinnedUiModel: PinnedUiModel) {
+        when (pinnedUiModel) {
+            is PinnedMessageUiModel -> {
+                shouldShow = if (pinnedUiModel.shouldRemove) {
+                    uiView.hide()
+                    false
+                } else {
+                    uiView.setPinnedMessage(pinnedUiModel)
+                    if (!isKeyboardShown) uiView.show()
+                    true
+                }
+            }
         }
     }
 
