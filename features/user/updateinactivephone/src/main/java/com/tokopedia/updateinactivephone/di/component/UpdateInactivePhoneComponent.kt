@@ -1,6 +1,6 @@
 package com.tokopedia.updateinactivephone.di.component
 
-import com.tokopedia.core.base.di.component.AppComponent
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.updateinactivephone.di.scope.UpdateInactivePhoneScope
 import com.tokopedia.updateinactivephone.view.activity.ChangeInactiveFormRequestActivity
 import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
@@ -10,7 +10,7 @@ import com.tokopedia.updateinactivephone.view.fragment.SelectImageNewPhoneFragme
 import dagger.Component
 
 @UpdateInactivePhoneScope
-@Component(modules = [UpdateInactivePhoneModule::class], dependencies = [AppComponent::class])
+@Component(modules = [UpdateInactivePhoneModule::class], dependencies = [BaseAppComponent::class])
 interface UpdateInactivePhoneComponent {
 
     fun inject(changeInactivePhoneFragment: ChangeInactivePhoneFragment)

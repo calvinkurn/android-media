@@ -17,12 +17,13 @@ import android.widget.EditText
 import android.widget.TextView
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.core.analytics.ScreenTracking
 import com.tokopedia.core.app.MainApplication
-import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.view.activity.ChangeInactiveFormRequestActivity
@@ -50,13 +51,9 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
     lateinit var presenter: ChangeInactivePhonePresenter
 
     override fun initInjector() {
-        val appComponent = getComponent(AppComponent::class.java)
-
-        val daggerUpdateInactivePhoneComponent = DaggerUpdateInactivePhoneComponent.builder()
-                .appComponent(appComponent)
-                .build() as DaggerUpdateInactivePhoneComponent
-
-        daggerUpdateInactivePhoneComponent.inject(this)
+        DaggerUpdateInactivePhoneComponent.builder()
+                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                .build().inject(this)
     }
 
     override fun getScreenName(): String {
@@ -67,7 +64,6 @@ class ChangeInactivePhoneFragment : BaseDaggerFragment(), ChangeInactivePhone.Vi
         super.onStart()
         ScreenTracking.screen(MainApplication.getAppContext(), screenName)
     }
-
 
     override fun onCreateView(inflater: LayoutInflater, parent: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_change_inactive_phone, parent, false)

@@ -11,11 +11,11 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 
 import com.tkpd.library.ui.utilities.TkpdProgressDialog
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
-import com.tokopedia.core.app.MainApplication
-import com.tokopedia.core.base.di.component.AppComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.updateinactivephone.R
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Constants.Companion.IS_DUPLICATE_REQUEST
@@ -28,7 +28,6 @@ import com.tokopedia.updateinactivephone.view.fragment.SelectImageNewPhoneFragme
 import com.tokopedia.updateinactivephone.view.fragment.UpdateNewPhoneEmailFragment
 import com.tokopedia.updateinactivephone.viewmodel.presenter.ChangeInactiveFormRequestPresenter
 import com.tokopedia.updateinactivephone.view.ChangeInactiveFormRequest
-
 import javax.inject.Inject
 
 /**
@@ -36,7 +35,7 @@ import javax.inject.Inject
  * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE_FORM]
  * Please pass USER_ID and OLD_PHONE
  */
-class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<AppComponent>, ChangeInactiveFormRequest.View, SelectImageNewPhoneFragment.SelectImageInterface, UpdateNewPhoneEmailFragment.UpdateNewPhoneEmailInteractor {
+class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, ChangeInactiveFormRequest.View, SelectImageNewPhoneFragment.SelectImageInterface, UpdateNewPhoneEmailFragment.UpdateNewPhoneEmailInteractor {
 
     @Inject
     lateinit var presenter: ChangeInactiveFormRequestPresenter
@@ -70,11 +69,9 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<App
     }
 
     private fun initInjector() {
-        val daggerUpdateInactivePhoneComponent = DaggerUpdateInactivePhoneComponent.builder()
-                .appComponent(component)
-                .build() as DaggerUpdateInactivePhoneComponent
-
-        daggerUpdateInactivePhoneComponent.inject(this)
+        DaggerUpdateInactivePhoneComponent.builder()
+                .baseAppComponent(component)
+                .build().inject(this)
     }
 
     private fun initView() {
@@ -120,8 +117,8 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<App
         toolbar.setNavigationOnClickListener { onBackPressed() }
     }
 
-    override fun getComponent(): AppComponent {
-        return (application as MainApplication).appComponent
+    override fun getComponent(): BaseAppComponent {
+        return (application as BaseMainApplication).baseAppComponent
     }
 
     override fun onBackPressed() {
