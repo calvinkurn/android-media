@@ -398,7 +398,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                     isSelected = selectedPosition == SellerHomeState.DrawerPosition.SETTINGS
             ))
             add(SellerDrawerItem(
-                    label = context.getString(R.string.title_activity_contact_us),
+                    label = context.getString(R.string.title_activity_contact_us_drawer),
                     iconId = R.drawable.sh_ic_contactus,
                     id = SellerHomeState.DrawerPosition.CONTACT_US,
                     isExpanded = true,

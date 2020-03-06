@@ -60,7 +60,7 @@
     <string name="webview_toolbar_menu_text">Toolbar Menu</string>
     <string name="title_activity_promo">Promo</string>
     <string name="title_activity_top_picks">Top Picks</string>
-    <string name="title_activity_contact_us">Pusat Bantuan</string>
+    <string name="title_activity_contact_us_drawer">Tokopedia Care</string>
 
     <string name="featured_product_title">Produk Unggulan</string>
     <string name="pm_title">Power Merchant</string>
