@@ -55,11 +55,12 @@
                 android:background="@drawable/setting_shop_pm_partial"/>
 
             <View
+                android:id="@+id/powerMerchantLeftStatus"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-                android:background="@drawable/setting_shop_pm_tip"/>
+                android:background="@drawable/setting_pm_green_tip"/>
 
             <View
                 android:id="@+id/badgeBorder"

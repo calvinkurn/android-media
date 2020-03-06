@@ -1,4 +1,4 @@
-package com.tokopedia.sellerhome.settings.view.viewholder
+package com.tokopedia.sellerhome.settings.view.viewholder.adapterviewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes

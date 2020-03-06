@@ -5,7 +5,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.sellerhome.settings.view.uimodel.*
-import com.tokopedia.sellerhome.settings.view.viewholder.*
+import com.tokopedia.sellerhome.settings.view.viewholder.ShopStatusViewHolder
+import com.tokopedia.sellerhome.settings.view.viewholder.adapterviewholder.BalanceViewHolder
+import com.tokopedia.sellerhome.settings.view.viewholder.adapterviewholder.DividerViewHolder
+import com.tokopedia.sellerhome.settings.view.viewholder.adapterviewholder.MenuItemsViewHolder
+import com.tokopedia.sellerhome.settings.view.viewholder.adapterviewholder.SettingTitleViewHolder
 
 class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTypeFactory {
 
@@ -15,7 +19,6 @@ class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTyp
             DividerViewHolder.LAYOUT -> DividerViewHolder(parent)
             SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
             MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent)
-            ShopInfoViewHolder.LAYOUT -> ShopInfoViewHolder(parent)
             ShopStatusViewHolder.LAYOUT -> ShopStatusViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
@@ -35,10 +38,6 @@ class OtherSettingAdapterTypeFactory : BaseAdapterTypeFactory(), OtherSettingTyp
 
     override fun type(menuItemUiModel: MenuItemUiModel): Int {
         return MenuItemsViewHolder.LAYOUT
-    }
-
-    override fun type(shopInfoUiModel: ShopInfoUiModel): Int {
-        return ShopInfoViewHolder.LAYOUT
     }
 
     override fun type(shopStatusUiModel: ShopStatusUiModel): Int {

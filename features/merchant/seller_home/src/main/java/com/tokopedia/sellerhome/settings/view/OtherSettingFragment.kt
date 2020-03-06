@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -14,8 +14,10 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.di.DaggerOtherSettingComponent
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherSettingAdapterTypeFactory
+import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiType
+import com.tokopedia.sellerhome.settings.view.viewholder.ShopInfoViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherSettingViewModel
 import kotlinx.android.synthetic.main.fragment_other_setting.*
 import javax.inject.Inject
@@ -29,6 +31,8 @@ class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapter
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    private var shopInfoViewHolder: ShopInfoViewHolder? = null
 
     private val otherSettingViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherSettingViewModel::class.java)
@@ -45,7 +49,7 @@ class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapter
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupView()
+        setupView(view)
         observeLiveData()
     }
 
@@ -80,18 +84,12 @@ class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapter
         adapter.data.addAll(settingList)
         adapter.notifyDataSetChanged()
         renderList(settingList)
+        shopInfoViewHolder?.onSuccessGetShopGeneralInfoData(GeneralShopInfoUiModel("Adeedast Naiki", "https://www.bukalapak.com/images/logo-google-graph.png", PowerMerchantStatus.Active))
     }
 
-    private fun setupView() {
-        val defaultSpanCount = 2
-        recycler_view.layoutManager = GridLayoutManager(context, defaultSpanCount).apply {
-            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
-                override fun getSpanSize(position: Int): Int =
-                        if (adapter.data[position].settingUiType == SettingUiType.BALANCE) {
-                            defaultSpanCount
-                        } else spanCount
-            }
-        }
+    private fun setupView(view: View) {
+        recycler_view.layoutManager = LinearLayoutManager(context)
+        context?.let { shopInfoViewHolder = ShopInfoViewHolder(view, it)}
     }
 
 }

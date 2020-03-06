@@ -8,7 +8,6 @@ interface OtherSettingTypeFactory {
     fun type(dividerUiModel: DividerUiModel): Int
     fun type(settingTitleUiModel: SettingTitleUiModel): Int
     fun type(menuItemUiModel: MenuItemUiModel): Int
-    fun type(shopInfoUiModel: ShopInfoUiModel): Int
     fun type(shopStatusUiModel: ShopStatusUiModel): Int
 
 }

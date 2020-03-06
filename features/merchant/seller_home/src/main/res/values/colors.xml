@@ -16,4 +16,5 @@
     <color name="setting_black_text">#F531353B</color>
     <color name="setting_grey_text">#AD31353B</color>
     <color name="setting_white_background">#E5E5E5</color>
+    <color name="setting_red_text">#EF144A</color>
 </resources>

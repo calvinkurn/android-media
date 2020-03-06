@@ -27,16 +27,17 @@
                 android:id="@+id/shopInfoLayout"
                 layout="@layout/setting_shop_info_layout"/>
 
-            <include
+            <LinearLayout
                 android:id="@+id/shopStatus"
-                layout="@layout/setting_shop_status_regular"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
-
 
     </androidx.core.widget.NestedScrollView>
 

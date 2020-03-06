@@ -47,7 +47,7 @@
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-                android:background="@drawable/setting_shop_os_tip"/>
+                android:background="@drawable/setting_os_tip"/>
 
             <View
                 android:id="@+id/badgeBorder"
