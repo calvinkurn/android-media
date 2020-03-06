@@ -26,8 +26,6 @@ import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -47,6 +45,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
@@ -60,21 +59,18 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
-import com.tokopedia.product.manage.feature.list.view.adapter.ProductFilterAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
-import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductFilterItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
+import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
 import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Active
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Banned
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.InActive
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Delete
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Duplicate
@@ -86,8 +82,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.StockReminder
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.item.common.util.ViewUtils
@@ -157,12 +152,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var goldMerchant: Boolean = false
     private var isOfficialStore: Boolean = false
     private var manageProductBottomSheet: ManageProductBottomSheet? = null
+    private var filterProductBottomSheet: ProductManageFilterFragment? = null
 
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
-    private val productFilterAdapter by lazy { ProductFilterAdapter(this) }
 
-    private var productManageViewModels: MutableList<ProductViewModel> = mutableListOf()
+    private var productList: MutableList<ProductViewModel> = mutableListOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
     private var stockType = BulkBottomSheetType.StockType()
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
@@ -192,15 +187,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun initView() {
         setupSearchBar()
         setupProductList()
-        setupProductFilters()
+        setupTabFilters()
         setupBottomSheet()
         renderCheckedView()
 
         observeShopInfo()
         observeUpdateProduct()
         observeDeleteProduct()
-
-        observeProductFilters()
         observeProductList()
 
         observeEditPrice()
@@ -261,27 +254,65 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder) {
-        filterProductList(filter)
-        resetProductFilters(viewHolder)
-    }
-
-    private fun filterProductList(filter: FilterViewModel) {
-        // TODO: Handle filter product here
         when(filter) {
-            is Default -> {}
-            is Active -> {}
-            is InActive -> {}
-            is Banned -> {}
-        }
-    }
+            is Default -> {
+                showFilterBottomSheet()
+            }
+            else -> {
+                val selectedFilter = filter.status
+                val currentFilter = tabFilters.selectedFilter?.status
 
-    private fun resetProductFilters(selectedFilter: FilterViewHolder) {
-        for(i in 0..productFilterAdapter.itemCount) {
-            val viewHolder = productFilterList.findViewHolderForAdapterPosition(i)
-            if(viewHolder is FilterViewHolder && viewHolder != selectedFilter) {
-                viewHolder.resetFilter()
+                if(selectedFilter == currentFilter) {
+                    renderList(productList)
+                    tabFilters.resetSelectedFilter()
+                } else {
+                    tabFilters.resetAllFilter(viewHolder)
+                    tabFilters.setSelectedFilter(filter)
+                    filterProductByStatus(selectedFilter)
+                }
             }
         }
+    }
+
+    private fun showFilterBottomSheet() {
+        val savedInstanceManager = this.context?.let { SaveInstanceCacheManager(it, true) }
+        savedInstanceManager?.let { cacheManager ->
+            filterProductBottomSheet = context?.let { cacheManager.id?.let { id -> ProductManageFilterFragment.createInstance(it, id) } }
+            setupFilterProductBottomSheet()
+            this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
+        }
+    }
+
+    private fun setupFilterProductBottomSheet() {
+//        filterProductBottomSheet?.let { bottomSheet ->
+//            bottomSheet.setOnDismissListener {
+//                if(bottomSheet.isResultReady) {
+//                    bottomSheet.isResultReady = false
+//                    val cacheManager = context?.let { SaveInstanceCacheManager(it, bottomSheet.resultCacheManagerId) }
+//                    val filterOptionWrapper: FilterOptionWrapper? = cacheManager?.get(ProductManageFilterFragment.SELECTED_FILTER, FilterOptionWrapper::class.java)
+//                    filterOptionWrapper?.let {
+//                        viewModel.getProductList(userSession.shopId, filterOptionWrapper.filterOptions, filterOptionWrapper.sortOption)
+//                    }
+//                }
+//            }
+//        }
+        filterProductBottomSheet?.let { bottomSheet ->
+            bottomSheet.setOnDismissListener {
+                if(bottomSheet.isResultReady) {
+                    bottomSheet.isResultReady = false
+                    viewModel.getProductList(userSession.shopId,
+                            bottomSheet.selectedFilterOptions?.filterOptions,
+                            bottomSheet.selectedFilterOptions?.sortOption, true)
+                }
+            }
+        }
+    }
+
+    private fun filterProductByStatus(status: ProductStatus?) {
+        val productList = productList.filter {
+            it.status == status
+        }
+        renderList(productList)
     }
 
     private fun clearEtalaseAndStockData() {
@@ -294,7 +325,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             textProductCount.visibility = View.VISIBLE
             textProductCount.text = getString(R.string.product_manage_bulk_count, itemsChecked.size.toString())
         } else {
-            textProductCount.text = getString(R.string.product_manage_count_format, productManageViewModels.count())
+            textProductCount.text = getString(R.string.product_manage_count_format, productList.count())
         }
     }
 
@@ -303,13 +334,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         recycler_view.addItemDecoration(ProductListItemDecoration())
     }
 
-    private fun setupProductFilters() {
-        with(productFilterList) {
-            adapter = productFilterAdapter
-            layoutManager = LinearLayoutManager(this@ProductManageFragment.context, HORIZONTAL, false)
-            addItemDecoration(ProductFilterItemDecoration())
-            isNestedScrollingEnabled = false
-        }
+    private fun setupTabFilters() {
+        tabFilters.init(this)
     }
 
     private val addProductReceiver = object : BroadcastReceiver() {
@@ -365,9 +391,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun showProductList(productList: List<ProductViewModel>) {
-        productManageViewModels = productList.toMutableList()
-        val hasNextPage = productList.isNotEmpty()
-        renderList(productList, hasNextPage)
+        if(tabFilters.isActive()) {
+            val selectedFilter = tabFilters.selectedFilter?.status
+            filterProductByStatus(selectedFilter)
+        } else {
+            val hasNextPage = productList.isNotEmpty()
+            renderList(productList, hasNextPage)
+        }
+    }
+
+    private fun showTabFilters() {
+        val tabFilterList = mapToTabFilters(productList)
+        tabFilters.setData(tabFilterList)
+    }
+
+    private fun addProductList(products: List<ProductViewModel>) {
+        productList.addAll(products)
     }
 
     private fun onErrorEditPrice(productId: String, price: String, t: Throwable?) {
@@ -568,6 +607,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         super.onSwipeRefresh()
         productManageListAdapter.resetCheckedItemSet()
         itemsChecked.clear()
+        productList.clear()
         renderCheckedView()
     }
 
@@ -1046,16 +1086,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun observeProductList() {
         observe(viewModel.productListResult) {
             when (it) {
-                is Success -> showProductList(it.data)
+                is Success -> {
+                    addProductList(it.data)
+                    showProductList(it.data)
+                    showTabFilters()
+                }
                 is Fail -> loadEmptyList()
             }
-        }
-    }
-
-    private fun observeProductFilters() {
-        observe(viewModel.productFilters) {
-            productFilterAdapter.clearAllElements()
-            productFilterAdapter.addElement(it)
         }
     }
 
@@ -1092,10 +1129,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             when(it) {
                 is ShowProgressDialog -> showLoadingProgress()
                 is HideProgressDialog -> hideLoadingProgress()
+                is RefreshList -> clearProductList()
             }
         }
     }
     // endregion
+
+    private fun clearProductList() {
+        renderList(emptyList())
+        productList.clear()
+    }
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
         if (imageUrls != null && imageUrls.size > 0) {

@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.feature.filter.presentation.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -55,22 +56,23 @@ class ProductManageFilterExpandSelectFragment :
     @Inject
     lateinit var productManageFilterExpandSelectViewModel: ProductManageFilterExpandSelectViewModel
 
-    private var cacheManager: SaveInstanceCacheManager? = null
     private var adapter: SelectAdapter? = null
     private var flag: String = ""
-    private var cacheManagerId: String = ""
+    private var isChipsShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        var cacheManagerId = ""
         arguments?.let {
             flag = it.getString(ACTIVITY_EXPAND_FLAG) ?: ""
             cacheManagerId = it.getString(CACHE_MANAGER_KEY) ?: ""
         }
         val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
-        cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
+        val cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
         val filterViewModel: FilterViewModel? = flag.let { cacheManager?.get(it, FilterViewModel::class.java) }
         filterViewModel?.let {
+            isChipsShown = it.isChipsShown
             val dataToDisplay = ProductManageFilterMapper.mapFilterViewModelsToSelectViewModels(filterViewModel)
             productManageFilterExpandSelectViewModel.updateData(dataToDisplay)
         }
@@ -90,26 +92,25 @@ class ProductManageFilterExpandSelectFragment :
         initView()
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        cacheManager?.onSave(outState)
-        flag.let { cacheManager?.put(it, productManageFilterExpandSelectViewModel.selectData.value, TimeUnit.DAYS.toMillis(1)) }
-    }
-
     override fun onSelectClick(element: SelectViewModel) {
         productManageFilterExpandSelectViewModel.updateSelectedItem(element)
+        val dataToSave = productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        val cacheManagerId = cacheManager?.id
         if(flag == SORT_CACHE_MANAGER_KEY) {
             cacheManager?.put(SORT_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     SORT_CACHE_MANAGER_KEY,
-                    productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
+                    dataToSave,
+                    isChipsShown
             ))
-            this.activity?.setResult(ProductManageFilterFragment.UPDATE_SORT_SUCCESS_RESPONSE)
+            this.activity?.setResult(ProductManageFilterFragment.UPDATE_SORT_SUCCESS_RESPONSE, Intent().putExtra(CACHE_MANAGER_KEY, cacheManagerId))
         } else {
             cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     ETALASE_CACHE_MANAGER_KEY,
-                    productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
+                    dataToSave,
+                    isChipsShown
             ))
-            this.activity?.setResult(ProductManageFilterFragment.UPDATE_ETALASE_SUCCESS_RESPONSE)
+            this.activity?.setResult(ProductManageFilterFragment.UPDATE_ETALASE_SUCCESS_RESPONSE, Intent().putExtra(CACHE_MANAGER_KEY, cacheManagerId))
         }
         this.activity?.finish()
     }
@@ -138,7 +139,7 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun configToolbar() {
-        select_toolbar.setNavigationIcon(R.drawable.product_manage_arrow_back)
+        select_toolbar.setNavigationIcon(R.drawable.ic_back)
         flag.let {
             if(it == SORT_CACHE_MANAGER_KEY) {
                 page_title.text = SORT_TITLE

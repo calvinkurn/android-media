@@ -2,15 +2,15 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/product_manage_white">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/filter_search_app_bar"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/product_manage_white"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -103,16 +103,27 @@
         android:id="@+id/bottomsheet_button_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginBottom="@dimen/layout_lvl2"
-        app:layout_constraintBottom_toTopOf="@id/btn_submit"/>
+        app:layout_constraintBottom_toTopOf="@id/btn_layout"/>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btn_submit"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/filter_expand_save_button"
-        android:layout_margin="@dimen/layout_lvl2"
-        android:enabled="false"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        android:background="@color/product_manage_white"
+        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingBottom="@dimen/layout_lvl2"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_expand_save_button"
+            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginLeft="@dimen/layout_lvl2"
+            android:enabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

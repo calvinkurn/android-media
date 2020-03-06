@@ -4,4 +4,5 @@ sealed class ViewState {
 
     object ShowProgressDialog: ViewState()
     object HideProgressDialog: ViewState()
+    object RefreshList: ViewState()
 }

@@ -2,4 +2,5 @@
 <resources>
     <color name="product_manage_menu_delete_color">#ef144a</color>
     <color name="product_manage_title_color">#f531353b</color>
+    <color name="product_manage_white">#ffffff</color>
 </resources>

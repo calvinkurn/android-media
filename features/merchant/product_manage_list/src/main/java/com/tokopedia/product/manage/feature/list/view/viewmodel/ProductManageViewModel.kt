@@ -6,18 +6,15 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToProductFilters
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductEditPriceParam
@@ -28,6 +25,7 @@ import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditPriceUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
@@ -57,23 +55,8 @@ class ProductManageViewModel(
     mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
 
-    val _viewState = MutableLiveData<ViewState>()
-
-    val _productFilters = MutableLiveData<List<FilterViewModel>>()
-    val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
-    val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
-    val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
-    val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
-    val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
-    val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
-    val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
-
     val viewState : LiveData<ViewState>
         get() = _viewState
-    val productFilters : LiveData<List<FilterViewModel>>
-        get() = _productFilters
     val productListResult : LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
     val shopInfoResult : LiveData<Result<ShopInfoResult>>
@@ -92,6 +75,17 @@ class ProductManageViewModel(
         get() = _getPopUpResult
     val setFeaturedProductResult : LiveData<Result<SetFeaturedProductResult>>
         get() = _setFeaturedProductResult
+
+    private val _viewState = MutableLiveData<ViewState>()
+    private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
+    private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
+    private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
+    private val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
+    private val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
+    private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
+    private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
@@ -134,7 +128,12 @@ class ProductManageViewModel(
         })
     }
 
-    fun getProductList(shopId: String, filterOptions: List<FilterOption>? = null, sortOption: SortOption? = null) {
+    fun getProductList(
+        shopId: String,
+        filterOptions: List<FilterOption>? = null,
+        sortOption: SortOption? = null,
+        isRefresh: Boolean = false
+    ) {
         launchCatchError(block = {
             val productList = withContext(ioDispatcher) {
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
@@ -143,10 +142,8 @@ class ProductManageViewModel(
                 productListResponse?.data
             }
 
-            if(productList?.isNotEmpty() == true) {
-                _productListResult.value = Success(mapToViewModels(productList))
-                _productFilters.value = mapToProductFilters(productList)
-            }
+            refreshList(isRefresh)
+            showProductList(productList)
         }, onError = {
             _productListResult.value = Fail(it)
         })
@@ -364,6 +361,15 @@ class ProductManageViewModel(
             response
         })
         return listParam
+    }
+
+    private fun showProductList(products: List<Product>?) {
+        val productList = mapToViewModels(products)
+        _productListResult.value = Success(productList)
+    }
+
+    private fun refreshList(isRefresh: Boolean) {
+        if (isRefresh) _viewState.value = RefreshList
     }
 
     private fun showProgressDialog() {
