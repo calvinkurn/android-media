@@ -23,5 +23,9 @@ class ListProductCardViewHolder(itemView: View,productCardListener: ProductCardL
         itemView.productCardView?.setOnClickListener {
             productListener.onItemClicked(productItem, adapterPosition)
         }
+
+        itemView.productCardView?.setThreeDotsOnClickListener {
+            productListener.onThreeDotsClicked(productItem, adapterPosition)
+        }
     }
 }

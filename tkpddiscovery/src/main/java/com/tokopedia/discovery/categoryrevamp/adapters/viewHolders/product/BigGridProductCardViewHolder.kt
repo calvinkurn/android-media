@@ -23,5 +23,9 @@ class BigGridProductCardViewHolder(itemView: View,productCardListener: ProductCa
         itemView.productCardView?.setOnClickListener {
             productListener.onItemClicked(productItem, adapterPosition)
         }
+
+        itemView.productCardView?.setThreeDotsOnClickListener {
+            productListener.onThreeDotsClicked(productItem, adapterPosition)
+        }
     }
 }

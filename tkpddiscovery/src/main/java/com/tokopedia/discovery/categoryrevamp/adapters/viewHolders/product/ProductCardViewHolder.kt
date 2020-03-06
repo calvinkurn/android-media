@@ -30,7 +30,8 @@ abstract class ProductCardViewHolder(itemView: View,
                 freeOngkir = freeOngkir?.toProductCardModelFreeOngkir()
                         ?: ProductCardModel.FreeOngkir(),
                 isTopAds = isTopAds,
-                labelGroupList = labelGroups.toProductCardModelLabelGroup()
+                labelGroupList = labelGroups.toProductCardModelLabelGroup(),
+                hasThreeDots = productListener.hasThreeDots()
         )
     }
 

@@ -41,6 +41,10 @@ import com.tokopedia.discovery.categoryrevamp.view.interfaces.SelectedFilterList
 import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListener
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
@@ -494,6 +498,68 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     }
 
     override fun onLongClick(item: ProductsItem, adapterPosition: Int) {
+    }
+
+    override fun hasThreeDots() = true
+
+    override fun onThreeDotsClicked(productItem: ProductsItem, position: Int) {
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        isWishlisted = productItem.wishlist,
+                        productId = productItem.id.toString(),
+                        isTopAds = productItem.isTopAds,
+                        topAdsWishlistUrl = productItem.productWishlistTrackingUrl,
+                        productPosition = position
+                )
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        handleActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+            override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                handleWishlistAction(productCardOptionsModel)
+            }
+        })
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        catAnalyticsInstance.eventWishistClicked(mDepartmentId, productCardOptionsModel.productId, !productCardOptionsModel.isWishlisted, isUserLoggedIn(), productCardOptionsModel.isTopAds)
+
+        if (productCardOptionsModel.wishlistResult.isUserLoggedIn) {
+            handleWishlistActionForLoggedInUser(productCardOptionsModel)
+        } else {
+            launchLoginActivity()
+        }
+    }
+
+    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isAddWishlist) {
+            handleAddWishlistAction(productCardOptionsModel)
+        } else {
+            handleRemoveWishlistAction(productCardOptionsModel)
+        }
+    }
+
+    private fun handleAddWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessAddWishlist(productCardOptionsModel.productId)
+        }
+        else {
+            onErrorAddWishList(getString(R.string.msg_add_wishlist_failed), productCardOptionsModel.productId)
+        }
+    }
+
+    private fun handleRemoveWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess) {
+            onSuccessRemoveWishlist(productCardOptionsModel.productId)
+        }
+        else {
+            onErrorRemoveWishlist(getString(R.string.msg_remove_wishlist_failed), productCardOptionsModel.productId)
+        }
     }
 
     override fun onWishlistButtonClicked(productItem: ProductsItem, position: Int) {

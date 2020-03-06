@@ -23,5 +23,9 @@ class SmallGridProductCardViewHolder(itemView: View,productCardListener: Product
         itemView.productCardView?.setOnClickListener {
             productListener.onItemClicked(productItem, adapterPosition)
         }
+
+        itemView.productCardView?.setThreeDotsOnClickListener {
+            productListener.onThreeDotsClicked(productItem, adapterPosition)
+        }
     }
 }
