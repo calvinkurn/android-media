@@ -106,7 +106,7 @@ class PlayCardViewHolder(
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
 
-            if(playChannel.totalView.isNotEmpty()){
+            if(playChannel.totalView.isNotEmpty() && playChannel.isShowTotalView){
                 viewer.text = playChannel.totalView
                 viewer.show()
                 imageViewer.show()

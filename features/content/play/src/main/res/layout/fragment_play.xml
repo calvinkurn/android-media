@@ -38,6 +38,15 @@
         />
 
     <FrameLayout
+        android:id="@+id/fl_bottom_sheet"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <FrameLayout
         android:id="@+id/fl_global_error"
         android:layout_width="0dp"
         android:layout_height="match_parent"

@@ -109,10 +109,9 @@ class PlayViewModel @Inject constructor(
             0
         }
     }
+    val totalView: String?
+        get() = _observableTotalViews.value?.totalView
 
-    /**
-     * Private variable
-     */
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
@@ -304,6 +303,16 @@ class PlayViewModel @Inject constructor(
         currentValue.values.forEach { it.isPreviousStateSame = true }
 
         return currentValue
+    }
+
+    private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> = mapOf(
+            BottomInsetsType.Keyboard to BottomInsetsState.Hidden(false),
+            BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
+            BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
+    )
+
+    fun hideAllInsets() {
+        _observableBottomInsetsState.value = getDefaultBottomInsetsMapState()
     }
     //end region
 

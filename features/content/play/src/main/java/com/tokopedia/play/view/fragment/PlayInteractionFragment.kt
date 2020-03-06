@@ -133,13 +133,11 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var quickReplyComponent: UIComponent<*>
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
-    private lateinit var productSheetComponent: UIComponent<*>
-    private lateinit var variantSheetComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
     private lateinit var clPlayInteraction: ConstraintLayout
 
-    private val bottomSheetMaxHeight: Int
+    private val productSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
 
     private val sendChatView: View
@@ -177,7 +175,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
-        initCoordinatorComponents(view as ViewGroup)
         initComponents(view.findViewById(R.id.cl_play_interaction) as ViewGroup)
         return view
     }
@@ -193,8 +190,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
         observeVOD()
         observeVideoProperty()
-        observeProductSheetContent()
-        observeVariantSheetContent()
         observeTitleChannel()
         observeQuickReply()
         observeVideoStream()
@@ -270,30 +265,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         .emit(
                                 ScreenStateEvent::class.java,
                                 ScreenStateEvent.VideoPropertyChanged(it)
-                        )
-            }
-        })
-    }
-
-    private fun observeProductSheetContent() {
-        playViewModel.observableProductSheetContent.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetProductSheet(it)
-                        )
-            }
-        })
-    }
-
-    private fun observeVariantSheetContent() {
-        playViewModel.observableVariantSheetContent.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetVariantSheet(it)
                         )
             }
         })
@@ -382,15 +353,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         is BottomInsetsState.Shown -> pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
                     }
                 }
-
-                val productSheetState = it[BottomInsetsType.ProductSheet]
-
-                if (productSheetState != null && !productSheetState.isPreviousStateSame) {
-                    when (productSheetState) {
-                        is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
-                    }
-                }
             }
         })
     }
@@ -443,11 +405,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     //region Component Initialization
-    private fun initCoordinatorComponents(container: ViewGroup) {
-        productSheetComponent = initProductSheetComponent(container)
-        variantSheetComponent = initVariantSheetComponent(container)
-    }
-
     private fun initComponents(container: ViewGroup) {
         sizeContainerComponent = initSizeContainerComponent(container)
         gradientBackgroundComponent = initGradientBackgroundComponent(container)
@@ -650,40 +607,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         }
 
         return endLiveInfoComponent
-    }
-
-    private fun initProductSheetComponent(container: ViewGroup): UIComponent<ProductSheetInteractionEvent> {
-        val productSheetComponent = ProductSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-
-        launch {
-            productSheetComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
-                            is ProductSheetInteractionEvent.OnBuyProduct -> openVariantSheet(it.productId, ProductAction.Buy)
-                            is ProductSheetInteractionEvent.OnAtcProduct -> openVariantSheet(it.productId, ProductAction.AddToCart)
-                        }
-                    }
-        }
-
-        return productSheetComponent
-    }
-
-    private fun initVariantSheetComponent(container: ViewGroup): UIComponent<VariantSheetInteractionEvent> {
-        val variantSheetComponent = VariantSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
-
-        launch {
-            variantSheetComponent.getUserInteractionEvents()
-                    .collect {
-                        when (it) {
-                            VariantSheetInteractionEvent.OnCloseVariantSheet -> closeVariantSheet()
-                            is VariantSheetInteractionEvent.OnBuyProduct -> shouldBuyProduct(it.productId)
-                            is VariantSheetInteractionEvent.OnAddProductToCart -> shouldAtcProduct(it.productId)
-                        }
-                    }
-        }
-
-        return variantSheetComponent
     }
     //endregion
 
@@ -1128,16 +1051,6 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         PlayFullScreenHelper.showSystemUi(requireActivity())
     }
 
-    private fun shouldBuyProduct(productId: String) {
-        Toaster.make(requireView(), "Product bought", Snackbar.LENGTH_SHORT)
-        closeVariantSheet()
-    }
-
-    private fun shouldAtcProduct(productId: String) {
-        Toaster.make(requireView(), "Product added to cart", Snackbar.LENGTH_SHORT)
-        closeVariantSheet()
-    }
-
     private fun sendEventBanned(eventUiModel: EventUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
@@ -1195,24 +1108,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openProductSheet() {
-        playViewModel.onShowProductSheet(bottomSheetMaxHeight)
-    }
-
-    private fun closeProductSheet() {
-        playViewModel.onHideProductSheet()
-    }
-
-    private fun openVariantSheet(productId: String, action: ProductAction) {
-        playViewModel.onShowVariantSheet(bottomSheetMaxHeight, productId, action)
-    }
-
-    private fun closeVariantSheet() {
-        playViewModel.onHideVariantSheet()
-    }
-
-    private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
-        val requiredMargin = offset16
-        playFragment.onBottomInsetsViewShown(getScreenHeight() - (productSheetHeight + requiredMargin))
+        playViewModel.onShowProductSheet(productSheetMaxHeight)
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
