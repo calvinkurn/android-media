@@ -12,9 +12,11 @@
     <ImageView
         android:id="@+id/button_back"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
+        android:paddingEnd="@dimen/dp_16"
+        android:paddingRight="@dimen/dp_16"
         app:srcCompat="@drawable/ic_arrow_back_black" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -22,8 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
         android:layout_toEndOf="@+id/button_back"
         android:layout_toRightOf="@+id/button_back"
         android:text="Pakai Promo"
@@ -32,13 +32,14 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/button_reset_promo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignWithParentIfMissing="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
+        android:gravity="center_vertical"
         android:text="Reset Promo"
         android:textColor="@color/Green_G500"
         app:typographyType="heading_5" />
