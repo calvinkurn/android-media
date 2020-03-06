@@ -24,7 +24,6 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
@@ -424,24 +423,31 @@ class OfficialHomeFragment :
     }
 
     private fun showSuccessAddWishlist() {
-        val rootView = view?.findViewById<View>(android.R.id.content) ?: return
-        val message = getString(R.string.msg_success_add_wishlist)
+        activity?.let { activity ->
+            val view = activity.findViewById<View>(android.R.id.content)
+            val message = getString(R.string.msg_success_add_wishlist)
 
-        Snackbar.make(rootView, message, Snackbar.LENGTH_LONG)
-                .setAction("Lihat Wishlist") { RouteManager.route(rootView.context, ApplinkConst.WISHLIST) }
-                .show()
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                    .setAction("Lihat Wishlist") { RouteManager.route(activity, ApplinkConst.WISHLIST) }
+                    .show()
+
+        }
     }
 
     private fun showSuccessRemoveWishlist() {
-        val rootView = view?.findViewById<View>(android.R.id.content) ?: return
-        val message = getString(R.string.msg_success_remove_wishlist)
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content)
+            val message = getString(R.string.msg_success_remove_wishlist)
 
-        Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        }
     }
 
     private fun showErrorWishlist() {
-        val rootView = view?.findViewById<View>(android.R.id.content) ?: return
-        Toaster.showError(rootView, ErrorHandler.getErrorMessage(rootView.context, null), Snackbar.LENGTH_LONG)
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content)
+            Toaster.showError(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG)
+        }
     }
 
     private fun goToPDP(item: RecommendationItem, position: Int) {
