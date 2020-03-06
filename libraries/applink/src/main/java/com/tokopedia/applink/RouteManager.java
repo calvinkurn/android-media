@@ -112,16 +112,21 @@ public class RouteManager {
         if (context == null) {
             return false;
         }
+        //
         String uriString = UriUtil.buildUri(applinkPattern, parameter);
         if (uriString.isEmpty()) {
             return false;
         }
+        //
         String mappedDeeplink = DeeplinkMapper.getRegisteredNavigation(context, uriString);
         if (TextUtils.isEmpty(mappedDeeplink)) {
             mappedDeeplink = uriString;
         }
+        //
         Intent intent;
+        //
         String dynamicFeatureDeeplink = DeeplinkDFMapper.getDFDeeplinkIfNotInstalled(context, mappedDeeplink);
+        //
         if (dynamicFeatureDeeplink != null) {
             intent = buildInternalExplicitIntent(context, dynamicFeatureDeeplink);
         } else if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
@@ -146,6 +151,7 @@ public class RouteManager {
         } else {
             intent = buildInternalExplicitIntent(context, mappedDeeplink);
         }
+        //
         if (intent != null && intent.resolveActivity(context.getPackageManager()) != null) {
             if (queryParamBundle != null) {
                 intent.putExtras(queryParamBundle);
