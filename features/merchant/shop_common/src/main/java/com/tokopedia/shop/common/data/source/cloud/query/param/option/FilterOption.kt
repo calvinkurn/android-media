@@ -16,11 +16,13 @@ sealed class FilterOption(val id: String) {
     data class FilterByMenu(val menuIds: List<String>): FilterOption(MENU)
     data class FilterByCategory(val categoryIds: List<String>): FilterOption(CATEGORY)
     data class FilterByPage(val page: Int): FilterOption(PAGE)
+    data class FilterByKeyword(val keyword: String): FilterOption(KEYWORD)
 
     companion object FilterId {
         private const val MENU = "menu"
         private const val CATEGORY = "category"
         private const val PAGE = "page"
+        private const val KEYWORD = "keyword"
 
         private const val NEW_ONLY = "isNewOnly"
         private const val USED_ONLY = "isUsedOnly"
