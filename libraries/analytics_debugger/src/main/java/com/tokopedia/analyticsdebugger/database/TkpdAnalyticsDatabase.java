@@ -5,6 +5,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import android.content.Context;
 
+import com.tokopedia.analyticsdebugger.debugger.data.source.FpmLogDao;
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmErrorLogDao;
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao;
 import com.tokopedia.analyticsdebugger.debugger.data.source.IrisLogSaveDao;
@@ -13,10 +14,11 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.IrisLogSendDao;
 /**
  * @author okasurya on 5/14/18.
  */
-@Database(entities = {GtmLogDB.class, IrisSaveLogDB.class, IrisSendLogDB.class, GtmErrorLogDB.class}, version = 2)
+@Database(entities = {GtmLogDB.class, FpmLogDB.class, IrisSaveLogDB.class, IrisSendLogDB.class, GtmErrorLogDB.class}, version = 2)
 public abstract class TkpdAnalyticsDatabase extends RoomDatabase {
 
     public abstract GtmLogDao gtmLogDao();
+    public abstract FpmLogDao fpmLogDao();
     public abstract IrisLogSaveDao irisLogSaveDao();
     public abstract IrisLogSendDao irisLogSendDao();
     public abstract GtmErrorLogDao gtmErrorLogDao();

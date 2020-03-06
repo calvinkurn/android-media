@@ -4,6 +4,9 @@ import android.app.Application
 import android.os.Build
 import com.akamai.botman.CYFMonitor
 import com.tokopedia.config.GlobalConfig
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
 
 fun initAkamaiBotManager(app:Application?){
     app?.let { CYFMonitor.initialize(it) }
@@ -16,3 +19,17 @@ private val userAgentFormat = "TkpdConsumer/%s (%s;)"
 fun getUserAgent(): String {
     return String.format(userAgentFormat, GlobalConfig.VERSION_NAME, "Android " + Build.VERSION.RELEASE)
 }
+
+fun getMutation(input: String, match:String) : Boolean{
+    val input2 = input.replace("\n", "")
+    val input3 = input2.replace("\\s+", " ")
+    val m: Matcher = p.matcher(input3)
+    while (m.find()) {
+        if( m.group(0).equals(match, ignoreCase = true))
+            return true
+    }
+    return false
+}
+
+
+val p: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
