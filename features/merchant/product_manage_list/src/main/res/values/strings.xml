@@ -147,5 +147,12 @@
     <string name="product_stock_reminder_button">Simpan</string>
 
     <string name="quick_edit_currency">Rp</string>
+    <string name="quick_edit_min_price_error">Min. Rp 100</string>
+    <string name="quick_edit_max_price_error">Maks. Rp100.000.000</string>
+    <string name="quick_edit_price_success">Harga produk \"%1$s\" berhasil diubah.</string>
+    <string name="quick_edit_stock_title">Atur Stok</string>
+    <string name="quick_edit_stock_active_product">Produk Aktif</string>
+    <string name="quick_edit_stock_total_stock">Jumlah Stok</string>
+    <string name="quick_edit_stock_success">Jumlah stok \"%1$s\" berhasil diubah.</string>
 
 </resources>

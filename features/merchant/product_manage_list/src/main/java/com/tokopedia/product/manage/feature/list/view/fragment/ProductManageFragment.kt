@@ -69,6 +69,8 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgre
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
+import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
+import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment.Companion.EDIT_STOCK_PRODUCT
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
@@ -651,6 +653,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onClickStockInformation() {
     }
 
+    override fun onClickEditStockButton(product: ProductViewModel) {
+        val cacheManager = context?.let { SaveInstanceCacheManager(it,true) }
+        cacheManager?.put(EDIT_STOCK_PRODUCT, product)
+        val editStockBottomSheet = context?.let { cacheManager?.id?.let {
+            cacheId -> ProductManageQuickEditStockFragment.createInstance(it, cacheId) } }
+        editStockBottomSheet?.setOnDismissListener {
+            if(editStockBottomSheet.editStockSuccess) {
+                Toaster.make(coordinatorLayout, getString(
+                        R.string.quick_edit_stock_success, product.title),
+                        Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                //Call GQL
+            }
+        }
+        editStockBottomSheet?.show(childFragmentManager, "quick_edit_stock")
+    }
+
     override fun onClickMoreOptionsButton(product: ProductViewModel) {
         hideSoftKeyboard()
 
@@ -663,8 +681,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onClickEditPriceButton(product: ProductViewModel) {
-        val editBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it) }
-        editBottomSheet?.show(childFragmentManager, "quick_edit_price")
+        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it, product.price ?: "") }
+        editPriceBottomSheet?.setOnDismissListener {
+            if(editPriceBottomSheet.editPriceSuccess) {
+                editPriceBottomSheet.editPriceSuccess = false
+                Toaster.make(coordinatorLayout, getString(
+                        R.string.quick_edit_price_success, product.title),
+                        Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                viewModel.editPrice(product.id, editPriceBottomSheet.price)
+            }
+        }
+        editPriceBottomSheet?.show(childFragmentManager, "quick_edit_price")
     }
 
     override fun onClickOptionMenu(menu: ProductMenuViewModel) {
