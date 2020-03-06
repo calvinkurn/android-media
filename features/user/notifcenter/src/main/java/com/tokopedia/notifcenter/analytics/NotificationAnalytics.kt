@@ -17,4 +17,8 @@ open class NotificationAnalytics {
         return "$location - ${notification.templateKey} - ${notification.notificationId} - ${notification.getAtcProduct()?.productId}"
     }
 
+    fun getMultipleProductImpressionLabel(notificationId: String, productNumber: String, location: String): String {
+        return "$notificationId - $productNumber - $location"
+    }
+
 }

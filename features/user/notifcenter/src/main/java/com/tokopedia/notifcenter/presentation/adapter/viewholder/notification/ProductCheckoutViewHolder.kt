@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
+import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
 import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
@@ -17,7 +18,6 @@ import com.tokopedia.notifcenter.presentation.adapter.MultipleProductCardAdapter
 import com.tokopedia.notifcenter.presentation.adapter.typefactory.product.MultipleProductCardFactoryImpl
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.base.BaseProductCampaignViewHolder
 import com.tokopedia.notifcenter.util.ProductCardSnapHelper
-import com.tokopedia.notifcenter.util.isSingleItem
 import com.tokopedia.notifcenter.widget.CampaignRedView
 import com.tokopedia.unifycomponents.UnifyButton
 
@@ -42,7 +42,7 @@ class ProductCheckoutViewHolder(
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
-        listener.getAnalytic().trackProductListImpression(notification = element)
+        lstProduct.adapter = multiProductAdapter
         onProductCheckoutClick(element)
         productCardItemView(element)
 
@@ -57,12 +57,18 @@ class ProductCheckoutViewHolder(
     }
 
     private fun productCardItemView(element: NotificationItemViewBean) {
-        if (element.products.isSingleItem()) {
-            cardContainer.show()
-            lstProduct.hide()
+        if (element.totalProduct == SINGLE_PRODUCT) {
+            cardContainer.visibility = View.VISIBLE
+            lstProduct.visibility = View.GONE
+            listener.getAnalytic().trackProductListImpression(
+                    notification = element
+            )
         } else {
-            cardContainer.hide()
-            lstProduct.adapter = multiProductAdapter
+            cardContainer.visibility = View.GONE
+            listener.getAnalytic().trackProductListImpression(
+                    location = LABEL_BOTTOM_SHEET_LOCATION,
+                    notification = element
+            )
             multiProductAdapter.insertData(
                     MultipleProductCardMapper.map(element)
             )
@@ -79,12 +85,13 @@ class ProductCheckoutViewHolder(
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {
         btnCheckout.setOnClickListener {
             baseItemMarkedClick(element)
-            listener.getAnalytic().trackProductCheckoutBuyClick(notification = element)
+            listener.getAnalytic().trackAtcOnSingleProductClick(notification = element)
             listener.addProductToCheckout(element.userInfo, element.getAtcProduct())
         }
     }
 
     companion object {
+        private const val SINGLE_PRODUCT = 1
         @LayoutRes val LAYOUT = R.layout.item_notification_product_checkout
     }
 

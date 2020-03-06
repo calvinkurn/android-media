@@ -84,7 +84,17 @@ class MultipleProductCardViewHolder(
         }
 
         btnCheckout.setOnClickListener {
-            listener.getAnalytic().trackProductCheckoutBuyClick(notification = element)
+            when(sourceView) {
+                is SourceMultipleProductView.NotificationCenter -> {
+                    listener.getAnalytic().trackAtcOnMultiProductClick(notification = element)
+                }
+                is SourceMultipleProductView.BottomSheetDetail -> {
+                    listener.getAnalytic().trackAtcOnMultiProductClick(
+                            eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
+                            notification = element
+                    )
+                }
+            }
             listener.addProductToCheckout(element.userInfo, element.product)
         }
     }
