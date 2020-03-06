@@ -3,9 +3,7 @@ package com.tokopedia.dynamicfeatures
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -16,16 +14,18 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.google.android.gms.common.ConnectionResult
-import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.play.core.splitinstall.*
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
+import com.tokopedia.dynamicfeatures.constant.CommonConstant
+import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil
+import com.tokopedia.dynamicfeatures.utils.ErrorUtils
+import com.tokopedia.dynamicfeatures.utils.Utils
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
 import kotlinx.coroutines.*
@@ -76,9 +76,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         private const val defaultImageUrl = "https://ecs7.tokopedia.net/img/android/empty_profile/drawable-xxxhdpi/product_image_48_x_48.png"
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
-        private const val ONE_KB = 1024
         const val TAG_LOG = "Page"
-        const val PLAY_SRV_OOD = "play_ood" //tag for play service ouf of date
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -250,53 +248,49 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     }
 
     private fun showFailedMessage(message: String, errorCode: String = "") {
-        errorList.add(errorCode)
-        if (!isPlayStoreAvailable(this)) {
+        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(this, errorCode, usableSpaceBeforeDownload)
+        errorList.add(errorCodeTemp)
+        if (ErrorConstant.ERROR_PLAY_SERVICE_NOT_CONNECTED == errorCodeTemp) {
+            updateInformationView(R.drawable.ic_ill_general_error,
+                    getString(R.string.download_error_playservice_title),
+                    getString(R.string.download_error_playservice_subtitle),
+                    getString(R.string.start_download)) {
+                if (Utils.isPlayServiceConnected(this)) {
+                    downloadFeature()
+                } else {
+                    Utils.showPlayServiceErrorDialog(this)
+                }
+            }
+        } else if (ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE == errorCodeTemp) {
             updateInformationView(R.drawable.ic_ill_general_error,
                     getString(R.string.download_error_play_store_title),
                     getString(R.string.download_error_play_store_subtitle),
                     getString(R.string.goto_playstore)) {
                 gotoPlayStore()
             }
-        } else if (!checkPlayServiceUpToDate()) {
-            // show log play service is not up-to-date
-            val lastIndex = errorList.size - 1
-            val lastItem = errorList[lastIndex]
-            errorList[lastIndex] = "$lastItem $PLAY_SRV_OOD"
-
-            updateInformationView(R.drawable.ic_ill_general_error,
-                    getString(R.string.download_error_playservice_title),
-                    getString(R.string.download_error_playservice_subtitle),
-                    getString(R.string.start_download)) {
-                val hasBeenUpdated = checkPlayServiceUpToDate()
-                if (hasBeenUpdated) {
-                    downloadFeature()
-                }
-            }
-        } else if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode &&
-                usableSpaceBeforeDownload > (2 * ONE_KB) &&
-                DFRemoteConfig().getConfig(context).showErrorInvalidInsufficientStorage) {
+        } else if (ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE == errorCodeTemp &&
+                DFRemoteConfig().getConfig(this).showErrorInvalidInsufficientStorage) {
             updateInformationView(R.drawable.ic_ill_general_error,
                     getString(R.string.download_error_os_and_play_store_title),
                     getString(R.string.download_error_os_and_play_store_subtitle),
                     getString(R.string.goto_playstore)) {
                 gotoPlayStore()
             }
-        } else if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
+        } else if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCodeTemp) {
             updateInformationView(R.drawable.ic_ill_insuficient_memory,
                     getString(R.string.download_error_insuficient_storage_title),
                     getString(R.string.download_error_insuficient_storage_subtitle),
                     getString(R.string.goto_seting)) {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
             }
-        } else if (SplitInstallErrorCode.NETWORK_ERROR.toString() == errorCode) {
+        } else if (SplitInstallErrorCode.NETWORK_ERROR.toString() == errorCodeTemp) {
             updateInformationView(R.drawable.ic_ill_no_connection,
                     getString(R.string.download_error_connection_title),
                     getString(R.string.download_error_connection_subtitle),
                     getString(R.string.df_installer_try_again)) {
                 downloadFeature()
             }
-        } else if (SplitInstallErrorCode.MODULE_UNAVAILABLE.toString() == errorCode) {
+        } else if (SplitInstallErrorCode.MODULE_UNAVAILABLE.toString() == errorCodeTemp) {
             updateInformationView(R.drawable.ic_ill_module_unavailable,
                     getString(R.string.download_error_module_unavailable_title),
                     getString(R.string.download_error_module_unavailable_subtitle),
@@ -330,20 +324,6 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         }
     }
 
-    private fun checkPlayServiceUpToDate(): Boolean {
-        // this code should be on main thread.
-        val googleAPI = GoogleApiAvailability.getInstance()
-        val result = googleAPI.isGooglePlayServicesAvailable(this)
-        return if (result != ConnectionResult.SUCCESS) {
-            if (googleAPI.isUserResolvableError(result)) {
-                googleAPI.getErrorDialog(this, result, 9000).show()
-            }
-            false
-        } else {
-            true
-        }
-    }
-
     private fun gotoPlayStore() {
         try {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
@@ -371,7 +351,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         progressBar.max = totalBytesToDowload
         progressBar.progress = bytesDownloaded
         val progressText = String.format("%.2f KB / %.2f KB",
-            (bytesDownloaded.toFloat() / ONE_KB), totalBytesToDowload.toFloat() / ONE_KB)
+            (bytesDownloaded.toFloat() / CommonConstant.ONE_KB), totalBytesToDowload.toFloat() / CommonConstant.ONE_KB)
         Log.i(TAG_LOG, progressText)
         progressTextPercent.text = String.format("%.0f%%", bytesDownloaded.toFloat() * 100 / totalBytesToDowload)
         button_download.visibility = View.INVISIBLE
@@ -407,16 +387,4 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + job + CoroutineExceptionHandler { _, _ -> }
-
-    private fun isPlayStoreAvailable(context: Context): Boolean {
-        return try {
-            val pm: PackageManager = context.packageManager
-            pm.getInstalledPackages(PackageManager.GET_META_DATA).first {
-                it.packageName == "com.android.vending"
-            }
-            true
-        } catch (e: Exception) {
-            false
-        }
-    }
 }
