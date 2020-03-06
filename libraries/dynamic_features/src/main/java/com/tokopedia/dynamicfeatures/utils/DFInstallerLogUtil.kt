@@ -1,4 +1,4 @@
-package com.tokopedia.dynamicfeatures
+package com.tokopedia.dynamicfeatures.utils
 
 import android.app.usage.StorageStatsManager
 import android.content.Context
