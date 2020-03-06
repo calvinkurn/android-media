@@ -27,14 +27,11 @@ class ChecklistWidget: BaseCustomView {
 
     fun bind(element: ChecklistViewModel, checklistClickListener: ChecklistClickListener) {
         this.checklist.text = element.name
-        if(element.isSelected) {
-            this.checklist.isChecked = true
-        }
+        this.checklist.isChecked = element.isSelected
         this.checklist.setOnClickListener {
             checklistClickListener.onChecklistClick(element)
         }
         this.setOnClickListener {
-            this.checklist.isChecked = !this.checklist.isChecked
             checklistClickListener.onChecklistClick(element)
         }
     }

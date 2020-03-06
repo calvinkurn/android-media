@@ -1,10 +1,14 @@
 package com.tokopedia.product.manage.feature.filter.data.mapper
 
 import com.tokopedia.core.common.category.domain.model.CategoriesResponse
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionsResponse
 import com.tokopedia.product.manage.feature.filter.data.model.ProductListMetaData
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.*
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOrderOption
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 
 class ProductManageFilterMapper {
@@ -43,15 +47,15 @@ class ProductManageFilterMapper {
             return checklistViewModels
         }
 
-        fun mapSelectViewModelsToFilterViewModel(key: String, selectViewModels: List<SelectViewModel>): FilterViewModel {
+        fun mapSelectViewModelsToFilterViewModel(key: String, selectViewModels: List<SelectViewModel>, isChipsShown: Boolean): FilterViewModel {
             val data = mutableListOf<FilterDataViewModel>()
             selectViewModels.forEach {
                 data.add(FilterDataViewModel(it.id, it.name, it.value, it.isSelected))
             }
             return if(key == ProductManageFilterFragment.SORT_CACHE_MANAGER_KEY) {
-                FilterViewModel(SORT_HEADER, data, SHOW_CHIPS)
+                FilterViewModel(SORT_HEADER, data, isChipsShown)
             } else {
-                FilterViewModel(ETALASE_HEADER, data, SHOW_CHIPS)
+                FilterViewModel(ETALASE_HEADER, data, isChipsShown)
             }
         }
 
@@ -65,6 +69,81 @@ class ProductManageFilterMapper {
             } else {
                 FilterViewModel(OTHER_FILTER_HEADER, data, isChipsShown)
             }
+        }
+
+        fun mapFiltersToFilterOptions(filterViewModel: List<FilterViewModel>): FilterOptionWrapper {
+            val filterOptions = mutableListOf<FilterOption>()
+            val sortOption = mapSortToSortOptions(filterViewModel[ProductManageFilterFragment.ITEM_SORT_INDEX])
+            filterOptions.addAll(mapEtalaseToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_ETALASE_INDEX]))
+            filterOptions.addAll(mapCategoriesToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_CATEGORIES_INDEX]))
+            filterOptions.addAll(mapFiltersToFilterOptions(filterViewModel[ProductManageFilterFragment.ITEM_OTHER_FILTER_INDEX]))
+            return FilterOptionWrapper(sortOption, filterOptions)
+        }
+
+        private fun mapSortToSortOptions(filterViewModel: FilterViewModel): SortOption {
+            var selectedData: FilterDataViewModel? = null
+            filterViewModel.data.forEach {
+                if(it.select) {
+                    selectedData = it
+                }
+            }
+            var sortOrderOption = SortOrderOption.DESC
+            selectedData?.let {
+                if(it.value == SortOrderOption.ASC.name) sortOrderOption = SortOrderOption.ASC
+            }
+            return when(selectedData?.id) {
+                SortOption.SortId.NAME.name -> SortOption.SortByName(sortOrderOption)
+                SortOption.SortId.UPDATE_TIME.name -> SortOption.SortByUpdateTime(sortOrderOption)
+                SortOption.SortId.SOLD.name -> SortOption.SortBySold(sortOrderOption)
+                SortOption.SortId.PRICE.name -> SortOption.SortByPrice(sortOrderOption)
+                else -> SortOption.SortByDefault(sortOrderOption)
+            }
+        }
+
+        private fun mapEtalaseToFilterOptions(filterViewModel: FilterViewModel): List<FilterOption> {
+            var selectedData: FilterDataViewModel? = null
+            filterViewModel.data.forEach {
+                if(it.select) {
+                    selectedData = it
+                }
+            }
+            selectedData?.let {
+                return listOf(FilterOption.FilterByMenu(listOf(it.id)))
+            }
+            return listOf()
+        }
+
+        private fun mapCategoriesToFilterOptions(filterViewModel: FilterViewModel): List<FilterOption> {
+            val selectedCategoryIds = mutableListOf<String>()
+            filterViewModel.data.forEach {
+                if(it.select) {
+                    selectedCategoryIds.add(it.id)
+                }
+            }
+            if(selectedCategoryIds.isNotEmpty()) {
+                return listOf(FilterOption.FilterByCategory(selectedCategoryIds))
+            }
+            return listOf()
+        }
+
+        private fun mapFiltersToFilterOptions(filterViewModel: FilterViewModel): List<FilterOption> {
+            val selectedData = mutableListOf<FilterOption>()
+            filterViewModel.data.forEach {
+                if(it.select) {
+                    val mappedData = when(it.id) {
+                        FilterOption.FilterByCondition.NewOnly.id -> FilterOption.FilterByCondition.NewOnly
+                        FilterOption.FilterByCondition.UsedOnly.id -> FilterOption.FilterByCondition.UsedOnly
+                        FilterOption.FilterByCondition.EmptyStockOnly.id -> FilterOption.FilterByCondition.EmptyStockOnly
+                        FilterOption.FilterByCondition.VariantOnly.id -> FilterOption.FilterByCondition.VariantOnly
+                        FilterOption.FilterByCondition.CashBackOnly.id -> FilterOption.FilterByCondition.CashBackOnly
+                        FilterOption.FilterByCondition.WholesaleOnly.id -> FilterOption.FilterByCondition.WholesaleOnly
+                        FilterOption.FilterByCondition.PreorderOnly.id -> FilterOption.FilterByCondition.PreorderOnly
+                        else -> FilterOption.FilterByCondition.FeaturedOnly
+                    }
+                    selectedData.add(mappedData)
+                }
+            }
+            return selectedData
         }
 
         private fun mapMetaResponseToSortOptions(productListMetaData: ProductListMetaData): FilterViewModel {

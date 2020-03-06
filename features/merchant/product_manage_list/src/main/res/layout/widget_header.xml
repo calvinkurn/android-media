@@ -22,7 +22,7 @@
         android:layout_width="wrap_content"
         android:layout_height="@dimen/layout_lvl0"
         android:background="@null"
-        app:srcCompat="@drawable/ic_arrow_down_grey"
+        app:srcCompat="@drawable/unify_chips_ic_chevron_normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_header"
         app:layout_constraintBottom_toBottomOf="@id/tv_header" />

@@ -2,11 +2,7 @@ package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -16,13 +12,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -47,6 +37,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
@@ -60,6 +51,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductFilterAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
@@ -69,23 +61,9 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Active
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Banned
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.InActive
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Delete
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Duplicate
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Preview
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.RemoveFeaturedProduct
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetCashBack
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetFeaturedProduct
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetTopAds
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.StockReminder
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
+import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
@@ -157,6 +135,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var goldMerchant: Boolean = false
     private var isOfficialStore: Boolean = false
     private var manageProductBottomSheet: ManageProductBottomSheet? = null
+    private var filterProductBottomSheet: ProductManageFilterFragment? = null
 
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
@@ -263,6 +242,37 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder) {
         filterProductList(filter)
         resetProductFilters(viewHolder)
+        val savedInstanceManager = this.context?.let { SaveInstanceCacheManager(it, true) }
+        savedInstanceManager?.let { cacheManager ->
+            filterProductBottomSheet = context?.let { cacheManager.id?.let { id -> ProductManageFilterFragment.createInstance(it, id) } }
+            setupFilterProductBottomSheet()
+            this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
+        }
+    }
+
+    private fun setupFilterProductBottomSheet() {
+//        filterProductBottomSheet?.let { bottomSheet ->
+//            bottomSheet.setOnDismissListener {
+//                if(bottomSheet.isResultReady) {
+//                    bottomSheet.isResultReady = false
+//                    val cacheManager = context?.let { SaveInstanceCacheManager(it, bottomSheet.resultCacheManagerId) }
+//                    val filterOptionWrapper: FilterOptionWrapper? = cacheManager?.get(ProductManageFilterFragment.SELECTED_FILTER, FilterOptionWrapper::class.java)
+//                    filterOptionWrapper?.let {
+//                        viewModel.getProductList(userSession.shopId, filterOptionWrapper.filterOptions, filterOptionWrapper.sortOption)
+//                    }
+//                }
+//            }
+//        }
+        filterProductBottomSheet?.let { bottomSheet ->
+            bottomSheet.setOnDismissListener {
+                if(bottomSheet.isResultReady) {
+                    bottomSheet.isResultReady = false
+                    viewModel.getProductList(userSession.shopId,
+                            bottomSheet.selectedFilterOptions?.filterOptions,
+                            bottomSheet.selectedFilterOptions?.sortOption)
+                }
+            }
+        }
     }
 
     private fun filterProductList(filter: FilterViewModel) {
