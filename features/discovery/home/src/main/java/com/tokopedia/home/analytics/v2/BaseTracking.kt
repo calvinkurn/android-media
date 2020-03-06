@@ -14,6 +14,7 @@ abstract class BaseTracking {
         const val IMPRESSION = "impression"
         const val PROMO_VIEW = "promoView"
         const val PRODUCT_VIEW = "productView"
+        const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val PROMO_CLICK = "promoClick"
         const val PRODUCT_CLICK = "productClick"
         const val PROMO_VIEW_IRIS = "promoViewIris"
