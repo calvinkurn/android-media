@@ -246,6 +246,9 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             if (!it.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
                 it.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
                 val errorMessageBuilder = StringBuilder(it.uiData.errorMessage)
+                if (it.uiData.errorMessage.isNotBlank()) {
+                    errorMessageBuilder.append("\n")
+                }
                 errorMessageBuilder.append(it.uiData.clashingInfo[selectedItem.uiData.promoCode])
                 it.uiData.errorMessage = errorMessageBuilder.toString()
             }
@@ -443,6 +446,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                             if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSellected) {
                                 tmpPromoItem.uiState.isSellected = false
                                 _tmpUiModel.value = Update(tmpPromoItem)
+                                // calculate clash after uncheck
                                 calculateClash(tmpPromoItem)
                                 break
                             }
