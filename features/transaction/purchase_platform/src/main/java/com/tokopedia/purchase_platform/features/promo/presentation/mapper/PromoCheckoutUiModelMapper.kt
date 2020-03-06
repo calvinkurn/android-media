@@ -9,6 +9,20 @@ import javax.inject.Inject
 
 class PromoCheckoutUiModelMapper @Inject constructor() {
 
+    fun mapFragmentUiModel(failedToLoad: Boolean): FragmentUiModel {
+        return FragmentUiModel(
+                uiData = FragmentUiModel.UiData().apply {
+                    totalBenefit = 0
+                    usedPromoCount = 0
+                },
+                uiState = FragmentUiModel.UiState().apply {
+                    hasPreselectedPromo = false
+                    hasAnyPromoSelected = false
+                    hasFailedToLoad = failedToLoad
+                }
+        )
+    }
+
     fun mapPromoRecommendationUiModel(couponListRecommendation: CouponListRecommendation): PromoRecommendationUiModel {
         return PromoRecommendationUiModel(
                 uiData = PromoRecommendationUiModel.UiData().apply {

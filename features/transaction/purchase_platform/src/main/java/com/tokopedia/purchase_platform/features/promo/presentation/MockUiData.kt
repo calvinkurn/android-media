@@ -315,7 +315,7 @@ val MOCK_RESPONSE = """
     "coupon_list_recommendation": {
       "message": [],
       "error_code": "200",
-      "status": "ERROR",
+      "status": "OK",
       "data": {
         "result_status": {
           "code": "200",
@@ -325,9 +325,9 @@ val MOCK_RESPONSE = """
           "reason": "OK"
         },
         "empty_state": {
-          "title": "",
-          "description": "",
-          "image_url": ""
+          "title": "Kuponnya tidak ada",
+          "description": "Banyakin belanja ya biar dapet kupon",
+          "image_url": "https://ecs7.tokopedia.net/img/ovo/icon-benefit-2.png"
         },
         "title": "Pilih Promo",
         "sub_title": "Kamu bisa gabungkan promo!",

@@ -61,8 +61,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         get() = _tmpListUiModel
 
     fun loadData() {
-//        mockData()
-
         launch { getCouponRecommendation() }
     }
 
@@ -76,17 +74,32 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
             if (response.couponListRecommendation.status == "OK") {
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
+                    initFragmentUiModel(false)
                     initPromoRecommendation(response)
                     initPromoInput()
                     initPromoList(response)
-                    initSuccessFragmentUiModel()
+
+                    var tmpHasPreSelectedPromo = false
+                    promoListUiModel.value?.forEach {
+                        if (it is PromoListItemUiModel && it.uiState.isSellected) {
+                            tmpHasPreSelectedPromo = true
+                            return@forEach
+                        }
+                    }
+
+                    fragmentUiModel.value?.let {
+                        it.uiState.hasPreselectedPromo = tmpHasPreSelectedPromo
+                        it.uiState.hasAnyPromoSelected = tmpHasPreSelectedPromo
+                        _fragmentUiModel.value = it
+                    }
+
                     calculateAndRenderTotalBenefit()
                 } else if (response.couponListRecommendation.data.emptyState.title.isEmpty() &&
                         response.couponListRecommendation.data.emptyState.description.isEmpty() &&
                         response.couponListRecommendation.data.emptyState.imageUrl.isEmpty()) {
-                    initErrorFragmentUiModel(true)
+                    initFragmentUiModel(true)
                 } else {
-                    initErrorFragmentUiModel(false)
+                    initFragmentUiModel(false)
                     val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
                     if (response.couponListRecommendation.data.resultStatus.code == STATUS_COUPON_LIST_EMPTY) {
                         emptyState.uiState.isShowButton = false
@@ -101,46 +114,16 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                     _promoEmptyStateUiModel.value = emptyState
                 }
             } else {
-                initErrorFragmentUiModel(true)
+                initFragmentUiModel(true)
             }
 
         }) {
-            initErrorFragmentUiModel(true)
+            initFragmentUiModel(true)
         }
     }
 
-    private fun initErrorFragmentUiModel(failedToLoad: Boolean) {
-        val fragmentUiModel = FragmentUiModel(
-                uiData = FragmentUiModel.UiData().apply {
-
-                },
-                uiState = FragmentUiModel.UiState().apply {
-                    hasPreselectedPromo = false
-                    hasAnyPromoSelected = false
-                    hasFailedToLoad = failedToLoad
-                }
-        )
-        _fragmentUiModel.value = fragmentUiModel
-    }
-
-    private fun initSuccessFragmentUiModel() {
-        val fragmentUiModel = FragmentUiModel(
-                uiData = FragmentUiModel.UiData().apply {
-
-                },
-                uiState = FragmentUiModel.UiState().apply {
-                    var tmpHasPreSelectedPromo = false
-                    promoListUiModel.value?.forEach {
-                        if (it is PromoListItemUiModel && it.uiState.isSellected) {
-                            tmpHasPreSelectedPromo = true
-                            return@forEach
-                        }
-                    }
-                    hasPreselectedPromo = tmpHasPreSelectedPromo
-                    hasAnyPromoSelected = tmpHasPreSelectedPromo
-                    hasFailedToLoad = false
-                }
-        )
+    private fun initFragmentUiModel(failedToLoad: Boolean) {
+        val fragmentUiModel = uiModelMapper.mapFragmentUiModel(failedToLoad)
         _fragmentUiModel.value = fragmentUiModel
     }
 

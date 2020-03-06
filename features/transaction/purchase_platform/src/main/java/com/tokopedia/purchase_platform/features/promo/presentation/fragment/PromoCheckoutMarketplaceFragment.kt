@@ -128,7 +128,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     private fun handleStickyPromoHeader(recyclerView: RecyclerView, lastHeaderUiModel: PromoListHeaderUiModel?) {
-        if(adapter.data.isNotEmpty()) {
+        if (adapter.data.isNotEmpty()) {
             var tmpLastHeaderUiModel = lastHeaderUiModel
             val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             val lastData = adapter.data[topItemPosition]
@@ -385,7 +385,15 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     override fun onBackPressed() {
         // Todo : validate if has any changes but have not hit validate use
-        showSavePromoDialog()
+        if (viewModel.fragmentUiModel.value != null) {
+            if (viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false) {
+                showSavePromoDialog()
+            } else {
+                activity?.finish()
+            }
+        } else {
+            activity?.finish()
+        }
     }
 
     override fun onClickResetPromo() {
