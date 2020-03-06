@@ -2,11 +2,7 @@ package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -16,13 +12,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -61,7 +51,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductFilterAdapter
@@ -72,23 +61,9 @@ import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductMan
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
-import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Active
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Banned
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.InActive
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Delete
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Duplicate
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Preview
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.RemoveFeaturedProduct
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetCashBack
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetFeaturedProduct
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetTopAds
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.StockReminder
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
+import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.*
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
@@ -126,9 +101,7 @@ import com.tokopedia.product.manage.oldlist.view.fragment.ProductManageEditPrice
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByPage
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -290,10 +263,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 //                }
 //            }
 //        }
-        filterProductBottomSheet?.setOnDismissListener {
-            if (filterProductBottomSheet != null && filterProductBottomSheet!!.isResultReady) {
-                filterProductBottomSheet!!.isResultReady = false
-                viewModel.getProductList(userSession.shopId, filterProductBottomSheet!!.selectedFilterOptions?.filterOptions, filterProductBottomSheet!!.selectedFilterOptions?.sortOption)
+        filterProductBottomSheet?.let { bottomSheet ->
+            bottomSheet.setOnDismissListener {
+                if(bottomSheet.isResultReady) {
+                    bottomSheet.isResultReady = false
+                    viewModel.getProductList(userSession.shopId,
+                            bottomSheet.selectedFilterOptions?.filterOptions,
+                            bottomSheet.selectedFilterOptions?.sortOption)
+                }
             }
         }
     }
