@@ -8,5 +8,5 @@ import androidx.fragment.app.Fragment
 
 interface SellerHomeRouter {
 
-    fun getSellerOrderManageFragment(): Fragment
+    fun getSomListFragment(tabPage: String?): Fragment
 }

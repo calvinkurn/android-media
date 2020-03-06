@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.sellerhome.common.PageFragment
 import javax.inject.Inject
 
 /**
@@ -11,20 +12,20 @@ import javax.inject.Inject
 
 class SharedViewModel @Inject constructor() : ViewModel() {
 
-    private val _currentSelectedMenu = MutableLiveData<Int>()
+    private val _currentSelectedPage = MutableLiveData<PageFragment>()
     private val _toolbarTitle = MutableLiveData<String>()
 
     /**
      * this live data used for switching menu/page
      * */
-    val currentSelectedMenu: LiveData<Int>
-        get() = _currentSelectedMenu
+    val currentSelectedPage: LiveData<PageFragment>
+        get() = _currentSelectedPage
 
     val toolbarTitle: LiveData<String>
         get() = _toolbarTitle
 
-    fun setCurrentSelectedMenu(position: Int) {
-        _currentSelectedMenu.value = position
+    fun setCurrentSelectedPage(page: PageFragment) {
+        _currentSelectedPage.value = page
     }
 
     fun setToolbarTitle(title: String) {

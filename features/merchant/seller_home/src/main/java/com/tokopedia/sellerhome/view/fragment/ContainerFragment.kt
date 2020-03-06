@@ -13,6 +13,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
+import com.tokopedia.sellerhome.common.PageFragment
+import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
@@ -38,12 +40,10 @@ class ContainerFragment : Fragment() {
         else
             null
     }
-    private val homeFragment: SellerHomeFragment by lazy { SellerHomeFragment.newInstance() }
-    private val somListFragment: Fragment? by lazy { sellerHomeRouter?.getSellerOrderManageFragment() }
+    private val homeFragment by lazy { SellerHomeFragment.newInstance() }
+    private var somListFragment: Fragment? = null
     private var currentFragment: Fragment? = null
-    private val fragmentManger: FragmentManager by lazy {
-        childFragmentManager
-    }
+    private val fragmentManger: FragmentManager by lazy { childFragmentManager }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -81,49 +81,58 @@ class ContainerFragment : Fragment() {
 
     private fun setupView() = view?.run {
         sahToolbar.setOnNotificationClickListener {
-            sharedViewModel?.setCurrentSelectedMenu(FragmentType.CHAT)
+            sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.CHAT))
         }
     }
 
     private fun setupDefaultPage() {
         currentFragment = homeFragment
         sharedViewModel?.setToolbarTitle(context?.getString(R.string.sah_home).orEmpty())
-        sharedViewModel?.setCurrentSelectedMenu(FragmentType.HOME)
+        sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.HOME))
     }
 
     private fun observeCurrentSelectedMenu() {
-        sharedViewModel?.currentSelectedMenu?.observe(this, Observer { type ->
-            when (type) {
+        sharedViewModel?.currentSelectedPage?.observe(this, Observer { page ->
+            when (page.type) {
                 FragmentType.HOME -> {
                     if (!hasAttachHomeFragment) {
                         addFragment(homeFragment)
                         hasAttachHomeFragment = true
                     }
-                    showFragment(homeFragment)
+                    showFragment(homeFragment, getString(R.string.sah_home))
                 }
                 FragmentType.PRODUCT -> {
                     if (!hasAttachHomeFragment) {
                         addFragment(homeFragment)
                         hasAttachHomeFragment = true
                     }
-                    showFragment(homeFragment)
+                    showFragment(homeFragment, getString(R.string.sah_product))
                 }
                 FragmentType.CHAT -> {
                     if (!hasAttachHomeFragment) {
                         addFragment(homeFragment)
                         hasAttachHomeFragment = true
                     }
-                    showFragment(homeFragment)
+                    showFragment(homeFragment, getString(R.string.sah_chat))
                 }
-                FragmentType.ORDER -> somListFragment?.let {
-                    if (!hasAttachSomFragment) {
-                        addFragment(it)
-                        hasAttachSomFragment = true
-                    }
-                    showFragment(it)
-                }
+                FragmentType.ORDER -> showSomPageFragment(page)
             }
         })
+    }
+
+    private fun showSomPageFragment(page: PageFragment) {
+        if (null == somListFragment || (page.tabPage.isNotBlank() && SomTabConst.STATUS_ALL_ORDER != page.tabPage)) {
+            somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
+            hasAttachSomFragment = false
+        }
+
+        somListFragment?.let {
+            if (!hasAttachSomFragment) {
+                addFragment(it)
+                hasAttachSomFragment = true
+            }
+            showFragment(it, getString(R.string.sah_sale))
+        }
     }
 
     fun showChatNotificationBadge(chat: NotificationChatUiModel) {
@@ -140,7 +149,7 @@ class ContainerFragment : Fragment() {
                 .commit()
     }
 
-    private fun showFragment(fragment: Fragment) {
+    private fun showFragment(fragment: Fragment, title: String) {
         currentFragment?.let {
             fragmentManger.beginTransaction()
                     .hide(it)
@@ -148,6 +157,7 @@ class ContainerFragment : Fragment() {
                     .commit()
             currentFragment = fragment
         }
+        view?.sahToolbar?.title = title
     }
 
     private fun observeToolbarTitle() {

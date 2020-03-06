@@ -249,4 +249,7 @@ object ApplinkConstInternalMarketplace {
 
     @JvmField
     val SELLER_HOME_SOM_NEW_ORDER = "$INTERNAL_MARKETPLACE/sellerhome-som-neworder"
+
+    @JvmField
+    val SELLER_HOME_SOM_READY_TO_SHIP = "$INTERNAL_MARKETPLACE/sellerhome-som-readytoship"
 }

@@ -26,6 +26,7 @@ import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSa
 import com.tokopedia.applink.find.DeepLinkMapperFind.getRegisteredFind
 import com.tokopedia.applink.salam.DeeplinkMapperSalam.getRegisteredNavigationSalamUmrahShop
 import com.tokopedia.applink.order.DeeplinkMapperOrder.getRegisteredNavigationOrder
+import com.tokopedia.applink.sellerhome.DeepLinkMapperSellerHome
 
 /**
  * Function to map the deeplink to applink (registered in manifest)
@@ -99,6 +100,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.Gamification.TAP_TAP_MANTAP, true) -> DeeplinkMapperGamification.getGamificationTapTapDeeplink(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_ORDER_DETAIL, true) -> getRegisteredNavigationOrder(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> getRegisteredNavigationFromSellerapp(deeplink)
+                    deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> getRegisteredNavigationFromSellerapp(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -255,12 +257,8 @@ object DeeplinkMapper {
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.CREATE_SHOP -> ApplinkConstInternalMarketplace.OPEN_SHOP
             ApplinkConst.PRODUCT_MANAGE -> ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
-            ApplinkConst.SELLER_NEW_ORDER -> {
-                if (GlobalConfig.isSellerApp())
-                    ApplinkConstInternalMarketplace.SELLER_HOME_SOM_NEW_ORDER
-                else
-                    ApplinkConstInternalOrder.NEW_ORDER
-            }
+            ApplinkConst.SELLER_NEW_ORDER -> DeepLinkMapperSellerHome.getSomNewOrderDeepLink()
+            ApplinkConst.SELLER_SHIPMENT -> DeepLinkMapperSellerHome.getSomReadyToShipDeepLink()
             else -> ""
         }
     }

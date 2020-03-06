@@ -1047,9 +1047,10 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @NotNull
     @Override
-    public Fragment getSellerOrderManageFragment() {
+    public Fragment getSomListFragment(String tabPage) {
         Bundle bundle = new Bundle();
-        bundle.putString(SomConsts.TAB_ACTIVE, SomConsts.STATUS_ALL_ORDER);
+        tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
+        bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         return SomListFragment.newInstance(bundle);
     }
 }

@@ -5,6 +5,7 @@ import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.di.module.SellerHomeUseCaseModule
 import com.tokopedia.sellerhome.di.module.SellerHomeViewModelModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
+import com.tokopedia.sellerhome.settings.view.OtherSettingFragment
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
@@ -30,4 +31,6 @@ interface SellerHomeComponent {
     fun inject(sellerHomeFragment: SellerHomeFragment)
 
     fun inject(containerFragment: ContainerFragment)
+
+    fun inject(otherSettingFragment: OtherSettingFragment)
 }
