@@ -24,6 +24,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.list.adapter.SpaceItemDecoration
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
@@ -294,7 +295,16 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
             })
         }
         umrah_search_bottom_action_view.visible()
-        renderList(data, data.size >= searchParam.limit)
+
+        if (isPassingEmpty && data.isNullOrEmpty()) {
+            umrah_search_bottom_action_view.gone()
+            val emptyModel = EmptyModel()
+            emptyModel.content = REQUEST_ALL_EMPTY
+            renderList(listOf(emptyModel as Visitable<UmrahSearchAdapterTypeFactory>))
+        } else {
+            renderList(data, data.size >= searchParam.limit)
+        }
+
         if (isPassingEmpty && data.isNotEmpty()) {
             showEmptyState()
         }
@@ -325,9 +335,11 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
     }
 
     override fun showEmpty() {
-        isPassingEmpty = true
-        umrahSearchViewModel.resetSearchParam()
-        loadInitialData()
+        if (!isPassingEmpty) {
+            isPassingEmpty = true
+            umrahSearchViewModel.resetSearchParam()
+            loadInitialData()
+        }
     }
 
     override fun onEmptyButtonClicked() {
@@ -394,6 +406,7 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
         var isFilter = false
         const val REQUEST_CODE_LOGIN = 400
         const val UMRAH_SEARCH_PAGE_PERFORMANCE = "sl_umrah_searchpage"
+        const val REQUEST_ALL_EMPTY = "REQUEST_ALL_EMPTY"
 
         fun getInstance(categorySlugName: String?, departureCityId: String?, departurePeriod: String?,
                         priceMin: Int?, priceMax: Int?, durationMin: Int,
@@ -436,8 +449,10 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
         if (adapter.data[0] is UmrahSearchProduct) {
             adapter.data.add(0, EmptyModel() as Visitable<UmrahSearchAdapterTypeFactory>)
             adapter.notifyItemChanged(0)
+            umrah_search_bottom_action_view.gone()
         }
     }
+
 
     override fun umrahSearchEmptyOnClickListener() {
         openFilterFragment()
