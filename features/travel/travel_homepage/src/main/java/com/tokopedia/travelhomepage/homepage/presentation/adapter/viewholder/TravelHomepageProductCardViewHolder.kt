@@ -4,8 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageProductCardModel
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.ProductGridCardItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.widget.TravelHomepageProductGridCardWidget
 import kotlinx.android.synthetic.main.layout_travel_homepage_product_card.view.*
 
 /**
@@ -16,11 +18,23 @@ class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBind
                                           private val onItemClickListener: OnItemClickListener) : AbstractViewHolder<TravelHomepageProductCardModel>(itemView) {
     override fun bind(element: TravelHomepageProductCardModel) {
         if (element.isLoaded) {
-            if (element.productItem.isNotEmpty()) {
+            if (element.isSuccess && element.productItem.isNotEmpty()) {
                 with(itemView) {
+                    productCardWidget.setShimmeringVisibility(false)
+                    productCardWidget.setLayoutVisibility(true)
+
                     productCardWidget.titleText = element.title
                     productCardWidget.subtitleText = element.subtitle
                     productCardWidget.hasSeeAllButton = element.clickSeeAllUrl.isEmpty()
+                    productCardWidget.listener = object: TravelHomepageProductGridCardWidget.ActionListener {
+                        override fun onItemClickListener(item: ProductGridCardItemModel) {
+                            onItemClickListener.onItemClick(item.appUrl)
+                        }
+
+                        override fun onClickSeeAllListener() {
+                            onItemClickListener.onItemClick(element.clickSeeAllUrl)
+                        }
+                    }
                     productCardWidget.buildView(element.productItem)
                 }
             } else {

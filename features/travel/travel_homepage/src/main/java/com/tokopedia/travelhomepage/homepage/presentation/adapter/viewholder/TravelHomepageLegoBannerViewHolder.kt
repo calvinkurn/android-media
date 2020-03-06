@@ -4,8 +4,10 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageLegoBannerModel
+import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.widget.TravelHomepageLegoBannerWidget
 import kotlinx.android.synthetic.main.layout_travel_homepage_lego_banner.view.*
 
 /**
@@ -18,8 +20,16 @@ class TravelHomepageLegoBannerViewHolder(itemView: View, private val onItemBindL
         if (element.isLoaded) {
             if (element.isSuccess && element.bannerItem.isNotEmpty()) {
                 with(itemView) {
+                    legoBannerWidget.setShimmeringVisibility(false)
+                    legoBannerWidget.setLayoutVisibility(true)
+
                     legoBannerWidget.titleText = element.title
                     legoBannerWidget.subtitleText = element.subtitle
+                    legoBannerWidget.listener = object: TravelHomepageLegoBannerWidget.ActionListener{
+                        override fun onItemClickListener(item: LegoBannerItemModel) {
+                            onItemClickListener.onItemClick(item.appUrl, item.webUrl)
+                        }
+                    }
                     legoBannerWidget.buildView(element.bannerItem)
                 }
             } else {

@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/layout_lvl2"
-            app:width_weight="0.4"
+            app:width_weight="0.9"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             />
 
@@ -58,7 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_12"
-            app:width_weight="0.4"
+            app:width_weight="0.9"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             />
 
@@ -66,7 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/layout_lvl3"
-            app:width_weight="0.2"
+            app:width_weight="0.4"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             android:layout_marginBottom="@dimen/dp_40"
             />
@@ -94,7 +94,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/layout_lvl2"
-            app:width_weight="0.4"
+            app:width_weight="0.9"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             />
 
@@ -102,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_12"
-            app:width_weight="0.4"
+            app:width_weight="0.9"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             />
 
@@ -111,7 +111,7 @@
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/layout_lvl3"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
-            app:width_weight="0.2" />
+            app:width_weight="0.4" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
@@ -119,7 +119,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_22"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
-            app:width_weight="0.25" />
+            app:width_weight="0.6" />
     </LinearLayout>
 
     <LinearLayout
@@ -144,7 +144,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/layout_lvl2"
-            app:width_weight="0.4"
+            app:width_weight="0.9"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             />
 
@@ -152,7 +152,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_12"
-            app:width_weight="0.4"
+            app:width_weight="0.9"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             />
 
@@ -161,7 +161,7 @@
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/layout_lvl3"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
-            app:width_weight="0.2" />
+            app:width_weight="0.4" />
 
         <com.elyeproj.loaderviewlibrary.LoaderTextView
             android:layout_width="match_parent"
@@ -169,7 +169,7 @@
             android:layout_marginTop="@dimen/dp_12"
             android:layout_marginBottom="@dimen/dp_22"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
-            app:width_weight="0.25" />
+            app:width_weight="0.6" />
     </LinearLayout>
 
     <LinearLayout
@@ -194,7 +194,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/layout_lvl2"
-            app:width_weight="0.4"
+            app:width_weight="0.9"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             />
 
@@ -202,7 +202,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/dp_12"
-            app:width_weight="0.4"
+            app:width_weight="0.9"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             />
 
@@ -210,19 +210,22 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_6"
             android:layout_marginTop="@dimen/layout_lvl3"
-            app:width_weight="0.2"
+            app:width_weight="0.4"
             app:corners="@integer/travel_subhomepage_shimmering_corner"
             android:layout_marginBottom="@dimen/dp_40"
             />
     </LinearLayout>
 
+    <com.elyeproj.loaderviewlibrary.LoaderImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_40"
+        app:layout_constraintTop_toBottomOf="@id/image_shimmering_5"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="?actionBarSize"
-        tools:layout_constraintGuide_percent="0.5" />
+        app:layout_constraintGuide_percent="0.5" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

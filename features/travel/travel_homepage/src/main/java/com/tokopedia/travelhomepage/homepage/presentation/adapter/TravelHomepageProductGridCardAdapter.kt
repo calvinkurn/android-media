@@ -9,13 +9,14 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.widgetmodel.ProductGridCardItemModel
+import com.tokopedia.travelhomepage.homepage.widget.TravelHomepageProductGridCardWidget
 import kotlinx.android.synthetic.main.item_travel_homepage_product_widget_card.view.*
 
 /**
  * @author by jessica on 2020-02-28
  */
 
-class TravelHomepageProductGridCardAdapter(var list: List<ProductGridCardItemModel>): RecyclerView.Adapter<TravelHomepageProductGridCardAdapter.ViewHolder>() {
+class TravelHomepageProductGridCardAdapter(var list: List<ProductGridCardItemModel>, var listener: TravelHomepageProductGridCardWidget.ActionListener?) : RecyclerView.Adapter<TravelHomepageProductGridCardAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(ViewHolder.LAYOUT, parent, false)
@@ -26,9 +27,10 @@ class TravelHomepageProductGridCardAdapter(var list: List<ProductGridCardItemMod
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(list[position])
+        holder.itemView.setOnClickListener { listener?.onItemClickListener(list[position]) }
     }
 
-    class ViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+    class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(item: ProductGridCardItemModel) {
             with(itemView) {

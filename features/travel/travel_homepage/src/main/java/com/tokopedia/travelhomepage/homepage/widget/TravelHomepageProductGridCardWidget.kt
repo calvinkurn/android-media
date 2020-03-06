@@ -44,8 +44,8 @@ class TravelHomepageProductGridCardWidget @JvmOverloads constructor(context: Con
         if (!::adapter.isInitialized) {
             val listSize = productList.size
             if (listSize > 2 && listSize % 2 != 0) {
-                adapter = TravelHomepageProductGridCardAdapter(productList.subList(0, listSize - (listSize % 2)))
-            } else adapter = TravelHomepageProductGridCardAdapter(productList)
+                adapter = TravelHomepageProductGridCardAdapter(productList.subList(0, listSize - (listSize % 2)), listener)
+            } else adapter = TravelHomepageProductGridCardAdapter(productList, listener)
 
             travel_homepage_product_rv.layoutManager = GridLayoutManager(context, 2)
         }
@@ -66,6 +66,7 @@ class TravelHomepageProductGridCardWidget @JvmOverloads constructor(context: Con
     }
 
     interface ActionListener {
+        fun onItemClickListener(item: ProductGridCardItemModel)
         fun onClickSeeAllListener()
     }
 }

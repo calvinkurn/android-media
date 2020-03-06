@@ -23,6 +23,7 @@ class TravelHomepageLegoBannerWidget @JvmOverloads constructor(context: Context,
     var titleText: String = ""
     var subtitleText: String = ""
     lateinit var adapter: TravelHomepageLegoBannerAdapter
+    var listener: ActionListener? = null
 
     init {
         View.inflate(context, R.layout.layout_travel_homepage_lego_banner_widget, this)
@@ -40,9 +41,9 @@ class TravelHomepageLegoBannerWidget @JvmOverloads constructor(context: Context,
             val listSize = bannerList.size
 
             if (listSize > 3 && listSize % 3 != 0) {
-                adapter = TravelHomepageLegoBannerAdapter(bannerList.subList(0, listSize - (listSize % 3)))
+                adapter = TravelHomepageLegoBannerAdapter(bannerList.subList(0, listSize - (listSize % 3)), listener)
             } else
-                adapter = TravelHomepageLegoBannerAdapter(bannerList)
+                adapter = TravelHomepageLegoBannerAdapter(bannerList, listener)
 
             travel_homepage_lego_banner_rv.layoutManager = GridLayoutManager(context, 3)
         }
@@ -55,5 +56,9 @@ class TravelHomepageLegoBannerWidget @JvmOverloads constructor(context: Context,
 
     fun setLayoutVisibility(isShow: Boolean) {
         travel_homepage_lego_banner_layout.visibility = if (isShow) View.VISIBLE else View.GONE
+    }
+
+    interface ActionListener {
+        fun onItemClickListener(item: LegoBannerItemModel)
     }
 }
