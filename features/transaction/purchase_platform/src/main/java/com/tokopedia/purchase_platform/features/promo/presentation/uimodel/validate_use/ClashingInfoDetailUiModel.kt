@@ -1,8 +1,7 @@
-package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.varidate_use
+package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoClashOptionUiModel
 
 data class ClashingInfoDetailUiModel(
 		var isClashedPromos: Boolean? = false,
@@ -12,7 +11,7 @@ data class ClashingInfoDetailUiModel(
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-			parcel.createTypedArrayList(PromoClashOptionUiModel.PromoClashOptionUiModel),
+			parcel.createTypedArrayList(PromoClashOptionUiModel),
 			parcel.readString(),
 			parcel.readString())
 

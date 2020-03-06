@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 data class ValidateUsePromoRevamp(
 
 	@field:SerializedName("promo")
-	val promo: Promo? = null,
+	val promo: PromoValidateUseResponse? = null,
 
 	@field:SerializedName("code")
 	val code: String? = null,

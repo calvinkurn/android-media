@@ -1,7 +1,4 @@
-package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.varidate_use
-
-import android.os.Parcel
-import android.os.Parcelable
+package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use
 
 data class MessageUiModel(
 	var color: String? = "",

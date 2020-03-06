@@ -1,6 +1,4 @@
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ErrorDetailUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.varidate_use.MessageInfoUiModel
-
+package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use
 import android.os.Parcelable
 import android.os.Parcel
 

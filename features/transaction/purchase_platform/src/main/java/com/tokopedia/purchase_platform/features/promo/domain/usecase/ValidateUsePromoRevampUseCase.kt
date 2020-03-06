@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.features.promo.domain.usecase
 
-import AdditionalInfoUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

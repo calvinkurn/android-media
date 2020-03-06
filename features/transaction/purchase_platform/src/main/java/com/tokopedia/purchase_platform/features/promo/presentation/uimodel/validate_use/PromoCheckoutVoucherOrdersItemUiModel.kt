@@ -1,5 +1,4 @@
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.BenefitDetailsItemUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.varidate_use.MessageUiModel
+package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use
 
 data class PromoCheckoutVoucherOrdersItemUiModel(
         var code: String? = "",

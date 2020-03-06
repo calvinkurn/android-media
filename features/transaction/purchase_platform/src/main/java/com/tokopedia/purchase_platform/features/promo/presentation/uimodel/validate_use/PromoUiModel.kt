@@ -1,9 +1,4 @@
-package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.varidate_use
-
-import AdditionalInfoUiModel
-import BenefitSummaryInfoUiModel
-import PromoCheckoutVoucherOrdersItemUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.*
+package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use
 
 data class PromoUiModel(
         var codes: List<String?>? = listOf(),

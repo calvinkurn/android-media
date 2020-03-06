@@ -36,6 +36,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.promocheckout.common.view.model.PromoCheckoutData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
@@ -233,10 +234,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     EgoldAttributeModel savedEgoldAttributeModel;
     RecipientAddressModel savedRecipientAddressModel;
     PromoStackingData savedPromoStackingData;
-    PromoCheckoutData savedPromoCheckoutData;
+    // PromoCheckoutData savedPromoCheckoutData;
     ShipmentDonationModel savedShipmentDonationModel;
     BenefitSummaryInfoUiModel benefitSummaryInfoUiModel;
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
+    LastApplyData savedLastApplyData;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
     private boolean hasInsurance = false;
@@ -296,7 +298,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 savedShipmentDonationModel = saveInstanceCacheManager.get(ShipmentDonationModel.class.getSimpleName(), ShipmentDonationModel.class);
                 savedShipmentButtonPaymentModel = saveInstanceCacheManager.get(ShipmentButtonPaymentModel.class.getSimpleName(), ShipmentButtonPaymentModel.class);
                 savedPromoStackingData = saveInstanceCacheManager.get(PromoStackingData.class.getSimpleName(), PromoStackingData.class);
-                savedPromoCheckoutData = saveInstanceCacheManager.get(PromoCheckoutData.class.getSimpleName(), PromoCheckoutData.class);
+                // savedPromoCheckoutData = saveInstanceCacheManager.get(PromoCheckoutData.class.getSimpleName(), PromoCheckoutData.class);
+                savedLastApplyData = saveInstanceCacheManager.get(LastApplyData.class.getSimpleName(), LastApplyData.class);
             }
             ArrayList<ShipmentSelectionStateData> shipmentSelectionStateData =
                     saveInstanceCacheManager.get(EXTRA_STATE_SHIPMENT_SELECTION,
@@ -368,8 +371,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentPresenter.setEgoldAttributeModel(savedEgoldAttributeModel);
             shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
             shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
-            shipmentAdapter.addPromoCheckoutData(savedPromoCheckoutData);
+            // shipmentAdapter.addPromoCheckoutData(savedPromoCheckoutData);
             shipmentAdapter.addPromoStackingVoucherData(savedPromoStackingData);
+            shipmentPresenter.setLastApplyData(savedLastApplyData);
             renderCheckoutPage(true, false, isOneClickShipment());
             swipeToRefresh.setEnabled(false);
         }
@@ -1018,10 +1022,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void setPromoRevampData() {
+    public void setLastApplyData(LastApplyData lastApplyData) {
         PromoCheckoutData.Builder builder = new PromoCheckoutData.Builder();
-        builder.promoLabel(getString(R.string.promo_funnel_label));
-        builder.promoUsageInfo(getString(R.string.promo_benefit_info));
+
+        String label = getString(R.string.promo_funnel_label);
+        if (!lastApplyData.getAdditionalInfoMsg().isEmpty()) label = lastApplyData.getAdditionalInfoMsg();
+
+        String usageInfo = getString(R.string.promo_benefit_info);
+        if (!lastApplyData.getAdditionalInfoDetailMsg().isEmpty()) usageInfo = lastApplyData.getAdditionalInfoDetailMsg();
+
+        builder.promoLabel(label);
+        builder.promoUsageInfo(usageInfo);
         shipmentAdapter.addPromoCheckoutData(builder.build());
         shipmentAdapter.notifyDataSetChanged();
     }

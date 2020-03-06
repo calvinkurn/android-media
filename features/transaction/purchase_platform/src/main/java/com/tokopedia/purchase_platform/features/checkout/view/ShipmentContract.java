@@ -29,6 +29,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
@@ -134,7 +135,7 @@ public interface ShipmentContract {
 
         void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
-        void setPromoRevampData();
+        void setLastApplyData(LastApplyData lastApplyData);
 
         void showToastFailedTickerPromo(String text);
 
@@ -381,6 +382,10 @@ public interface ShipmentContract {
         void getInsuranceTechCartOnCheckout();
 
         ShipmentDataConverter getShipmentDataConverter();
+
+        void setLastApplyData(LastApplyData lastApplyData);
+
+        LastApplyData getLastApplyData();
     }
 
 }

@@ -22,7 +22,7 @@ data class BenefitDetailsItem(
 	val discountAmount: Int? = null,
 
 	@field:SerializedName("cashback_details")
-	val cashbackDetails: List<Any?>? = null,
+	val cashbackDetails: List<CashbackDetailsItem?>? = null,
 
 	@field:SerializedName("discount_details")
 	val discountDetails: List<DiscountDetailsItem?>? = null,

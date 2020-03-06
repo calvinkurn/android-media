@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.mapper
 
-import AdditionalInfoUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.AdditionalInfo
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ErrorDetailUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.varidate_use.MessageInfoUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.MessageInfoUiModel
 
 /**
  * Created by fwidjaja on 2020-03-05.

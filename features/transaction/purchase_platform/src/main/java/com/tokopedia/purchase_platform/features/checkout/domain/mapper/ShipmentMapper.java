@@ -13,11 +13,13 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.mode
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
 import com.tokopedia.purchase_platform.features.cart.data.model.response.Ticker;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.egold.EgoldTieringData;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.AdditionalInfo;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Addresses;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
@@ -265,6 +267,15 @@ public class ShipmentMapper implements IShipmentMapper {
             cod.setMessageLink(shipmentAddressFormDataResponse.getMessage().getMessageLink());
             cod.setMessageLogo(shipmentAddressFormDataResponse.getMessage().getMessageLogo());
             dataResult.setCod(cod);
+        }
+
+        if (shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData().getAdditionalInfo() != null) {
+            AdditionalInfo responseAdditionalInfo = shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData().getAdditionalInfo();
+            LastApplyData lastApplyData = new LastApplyData();
+            lastApplyData.setAdditionalInfoMsg(responseAdditionalInfo.getMessageInfo().getMessage());
+            lastApplyData.setAdditionalInfoDetailMsg(responseAdditionalInfo.getMessageInfo().getDetail());
+            lastApplyData.setErrorDetailMsg(responseAdditionalInfo.getErrorDetail().getMessage());
+            dataResult.setLastApplyData(lastApplyData);
         }
 
         if (!UtilsKt.isNullOrEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {

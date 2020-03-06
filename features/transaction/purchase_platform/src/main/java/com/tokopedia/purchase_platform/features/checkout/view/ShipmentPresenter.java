@@ -71,6 +71,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartGqlResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase;
@@ -190,6 +191,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private String PARAM_LOGISTIC = "logistic";
     private String statusOK = "OK";
     private RatesResponseStateConverter stateConverter;
+    private LastApplyData lastApplyData;
 
     @Inject
     public ShipmentPresenter(CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
@@ -622,7 +624,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         getView().setPromoStackingData(cartShipmentAddressFormData);
 
-        getView().setPromoRevampData();
+        getView().setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
 
         setShipmentCartItemModelList(shipmentDataConverter.getShipmentItems(
                 cartShipmentAddressFormData, newAddress != null && newAddress.getLocationDataModel() != null)
@@ -1961,6 +1963,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ShipmentDataConverter getShipmentDataConverter() {
         return shipmentDataConverter;
+    }
+
+    @Override
+    public void setLastApplyData(LastApplyData lastApplyData) {
+        this.lastApplyData = lastApplyData;
+    }
+
+    @Override
+    public LastApplyData getLastApplyData() {
+        return lastApplyData;
     }
 
     @Override

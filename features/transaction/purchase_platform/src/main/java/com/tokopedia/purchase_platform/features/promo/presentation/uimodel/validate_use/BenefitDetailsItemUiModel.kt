@@ -1,10 +1,5 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use
 
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.varidate_use.BenefitProductDetailsItemUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.varidate_use.DiscountDetailsItemUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.varidate_use.PromoTypeUiModel
-
-
 data class BenefitDetailsItemUiModel(
 		var code: String? = "",
 		var uniqueId: String? = "",
