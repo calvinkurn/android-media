@@ -32,6 +32,7 @@ import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_play.*
 import javax.inject.Inject
 
 /**
@@ -45,6 +46,7 @@ class PlayFragment : BaseDaggerFragment() {
 
         private const val VIDEO_FRAGMENT_TAG = "FRAGMENT_VIDEO"
         private const val INTERACTION_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
+        private const val BOTTOM_SHEET_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
         private const val ERROR_FRAGMENT_TAG = "FRAGMENT_ERROR"
 
         private const val ANIMATION_DURATION = 300L
@@ -73,6 +75,7 @@ class PlayFragment : BaseDaggerFragment() {
     private lateinit var ivClose: ImageView
     private lateinit var flVideo: FrameLayout
     private lateinit var flInteraction: FrameLayout
+    private lateinit var flBottomSheet: FrameLayout
     private lateinit var flGlobalError: FrameLayout
 
     private val keyboardWatcher = KeyboardWatcher()
@@ -118,6 +121,12 @@ class PlayFragment : BaseDaggerFragment() {
                     .commit()
         }
 
+        if (childFragmentManager.findFragmentByTag(BOTTOM_SHEET_FRAGMENT_TAG) == null) {
+            childFragmentManager.beginTransaction()
+                    .replace(fl_bottom_sheet.id, PlayBottomSheetFragment.newInstance(), BOTTOM_SHEET_FRAGMENT_TAG)
+                    .commit()
+        }
+
         if (childFragmentManager.findFragmentByTag(ERROR_FRAGMENT_TAG) == null) {
             childFragmentManager.beginTransaction()
                     .replace(flGlobalError.id, PlayErrorFragment.newInstance(channelId), ERROR_FRAGMENT_TAG)
@@ -158,6 +167,7 @@ class PlayFragment : BaseDaggerFragment() {
             ivClose = findViewById(R.id.iv_close)
             flVideo = findViewById(R.id.fl_video)
             flInteraction = findViewById(R.id.fl_interaction)
+            flBottomSheet = findViewById(R.id.fl_bottom_sheet)
             flGlobalError = findViewById(R.id.fl_global_error)
         }
     }
@@ -167,7 +177,7 @@ class PlayFragment : BaseDaggerFragment() {
             hideKeyboard()
         }
         flVideo.setOnClickListener {
-            hideKeyboard()
+            hideAllInsets()
         }
     }
 
@@ -280,6 +290,8 @@ class PlayFragment : BaseDaggerFragment() {
         videoScaleAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
+
+        flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     fun onBottomInsetsViewHidden() {
@@ -293,6 +305,8 @@ class PlayFragment : BaseDaggerFragment() {
         videoScaleAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
+
+        flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
     }
 
     private fun hideKeyboard() {
@@ -315,18 +329,21 @@ class PlayFragment : BaseDaggerFragment() {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.onKeyboardShown(estimatedKeyboardHeight)
                 ivClose.visible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
 
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
         })
     }
 
     private fun unregisterKeyboardListener(view: View) {
         keyboardWatcher.unlisten(view)
+    }
+
+    private fun hideAllInsets() {
+        hideKeyboard()
+        playViewModel.hideAllInsets()
     }
 }

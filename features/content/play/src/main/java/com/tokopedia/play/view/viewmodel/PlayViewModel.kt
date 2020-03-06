@@ -290,6 +290,10 @@ class PlayViewModel @Inject constructor(
 
         _observableBottomInsetsState.value = insetsMap
     }
+
+    fun hideAllInsets() {
+        _observableBottomInsetsState.value = getDefaultBottomInsetsMapState()
+    }
     //end region
 
     fun getChannelInfo(channelId: String) {
@@ -524,9 +528,7 @@ class PlayViewModel @Inject constructor(
 
     private fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
             uriString = videoStream.config.streamUrl,
-            channelType = if (videoStream.isLive
-                    && videoStream.type.equals(PlayChannelType.Live.value, true))
-                PlayChannelType.Live else PlayChannelType.VOD,
+            channelType = PlayChannelType.Live,
             isActive = isActive
     )
 
@@ -585,15 +587,17 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun getLatestBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
-        val currentValue = _observableBottomInsetsState.value ?: return mapOf(
-                BottomInsetsType.Keyboard to BottomInsetsState.Hidden(false),
-                BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
-                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
-        )
+        val currentValue = _observableBottomInsetsState.value ?: return getDefaultBottomInsetsMapState()
         currentValue.values.forEach { it.isPreviousStateSame = true }
 
         return currentValue
     }
+
+    private fun getDefaultBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> = mapOf(
+            BottomInsetsType.Keyboard to BottomInsetsState.Hidden(false),
+            BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
+            BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
+    )
 
     companion object {
         private const val MAX_RETRY_CHANNEL_INFO = 3
