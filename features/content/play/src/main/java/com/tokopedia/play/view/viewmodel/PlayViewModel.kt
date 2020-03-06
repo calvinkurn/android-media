@@ -558,7 +558,7 @@ class PlayViewModel @Inject constructor(
                         title = "Barang & Promo Pilihan",
                         voucherList = List(5) { voucherIndex ->
                             MerchantVoucherUiModel(
-                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.DeliveryFee,
+                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
                                     title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
                                     description = "min. pembelian ${(voucherIndex + 1)}00rb"
                             )
