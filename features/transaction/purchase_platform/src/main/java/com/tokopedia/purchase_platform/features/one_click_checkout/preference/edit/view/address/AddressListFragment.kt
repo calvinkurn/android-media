@@ -12,21 +12,29 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.design.text.SearchInputView
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
+import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.model.AddressListModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_choose_address.*
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, SearchInputView.ResetListener {
+class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
 
     override fun onSearchSubmitted(text: String) {
         performSearch(text)
@@ -34,10 +42,6 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
 
     override fun onSearchTextChanged(text: String?) {
         openSoftKeyboard()
-    }
-
-    override fun onSearchReset() {
-        viewModel.getAddress()
     }
 
     @Inject
@@ -72,15 +76,30 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
     private fun initViewModel(){
         viewModel.addressList.observe(this, Observer {
             when(it){
-                is AddressListModel -> {
-                    if(it.listAddress.isEmpty()){
-                        empty_state_order_list.visibility = View.VISIBLE
-                        address_list_rv.visibility = View.GONE
+                is OccState.Success -> {
+                    swipe_refresh_layout.isRefreshing = false
+                    global_error.gone()
+                    content_layout.visible()
+                    if(it.data.listAddress.isEmpty()){
+                        text_search_error.visible()
+                        content_layout.gone()
                     } else {
-                        renderData(it.listAddress)
+                        text_search_error.gone()
+                        address_list_rv.visible()
+                        renderData(it.data.listAddress)
                     }
-
                 }
+
+                is OccState.Fail -> {
+                    if(!it.isConsumed) {
+                        swipe_refresh_layout.isRefreshing = false
+                        if(it.throwable != null) {
+                            handleError(it.throwable)
+                        }
+                    }
+                }
+
+                else -> swipe_refresh_layout.isRefreshing = true
 
             }
         })
@@ -96,54 +115,38 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-        viewModel.getAddress()
+        performSearch("")
+        initView()
+        address_list_rv.adapter = adapter
+        address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        initSearch()
+        initSearchView()
 
+    }
+
+    private fun initView(){
         if(empty_state_order_list.visibility == View.GONE){
             btn_save_address.text = getString(R.string.label_button_input_address)
             btn_save_address.setOnClickListener {
                 goToNextStep()
             }
         } else {
-            address_list_layout.visibility = View.GONE
             empty_state_order_list.visibility = View.VISIBLE
             btn_save_address.text = getString(R.string.label_button_input_address_empty)
             btn_save_address.setOnClickListener {
                 goToPickLocation()
             }
         }
-
-        address_list_rv.adapter = adapter
-        address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
-        loadMore()
-        initSearchView()
-        onSearchReset()
-
     }
 
+    private fun initSearch(){
+        search_input_view.searchText = viewModel.savedQuery
+    }
+
+   /*OnActivityResult utk flow dari ana*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-    }
-
-    private fun loadMore(){
-        address_list_rv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                val adapter = recyclerView.adapter
-                val totalItemCount = adapter!!.itemCount
-                val lastVisibleItemPosition = (recyclerView.layoutManager as LinearLayoutManager)
-                        .findLastVisibleItemPosition()
-
-                if (maxItemPosition < lastVisibleItemPosition) {
-                    maxItemPosition = lastVisibleItemPosition
-                }
-
-                if (maxItemPosition + 1 == totalItemCount && !isLoading && dy > 0) {
-                    viewModel.loadMore()
-                }
-            }
-        })
+       goToNextStep()
 
     }
 
@@ -152,17 +155,13 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
         searchAddress.searchTextView.setOnTouchListener(onSearchViewTouchListener())
 
         searchAddress.setListener(this)
-        searchAddress.setResetListener(this)
         searchAddress.setSearchHint(getString(R.string.label_hint_search_address))
+
     }
 
 
     private fun performSearch(query: String){
-        if(query.isNotEmpty()){
-            viewModel.searchAddress(query)
-        } else {
-            viewModel.getAddress()
-        }
+        viewModel.searchAddress(query)
     }
 
     private fun openSoftKeyboard(){
@@ -209,8 +208,51 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Sear
     private fun goToNextStep() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
+            parent.addressId = adapter.addresspositionId
+            Log.d("address_fragment", parent.addressId.toString())
             parent.addFragment(ShippingDurationFragment())
         }
+    }
+
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                view?.let {
+                    showGlobalError(GlobalError.NO_CONNECTION)
+                }
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                            Toaster.make(it, "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            }
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                    Toaster.make(it, throwable.message
+                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                }
+            }
+        }
+        viewModel.consumeSearchAddressFail()
+    }
+
+    private fun showGlobalError(type: Int){
+        global_error.setType(type)
+        global_error.setActionClickListener {
+            viewModel.searchAddress("")
+        }
+        content_layout.gone()
+        global_error.visible()
     }
 
 }
