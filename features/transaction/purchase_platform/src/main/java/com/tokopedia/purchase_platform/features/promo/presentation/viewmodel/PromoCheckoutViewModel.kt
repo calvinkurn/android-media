@@ -489,7 +489,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         val promoRecommendation = promoRecommendationUiModel.value
         promoRecommendation?.let {
             it.uiState.isButtonSelectEnabled = false
-            it.uiState.hasAppliedRecommendation = true
 
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
@@ -509,7 +508,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         val promoRecommendation = promoRecommendationUiModel.value
         promoRecommendation?.let {
             it.uiState.isButtonSelectEnabled = true
-            it.uiState.hasAppliedRecommendation = false
             _promoRecommendationUiModel.value = it
         }
     }

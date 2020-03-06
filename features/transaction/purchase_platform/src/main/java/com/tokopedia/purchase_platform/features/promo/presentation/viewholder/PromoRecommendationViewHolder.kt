@@ -21,8 +21,11 @@ class PromoRecommendationViewHolder(private val view: View,
 
     override fun bind(element: PromoRecommendationUiModel) {
         if (element.uiState.isButtonSelectEnabled) {
+            itemView.lottie_button_apply_promo_recommendation.progress = 0f
+            itemView.lottie_button_apply_promo_recommendation.show()
             itemView.button_apply_promo_recommendation.setOnClickListener {
                 itemView.button_apply_promo_recommendation.isLoading = true
+                playAnimation()
                 listener.onClickApplyRecommendedPromo()
             }
             itemView.image_check_promo_recommendation.gone()
@@ -31,9 +34,6 @@ class PromoRecommendationViewHolder(private val view: View,
             itemView.label_promo_recommendation_title.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title, element.uiData.promoCount))
         } else {
             itemView.button_apply_promo_recommendation.isLoading = false
-            if (!element.uiState.hasAppliedRecommendation) {
-                playAnimation()
-            }
             itemView.image_check_promo_recommendation.show()
             itemView.button_apply_promo_recommendation.isEnabled = false
             itemView.button_apply_promo_recommendation.text = "Dipilih"
@@ -48,10 +48,12 @@ class PromoRecommendationViewHolder(private val view: View,
             override fun onAnimationRepeat(animator: Animator?) {}
 
             override fun onAnimationEnd(animator: Animator?) {
-
+                itemView.lottie_button_apply_promo_recommendation.gone()
             }
 
-            override fun onAnimationCancel(animator: Animator?) {}
+            override fun onAnimationCancel(animator: Animator?) {
+                itemView.lottie_button_apply_promo_recommendation.gone()
+            }
 
             override fun onAnimationStart(animator: Animator?) {}
         })
