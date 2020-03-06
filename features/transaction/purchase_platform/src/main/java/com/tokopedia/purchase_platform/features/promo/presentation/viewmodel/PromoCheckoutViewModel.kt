@@ -125,13 +125,21 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
                     },
                     uiState = FragmentUiModel.UiState().apply {
-                        hasPresellectedPromo = promoListUiModel.value?.isNotEmpty() == true
-                        hasAnyPromoSelected = promoListUiModel.value?.isNotEmpty() == true
+                        var tmpHasPreSelectedPromo = false
+                        promoListUiModel.value?.forEach {
+                            if (it is PromoListItemUiModel && it.uiState.isSellected) {
+                                tmpHasPreSelectedPromo = true
+                                return@forEach
+                            }
+                        }
+                        hasPreselectedPromo = tmpHasPreSelectedPromo
+                        hasAnyPromoSelected = tmpHasPreSelectedPromo
                         hasFailedToLoad = false
                     }
             )
             _fragmentUiModel.value = fragmentUiModel
             calculateAndRenderTotalBenefit()
+
         }) {
             // Init fragment ui model
             val fragmentUiModel = FragmentUiModel(
@@ -139,7 +147,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
                     },
                     uiState = FragmentUiModel.UiState().apply {
-                        hasPresellectedPromo = false
+                        hasPreselectedPromo = false
                         hasAnyPromoSelected = false
                         hasFailedToLoad = true
                     }
@@ -430,8 +438,13 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
         val fragmentUiModel = fragmentUiModel.value
         fragmentUiModel?.let {
-            it.uiData.totalBenefit = totalBenefit
-            it.uiData.usedPromoCount = usedPromoCount
+            if (usedPromoCount != 0) {
+                it.uiData.totalBenefit = totalBenefit
+                it.uiData.usedPromoCount = usedPromoCount
+                it.uiState.hasAnyPromoSelected = true
+            } else {
+                it.uiState.hasAnyPromoSelected = false
+            }
 
             _fragmentUiModel.value = it
         }

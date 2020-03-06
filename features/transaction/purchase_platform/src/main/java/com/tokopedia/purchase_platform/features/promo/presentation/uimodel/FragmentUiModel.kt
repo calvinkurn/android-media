@@ -14,7 +14,7 @@ data class FragmentUiModel(
     )
 
     data class UiState(
-            var hasPresellectedPromo: Boolean = false,
+            var hasPreselectedPromo: Boolean = false,
             var hasAnyPromoSelected: Boolean = false,
             var hasFailedToLoad: Boolean = false
     )

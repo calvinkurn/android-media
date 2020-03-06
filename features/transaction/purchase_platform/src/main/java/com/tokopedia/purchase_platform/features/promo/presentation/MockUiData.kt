@@ -472,7 +472,7 @@ val MOCK_RESPONSE = """
                     ],
                     "benefit_amount": 60000,
                     "is_recommended": false,
-                    "is_selected": false,
+                    "is_selected": true,
                     "is_attempted": false,
                     "radio_check_state": "enabled",
                     "clashing_infos": [

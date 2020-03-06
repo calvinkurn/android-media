@@ -122,7 +122,7 @@
         android:background="@color/white"
         android:orientation="horizontal"
         android:padding="@dimen/dp_16"
-        android:visibility="visible"
+        android:visibility="gone"
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography

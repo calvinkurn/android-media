@@ -284,7 +284,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             }
         } else {
             toolbar?.disableResetButton()
-            if (fragmentUiModel.uiState.hasPresellectedPromo) {
+            if (fragmentUiModel.uiState.hasPreselectedPromo) {
                 label_total_promo_info.gone()
                 label_total_promo_amount.gone()
                 button_apply_promo.gone()
