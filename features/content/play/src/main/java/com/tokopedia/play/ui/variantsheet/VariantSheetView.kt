@@ -14,7 +14,9 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.ProductSheetView
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
+import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -22,7 +24,7 @@ import com.tokopedia.unifycomponents.UnifyButton
  */
 class VariantSheetView(
         container: ViewGroup,
-        listener: Listener
+        private val listener: Listener
 ) : UIView(container) {
 
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_variant_sheet, container, true)
@@ -72,11 +74,22 @@ class VariantSheetView(
         show()
     }
 
-    internal fun setProductSheet(model: ProductSheetUiModel) {
+    internal fun setVariantSheet(model: VariantSheetUiModel) {
         tvSheetTitle.text = model.title
+        btnAction.text = view.context.getString(
+                if (model.action == ProductAction.Buy) R.string.play_buy
+                else R.string.play_add_to_card
+        )
+
+        btnAction.setOnClickListener {
+            if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.productId)
+            else listener.onAddToCartClicked(this, model.productId)
+        }
     }
 
     interface Listener {
         fun onCloseButtonClicked(view: VariantSheetView)
+        fun onAddToCartClicked(view: VariantSheetView, productId: String)
+        fun onBuyClicked(view: VariantSheetView, productId: String)
     }
 }

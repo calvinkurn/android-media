@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHeight
@@ -69,6 +70,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
@@ -192,6 +194,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeVOD()
         observeVideoProperty()
         observeProductSheetContent()
+        observeVariantSheetContent()
         observeTitleChannel()
         observeQuickReply()
         observeVideoStream()
@@ -278,6 +281,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                         .emit(
                                 ScreenStateEvent::class.java,
                                 ScreenStateEvent.SetProductSheet(it)
+                        )
+            }
+        })
+    }
+
+    private fun observeVariantSheetContent() {
+        playViewModel.observableVariantSheetContent.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.SetVariantSheet(it)
                         )
             }
         })
@@ -656,6 +671,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             VariantSheetInteractionEvent.OnCloseVariantSheet -> closeVariantSheet()
+                            is VariantSheetInteractionEvent.OnBuyProduct -> shouldBuyProduct(it.productId)
+                            is VariantSheetInteractionEvent.OnAddProductToCart -> shouldAtcProduct(it.productId)
                         }
                     }
         }
@@ -1093,6 +1110,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun showSystemUI() {
         PlayFullScreenHelper.showSystemUi(requireActivity())
+    }
+
+    private fun shouldBuyProduct(productId: String) {
+        Toaster.make(requireView(), "Product bought", Snackbar.LENGTH_SHORT)
+        closeVariantSheet()
+    }
+
+    private fun shouldAtcProduct(productId: String) {
+        Toaster.make(requireView(), "Product added to cart", Snackbar.LENGTH_SHORT)
+        closeVariantSheet()
     }
 
     private fun sendEventBanned(eventUiModel: EventUiModel) {

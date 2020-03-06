@@ -1,10 +1,8 @@
 package com.tokopedia.play.ui.variantsheet
 
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
-import com.tokopedia.play.ui.productsheet.ProductSheetView
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
@@ -33,8 +31,8 @@ class VariantSheetComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.setStateHidden()
-                            is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet.Variant]?.let(::handleShowHideVariantSheet) }
-                            is ScreenStateEvent.SetProductSheet -> uiView.setProductSheet(it.productSheetModel)
+                            is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet]?.let(::handleShowHideVariantSheet) }
+                            is ScreenStateEvent.SetVariantSheet -> uiView.setVariantSheet(it.variantSheetModel)
                         }
                     }
         }
@@ -51,6 +49,18 @@ class VariantSheetComponent(
     override fun onCloseButtonClicked(view: VariantSheetView) {
         launch {
             bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnCloseVariantSheet)
+        }
+    }
+
+    override fun onAddToCartClicked(view: VariantSheetView, productId: String) {
+        launch {
+            bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnAddProductToCart(productId))
+        }
+    }
+
+    override fun onBuyClicked(view: VariantSheetView, productId: String) {
+        launch {
+            bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnBuyProduct(productId))
         }
     }
 

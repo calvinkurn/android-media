@@ -8,4 +8,6 @@ import com.tokopedia.play.component.ComponentEvent
 sealed class VariantSheetInteractionEvent : ComponentEvent {
 
     object OnCloseVariantSheet : VariantSheetInteractionEvent()
+    data class OnBuyProduct(val productId: String) : VariantSheetInteractionEvent()
+    data class OnAddProductToCart(val productId: String) : VariantSheetInteractionEvent()
 }

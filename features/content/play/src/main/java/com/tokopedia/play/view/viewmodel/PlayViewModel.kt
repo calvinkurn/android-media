@@ -72,6 +72,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
     val observableProductSheetContent: LiveData<ProductSheetUiModel>
         get() = _observableProductSheetContent
+    val observableVariantSheetContent: LiveData<VariantSheetUiModel>
+        get() = _observableVariantSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
 
@@ -89,6 +91,7 @@ class PlayViewModel @Inject constructor(
     private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableProductSheetContent = MutableLiveData<ProductSheetUiModel>()
+    private val _observableVariantSheetContent = MutableLiveData<VariantSheetUiModel>()
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
@@ -195,6 +198,7 @@ class PlayViewModel @Inject constructor(
 
 //        startMockFreeze()
         setMockProductSheetContent()
+//        setMockVariantSheetContent()
         setMockProductPinned()
     }
 
@@ -219,11 +223,9 @@ class PlayViewModel @Inject constructor(
 
         insetsMap[BottomInsetsType.Keyboard] =
                 if (isLive) BottomInsetsState.Shown(
-                        type = BottomInsetsType.Keyboard,
                         estimatedInsetsHeight = estimatedKeyboardHeight,
                         isPreviousStateSame = insetsMap[BottomInsetsType.Keyboard]?.isHidden == false
                 ) else BottomInsetsState.Hidden(
-                        type = BottomInsetsType.Keyboard,
                         isPreviousStateSame = insetsMap[BottomInsetsType.Keyboard]?.isShown == false
                 )
 
@@ -235,7 +237,6 @@ class PlayViewModel @Inject constructor(
 
         insetsMap[BottomInsetsType.Keyboard] =
                 BottomInsetsState.Hidden(
-                        type = BottomInsetsType.Keyboard,
                         isPreviousStateSame = insetsMap[BottomInsetsType.Keyboard]?.isShown == false
                 )
 
@@ -247,7 +248,6 @@ class PlayViewModel @Inject constructor(
 
         insetsMap[BottomInsetsType.ProductSheet] =
                 BottomInsetsState.Shown(
-                        type = BottomInsetsType.ProductSheet,
                         estimatedInsetsHeight = estimatedProductSheetHeight,
                         isPreviousStateSame = insetsMap[BottomInsetsType.ProductSheet]?.isHidden == false
                 )
@@ -260,7 +260,6 @@ class PlayViewModel @Inject constructor(
 
         insetsMap[BottomInsetsType.ProductSheet] =
                 BottomInsetsState.Hidden(
-                        type = BottomInsetsType.ProductSheet,
                         isPreviousStateSame = insetsMap[BottomInsetsType.ProductSheet]?.isShown == false
                 )
 
@@ -269,25 +268,24 @@ class PlayViewModel @Inject constructor(
 
     fun onShowVariantSheet(estimatedProductSheetHeight: Int, productId: String, action: ProductAction) {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
-        val type = if (action == ProductAction.Buy) BottomInsetsType.VariantSheet.Buy(productId) else BottomInsetsType.VariantSheet.AddToCart(productId)
 
-        insetsMap[BottomInsetsType.VariantSheet.Variant] =
+        insetsMap[BottomInsetsType.VariantSheet] =
                 BottomInsetsState.Shown(
-                        type = type,
                         estimatedInsetsHeight = estimatedProductSheetHeight,
-                        isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet.Variant]?.isHidden == false
+                        isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet]?.isHidden == false
                 )
 
         _observableBottomInsetsState.value = insetsMap
+
+        setMockVariantSheetContent(action)
     }
 
     fun onHideVariantSheet() {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
-        insetsMap[BottomInsetsType.VariantSheet.Variant] =
+        insetsMap[BottomInsetsType.VariantSheet] =
                 BottomInsetsState.Hidden(
-                        type = BottomInsetsType.VariantSheet.Variant,
-                        isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet.Variant]?.isShown == false
+                        isPreviousStateSame = insetsMap[BottomInsetsType.VariantSheet]?.isShown == false
                 )
 
         _observableBottomInsetsState.value = insetsMap
@@ -588,9 +586,9 @@ class PlayViewModel @Inject constructor(
 
     private fun getLatestBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
         val currentValue = _observableBottomInsetsState.value ?: return mapOf(
-                BottomInsetsType.Keyboard to BottomInsetsState.Hidden(BottomInsetsType.Keyboard, false),
-                BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(BottomInsetsType.ProductSheet, false),
-                BottomInsetsType.VariantSheet.Variant to BottomInsetsState.Hidden(BottomInsetsType.VariantSheet.Variant, false)
+                BottomInsetsType.Keyboard to BottomInsetsState.Hidden(false),
+                BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
+                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
         )
         currentValue.values.forEach { it.isPreviousStateSame = true }
 
@@ -644,6 +642,14 @@ class PlayViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    private fun setMockVariantSheetContent(action: ProductAction) {
+        _observableVariantSheetContent.value = VariantSheetUiModel(
+                title = "Detail Produk",
+                productId = "123",
+                action = action
+        )
     }
 
     private fun setMockProductPinned() {
