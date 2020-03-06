@@ -372,6 +372,9 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
             }
         });
+        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().recordRecyclerViewScrollPerformance(
+                homeRecyclerView,
+                "home", "");
     }
 
     private void setupStatusBar() {
@@ -1850,4 +1853,9 @@ public class HomeFragment extends BaseDaggerFragment implements
         homeScrollJankyMonitoringUtil.stopFrameMetrics();
     }
 
+    @Override
+    public JankyFrameMonitoringUtil getHomeJankyFramesUtil() {
+        if (jankyFramesMonitoringListener != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil()
+        return null;
+    }
 }

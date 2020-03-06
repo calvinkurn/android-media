@@ -2,6 +2,7 @@ package com.tokopedia.home.beranda.listener
 
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
 
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData
@@ -88,4 +89,6 @@ interface HomeCategoryListener {
     fun getWindowWidth(): Int
 
     fun refreshHomeData()
+
+    fun getHomeJankyFramesUtil(): JankyFrameMonitoringUtil?
 }

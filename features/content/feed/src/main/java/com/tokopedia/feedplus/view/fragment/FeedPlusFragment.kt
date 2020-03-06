@@ -509,7 +509,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (arguments != null) {
             afterPost = TextUtils.equals(arguments!!.getString(AFTER_POST, ""), TRUE)
         }
-        jankyFrameMonitoringUtil = JankyFrameMonitoringUtil(activity as Activity, KEY_JANKY_FRAME_SCROLL)
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
