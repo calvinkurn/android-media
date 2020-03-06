@@ -329,11 +329,6 @@ class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFac
         startActivityForResult(context?.let { UmrahSearchFilterActivity.createIntent(it) }, REQUEST_FILTER)
     }
 
-    override fun getEmptyDataViewModel(): Visitable<*> {
-        val emptyModel = EmptyModel()
-        return emptyModel
-    }
-
     override fun showEmpty() {
         if (!isPassingEmpty) {
             isPassingEmpty = true
