@@ -306,6 +306,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 // Reset promo on expanded item
                 it.uiState.isSellected = false
                 it.uiData.currentClashingPromo.clear()
+                it.uiData.errorMessage = ""
                 promoList.add(it)
             } else if (it is PromoListHeaderUiModel) {
                 // Reset promo on collapsed item
@@ -324,6 +325,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         }
 
         setFragmentStateHasPromoSelected(false)
+        resetPromoSuggestion()
     }
 
     fun setFragmentStateHasPromoSelected(hasAnyPromoSelected: Boolean) {
@@ -489,13 +491,22 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 if (it is PromoListItemUiModel) {
                     if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
                         it.uiState.isSellected = true
-                        _tmpUiModel.value = Update(it)
+                        calculateClash(it)
                     }
                 }
             }
 
             _promoRecommendationUiModel.value = it
             calculateAndRenderTotalBenefit()
+        }
+    }
+
+    fun resetPromoSuggestion() {
+        val promoRecommendation = promoRecommendationUiModel.value
+        promoRecommendation?.let {
+            it.uiState.isButtonSelectEnabled = true
+            it.uiState.hasAppliedRecommendation = false
+            _promoRecommendationUiModel.value = it
         }
     }
 

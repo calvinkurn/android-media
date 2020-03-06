@@ -402,7 +402,7 @@ val MOCK_RESPONSE = """
                       "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 50000,
-                    "is_recommended": false,
+                    "is_recommended": true,
                     "is_selected": false,
                     "is_attempted": false,
                     "radio_check_state": "enabled",
@@ -435,7 +435,7 @@ val MOCK_RESPONSE = """
                       "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 30000,
-                    "is_recommended": false,
+                    "is_recommended": true,
                     "is_selected": false,
                     "is_attempted": false,
                     "radio_check_state": "enabled",
@@ -471,7 +471,7 @@ val MOCK_RESPONSE = """
                       "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 60000,
-                    "is_recommended": false,
+                    "is_recommended": true,
                     "is_selected": true,
                     "is_attempted": false,
                     "radio_check_state": "enabled",
