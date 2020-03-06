@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker.picker.main.builder;
 import android.os.Parcel;
 import android.os.Parcelable;
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
@@ -32,18 +33,18 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable{
     public static class PreviewExtension implements Parcelable{
         // usually when the user already select the image, it will show the preview at the bottom
         // this option is to hide/show it
-        private boolean hideThumbnailListPreview = false;
+        boolean hideThumbnailListPreview = false;
 
         // show counter "1", "2" when selecting image
-        private boolean showCounterAtSelectedImage = false;
+        boolean showCounterAtSelectedImage = false;
 
         // in gallery, if select true, will make the span smaller, resulting in bigger image
-        private boolean showBiggerPreviewWhenThumbnailHidden = true;
+        boolean showBiggerPreviewWhenThumbnailHidden = true;
 
         // in set to true, will append the selected Images in gallery (all albums)
         // example: previously user has select "data/image1.png".
         // this image will be appended at the gallery in the first rows.
-        private boolean appendInitialSelectedImageInGallery = true;
+        boolean appendInitialSelectedImageInGallery = true;
 
         public PreviewExtension(){
 
@@ -160,7 +161,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable{
         this.maximumNoPick = maximumNoPick;
     }
 
-    @Nullable
+    @NonNull
     public PreviewExtension getPreviewExtension() {
         if (previewExtension == null) {
             previewExtension =  new PreviewExtension();

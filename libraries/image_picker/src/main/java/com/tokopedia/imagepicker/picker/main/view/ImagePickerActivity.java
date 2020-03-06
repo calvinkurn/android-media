@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler;
-import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.component.Menus;
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.common.exception.FileSizeAboveMaximumException;
@@ -41,6 +40,7 @@ import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef;
 import com.tokopedia.imagepicker.picker.main.builder.StateRecorderType;
 import com.tokopedia.imagepicker.picker.video.VideoRecorderFragment;
 import com.tokopedia.imagepicker.picker.widget.ImagePickerPreviewWidget;
+import com.tokopedia.unifycomponents.Toaster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +79,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
     private ImagePickerPresenter imagePickerPresenter;
 
+    //this image paths are edited at imagePickerPreviewWidget
     private ArrayList<String> selectedImagePaths;
+    private ArrayList<String> appendedImagePaths;
     protected ArrayList<String> imageDescriptionList;
     private TextView tvDone;
     private boolean isPermissionGotDenied;
@@ -174,11 +176,15 @@ public class ImagePickerActivity extends BaseSimpleActivity
             imagePickerPreviewWidget.setData(selectedImagePaths,
                     imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPrimaryImageStringRes(),
                     imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPlaceholderImagePathResList());
-            imagePickerPreviewWidget.setVisibility(View.VISIBLE);
-            imagePickerPreviewWidget.setOnImagePickerThumbnailListWidgetListener(this);
-            imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
-            imagePickerPreviewWidget.setCanReorder(
-                    imagePickerBuilder.getImagePickerMultipleSelectionBuilder().isCanReorder());
+            if (imagePickerBuilder.hideThumbnailListPreview()) {
+                imagePickerPreviewWidget.setVisibility(View.GONE);
+            } else {
+                imagePickerPreviewWidget.setVisibility(View.VISIBLE);
+                imagePickerPreviewWidget.setOnImagePickerThumbnailListWidgetListener(this);
+                imagePickerPreviewWidget.setMaxAdapterSize(imagePickerBuilder.getMaximumNoPick());
+                imagePickerPreviewWidget.setCanReorder(
+                        imagePickerBuilder.getImagePickerMultipleSelectionBuilder().isCanReorder());
+            }
         } else {
             imagePickerPreviewWidget.setVisibility(View.GONE);
         }
@@ -357,9 +363,18 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public boolean isMaxImageReached() {
         boolean isMaxImageReached = selectedImagePaths.size() >= imagePickerBuilder.getMaximumNoPick();
         if (isMaxImageReached) {
-            NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_no_of_image_reached));
+            showToastError(getString(R.string.max_no_of_image_reached));
         }
         return isMaxImageReached;
+    }
+
+    private void showToastError(String message){
+        Toaster.INSTANCE.make(findViewById(android.R.id.content),
+                message, Toaster.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                getString(R.string.close), v -> {
+                    // no-op
+                });
     }
 
     @Override
@@ -396,8 +411,13 @@ public class ImagePickerActivity extends BaseSimpleActivity
 
 
     @Override
-    public ArrayList<String> getImagePath() {
+    public ArrayList<String> getSelectedImagePath() {
         return selectedImagePaths;
+    }
+
+    @Override
+    public ArrayList<String> getAppendedImagePath() {
+        return appendedImagePaths;
     }
 
     @Override
@@ -406,8 +426,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     @Override
-    public void onAlbumItemClicked(MediaItem item, boolean isChecked) {
-        onImageSelected(item.getRealPath(), isChecked, null);
+    public void onAlbumItemClicked(String realPath, boolean isChecked) {
+        onImageSelected(realPath, isChecked, null);
     }
 
     @Override
@@ -581,7 +601,7 @@ public class ImagePickerActivity extends BaseSimpleActivity
     @Override
     public void onErrorDownloadImageToLocal(Throwable e) {
         hideDownloadProgressDialog();
-        NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+        showToastError(ErrorHandler.getErrorMessage(getContext(), e));
     }
 
     @Override
@@ -594,9 +614,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
     public void onErrorResizeImage(Throwable e) {
         hideDownloadProgressDialog();
         if (e instanceof FileSizeAboveMaximumException) {
-            NetworkErrorHelper.showRedCloseSnackbar(this, getString(R.string.max_file_size_reached));
+            showToastError(getString(R.string.max_file_size_reached));
         } else {
-            NetworkErrorHelper.showRedCloseSnackbar(this, ErrorHandler.getErrorMessage(getContext(), e));
+            showToastError(ErrorHandler.getErrorMessage(getContext(), e));
         }
     }
 

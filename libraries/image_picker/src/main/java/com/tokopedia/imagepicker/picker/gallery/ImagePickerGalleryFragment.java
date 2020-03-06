@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -58,6 +56,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     public static final String ARGS_GALLERY_TYPE = "args_gallery_type";
     public static final String ARGS_SUPPORT_MULTIPLE = "args_support_multiple";
     public static final String ARGS_MIN_RESOLUTION = "args_min_resolution";
+    public static final String ARGS_HAS_COUNTER_LABEL = "args_has_counter_label";
+    public static final String ARGS_SHOW_BIGGER_PREVIEW = "args_show_bigger_preview";
 
     public static final String SAVED_ALBUM_TITLE_ID = "svd_album_title_id";
     public static final long MAX_VIDEO_DURATION_MS = 60000L;
@@ -67,6 +67,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private static final int ALBUM_LOADER_ID = 1;
     private static final int MEDIA_LOADER_ID = 2;
     public static final int BYTES_IN_KB = 1024;
+    public static final int MIN_SPAN_GRID = 3;
 
     private OnImagePickerGalleryFragmentListener onImagePickerGalleryFragmentListener;
     private View loadingView;
@@ -77,17 +78,20 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private int selectedAlbumPosition;
     private @GalleryType
     int galleryType;
-    private boolean supportMultipleSelection;
+    private boolean showBiggerPreview;
     private int minImageResolution;
 
     private LabelView labelViewAlbum;
 
     public interface OnImagePickerGalleryFragmentListener {
-        void onAlbumItemClicked(MediaItem item, boolean isChecked);
+        void onAlbumItemClicked(String realPath, boolean isChecked);
 
         boolean isMaxImageReached();
 
-        ArrayList<String> getImagePath();
+        ArrayList<String> getSelectedImagePath();
+
+        // imagePath that appended at start of the list
+        ArrayList<String> getAppendedImagePath();
 
         long getMaxFileSize();
     }
@@ -96,12 +100,16 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     @RequiresPermission("android.permission.CAMERA")
     public static ImagePickerGalleryFragment newInstance(@GalleryType int galleryType,
                                                          boolean supportMultipleSelection,
-                                                         int minImageResolution) {
+                                                         int minImageResolution,
+                                                         boolean hasCounterLabel,
+                                                         boolean showBiggerPreview) {
         ImagePickerGalleryFragment imagePickerGalleryFragment = new ImagePickerGalleryFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARGS_GALLERY_TYPE, galleryType);
         bundle.putBoolean(ARGS_SUPPORT_MULTIPLE, supportMultipleSelection);
         bundle.putInt(ARGS_MIN_RESOLUTION, minImageResolution);
+        bundle.putBoolean(ARGS_HAS_COUNTER_LABEL, hasCounterLabel);
+        bundle.putBoolean(ARGS_SHOW_BIGGER_PREVIEW, showBiggerPreview);
         imagePickerGalleryFragment.setArguments(bundle);
         return imagePickerGalleryFragment;
     }
@@ -112,14 +120,17 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         galleryType = bundle.getInt(ARGS_GALLERY_TYPE);
-        supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
         minImageResolution = bundle.getInt(ARGS_MIN_RESOLUTION);
+        boolean supportMultipleSelection = bundle.getBoolean(ARGS_SUPPORT_MULTIPLE);
+        boolean hasCounterLabel = bundle.getBoolean(ARGS_HAS_COUNTER_LABEL);
+        showBiggerPreview = bundle.getBoolean(ARGS_SHOW_BIGGER_PREVIEW);
         if (savedInstanceState != null) {
             selectedAlbumPosition = savedInstanceState.getInt(SAVED_ALBUM_TITLE_ID);
         }
         albumMediaAdapter = new AlbumMediaAdapter(supportMultipleSelection,
-                onImagePickerGalleryFragmentListener.getImagePath(),
-                this);
+                onImagePickerGalleryFragmentListener.getSelectedImagePath(),
+                this, hasCounterLabel,
+                onImagePickerGalleryFragmentListener.getAppendedImagePath());
     }
 
     @Nullable
@@ -129,7 +140,10 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         loadingView = view.findViewById(R.id.loading);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
-        int spanCount = getContext().getResources().getInteger(R.integer.gallery_span_count);
+        int spanCount = getResources().getInteger(R.integer.gallery_span_count);
+        if (spanCount > MIN_SPAN_GRID && showBiggerPreview) {
+            spanCount--;
+        }
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), spanCount));
         int spacing = getResources().getDimensionPixelSize(R.dimen.image_picker_media_grid_spacing);
         recyclerView.addItemDecoration(new MediaGridInset(spanCount, spacing, false));
@@ -277,8 +291,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     }
 
     @Override
-    public void onMediaClick(MediaItem item, boolean isChecked, int adapterPosition) {
-        onImagePickerGalleryFragmentListener.onAlbumItemClicked(item, isChecked);
+    public void onMediaClick(String mediaPath, boolean isChecked, int adapterPosition) {
+        onImagePickerGalleryFragmentListener.onAlbumItemClicked(mediaPath, isChecked);
     }
 
     @Override
@@ -301,7 +315,8 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
         }
         //check image resolution
         if (item.isVideo() && item.getDuration() > 0) { // it is video
-            int minVideoResolution = item.getMinimumVideoResolution();
+            //Currently there is no requirement for min video resolution
+            //int minVideoResolution = item.getMinimumVideoResolution();
             if ((file.length() / BYTES_IN_KB) > onImagePickerGalleryFragmentListener.getMaxFileSize()) {
                 showToastError(getString(R.string.max_video_size_reached));
                 return false;

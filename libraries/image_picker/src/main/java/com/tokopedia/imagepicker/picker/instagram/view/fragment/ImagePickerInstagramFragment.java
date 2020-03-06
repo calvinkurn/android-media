@@ -100,7 +100,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     @Override
     protected BaseListAdapter<InstagramMediaModel, ImageInstagramAdapterTypeFactory> createAdapterInstance() {
         imageInstagramAdapter = new ImageInstagramAdapter(getAdapterTypeFactory(),
-                this, listenerImagePickerInstagram.getImagePath(), supportMultipleSelection);
+                this, listenerImagePickerInstagram.getSelectedImagePath(), supportMultipleSelection);
         return imageInstagramAdapter;
     }
 
@@ -278,7 +278,7 @@ public class ImagePickerInstagramFragment extends BaseListFragment<InstagramMedi
     public interface ListenerImagePickerInstagram {
         void onClickImageInstagram(String url, boolean isChecked, String imageDescription);
         boolean isMaxImageReached();
-        ArrayList<String> getImagePath();
+        ArrayList<String> getSelectedImagePath();
     }
 
 }

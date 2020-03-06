@@ -3,20 +3,20 @@ package com.tokopedia.imagepicker.picker.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.widget.FrameLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.widget.FrameLayout;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.adapter.ImagePickerThumbnailAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
