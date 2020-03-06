@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.play.KEY_GROUPCHAT_PREFERENCES
@@ -81,6 +82,10 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
+    fun providesGraphqlUsecase(): GraphqlUseCase = GraphqlUseCase()
+
+    @PlayScope
+    @Provides
     fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase {
         return GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
     }
@@ -95,6 +100,13 @@ class PlayModule(val mContext: Context) {
     @Provides
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideUpdateCartCounterMutation(): String {
-        return GraphqlHelper.loadRawString(mContext.resources, R.raw.gql_update_cart_counter)
+        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
+    }
+
+    @Provides
+    @PlayScope
+    @Named(AtcConstant.MUTATION_ADD_TO_CART)
+    internal fun provideAddToCartMutation(): String {
+        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 }
