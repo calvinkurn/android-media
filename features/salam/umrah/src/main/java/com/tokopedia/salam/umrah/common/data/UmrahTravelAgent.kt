@@ -42,7 +42,8 @@ data class TravelAgent(
         val products : List<UmrahProductModel.UmrahProduct> = emptyList(),
         @SerializedName("ui")
         @Expose
-        val ui: UmrahTravelAgentUI = UmrahTravelAgentUI()
+        val ui: UmrahTravelAgentUI = UmrahTravelAgentUI(),
+        var isViewed : Boolean = true
 
 ): Visitable<UmrahTravelListAdapterTypeFactory> {
         override fun type(typeFactory: UmrahTravelListAdapterTypeFactory?): Int =
