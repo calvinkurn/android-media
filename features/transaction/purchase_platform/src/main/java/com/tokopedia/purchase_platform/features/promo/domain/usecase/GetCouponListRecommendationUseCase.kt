@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.GqlCouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.MOCK_RESPONSE
+import com.tokopedia.purchase_platform.features.promo.presentation.MOCK_RESPONSE_PHONE_NOT_VERIF
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 

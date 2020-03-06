@@ -325,9 +325,9 @@ val MOCK_RESPONSE = """
           "reason": "OK"
         },
         "empty_state": {
-          "title": "Kuponnya tidak ada",
-          "description": "Banyakin belanja ya biar dapet kupon",
-          "image_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+          "title": "",
+          "description": "",
+          "image_url": ""
         },
         "title": "Pilih Promo",
         "sub_title": "Kamu bisa gabungkan promo!",
@@ -544,6 +544,123 @@ val MOCK_RESPONSE = """
                 "description": "peraturan kedua"
               }
             ]
+          }
+        }
+      }
+    }
+  }
+""".trimIndent()
+
+val MOCK_RESPONSE_PHONE_NOT_VERIF = """
+    {
+    "coupon_list_recommendation": {
+      "message": [],
+      "error_code": "200",
+      "status": "OK",
+      "data": {
+        "result_status": {
+          "code": "42049",
+          "message": [
+            "Nomor telepon anda belum terverifikasi, silahkan lengkapi Profil Anda"
+          ],
+          "reason": "MSISDN not verified"
+        },
+        "empty_state": {
+          "title": "Nomor belum diverifikasi",
+          "description": "Verifikasi nomor dulu ya",
+          "image_url": "https://ecs7.tokopedia.net/img/ovo/icon-benefit-2.png"
+        },
+        "title": "",
+        "sub_title": "",
+        "promo_recommendation": {
+          "codes": [],
+          "message": ""
+        },
+        "coupon_sections": [],
+        "additional_message": "",
+        "reward_points_info": {
+          "message": "",
+          "gain_reward_points_tnc": {
+            "title": "",
+            "tnc_details": []
+          }
+        }
+      }
+    }
+  }
+""".trimIndent()
+
+val MOCK_RESPONSE_BLACKLIST = """
+    {
+    "coupon_list_recommendation": {
+      "message": [],
+      "error_code": "200",
+      "status": "OK",
+      "data": {
+        "result_status": {
+          "code": "42003",
+          "message": [
+            "Alamat e-mail telah melanggar Syarat & Ketentuan Tokopedia."
+          ],
+          "reason": "Blacklisted Account"
+        },
+        "empty_state": {
+          "title": "Akun Anda terblacklist",
+          "description": "Silahkan hubungi Tokopedia",
+          "image_url": "https://ecs7.tokopedia.net/img/ovo/icon-benefit-2.png"
+        },
+        "title": "",
+        "sub_title": "",
+        "promo_recommendation": {
+          "codes": [],
+          "message": ""
+        },
+        "coupon_sections": [],
+        "additional_message": "",
+        "reward_points_info": {
+          "message": "",
+          "gain_reward_points_tnc": {
+            "title": "",
+            "tnc_details": []
+          }
+        }
+      }
+    }
+  }
+""".trimIndent()
+
+val MOCK_RESPONSE_EMPTY_PROMO = """
+    {
+    "coupon_list_recommendation": {
+      "message": [],
+      "error_code": "200",
+      "status": "OK",
+      "data": {
+        "result_status": {
+          "code": "42050",
+          "message": [
+            "Anda tidak memiliki kupon"
+          ],
+          "reason": "Coupon List Empty"
+        },
+        "empty_state": {
+            "title": "Kuponnya tidak ada",
+            "description": "Banyakin belanja ya biar dapet kupon",
+            "image_url": "https://ecs7.tokopedia.net/img/ovo/icon-benefit-2.png"
+        },
+        "title": "",
+        "sub_title": "",
+        "promo_recommendation": {
+          "codes": [],
+          "message": ""
+        },
+        "coupon_sections": [],
+        "additional_message": "",
+        "reward_points_info": {
+          "message": "",
+          "gain_reward_points_tnc": {
+            "title": "",
+            "tnc_details": []
           }
         }
       }

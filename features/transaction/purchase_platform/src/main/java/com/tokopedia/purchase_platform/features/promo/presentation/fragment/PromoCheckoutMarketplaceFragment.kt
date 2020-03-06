@@ -40,10 +40,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.adapter.Promo
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.FragmentUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibilityHeaderUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
@@ -131,7 +128,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     private fun handleStickyPromoHeader(recyclerView: RecyclerView, lastHeaderUiModel: PromoListHeaderUiModel?) {
-        if (adapter.data.isNotEmpty()) {
+        if(adapter.data.isNotEmpty()) {
             var tmpLastHeaderUiModel = lastHeaderUiModel
             val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             val lastData = adapter.data[topItemPosition]
@@ -215,33 +212,29 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         })
     }
 
+    private fun addOrModify(it: Visitable<*>) {
+        if (adapter.data.contains(it)) {
+            adapter.modifyData(adapter.data.indexOf(it))
+        } else {
+            adapter.addVisitable(it)
+        }
+    }
+
     private fun observeEmptyStateUiModel() {
         viewModel.promoEmptyStateUiModel.observe(this, Observer {
-            if (adapter.data.contains(it)) {
-                adapter.modifyData(adapter.data.indexOf(it))
-            } else {
-                adapter.addVisitable(it)
-            }
+            addOrModify(it)
         })
     }
 
     private fun observePromoRecommendationUiModel() {
         viewModel.promoRecommendationUiModel.observe(this, Observer {
-            if (adapter.data.contains(it)) {
-                adapter.modifyData(adapter.data.indexOf(it))
-            } else {
-                adapter.addVisitable(it)
-            }
+            addOrModify(it)
         })
     }
 
     private fun observePromoInputUiModel() {
         viewModel.promoInputUiModel.observe(this, Observer {
-            if (adapter.data.contains(it)) {
-                adapter.modifyData(adapter.data.indexOf(it))
-            } else {
-                adapter.addVisitable(it)
-            }
+            addOrModify(it)
         })
     }
 

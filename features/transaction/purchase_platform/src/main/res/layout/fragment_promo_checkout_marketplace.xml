@@ -176,6 +176,6 @@
         android:background="@color/white"
         android:gravity="center"
         android:visibility="gone"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
 </RelativeLayout>

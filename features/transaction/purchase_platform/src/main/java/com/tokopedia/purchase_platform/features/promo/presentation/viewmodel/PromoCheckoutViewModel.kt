@@ -92,6 +92,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                         emptyState.uiState.isShowButton = false
                         initPromoInput()
                     } else if (response.couponListRecommendation.data.resultStatus.code == STATUS_PHONE_NOT_VERIFIED) {
+                        emptyState.uiData.buttonText = "Verifikasi Nomor HP"
                         emptyState.uiState.isShowButton = true
                     } else if (response.couponListRecommendation.data.resultStatus.code == STATUS_USER_BLACKLISTED) {
                         emptyState.uiState.isShowButton = false
