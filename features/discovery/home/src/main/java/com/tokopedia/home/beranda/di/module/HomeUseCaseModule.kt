@@ -69,16 +69,6 @@ class HomeUseCaseModule {
     }
 
     @Provides
-    fun provideAddWishlistUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @Provides
-    fun provideRemoveWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
-    }
-
-    @Provides
     @HomeScope
     fun provideStickyLoginUseCase(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository): StickyLoginUseCase {
         val query = GraphqlHelper.loadRawString(context.resources, com.tokopedia.stickylogin.R.raw.gql_sticky_login_query)

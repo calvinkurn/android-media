@@ -1,17 +1,23 @@
 package com.tokopedia.productcard.utils
 
-import androidx.annotation.DimenRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
+import android.content.Context
+import android.graphics.Color
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DimenRes
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
+import com.tokopedia.unifycomponents.Label
+import com.tokopedia.unifyprinciples.Typography
 
 internal val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
@@ -26,6 +32,10 @@ internal fun View.doIfVisible(action: (View) -> Unit) {
     if(this.isVisible) {
         action(this)
     }
+}
+
+internal fun ImageView.glideClear(context: Context) {
+    Glide.with(context).clear(this)
 }
 
 internal fun View.getDimensionPixelSize(@DimenRes id: Int): Int {
@@ -79,7 +89,7 @@ internal fun <T: View> T?.shouldShowWithAction(shouldShow: Boolean, action: (T) 
     }
 }
 
-internal fun ImageView.loadProductImage(url: String?) {
+internal fun ImageView.loadImage(url: String?) {
     if (url != null && url.isNotEmpty()) {
         Glide.with(context)
                 .load(url)
@@ -90,15 +100,99 @@ internal fun ImageView.loadProductImage(url: String?) {
     }
 }
 
-internal fun ImageView.loadProductImageRounded(url: String?) {
+internal fun ImageView.loadImageRounded(url: String?) {
     if (url != null && url.isNotEmpty()) {
         Glide.with(context)
                 .load(url)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .transform(RoundedCorners(5))
+                .transform(CenterCrop(), RoundedCorners(getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_6)))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .placeholder(R.drawable.ic_loading_toped_new)
                 .error(R.drawable.error_drawable)
                 .into(this)
+    }
+}
+
+internal fun ImageView.loadIcon(url: String?) {
+    if (url != null && url.isNotEmpty()) {
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                .into(this)
+    }
+}
+
+internal fun Label.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
+    if (labelGroup == null) hide()
+    else showLabel(labelGroup)
+}
+
+private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
+    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+        it.text = MethodChecker.fromHtml(labelGroup.title)
+        it.determineLabelType(labelGroup.type)
+    }
+}
+
+private fun Label.determineLabelType(labelGroupType: String) {
+    val labelType = labelGroupType.toUnifyLabelType()
+
+    if (labelType != -1) setLabelType(labelType)
+    else setCustomLabelType(labelGroupType)
+}
+
+private fun String?.toUnifyLabelType(): Int {
+    return when (this) {
+        LIGHT_GREY -> Label.GENERAL_LIGHT_GREY
+        LIGHT_BLUE -> Label.GENERAL_LIGHT_BLUE
+        LIGHT_GREEN -> Label.GENERAL_LIGHT_GREEN
+        LIGHT_RED -> Label.GENERAL_LIGHT_RED
+        LIGHT_ORANGE -> Label.GENERAL_LIGHT_ORANGE
+        DARK_GREY -> Label.GENERAL_DARK_GREY
+        DARK_BLUE -> Label.GENERAL_DARK_BLUE
+        DARK_GREEN -> Label.GENERAL_DARK_GREEN
+        DARK_RED -> Label.GENERAL_DARK_RED
+        DARK_ORANGE -> Label.GENERAL_DARK_ORANGE
+        else -> -1
+    }
+}
+
+private fun Label.setCustomLabelType(labelGroupType: String) {
+    unlockFeature = true
+
+    when(labelGroupType) {
+        TRANSPARENT_BLACK -> setLabelType(COLOR_LABEL_TRANSPARENT_BLACK)
+        else -> setLabelType(COLOR_LABEL_DEFAULT)
+    }
+}
+
+internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?) {
+    if (labelGroup == null) hide()
+    else showTypography(labelGroup)
+}
+
+private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
+    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+        it.text = MethodChecker.fromHtml(labelGroup.title)
+        it.setTextColor(safeParseColor(labelGroup.type.toUnifyTextColor()))
+    }
+}
+
+private fun String?.toUnifyTextColor(): String {
+    return when(this) {
+        TEXT_DARK_ORANGE -> COLOR_TEXT_DARK_ORANGE
+        TEXT_DARK_RED -> COLOR_TEXT_DARK_RED
+        TEXT_DARK_GREY -> COLOR_TEXT_DARK_GREY
+        TEXT_LIGHT_GREY -> COLOR_TEXT_LIGHT_GREY
+        else -> this ?: ""
+    }
+}
+
+private fun safeParseColor(color: String): Int {
+    return try {
+        Color.parseColor(color)
+    }
+    catch (throwable: Throwable) {
+        throwable.printStackTrace()
+        0
     }
 }

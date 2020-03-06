@@ -581,9 +581,6 @@ class ProductInfoFragment : BaseDaggerFragment() {
             isFreeOngkirActive = false,
             freeOngkirImageUrl = "",
             discountPercentage = "",
-            labelOffers = RecommendationLabel(),
-            labelCredibility = RecommendationLabel(),
-            labelPromo = RecommendationLabel(),
             isGold = false
     )
 
