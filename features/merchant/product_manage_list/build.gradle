@@ -53,7 +53,6 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.sort_filter
-    implementation rootProject.ext.unifyDependencies.icon
     implementation project(rootProject.ext.libraries.playCore)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
