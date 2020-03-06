@@ -31,7 +31,7 @@ open class PinnedComponent(
 
     //temp state
     private var shouldShow: Boolean = false
-    private var isKeyboardShown: Boolean = false
+    private var isBottomInsetsShown: Boolean = false
 
     init {
         launch(dispatchers.immediate) {
@@ -40,9 +40,9 @@ open class PinnedComponent(
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.SetPinned -> setPinned(it.pinned)
-                            is ScreenStateEvent.BottomInsetsView -> {
-                                if (!it.isShown && shouldShow) uiView.show() else uiView.hide()
-                                isKeyboardShown = it.isShown
+                            is ScreenStateEvent.BottomInsetsChanged -> {
+                                if (!it.isAnyShown && shouldShow) uiView.show() else uiView.hide()
+                                isBottomInsetsShown = it.isAnyShown
                             }
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
@@ -74,12 +74,12 @@ open class PinnedComponent(
        shouldShow = when (pinnedUiModel) {
             is PinnedMessageUiModel -> {
                 uiView.setPinnedMessage(pinnedUiModel)
-                if (!isKeyboardShown) uiView.show()
+                if (!isBottomInsetsShown) uiView.show()
                 true
             }
             is PinnedProductUiModel -> {
                 uiView.setPinnedProduct(pinnedUiModel)
-                if (!isKeyboardShown) uiView.show()
+                if (!isBottomInsetsShown) uiView.show()
                 true
             }
             is PinnedRemoveUiModel -> {

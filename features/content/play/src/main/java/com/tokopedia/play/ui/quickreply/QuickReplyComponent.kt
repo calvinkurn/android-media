@@ -7,8 +7,9 @@ import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.quickreply.interaction.QuickReplyInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -33,7 +34,7 @@ open class QuickReplyComponent(
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.SetQuickReply -> uiView.setQuickReply(it.quickReply)
-                            is ScreenStateEvent.BottomInsetsView -> if (it.isShown && it.type.isKeyboard) uiView.show() else uiView.hide()
+                            is ScreenStateEvent.BottomInsetsChanged -> if (it.insetsViewMap[BottomInsetsType.Keyboard] is BottomInsetsState.Shown) uiView.show() else uiView.hide()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.hide()
                         }
                     }

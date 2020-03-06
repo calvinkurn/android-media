@@ -8,4 +8,6 @@ import com.tokopedia.play.component.ComponentEvent
 sealed class ProductSheetInteractionEvent : ComponentEvent {
 
     object OnCloseProductSheet : ProductSheetInteractionEvent()
+    data class OnBuyProduct(val productId: String) : ProductSheetInteractionEvent()
+    data class OnAtcProduct(val productId: String) : ProductSheetInteractionEvent()
 }

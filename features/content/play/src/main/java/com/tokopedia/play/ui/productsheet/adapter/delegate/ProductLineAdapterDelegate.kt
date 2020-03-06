@@ -10,13 +10,15 @@ import com.tokopedia.play.view.type.ProductLineUiModel
 /**
  * Created by jegul on 03/03/20
  */
-class ProductLineAdapterDelegate : TypedAdapterDelegate<ProductLineUiModel, ProductLineUiModel, ProductLineViewHolder>(R.layout.item_play_product_line) {
+class ProductLineAdapterDelegate(
+        listener: ProductLineViewHolder.Listener
+) : TypedAdapterDelegate<ProductLineUiModel, ProductLineUiModel, ProductLineViewHolder>(R.layout.item_play_product_line), ProductLineViewHolder.Listener by listener {
 
     override fun onBindViewHolder(item: ProductLineUiModel, holder: ProductLineViewHolder) {
         holder.bind(item)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): ProductLineViewHolder {
-        return ProductLineViewHolder(basicView)
+        return ProductLineViewHolder(basicView, this)
     }
 }

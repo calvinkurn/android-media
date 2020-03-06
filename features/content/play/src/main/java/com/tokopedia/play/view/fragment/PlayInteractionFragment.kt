@@ -12,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils.getStatusBarHeight
@@ -25,6 +26,8 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
@@ -49,6 +52,8 @@ import com.tokopedia.play.ui.toolbar.ToolbarComponent
 import com.tokopedia.play.ui.toolbar.interaction.PlayToolbarInteractionEvent
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
+import com.tokopedia.play.ui.variantsheet.VariantSheetComponent
+import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
 import com.tokopedia.play.ui.videocontrol.VideoControlComponent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.PlayFullScreenHelper
@@ -58,12 +63,14 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
@@ -127,11 +134,12 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     private lateinit var playButtonComponent: UIComponent<*>
     private lateinit var endLiveInfoComponent: UIComponent<*>
     private lateinit var productSheetComponent: UIComponent<*>
+    private lateinit var variantSheetComponent: UIComponent<*>
 
     private lateinit var bottomSheet: PlayMoreActionBottomSheet
     private lateinit var clPlayInteraction: ConstraintLayout
 
-    private val productSheetMaxHeight: Int
+    private val bottomSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_PRODUCT_SHEET_HEIGHT).toInt()
 
     private val sendChatView: View
@@ -169,7 +177,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_play_interaction, container, false)
-        initCoordinatorComponent(view as ViewGroup)
+        initCoordinatorComponents(view as ViewGroup)
         initComponents(view.findViewById(R.id.cl_play_interaction) as ViewGroup)
         return view
     }
@@ -186,6 +194,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeVOD()
         observeVideoProperty()
         observeProductSheetContent()
+        observeVariantSheetContent()
         observeTitleChannel()
         observeQuickReply()
         observeVideoStream()
@@ -277,6 +286,18 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         })
     }
 
+    private fun observeVariantSheetContent() {
+        playViewModel.observableVariantSheetContent.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.SetVariantSheet(it)
+                        )
+            }
+        })
+    }
+
     private fun observeTitleChannel() {
         playViewModel.observableGetChannelInfo.observe(viewLifecycleOwner, Observer {
             when(it) {
@@ -351,17 +372,22 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(it.type, it.isShown))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden))
 
-                if (it.type is BottomInsetsType.BottomSheet && !it.isPreviousStateSame) {
-                    when (it) {
+                val keyboardState = it[BottomInsetsType.Keyboard]
+                if (keyboardState != null && !keyboardState.isPreviousStateSame) {
+                    when (keyboardState) {
                         is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> pushParentPlayByProductSheetHeight(it.estimatedInsetsHeight)
+                        is BottomInsetsState.Shown -> pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
                     }
-                } else if (it.type is BottomInsetsType.Keyboard && !it.isPreviousStateSame) {
-                    when (it) {
+                }
+
+                val productSheetState = it[BottomInsetsType.ProductSheet]
+
+                if (productSheetState != null && !productSheetState.isPreviousStateSame) {
+                    when (productSheetState) {
                         is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> pushParentPlayByKeyboardHeight(it.estimatedInsetsHeight)
+                        is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
                     }
                 }
             }
@@ -412,8 +438,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     //region Component Initialization
-    private fun initCoordinatorComponent(container: ViewGroup) {
+    private fun initCoordinatorComponents(container: ViewGroup) {
         productSheetComponent = initProductSheetComponent(container)
+        variantSheetComponent = initVariantSheetComponent(container)
     }
 
     private fun initComponents(container: ViewGroup) {
@@ -627,11 +654,30 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .collect {
                         when (it) {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
+                            is ProductSheetInteractionEvent.OnBuyProduct -> openVariantSheet(it.productId, ProductAction.Buy)
+                            is ProductSheetInteractionEvent.OnAtcProduct -> openVariantSheet(it.productId, ProductAction.AddToCart)
                         }
                     }
         }
 
         return productSheetComponent
+    }
+
+    private fun initVariantSheetComponent(container: ViewGroup): UIComponent<VariantSheetInteractionEvent> {
+        val variantSheetComponent = VariantSheetComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+
+        launch {
+            variantSheetComponent.getUserInteractionEvents()
+                    .collect {
+                        when (it) {
+                            VariantSheetInteractionEvent.OnCloseVariantSheet -> closeVariantSheet()
+                            is VariantSheetInteractionEvent.OnBuyProduct -> shouldBuyProduct(it.productId)
+                            is VariantSheetInteractionEvent.OnAddProductToCart -> shouldAtcProduct(it.productId)
+                        }
+                    }
+        }
+
+        return variantSheetComponent
     }
     //endregion
 
@@ -1066,6 +1112,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         PlayFullScreenHelper.showSystemUi(requireActivity())
     }
 
+    private fun shouldBuyProduct(productId: String) {
+        Toaster.make(requireView(), "Product bought", Snackbar.LENGTH_SHORT)
+        closeVariantSheet()
+    }
+
+    private fun shouldAtcProduct(productId: String) {
+        Toaster.make(requireView(), "Product added to cart", Snackbar.LENGTH_SHORT)
+        closeVariantSheet()
+    }
+
     private fun sendEventBanned(eventUiModel: EventUiModel) {
         launch {
             EventBusFactory.get(viewLifecycleOwner)
@@ -1123,14 +1179,22 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openProductSheet() {
-        playViewModel.onShowProductSheet(productSheetMaxHeight)
+        playViewModel.onShowProductSheet(bottomSheetMaxHeight)
     }
 
     private fun closeProductSheet() {
         playViewModel.onHideProductSheet()
     }
 
-    private fun pushParentPlayByProductSheetHeight(productSheetHeight: Int) {
+    private fun openVariantSheet(productId: String, action: ProductAction) {
+        playViewModel.onShowVariantSheet(bottomSheetMaxHeight, productId, action)
+    }
+
+    private fun closeVariantSheet() {
+        playViewModel.onHideVariantSheet()
+    }
+
+    private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
         val requiredMargin = offset16
         playFragment.onBottomInsetsViewShown(getScreenHeight() - (productSheetHeight + requiredMargin))
     }

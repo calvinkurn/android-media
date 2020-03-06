@@ -18,6 +18,7 @@
     </plurals>
 
     <string name="play_buy">Beli</string>
+    <string name="play_add_to_card">Tambah ke Keranjang</string>
     <string name="play_discount_percent">%d%%</string>
 
     <!--mock-->
