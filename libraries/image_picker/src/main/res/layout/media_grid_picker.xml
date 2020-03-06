@@ -36,12 +36,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|top"
+        android:paddingLeft="@dimen/dp_4"
+        android:paddingRight="@dimen/dp_4"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:visibility="gone"
         app:labelTitle="1"
-        app:labelType="general_light_green"
+        app:labelType="general_dark_green"
         tools:visibility="visible" />
 
 </merge>

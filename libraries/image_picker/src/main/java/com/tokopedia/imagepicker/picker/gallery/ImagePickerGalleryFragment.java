@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.design.label.LabelView;
@@ -341,7 +342,7 @@ public class ImagePickerGalleryFragment extends TkpdBaseV4Fragment
     private void showToastError(String message){
         if (getView()!= null){
             Toaster.INSTANCE.make(getView(),
-                    message, Toaster.LENGTH_LONG,
+                    message, Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR,
                     getString(R.string.close), v -> {
                         // no-op

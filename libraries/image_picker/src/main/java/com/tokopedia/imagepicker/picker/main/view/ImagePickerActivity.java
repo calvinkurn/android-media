@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
@@ -182,7 +184,9 @@ public class ImagePickerActivity extends BaseSimpleActivity
             imagePickerPreviewWidget.setData(selectedImagePaths,
                     imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPrimaryImageStringRes(),
                     imagePickerBuilder.getImagePickerMultipleSelectionBuilder().getPlaceholderImagePathResList());
-            if (imagePickerBuilder.hideThumbnailListPreview()) {
+            boolean hideThumbnail = imagePickerBuilder.hideThumbnailListPreview();
+            imagePickerPreviewWidget.setShown(!hideThumbnail);
+            if (hideThumbnail) {
                 imagePickerPreviewWidget.setVisibility(View.GONE);
             } else {
                 imagePickerPreviewWidget.setVisibility(View.VISIBLE);
@@ -375,8 +379,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
     }
 
     private void showToastError(String message){
-        Toaster.INSTANCE.make(findViewById(android.R.id.content),
-                message, Toaster.LENGTH_LONG,
+        Toaster.INSTANCE.make(findViewById(R.id.container),
+                message, Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
                 getString(R.string.close), v -> {
                     // no-op
@@ -407,7 +411,8 @@ public class ImagePickerActivity extends BaseSimpleActivity
         if (tabLayout.getTabCount() > 1) {
             tabLayout.setVisibility(View.VISIBLE);
         }
-        if (imagePickerBuilder.supportMultipleSelection()) {
+        if (imagePickerBuilder.supportMultipleSelection() &&
+            !imagePickerBuilder.hideThumbnailListPreview()) {
             imagePickerPreviewWidget.setVisibility(View.VISIBLE);
         }
         if (selectedImagePaths.size() > 0) {

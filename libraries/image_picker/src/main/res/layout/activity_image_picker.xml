@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:clipToPadding="false"
     android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:id="@+id/container">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"

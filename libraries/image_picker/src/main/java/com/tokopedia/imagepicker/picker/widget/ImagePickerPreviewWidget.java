@@ -29,6 +29,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
 
     private ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener onImagePickerThumbnailListWidgetListener;
     private RecyclerView recyclerView;
+    private boolean isShown = true;
 
     public interface OnImagePickerThumbnailListWidgetListener {
         void onThumbnailItemLongClicked(String imagePath, int position);
@@ -57,6 +58,10 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
     public ImagePickerPreviewWidget(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
+    }
+
+    public void setShown(boolean shown) {
+        isShown = shown;
     }
 
     private void init() {
@@ -90,6 +95,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
 
     public void addData(String imagePath) {
         imagePickerThumbnailAdapter.addData(imagePath);
+        if (!isShown) return;
         recyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -113,6 +119,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
 
     public int removeData(String imagePath) {
         final int position = imagePickerThumbnailAdapter.removeData(imagePath);
+        if (!isShown) return position;
         recyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {

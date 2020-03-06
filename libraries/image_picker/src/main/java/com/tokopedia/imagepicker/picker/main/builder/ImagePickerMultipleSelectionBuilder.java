@@ -2,6 +2,7 @@ package com.tokopedia.imagepicker.picker.main.builder;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
  * Created by hendry on 24/05/18.
  */
 
-public class ImagePickerMultipleSelectionBuilder implements Parcelable{
+public class ImagePickerMultipleSelectionBuilder implements Parcelable {
     public static final int DEFAULT_MAXIMUM_NO_PICK = 5;
 
     private int primaryImageStringRes;
@@ -30,7 +31,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable{
     @Nullable
     private PreviewExtension previewExtension;
 
-    public static class PreviewExtension implements Parcelable{
+    public static class PreviewExtension implements Parcelable {
         // usually when the user already select the image, it will show the preview at the bottom
         // this option is to hide/show it
         boolean hideThumbnailListPreview = false;
@@ -44,14 +45,18 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable{
         // in set to true, will append the selected Images in gallery (all albums)
         // example: previously user has select "data/image1.png".
         // this image will be appended at the gallery in the first rows.
-        boolean appendInitialSelectedImageInGallery = true;
+        boolean appendInitialSelectedImageInGallery = false;
 
-        public PreviewExtension(){
+        public static PreviewExtension createNoPreview() {
+            return new PreviewExtension(false, false, false, false);
+        }
 
+        public static PreviewExtension createPreview() {
+            return new PreviewExtension(true, true, true, true);
         }
 
         public PreviewExtension(boolean hideThumbnailListPreview, boolean showCounterAtSelectedImage,
-                                boolean showBiggerPreviewWhenThumbnailHidden, boolean appendInitialSelectedImageInGallery){
+                                boolean showBiggerPreviewWhenThumbnailHidden, boolean appendInitialSelectedImageInGallery) {
             this.hideThumbnailListPreview = hideThumbnailListPreview;
             this.showCounterAtSelectedImage = showCounterAtSelectedImage;
             this.showBiggerPreviewWhenThumbnailHidden = showBiggerPreviewWhenThumbnailHidden;
@@ -91,7 +96,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable{
         }
     }
 
-    public static ImagePickerMultipleSelectionBuilder getDefaultBuilder(){
+    public static ImagePickerMultipleSelectionBuilder getDefaultBuilder() {
         return new ImagePickerMultipleSelectionBuilder(
                 null,
                 null,
@@ -133,7 +138,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable{
         return canReorder;
     }
 
-    private void setInitialSelectedImagePathList(ArrayList<String> initialSelectedImagePathList){
+    private void setInitialSelectedImagePathList(ArrayList<String> initialSelectedImagePathList) {
         if (initialSelectedImagePathList == null) {
             this.initialSelectedImagePathList = new ArrayList<>();
         } else {
@@ -164,7 +169,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable{
     @NonNull
     public PreviewExtension getPreviewExtension() {
         if (previewExtension == null) {
-            previewExtension =  new PreviewExtension();
+            previewExtension = PreviewExtension.createNoPreview();
         }
         return previewExtension;
     }

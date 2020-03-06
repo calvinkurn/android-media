@@ -125,6 +125,9 @@ public class MediaGrid extends SquareFrameLayout implements View.OnClickListener
             }
         } else {
             ivCheck.setVisibility(View.GONE);
+            if (hasCounterLabel) {
+                counterLabel.setVisibility(View.GONE);
+            }
         }
     }
 
