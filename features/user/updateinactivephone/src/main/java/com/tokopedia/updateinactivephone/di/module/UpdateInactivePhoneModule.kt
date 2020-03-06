@@ -1,53 +1,46 @@
 package com.tokopedia.updateinactivephone.di.module
 
-import android.app.Activity
 import android.content.Context
 import com.tokopedia.updateinactivephone.data.repository.UploadImageRepositoryImpl
+import com.tokopedia.updateinactivephone.di.scope.UpdateInActiveContext
 import com.tokopedia.updateinactivephone.di.scope.UpdateInactivePhoneScope
-import com.tokopedia.updateinactivephone.usecase.CheckPhoneNumberStatusUsecase
-import com.tokopedia.updateinactivephone.usecase.GetUploadHostUseCase
-import com.tokopedia.updateinactivephone.usecase.SubmitImageUseCase
-import com.tokopedia.updateinactivephone.usecase.UploadChangePhoneNumberRequestUseCase
-import com.tokopedia.updateinactivephone.usecase.UploadImageUseCase
-import com.tokopedia.updateinactivephone.usecase.ValidateUserDataUseCase
+import com.tokopedia.updateinactivephone.usecase.*
 import com.tokopedia.updateinactivephone.viewmodel.presenter.ChangeInactiveFormRequestPresenter
-
 import dagger.Module
 import dagger.Provides
 
-@Module
-class UpdateInactivePhoneModule (val activity: Activity) {
+@Module class UpdateInactivePhoneModule(val context: Context) {
 
-    @UpdateInactivePhoneScope
     @Provides
-    fun getContext(): Context = activity
+    @UpdateInActiveContext
+    fun provideInActivePhoneContext() = context
 
-    @UpdateInactivePhoneScope
     @Provides
-    fun provideCheckPhoneNumberStatusUsecase(context: Context): CheckPhoneNumberStatusUsecase {
+    @UpdateInactivePhoneScope
+    fun provideCheckPhoneNumberStatusUsecase(@UpdateInActiveContext context: Context): CheckPhoneNumberStatusUsecase {
         return CheckPhoneNumberStatusUsecase(context)
     }
 
-    @UpdateInactivePhoneScope
     @Provides
-    fun provideValidateUserDataUseCase(context: Context): ValidateUserDataUseCase {
+    @UpdateInactivePhoneScope
+    fun provideValidateUserDataUseCase(@UpdateInActiveContext context: Context): ValidateUserDataUseCase {
         return ValidateUserDataUseCase(context)
     }
 
-    @UpdateInactivePhoneScope
     @Provides
+    @UpdateInactivePhoneScope
     fun provideUploadImageUseCase(uploadImageRepository: UploadImageRepositoryImpl): UploadImageUseCase {
         return UploadImageUseCase(uploadImageRepository)
     }
 
-    @UpdateInactivePhoneScope
     @Provides
+    @UpdateInactivePhoneScope
     fun provideGetUploadHostUseCase(uploadImageRepository: UploadImageRepositoryImpl): GetUploadHostUseCase {
         return GetUploadHostUseCase(uploadImageRepository)
     }
 
-    @UpdateInactivePhoneScope
     @Provides
+    @UpdateInactivePhoneScope
     fun provideUploadChangePhoneNumberRequestUseCase(uploadImageUseCase: UploadImageUseCase,
                       submitImageUseCase: SubmitImageUseCase,
                       getUploadHostUseCase: GetUploadHostUseCase): UploadChangePhoneNumberRequestUseCase {
@@ -55,14 +48,14 @@ class UpdateInactivePhoneModule (val activity: Activity) {
         return UploadChangePhoneNumberRequestUseCase(uploadImageUseCase, submitImageUseCase, getUploadHostUseCase)
     }
 
-    @UpdateInactivePhoneScope
     @Provides
-    fun provideSubmitImageUseCase(context: Context): SubmitImageUseCase {
+    @UpdateInactivePhoneScope
+    fun provideSubmitImageUseCase(@UpdateInActiveContext context: Context): SubmitImageUseCase {
         return SubmitImageUseCase(context)
     }
 
-    @UpdateInactivePhoneScope
     @Provides
+    @UpdateInactivePhoneScope
     fun provideChangeInactiveFormRequestPresenter(
             validateUserDataUseCase: ValidateUserDataUseCase,
             uploadChangePhoneNumberRequestUseCase: UploadChangePhoneNumberRequestUseCase
@@ -70,8 +63,4 @@ class UpdateInactivePhoneModule (val activity: Activity) {
         return ChangeInactiveFormRequestPresenter(validateUserDataUseCase, uploadChangePhoneNumberRequestUseCase)
     }
 
-    companion object {
-
-        private val WS_SERVICE = "WS_SERVICE"
-    }
 }

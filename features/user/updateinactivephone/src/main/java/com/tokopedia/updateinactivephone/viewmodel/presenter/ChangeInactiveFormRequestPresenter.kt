@@ -29,15 +29,11 @@ import javax.inject.Inject
 
 class ChangeInactiveFormRequestPresenter @Inject constructor(
         private val validateUserDataUseCase: ValidateUserDataUseCase,
-        private val uploadChangePhoneNumberRequestUseCase: UploadChangePhoneNumberRequestUseCase)
-    : BaseDaggerPresenter<ChangeInactiveFormRequest.View>(), ChangeInactiveFormRequest.Presenter {
+        private val uploadChangePhoneNumberRequestUseCase: UploadChangePhoneNumberRequestUseCase
+) : BaseDaggerPresenter<ChangeInactiveFormRequest.View>(), ChangeInactiveFormRequest.Presenter {
 
     private var photoIdImagePath: String? = null
     private var accountImagePath: String? = null
-
-    val isValidPhotoIdPath: Boolean
-        get() = !TextUtils.isEmpty(photoIdImagePath)
-
 
     fun setPhotoIdImagePath(imagePath: String) {
         this.photoIdImagePath = imagePath

@@ -10,12 +10,13 @@ import com.tokopedia.updateinactivephone.view.fragment.SelectImageNewPhoneFragme
 import dagger.Component
 
 @UpdateInactivePhoneScope
-@Component(modules = [UpdateInactivePhoneModule::class], dependencies = [BaseAppComponent::class])
+@Component(modules = [
+    UpdateInactivePhoneModule::class
+], dependencies = [
+    BaseAppComponent::class
+])
 interface UpdateInactivePhoneComponent {
-
     fun inject(changeInactivePhoneFragment: ChangeInactivePhoneFragment)
-
     fun inject(selectImageNewPhoneFragment: SelectImageNewPhoneFragment)
-
     fun inject(changeInactiveFormRequestActivity: ChangeInactiveFormRequestActivity)
 }

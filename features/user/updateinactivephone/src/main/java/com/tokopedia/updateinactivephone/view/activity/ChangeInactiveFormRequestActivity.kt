@@ -24,6 +24,7 @@ import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.Con
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.OLD_PHONE
 import com.tokopedia.updateinactivephone.common.UpdateInactivePhoneConstants.QUERY_CONSTANTS.Companion.USER_ID
 import com.tokopedia.updateinactivephone.di.component.DaggerUpdateInactivePhoneComponent
+import com.tokopedia.updateinactivephone.di.module.UpdateInactivePhoneModule
 import com.tokopedia.updateinactivephone.view.fragment.SelectImageNewPhoneFragment
 import com.tokopedia.updateinactivephone.view.fragment.UpdateNewPhoneEmailFragment
 import com.tokopedia.updateinactivephone.viewmodel.presenter.ChangeInactiveFormRequestPresenter
@@ -35,24 +36,29 @@ import javax.inject.Inject
  * [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.CHANGE_INACTIVE_PHONE_FORM]
  * Please pass USER_ID and OLD_PHONE
  */
-class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<BaseAppComponent>, ChangeInactiveFormRequest.View, SelectImageNewPhoneFragment.SelectImageInterface, UpdateNewPhoneEmailFragment.UpdateNewPhoneEmailInteractor {
+class ChangeInactiveFormRequestActivity : BaseSimpleActivity(),
+        HasComponent<BaseAppComponent>,
+        ChangeInactiveFormRequest.View,
+        SelectImageNewPhoneFragment.SelectImageInterface,
+        UpdateNewPhoneEmailFragment.UpdateNewPhoneEmailInteractor {
 
-    @Inject
-    lateinit var presenter: ChangeInactiveFormRequestPresenter
+    @Inject lateinit var presenter: ChangeInactiveFormRequestPresenter
 
     private var userId: String? = null
     private var tkpdProgressDialog: TkpdProgressDialog? = null
     private var updateNewPhoneEmailFragment: UpdateNewPhoneEmailFragment? = null
     private var newEmail: String? = null
     private var newPhoneNumber: String? = null
-    private var updateInactivePhoneInfoBottomSheet: BottomSheetUnify? = null
+    private val updateInactivePhoneInfoBottomSheet by lazy { BottomSheetUnify() }
 
     override fun getNewFragment(): Fragment? {
         return SelectImageNewPhoneFragment.instance
     }
 
-    override fun setupLayout(savedInstanceState: Bundle) {
+    override fun setupLayout(savedInstanceState: Bundle?) {
+        initInjector()
         super.setupLayout(savedInstanceState)
+        presenter.attachView(this)
         setupToolbar()
         initView()
     }
@@ -61,21 +67,15 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<Bas
         return R.layout.change_inactive_form_layout
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initInjector()
-        presenter.attachView(this)
-        updateInactivePhoneInfoBottomSheet = BottomSheetUnify()
-    }
-
     private fun initInjector() {
         DaggerUpdateInactivePhoneComponent.builder()
                 .baseAppComponent(component)
-                .build().inject(this)
+                .updateInactivePhoneModule(UpdateInactivePhoneModule(this))
+                .build()
+                .inject(this)
     }
 
     private fun initView() {
-
         if (intent != null && intent.extras != null) {
             userId = intent.extras?.getString(USER_ID)
         }
@@ -110,8 +110,8 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<Bas
 
         val infoIcon = toolbar.findViewById<ImageView>(R.id.info_icon)
         infoIcon.setOnClickListener { view ->
-            updateInactivePhoneInfoBottomSheet?.setTitle("Info")
-            updateInactivePhoneInfoBottomSheet?.show(supportFragmentManager, SelectImageNewPhoneFragment::class.java.name)
+            updateInactivePhoneInfoBottomSheet.setTitle("Info")
+            updateInactivePhoneInfoBottomSheet.show(supportFragmentManager, SelectImageNewPhoneFragment::class.java.name)
         }
 
         toolbar.setNavigationOnClickListener { onBackPressed() }
@@ -147,8 +147,6 @@ class ChangeInactiveFormRequestActivity : BaseSimpleActivity(), HasComponent<Bas
             fragmentTransaction.add(R.id.parent_view, this).addToBackStack(null).commit()
         }
     }
-
-    override val isValidPhotoIdPath: Boolean = presenter.isValidPhotoIdPath == true
 
     override fun setAccountPhotoImagePath(imagePath: String?) {
         imagePath?.let { presenter.setAccountPhotoImagePath(it) }

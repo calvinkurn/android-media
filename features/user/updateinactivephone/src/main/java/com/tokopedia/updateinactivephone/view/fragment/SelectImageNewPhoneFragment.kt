@@ -44,6 +44,7 @@ class SelectImageNewPhoneFragment : TkpdBaseV4Fragment() {
 
     private var photoIdPath: String? = null
     private var accountIdPath: String? = null
+    private var isValidPhotoPath = false
 
     override fun onStart() {
         super.onStart()
@@ -175,7 +176,8 @@ class SelectImageNewPhoneFragment : TkpdBaseV4Fragment() {
     }
 
     private fun setSubmitButton() {
-        if (selectImageInterface?.isValidPhotoIdPath == true) {
+        checkImageNotEmpty()
+        if (isValidPhotoPath) {
             MethodChecker.setBackground(continueButton,
                     MethodChecker.getDrawable(activity,
                             R.drawable.green_button_rounded
@@ -191,6 +193,12 @@ class SelectImageNewPhoneFragment : TkpdBaseV4Fragment() {
         }
     }
 
+    private fun checkImageNotEmpty(){
+        if(photoIdPath != null && accountIdPath != null) {
+            isValidPhotoPath = true
+        }
+    }
+
     private fun loadImageToImageView(imageView: ImageView?, imagePath: String?) {
         ImageHandler.loadImageFromFile(activity, imageView, File(imagePath))
     }
@@ -200,8 +208,6 @@ class SelectImageNewPhoneFragment : TkpdBaseV4Fragment() {
     }
 
     interface SelectImageInterface {
-
-        val isValidPhotoIdPath: Boolean
         fun onContinueButtonClick()
 
         fun setAccountPhotoImagePath(imagePath: String?)
