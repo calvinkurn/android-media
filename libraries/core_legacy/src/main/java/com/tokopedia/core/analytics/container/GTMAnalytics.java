@@ -58,6 +58,8 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String USER_ID = "userId";
     private static final String SHOP_ID = "shopId";
     private static final String SHOP_TYPE = "shopType";
+    public static final String OPEN_SCREEN = "openScreen";
+    public static final String CAMPAIGN_TRACK = "campaignTrack";
     private final Iris iris;
     private TetraDebugger tetraDebugger;
     private final RemoteConfig remoteConfig;
@@ -754,6 +756,7 @@ public class GTMAnalytics extends ContextAnalytics {
         Bundle bundle = new Bundle();
         bundle.putString("screenName", screenName);
         bundle.putString("appsflyerId", afUniqueId);
+        bundle.putString(KEY_EVENT, OPEN_SCREEN);
         if(!TextUtils.isEmpty(sessionHandler.getLoginID())) {
             bundle.putString("userId", sessionHandler.getLoginID());
         }else{
@@ -969,7 +972,7 @@ public class GTMAnalytics extends ContextAnalytics {
         bundle.putString("appsflyerId", afUniqueId);
         bundle.putString("userId", sessionHandler.getLoginID());
         bundle.putString("clientId", getClientIDString());
-
+        bundle.putString(KEY_EVENT, CAMPAIGN_TRACK);
         bundle.putString("screenName", (String) param.get("screenName"));
 
         String gclid = (String) param.get(AppEventTracking.GTM.UTM_GCLID);
