@@ -678,8 +678,6 @@ public class HomeFragment extends BaseDaggerFragment implements
                         }
                     }
                 }
-
-                jankyFramesMonitoringListener.submitDynamicChannelCount(layoutCounter);
             }
 
             if (isDataValid(data)) {
