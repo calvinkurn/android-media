@@ -185,10 +185,16 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                             trackingDataForCombination = channel.convertProductEnhanceSprintSaleCarouselDataLayerForCombination(),
                             isCombined = true)
                 }
-                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO, DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
+                DynamicHomeChannel.Channels.LAYOUT_ORGANIC -> {
                     createDynamicChannel(
                             channel = channel,
                             trackingData = channel.enhanceImpressionDynamicSprintLegoHomePage
+                    )
+                }
+                DynamicHomeChannel.Channels.LAYOUT_SPRINT_LEGO -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = HomePageTrackingV2.SprintSale.getSprintSaleImpression(channel)
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC, DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> {
@@ -208,8 +214,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL-> {
                     createDynamicChannel(
                             channel = channel,
-                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel),
-                            isCombined = false
+                            trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel)
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}

@@ -15,6 +15,7 @@ abstract class BaseTracking {
         const val PROMO_CLICK = "promoClick"
         const val PRODUCT_CLICK = "productClick"
         const val PROMO_VIEW_IRIS = "promoViewIris"
+        const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val CLICK_HOMEPAGE = "clickHomepage"
     }
 
@@ -42,9 +43,16 @@ abstract class BaseTracking {
         const val FORMAT_2_ITEMS = "%s - %s"
     }
 
+    protected object ChannelId{
+        const val KEY = "channelId"
+    }
+
     protected object Value{
         const val NONE_OTHER = "none / other"
-        const val LIST = "/ - p%s - %s - %s"
+        const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
+        const val LIST = "/ - p%s - %s"
+        const val EMPTY = ""
+
         fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
     }
 
