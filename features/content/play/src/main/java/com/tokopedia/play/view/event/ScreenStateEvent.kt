@@ -20,6 +20,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetVideo(val videoPlayer: ExoPlayer) : ScreenStateEvent()
     data class SetChannelTitle(val title: String): ScreenStateEvent()
     data class SetPartnerInfo(val partnerInfo: PartnerInfoUiModel): ScreenStateEvent()
+    data class SetTotalCart(val cartUiModel: CartUiModel): ScreenStateEvent()
     data class SetTotalViews(val totalView: TotalViewUiModel): ScreenStateEvent()
     data class SetTotalLikes(val totalLikes: TotalLikeUiModel): ScreenStateEvent()
     data class SetPinned(val pinned: PinnedUiModel) : ScreenStateEvent()

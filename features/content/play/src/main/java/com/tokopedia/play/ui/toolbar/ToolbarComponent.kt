@@ -39,6 +39,7 @@ open class ToolbarComponent(
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.show()
                             is ScreenStateEvent.OnNoMoreAction -> uiView.hideActionMore()
                             is ScreenStateEvent.FollowPartner -> uiView.setFollowStatus(it.shouldFollow)
+                            is ScreenStateEvent.SetTotalCart -> uiView.setCartInfo(it.cartUiModel)
                         }
                     }
         }
@@ -73,6 +74,12 @@ open class ToolbarComponent(
     override fun onPartnerNameClicked(view: ToolbarView, partnerId: Long, type: PartnerType) {
         launch {
             bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.PartnerNameClicked(partnerId, type))
+        }
+    }
+
+    override fun onCartButtonClicked(view: ToolbarView) {
+        launch {
+            bus.emit(PlayToolbarInteractionEvent::class.java, PlayToolbarInteractionEvent.CartButtonClicked)
         }
     }
 
