@@ -1,50 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:tickerShapeType="full"
-        app:closeButtonVisibility="gone"
         android:layout_margin="@dimen/dp_16"
+        android:visibility="visible"
+        app:closeButtonVisibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:tickerShapeType="full" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/shipping_duration_rv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
-        app:layout_constraintTop_toBottomOf="@id/ticker_info"/>
+        app:layout_constraintTop_toBottomOf="@id/ticker_info" />
 
     <FrameLayout
         android:id="@+id/bottom_layout_shipping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btn_save_duration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/sp_16"
-            android:textStyle="bold"
+            android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_8"
             android:layout_marginEnd="@dimen/dp_16"
             android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginStart="@dimen/dp_16"
             android:layout_marginBottom="@dimen/dp_8"
-            android:layout_marginTop="@dimen/dp_8"
-            android:text="@string/label_button_choose_shipping_duration"/>
+            android:text="@string/label_button_choose_shipping_duration"
+            android:textSize="@dimen/sp_16"
+            android:textStyle="bold" />
 
     </FrameLayout>
 
@@ -52,8 +52,8 @@
         android:id="@+id/content_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ticker_info,shipping_duration_rv,bottom_layout_shipping"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:constraint_referenced_ids="ticker_info,shipping_duration_rv,bottom_layout_shipping" />
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/global_error"
@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:visibility="gone"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

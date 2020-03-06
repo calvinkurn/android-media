@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,10 +20,8 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
-import com.tokopedia.network.constant.ResponseStatus
+import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.KERO_TOKEN
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
@@ -33,25 +30,12 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_choose_address.*
-import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
 class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, AddressListItemAdapter.onSelectedListener {
-
-    override fun onSelect(addressId: String) {
-        viewModel.setSelectedAddress(addressId)
-    }
-
-    override fun onSearchSubmitted(text: String) {
-        performSearch(text)
-    }
-
-    override fun onSearchTextChanged(text: String?) {
-        openSoftKeyboard()
-    }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -78,9 +62,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     val adapter = AddressListItemAdapter(this)
-    private var maxItemPosition: Int = 0
-    private var isLoading: Boolean = false
-    private lateinit var inputMethodManager: InputMethodManager
+
     private lateinit var searchAddress: SearchInputView
 
     override fun getScreenName(): String = ""
@@ -101,15 +83,15 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                 is OccState.Success -> {
                     swipe_refresh_layout.isRefreshing = false
                     global_error.gone()
-                    content_layout.visible()
-                    if (it.data.listAddress.isEmpty()) {
-                        text_search_error.visible()
-                        content_layout.gone()
-                    } else {
-                        text_search_error.gone()
-                        address_list_rv.visible()
-                        renderData(it.data.listAddress)
-                    }
+                    setEmptyState(it.data.listAddress.isEmpty(), viewModel.savedQuery.isEmpty())
+//                    if (it.data.listAddress.isEmpty()) {
+//                        text_search_error.visible()
+//                        content_layout.gone()
+//                    } else {
+//                        text_search_error.gone()
+//                        address_list_rv.visible()
+                    renderData(it.data.listAddress)
+//                    }
                 }
 
                 is OccState.Fail -> {
@@ -139,15 +121,13 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         initHeader()
         initViewModel()
         initSearch()
-        initView()
         address_list_rv.adapter = adapter
         address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initSearchView()
-
     }
 
-    private fun initView() {
-        if (empty_state_order_list.visibility == View.GONE) {
+    private fun setEmptyState(isEmpty: Boolean, isFirstLoad: Boolean) {
+        if (!isEmpty) {
             btn_save_address.text = getString(R.string.label_button_input_address)
             btn_save_address.setOnClickListener {
                 if (arguments?.getBoolean(ARG_IS_EDIT) == false) {
@@ -156,16 +136,31 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
                     goBack()
                 }
             }
-        } else {
-            empty_state_order_list.visibility = View.VISIBLE
+            empty_state_order_list.gone()
+            text_search_error.gone()
+            searchAddress.visible()
+            address_list_rv.visible()
+            bottom_layout_address.visible()
+        } else if (isFirstLoad) {
             btn_save_address.text = getString(R.string.label_button_input_address_empty)
             btn_save_address.setOnClickListener {
                 goToPickLocation(REQUEST_FIRST_CREATE)
             }
+            address_list_rv.gone()
+            searchAddress.gone()
+            text_search_error.gone()
+            empty_state_order_list.visible()
+            bottom_layout_address.visible()
+        } else {
+            address_list_rv.gone()
+            bottom_layout_address.gone()
+            empty_state_order_list.gone()
+            searchAddress.visible()
+            text_search_error.visible()
         }
     }
 
-    private fun initSearch(){
+    private fun initSearch() {
         val searchKey = viewModel.savedQuery
         search_input_view.searchText = searchKey
 
@@ -175,9 +170,11 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     private fun goBack() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
-            parent.addressId = adapter.addresspositionId
-            Log.d("address_fragment", parent.addressId.toString())
-            parent.goBack()
+            val selectedId = viewModel.selectedId.toIntOrZero()
+            if (selectedId > 0) {
+                parent.addressId = selectedId
+                parent.goBack()
+            }
         }
     }
 
@@ -220,8 +217,12 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_FIRST_CREATE) {
-            performSearch("")
-            goToNextStep()
+            val saveAddressDataModel = data?.getParcelableExtra<SaveAddressDataModel>("EXTRA_ADDRESS_MODEL")
+            if (saveAddressDataModel != null) {
+                viewModel.selectedId = saveAddressDataModel.id.toString()
+                performSearch("")
+                goToNextStep()
+            }
         } else if (requestCode == REQUEST_CREATE) {
             performSearch(searchAddress.searchTextView.text.toString())
         }
@@ -236,16 +237,26 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         }
         searchAddress.setListener(this)
         searchAddress.setSearchHint(getString(R.string.label_hint_search_address))
-
     }
 
+    override fun onSelect(addressId: String) {
+        viewModel.setSelectedAddress(addressId)
+    }
+
+    override fun onSearchSubmitted(text: String) {
+        performSearch(text)
+    }
+
+    override fun onSearchTextChanged(text: String?) {
+        openSoftKeyboard()
+    }
 
     private fun performSearch(query: String) {
         viewModel.searchAddress(query)
     }
 
     private fun openSoftKeyboard() {
-        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)?.showSoftInput(
+        (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager).showSoftInput(
                 searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
     }
 
@@ -275,7 +286,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         val parent = activity
         if (parent is PreferenceEditActivity) {
             val selectedId = viewModel.selectedId.toIntOrZero()
-            if(selectedId > 0) {
+            if (selectedId > 0) {
                 parent.addressId = selectedId
                 parent.addFragment(ShippingDurationFragment())
             }
@@ -319,7 +330,11 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         global_error.setActionClickListener {
             viewModel.searchAddress("")
         }
-        content_layout.gone()
+        searchAddress.gone()
+        text_search_error.gone()
+        address_list_rv.gone()
+        bottom_layout_address.gone()
+        empty_state_order_list.gone()
         global_error.visible()
     }
 
