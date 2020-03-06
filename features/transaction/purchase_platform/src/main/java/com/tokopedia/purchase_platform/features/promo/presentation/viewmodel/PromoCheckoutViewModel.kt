@@ -497,19 +497,31 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         promoRecommendation?.let {
             it.uiState.isButtonSelectEnabled = false
 
+            val expandedParentIdentifierList = mutableSetOf<Int>()
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
                     if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
                         it.uiState.isSellected = true
                         calculateClash(it)
+                        expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
                     }
                 } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    var hasSelectedPromoItem = false
                     it.uiData.tmpPromoItemList.forEach {
                         if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
                             it.uiState.isSellected = true
                             calculateClash(it)
+                            hasSelectedPromoItem = true
                         }
                     }
+                    it.uiState.hasSelectedPromoItem = hasSelectedPromoItem
+                }
+            }
+
+            promoListUiModel.value?.forEach {
+                if (it is PromoListHeaderUiModel && expandedParentIdentifierList.contains(it.uiData.identifierId)) {
+                    it.uiState.hasSelectedPromoItem = true
+                    _tmpUiModel.value = Update(it)
                 }
             }
 
