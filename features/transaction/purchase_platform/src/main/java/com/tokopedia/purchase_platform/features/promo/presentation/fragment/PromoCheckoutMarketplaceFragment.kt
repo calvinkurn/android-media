@@ -357,8 +357,6 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         showToastMessage(errorMessage)
     }
 
-    // --- FRAGMENT LEVEL ACTION
-
     private fun showSavePromoDialog() {
         activity?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -387,19 +385,9 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         viewModel.resetPromo()
     }
 
-    // --- END OF FRAGMENT LEVEL ACTION
-
-
-    // --- RECOMMENDATION SECTION
-
     override fun onClickApplyRecommendedPromo() {
         viewModel.applyPromoSuggestion()
     }
-
-    // --- END OF RECOMMENDATION SECTION
-
-
-    // --- PROMO LIST SECTION
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
 
@@ -428,28 +416,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     override fun onClickPromoEligibilityHeader(position: Int, element: PromoEligibilityHeaderUiModel) {
-        val modifiedData = ArrayList<Visitable<*>>()
-
-        if (!element.uiState.isCollapsed) {
-            val startIndex = position + 1
-            for (index in startIndex until adapter.data.size) {
-                val oldPromoItem = adapter.data[index]
-                modifiedData.add(oldPromoItem)
-            }
-
-            element.uiState.isCollapsed = !element.uiState.isCollapsed
-            element.uiData.tmpPromo = modifiedData
-
-            adapter.modifyData(position)
-            adapter.removeDataList(modifiedData)
-        } else {
-            element.uiState.isCollapsed = !element.uiState.isCollapsed
-
-            adapter.modifyData(position)
-            adapter.addVisitableList(position + 1, element.uiData.tmpPromo)
-            element.uiData.tmpPromo = emptyList()
-        }
+        viewModel.updateIneligiblePromoList(element)
     }
 
-    // -- END OF PROMO LIST SECTION
 }

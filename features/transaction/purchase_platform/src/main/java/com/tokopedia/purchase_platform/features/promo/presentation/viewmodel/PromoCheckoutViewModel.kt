@@ -469,4 +469,42 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             calculateAndRenderTotalBenefit()
         }
     }
+
+    fun updateIneligiblePromoList(element: PromoEligibilityHeaderUiModel) {
+        val modifiedData = ArrayList<Visitable<*>>()
+
+        val dataIndex = promoListUiModel.value?.indexOf(element) ?: 0
+
+        if (dataIndex != 0) {
+            val data = promoListUiModel.value?.get(dataIndex) as PromoEligibilityHeaderUiModel
+            data.let {
+                if (!it.uiState.isCollapsed) {
+                    val startIndex = dataIndex + 1
+                    val promoListSize = promoListUiModel.value?.size ?: 0
+                    for (index in startIndex until promoListSize) {
+                        promoListUiModel.value?.get(index)?.let {
+                            modifiedData.add(it)
+                        }
+                    }
+
+                    it.uiState.isCollapsed = !it.uiState.isCollapsed
+                    it.uiData.tmpPromo = modifiedData
+
+                    _tmpUiModel.value = Update(it)
+                    modifiedData.forEach {
+                        _tmpUiModel.value = Delete(it)
+                    }
+                } else {
+                    it.uiState.isCollapsed = !it.uiState.isCollapsed
+
+                    _tmpUiModel.value = Update(it)
+                    val mapList = HashMap<Visitable<*>, List<Visitable<*>>>()
+                    mapList[it] = it.uiData.tmpPromo
+
+                    _tmpListUiModel.value = Insert(mapList)
+                    it.uiData.tmpPromo = emptyList()
+                }
+            }
+        }
+    }
 }
