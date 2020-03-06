@@ -2,10 +2,7 @@ package com.tokopedia.play.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.play.view.activity.PlayActivity
-import com.tokopedia.play.view.fragment.PlayErrorFragment
-import com.tokopedia.play.view.fragment.PlayFragment
-import com.tokopedia.play.view.fragment.PlayInteractionFragment
-import com.tokopedia.play.view.fragment.PlayVideoFragment
+import com.tokopedia.play.view.fragment.*
 import dagger.Component
 
 /**
@@ -25,6 +22,8 @@ interface PlayComponent {
     fun inject(playInteractionFragment: PlayInteractionFragment)
 
     fun inject(playErrorFragment: PlayErrorFragment)
+
+    fun inject(playBottomSheetFragment: PlayBottomSheetFragment)
 
     fun inject(playActivity: PlayActivity)
 }
