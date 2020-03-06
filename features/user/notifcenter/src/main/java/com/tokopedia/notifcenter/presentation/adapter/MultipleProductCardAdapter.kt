@@ -20,6 +20,13 @@ class MultipleProductCardAdapter(
         return multipleProductCardFactory.createViewHolder(containerView, viewType)
     }
 
+    fun removeAllItem() {
+        visitables.removeAll {
+            it is MultipleProductCardViewBean
+        }
+        notifyDataSetChanged()
+    }
+
     fun insertData(data: List<MultipleProductCardViewBean>) {
         addElement(data)
     }

@@ -69,6 +69,7 @@ class ProductCheckoutViewHolder(
                     location = LABEL_BOTTOM_SHEET_LOCATION,
                     notification = element
             )
+            multiProductAdapter.removeAllItem()
             multiProductAdapter.insertData(
                     MultipleProductCardMapper.map(element)
             )
