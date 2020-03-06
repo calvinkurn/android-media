@@ -31,7 +31,6 @@
         android:id="@+id/rvCarouselShopPageHome"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl3"
         android:clipToPadding="false"
         android:clipChildren="false" />
 
