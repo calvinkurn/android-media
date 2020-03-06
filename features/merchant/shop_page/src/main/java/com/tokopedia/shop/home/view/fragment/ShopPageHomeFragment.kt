@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
@@ -22,6 +23,7 @@ import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -98,7 +100,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onSuccessGetProductListData(hasNextPage: Boolean, productList: List<ShopHomeProductViewModel>) {
-        shopHomeAdapter.setEtalaseTitleData()
+        shopHomeAdapter.hideLoading()
+        if(shopHomeAdapter.endlessDataSize == 0) {
+            shopHomeAdapter.setEtalaseTitleData()
+        }
         shopHomeAdapter.setProductListData(productList)
     }
 
@@ -134,8 +139,20 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 .inject(this)
     }
 
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : DataEndlessScrollListener(recyclerViewLayoutManager, shopHomeAdapter) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                shopHomeAdapter.showLoading()
+                loadData(page)
+            }
+        }
+    }
+
     override fun callInitialLoadAutomatically() = false
 
     override fun loadData(page: Int) {
+        if(shopId.isNotEmpty()) {
+            viewModel.getNextProductList(shopId, page)
+        }
     }
 }

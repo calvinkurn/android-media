@@ -40,7 +40,9 @@ class ShopHomeMultipleImageColumnViewHolder(itemView: View) : AbstractViewHolder
         }
         itemView.rvShopHomeMultiple.apply {
             layoutManager = gridLayoutManager
-            addItemDecoration(PaddingItemDecorationShopPage(element.name))
+            if(itemDecorationCount == 0) {
+                addItemDecoration(PaddingItemDecorationShopPage(element.name))
+            }
             adapter = shopHomeMultipleImageColumnAdapter
         }
         shopHomeMultipleImageColumnAdapter.submitList(element.data)

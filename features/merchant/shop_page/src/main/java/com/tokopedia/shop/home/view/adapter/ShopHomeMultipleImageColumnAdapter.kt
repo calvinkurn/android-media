@@ -19,5 +19,4 @@ class ShopHomeMultipleImageColumnAdapter: ListAdapter<ShopHomeDisplayWidgetUiMod
     override fun onBindViewHolder(holder: ShopHomeItemImageColumnViewHolder, position: Int) {
         getItem(position)?.let { holder.bind(it) }
     }
-
 }

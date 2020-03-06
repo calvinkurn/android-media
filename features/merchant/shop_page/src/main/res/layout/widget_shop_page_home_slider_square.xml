@@ -13,7 +13,7 @@
     android:layout_marginRight="-12dp"
     android:orientation="vertical"
     android:clipToPadding="false"
-    android:layout_marginBottom="@dimen/dp_8"
+    android:layout_marginBottom="@dimen/spacing_lvl3"
     android:clipChildren="false">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -22,8 +22,9 @@
         android:layout_height="wrap_content"
         app:typographyType="body_1"
         app:typographyWeight="bold"
+        android:layout_marginBottom="@dimen/dp_12"
+        android:layout_marginTop="@dimen/spacing_lvl4"
         android:textColor="@color/clr_f531353b"
-        android:layout_marginTop="@dimen/dp_16"
         tools:text="New Axe Apollo" />
 
     <androidx.recyclerview.widget.RecyclerView
