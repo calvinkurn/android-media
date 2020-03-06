@@ -1855,7 +1855,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public JankyFrameMonitoringUtil getHomeJankyFramesUtil() {
-        if (jankyFramesMonitoringListener != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil()
+        if (jankyFramesMonitoringListener != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
         return null;
     }
 }
