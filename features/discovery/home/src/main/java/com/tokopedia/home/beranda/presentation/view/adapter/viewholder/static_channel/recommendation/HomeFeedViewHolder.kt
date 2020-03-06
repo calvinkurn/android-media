@@ -32,7 +32,7 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
             ProductCardModel.LabelGroup(position = it.position, type = it.type, title = it.title)
         }
 
-        productCardView.run{
+        productCardView?.run{
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.slashedPrice,
@@ -53,7 +53,8 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                                     isActive = element.isFreeOngkirActive,
                                     imageUrl = element.freeOngkirImageUrl
                             ),
-                            labelGroupList = productCardModelLabelGroupList
+                            labelGroupList = productCardModelLabelGroupList,
+                            hasThreeDots = true
                     )
             )
             setImageProductViewHintListener(element, object: ViewHintListener {
@@ -62,6 +63,18 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
                 }
             })
             setOnClickListener { homeFeedView.onProductClick(element, adapterPosition) }
+
+            setThreeDotsOnClickListener {
+                homeFeedView.onProductThreeDotsClick(element, adapterPosition)
+            }
+        }
+    }
+
+    override fun bind(element: HomeFeedViewModel, payload: List<Any>) {
+        if (payload.getOrNull(0) !is Boolean) return
+
+        productCardView?.setThreeDotsOnClickListener {
+            homeFeedView.onProductThreeDotsClick(element, adapterPosition)
         }
     }
 }

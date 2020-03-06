@@ -12,6 +12,7 @@ data class ProductCardOptionsModel(
         var isTopAds: Boolean = false,
         var topAdsWishlistUrl: String = "",
         var isRecommendation: Boolean = false,
+        var productPosition: Int = 0,
         var screenName: String = "",
         var seeSimilarProductEvent: String = ""
 ): Parcelable {
@@ -27,6 +28,7 @@ data class ProductCardOptionsModel(
             parcel.readByte() != 0.toByte(),
             parcel.readString() ?: "",
             parcel.readByte() != 0.toByte(),
+            parcel.readInt(),
             parcel.readString() ?: "",
             parcel.readString() ?: "")
 
@@ -39,6 +41,7 @@ data class ProductCardOptionsModel(
         parcel.writeByte(if (isTopAds) 1 else 0)
         parcel.writeString(topAdsWishlistUrl)
         parcel.writeByte(if (isRecommendation) 1 else 0)
+        parcel.writeInt(productPosition)
         parcel.writeString(screenName)
         parcel.writeString(seeSimilarProductEvent)
         parcel.writeParcelable(wishlistResult, flags)

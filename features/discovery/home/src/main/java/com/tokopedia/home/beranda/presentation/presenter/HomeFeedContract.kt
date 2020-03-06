@@ -19,6 +19,7 @@ object HomeFeedContract {
     interface View : BaseListViewListener<Visitable<HomeFeedTypeFactory>> {
         fun onProductImpression(homeFeedViewModel: HomeFeedViewModel, position: Int)
         fun onProductClick(homeFeedViewModel: HomeFeedViewModel, position: Int)
+        fun onProductThreeDotsClick(homeFeedViewModel: HomeFeedViewModel, position: Int)
         fun getTrackingQueue(): TrackingQueue
         fun getTabName(): String
     }
