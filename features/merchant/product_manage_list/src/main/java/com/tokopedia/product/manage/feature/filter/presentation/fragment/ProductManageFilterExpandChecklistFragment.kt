@@ -203,10 +203,7 @@ class ProductManageFilterExpandChecklistFragment :
     private fun initButtons() {
         btn_submit.setOnClickListener {
             val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
-            var cacheManagerId = ""
-            cacheManager?.let {
-                cacheManagerId = it.id!!
-            }
+            val cacheManagerId = cacheManager?.id
             productManageFilterExpandChecklistViewModel.checklistData.value?.sortByDescending { it.isSelected }
             val dataToSave = productManageFilterExpandChecklistViewModel.checklistData.value?.toList() ?: listOf()
             if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
