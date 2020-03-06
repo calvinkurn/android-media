@@ -16,7 +16,8 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
     private var positionWidgetOnHome = -1
 
     private var listener = object: BusinessUnitItemViewListener{
-        override fun onClicked(element: BusinessUnitItemDataModel, position: Int) {
+        override fun onClicked(position: Int) {
+            val element = getItem(position)
             listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
         }
 

@@ -36,11 +36,9 @@ open class SizeSmallBusinessViewHolder (
     }
 
     open fun addClickListener(element: BusinessUnitItemDataModel){
-        if(!itemView.hasOnClickListeners()){
-            itemView.setOnClickListener {
-                RouteManager.route(itemView.context, element.content.applink)
-                listener.onClicked(element, adapterPosition)
-            }
+        itemView.setOnClickListener {
+            listener.onClicked(adapterPosition)
+            RouteManager.route(itemView.context, element.content.applink)
         }
     }
 

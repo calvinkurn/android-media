@@ -5,5 +5,5 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 
 interface BusinessUnitItemViewListener {
     fun onImpressed(element: BusinessUnitItemDataModel, position: Int)
-    fun onClicked(element: BusinessUnitItemDataModel, position: Int)
+    fun onClicked(position: Int)
 }
