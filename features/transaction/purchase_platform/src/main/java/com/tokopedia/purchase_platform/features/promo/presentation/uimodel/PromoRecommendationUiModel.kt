@@ -37,7 +37,8 @@ data class PromoRecommendationUiModel(
     )
 
     data class UiState(
-            var isButtonSelectEnabled: Boolean = false
+            var isButtonSelectEnabled: Boolean = false,
+            var hasAppliedRecommendation: Boolean = false
     )
 
 }

@@ -441,6 +441,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
         val promoRecommendation = promoRecommendationUiModel.value
         promoRecommendation?.let {
             it.uiState.isButtonSelectEnabled = false
+            it.uiState.hasAppliedRecommendation = true
 
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
