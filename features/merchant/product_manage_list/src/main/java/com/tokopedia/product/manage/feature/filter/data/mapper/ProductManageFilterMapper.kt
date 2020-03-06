@@ -20,10 +20,6 @@ class ProductManageFilterMapper {
         const val OTHER_FILTER_HEADER = "Filter Lainnya"
         private const val SHOW_CHIPS = true
         private const val HIDE_CHIPS = false
-        private const val SORT_NAME = "NAME"
-        private const val SORT_UPDATE_TIME = "UPDATE_TIME"
-        private const val SORT_SOLD = "SOLD"
-        private const val SORT_PRICE = "PRICE"
 
         fun mapCombinedResultToFilterViewModels(filterOptionsResponse: FilterOptionsResponse): List<FilterViewModel> {
             val filterViewModels = mutableListOf<FilterViewModel>()
