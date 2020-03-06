@@ -12,9 +12,10 @@ import kotlinx.android.synthetic.main.item_shipping_duration.view.*
 class ShippingDurationItemAdapter : RecyclerView.Adapter<ShippingDurationItemAdapter.ShippingDurationViewHolder>(){
 
     var shippingDurationList = mutableListOf<ServicesItemModelNoPrice>()
-    var lasCheckedPosition = -1
+    var lastCheckedPosition = -1
 //    private var inflater: LayoutInflater = LayoutInflater.from(context)
 //    private val listShippingDuration = emptyList<Preference>()
+    var shippingDurationPositionId = -1
     private val listener: OnShippingMenuSelected? = null
 
     interface OnShippingMenuSelected {
@@ -43,17 +44,19 @@ class ShippingDurationItemAdapter : RecyclerView.Adapter<ShippingDurationItemAda
                 item_shipping_price.visibility = View.GONE
                 item_shipping_desc.visibility = View.GONE
 
-                item_shipping_radio.isChecked = lasCheckedPosition == currentPosition
+                item_shipping_radio.isChecked = lastCheckedPosition == currentPosition
 
                 item_shipping_list.setOnClickListener {
 
-                    val position = lasCheckedPosition
-                    lasCheckedPosition = currentPosition
+                    val position = lastCheckedPosition
+                    lastCheckedPosition = currentPosition
                     if(position > -1) notifyItemChanged(position)
-                    notifyItemChanged(lasCheckedPosition)
+                    notifyItemChanged(lastCheckedPosition)
 
-                    listener?.onSelect(data.serviceId)
-                    Log.d("ID_NIH", listener?.onSelect(data.serviceId).toString())
+//                    listener?.onSelect(data.serviceId)
+                    data.serviceId?.let {
+                        shippingDurationPositionId = it
+                    }
                 }
 
 

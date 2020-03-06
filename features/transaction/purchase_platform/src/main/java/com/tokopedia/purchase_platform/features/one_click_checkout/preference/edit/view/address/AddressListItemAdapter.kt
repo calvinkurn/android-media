@@ -3,30 +3,22 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.domain.model.AddressListModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import kotlinx.android.synthetic.main.card_address_list.view.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlin.math.log
 
 class AddressListItemAdapter : RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
     var addressList = mutableListOf<RecipientAddressModel>()
     var lastCheckedPosition = -1
 //    private val listAddressList = listOf(Preference(), Preference(), Preference(), Preference(), Preference())
-    val listener: ActionListener? = null
+    var listener: onSelectedListener? = null
+    var addresspositionId = -1
 
-    interface ActionListener{
-        fun onSelect(selection: RecipientAddressModel)
+    interface onSelectedListener{
+        fun onSelect(selection: Int?)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressListViewHolder {
@@ -57,8 +49,14 @@ class AddressListItemAdapter : RecyclerView.Adapter<AddressListItemAdapter.Addre
                     lastCheckedPosition = adapterPosition
                     if(position > -1) notifyItemChanged(position)
                     notifyItemChanged(lastCheckedPosition)
+                 /*   data.id?.let {
+                        listener?.onSelect(it.toInt())
+                    }
+*/
+//                    listener?.onSelect(data.id.toInt())
 
-                    listener?.onSelect(data)
+                    addresspositionId = data.id.toInt()
+                    Log.d("address_adapter", addresspositionId.toString())
                 }
             }
         }

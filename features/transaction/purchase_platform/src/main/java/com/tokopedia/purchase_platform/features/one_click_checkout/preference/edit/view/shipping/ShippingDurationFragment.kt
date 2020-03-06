@@ -9,12 +9,22 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ServicesItemModelNoPrice
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
 import kotlinx.android.synthetic.main.fragment_shipping_duration.*
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ShippingDurationFragment : BaseDaggerFragment(){
@@ -52,7 +62,21 @@ class ShippingDurationFragment : BaseDaggerFragment(){
 
     private fun initViewModel(){
         viewModel.shippingDuration.observe(this, Observer {
-            renderData(it.services)
+            when(it) {
+                is OccState.Success -> {
+                    global_error.gone()
+                    content_layout.visible()
+                    renderData(it.data.services)
+                }
+
+                is OccState.Fail -> {
+                    if(!it.isConsumed) {
+                        if(it.throwable != null){
+                            handleError(it.throwable)
+                        }
+                    }
+                }
+            }
         })
     }
 
@@ -108,6 +132,47 @@ class ShippingDurationFragment : BaseDaggerFragment(){
                 parent.setHeaderSubtitle(getString(R.string.activity_subtitle_shipping_address))
             }
         }
+    }
+
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                view?.let {
+                    showGlobalError(GlobalError.NO_CONNECTION)
+                }
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                            Toaster.make(it, "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            }
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                    Toaster.make(it, throwable.message
+                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                }
+            }
+        }
+        viewModel.consumeGetShippingDurationFail()
+    }
+
+    private fun showGlobalError(type: Int){
+        global_error.setType(type)
+        global_error.setActionClickListener {
+            viewModel.getShippingDuration()
+        }
+        global_error.visible()
+        content_layout.gone()
     }
 
 }
