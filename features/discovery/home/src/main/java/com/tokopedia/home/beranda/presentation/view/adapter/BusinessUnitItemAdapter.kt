@@ -42,8 +42,8 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
             holder.bind(businessUnit)
             if(!holder.itemView.hasOnClickListeners()){
                 holder.itemView.setOnClickListener {
-                    RouteManager.route(holder.itemView.context, businessUnit.content.applink)
-                    listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(businessUnit, tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
+                    RouteManager.route(holder.itemView.context, getItem(position).content.applink)
+                    listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(getItem(position), tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
                 }
             }
         }
