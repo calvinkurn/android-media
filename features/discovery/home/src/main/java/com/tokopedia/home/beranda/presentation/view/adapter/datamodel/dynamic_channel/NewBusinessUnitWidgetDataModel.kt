@@ -1,11 +1,9 @@
 package com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel
 
 import android.os.Bundle
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 data class NewBusinessUnitWidgetDataModel(
@@ -83,8 +81,4 @@ data class BusinessUnitDataModel(
 data class BusinessUnitItemDataModel(
         val content: HomeWidget.ContentItemTab,
         val itemPosition: Int
-): ImpressHolder(), Visitable<BusinessWidgetTypeFactory> {
-    override fun type(typeFactory: BusinessWidgetTypeFactory?): Int {
-        return typeFactory!!.type(this.content)
-    }
-}
+): ImpressHolder()
