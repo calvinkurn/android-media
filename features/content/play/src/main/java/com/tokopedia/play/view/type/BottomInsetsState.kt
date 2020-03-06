@@ -9,11 +9,11 @@ package com.tokopedia.play.view.type
  */
 sealed class BottomInsetsState {
 
-    abstract val isPreviousStateSame: Boolean
+    abstract var isPreviousStateSame: Boolean
     abstract val type: BottomInsetsType
 
-    data class Shown(override val type: BottomInsetsType, val estimatedInsetsHeight: Int, override val isPreviousStateSame: Boolean) : BottomInsetsState()
-    data class Hidden(override val type: BottomInsetsType, override val isPreviousStateSame: Boolean) : BottomInsetsState()
+    data class Shown(override val type: BottomInsetsType, val estimatedInsetsHeight: Int, override var isPreviousStateSame: Boolean) : BottomInsetsState()
+    data class Hidden(override val type: BottomInsetsType, override var isPreviousStateSame: Boolean) : BottomInsetsState()
 
     val isShown: Boolean
         get() = this is Shown

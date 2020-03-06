@@ -1,12 +1,12 @@
 package com.tokopedia.play.ui.productsheet
 
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.productsheet.interaction.ProductSheetInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -31,7 +31,7 @@ class ProductSheetComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.setStateHidden()
-                            is ScreenStateEvent.BottomInsetsView -> if (it.type is BottomInsetsType.BottomSheet.Product) handleIfProductSheet(it.type.height.orZero(), it.isShown)
+                            is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.ProductSheet]?.let(::handleShowHideProductSheet) }
                             is ScreenStateEvent.SetProductSheet -> uiView.setProductSheet(it.productSheetModel)
                         }
                     }
@@ -67,7 +67,9 @@ class ProductSheetComponent(
     private fun initView(container: ViewGroup) =
             ProductSheetView(container, this)
 
-    private fun handleIfProductSheet(height: Int, isShown: Boolean) {
-        if (isShown) uiView.showWithHeight(height) else uiView.hide()
+    private fun handleShowHideProductSheet(state: BottomInsetsState) {
+        if (state is BottomInsetsState.Shown) uiView.showWithHeight(state.estimatedInsetsHeight)
+        else uiView.hide()
     }
+
 }

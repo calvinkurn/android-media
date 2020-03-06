@@ -4,14 +4,15 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
+import com.tokopedia.play.ui.productsheet.ProductSheetView
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
+import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.launch
 
 /**
@@ -22,7 +23,7 @@ class VariantSheetComponent(
         private val bus: EventBusFactory,
         coroutineScope: CoroutineScope,
         dispatchers: CoroutineDispatcherProvider
-) : UIComponent<VariantSheetInteractionEvent>, CoroutineScope by coroutineScope {
+) : UIComponent<VariantSheetInteractionEvent>, CoroutineScope by coroutineScope, VariantSheetView.Listener {
 
     private val uiView = initView(container)
 
@@ -32,7 +33,7 @@ class VariantSheetComponent(
                     .collect {
                         when (it) {
                             ScreenStateEvent.Init -> uiView.setStateHidden()
-                            is ScreenStateEvent.BottomInsetsView -> if (it.type is BottomInsetsType.BottomSheet.Variant) handleIfVariantSheet(it.type.height.orZero(), it.isShown)
+                            is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet.Variant]?.let(::handleShowHideVariantSheet) }
                             is ScreenStateEvent.SetProductSheet -> uiView.setProductSheet(it.productSheetModel)
                         }
                     }
@@ -47,10 +48,17 @@ class VariantSheetComponent(
         return bus.getSafeManagedFlow(VariantSheetInteractionEvent::class.java)
     }
 
-    private fun initView(container: ViewGroup) =
-            VariantSheetView(container)
+    override fun onCloseButtonClicked(view: VariantSheetView) {
+        launch {
+            bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnCloseVariantSheet)
+        }
+    }
 
-    private fun handleIfVariantSheet(height: Int, isShown: Boolean) {
-        if (isShown) uiView.showWithHeight(height) else uiView.hide()
+    private fun initView(container: ViewGroup) =
+            VariantSheetView(container, this)
+
+    private fun handleShowHideVariantSheet(state: BottomInsetsState) {
+        if (state is BottomInsetsState.Shown) uiView.showWithHeight(state.estimatedInsetsHeight)
+        else uiView.hide()
     }
 }

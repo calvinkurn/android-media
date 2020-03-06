@@ -2,6 +2,7 @@ package com.tokopedia.play.view.event
 
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.play.component.ComponentEvent
+import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.*
@@ -40,7 +41,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     /**
      * Keyboard
      */
-    data class BottomInsetsView(val type: BottomInsetsType, val isShown: Boolean) : ScreenStateEvent()
+    data class BottomInsetsChanged(val insetsViewMap: Map<BottomInsetsType, BottomInsetsState>, val isAnyShown: Boolean, val isAnyHidden: Boolean) : ScreenStateEvent()
 
     @Deprecated(
             message = "Use BottomInsetsView with type BottomInsetsType.Keyboard",

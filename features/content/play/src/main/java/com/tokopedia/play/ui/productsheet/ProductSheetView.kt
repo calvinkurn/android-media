@@ -26,7 +26,7 @@ import com.tokopedia.play.view.uimodel.ProductSheetUiModel
  */
 class ProductSheetView(
         container: ViewGroup,
-        private val listener: Listener
+        listener: Listener
 ) : UIView(container) {
 
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_product_sheet, container, true)
@@ -79,12 +79,10 @@ class ProductSheetView(
 
     override fun show() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        view.show()
     }
 
     override fun hide() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        view.gone()
     }
 
     internal fun setStateHidden() {

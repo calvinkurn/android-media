@@ -3,6 +3,7 @@ package com.tokopedia.play.ui.variantsheet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
@@ -19,7 +20,10 @@ import com.tokopedia.unifycomponents.UnifyButton
 /**
  * Created by jegul on 05/03/20
  */
-class VariantSheetView(container: ViewGroup) : UIView(container) {
+class VariantSheetView(
+        container: ViewGroup,
+        listener: Listener
+) : UIView(container) {
 
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_variant_sheet, container, true)
             .findViewById(R.id.cl_variant_sheet)
@@ -31,6 +35,11 @@ class VariantSheetView(container: ViewGroup) : UIView(container) {
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
 
     init {
+        view.findViewById<ImageView>(R.id.iv_close)
+                .setOnClickListener {
+                    listener.onCloseButtonClicked(this)
+                }
+
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
 
             v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, insets.systemWindowInsetBottom)
@@ -43,12 +52,10 @@ class VariantSheetView(container: ViewGroup) : UIView(container) {
 
     override fun show() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        view.show()
     }
 
     override fun hide() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        view.gone()
     }
 
     internal fun setStateHidden() {
@@ -70,6 +77,6 @@ class VariantSheetView(container: ViewGroup) : UIView(container) {
     }
 
     interface Listener {
-        fun onCloseButtonClicked(view: ProductSheetView)
+        fun onCloseButtonClicked(view: VariantSheetView)
     }
 }

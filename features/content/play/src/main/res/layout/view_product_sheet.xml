@@ -10,7 +10,7 @@
         android:paddingTop="@dimen/spacing_lvl4"
         android:paddingStart="@dimen/spacing_lvl4"
         android:paddingEnd="@dimen/spacing_lvl4"
-        android:background="@drawable/bg_play_product_sheet"
+        android:background="@drawable/bg_play_bottom_sheet"
         app:behavior_skipCollapsed="true"
         app:behavior_hideable="true"
         app:layout_behavior="com.tokopedia.play.view.custom.behavior.LockableBottomSheetBehavior"

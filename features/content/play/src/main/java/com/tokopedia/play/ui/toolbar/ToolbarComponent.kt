@@ -10,7 +10,6 @@ import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -36,7 +35,7 @@ open class ToolbarComponent(
                             ScreenStateEvent.Init -> uiView.show()
                             is ScreenStateEvent.SetPartnerInfo ->
                                 uiView.setPartnerInfo(it.partnerInfo)
-                            is ScreenStateEvent.BottomInsetsView -> if (it.isShown) uiView.hide() else uiView.show()
+                            is ScreenStateEvent.BottomInsetsChanged -> if (it.isAnyShown) uiView.hide() else uiView.show()
                             is ScreenStateEvent.OnNewPlayRoomEvent -> if(it.event.isFreeze) uiView.show()
                             is ScreenStateEvent.OnNoMoreAction -> uiView.hideActionMore()
                             is ScreenStateEvent.FollowPartner -> uiView.setFollowStatus(it.shouldFollow)

@@ -25,6 +25,8 @@ import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayModule
+import com.tokopedia.play.extensions.isAnyHidden
+import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.ChatListComponent
 import com.tokopedia.play.ui.endliveinfo.EndLiveInfoComponent
 import com.tokopedia.play.ui.endliveinfo.interaction.EndLiveInfoInteractionEvent
@@ -355,17 +357,22 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
-                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsView(it.type, it.isShown))
+                        .emit(ScreenStateEvent::class.java, ScreenStateEvent.BottomInsetsChanged(it, it.isAnyShown, it.isAnyHidden))
 
-                if (it.type is BottomInsetsType.BottomSheet && !it.isPreviousStateSame) {
-                    when (it) {
+                val keyboardState = it[BottomInsetsType.Keyboard]
+                if (keyboardState != null && !keyboardState.isPreviousStateSame) {
+                    when (keyboardState) {
                         is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> pushParentPlayByProductSheetHeight(it.estimatedInsetsHeight)
+                        is BottomInsetsState.Shown -> pushParentPlayByKeyboardHeight(keyboardState.estimatedInsetsHeight)
                     }
-                } else if (it.type is BottomInsetsType.Keyboard && !it.isPreviousStateSame) {
-                    when (it) {
+                }
+
+                val productSheetState = it[BottomInsetsType.ProductSheet]
+
+                if (productSheetState != null && !productSheetState.isPreviousStateSame) {
+                    when (productSheetState) {
                         is BottomInsetsState.Hidden -> playFragment.onBottomInsetsViewHidden()
-                        is BottomInsetsState.Shown -> pushParentPlayByKeyboardHeight(it.estimatedInsetsHeight)
+                        is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(productSheetState.estimatedInsetsHeight)
                     }
                 }
             }
@@ -1160,7 +1167,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         playViewModel.onHideVariantSheet()
     }
 
-    private fun pushParentPlayByProductSheetHeight(productSheetHeight: Int) {
+    private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
         val requiredMargin = offset16
         playFragment.onBottomInsetsViewShown(getScreenHeight() - (productSheetHeight + requiredMargin))
     }

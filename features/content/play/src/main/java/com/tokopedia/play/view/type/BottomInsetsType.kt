@@ -6,17 +6,15 @@ package com.tokopedia.play.view.type
 sealed class BottomInsetsType {
 
     object Keyboard : BottomInsetsType()
-    sealed class BottomSheet : BottomInsetsType() {
+    object ProductSheet : BottomInsetsType()
+    sealed class VariantSheet : BottomInsetsType() {
 
-        abstract val height: Int?
+        /**
+         * Used to represent variant state regardless of the type
+         */
+        object Variant : VariantSheet()
 
-        data class Product(override val height: Int?) : BottomSheet()
-        data class Variant(override val height: Int?) : BottomSheet()
+        data class Buy(val productId: String) : VariantSheet()
+        data class AddToCart(val productId: String) : VariantSheet()
     }
-
-    val isKeyboard: Boolean
-        get() = this is Keyboard
-
-    val isBottomSheet: Boolean
-        get() = this is BottomSheet
 }
