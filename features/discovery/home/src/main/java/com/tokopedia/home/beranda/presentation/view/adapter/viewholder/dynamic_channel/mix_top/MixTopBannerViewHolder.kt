@@ -89,7 +89,7 @@ class MixTopBannerViewHolder(
         recyclerView.setRecycledViewPool(parentRecycledViewPool)
         recyclerView.setHasFixedSize(true)
 
-        valuateRecyclerViewDecoration(channel)
+        valuateRecyclerViewDecoration()
 
         mappingHeader(channel)
         mappingCtaButton(channel.banner.cta)
@@ -100,8 +100,19 @@ class MixTopBannerViewHolder(
     private fun mappingHeader(channel: DynamicHomeChannel.Channels){
         val bannerItem = channel.banner
         val ctaData = channel.banner.cta
-        val textColor = if (bannerItem.textColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.textColor)
-        val backColor = if (bannerItem.backColor.isEmpty()) ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50) else Color.parseColor(bannerItem.backColor)
+        var textColor = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
+        var backColor: Int = ContextCompat.getColor(bannerTitle.context, R.color.Neutral_N50)
+        if(bannerItem.textColor.isNotEmpty()){
+            try {
+                textColor = Color.parseColor(bannerItem.textColor)
+            } catch (e: IllegalArgumentException) { }
+        }
+
+        if(bannerItem.backColor.isNotEmpty()) {
+            try {
+                backColor = Color.parseColor(bannerItem.backColor)
+            } catch (e: IllegalArgumentException) { }
+        }
 
         bannerTitle.text = bannerItem.title
         bannerTitle.visibility = if(bannerItem.title.isEmpty()) View.GONE else View.VISIBLE
@@ -199,7 +210,7 @@ class MixTopBannerViewHolder(
         return blankSpaceConfig
     }
 
-    private fun valuateRecyclerViewDecoration(channel: DynamicHomeChannel.Channels) {
+    private fun valuateRecyclerViewDecoration() {
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
         recyclerView.layoutManager = LinearLayoutManager(
                 itemView.context,
