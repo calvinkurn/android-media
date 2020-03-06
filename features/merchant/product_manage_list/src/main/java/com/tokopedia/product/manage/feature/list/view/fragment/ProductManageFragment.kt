@@ -61,7 +61,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductFilterAdapter
@@ -93,6 +92,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgre
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
+import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
@@ -126,9 +126,7 @@ import com.tokopedia.product.manage.oldlist.view.fragment.ProductManageEditPrice
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByPage
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -682,6 +680,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         } else {
             manageProductBottomSheet?.show(product)
         }
+    }
+
+    override fun onClickEditPriceButton(product: ProductViewModel) {
+        val editBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it) }
+        editBottomSheet?.show(childFragmentManager, "quick_edit_price")
     }
 
     override fun onClickOptionMenu(menu: ProductMenuViewModel) {

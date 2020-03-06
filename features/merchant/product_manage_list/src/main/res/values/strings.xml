@@ -146,4 +146,6 @@
     <string name="product_stock_reminder_typography_desc">Pengingat akan aktif jika stok produk kurang dari"</string>
     <string name="product_stock_reminder_button">Simpan</string>
 
+    <string name="quick_edit_currency">Rp</string>
+
 </resources>
