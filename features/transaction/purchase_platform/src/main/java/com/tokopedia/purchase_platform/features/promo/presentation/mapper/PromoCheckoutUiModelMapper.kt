@@ -126,4 +126,17 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 }
         )
     }
+
+    fun mapEmptyState(couponListRecommendation: CouponListRecommendation): PromoEmptyStateUiModel {
+        return PromoEmptyStateUiModel(
+                uiData = PromoEmptyStateUiModel.UiData().apply {
+                    title = couponListRecommendation.data.emptyState.title
+                    description = couponListRecommendation.data.emptyState.description
+                    imageUrl = couponListRecommendation.data.emptyState.imageUrl
+                },
+                uiState = PromoEmptyStateUiModel.UiState().apply {
+
+                }
+        )
+    }
 }

@@ -5,6 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.purchase_platform.features.promo.data.response.GqlCouponListRecommendationResponse
+import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
+import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
+import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.GetCouponListRecommendationUseCase
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
@@ -70,89 +74,127 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 getCouponListRecommendationUseCase.executeOnBackground()
             }
 
-            // Initialize promo recommendation
-            val promoRecommendation = response.couponListRecommendation.data.promoRecommendation
-            if (promoRecommendation.codes.isNotEmpty()) {
-                _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(response.couponListRecommendation)
-            }
-
-            // Initialize promo input model
-            val promoInputUiModel = uiModelMapper.mapPromoInputUiModel()
-            _promoInputUiModel.value = promoInputUiModel
-
-            // Get all sellected promo
-            val selectedPromoList = ArrayList<String>()
-            response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
-                if (couponSectionItem.isEnabled) {
-                    couponSectionItem.subSections.forEach {
-                        it.coupons.forEach {
-                            if (it.isSelected) {
-                                selectedPromoList.add(it.code)
-                            }
-                        }
+            if (response.couponListRecommendation.status == "OK") {
+                if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
+                    initPromoRecommendation(response)
+                    initPromoInput()
+                    initPromoList(response)
+                    initSuccessFragmentUiModel()
+                    calculateAndRenderTotalBenefit()
+                } else if (response.couponListRecommendation.data.emptyState.title.isEmpty() &&
+                        response.couponListRecommendation.data.emptyState.description.isEmpty() &&
+                        response.couponListRecommendation.data.emptyState.imageUrl.isEmpty()) {
+                    initErrorFragmentUiModel(true)
+                } else {
+                    initErrorFragmentUiModel(false)
+                    val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
+                    if (response.couponListRecommendation.data.resultStatus.code == STATUS_COUPON_LIST_EMPTY) {
+                        emptyState.uiState.isShowButton = false
+                        initPromoInput()
+                    } else if (response.couponListRecommendation.data.resultStatus.code == STATUS_PHONE_NOT_VERIFIED) {
+                        emptyState.uiState.isShowButton = true
+                    } else if (response.couponListRecommendation.data.resultStatus.code == STATUS_USER_BLACKLISTED) {
+                        emptyState.uiState.isShowButton = false
                     }
+
+                    _promoEmptyStateUiModel.value = emptyState
                 }
+            } else {
+                initErrorFragmentUiModel(true)
             }
-
-            // Initialize coupon section
-            val couponList = ArrayList<Visitable<*>>()
-            var headerIdentifierId = 0
-            response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
-                // Initialize eligibility header
-                val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
-                couponList.add(eligibilityHeader)
-
-                // Initialize promo list header
-                couponSectionItem.subSections.forEach { couponSubSection ->
-                    val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId)
-                    couponList.add(promoHeader)
-                    headerIdentifierId++
-
-                    // Initialize promo list item
-                    couponSubSection.coupons.forEach { couponItem ->
-                        val promoItem = uiModelMapper.mapPromoListItemUiModel(
-                                couponItem, promoHeader.uiData.identifierId, couponSubSection.isEnabled, selectedPromoList
-                        )
-                        couponList.add(promoItem)
-                    }
-                }
-            }
-            _promoListUiModel.value = couponList
-
-            // Init fragment ui model
-            val fragmentUiModel = FragmentUiModel(
-                    uiData = FragmentUiModel.UiData().apply {
-
-                    },
-                    uiState = FragmentUiModel.UiState().apply {
-                        var tmpHasPreSelectedPromo = false
-                        promoListUiModel.value?.forEach {
-                            if (it is PromoListItemUiModel && it.uiState.isSellected) {
-                                tmpHasPreSelectedPromo = true
-                                return@forEach
-                            }
-                        }
-                        hasPreselectedPromo = tmpHasPreSelectedPromo
-                        hasAnyPromoSelected = tmpHasPreSelectedPromo
-                        hasFailedToLoad = false
-                    }
-            )
-            _fragmentUiModel.value = fragmentUiModel
-            calculateAndRenderTotalBenefit()
 
         }) {
-            // Init fragment ui model
-            val fragmentUiModel = FragmentUiModel(
-                    uiData = FragmentUiModel.UiData().apply {
+            initErrorFragmentUiModel(true)
+        }
+    }
 
-                    },
-                    uiState = FragmentUiModel.UiState().apply {
-                        hasPreselectedPromo = false
-                        hasAnyPromoSelected = false
-                        hasFailedToLoad = true
+    private fun initErrorFragmentUiModel(failedToLoad: Boolean) {
+        val fragmentUiModel = FragmentUiModel(
+                uiData = FragmentUiModel.UiData().apply {
+
+                },
+                uiState = FragmentUiModel.UiState().apply {
+                    hasPreselectedPromo = false
+                    hasAnyPromoSelected = false
+                    hasFailedToLoad = failedToLoad
+                }
+        )
+        _fragmentUiModel.value = fragmentUiModel
+    }
+
+    private fun initSuccessFragmentUiModel() {
+        val fragmentUiModel = FragmentUiModel(
+                uiData = FragmentUiModel.UiData().apply {
+
+                },
+                uiState = FragmentUiModel.UiState().apply {
+                    var tmpHasPreSelectedPromo = false
+                    promoListUiModel.value?.forEach {
+                        if (it is PromoListItemUiModel && it.uiState.isSellected) {
+                            tmpHasPreSelectedPromo = true
+                            return@forEach
+                        }
                     }
-            )
-            _fragmentUiModel.value = fragmentUiModel
+                    hasPreselectedPromo = tmpHasPreSelectedPromo
+                    hasAnyPromoSelected = tmpHasPreSelectedPromo
+                    hasFailedToLoad = false
+                }
+        )
+        _fragmentUiModel.value = fragmentUiModel
+    }
+
+    private fun initPromoList(response: GqlCouponListRecommendationResponse) {
+        // Get all sellected promo
+        val selectedPromoList = ArrayList<String>()
+        response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
+            if (couponSectionItem.isEnabled) {
+                couponSectionItem.subSections.forEach {
+                    it.coupons.forEach {
+                        if (it.isSelected) {
+                            selectedPromoList.add(it.code)
+                        }
+                    }
+                }
+            }
+        }
+
+        // Initialize coupon section
+        val couponList = ArrayList<Visitable<*>>()
+        var headerIdentifierId = 0
+        response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
+            // Initialize eligibility header
+            val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
+            couponList.add(eligibilityHeader)
+
+            // Initialize promo list header
+            couponSectionItem.subSections.forEach { couponSubSection ->
+                val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId)
+                couponList.add(promoHeader)
+                headerIdentifierId++
+
+                // Initialize promo list item
+                couponSubSection.coupons.forEach { couponItem ->
+                    val promoItem = uiModelMapper.mapPromoListItemUiModel(
+                            couponItem, promoHeader.uiData.identifierId, couponSubSection.isEnabled, selectedPromoList
+                    )
+                    couponList.add(promoItem)
+                }
+            }
+        }
+        _promoListUiModel.value = couponList
+    }
+
+    private fun initPromoInput() {
+        // Initialize promo input model
+        val promoInputUiModel = uiModelMapper.mapPromoInputUiModel()
+        _promoInputUiModel.value = promoInputUiModel
+    }
+
+    private fun initPromoRecommendation(response: GqlCouponListRecommendationResponse) {
+        // Initialize promo recommendation
+        val promoRecommendation = response.couponListRecommendation.data.promoRecommendation
+        if (promoRecommendation.codes.isNotEmpty()) {
+            _promoRecommendationUiModel.value = uiModelMapper.mapPromoRecommendationUiModel(response.couponListRecommendation)
         }
     }
 

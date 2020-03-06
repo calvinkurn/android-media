@@ -300,7 +300,7 @@ fun mockEmptyState(): PromoEmptyStateUiModel {
     return PromoEmptyStateUiModel(
             uiData = PromoEmptyStateUiModel.UiData().apply {
                 title = "Yaah, kamu belum punya kupon belanja"
-                subTitle = "Ini Sub Title"
+                description = "Ini Sub Title"
                 imageUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/06/newpm-cta-bottom-bg.jpg"
                 buttonText = "Click Me"
             },
@@ -315,7 +315,7 @@ val MOCK_RESPONSE = """
     "coupon_list_recommendation": {
       "message": [],
       "error_code": "200",
-      "status": "OK",
+      "status": "ERROR",
       "data": {
         "result_status": {
           "code": "200",

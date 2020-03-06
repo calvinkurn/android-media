@@ -40,7 +40,10 @@ import com.tokopedia.purchase_platform.features.promo.presentation.adapter.Promo
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.FragmentUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibilityHeaderUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
@@ -128,68 +131,70 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     private fun handleStickyPromoHeader(recyclerView: RecyclerView, lastHeaderUiModel: PromoListHeaderUiModel?) {
-        var tmpLastHeaderUiModel = lastHeaderUiModel
-        val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-        val lastData = adapter.data[topItemPosition]
+        if (adapter.data.isNotEmpty()) {
+            var tmpLastHeaderUiModel = lastHeaderUiModel
+            val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+            val lastData = adapter.data[topItemPosition]
 
-        var isShow = false
-        if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
-            tmpLastHeaderUiModel = lastData
-            isShow = true
-        } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
-            isShow = true
-        } else if (lastData is PromoListItemUiModel) {
-            if (tmpLastHeaderUiModel != null && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
+            var isShow = false
+            if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
+                tmpLastHeaderUiModel = lastData
                 isShow = true
+            } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
+                isShow = true
+            } else if (lastData is PromoListItemUiModel) {
+                if (tmpLastHeaderUiModel != null && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
+                    isShow = true
+                } else {
+                    var foundHeader = false
+                    adapter.data.forEach {
+                        if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
+                            tmpLastHeaderUiModel = it
+                            foundHeader = true
+                            return@forEach
+                        }
+                    }
+                    isShow = foundHeader
+                }
             } else {
-                var foundHeader = false
-                adapter.data.forEach {
-                    if (it is PromoListHeaderUiModel && it.uiData.identifierId == lastData.uiData.parentIdentifierId) {
-                        tmpLastHeaderUiModel = it
-                        foundHeader = true
-                        return@forEach
+                isShow = false
+            }
+
+            if (tmpLastHeaderUiModel != null) {
+
+                if (tmpLastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
+                    ImageHandler.loadImageRounded2(context, section_image_promo_list_header, tmpLastHeaderUiModel?.uiData?.iconUrl)
+                    section_image_promo_list_header.show()
+                } else {
+                    section_image_promo_list_header.gone()
+                }
+
+                section_label_promo_list_header_title.text = tmpLastHeaderUiModel?.uiData?.title
+                section_label_promo_list_header_sub_title.text = tmpLastHeaderUiModel?.uiData?.subTitle
+
+                if (tmpLastHeaderUiModel?.uiState?.isCollapsed == false) {
+                    section_image_chevron.rotation = 180f
+                } else {
+                    section_image_chevron.rotation = 0f
+                }
+
+                setImageFilterNormal(section_image_promo_list_header)
+                section_label_promo_list_header_sub_title.show()
+                section_image_chevron.show()
+                section_image_chevron.setOnClickListener {
+                    if (tmpLastHeaderUiModel != null) {
+                        onClickPromoListHeader(tmpLastHeaderUiModel!!)
                     }
                 }
-                isShow = foundHeader
             }
-        } else {
-            isShow = false
-        }
 
-        if (tmpLastHeaderUiModel != null) {
-
-            if (tmpLastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
-                ImageHandler.loadImageRounded2(context, section_image_promo_list_header, tmpLastHeaderUiModel?.uiData?.iconUrl)
-                section_image_promo_list_header.show()
+            if (isShow) {
+                header_promo_section.show()
+                setToolbarShadowVisibility(false)
             } else {
-                section_image_promo_list_header.gone()
+                header_promo_section.gone()
+                setToolbarShadowVisibility(true)
             }
-
-            section_label_promo_list_header_title.text = tmpLastHeaderUiModel?.uiData?.title
-            section_label_promo_list_header_sub_title.text = tmpLastHeaderUiModel?.uiData?.subTitle
-
-            if (tmpLastHeaderUiModel?.uiState?.isCollapsed == false) {
-                section_image_chevron.rotation = 180f
-            } else {
-                section_image_chevron.rotation = 0f
-            }
-
-            setImageFilterNormal(section_image_promo_list_header)
-            section_label_promo_list_header_sub_title.show()
-            section_image_chevron.show()
-            section_image_chevron.setOnClickListener {
-                if (tmpLastHeaderUiModel != null) {
-                    onClickPromoListHeader(tmpLastHeaderUiModel!!)
-                }
-            }
-        }
-
-        if (isShow) {
-            header_promo_section.show()
-            setToolbarShadowVisibility(false)
-        } else {
-            header_promo_section.gone()
-            setToolbarShadowVisibility(true)
         }
     }
 
@@ -205,6 +210,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
 
     private fun observeFragmentUiModel() {
         viewModel.fragmentUiModel.observe(this, Observer {
+            hideLoading()
             renderFragmentState(it)
         })
     }
@@ -271,28 +277,36 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     private fun renderFragmentState(fragmentUiModel: FragmentUiModel) {
-        if (fragmentUiModel.uiState.hasAnyPromoSelected) {
-            toolbar?.enableResetButton()
-            activity?.let {
-                label_total_promo_info.show()
-                label_total_promo_amount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
-                label_total_promo_amount.show()
-                button_apply_promo.text = String.format(it.resources.getString(R.string.promo_checkout_label_button_apply_promo), fragmentUiModel.uiData.usedPromoCount)
-                button_apply_promo.show()
-                button_apply_no_promo.gone()
-                container_action_bottom.show()
+        if (!fragmentUiModel.uiState.hasFailedToLoad) {
+            if (fragmentUiModel.uiState.hasAnyPromoSelected) {
+                toolbar?.enableResetButton()
+                activity?.let {
+                    label_total_promo_info.show()
+                    label_total_promo_amount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
+                    label_total_promo_amount.show()
+                    button_apply_promo.text = String.format(it.resources.getString(R.string.promo_checkout_label_button_apply_promo), fragmentUiModel.uiData.usedPromoCount)
+                    button_apply_promo.show()
+                    button_apply_no_promo.gone()
+                    container_action_bottom.show()
+                }
+            } else {
+                toolbar?.disableResetButton()
+                if (fragmentUiModel.uiState.hasPreselectedPromo) {
+                    label_total_promo_info.gone()
+                    label_total_promo_amount.gone()
+                    button_apply_promo.gone()
+                    button_apply_no_promo.show()
+                    container_action_bottom.show()
+                } else {
+                    container_action_bottom.gone()
+                }
             }
+            layout_global_error.gone()
+            layout_main_container.show()
         } else {
             toolbar?.disableResetButton()
-            if (fragmentUiModel.uiState.hasPreselectedPromo) {
-                label_total_promo_info.gone()
-                label_total_promo_amount.gone()
-                button_apply_promo.gone()
-                button_apply_no_promo.show()
-                container_action_bottom.show()
-            } else {
-                container_action_bottom.gone()
-            }
+            layout_global_error.show()
+            layout_main_container.gone()
         }
     }
 
@@ -338,8 +352,8 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     override fun loadData(page: Int) {
+        showLoading()
         viewModel.loadData()
-        hideLoading()
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
