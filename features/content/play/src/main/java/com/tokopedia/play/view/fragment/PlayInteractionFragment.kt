@@ -198,6 +198,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         observeTotalViews()
         observeChatList()
         observePinned()
+        observeCartInfo()
         observeFollowShop()
         observeLikeContent()
         observeBottomInsetsState()
@@ -369,6 +370,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             }
         })
     }
+
+    private fun observeCartInfo() {
+        playViewModel.observableBadgeCart.observe(viewLifecycleOwner, Observer(::setCartInfo))
+    }
     //endregion
 
     private fun setupView(view: View) {
@@ -521,6 +526,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                             is PlayToolbarInteractionEvent.FollowButtonClicked -> doClickFollow(it.partnerId, it.action)
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
                             is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
+                            PlayToolbarInteractionEvent.CartButtonClicked -> openPageByApplink(ApplinkConst.CART)
                         }
                     }
         }
@@ -852,6 +858,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                     .emit(
                             ScreenStateEvent::class.java,
                             ScreenStateEvent.SetPartnerInfo(partnerInfo)
+                    )
+        }
+    }
+
+    private fun setCartInfo(cartUiModel: CartUiModel) {
+        launch {
+            EventBusFactory.get(viewLifecycleOwner)
+                    .emit(
+                            ScreenStateEvent::class.java,
+                            ScreenStateEvent.SetTotalCart(cartUiModel)
                     )
         }
     }

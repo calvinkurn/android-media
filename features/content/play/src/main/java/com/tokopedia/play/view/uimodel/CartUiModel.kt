@@ -8,3 +8,9 @@ data class CartUiModel(
         val isShow: Boolean = false,
         val count: Int = 0
 )
+
+data class CartFeedbackUiModel(
+        val isSuccess: Boolean = false,
+        val errorMessage: String = "",
+        val isAtcOnly: Boolean = true
+)
