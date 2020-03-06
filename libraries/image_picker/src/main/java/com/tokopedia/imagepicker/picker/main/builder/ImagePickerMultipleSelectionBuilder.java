@@ -47,11 +47,11 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
         // this image will be appended at the gallery in the first rows.
         boolean appendInitialSelectedImageInGallery = false;
 
-        public static PreviewExtension createNoPreview() {
-            return new PreviewExtension(false, false, false, false);
+        public static PreviewExtension createPreview() {
+            return new PreviewExtension(false, false, true, false);
         }
 
-        public static PreviewExtension createPreview() {
+        public static PreviewExtension createNoPreview() {
             return new PreviewExtension(true, true, true, true);
         }
 
@@ -169,7 +169,7 @@ public class ImagePickerMultipleSelectionBuilder implements Parcelable {
     @NonNull
     public PreviewExtension getPreviewExtension() {
         if (previewExtension == null) {
-            previewExtension = PreviewExtension.createNoPreview();
+            previewExtension = PreviewExtension.createPreview();
         }
         return previewExtension;
     }
