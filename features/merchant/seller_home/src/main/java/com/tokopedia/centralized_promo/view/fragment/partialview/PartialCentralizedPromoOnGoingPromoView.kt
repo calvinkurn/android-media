@@ -9,6 +9,7 @@ import com.tokopedia.centralized_promo.view.model.OnGoingPromoUiModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
+import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo.view.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_shimmering.view.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_success.view.*
@@ -33,9 +34,9 @@ class PartialCentralizedPromoOnGoingPromoView(
                 } else {
                     layoutCentralizedPromoOnGoingPromoSuccess.hide()
                 }
-                localLoadOnGoingPromo.progressState = false
                 layoutCentralizedPromoOnGoingPromoShimmering.hide()
-                layoutCentralizedPromoOnGoingPromoError.hide()
+                localLoadOnGoingPromo?.progressState = false
+                layoutCentralizedPromoOnGoingPromoError?.hide()
             }
         } else {
             renderError(MessageErrorException(data.errorMessage))
@@ -47,7 +48,10 @@ class PartialCentralizedPromoOnGoingPromoView(
             show()
             layoutCentralizedPromoOnGoingPromoSuccess.hide()
             layoutCentralizedPromoOnGoingPromoShimmering.hide()
-            layoutCentralizedPromoOnGoingPromoError.show()
+            if (stubLayoutCentralizedPromoOnGoingPromoError?.parent != null) {
+                stubLayoutCentralizedPromoOnGoingPromoError.inflate()
+            }
+            layoutCentralizedPromoOnGoingPromoError?.show()
             tvCentralizedPromoOnGoingTitleError.text = context.getString(R.string.sah_label_promo_and_ads)
             localLoadOnGoingPromo.progressState = false
             localLoadOnGoingPromo.description?.text = context.getString(R.string.sah_label_on_going_promotion_retry)
@@ -70,7 +74,7 @@ class PartialCentralizedPromoOnGoingPromoView(
         with(view) {
             show()
             layoutCentralizedPromoOnGoingPromoSuccess.hide()
-            layoutCentralizedPromoOnGoingPromoError.hide()
+            layoutCentralizedPromoOnGoingPromoError?.hide()
             layoutCentralizedPromoOnGoingPromoShimmering.show()
         }
     }

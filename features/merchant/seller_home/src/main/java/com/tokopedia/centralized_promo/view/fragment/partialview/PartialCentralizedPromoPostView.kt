@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
+import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post.view.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post_error.view.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post_shimmering.view.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post_success.view.*
@@ -42,9 +43,8 @@ class PartialCentralizedPromoPostView(
             } else {
                 gone()
             }
-
             layoutCentralizedPromoPostListShimmering.hide()
-            layoutCentralizedPromoPostListError.hide()
+            layoutCentralizedPromoPostListError?.hide()
             layoutCentralizedPromoPostListSuccess.show()
         }
     }
@@ -54,7 +54,10 @@ class PartialCentralizedPromoPostView(
             show()
             layoutCentralizedPromoPostListShimmering.hide()
             layoutCentralizedPromoPostListSuccess.hide()
-            layoutCentralizedPromoPostListError.show()
+            if (stubLayoutCentralizedPromoPostListError?.parent != null) {
+                stubLayoutCentralizedPromoPostListError.inflate()
+            }
+            layoutCentralizedPromoPostListError?.show()
             ImageHandler.loadImageWithId(imgWidgetOnError, R.drawable.unify_globalerrors_connection)
         }
     }
@@ -63,7 +66,7 @@ class PartialCentralizedPromoPostView(
         with(view) {
             show()
             layoutCentralizedPromoPostListSuccess.hide()
-            layoutCentralizedPromoPostListError.hide()
+            layoutCentralizedPromoPostListError?.hide()
             layoutCentralizedPromoPostListShimmering.show()
         }
     }

@@ -14,6 +14,11 @@
 
     <include layout="@layout/sah_partial_centralized_promo_post_shimmering" />
 
-    <include layout="@layout/sah_partial_centralized_promo_post_error" />
+    <ViewStub
+        android:id="@+id/stubLayoutCentralizedPromoPostListError"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_large_widget_height"
+        android:padding="@dimen/layout_lvl2"
+        android:layout="@layout/sah_partial_centralized_promo_post_error"/>
 
 </androidx.cardview.widget.CardView>
