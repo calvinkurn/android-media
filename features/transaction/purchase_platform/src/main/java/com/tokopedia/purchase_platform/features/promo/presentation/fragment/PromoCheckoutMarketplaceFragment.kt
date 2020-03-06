@@ -20,6 +20,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -298,6 +299,16 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             layout_main_container.show()
         } else {
             toolbar?.disableResetButton()
+//            fragmentUiModel.uiData.exception?.let {
+//                if (it is ) {
+//                    layout_global_error.setType(GlobalErrorsUnify.NO_CONNECTION)
+//                }
+//            }
+            layout_global_error.setActionClickListener { view ->
+                if (activity != null) {
+                    RouteManager.route(context, ApplinkConst.HOME)
+                }
+            }
             layout_global_error.show()
             layout_main_container.gone()
         }

@@ -325,9 +325,9 @@ val MOCK_RESPONSE = """
           "reason": "OK"
         },
         "empty_state": {
-          "title": "Kuponnya tidak ada",
-          "description": "Banyakin belanja ya biar dapet kupon",
-          "image_url": "https://ecs7.tokopedia.net/img/ovo/icon-benefit-2.png"
+          "title": "",
+          "description": "",
+          "image_url": ""
         },
         "title": "Pilih Promo",
         "sub_title": "Kamu bisa gabungkan promo!",

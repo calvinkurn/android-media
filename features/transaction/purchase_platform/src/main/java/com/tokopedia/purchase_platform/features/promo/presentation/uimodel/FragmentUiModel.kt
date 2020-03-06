@@ -10,7 +10,8 @@ data class FragmentUiModel(
 
     data class UiData(
             var totalBenefit: Int = 0,
-            var usedPromoCount: Int = 0
+            var usedPromoCount: Int = 0,
+            var exception: Throwable? = null
     )
 
     data class UiState(
