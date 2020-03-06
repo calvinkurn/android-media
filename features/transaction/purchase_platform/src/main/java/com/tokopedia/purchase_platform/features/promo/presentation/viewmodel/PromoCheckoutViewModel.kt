@@ -468,6 +468,13 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
             if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty() && it.uiState.isSellected) {
                 totalBenefit += it.uiData.benefitAmount
                 usedPromoCount++
+            } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                it.uiData.tmpPromoItemList.forEach {
+                    if (it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty() && it.uiState.isSellected) {
+                        totalBenefit += it.uiData.benefitAmount
+                        usedPromoCount++
+                    }
+                }
             }
         }
 
@@ -495,6 +502,13 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                     if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
                         it.uiState.isSellected = true
                         calculateClash(it)
+                    }
+                } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    it.uiData.tmpPromoItemList.forEach {
+                        if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
+                            it.uiState.isSellected = true
+                            calculateClash(it)
+                        }
                     }
                 }
             }
