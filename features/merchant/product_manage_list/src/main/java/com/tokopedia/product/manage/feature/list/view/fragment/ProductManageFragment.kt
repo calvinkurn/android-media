@@ -45,6 +45,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
@@ -81,8 +82,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.StockReminder
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.item.common.util.ViewUtils
@@ -302,7 +302,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     bottomSheet.isResultReady = false
                     viewModel.getProductList(userSession.shopId,
                             bottomSheet.selectedFilterOptions?.filterOptions,
-                            bottomSheet.selectedFilterOptions?.sortOption)
+                            bottomSheet.selectedFilterOptions?.sortOption, true)
                 }
             }
         }
@@ -1129,10 +1129,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             when(it) {
                 is ShowProgressDialog -> showLoadingProgress()
                 is HideProgressDialog -> hideLoadingProgress()
+                is RefreshList -> clearProductList()
             }
         }
     }
     // endregion
+
+    private fun clearProductList() {
+        renderList(emptyList())
+        productList.clear()
+    }
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
         if (imageUrls != null && imageUrls.size > 0) {
