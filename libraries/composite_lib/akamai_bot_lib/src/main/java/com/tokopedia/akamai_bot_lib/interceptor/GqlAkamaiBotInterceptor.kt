@@ -11,9 +11,11 @@ import okio.Buffer
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import timber.log.Timber
 import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.Charset
+import kotlin.system.measureTimeMillis
 
 class GqlAkamaiBotInterceptor : Interceptor {
     @Throws(IOException::class)
@@ -38,15 +40,22 @@ class GqlAkamaiBotInterceptor : Interceptor {
                 charset?.let {
                     readFromBuffer(buffer, it).let {
 
+                        // start time
                         var functionNames: List<String> = mutableListOf();
                         try {
-                            val jsonArray = JSONArray(it)
-                            val jsonObject: JSONObject = jsonArray.getJSONObject(0)
-                            val query = jsonObject.getString("query")
-                            functionNames = getAny(query)
+                            val time = measureTimeMillis {
+                                val jsonArray = JSONArray(it)
+                                val jsonObject: JSONObject = jsonArray.getJSONObject(0)
+                                val query = jsonObject.getString("query")
+                                functionNames = getAny(query)
+                            }
+                            println("P2#AKAMAI_REGEX_PERFORMANCE#query;function_name=$functionNames;read_time=$time")
+                            Timber.w("P2#AKAMAI_REGEX_PERFORMANCE#query;function_name=$functionNames;read_time=$time")
+                            Log.d("TIMBER", "P2#AKAMAI_REGEX_PERFORMANCE#query;function_name=$functionNames;read_time=$time")
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }
+                        // end time and elapse time
 
                         for(functionName in functionNames){
 
