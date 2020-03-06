@@ -6,6 +6,8 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.View
+import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -31,13 +33,22 @@ class PromoListItemViewHolder(private val view: View,
 
     override fun bind(element: PromoListItemUiModel) {
         if (element.uiData.imageResourceUrls.isNotEmpty()) {
-            ImageHandler.loadImageRounded2(itemView.context, itemView.image_promo_item, element.uiData.imageResourceUrls[0])
-            itemView.label_promo_item_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
-                    itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
-            itemView.image_promo_item.show()
+            itemView.container_image_promo_item.removeAllViews()
+            element.uiData.imageResourceUrls.forEach {
+                val imageView = ImageView(itemView.context)
+                imageView.layoutParams = LinearLayout.LayoutParams(
+                        itemView.context.resources.getDimensionPixelSize(R.dimen.dp_30),
+                        LinearLayout.LayoutParams.MATCH_PARENT
+                )
+                imageView.setMargin(0, 0, itemView.context.resources.getDimensionPixelSize(R.dimen.dp_4), 0)
+                imageView.scaleType = ImageView.ScaleType.FIT_START
+                ImageHandler.loadImageRounded2(itemView.context, imageView, it)
+                itemView.container_image_promo_item.addView(imageView)
+            }
+            itemView.container_image_promo_item.show()
         } else {
             itemView.label_promo_item_title.setMargin(0, 0, itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
-            itemView.image_promo_item.gone()
+            itemView.container_image_promo_item.gone()
         }
 
         if (element.uiState.isAttempted) {
@@ -77,7 +88,14 @@ class PromoListItemViewHolder(private val view: View,
             itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER
             itemView.image_select_promo.gone()
         }
-        setImageFilterNormal(itemView.image_promo_item)
+
+        val childcount = itemView.container_image_promo_item.childCount
+        for (index in 0 until childcount) {
+            val child = itemView.container_image_promo_item.getChildAt(index)
+            if (child is ImageView) {
+                setImageFilterNormal(child)
+            }
+        }
     }
 
     private fun renderDisablePromoItem(element: PromoListItemUiModel) {
@@ -91,7 +109,14 @@ class PromoListItemViewHolder(private val view: View,
         itemView.label_promo_item_sub_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_8).toInt(),
                 itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
         itemView.image_select_promo.gone()
-        setImageFilterGrayScale(itemView.image_promo_item)
+
+        val childcount = itemView.container_image_promo_item.childCount
+        for (index in 0 until childcount) {
+            val child = itemView.container_image_promo_item.getChildAt(index)
+            if (child is ImageView) {
+                setImageFilterGrayScale(child)
+            }
+        }
     }
 
     private fun formatSubTitle(element: PromoListItemUiModel) {

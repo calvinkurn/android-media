@@ -16,6 +16,6 @@ fun setImageFilterGrayScale(imageView: ImageView) {
 }
 
 fun setImageFilterNormal(imageView: ImageView) {
-    imageView.setColorFilter(null)
-    imageView.setImageAlpha(IMAGE_ALPHA_ENABLED)
+    imageView.colorFilter = null
+    imageView.imageAlpha = IMAGE_ALPHA_ENABLED
 }

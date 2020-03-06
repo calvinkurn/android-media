@@ -368,8 +368,10 @@ val MOCK_RESPONSE = """
                     "unique_id": "cart-string",
                     "shop_id": 0,
                     "tag_image_urls": [
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 20000,
                     "is_recommended": false,
@@ -398,8 +400,9 @@ val MOCK_RESPONSE = """
                     "unique_id": "cart-string",
                     "shop_id": 0,
                     "tag_image_urls": [
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 50000,
                     "is_recommended": true,
@@ -431,7 +434,6 @@ val MOCK_RESPONSE = """
                     "unique_id": "cart-string",
                     "shop_id": 102,
                     "tag_image_urls": [
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                       "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 30000,
