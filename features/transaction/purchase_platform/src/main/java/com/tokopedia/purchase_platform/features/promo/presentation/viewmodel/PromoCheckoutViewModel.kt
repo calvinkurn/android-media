@@ -315,6 +315,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 // Reset promo on collapsed item
                 it.uiState.hasSelectedPromoItem = false
                 it.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
+                    promoListItemUiModel.uiData.errorMessage = ""
                     promoListItemUiModel.uiState.isSellected = false
                     promoListItemUiModel.uiData.currentClashingPromo.clear()
                 }
