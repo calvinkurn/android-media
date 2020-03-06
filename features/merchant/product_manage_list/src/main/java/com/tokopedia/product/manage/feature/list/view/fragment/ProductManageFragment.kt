@@ -121,7 +121,8 @@ import com.tokopedia.product.manage.oldlist.view.fragment.ProductManageEditPrice
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByPage
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.*
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -217,6 +218,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             searchInputView.searchText = ""
             loadInitialData()
         }
+        searchInputView.setSearchHint(getString(R.string.product_manage_search_hint))
     }
 
     private fun setupBottomSheet() {
@@ -371,8 +373,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun loadData(page: Int) {
-        val filters = listOf(FilterByPage(page))
-        viewModel.getProductList(userSession.shopId, filters)
+        getProductList(page)
     }
 
     override fun renderList(list: List<ProductViewModel>, hasNextPage: Boolean) {
@@ -381,12 +382,34 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onSearchSubmitted(text: String) {
+        getProductList(keyword = text, isRefresh = true)
         ProductManageTracking.eventProductManageSearch()
-        loadInitialData()
     }
 
     override fun onSearchTextChanged(text: String?) {
         // NO OP
+    }
+
+    private fun getProductList(page: Int = 1, keyword: String? = null, isRefresh: Boolean = false) {
+        val selectedFilter = filterProductBottomSheet?.selectedFilterOptions
+        val filterOptions = createFilterOptions(page, keyword)
+        val sortOption = selectedFilter?.sortOption
+
+        viewModel.getProductList(userSession.shopId, filterOptions, sortOption, isRefresh)
+    }
+
+    private fun createFilterOptions(page: Int, keyword: String?): MutableList<FilterOption> {
+        val selectedFilter = filterProductBottomSheet?.selectedFilterOptions
+        val filterOptions = selectedFilter?.filterOptions.orEmpty()
+            .toMutableList()
+
+        filterOptions.addKeywordFilter(keyword)
+        filterOptions.add(FilterByPage(page))
+        return filterOptions
+    }
+
+    private fun MutableList<FilterOption>.addKeywordFilter(keyword: String?) {
+        if(!keyword.isNullOrEmpty()) add(FilterByKeyword(keyword))
     }
 
     private fun loadEmptyList() {
@@ -608,6 +631,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
+        searchInputView.searchTextView.text.clear()
         productManageListAdapter.resetCheckedItemSet()
         itemsChecked.clear()
         productList.clear()

@@ -15,6 +15,7 @@ class FilterMapper {
                     is FilterByMenu -> ProductListParam(filter.id, "${filter.menuIds}")
                     is FilterByCondition -> ProductListParam(filter.id, VALUE_TRUE)
                     is FilterByPage -> ProductListParam(filter.id, filter.page.toString())
+                    is FilterByKeyword -> ProductListParam(filter.id, filter.keyword)
                 }
             }
         }

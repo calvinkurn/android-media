@@ -145,6 +145,7 @@
     <string name="product_stock_reminder_typography_title">Pengingat Stok</string>
     <string name="product_stock_reminder_typography_desc">Pengingat akan aktif jika stok produk kurang dari"</string>
     <string name="product_stock_reminder_button">Simpan</string>
+    <string name="product_manage_search_hint">Cari produk atau SKU</string>
 
     <string name="quick_edit_currency">Rp</string>
     <string name="quick_edit_min_price_error">Min. Rp 100</string>
