@@ -56,8 +56,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/container_caption"
-        android:layout_marginTop="@dimen/dp_6"
-        android:layout_marginBottom="@dimen/dp_2">
+        android:layout_marginTop="@dimen/dp_6">
 
         <include layout="@layout/item_notification_product_card" />
 
