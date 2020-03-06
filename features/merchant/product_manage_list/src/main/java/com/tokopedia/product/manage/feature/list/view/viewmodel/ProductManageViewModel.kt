@@ -14,8 +14,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductEditPriceParam
@@ -129,7 +128,12 @@ class ProductManageViewModel(
         })
     }
 
-    fun getProductList(shopId: String, filterOptions: List<FilterOption>? = null, sortOption: SortOption? = null) {
+    fun getProductList(
+        shopId: String,
+        filterOptions: List<FilterOption>? = null,
+        sortOption: SortOption? = null,
+        isRefresh: Boolean = false
+    ) {
         launchCatchError(block = {
             val productList = withContext(ioDispatcher) {
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
@@ -138,15 +142,11 @@ class ProductManageViewModel(
                 productListResponse?.data
             }
 
+            refreshList(isRefresh)
             showProductList(productList)
         }, onError = {
             _productListResult.value = Fail(it)
         })
-    }
-
-    private fun showProductList(products: List<Product>?) {
-        val productList = mapToViewModels(products)
-        _productListResult.value = Success(productList)
     }
 
     fun editPrice(productId: String, price: String) {
@@ -361,6 +361,15 @@ class ProductManageViewModel(
             response
         })
         return listParam
+    }
+
+    private fun showProductList(products: List<Product>?) {
+        val productList = mapToViewModels(products)
+        _productListResult.value = Success(productList)
+    }
+
+    private fun refreshList(isRefresh: Boolean) {
+        if (isRefresh) _viewState.value = RefreshList
     }
 
     private fun showProgressDialog() {
