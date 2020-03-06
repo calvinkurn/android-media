@@ -21,13 +21,17 @@ import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.laku6.tradeinsdk.api.Laku6TradeIn;
+import com.tokopedia.abstraction.common.utils.view.MethodChecker;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
+import com.tokopedia.common_tradein.utils.TradeInUtils;
 import com.tokopedia.design.dialog.AccessRequestDialogFragment;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.tradein.R;
@@ -38,8 +42,11 @@ import com.tokopedia.tradein.viewmodel.TradeInHomeViewModel;
 import com.tokopedia.tradein.Constants;
 import com.tokopedia.design.dialog.IAccessRequestListener;
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel;
+import com.tokopedia.unifyprinciples.Typography;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 
@@ -47,7 +54,7 @@ import timber.log.Timber;
 
 import static com.tokopedia.tradein.view.viewcontrollers.FinalPriceActivity.PARAM_TRADEIN_PHONE_TYPE;
 
-public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener {
+public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewModel> implements IAccessRequestListener, Laku6TradeIn.TradeInListener {
 
 
     private TextView mTvPriceElligible;
@@ -65,6 +72,11 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
     private String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
     private String errorDialogGTMLabel = "";
     private String productName = "";
+    private LinearLayout imeiView;
+    private EditText editTextImei;
+    private Typography typographyImeiDescription;
+    private Typography typographyImeiHelp;
+    private boolean inputImei;
 
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -133,6 +145,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         mTvNotUpto = findViewById(R.id.tv_not_upto);
         mTvGoToProductDetails = findViewById(R.id.tv_go_to_product_details);
         tvIndicateive = findViewById(R.id.tv_indicative);
+        imeiView = findViewById(R.id.imei_view);
+        editTextImei = findViewById(R.id.edit_text_imei);
+        typographyImeiDescription = findViewById(R.id.typography_imei_description);
+        typographyImeiHelp = findViewById(R.id.typography_imei_help);
         mTvModelName.setText(new StringBuilder().append(Build.MANUFACTURER).append(" ").append(Build.MODEL).toString());
         if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
             closeButtonText = R.string.tradein_return;
@@ -145,6 +161,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             tncStringId = R.string.tradein_tnc;
         }
         mTvGoToProductDetails.setText(closeButtonText);
+        typographyImeiHelp.setOnClickListener(v -> {
+            TradeInImeiHelpBottomSheet tradeInImeiHelpBottomSheet = TradeInImeiHelpBottomSheet.Companion.newInstance();
+            tradeInImeiHelpBottomSheet.show(getSupportFragmentManager(), "");
+        });
     }
 
     private void setTradeInParams() {
@@ -220,7 +240,20 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                         mTvInitialPrice.setText(homeResult.getDisplayMessage());
                         mTvGoToProductDetails.setText(getString(R.string.text_check_functionality));
                         mTvGoToProductDetails.setOnClickListener(v -> {
-                            laku6TradeIn.startGUITest();
+                            if (imeiView.getVisibility() == View.VISIBLE) {
+                                if (editTextImei.getText().length() == 15) {
+                                    showProgressBar();
+                                    laku6TradeIn.checkImeiValidation(this, editTextImei.getText().toString());
+                                } else if (editTextImei.getText().length() == 0){
+                                    typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
+                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+                                } else {
+                                    typographyImeiDescription.setText(getString(R.string.wrong_imei_string));
+                                    typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+                                }
+                            } else {
+                                laku6TradeIn.startGUITest();
+                            }
                             sendGeneralEvent(clickEvent,
                                     category,
                                     TradeInGTMConstants.ACTION_CLICK_MULAI_FUNGSI,
@@ -230,6 +263,10 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                         });
                         if (TRADEIN_TYPE != TRADEIN_MONEYIN) {
                             sendIrisEvent(homeResult.maxPrice != null ? homeResult.maxPrice : 0 , homeResult.minPrice!= null ? homeResult.minPrice : 0 );
+                        }
+                        if(inputImei){
+                            laku6TradeIn.startGUITest();
+                            break;
                         }
                         viewMoneyInPriceGTM(homeResult.getDeviceDisplayName() + " - " + homeResult.getDisplayMessage());
                         break;
@@ -249,6 +286,13 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
                 showPermissionDialog();
             }
         }));
+        tradeInHomeViewModel.getImeiStateLiveData().observe(this, showImei -> {
+            if(showImei){
+                imeiView.setVisibility(View.VISIBLE);
+            } else {
+                imeiView.setVisibility(View.GONE);
+            }
+        });
     }
 
     protected void showDialogFragment(String titleText, String bodyText, String positiveButton, String negativeButton) {
@@ -483,4 +527,27 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
         IrisAnalytics.getInstance(this).sendEvent(values);
     }
 
+    @Override
+    public void onFinished(JSONObject jsonObject) {
+        hideProgressBar();
+        tradeInHomeViewModel.setDeviceId(editTextImei.getText().toString());
+        inputImei = true;
+        TradeInUtils.setImeiNumber(this, editTextImei.getText().toString());
+        getPriceFromSDK(this);
+        typographyImeiDescription.setText(getString(R.string.enter_the_imei_number_text));
+        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_black));
+    }
+
+    @Override
+    public void onError(JSONObject error) {
+        hideProgressBar();
+        String errorMessage = getString(R.string.wrong_imei_string);
+        try {
+            errorMessage = error.getString("message");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        typographyImeiDescription.setText(errorMessage);
+        typographyImeiDescription.setTextColor(MethodChecker.getColor(this,R.color.tradein_hint_red));
+    }
 }

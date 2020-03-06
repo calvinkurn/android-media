@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.common.travel.utils.TravelDateUtil
 import com.tokopedia.hotel.HotelComponentInstance
 import com.tokopedia.hotel.common.presentation.HotelBaseActivity
+import com.tokopedia.hotel.common.util.HotelUtils
 import com.tokopedia.hotel.hoteldetail.di.DaggerHotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.di.HotelDetailComponent
 import com.tokopedia.hotel.hoteldetail.presentation.fragment.HotelDetailFragment
@@ -59,9 +60,16 @@ class HotelDetailActivity : HotelBaseActivity(), HasComponent<HotelDetailCompone
                 isDirectPayment =  getBooleanExtra(EXTRA_IS_DIRECT_PAYMENT, true)
             }
         }
+        checkParameter()
 
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
+    }
+
+    private fun checkParameter() {
+        val updatedCheckInCheckOutDate = HotelUtils.validateCheckInAndCheckOutDate(checkInDate, checkOutDate)
+        checkInDate = updatedCheckInCheckOutDate.first
+        checkOutDate = updatedCheckInCheckOutDate.second
     }
 
     override fun shouldShowOptionMenu(): Boolean = true
