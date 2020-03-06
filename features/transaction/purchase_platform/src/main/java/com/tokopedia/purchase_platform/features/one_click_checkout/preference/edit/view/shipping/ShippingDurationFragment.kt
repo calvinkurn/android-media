@@ -20,14 +20,13 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
 import kotlinx.android.synthetic.main.fragment_shipping_duration.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ShippingDurationFragment : BaseDaggerFragment(){
+class ShippingDurationFragment : BaseDaggerFragment() {
 
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
@@ -60,9 +59,9 @@ class ShippingDurationFragment : BaseDaggerFragment(){
         return inflater.inflate(R.layout.fragment_shipping_duration, container, false)
     }
 
-    private fun initViewModel(){
+    private fun initViewModel() {
         viewModel.shippingDuration.observe(this, Observer {
-            when(it) {
+            when (it) {
                 is OccState.Success -> {
                     global_error.gone()
                     content_layout.visible()
@@ -70,8 +69,8 @@ class ShippingDurationFragment : BaseDaggerFragment(){
                 }
 
                 is OccState.Fail -> {
-                    if(!it.isConsumed) {
-                        if(it.throwable != null){
+                    if (!it.isConsumed) {
+                        if (it.throwable != null) {
                             handleError(it.throwable)
                         }
                     }
@@ -80,7 +79,7 @@ class ShippingDurationFragment : BaseDaggerFragment(){
         })
     }
 
-    private fun renderData(data: List<ServicesItemModelNoPrice>){
+    private fun renderData(data: List<ServicesItemModelNoPrice>) {
         adapter.shippingDurationList.clear()
         adapter.shippingDurationList.addAll(data)
         adapter.notifyDataSetChanged()
@@ -166,7 +165,7 @@ class ShippingDurationFragment : BaseDaggerFragment(){
         viewModel.consumeGetShippingDurationFail()
     }
 
-    private fun showGlobalError(type: Int){
+    private fun showGlobalError(type: Int) {
         global_error.setType(type)
         global_error.setActionClickListener {
             viewModel.getShippingDuration()

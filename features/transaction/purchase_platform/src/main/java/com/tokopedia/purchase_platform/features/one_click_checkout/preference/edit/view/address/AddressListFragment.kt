@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.KERO_TOKEN
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
@@ -35,7 +37,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
+class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener {
 
     override fun onSearchSubmitted(text: String) {
         performSearch(text)
@@ -53,6 +55,9 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
     }
 
     companion object {
+        const val REQUEST_FIRST_CREATE = 1
+        const val REQUEST_CREATE = 2
+
         const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
 
         private const val ARG_IS_EDIT = "is_edit"
@@ -84,14 +89,14 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
         return view
     }
 
-    private fun initViewModel(){
+    private fun initViewModel() {
         viewModel.addressList.observe(this, Observer {
-            when(it){
+            when (it) {
                 is OccState.Success -> {
                     swipe_refresh_layout.isRefreshing = false
                     global_error.gone()
                     content_layout.visible()
-                    if(it.data.listAddress.isEmpty()){
+                    if (it.data.listAddress.isEmpty()) {
                         text_search_error.visible()
                         content_layout.gone()
                     } else {
@@ -102,9 +107,9 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
                 }
 
                 is OccState.Fail -> {
-                    if(!it.isConsumed) {
+                    if (!it.isConsumed) {
                         swipe_refresh_layout.isRefreshing = false
-                        if(it.throwable != null) {
+                        if (it.throwable != null) {
                             handleError(it.throwable)
                         }
                     }
@@ -136,8 +141,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
 
     }
 
-    private fun initView(){
-        if(empty_state_order_list.visibility == View.GONE){
+    private fun initView() {
+        if (empty_state_order_list.visibility == View.GONE) {
             btn_save_address.text = getString(R.string.label_button_input_address)
             btn_save_address.setOnClickListener {
                 if (arguments?.getBoolean(ARG_IS_EDIT) == false) {
@@ -150,19 +155,20 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
             empty_state_order_list.visibility = View.VISIBLE
             btn_save_address.text = getString(R.string.label_button_input_address_empty)
             btn_save_address.setOnClickListener {
-                goToPickLocation()
+                goToPickLocation(REQUEST_FIRST_CREATE)
             }
         }
     }
 
-    private fun initSearch(){
+    private fun initSearch() {
         search_input_view.searchText = viewModel.savedQuery
     }
 
-   /*OnActivityResult utk flow dari ana*/
     private fun goBack() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
+            parent.addressId = adapter.addresspositionId
+            Log.d("address_fragment", parent.addressId.toString())
             parent.goBack()
         }
     }
@@ -175,7 +181,13 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
                 parent.setHeaderTitle(getString(R.string.activity_title_choose_address))
                 parent.showAddButton()
                 parent.setAddButtonOnClickListener {
-                    goToPickLocation()
+                    if (viewModel.token != null) {
+                        goToPickLocation(REQUEST_CREATE)
+                    } else {
+                        view?.let {
+                            Toaster.make(it, "Failed", type = Toaster.TYPE_ERROR)
+                        }
+                    }
                 }
             }
         } else {
@@ -183,6 +195,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
             if (parent is PreferenceEditActivity) {
                 parent.hideDeleteButton()
                 parent.hideAddButton()
+                parent.showAddButton()
+                parent.setAddButtonOnClickListener {
+                    goToPickLocation(REQUEST_CREATE)
+                }
                 parent.showStepper()
                 parent.setStepperValue(25, true)
                 parent.setHeaderTitle(getString(R.string.activity_title_choose_address))
@@ -191,13 +207,20 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
         }
     }
 
+    /*OnActivityResult utk flow dari ana*/
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-       goToNextStep()
+
+        if (requestCode == REQUEST_FIRST_CREATE) {
+            performSearch("")
+            goToNextStep()
+        } else if (requestCode == REQUEST_CREATE) {
+            performSearch(searchAddress.searchTextView.text.toString())
+        }
 
     }
 
-    private fun initSearchView(){
+    private fun initSearchView() {
         searchAddress.searchTextView.setOnClickListener(onSearchViewClickListener())
         searchAddress.searchTextView.setOnTouchListener(onSearchViewTouchListener())
 
@@ -207,11 +230,11 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
     }
 
 
-    private fun performSearch(query: String){
+    private fun performSearch(query: String) {
         viewModel.searchAddress(query)
     }
 
-    private fun openSoftKeyboard(){
+    private fun openSoftKeyboard() {
         (activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)?.showSoftInput(
                 searchAddress.searchTextView, InputMethodManager.SHOW_IMPLICIT)
     }
@@ -231,10 +254,11 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
         }
     }
 
-    private fun goToPickLocation(){
+    private fun goToPickLocation(requestCode: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalLogistic.ADD_ADDRESS_V2)
         intent.putExtra(EXTRA_IS_FULL_FLOW, true)
-        startActivity(intent)
+        intent.putExtra(KERO_TOKEN, viewModel.token)
+        startActivityForResult(intent, requestCode)
     }
 
     override fun onStart() {
@@ -293,7 +317,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
         viewModel.consumeSearchAddressFail()
     }
 
-    private fun showGlobalError(type: Int){
+    private fun showGlobalError(type: Int) {
         global_error.setType(type)
         global_error.setActionClickListener {
             viewModel.searchAddress("")
