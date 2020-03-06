@@ -118,7 +118,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private var operatorName = ""
     private var categoryName = ""
-    private var isInitialRender = true
 
     private lateinit var checkoutBottomSheet: BottomSheetUnify
 
@@ -771,10 +770,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         with (data.catalog) {
             (activity as? BaseSimpleActivity)?.updateTitle(label)
             categoryName = name.toLowerCase()
-            if (isInitialRender) {
-                rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName, categoryId.toString())
-                isInitialRender = false
-            }
+            rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName, categoryId.toString())
         }
         renderTickers(data.tickers)
         // Set recommendation data if available
