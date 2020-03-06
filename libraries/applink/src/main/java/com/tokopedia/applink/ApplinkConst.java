@@ -299,6 +299,7 @@ public interface ApplinkConst {
     String SALAM_UMRAH_PDP = "tokopedia://s/umroh/produk/{slug}";
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
+    String SALAM_UMRAH_AGEN = "tokopedia://s/umroh/agen/{slug}";
 
     interface Discovery {
         String CATEGORY = "tokopedia://category";
@@ -415,6 +416,8 @@ public interface ApplinkConst {
 
         String PATH_ASK_SELLER = "askseller";
         String PATH_ASK_BUYER = "askbuyer";
+
+        String SOURCE_ASK_SELLER = "tx_ask_seller";
     }
 
     interface AttachInvoice {

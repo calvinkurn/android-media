@@ -80,11 +80,11 @@ data class HotelRoom(
 
         var additionalPropertyInfo: AdditionalPropertyInfo = AdditionalPropertyInfo()
 
-        ): Visitable<RoomListTypeFactory> {
+) : Visitable<RoomListTypeFactory> {
 
-        override fun type(typeFactory: RoomListTypeFactory) = typeFactory.type(this)
+    override fun type(typeFactory: RoomListTypeFactory) = typeFactory.type(this)
 
-        data class RoomBreakfastInfo(
+    data class RoomBreakfastInfo(
             @SerializedName("isBreakFastIncluded")
             @Expose
             val isBreakfastIncluded: Boolean = false,
@@ -208,7 +208,9 @@ data class HotelRoom(
 
             val isEnabled: Boolean = false,
 
-            val propertyName: String = ""
+            val propertyName: String = "",
+
+            val hotelTagging: String = ""
     )
 }
 

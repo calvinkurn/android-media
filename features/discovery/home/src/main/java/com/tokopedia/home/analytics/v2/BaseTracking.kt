@@ -148,7 +148,7 @@ abstract class BaseTracking {
             map[KEY_NAME] = promotion.name
             map[KEY_CREATIVE] = promotion.creative
             map[KEY_CREATIVE_URL] = promotion.creativeUrl
-            map[KEY_POSITION] = promotion.position
+            map[KEY_POSITION] = promotion.position.toString()
             map[KEY_PROMO_ID] = promotion.promoIds
             map[KEY_PROMO_CODE] = promotion.promoCodes
             return map
@@ -160,9 +160,9 @@ abstract class BaseTracking {
             map[KEY_NAME] = product.name
             map[KEY_BRAND] = product.brand
             map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice
+            map[KEY_PRICE] = product.productPrice.toString()
             map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition
+            map[KEY_POSITION] = product.productPosition.toString()
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (list.isNotEmpty()) map[KEY_LIST] = list

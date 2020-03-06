@@ -36,6 +36,10 @@
                 app:tckv_indicator_on_color="@color/tkpd_main_green"
                 tools:visibility="visible" />
 
+            <include layout="@layout/include_flight_search_title_route" />
+
+            <include layout="@layout/include_flight_quick_filter" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
@@ -44,8 +48,5 @@
                 android:fitsSystemWindows="true" />
         </LinearLayout>
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
-
-
-    <include layout="@layout/include_filter_bottom_action_view" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

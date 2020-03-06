@@ -31,6 +31,7 @@ data class PlayCardViewModel(
                     && playCardHome?.moderatorName == b.playCardHome?.moderatorName
                     && playCardHome?.title == b.playCardHome?.title
                     && playCardHome?.totalView == b.playCardHome?.totalView
+                    && playCardHome?.isShowTotalView == b.playCardHome?.isShowTotalView
         }
         return false
     }
