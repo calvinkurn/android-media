@@ -8,8 +8,14 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.*
 
 object ProductMapper {
-    fun mapToViewModels(productList: List<Product>?): List<ProductViewModel> {
 
+    private val filterType = listOf(
+        ACTIVE,
+        INACTIVE,
+        BANNED
+    )
+
+    fun mapToViewModels(productList: List<Product>?): List<ProductViewModel> {
         return productList?.map {
             val price = it.price?.min
             val picture = it.pictures?.firstOrNull()
@@ -30,11 +36,12 @@ object ProductMapper {
         } ?: emptyList()
     }
 
-    fun mapToProductFilters(productList: List<Product>?): List<FilterViewModel> {
+    fun mapToTabFilters(productList: List<ProductViewModel>?): List<FilterViewModel> {
         val productFilters = mutableListOf<FilterViewModel>(Default)
 
         val availableFilters = productList
             ?.distinctBy { it.status }
+            ?.filter { filterType.contains(it.status) }
             ?.map { product ->
                 val productStatus = product.status
                 val productCount = productList.filter {
