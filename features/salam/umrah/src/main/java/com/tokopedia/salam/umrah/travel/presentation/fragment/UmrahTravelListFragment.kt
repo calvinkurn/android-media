@@ -85,17 +85,15 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    if(userVisibleHint) {
                         val firstVisibleItem = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                         val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                         val dataList = (adapter as BaseListAdapter<*, *>).data
                         trackImpression(firstVisibleItem, lastVisibleItem, dataList)
-                    }
                 }
 
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     super.onScrollStateChanged(recyclerView, newState)
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE && userVisibleHint) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                         val firstVisibleItem = (layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
                         val lastVisibleItem = (layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                         val dataList = (adapter as BaseListAdapter<*, *>).data
