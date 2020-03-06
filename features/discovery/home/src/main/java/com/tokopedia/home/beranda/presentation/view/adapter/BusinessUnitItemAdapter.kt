@@ -16,11 +16,9 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
     private var positionWidgetOnHome = -1
 
     private var listener = object: BusinessUnitItemViewListener{
-        override fun onReloadButtonClick() {}
-
-        override fun onSuccessGetData(data: HomeWidget) {}
-
-        override fun onErrorGetData(throwable: Throwable) {}
+        override fun onClicked(element: BusinessUnitItemDataModel, position: Int) {
+            listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
+        }
 
         override fun onImpressed(element: BusinessUnitItemDataModel, position: Int) {
             listenerBusinessTrackerTracker.onImpressTracking(BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
@@ -40,12 +38,6 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
     override fun onBindViewHolder(holder: SizeSmallBusinessViewHolder, position: Int) {
         getItem(position).let {businessUnit ->
             holder.bind(businessUnit)
-            if(!holder.itemView.hasOnClickListeners()){
-                holder.itemView.setOnClickListener {
-                    RouteManager.route(holder.itemView.context, getItem(position).content.applink)
-                    listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(getItem(position), tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
-                }
-            }
         }
     }
 

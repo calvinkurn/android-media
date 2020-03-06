@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
@@ -30,6 +31,16 @@ open class SizeSmallBusinessViewHolder (
             renderSubtitle(it)
             renderFooter(it)
             addImpressionListener(element)
+            addClickListener(element)
+        }
+    }
+
+    open fun addClickListener(element: BusinessUnitItemDataModel){
+        if(!itemView.hasOnClickListeners()){
+            itemView.setOnClickListener {
+                RouteManager.route(itemView.context, element.content.applink)
+                listener.onClicked(element, adapterPosition)
+            }
         }
     }
 
