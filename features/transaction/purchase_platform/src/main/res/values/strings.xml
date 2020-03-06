@@ -273,7 +273,7 @@
     <string name="text_address_type">Kantor</string>
     <string name="text_address_name">Tari</string>
     <string name="text_address_number">081808180008</string>
-    <string name="title_empty_address">Masukkan Alamat Dulu, Ya</string>
+    <string name="title_empty_address">Mau dikirim ke mana barangmu?</string>
     <string name="text_empty_address">Tambahkan alamat pengiriman barang untuk mempermudah proses pembelian</string>
     <string name="label_button_input_address">Simpan alamat</string>
     <string name="label_button_input_address_empty">Tambah Alamat</string>

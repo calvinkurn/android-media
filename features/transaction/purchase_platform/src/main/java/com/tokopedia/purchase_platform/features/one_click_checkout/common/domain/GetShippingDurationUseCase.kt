@@ -15,7 +15,7 @@ class GetShippingDurationUseCase @Inject constructor(val graphqlUseCase: Graphql
                 { shippingNoPriceResponse: ShippingNoPriceResponse ->
                     print(shippingNoPriceResponse)
                     onSuccess(shippingNoPriceResponse) },
-                { throwable ->
+                { throwable: Throwable ->
                     print(throwable)
                     onError(throwable) })
     }
