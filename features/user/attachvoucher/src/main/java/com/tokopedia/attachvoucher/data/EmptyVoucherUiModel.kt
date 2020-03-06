@@ -17,7 +17,7 @@ class EmptyVoucherUiModel(
         merchantVoucherBanner: MerchantVoucherBanner = MerchantVoucherBanner(),
         merchantVoucherStatus: MerchantVoucherStatus = MerchantVoucherStatus(),
         restrictedForLiquidProduct: Boolean = false
-) : Voucher(
+) : VoucherUiModel(
         voucherId,
         voucherName,
         voucherCode,
