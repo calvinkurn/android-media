@@ -115,11 +115,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViewModel()
-        performSearch("")
+        initSearch()
         initView()
         address_list_rv.adapter = adapter
         address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        initSearch()
         initSearchView()
 
     }
@@ -141,6 +140,9 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
 
     private fun initSearch(){
         search_input_view.searchText = viewModel.savedQuery
+        var searchKey = search_input_view.searchText
+        performSearch(searchKey)
+        Log.d("search_text", search_input_view.searchText)
     }
 
    /*OnActivityResult utk flow dari ana*/
