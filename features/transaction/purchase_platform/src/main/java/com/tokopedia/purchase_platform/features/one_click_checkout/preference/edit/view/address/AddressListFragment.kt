@@ -19,6 +19,7 @@ import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel
 import com.tokopedia.network.constant.ResponseStatus
@@ -29,12 +30,17 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_choose_address.*
+import kotlinx.android.synthetic.main.fragment_detail_product_page.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
+class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, AddressListItemAdapter.onSelectedListener {
+
+    override fun onSelect(addressId: String) {
+        viewModel.setSelectedAddress(addressId)
+    }
 
     override fun onSearchSubmitted(text: String) {
         performSearch(text)
@@ -55,7 +61,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
         const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
     }
 
-    val adapter = AddressListItemAdapter()
+    val adapter = AddressListItemAdapter(this)
     private var maxItemPosition: Int = 0
     private var isLoading: Boolean = false
     private lateinit var inputMethodManager: InputMethodManager
@@ -139,10 +145,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
     }
 
     private fun initSearch(){
-        search_input_view.searchText = viewModel.savedQuery
-        var searchKey = search_input_view.searchText
+        val searchKey = viewModel.savedQuery
+        search_input_view.searchText = searchKey
+
         performSearch(searchKey)
-        Log.d("search_text", search_input_view.searchText)
     }
 
    /*OnActivityResult utk flow dari ana*/
@@ -155,7 +161,9 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
     private fun initSearchView(){
         searchAddress.searchTextView.setOnClickListener(onSearchViewClickListener())
         searchAddress.searchTextView.setOnTouchListener(onSearchViewTouchListener())
-
+        searchAddress.setResetListener {
+            performSearch("")
+        }
         searchAddress.setListener(this)
         searchAddress.setSearchHint(getString(R.string.label_hint_search_address))
 
@@ -210,9 +218,11 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener{
     private fun goToNextStep() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
-            parent.addressId = adapter.addresspositionId
-            Log.d("address_fragment", parent.addressId.toString())
-            parent.addFragment(ShippingDurationFragment())
+            val selectedId = viewModel.selectedId.toIntOrZero()
+            if(selectedId > 0) {
+                parent.addressId = selectedId
+                parent.addFragment(ShippingDurationFragment())
+            }
         }
     }
 

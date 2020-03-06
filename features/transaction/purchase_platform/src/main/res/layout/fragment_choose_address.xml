@@ -1,103 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="@color/white"
-    android:enabled="false"
-    tools:context=".features.one_click_checkout.preference.edit.view.address.AddressListFragment">
+    android:enabled="false">
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/white">
+    <com.tokopedia.design.text.SearchInputView
+        android:id="@+id/search_input_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:siv_search_hint="@string/label_hint_search_address"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.tokopedia.design.text.SearchInputView
-            android:id="@+id/search_input_view"
+    <TextView
+        android:id="@+id/text_search_error"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp_25"
+        android:text="Pencarian tidak dapat ditemukan"
+        app:layout_constraintTop_toBottomOf="@id/search_input_view"
+        android:visibility="gone"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/address_list_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/search_input_view"/>
+
+
+        <FrameLayout
+            android:id="@+id/bottom_layout_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:siv_search_hint="@string/label_hint_search_address"
-            android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
+            android:animateLayoutChanges="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btn_save_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold"
+                android:layout_marginStart="@dimen/dp_16"
+                android:layout_marginLeft="@dimen/dp_16"
+                android:layout_marginEnd="@dimen/dp_16"
+                android:layout_marginRight="@dimen/dp_16"
+                android:layout_marginTop="@dimen/dp_8"
+                android:layout_marginBottom="@dimen/dp_8"
+                android:text="@string/label_button_save_address" />
+
+        </FrameLayout>
+
+        <include
+            android:id="@+id/empty_state_order_list"
+            layout="@layout/empty_list_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dp_40"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
-
-        <TextView
-            android:id="@+id/text_search_error"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_25"
-            android:text="Pencarian tidak dapat ditemukan"
-            app:layout_constraintTop_toBottomOf="@id/search_input_view"
             android:visibility="gone"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/address_list_rv"
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/content_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="address_list_rv,bottom_layout_address"
+            android:visibility="visible"/>
+
+        <com.tokopedia.globalerror.GlobalError
+            android:id="@+id/global_error"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/search_input_view"/>
 
-
-            <FrameLayout
-                android:id="@+id/bottom_layout_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent">
-
-                <com.tokopedia.unifycomponents.UnifyButton
-                    android:id="@+id/btn_save_address"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/sp_16"
-                    android:textStyle="bold"
-                    android:layout_marginStart="@dimen/dp_16"
-                    android:layout_marginLeft="@dimen/dp_16"
-                    android:layout_marginEnd="@dimen/dp_16"
-                    android:layout_marginRight="@dimen/dp_16"
-                    android:layout_marginTop="@dimen/dp_8"
-                    android:layout_marginBottom="@dimen/dp_8"
-                    android:text="@string/label_button_save_address" />
-
-            </FrameLayout>
-
-            <include
-                android:id="@+id/empty_state_order_list"
-                layout="@layout/empty_list_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_40"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                android:visibility="gone"/>
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/content_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="address_list_rv,bottom_layout_address"
-                android:visibility="visible"/>
-
-            <com.tokopedia.globalerror.GlobalError
-                android:id="@+id/global_error"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:visibility="gone"
-                app:layout_constraintTop_toBottomOf="@id/search_input_view"/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
