@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.attachvoucher.data.EmptyVoucherUiModel
-import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.view.adapter.viewholder.AttachVoucherViewHolder
 import com.tokopedia.attachvoucher.view.adapter.viewholder.EmptyAttachVoucherViewHolder
 import com.tokopedia.attachvoucher.view.adapter.viewholder.EmptyVoucherViewHolder
@@ -17,7 +17,7 @@ class AttachVoucherTypeFactoryImpl : BaseAdapterTypeFactory(), AttachVoucherType
         return EmptyAttachVoucherViewHolder.LAYOUT
     }
 
-    override fun type(voucher: Voucher): Int {
+    override fun type(voucher: VoucherUiModel): Int {
         return AttachVoucherViewHolder.LAYOUT
     }
 
