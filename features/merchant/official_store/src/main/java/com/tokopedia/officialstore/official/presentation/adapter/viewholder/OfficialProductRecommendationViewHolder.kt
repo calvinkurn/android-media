@@ -16,10 +16,10 @@ class OfficialProductRecommendationViewHolder(
         val recommendationListener: RecommendationListener
 ): AbstractViewHolder<ProductRecommendationViewModel>(view) {
 
-    private val productCardView: ProductCardGridView by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
+    private val productCardView: ProductCardGridView? by lazy { view.findViewById<ProductCardGridView>(R.id.product_item) }
 
     override fun bind(element: ProductRecommendationViewModel) {
-        productCardView.run {
+        productCardView?.run {
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.productItem.slashedPrice,
@@ -47,7 +47,8 @@ class OfficialProductRecommendationViewHolder(
                                         title = recommendationLabel.title,
                                         type = recommendationLabel.type
                                 )
-                            }
+                            },
+                            hasThreeDots = true
                     )
             )
 
@@ -64,6 +65,18 @@ class OfficialProductRecommendationViewHolder(
                 element.listener.onProductClick(element.productItem, element.productItem.type, adapterPosition)
                 if (element.productItem.isTopAds) ImpresionTask().execute(element.productItem.clickUrl)
             }
+
+            setThreeDotsOnClickListener {
+                element.listener.onThreeDotsClick(element.productItem, adapterPosition)
+            }
+        }
+    }
+
+    override fun bind(element: ProductRecommendationViewModel, payloads: MutableList<Any>) {
+        if (payloads.getOrNull(0) !is Boolean) return
+
+        productCardView?.setThreeDotsOnClickListener {
+            element.listener.onThreeDotsClick(element.productItem, adapterPosition)
         }
     }
 

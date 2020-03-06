@@ -20,7 +20,13 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
+import com.tokopedia.discovery.common.manager.handleActivityResult
+import com.tokopedia.discovery.common.manager.showProductCardOptions
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -37,7 +43,6 @@ import com.tokopedia.officialstore.official.di.OfficialStoreHomeComponent
 import com.tokopedia.officialstore.official.di.OfficialStoreHomeModule
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapter
 import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAdapterTypeFactory
-import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.OfficialFeaturedShopViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationTitleViewModel
 import com.tokopedia.officialstore.official.presentation.adapter.viewmodel.ProductRecommendationViewModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
@@ -374,6 +379,69 @@ class OfficialHomeFragment :
             lastClickLayoutType = null
             lastParentPosition = null
         }
+
+        // ProductCardOptionsManager
+        handleActivityResult(
+                requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+                    override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
+                        handleWishlistAction(productCardOptionsModel)
+                    }
+                }
+        )
+    }
+
+    private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
+        val wishlistResult = productCardOptionsModel.wishlistResult
+
+        if (wishlistResult.isUserLoggedIn)
+            handleWishlistActionForLoggedInUser(productCardOptionsModel)
+        else
+            RouteManager.route(context, ApplinkConst.LOGIN)
+
+        tracking?.eventClickWishlist(
+                category?.title.toEmptyStringIfNull(),
+                !productCardOptionsModel.isWishlisted,
+                viewModel.isLoggedIn(),
+                productCardOptionsModel.productId.toIntOrZero(),
+                productCardOptionsModel.isTopAds
+        )
+    }
+
+    private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isSuccess)
+            handleWishlistActionSuccess(productCardOptionsModel)
+        else
+            showErrorWishlist()
+    }
+
+    private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
+        if (productCardOptionsModel.wishlistResult.isAddWishlist)
+            showSuccessAddWishlist()
+        else
+            showSuccessRemoveWishlist()
+
+        updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
+    }
+
+    private fun showSuccessAddWishlist() {
+        val rootView = view?.findViewById<View>(android.R.id.content) ?: return
+        val message = getString(R.string.msg_success_add_wishlist)
+
+        Snackbar.make(rootView, message, Snackbar.LENGTH_LONG)
+                .setAction("Lihat Wishlist") { RouteManager.route(rootView.context, ApplinkConst.WISHLIST) }
+                .show()
+    }
+
+    private fun showSuccessRemoveWishlist() {
+        val rootView = view?.findViewById<View>(android.R.id.content) ?: return
+        val message = getString(R.string.msg_success_remove_wishlist)
+
+        Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show()
+    }
+
+    private fun showErrorWishlist() {
+        val rootView = view?.findViewById<View>(android.R.id.content) ?: return
+        Toaster.showError(rootView, ErrorHandler.getErrorMessage(rootView.context, null), Snackbar.LENGTH_LONG)
     }
 
     private fun goToPDP(item: RecommendationItem, position: Int) {
@@ -408,7 +476,7 @@ class OfficialHomeFragment :
         if (position > -1 && adapter != null) {
             (adapter?.list?.getOrNull(position) as?
                     ProductRecommendationViewModel)?.productItem?.isWishlist = isWishlist
-            adapter?.notifyItemChanged(position)
+            adapter?.notifyItemChanged(position, isWishlist)
         }
     }
 
@@ -439,6 +507,20 @@ class OfficialHomeFragment :
                 viewModel.isLoggedIn(),
                 item.productId,
                 item.isTopAds
+        )
+    }
+
+    override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
+        showProductCardOptions(
+                this,
+                ProductCardOptionsModel(
+                        hasWishlist = true,
+                        productId = item.productId.toString(),
+                        isWishlisted = item.isWishlist,
+                        isTopAds = item.isTopAds,
+                        topAdsWishlistUrl = item.wishlistUrl,
+                        productPosition = position.getOrElse(0) { 0 }
+                )
         )
     }
 
