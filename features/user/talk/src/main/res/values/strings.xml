@@ -4,6 +4,7 @@
     <!-- ACTIVITY TITLE -->
     <string name="title_product_discussion">Diskusi Produk</string>
     <string name="title_report_talk">Laporkan</string>
+    <string name="title_talk_discuss">Diskusi</string>
 
     <!-- INBOX TALK -->
     <string name="title_tab_talk_all">Semua</string>
