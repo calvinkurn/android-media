@@ -424,7 +424,7 @@ class OfficialHomeFragment :
 
     private fun showSuccessAddWishlist() {
         activity?.let { activity ->
-            val view = activity.findViewById<View>(android.R.id.content)
+            val view = activity.findViewById<View>(android.R.id.content) ?: return
             val message = getString(R.string.msg_success_add_wishlist)
 
             Snackbar.make(view, message, Snackbar.LENGTH_LONG)
@@ -436,7 +436,7 @@ class OfficialHomeFragment :
 
     private fun showSuccessRemoveWishlist() {
         activity?.let {
-            val view = it.findViewById<View>(android.R.id.content)
+            val view = it.findViewById<View>(android.R.id.content) ?: return
             val message = getString(R.string.msg_success_remove_wishlist)
 
             Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
@@ -445,7 +445,7 @@ class OfficialHomeFragment :
 
     private fun showErrorWishlist() {
         activity?.let {
-            val view = it.findViewById<View>(android.R.id.content)
+            val view = it.findViewById<View>(android.R.id.content) ?: return
             Toaster.showError(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG)
         }
     }
