@@ -27,14 +27,21 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
             with(itemView) {
                 itemView.section_layout.show()
                 itemView.shimmering.hide()
-                section_title.text = element.meta.title
+
+                if (element.meta.title.isNotEmpty()) {
+                    section_title.show()
+                    section_title.text = element.meta.title
+                } else section_title.hide()
 
                 if (!::recentSearchAdapter.isInitialized) {
                     recentSearchAdapter = TravelHomepageDestinationAdapter(element.destination, onItemClickListener)
 
                     val layoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
                     layoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
-                        override fun getSpanSize(position: Int): Int = element.spanSize
+                        override fun getSpanSize(position: Int): Int {
+                            if (element.spanSize == 0) return if (position == 0) 2 else 1
+                            return element.spanSize
+                        }
                     }
                     list_recycler_view.layoutManager = layoutManager
                     list_recycler_view.addItemDecoration(TravelHomepageDestinationViewDecorator())
@@ -46,7 +53,7 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
         } else {
             itemView.section_layout.hide()
             itemView.shimmering.show()
-            onItemBindListener.onItemBindViewHolder(element.layoutData, element.isLoadFromCloud)
+            onItemBindListener.onItemBindViewHolder(element.layoutData, adapterPosition, element.isLoadFromCloud)
         }
 
     }

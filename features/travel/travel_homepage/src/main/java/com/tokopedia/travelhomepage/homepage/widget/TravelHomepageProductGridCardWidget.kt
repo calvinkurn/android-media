@@ -30,7 +30,11 @@ class TravelHomepageProductGridCardWidget @JvmOverloads constructor(context: Con
     }
 
     fun buildView(productList: List<ProductGridCardItemModel>) {
-        travel_homepage_product_widget_title.text = titleText
+
+        if (titleText.isNotEmpty()) {
+            travel_homepage_product_widget_title.show()
+            travel_homepage_product_widget_title.text = titleText
+        } else travel_homepage_product_widget_title.hide()
 
         if (subtitleText.isNotEmpty()) {
             travel_homepage_product_widget_subtitle.show()
@@ -38,7 +42,11 @@ class TravelHomepageProductGridCardWidget @JvmOverloads constructor(context: Con
         } else travel_homepage_product_widget_subtitle.hide()
 
         if (!::adapter.isInitialized) {
-            adapter = TravelHomepageProductGridCardAdapter(productList)
+            val listSize = productList.size
+            if (listSize > 2 && listSize % 2 != 0) {
+                adapter = TravelHomepageProductGridCardAdapter(productList.subList(0, listSize - (listSize % 2)))
+            } else adapter = TravelHomepageProductGridCardAdapter(productList)
+
             travel_homepage_product_rv.layoutManager = GridLayoutManager(context, 2)
         }
         travel_homepage_product_rv.adapter = adapter
@@ -47,6 +55,14 @@ class TravelHomepageProductGridCardWidget @JvmOverloads constructor(context: Con
             travel_homepage_product_widget_see_all.show()
             travel_homepage_product_widget_see_all.setOnClickListener { listener?.onClickSeeAllListener() }
         } else travel_homepage_product_widget_see_all.hide()
+    }
+
+    fun setLayoutVisibility(isShow: Boolean) {
+        travel_homepage_product_widget_layout.visibility = if (isShow) View.VISIBLE else View.GONE
+    }
+
+    fun setShimmeringVisibility(isShow: Boolean) {
+        travel_product_widget_shimmering.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 
     interface ActionListener {

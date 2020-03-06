@@ -27,7 +27,7 @@ class TravelHomepageCategoryViewHolder(itemView: View, private val onItemBindLis
         if (element.isLoaded) {
             categoriesRecyclerView.adapter = TravelHomepageCategoryListAdapter(element.categories, onItemClickListener)
         } else {
-            onItemBindListener.onItemBindViewHolder(element.layoutData, element.isLoadFromCloud)
+            onItemBindListener.onItemBindViewHolder(element.layoutData, adapterPosition, element.isLoadFromCloud)
 
             categoriesRecyclerView.adapter = TravelHomepageCategoryListShimmeringAdapter()
         }

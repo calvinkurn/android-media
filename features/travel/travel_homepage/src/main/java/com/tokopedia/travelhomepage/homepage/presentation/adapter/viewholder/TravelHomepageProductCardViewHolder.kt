@@ -25,11 +25,14 @@ class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBind
                 }
             } else {
                 // hide shimmering and hide layout
+                itemView.productCardWidget.setShimmeringVisibility(false)
+                itemView.productCardWidget.setLayoutVisibility(false)
             }
         } else {
             // show shimmering hide layout
-            //
-            onItemBindListener.onItemBindViewHolder(element.layoutData, element.isLoadFromCloud)
+            itemView.productCardWidget.setShimmeringVisibility(true)
+            itemView.productCardWidget.setLayoutVisibility(false)
+            onItemBindListener.onItemBindViewHolder(element.layoutData, adapterPosition, element.isLoadFromCloud)
         }
 
     }

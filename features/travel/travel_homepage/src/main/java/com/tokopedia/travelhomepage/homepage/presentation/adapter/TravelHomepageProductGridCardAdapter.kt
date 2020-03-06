@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
@@ -33,13 +34,21 @@ class TravelHomepageProductGridCardAdapter(var list: List<ProductGridCardItemMod
             with(itemView) {
                 travel_homepage_product_image.loadImage(item.imageUrl)
                 travel_homepage_product_title.text = item.title
-                travel_homepage_product_strikethrough_price.text = item.strikethroughPrice
-                travel_homepage_product_final_price.text = item.price
+
+                if (item.price.isNotEmpty()) {
+                    travel_homepage_product_final_price.text = item.price
+                    travel_homepage_product_final_price.show()
+                } else travel_homepage_product_final_price.hide()
+
+                if (item.strikethroughPrice.isNotEmpty()) {
+                    travel_homepage_product_strikethrough_price.show()
+                    travel_homepage_product_strikethrough_price.text = item.strikethroughPrice
+                } else travel_homepage_product_strikethrough_price.hide()
 
                 if (item.tag.isNotEmpty()) {
                     travel_homepage_product_discount_tag.show()
                     travel_homepage_product_discount_tag.text = item.tag
-                }
+                } else travel_homepage_product_discount_tag.hide()
             }
         }
 

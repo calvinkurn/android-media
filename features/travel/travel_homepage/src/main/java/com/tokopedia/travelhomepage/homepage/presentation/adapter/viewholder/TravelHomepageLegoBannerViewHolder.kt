@@ -16,7 +16,7 @@ class TravelHomepageLegoBannerViewHolder(itemView: View, private val onItemBindL
                                           private val onItemClickListener: OnItemClickListener) : AbstractViewHolder<TravelHomepageLegoBannerModel>(itemView) {
     override fun bind(element: TravelHomepageLegoBannerModel) {
         if (element.isLoaded) {
-            if (element.bannerItem.isNotEmpty()) {
+            if (element.isSuccess && element.bannerItem.isNotEmpty()) {
                 with(itemView) {
                     legoBannerWidget.titleText = element.title
                     legoBannerWidget.subtitleText = element.subtitle
@@ -24,11 +24,15 @@ class TravelHomepageLegoBannerViewHolder(itemView: View, private val onItemBindL
                 }
             } else {
                 // hide shimmering and hide layout
+                itemView.legoBannerWidget.setShimmeringVisibility(false)
+                itemView.legoBannerWidget.setLayoutVisibility(false)
             }
         } else {
             // show shimmering hide layout
-            //
-            onItemBindListener.onItemBindViewHolder(element.layoutData, element.isLoadFromCloud)
+            itemView.legoBannerWidget.setShimmeringVisibility(true)
+            itemView.legoBannerWidget.setLayoutVisibility(false)
+
+            onItemBindListener.onItemBindViewHolder(element.layoutData, adapterPosition, element.isLoadFromCloud)
         }
 
     }

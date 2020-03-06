@@ -34,7 +34,11 @@ class TravelHomepageSectionViewHolder(itemView: View,
                 itemView.shimmering.visibility = View.GONE
 
                 with(itemView) {
-                    section_title.text = element.title
+                    if (element.title.isNotEmpty()) {
+                        section_title.show()
+                        section_title.text = element.title
+                    } else section_title.hide()
+
                     if (element.seeAllUrl.isNotBlank()) {
                         section_see_all.show()
                         section_see_all.setOnClickListener {
@@ -62,7 +66,7 @@ class TravelHomepageSectionViewHolder(itemView: View,
         } else {
             itemView.shimmering.visibility = View.VISIBLE
             itemView.section_layout.visibility = View.GONE
-            onItemBindListener.onItemBindViewHolder(element.layoutData, element.isLoadFromCloud)
+            onItemBindListener.onItemBindViewHolder(element.layoutData, adapterPosition, element.isLoadFromCloud)
         }
     }
 

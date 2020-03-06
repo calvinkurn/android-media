@@ -38,6 +38,10 @@
             android:nestedScrollingEnabled="false"/>
     </LinearLayout>
 
+    <include android:id="@+id/lego_banner_shimmering"
+        layout="@layout/travel_homepage_lego_banner_shimmering"
+        android:visibility="gone"/>
+
 </FrameLayout>
 
 

@@ -15,61 +15,17 @@ import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepag
 
 class TravelHomepageMapper {
 
-    fun mapToSectionViewModel(model: TravelHomepageOrderListModel): TravelHomepageSectionModel {
-        val viewModel = TravelHomepageSectionModel()
-        viewModel.title = model.travelMeta.title
-        viewModel.seeAllUrl = model.travelMeta.appUrl
-        viewModel.list = model.orders.map {
-            TravelHomepageSectionModel.Item(title = it.title,
-                    subtitle = it.subtitle, prefix = it.prefix, value = it.value,
-                    appUrl = it.appUrl, imageUrl = it.imageUrl, product = it.product
-            )
-        }
-        viewModel.type = TYPE_ORDER_LIST
-        return viewModel
-    }
-
-    fun mapToSectionViewModel(model: TravelRecentSearchModel): TravelHomepageSectionModel {
-        val viewModel = TravelHomepageSectionModel()
-        viewModel.title = model.travelMeta.title
-        viewModel.seeAllUrl = model.travelMeta.appUrl
-        viewModel.list = model.items.map {
-            TravelHomepageSectionModel.Item(title = it.title,
-                    subtitle = it.subtitle, prefix = it.prefix,
-                    prefixStyling = it.prefixStyling, value = it.value,
-                    appUrl = it.appUrl, imageUrl = it.imageUrl, product = it.product
-            )
-        }
-        viewModel.type = TYPE_RECENT_SEARCH
-        viewModel.categoryType = model.travelMeta.type
-        return viewModel
-    }
-
-    fun mapToSectionViewModel(model: TravelHomepageRecommendationModel): TravelHomepageSectionModel {
-        val viewModel = TravelHomepageSectionModel()
-        viewModel.title = model.travelMeta.title
-        viewModel.seeAllUrl = model.travelMeta.appUrl
-        viewModel.list = model.items.map {
-            TravelHomepageSectionModel.Item(title = it.title,
-                    subtitle = it.subtitle, prefix = it.prefix,
-                    prefixStyling = it.prefixStyling, value = it.value,
-                    appUrl = it.appUrl, imageUrl = it.imageUrl, product = it.product
-            )
-        }
-        viewModel.type = TYPE_RECOMMENDATION
-        return viewModel
-    }
-
     fun mapToViewModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageItemModel {
         return when (layoutData.widgetType) {
             ConstantWidgetType.DUAL_PRODUCT_CARD, ConstantWidgetType.QUAD_PRODUCT_CARD -> mapToProductCardModel(layoutData, unifiedModel)
-            ConstantWidgetType.DYNAMIC_ICON -> mapToCategoryListModel(layoutData, unifiedModel)
-            ConstantWidgetType.DYNAMIC_BANNER -> mapToBannerModel(layoutData, unifiedModel)
+            ConstantWidgetType.DYNAMIC_ICON -> mapToCategoryListModel(unifiedModel)
+            ConstantWidgetType.SLIDER_BANNER -> mapToBannerModel(unifiedModel)
             ConstantWidgetType.SLIDER_PRODUCT_CARD -> mapToHomepageSectionModel(layoutData, unifiedModel)
             ConstantWidgetType.DUAL_BANNER -> mapToDestinationModel(layoutData, unifiedModel, 2)
             ConstantWidgetType.SINGLE_BANNER -> mapToDestinationModel(layoutData, unifiedModel, 1)
+            ConstantWidgetType.DYNAMIC_BANNER -> mapToDestinationModel(layoutData, unifiedModel, 0)
             ConstantWidgetType.LEGO_BANNER -> mapToLegoBannerModel(layoutData, unifiedModel)
-            else -> mapToCategoryListModel(layoutData, unifiedModel)
+            else -> mapToHomepageSectionModel(layoutData, unifiedModel)
         }
     }
 
@@ -83,7 +39,7 @@ class TravelHomepageMapper {
 
             banners.add(banner)
         }
-        return TravelHomepageLegoBannerModel(bannerItem = banners)
+        return TravelHomepageLegoBannerModel(title = layoutData.title, subtitle = layoutData.subtitle, bannerItem = banners)
     }
 
     private fun mapToDestinationModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>, spanSize: Int): TravelHomepageDestinationModel {
@@ -91,33 +47,37 @@ class TravelHomepageMapper {
         for (item in unifiedModel) {
             val product = TravelHomepageDestinationModel.Destination()
             product.attributes.title = item.title
+            product.attributes.subtitle = item.subtitle
+            product.attributes.webUrl = item.webUrl
             product.attributes.appUrl = item.appUrl
             product.attributes.imageUrl = item.imageUrl
-            product.attributes.subtitle = item.subtitle
 
             products.add(product)
         }
-        return TravelHomepageDestinationModel(destination = products, spanSize = spanSize)
+        return TravelHomepageDestinationModel(meta = TravelHomepageDestinationModel.MetaModel(layoutData.title),
+                destination = products, spanSize = spanSize)
     }
 
     private fun mapToHomepageSectionModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageSectionModel {
         val sectionItems = mutableListOf<TravelHomepageSectionModel.Item>()
         for (item in unifiedModel) {
             var sectionItem = TravelHomepageSectionModel.Item()
-            sectionItem.product = item.product
             sectionItem.title = item.title
             sectionItem.subtitle = item.subtitle
             sectionItem.prefix = item.prefix
             sectionItem.prefixStyling = item.prefixStyle
             sectionItem.value = item.value
             sectionItem.imageUrl = item.imageUrl
+            sectionItem.product = item.product
 
             sectionItems.add(sectionItem)
         }
-        return TravelHomepageSectionModel(list = sectionItems)
+        return TravelHomepageSectionModel(title = layoutData.title,
+                seeAllUrl = layoutData.appUrl,
+                list = sectionItems)
     }
 
-    private fun mapToBannerModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageBannerModel {
+    private fun mapToBannerModel(unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageBannerModel {
         val banners = mutableListOf<TravelCollectiveBannerModel.Banner>()
         for (item in unifiedModel) {
             var banner = TravelCollectiveBannerModel.Banner()
@@ -125,8 +85,10 @@ class TravelHomepageMapper {
             banner.product = item.product
             banner.attribute.promoCode = item.promoCode
             banner.attribute.description = item.description
+            banner.attribute.webUrl = item.webUrl
             banner.attribute.appUrl = item.appUrl
             banner.attribute.imageUrl = item.imageUrl
+            banner.attribute.promoCode = item.promoCode
 
             banners.add(banner)
         }
@@ -138,20 +100,27 @@ class TravelHomepageMapper {
         for (item in unifiedModel) {
             var product = ProductGridCardItemModel()
             product.title = item.title
+            product.tag = item.promoCode
+            product.price = item.subtitle
+            product.strikethroughPrice = item.prefix
             product.imageUrl = item.imageUrl
             product.appUrl = item.appUrl
 
             productList.add(product)
         }
-        return TravelHomepageProductCardModel(productItem = productList)
+        return TravelHomepageProductCardModel(title = layoutData.title,
+                subtitle = layoutData.subtitle,
+                clickSeeAllUrl = layoutData.appUrl,
+                productItem = productList)
     }
 
-    private fun mapToCategoryListModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageCategoryListModel {
+    private fun mapToCategoryListModel(unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageCategoryListModel {
         var icons = mutableListOf<TravelHomepageCategoryListModel.Category>()
         for (item in unifiedModel) {
             var category = TravelHomepageCategoryListModel.Category()
-            category.product = item.title
+            category.product = item.product
             category.attributes.title = item.title
+            category.attributes.webUrl = item.webUrl
             category.attributes.appUrl = item.appUrl
             category.attributes.imageUrl = item.imageUrl
             icons.add(category)

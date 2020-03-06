@@ -22,7 +22,7 @@ class TravelHomepageLegoBannerWidget @JvmOverloads constructor(context: Context,
 
     var titleText: String = ""
     var subtitleText: String = ""
-    lateinit var adapter: TravelHomepageProductGridCardAdapter
+    lateinit var adapter: TravelHomepageLegoBannerAdapter
 
     init {
         View.inflate(context, R.layout.layout_travel_homepage_lego_banner_widget, this)
@@ -37,9 +37,23 @@ class TravelHomepageLegoBannerWidget @JvmOverloads constructor(context: Context,
         } else travel_homepage_lego_banner_subtitle.hide()
 
         if (!::adapter.isInitialized) {
-            travel_homepage_lego_banner_rv.adapter = TravelHomepageLegoBannerAdapter(bannerList)
+            val listSize = bannerList.size
+
+            if (listSize > 3 && listSize % 3 != 0) {
+                adapter = TravelHomepageLegoBannerAdapter(bannerList.subList(0, listSize - (listSize % 3)))
+            } else
+                adapter = TravelHomepageLegoBannerAdapter(bannerList)
+
             travel_homepage_lego_banner_rv.layoutManager = GridLayoutManager(context, 3)
         }
         travel_homepage_lego_banner_rv.adapter = adapter
+    }
+
+    fun setShimmeringVisibility(isShow: Boolean) {
+        lego_banner_shimmering.visibility = if (isShow) View.VISIBLE else View.GONE
+    }
+
+    fun setLayoutVisibility(isShow: Boolean) {
+        travel_homepage_lego_banner_layout.visibility = if (isShow) View.VISIBLE else View.GONE
     }
 }

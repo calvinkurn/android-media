@@ -160,7 +160,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         isLoadingInitialData = true
         adapter.clearAllElements()
         showLoading()
-        travelHomepageViewModel.getIntialList(true)
+        travelHomepageViewModel.getListFromCloud(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_get_layout), true)
     }
 
     override fun initInjector() {
@@ -168,11 +168,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun getScreenName(): String = ""
-
-    override fun onDestinationVHBind(isFromCloud: Boolean?) {
-        travelHomepageViewModel.getDestination(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_destination), isFromCloud
-                ?: true)
-    }
 
     override fun onItemClick(appUrl: String, webUrl: String) {
         context?.run {
@@ -222,9 +217,9 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         }
     }
 
-    override fun onItemBindViewHolder(travelLayoutSubhomepageMetaData: TravelLayoutSubhomepage.Data, isFromCloud: Boolean?) {
+    override fun onItemBindViewHolder(travelLayoutSubhomepageMetaData: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
         travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
-                travelLayoutSubhomepageMetaData, true)
+                travelLayoutSubhomepageMetaData, position, true)
     }
 
     companion object {

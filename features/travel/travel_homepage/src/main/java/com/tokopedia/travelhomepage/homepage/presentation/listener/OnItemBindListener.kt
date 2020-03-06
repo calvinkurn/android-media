@@ -7,7 +7,5 @@ import com.tokopedia.travelhomepage.homepage.data.TravelLayoutSubhomepage
  */
 
 interface OnItemBindListener {
-    fun onDestinationVHBind(isFromCloud: Boolean?)
-
-    fun onItemBindViewHolder(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, isFromCloud: Boolean?)
+    fun onItemBindViewHolder(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?)
 }

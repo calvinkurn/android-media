@@ -71,7 +71,7 @@ class GetEmptyModelsUseCase @Inject constructor(val useCase: MultiRequestGraphql
         val travelHomepageItems = mutableListOf<TravelHomepageItemModel>()
         for (item in list) {
             when (item.widgetType) {
-                ConstantWidgetType.DYNAMIC_BANNER -> {
+                ConstantWidgetType.SLIDER_BANNER -> {
                     travelHomepageItems.add(TravelHomepageBannerModel())
                     travelHomepageItems.lastOrNull()?.layoutData = item
                 }
@@ -95,12 +95,16 @@ class GetEmptyModelsUseCase @Inject constructor(val useCase: MultiRequestGraphql
                     travelHomepageItems.add(TravelHomepageDestinationModel(spanSize = 1))
                     travelHomepageItems.lastOrNull()?.layoutData = item
                 }
+                ConstantWidgetType.DYNAMIC_BANNER -> {
+                    travelHomepageItems.add(TravelHomepageDestinationModel(spanSize = 0))
+                    travelHomepageItems.lastOrNull()?.layoutData = item
+                }
                 ConstantWidgetType.LEGO_BANNER -> {
                     travelHomepageItems.add(TravelHomepageLegoBannerModel())
                     travelHomepageItems.lastOrNull()?.layoutData = item
                 }
                 else -> {
-                    travelHomepageItems.add(TravelHomepageCategoryListModel())
+                    travelHomepageItems.add(TravelHomepageSectionModel())
                     travelHomepageItems.lastOrNull()?.layoutData = item
                 }
             }
