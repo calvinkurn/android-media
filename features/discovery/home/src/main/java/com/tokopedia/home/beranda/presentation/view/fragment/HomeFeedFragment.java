@@ -444,7 +444,6 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                     TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationAddWishlistLogin(productCardOptionsModel.getProductId(), tabName));
                     showMessageSuccessAddWishlist();
                 } else {
-                    HomePageTracking.eventClickRemoveWishlistOnProductRecommendation(getActivity(), tabName);
                     TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationRemoveWishlistLogin(productCardOptionsModel.getProductId(), tabName));
                     showMessageSuccessRemoveWishlist();
                 }
