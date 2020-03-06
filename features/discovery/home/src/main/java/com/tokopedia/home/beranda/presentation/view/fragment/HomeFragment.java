@@ -274,7 +274,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        homeScrollJankyMonitoringUtil = new JankyFrameMonitoringUtil(getActivity(), KEY_JANKY_FRAME_SCROLL);
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
@@ -664,22 +663,6 @@ public class HomeFragment extends BaseDaggerFragment implements
             }
 
             adapter.submitList(data);
-            if (jankyFramesMonitoringListener != null && !isCache && jankyFramesMonitoringListener.needToSubmitDynamicChannelCount()) {
-                Map<String, Integer> layoutCounter = new HashMap<>();
-                for (Visitable visitable: data) {
-                    if (visitable instanceof DynamicChannelViewModel) {
-                        DynamicChannelViewModel dynamicChannelViewModel = (((DynamicChannelViewModel) visitable));
-                        DynamicHomeChannel.Channels channel = dynamicChannelViewModel.getChannel();
-                        if (channel != null && layoutCounter.get(channel.getLayout()) != null) {
-                            int currentCount = layoutCounter.get(channel.getLayout());
-                            layoutCounter.put(channel.getLayout(), ++currentCount);
-                        } else if (layoutCounter.get(channel.getLayout()) == null) {
-                            layoutCounter.put(channel.getLayout(), 1);
-                        }
-                    }
-                }
-            }
-
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {
@@ -1843,12 +1826,10 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     private void startHomeScrollingJankyFrameCount() {
-        homeScrollJankyMonitoringUtil.startFrameMetrics();
 
     }
 
     private void stopHomeScrollingJankyFrameCount() {
-        homeScrollJankyMonitoringUtil.stopFrameMetrics();
     }
 
     @Override
