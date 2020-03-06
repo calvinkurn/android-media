@@ -41,8 +41,7 @@ import com.tokopedia.shop.ShopModuleRouter
 import com.tokopedia.shop.analytic.ShopPageTrackingBuyer
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.TrackShopTypeDef
-import com.tokopedia.shop.common.constant.ShopStatusDef
-import com.tokopedia.shop.common.data.source.cloud.model.ShopModerateRequestData
+import com.tokopedia.shop.common.constant.ShopHomeType
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.favourite.view.activity.ShopFavouriteListActivity
 import com.tokopedia.shop.feed.view.fragment.FeedShopFragment
@@ -55,6 +54,7 @@ import com.tokopedia.shop.oldpage.view.ShopPageViewModel
 import com.tokopedia.shop.pageheader.presentation.adapter.ShopPageFragmentPagerAdapter
 import com.tokopedia.shop.pageheader.presentation.holder.ShopPageFragmentHeaderViewHolder
 import com.tokopedia.shop.product.view.activity.ShopProductListActivity
+import com.tokopedia.shop.product.view.fragment.HomeProductFragment
 import com.tokopedia.shop.search.view.activity.ShopSearchProductActivity
 import com.tokopedia.shop.setting.view.activity.ShopPageSettingActivity
 import com.tokopedia.shop.sort.view.activity.ShopProductSortActivity
@@ -353,7 +353,7 @@ class ShopPageFragment :
     }
 
     private fun clickSort() {
-        shopPageTracking?.clickSort(isMyShop,customDimensionShopPage)
+        shopPageTracking?.clickSort(isMyShop, customDimensionShopPage)
         openShopProductSortPage()
     }
 
@@ -551,34 +551,15 @@ class ShopPageFragment :
     }
 
     private fun setupTabs() {
-        titles = when {
-            isShowFeed and isOfficialStore -> {
-                listOf(getString(R.string.shop_info_title_tab_home),
-                        getString(R.string.new_shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_feed),
-                        getString(R.string.shop_info_title_tab_review))
-            }
-            isShowFeed -> {
-                listOf(getString(R.string.new_shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_feed),
-                        getString(R.string.shop_info_title_tab_review))
-            }
-            isOfficialStore -> {
-                listOf(getString(R.string.shop_info_title_tab_home),
-                        getString(R.string.new_shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_review))
-            }
-            else -> {
-                listOf(getString(R.string.new_shop_info_title_tab_product),
-                        getString(R.string.shop_info_title_tab_review))
-            }
+        titles = mutableListOf<String>().apply {
+            if (isShowHomeTab())
+                add(getString(R.string.shop_info_title_tab_home))
+            add(getString(R.string.new_shop_info_title_tab_product))
+            if (isShowFeed)
+                add(getString(R.string.shop_info_title_tab_feed))
+            add(getString(R.string.shop_info_title_tab_review))
         }
-        if (isOfficialStore && tabPosition == 0) {
-            tabPosition = 1
-        } else if (isOfficialStore && tabPosition == TAB_POSITION_OS_HOME) {
-            tabPosition = 0
-        }
-        val selectedPosition = if (tabPosition == TAB_POSITION_INFO) getShopInfoPosition() else tabPosition
+        val selectedPosition = tabPosition
         viewPagerAdapter.setTabData(generateTabData())
         viewPagerAdapter.notifyDataSetChanged()
         tabLayout?.apply {
@@ -590,33 +571,59 @@ class ShopPageFragment :
         viewPager.currentItem = selectedPosition
     }
 
+    private fun isShowHomeTab(): Boolean {
+        return getShopInfoData()?.shopHomeType?.let {
+            it != ShopHomeType.NONE
+        } ?: false
+    }
+
+    private fun isShowNewHomeTab(): Boolean {
+        return getShopInfoData()?.shopHomeType?.let {
+            it == ShopHomeType.NATIVE
+        } ?: false
+    }
+
     private fun generateTabData(): Pair<List<Int>, List<Fragment>> {
         return Pair(getListTitleIcon(), getListFragment())
     }
 
     private fun getListFragment(): List<Fragment> {
-        val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution, shopRef)
-        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
-//        val homeFragment = HomeProductFragment.createInstance()
-        val homeFragment = ShopPageHomeFragment.createInstance(shopId ?: "", isOfficialStore, isGoldMerchant)
-        val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
-        getShopInfoData()?.let {
-//            homeFragment.setShopInfo(it)
-            shopPageProductFragment.setShopInfo(it)
+        val shopPageProductFragment = ShopPageProductListFragment.createInstance(shopAttribution, shopRef).apply {
+            getShopInfoData()?.let {
+                setShopInfo(it)
+            }
         }
-        return when {
-            isShowFeed and isOfficialStore -> {
-                listOf(homeFragment, shopPageProductFragment, feedFragment, shopReviewFragment)
+        val shopReviewFragment = (activity?.application as ShopModuleRouter).getReviewFragment(activity, shopId, shopDomain)
+        val homeFragment = getHomeFragment()
+        val feedFragment = FeedShopFragment.createInstance(shopId ?: "", createPostUrl)
+        return mutableListOf<Fragment>().apply {
+            homeFragment?.let {
+                if (isShowHomeTab()) add(it)
             }
-            isShowFeed -> {
-                listOf(homeFragment, shopPageProductFragment, feedFragment, shopReviewFragment)
+            add(shopPageProductFragment)
+            if (isShowFeed)
+                add(feedFragment)
+            add(shopReviewFragment)
+        }
+    }
+
+    private fun getHomeFragment(): Fragment? {
+        return if (isShowHomeTab()) {
+            if (isShowNewHomeTab()) {
+                ShopPageHomeFragment.createInstance(
+                        shopId ?: "",
+                        isOfficialStore,
+                        isGoldMerchant
+                )
+            } else {
+                HomeProductFragment.createInstance().apply {
+                    getShopInfoData()?.let {
+                        setShopInfo(it)
+                    }
+                }
             }
-            isOfficialStore -> {
-                listOf(homeFragment, shopPageProductFragment, shopReviewFragment)
-            }
-            else -> {
-                listOf(homeFragment, shopPageProductFragment, shopReviewFragment)
-            }
+        } else {
+            null
         }
     }
 

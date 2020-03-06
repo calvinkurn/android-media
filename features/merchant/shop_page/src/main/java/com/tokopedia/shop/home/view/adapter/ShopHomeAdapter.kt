@@ -31,6 +31,8 @@ class ShopHomeAdapter(
         super.onBindViewHolder(holder, position)
     }
 
+    override fun getLastIndex() = visitables.size
+
     fun setProductListData(productList: List<ShopHomeProductViewModel>) {
         val lastIndex = lastIndex
         visitables.addAll(productList)
@@ -46,6 +48,18 @@ class ShopHomeAdapter(
         val lastIndex = lastIndex
         visitables.addAll(data)
         notifyItemRangeInserted(lastIndex, data.size)
+    }
+
+    override fun hideLoading() {
+        if (visitables.contains(loadingModel)) {
+            val itemPosition = visitables.indexOf(loadingModel)
+            visitables.remove(loadingModel)
+            notifyItemRemoved(itemPosition)
+        } else if (visitables.contains(loadingMoreModel)) {
+            val itemPosition = visitables.indexOf(loadingMoreModel)
+            visitables.remove(loadingMoreModel)
+            notifyItemRemoved(itemPosition)
+        }
     }
 
 //    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {

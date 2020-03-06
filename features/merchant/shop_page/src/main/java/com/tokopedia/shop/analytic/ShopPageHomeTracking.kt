@@ -1,5 +1,6 @@
 package com.tokopedia.shop.analytic
 
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.*
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -30,8 +31,11 @@ class ShopPageHomeTracking(
                 eventLabel,
                 customDimensionShopPage
         )
-        eventMap[ECOMMERCE] = mapOf(PROMO_VIEW to mapOf(
-                PROMOTIONS to listOf(createDisplayWidgetPromotionsItemMap(
+
+        eventMap.put(ECOMMERCE, DataLayer.mapOf(
+                PROMO_VIEW, DataLayer.mapOf(
+                PROMOTIONS, DataLayer.listOf(
+                createDisplayWidgetPromotionsItemMap(
                         widgetId,
                         positionVertical,
                         widgetName,
@@ -41,7 +45,7 @@ class ShopPageHomeTracking(
                         positionHorizontal,
                         customDimensionShopPage.shopType,
                         shopId
-                ))
+                )))
         ))
         sendDataLayerEvent(eventMap)
     }
@@ -64,7 +68,7 @@ class ShopPageHomeTracking(
                 widgetOption
 
         )
-        return mapOf(
+        return mutableMapOf(
                 ID to widgetId,
                 NAME to nameEvent,
                 CREATIVE to destinationLink,

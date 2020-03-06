@@ -90,23 +90,31 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             layoutManager = recyclerViewLayoutManager
         }
         observeLiveData()
+
+    }
+
+    override fun onPause() {
+        super.onPause()
+        shopPageHomeTracking.sendAllTrackingQueue()
     }
 
     override fun loadInitialData() {
-        super.loadInitialData()
+        showLoading()
         viewModel.getShopPageHomeData(shopId)
+
     }
 
     private fun getIntentData() {
         arguments?.let {
             shopId = it.getString(KEY_SHOP_ID, "")
             isOfficialStore = it.getBoolean(KEY_IS_OFFICIAL_STORE, false)
-            isGoldMerchant= it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
+            isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
         }
     }
 
     private fun observeLiveData() {
         viewModel.shopHomeLayoutData.observe(this, Observer {
+            hideLoading()
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
@@ -115,6 +123,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
 
         viewModel.productListData.observe(this, Observer {
+            hideLoading()
             when (it) {
                 is Success -> {
                     onSuccessGetProductListData(it.data.first, it.data.second)
@@ -170,11 +179,11 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopPageHomeLayoutUiModel?.layoutId ?: "",
                 displayWidgetUiModel?.name ?: "",
                 displayWidgetUiModel?.widgetId ?: "",
-                parentPosition,
+                parentPosition + 1,
                 displayWidgetUiModel?.header?.ratio ?: "",
                 displayWidgetItem.appLink,
                 displayWidgetItem.imageUrl,
-                adapterPosition,
+                adapterPosition + 1,
                 customDimensionShopPage
         )
     }

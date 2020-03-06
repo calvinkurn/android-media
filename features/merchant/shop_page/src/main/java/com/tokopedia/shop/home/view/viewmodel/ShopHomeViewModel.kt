@@ -18,6 +18,7 @@ import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 
 class ShopHomeViewModel @Inject constructor(
@@ -64,7 +65,7 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     private suspend fun getShopPageHomeLayout(shopId: String): ShopPageHomeLayoutUiModel {
-        getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams("111")
+        getShopPageHomeLayoutUseCase.params = GetShopPageHomeLayoutUseCase.createParams(shopId)
         return ShopPageHomeMapper.mapToShopPageHomeLayoutUiModel(
                 getShopPageHomeLayoutUseCase.executeOnBackground(),
                 Util.isMyShop(shopId, userSessionShopId)
