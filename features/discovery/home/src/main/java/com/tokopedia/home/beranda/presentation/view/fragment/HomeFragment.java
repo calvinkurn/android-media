@@ -173,8 +173,10 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String EXTRA_URL = "url";
     private static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    private static final String EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     private static final String DEFAULT_UTM_SOURCE = "home_notif";
+    private static final int REQUEST_CODE_PLAY_ROOM = 256;
     @NonNull
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
@@ -977,6 +979,9 @@ public class HomeFragment extends BaseDaggerFragment implements
                     viewModel.removeSuggestedReview();
                 }
                 break;
+            case REQUEST_CODE_PLAY_ROOM:
+                viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
+                break;
         }
     }
 
@@ -1733,7 +1738,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
                 Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
         );
-        startActivity(intent, options.toBundle());
+        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM, options.toBundle());
     }
 
     private boolean needToPerformanceMonitoring() {

@@ -2,7 +2,9 @@ package com.tokopedia.play.view.fragment
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -41,6 +43,8 @@ import javax.inject.Inject
 class PlayFragment : BaseDaggerFragment() {
 
     companion object {
+
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
 
         private val MARGIN_CHAT_VIDEO = 16f.dpToPx()
 
@@ -307,6 +311,13 @@ class PlayFragment : BaseDaggerFragment() {
         }.start()
 
         flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+    }
+
+    fun setResultBeforeFinish() {
+        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+            val totalView = playViewModel.totalView
+            if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
+        })
     }
 
     private fun hideKeyboard() {

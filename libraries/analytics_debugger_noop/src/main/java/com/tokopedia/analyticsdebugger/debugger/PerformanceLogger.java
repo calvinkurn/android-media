@@ -16,4 +16,8 @@ public interface PerformanceLogger {
     void enableNotification(boolean status);
 
     boolean isNotificationEnabled();
+
+    void enableAutoLogFile(boolean status);
+
+    boolean isAutoLogFileEnabled();
 }

@@ -213,6 +213,21 @@ open class HomeViewModel @Inject constructor(
         getTokopoint()
     }
 
+    fun updateBannerTotalView(totalView: String) {
+        val newList = mutableListOf<Visitable<*>>()
+        newList.addAll(_homeLiveData.value?.list ?: listOf())
+
+        val playCard = newList.firstOrNull { visitable -> visitable is PlayCardViewModel }
+        val playIndex = newList.indexOf(playCard)
+        if(playCard != null && playCard is PlayCardViewModel && playCard.playCardHome != null) {
+            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome.copy(totalView = totalView))
+            newList[playIndex] = newPlayCard
+            _homeLiveData.postValue(_homeLiveData.value?.copy(
+                    list = newList
+            ))
+        }
+    }
+
     private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
                                       homeHeaderWalletAction: HomeHeaderWalletAction? = null,
                                       tokopointHomeDrawerData: TokopointHomeDrawerData? = null,

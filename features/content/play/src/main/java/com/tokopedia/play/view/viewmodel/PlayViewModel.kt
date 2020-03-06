@@ -177,6 +177,9 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    val totalView: String?
+        get() = _observableTotalViews.value?.totalView
+
     init {
         stateHandler.observeForever(stateHandlerObserver)
 
