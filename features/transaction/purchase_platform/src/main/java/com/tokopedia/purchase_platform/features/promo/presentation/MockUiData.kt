@@ -496,8 +496,8 @@ val MOCK_RESPONSE = """
             "coupons": [],
             "sub_sections": [
               {
-                "title": "Kupon Saya",
-                "sub_title": "Promo dipilih",
+                "title": "Kupon Saya Not available",
+                "sub_title": "Not avalibale",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": false,
                 "is_collapsed": false,

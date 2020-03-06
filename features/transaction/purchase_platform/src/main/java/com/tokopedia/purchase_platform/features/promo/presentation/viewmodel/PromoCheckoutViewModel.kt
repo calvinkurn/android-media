@@ -96,13 +96,13 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
             // Initialize coupon section
             val couponList = ArrayList<Visitable<*>>()
+            var headerIdentifierId = 0
             response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
                 // Initialize eligibility header
                 val eligibilityHeader = uiModelMapper.mapPromoEligibilityHeaderUiModel(couponSectionItem)
                 couponList.add(eligibilityHeader)
 
                 // Initialize promo list header
-                var headerIdentifierId = 0
                 couponSectionItem.subSections.forEach { couponSubSection ->
                     val promoHeader = uiModelMapper.mapPromoListHeaderUiModel(couponSubSection, headerIdentifierId)
                     couponList.add(promoHeader)
@@ -330,7 +330,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 }
 
                 // Update header
-                _tmpUiModel.value = Update(headerData)
+//                _tmpUiModel.value = Update(headerData)
 
                 // Store collapsed promo item to promo header as temporary value
                 headerData.uiData.tmpPromoItemList = modifiedData
@@ -342,6 +342,9 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
 
                 // Remove collapsed item
                 promoListUiModel.value?.removeAll(modifiedData)
+
+                // Update header
+                _tmpUiModel.value = Update(headerData)
             }
         } else {
             promoListUiModel.value?.indexOf(element)?.let {
@@ -363,7 +366,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 }
 
                 // Update header
-                _tmpUiModel.value = Update(headerData)
+//                _tmpUiModel.value = Update(headerData)
 
                 headerData.uiData.tmpPromoItemList = emptyList()
                 _tmpUiModel.value = Update(headerData)

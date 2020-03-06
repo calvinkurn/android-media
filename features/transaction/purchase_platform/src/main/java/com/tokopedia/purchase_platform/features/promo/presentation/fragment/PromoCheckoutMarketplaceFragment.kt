@@ -136,10 +136,10 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
             tmpLastHeaderUiModel = lastData
             isShow = true
-        } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel?.uiData?.identifierId) {
+        } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
             isShow = true
         } else if (lastData is PromoListItemUiModel) {
-            if (tmpLastHeaderUiModel != null && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel?.uiData?.identifierId) {
+            if (tmpLastHeaderUiModel != null && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
                 isShow = true
             } else {
                 var foundHeader = false
@@ -390,7 +390,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
-
+        // Todo : Hit API, then if success, reload page
     }
 
     override fun onClickPromoListHeader(element: PromoListHeaderUiModel) {
