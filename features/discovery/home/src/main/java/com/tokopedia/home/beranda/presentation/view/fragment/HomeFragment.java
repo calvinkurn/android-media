@@ -1621,6 +1621,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void sendEETracking(@NotNull HashMap<String, Object> data) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(data);
+    }
+
+    @Override
     public void putEEToIris(@NotNull HashMap<String, Object> data) {
         if (irisAnalytics!=null) {
             irisAnalytics.saveEvent(data);

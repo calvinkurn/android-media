@@ -8,6 +8,7 @@ import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopProductDataModel
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
+import java.util.HashMap
 
 class MixTopProductViewHolder(view: View, val homeCategoryListener: HomeCategoryListener): AbstractViewHolder<MixTopProductDataModel>(view) {
     companion object {
@@ -21,7 +22,8 @@ class MixTopProductViewHolder(view: View, val homeCategoryListener: HomeCategory
             val gridItem = mixTopProductDataModel.grid
             setItemWithWrapBlankSpaceConfig(gridItem, mixTopProductDataModel.blankSpaceConfig)
             setOnClickListener {
-                MixTopTracking.getMixTopClick(MixTopTracking.mapChannelToProductTracker(mixTopProductDataModel.channel), mixTopProductDataModel.channel.header.name, mixTopProductDataModel.channel.id, mixTopProductDataModel.positionOnWidgetHome)
+                val tracker = MixTopTracking.getMixTopClick(MixTopTracking.mapChannelToProductTracker(mixTopProductDataModel.channel), mixTopProductDataModel.channel.header.name, mixTopProductDataModel.channel.id, mixTopProductDataModel.positionOnWidgetHome)
+                homeCategoryListener.sendEETracking(tracker as HashMap<String, Any>)
                 homeCategoryListener.onSectionItemClicked(gridItem.applink)
             }
         }
