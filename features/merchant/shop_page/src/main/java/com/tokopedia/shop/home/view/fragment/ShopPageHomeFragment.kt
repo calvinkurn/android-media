@@ -17,12 +17,12 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.shop.R
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
-import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
+import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -71,6 +71,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         getRecyclerView(view)?.apply {
             layoutManager = recyclerViewLayoutManager
         }
+        shopHomeAdapter.showLoading()
         viewModel.getShopPageHomeData(shopId)
         observeLiveData()
     }
@@ -108,6 +109,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
+        shopHomeAdapter.hideLoading()
         shopHomeAdapter.setHomeLayoutData(data)
     }
 
