@@ -7,6 +7,8 @@ if (project.hasProperty("robust")) {
 }
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'android'
+apply plugin: 'newrelic'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 
@@ -428,6 +430,8 @@ dependencies {
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
+
+    implementation rootProject.ext.analyticsDependencies.newRelic
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor

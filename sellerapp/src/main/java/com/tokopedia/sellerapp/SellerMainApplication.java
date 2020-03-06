@@ -39,6 +39,7 @@ import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.tokofix.TokoFix;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.TokopediaUrl;
+import com.newrelic.agent.android.NewRelic;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -53,6 +54,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         InAppManager.InAppMessageListener {
 
     public static final String ANDROID_ROBUST_ENABLE = "android_sellerapp_robust_enable";
+
+    private static final int[] RAW_NEWRELIC_TOKEN = {65, 65, 102, 54, 51, 101, 97, 49, 51, 56, 57, 98, 48, 101, 53, 55, 54, 50, 56, 53, 100, 49, 100, 55, 56, 50, 99, 100, 100, 101, 52, 56, 99, 57, 102, 99, 98, 51, 56, 53, 102, 48, 45, 78, 82, 77, 65};
 
     static {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
@@ -158,6 +161,17 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         GraphqlClient.init(this);
         NetworkClient.init(this);
         initializeAbTestVariant();
+        NewRelic.withApplicationToken(
+                decodeKey(RAW_NEWRELIC_TOKEN)
+        ).start(this);
+    }
+
+    private String decodeKey(int[] keys) {
+        StringBuilder result = new StringBuilder("");
+        for (int key : keys) {
+            result.append((char) key);
+        }
+        return result.toString();
     }
 
     @Override
