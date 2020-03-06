@@ -23,6 +23,8 @@ import com.tokopedia.core.common.category.domain.interactor.FetchCategoryFromSel
 import com.tokopedia.core.common.category.domain.interactor.FetchCategoryWithParentChildUseCase;
 import com.tokopedia.core.common.category.presenter.CategoryPickerPresenter;
 import com.tokopedia.core.common.category.presenter.CategoryPickerPresenterImpl;
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor;
+import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.interceptor.DebugInterceptor;
 import com.tokopedia.network.interceptor.FingerprintInterceptor;
@@ -155,5 +157,10 @@ public class CategoryPickerModule {
     @Provides
     CacheApiInterceptor provideCacheApiInterceptor(@ApplicationContext Context context) {
         return new CacheApiInterceptor(context);
+    }
+
+    @Provides
+    MultiRequestGraphqlUseCase provideMultiRequestGraphqlUseCase() {
+        return GraphqlInteractor.getInstance().getMultiRequestGraphqlUseCase();
     }
 }

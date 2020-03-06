@@ -5,17 +5,19 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/tv_draft_product"
+        android:id="@+id/tvDraftProduct"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_16"
         android:background="@color/tkpd_yellow_status"
         android:clickable="true"
+        android:focusable="true"
         android:visibility="gone"
         tools:visibility="visible"
         android:textSize="@dimen/fontvs"
         android:foreground="?attr/selectableItemBackground"
-        tools:text="@string/product_manage_you_have_x_unfinished_product"/>
+        tools:text="@string/product_manage_you_have_x_unfinished_product"
+        tools:targetApi="m" />
 
     <include layout="@layout/fragment_product_manage" />
 </LinearLayout>

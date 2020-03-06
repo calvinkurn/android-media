@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/filter_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/bottomsheet_title_divider"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="@dimen/dp_negative_8"
+            android:layout_marginRight="@dimen/dp_negative_8"
+            android:layout_height="@dimen/dp_1"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/filter_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/layout_lvl2"
+            app:layout_constraintBottom_toTopOf="@id/bottomsheet_button_divider"
+            app:layout_constraintTop_toBottomOf="@id/bottomsheet_title_divider" />
+
+        <RelativeLayout
+            android:id="@+id/filter_loader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/product_manage_white"
+            app:layout_constraintTop_toBottomOf="@id/bottomsheet_title_divider"
+            app:layout_constraintBottom_toTopOf="@id/bottomsheet_button_divider">
+
+            <ImageView
+                android:id="@+id/filter_loader_image"
+                android:layout_width="@dimen/layout_lvl4"
+                android:layout_height="@dimen/layout_lvl4"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/ic_loading_indeterminate"/>
+        </RelativeLayout>
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/bottomsheet_button_divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dp_1"
+            android:layout_marginLeft="@dimen/dp_negative_8"
+            android:layout_marginRight="@dimen/dp_negative_8"
+            android:layout_marginBottom="@dimen/layout_lvl2"
+            app:layout_constraintBottom_toTopOf="@id/btn_close_bottom_sheet" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_close_bottom_sheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/filter_button"
+            android:layout_margin="@dimen/layout_lvl2"
+            android:enabled="false"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
