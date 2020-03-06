@@ -90,6 +90,7 @@ class ProductViewHolder(
         itemView.setOnClickListener { listener.onClickProductItem(product) }
         itemView.btnMoreOptions.setOnClickListener { listener.onClickMoreOptionsButton(product) }
         itemView.imageStockInformation.setOnClickListener { listener.onClickStockInformation() }
+        itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
     }
     
     private fun View.showViewIf(predicate: Boolean) {
@@ -100,5 +101,6 @@ class ProductViewHolder(
         fun onClickStockInformation()
         fun onClickMoreOptionsButton(product: ProductViewModel)
         fun onClickProductItem(product: ProductViewModel)
+        fun onClickEditPriceButton(product: ProductViewModel)
     }
 }
