@@ -23,6 +23,7 @@ import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
@@ -271,10 +272,19 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                     downloadFeature()
                 }
             }
+        } else if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode &&
+                usableSpaceBeforeDownload > (2 * ONE_KB) &&
+                DFRemoteConfig().getConfig(context).showErrorInvalidInsufficientStorage) {
+            updateInformationView(R.drawable.ic_ill_general_error,
+                    getString(R.string.download_error_os_and_play_store_title),
+                    getString(R.string.download_error_os_and_play_store_subtitle),
+                    getString(R.string.goto_playstore)) {
+                gotoPlayStore()
+            }
         } else if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCode) {
             updateInformationView(R.drawable.ic_ill_insuficient_memory,
-                    getString(R.string.download_error_insuficient_memory_title),
-                    getString(R.string.download_error_insuficient_memory_subtitle),
+                    getString(R.string.download_error_insuficient_storage_title),
+                    getString(R.string.download_error_insuficient_storage_subtitle),
                     getString(R.string.goto_seting)) {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
             }
