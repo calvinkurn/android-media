@@ -17,6 +17,8 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                                                      defStyleAttr: Int = 0)
     : BaseCustomView(context, attrs, defStyleAttr) {
 
+    private lateinit var listener: ActionListener
+
     init {
         View.inflate(context, R.layout.widget_cc_number, this)
 
@@ -72,8 +74,12 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         }
 
         cc_button_next.setOnClickListener {
-
+            listener.onClickNextButton(cc_input_number.text.toString())
         }
+    }
+
+    fun setListener(actionListener: ActionListener) {
+        this.listener = actionListener
     }
 
     private fun disableBtnNext() {
@@ -86,6 +92,10 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         cc_button_next.isEnabled = true
         cc_button_next.setBackgroundResource(com.tokopedia.design.R.drawable.bg_button_green)
         cc_button_next.setTextColor(context.resources.getColorFromResources(context, R.color.white))
+    }
+
+    interface ActionListener {
+        fun onClickNextButton(clientNumber: String)
     }
 
     companion object {

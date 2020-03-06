@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">recharge_credit_card</string>
+    <string name="app_name">Credit Card</string>
+
+    <string name="cc_title_dialog">Pastikan Nomor Kartu Sudah Benar</string>
+    <string name="cc_desc_dialog">Sebelum lanjut, pastikan nomor kartu kreditmu sudah benar.</string>
+    <string name="cc_cta_btn_primary">Lanjut</string>
+    <string name="cc_cta_btn_secondary">Kembali</string>
 </resources>
