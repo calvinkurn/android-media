@@ -1,14 +1,13 @@
-<RelativeLayout
+<com.tokopedia.unifycomponents.CardUnify
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clipToPadding="false"
-    android:layout_marginStart="@dimen/dp_6"
-    android:layout_marginEnd="@dimen/dp_6"
-    android:layout_marginBottom="@dimen/dp_6">
+    android:layout_margin="@dimen/dp_4"
+    app:cardCornerRadius="@dimen/dp_8"
+    app:cardElevation="@dimen/dp_2">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_product"
@@ -120,4 +119,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-</RelativeLayout>
+</com.tokopedia.unifycomponents.CardUnify>

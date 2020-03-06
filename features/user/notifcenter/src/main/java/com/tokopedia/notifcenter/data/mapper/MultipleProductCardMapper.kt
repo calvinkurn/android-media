@@ -18,4 +18,12 @@ object MultipleProductCardMapper {
         return multiProductCards
     }
 
+    fun map(notification: MultipleProductCardViewBean): NotificationItemViewBean {
+        return NotificationItemViewBean().apply {
+            notificationId = notification.notificationId
+            templateKey = notification.templateKey
+            userInfo = notification.userInfo
+        }
+    }
+
 }

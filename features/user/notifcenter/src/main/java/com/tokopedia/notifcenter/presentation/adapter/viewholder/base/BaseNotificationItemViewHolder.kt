@@ -48,12 +48,12 @@ abstract class BaseNotificationItemViewHolder(
     protected val body: TextView = itemView.findViewById(R.id.body)
 
     override fun bind(element: NotificationItemViewBean) {
+        trackImpression(element)
         bindNotificationBackgroundColor(element)
         bindNotificationHeader(element)
         bindNotificationContent(element)
         bindNotificationPayload(element)
         bindOnNotificationClick(element)
-        trackImpression(element)
     }
 
     private fun trackImpression(element: NotificationItemViewBean) {
@@ -115,8 +115,8 @@ abstract class BaseNotificationItemViewHolder(
     abstract fun bindNotificationPayload(element: NotificationItemViewBean)
 
     protected open fun baseItemMarkedClick(element: NotificationItemViewBean) {
-        element.isRead = true
         listener.itemClicked(element, adapterPosition)
+        element.isRead = true
     }
 
     protected open fun bindOnNotificationClick(element: NotificationItemViewBean) {

@@ -187,6 +187,7 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
     }
 
     override fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int) {
+        super.itemClicked(notification, adapterPosition)
         val payloadBackground = BaseNotificationItemViewHolder.PAYLOAD_CHANGE_BACKGROUND
         _adapter.notifyItemChanged(adapterPosition, payloadBackground)
         viewModel.markReadNotification(notification.notificationId)

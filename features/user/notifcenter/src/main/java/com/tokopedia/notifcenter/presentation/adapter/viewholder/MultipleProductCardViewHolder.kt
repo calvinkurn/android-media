@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
 import com.tokopedia.notifcenter.data.entity.ProductData
+import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.MultipleProductCardViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
@@ -55,7 +56,9 @@ class MultipleProductCardViewHolder(
     private fun impressionTracker(element: MultipleProductCardViewBean) {
         when(sourceView) {
             is SourceMultipleProductView.NotificationCenter -> {
-                listener.getAnalytic().trackProductListImpression(notification = element)
+                listener.getAnalytic().trackProductListImpression(
+                        notification = element
+                )
             }
             is SourceMultipleProductView.BottomSheetDetail -> {
                 listener.getAnalytic().trackProductListImpression(
@@ -74,8 +77,12 @@ class MultipleProductCardViewHolder(
     }
 
     private fun productCheckoutClicked(element: MultipleProductCardViewBean) {
+        val notification = MultipleProductCardMapper.map(element)
         productContainer.setOnClickListener {
-            listener.getAnalytic().trackProductCheckoutCardClick(notification = element)
+            listener.itemClicked(notification, adapterPosition)
+            listener.getAnalytic().trackProductCheckoutCardClick(
+                    notification = element
+            )
             RouteManager.route(
                     itemView.context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
@@ -86,7 +93,9 @@ class MultipleProductCardViewHolder(
         btnCheckout.setOnClickListener {
             when(sourceView) {
                 is SourceMultipleProductView.NotificationCenter -> {
-                    listener.getAnalytic().trackAtcOnMultiProductClick(notification = element)
+                    listener.getAnalytic().trackAtcOnMultiProductClick(
+                            notification = element
+                    )
                 }
                 is SourceMultipleProductView.BottomSheetDetail -> {
                     listener.getAnalytic().trackAtcOnMultiProductClick(
@@ -95,6 +104,7 @@ class MultipleProductCardViewHolder(
                     )
                 }
             }
+            listener.itemClicked(notification, adapterPosition)
             listener.addProductToCheckout(element.userInfo, element.product)
         }
     }

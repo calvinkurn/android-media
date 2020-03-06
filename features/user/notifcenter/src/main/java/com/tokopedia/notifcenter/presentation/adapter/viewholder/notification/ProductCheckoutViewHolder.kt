@@ -92,6 +92,7 @@ class ProductCheckoutViewHolder(
 
     companion object {
         private const val SINGLE_PRODUCT = 1
+
         @LayoutRes val LAYOUT = R.layout.item_notification_product_checkout
     }
 

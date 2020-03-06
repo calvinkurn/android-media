@@ -274,8 +274,8 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     }
 
     // #NC2
-    override fun trackNotificationClick(viewModel: NotificationItemViewBean) {
-        val label = getImpressionTrackLabel(LABEL_LOCATION, viewModel)
+    override fun trackNotificationClick(notification: NotificationItemViewBean) {
+        val label = getImpressionTrackLabel(LABEL_LOCATION, notification)
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_NAME_CLICK_NOTIF_CENTER,
                 CATEGORY_NOTIF_CENTER,

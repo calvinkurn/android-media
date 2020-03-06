@@ -128,7 +128,11 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     private fun onErrorInitiateData(): (Throwable) -> Unit {
         return {
             if (activity != null) {
-                SnackbarManager.make(activity, ErrorHandler.getErrorMessage(activity, it), Snackbar.LENGTH_LONG).show()
+                SnackbarManager.make(
+                        activity,
+                        ErrorHandler.getErrorMessage(activity, it),
+                        Snackbar.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -182,6 +186,7 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     }
 
     override fun itemClicked(notification: NotificationItemViewBean, adapterPosition: Int) {
+        super.itemClicked(notification, adapterPosition)
         val payloadBackground = BaseNotificationItemViewHolder.PAYLOAD_CHANGE_BACKGROUND
         adapter.notifyItemChanged(adapterPosition, payloadBackground)
         presenter.markReadNotif(notification.notificationId)
@@ -268,4 +273,5 @@ class NotificationUpdateFragment : BaseNotificationFragment(),
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
         return NotificationUpdateAdapter(NotificationUpdateTypeFactoryImpl(this))
     }
+
 }
