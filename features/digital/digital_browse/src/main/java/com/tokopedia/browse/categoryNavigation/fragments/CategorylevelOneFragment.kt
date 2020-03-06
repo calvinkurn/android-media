@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.adapters.CategoryLevelOneAdapter
-import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.di.CategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.di.DaggerCategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.view.ActivityStateListener
@@ -33,7 +32,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var categoryBrowseViewModel: CategoryLevelOneViewModel
-    private val categoryList = ArrayList<CategoriesItem>()
+    private val categoryList = ArrayList<com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoriesItem>()
 
     var activityStateListener: ActivityStateListener? = null
 
@@ -92,7 +91,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
             when (it) {
                 is Success -> {
                     categoryList.clear()
-                    categoryList.addAll(it.data.categories as ArrayList<CategoriesItem>)
+                    categoryList.addAll(it.data.categories as ArrayList<com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoriesItem> )
                     var selectedPosition = 0
                     if (selectedItemIdentifier != null) {
                         selectedPosition = getPositionFromIdentifier(categoryList)
@@ -113,7 +112,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         })
     }
 
-    private fun getPositionFromIdentifier(categoryList: ArrayList<CategoriesItem>): Int {
+    private fun getPositionFromIdentifier(categoryList: ArrayList<com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoriesItem>): Int {
         for (i in 0 until categoryList.size) {
 
             categoryList[i].identifier?.let {

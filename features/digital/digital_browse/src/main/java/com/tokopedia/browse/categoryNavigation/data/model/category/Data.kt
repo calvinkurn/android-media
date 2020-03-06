@@ -4,6 +4,6 @@ import com.google.gson.annotations.SerializedName
 
 data class Data(
 
-	@field:SerializedName("categoryAllList")
+	@field:SerializedName("categorylist")
 	val categoryAllList: CategoryAllList? = null
 )

@@ -1,0 +1,8 @@
+package com.tokopedia.browse.categoryNavigation.utils
+
+object Constants {
+    const val TextHeaderView = 1
+    const val YangLagiHitsView = 2
+    const val ProductHeaderView = 3
+    const val ProductView = 4
+}

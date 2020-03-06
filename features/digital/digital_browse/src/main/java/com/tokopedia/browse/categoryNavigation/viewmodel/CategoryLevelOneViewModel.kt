@@ -2,8 +2,7 @@ package com.tokopedia.browse.categoryNavigation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.browse.categoryNavigation.data.model.category.CategoryAllList
-import com.tokopedia.browse.categoryNavigation.domain.usecase.GetCategoryLevelOneUseCase
+import com.tokopedia.browse.categoryNavigation.domain.usecase.AllCategoryQueryUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -11,18 +10,14 @@ import rx.Subscriber
 import javax.inject.Inject
 
 
-class CategoryLevelOneViewModel @Inject constructor(private var getCategoryListUseCase: GetCategoryLevelOneUseCase) : ViewModel() {
+class CategoryLevelOneViewModel @Inject constructor(private var getCategoryListUseCase: AllCategoryQueryUseCase) : ViewModel() {
 
 
-    val categoryAllList = MutableLiveData<Result<CategoryAllList>>()
+    val categoryAllList = MutableLiveData<Result<com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryAllList>>()
 
 
     fun bound() {
-        getCategoryListUseCase.execute(getCategoryListUseCase.createRequestParams(true), object : Subscriber<CategoryAllList>() {
-            override fun onNext(t: CategoryAllList?) {
-                categoryAllList.value = Success((t as CategoryAllList))
-            }
-
+        getCategoryListUseCase.execute(getCategoryListUseCase.createRequestParams(2, true), object : Subscriber<com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryAllList>() {
             override fun onCompleted() {
             }
 
@@ -30,12 +25,15 @@ class CategoryLevelOneViewModel @Inject constructor(private var getCategoryListU
                 categoryAllList.value = Fail(e)
             }
 
+            override fun onNext(t: com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryAllList?) {
+                categoryAllList.value = Success((t as com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryAllList))
+            }
         })
 
     }
 
 
-    fun getCategoryList(): MutableLiveData<Result<CategoryAllList>> {
+    fun getCategoryList(): MutableLiveData<Result<com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryAllList>> {
 
         return categoryAllList
     }

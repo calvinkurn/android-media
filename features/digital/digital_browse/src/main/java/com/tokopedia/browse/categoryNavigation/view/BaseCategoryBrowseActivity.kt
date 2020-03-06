@@ -33,11 +33,9 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     private var masterFragment = Fragment()
     private var slaveFragment = Fragment()
 
-    private var autocompleteParam = ""
-
     private var deepLinkCategoryName: String? = null
 
-    private var TOOLBAR_NAME = "Belanja"
+    private var TOOLBAR_NAME = "Kategori"
 
 
     companion object {
@@ -67,6 +65,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
     object DeepLinkIntents {
         lateinit var extras: Bundle
+
         @DeepLink(ApplinkConst.CATEGORY_BELANJA)
         @JvmStatic
         fun getCategoryBrowseIntent(context: Context, bundle: Bundle): Intent {
@@ -166,33 +165,13 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
         empty_view.visibility = View.VISIBLE
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_digital_browse_search, menu)
-        return true
-    }
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_search) {
-            onSearchClicked()
-            CategoryAnalytics.createInstance().eventSearchBarClick()
-            return true
-        } else if (item.itemId == android.R.id.home) {
+        if (item.itemId == android.R.id.home) {
             CategoryAnalytics.createInstance().eventBackButtonClick()
             onBackPressed()
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun onSearchClicked() {
-        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource=shoppingnav", autocompleteParam)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        val menuItem = menu.findItem(R.id.action_search)
-        menuItem.setIcon(R.drawable.ic_browse_search)
-
-        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun getActivityTrackingQueue(): TrackingQueue {

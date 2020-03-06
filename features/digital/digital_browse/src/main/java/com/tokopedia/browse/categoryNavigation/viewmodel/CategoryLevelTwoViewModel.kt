@@ -2,74 +2,121 @@ package com.tokopedia.browse.categoryNavigation.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
-import com.tokopedia.browse.categoryNavigation.data.model.hotlist.CategoryHotlist
-import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
-import com.tokopedia.browse.categoryNavigation.domain.usecase.GetCategoryHotListUseCase
-import com.tokopedia.browse.categoryNavigation.domain.usecase.GetCategoryLevelTwoUsecase
+import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoriesItem
+import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryAllList
+import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryChildItem
+import com.tokopedia.browse.categoryNavigation.data.model.newcategory.ChildItem
+import com.tokopedia.browse.categoryNavigation.domain.usecase.AllCategoryQueryUseCase
+import com.tokopedia.browse.categoryNavigation.utils.Constants
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import rx.Subscriber
 import javax.inject.Inject
 
-class CategoryLevelTwoViewModel @Inject constructor(private var getCategoryListUseCase: GetCategoryLevelTwoUsecase,
-                                                    private var getCategoryHotListUseCase: GetCategoryHotListUseCase) : ViewModel() {
+class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQueryUseCase: AllCategoryQueryUseCase) : ViewModel() {
 
-    var childItem = MutableLiveData<Result<List<ChildItem>>>()
-
-    var hotlistItem = MutableLiveData<MutableList<ListItem>>()
-
-
+    var childItem = MutableLiveData<Result<List<CategoryChildItem>>>()
     fun refresh(id: String) {
-
-        getCategoryListUseCase.execute(getCategoryListUseCase.createRequestParams(true, id), object : Subscriber<List<ChildItem>>() {
-            override fun onNext(childItemList: List<ChildItem>) {
-                childItem.value = Success(childItemList)
-            }
-
+        allCategoryQueryUseCase.execute(allCategoryQueryUseCase.createRequestParams(2, true), object : Subscriber<CategoryAllList>() {
             override fun onCompleted() {
             }
 
             override fun onError(e: Throwable) {
                 childItem.value = Fail(e)
             }
+
+            override fun onNext(categoryAllList: CategoryAllList?) {
+                childItem.value = createChildList((categoryAllList as CategoryAllList), id)
+            }
         })
     }
 
+    private fun createChildList(categoryAllList: CategoryAllList, id: String): Result<List<CategoryChildItem>>? {
+        val defaultCaseID = "0"
 
-    fun fetchHotlist(categoryId: String, categoryName: String) {
-        getCategoryHotListUseCase.execute(getCategoryHotListUseCase.createRequestParams(categoryId.toInt(), categoryName), object : Subscriber<CategoryHotlist>() {
-            override fun onNext(categoryHotlist: CategoryHotlist?) {
-                categoryHotlist!!.list.let {
-                    hotlistItem.value = categoryHotlist.list
+        val iterator = categoryAllList.categories
+        val childList: MutableList<CategoryChildItem>? = ArrayList()
+
+
+        iterator?.forEach {
+
+            if (it?.id.equals(id)) {
+                if (id == defaultCaseID) {
+                    it?.child?.let { levelOneList ->
+                        for (levelOneChild in levelOneList) {
+                            childList?.add(createChildItem(Constants.TextHeaderView, levelOneChild))
+                            levelOneChild?.child.let { levelTwoChildItem ->
+                                if (levelTwoChildItem != null) {
+                                    val type = if (getTrimmedString(levelOneChild?.name
+                                                    ?: "") == "yanglagihits") {
+                                        Constants.YangLagiHitsView
+                                    } else {
+                                        Constants.ProductView
+                                    }
+
+                                    for (childItem in levelTwoChildItem) {
+                                        childList?.add(createChildItem(type, childItem))
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    return Success(childList as List<CategoryChildItem>)
+
+                } else {
+                    childList?.add(createChildItem(Constants.ProductHeaderView, it))
+                    it?.child?.let { levelOneList ->
+                        for (element in levelOneList) {
+                            childList?.add(createChildItem(Constants.ProductView, element))
+
+                        }
+                    }
+                    return Success(childList as List<CategoryChildItem>)
                 }
             }
+        }
+        return Fail(Throwable("no data"))
+    }
 
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-
-
-            }
-        })
-
+    private fun createChildItem(itemType: Int, childItem: ChildItem?): CategoryChildItem {
+        return CategoryChildItem(itemType,
+                childItem?.identifier,
+                childItem?.hexColor,
+                childItem?.parentName,
+                childItem?.iconImageUrl,
+                childItem?.applinks,
+                childItem?.name,
+                childItem?.id,
+                childItem?.iconBannerURL,
+                childItem?.url)
 
     }
 
-    fun getCategoryChildren(): MutableLiveData<Result<List<ChildItem>>> {
+    private fun createChildItem(itemType: Int, childItem: CategoriesItem?): CategoryChildItem {
+        return CategoryChildItem(itemType,
+                childItem?.identifier,
+                childItem?.hexColor,
+                childItem?.parentName,
+                childItem?.iconImageUrl,
+                childItem?.applinks,
+                childItem?.name,
+                childItem?.id,
+                childItem?.iconBannerURL,
+                childItem?.url)
+    }
+
+    private fun getTrimmedString(label: String): String {
+        return label.replace(" ", "").toLowerCase()
+    }
+
+
+    fun getCategoryChildren(): MutableLiveData<Result<List<CategoryChildItem>>> {
         return childItem
-    }
-
-    fun getCategoryHotlist(): MutableLiveData<MutableList<ListItem>> {
-        return hotlistItem
     }
 
     override fun onCleared() {
         super.onCleared()
-        getCategoryListUseCase.unsubscribe()
-        getCategoryHotListUseCase.unsubscribe()
+        allCategoryQueryUseCase.unsubscribe()
     }
 }

@@ -2,6 +2,7 @@ package com.tokopedia.browse.categoryNavigation.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.browse.categoryNavigation.domain.usecase.AllCategoryQueryUseCase
 import com.tokopedia.browse.categoryNavigation.domain.usecase.GetCategoryHotListUseCase
 import com.tokopedia.browse.categoryNavigation.domain.usecase.GetCategoryLevelOneUseCase
 import com.tokopedia.browse.categoryNavigation.domain.usecase.GetCategoryLevelTwoUsecase
@@ -39,8 +40,8 @@ class CategoryUseCaseModule {
 
     @CategoryNavigationScope
     @Provides
-    fun getCategoryHotListUseCase(context: Context, graphqlUseCase: GraphqlUseCase): GetCategoryHotListUseCase {
-        return GetCategoryHotListUseCase(context, graphqlUseCase)
+    fun getAllCategoryUseCase(context: Context, graphqlUseCase: GraphqlUseCase): AllCategoryQueryUseCase {
+        return AllCategoryQueryUseCase(context, graphqlUseCase)
     }
 
 

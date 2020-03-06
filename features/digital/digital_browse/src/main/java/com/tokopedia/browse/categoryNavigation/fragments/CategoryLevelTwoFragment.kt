@@ -17,12 +17,10 @@ import com.tokopedia.applink.RouteManager
 
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.adapters.CategoryLevelTwoAdapter
-import com.tokopedia.browse.categoryNavigation.adapters.HotlistAdapter
-import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
-import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
-import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
+import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryChildItem
 import com.tokopedia.browse.categoryNavigation.di.CategoryNavigationComponent
 import com.tokopedia.browse.categoryNavigation.di.DaggerCategoryNavigationComponent
+import com.tokopedia.browse.categoryNavigation.utils.Constants
 import com.tokopedia.browse.categoryNavigation.view.ActivityStateListener
 import com.tokopedia.browse.categoryNavigation.viewmodel.CategoryLevelTwoViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -40,10 +38,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     private lateinit var categoryLevelTwoAdapter: CategoryLevelTwoAdapter
     private lateinit var gridLayoutManager: GridLayoutManager
 
-    private val childList = ArrayList<ChildItem>()
-
-    private val categoryHotlist = ArrayList<ListItem>()
-
+    private val childList = ArrayList<CategoryChildItem>()
     private val defaultCaseId = "0"
 
     private var currentPosition = "0"
@@ -66,59 +61,41 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         currentPosition = id
         currentCategoryName = categoryName
         categoryLevelTwoViewModel.refresh(id)
-        categoryLevelTwoViewModel.fetchHotlist(id, currentCategoryName)
         setShimmer(id)
-        category_name.text = categoryName
-        hotlist_name.text = "Hotlist $categoryName"
         categoryApplink = applink
     }
 
     private fun setShimmer(id: String) {
-
         slave_list.visibility = View.GONE
-        hotlist.visibility = View.GONE
-        label_lihat_semua.visibility = View.GONE
-        category_name.visibility = View.GONE
-        hotlist_name.visibility = View.GONE
-
-        if (id == defaultCaseId) {
-            shimmer_layout_default.visibility = View.VISIBLE
-            shimmer_layout.visibility = View.GONE
-        } else {
-            shimmer_layout_default.visibility = View.GONE
-            shimmer_layout.visibility = View.VISIBLE
-        }
 
     }
 
     private fun removeShimmer() {
 
         if (currentPosition != defaultCaseId) {
-            label_lihat_semua.visibility = View.VISIBLE
-            hotlist.visibility = View.VISIBLE
-            hotlist_name.visibility = View.VISIBLE
+           // label_lihat_semua.visibility = View.VISIBLE
+            //hotlist.visibility = View.VISIBLE
+            // hotlist_name.visibility = View.VISIBLE
         }
 
-        shimmer_layout.visibility = View.GONE
-        shimmer_layout_default.visibility = View.GONE
+
         slave_list.visibility = View.VISIBLE
-        category_name.visibility = View.VISIBLE
 
         if (categoryApplink != null) {
 
-            label_lihat_semua.setOnClickListener {
+          /*  label_lihat_semua.setOnClickListener {
                 routeToCategoryLevelTwo(activity, categoryApplink ?: "")
             }
             category_name.setOnClickListener {
                 routeToCategoryLevelTwo(activity, categoryApplink ?: "")
-            }
+            }*/
         }
     }
 
     private fun routeToCategoryLevelTwo(context: Context?, categoryApplink: String) {
         context?.let {
             RouteManager.route(it, categoryApplink)
-            CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
+           // CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
         }
     }
 
@@ -141,62 +118,58 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
             when (it) {
                 is Success -> {
-                    empty_view_second_level.visibility = View.GONE
+                   // empty_view_second_level.visibility = View.GONE
                     childList.clear()
-                    childList.addAll(it.data as List<ChildItem>)
+                    childList.addAll(it.data)
                     removeShimmer()
                     slave_list.adapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
                 }
 
                 is Fail -> {
-                    shimmer_layout_default.visibility = View.GONE
+                   /* shimmer_layout_default.visibility = View.GONE
                     shimmer_layout.visibility = View.GONE
-                    empty_view_second_level.visibility = View.VISIBLE
+                    empty_view_second_level.visibility = View.VISIBLE*/
 
                 }
             }
 
         })
 
-        categoryLevelTwoViewModel.getCategoryHotlist().observe(viewLifecycleOwner, Observer<MutableList<ListItem>> {
-            categoryHotlist.clear()
-            categoryHotlist.addAll(it as List<ListItem>)
-            hotlist.adapter?.notifyDataSetChanged()
-
-        })
     }
 
     private fun initView() {
 
-        empty_view_second_level.setOnClickListener {
+      /*  empty_view_second_level.setOnClickListener {
             categoryLevelTwoViewModel.refresh(currentPosition)
 
-        }
-
+        }*/
 
         categoryLevelTwoAdapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
-        gridLayoutManager = GridLayoutManager(context, 2)
+        gridLayoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                val type = slave_list.adapter?.getItemViewType(position)
-                return if (type == 1)
-                    1
-                else
-                    2
+                return when (slave_list.adapter?.getItemViewType(position)) {
+                    Constants.ProductHeaderView -> 6
+                    Constants.YangLagiHitsView -> 3
+                    Constants.ProductView -> 2
+                    else -> 6
+                }
+
             }
         }
 
+
         slave_list.layoutManager = gridLayoutManager
         slave_list.adapter = categoryLevelTwoAdapter
-        slave_list.isNestedScrollingEnabled = false
+        //slave_list.isNestedScrollingEnabled = false
 
 
-        val hotlistAdapter = HotlistAdapter(categoryHotlist, activityStateListener?.getActivityTrackingQueue())
-        val horizontalLayout = GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
-        hotlist.layoutManager = horizontalLayout
-        hotlist.adapter = hotlistAdapter
-        hotlist.isNestedScrollingEnabled = false
+        /*  val hotlistAdapter = HotlistAdapter(categoryHotlist, activityStateListener?.getActivityTrackingQueue())
+          val horizontalLayout = GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
+          hotlist.layoutManager = horizontalLayout
+          hotlist.adapter = hotlistAdapter
+          hotlist.isNestedScrollingEnabled = false*/
 
 
     }
@@ -207,7 +180,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     fun startShimmer(isStarted: Boolean) {
-        if (isStarted) {
+      /*  if (isStarted) {
             if (currentPosition == defaultCaseId) {
                 shimmer_layout_default.visibility = View.VISIBLE
                 shimmer_layout.visibility = View.GONE
@@ -218,7 +191,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         } else {
             shimmer_layout_default.visibility = View.GONE
             shimmer_layout.visibility = View.GONE
-        }
+        }*/
 
     }
 }
