@@ -177,7 +177,7 @@ class PlayFragment : BaseDaggerFragment() {
             hideKeyboard()
         }
         flVideo.setOnClickListener {
-            hideKeyboard()
+            hideAllInsets()
         }
     }
 
@@ -290,6 +290,8 @@ class PlayFragment : BaseDaggerFragment() {
         videoScaleAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
+
+        flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     fun onBottomInsetsViewHidden() {
@@ -303,6 +305,8 @@ class PlayFragment : BaseDaggerFragment() {
         videoScaleAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
+
+        flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
     }
 
     private fun hideKeyboard() {
@@ -325,18 +329,21 @@ class PlayFragment : BaseDaggerFragment() {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.onKeyboardShown(estimatedKeyboardHeight)
                 ivClose.visible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
 
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
             }
         })
     }
 
     private fun unregisterKeyboardListener(view: View) {
         keyboardWatcher.unlisten(view)
+    }
+
+    private fun hideAllInsets() {
+        hideKeyboard()
+        playViewModel.hideAllInsets()
     }
 }

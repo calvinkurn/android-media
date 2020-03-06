@@ -290,6 +290,10 @@ class PlayViewModel @Inject constructor(
 
         _observableBottomInsetsState.value = insetsMap
     }
+
+    fun hideAllInsets() {
+        _observableBottomInsetsState.value = getDefaultBottomInsetsMapState()
+    }
     //end region
 
     fun getChannelInfo(channelId: String) {
