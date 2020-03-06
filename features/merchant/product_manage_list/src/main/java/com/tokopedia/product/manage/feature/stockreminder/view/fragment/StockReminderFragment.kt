@@ -105,11 +105,10 @@ class StockReminderFragment: BaseDaggerFragment() {
             }
         }
 
-        qeStock.setValueChangedListener { _, _, _ ->
-            btnSaveReminder.isEnabled =  qeStock.getValue() != 0
-        }
-        
         btnSaveReminder.setOnClickListener {
+            if(qeStock.getValue() == 0) qeStock.setValue(1)
+            else if(qeStock.getValue() > 100) qeStock.setValue(100)
+
             if (threshold == 0) {
                 threshold = qeStock.getValue()
                 createStockReminder()
