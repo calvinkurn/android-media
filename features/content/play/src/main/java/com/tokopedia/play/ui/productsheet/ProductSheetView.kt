@@ -18,6 +18,7 @@ import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
 import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
+import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**
@@ -25,7 +26,7 @@ import com.tokopedia.play.view.uimodel.ProductSheetUiModel
  */
 class ProductSheetView(
         container: ViewGroup,
-        private val listener: Listener
+        listener: Listener
 ) : UIView(container) {
 
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_product_sheet, container, true)
@@ -35,7 +36,15 @@ class ProductSheetView(
     private val rvProductList: RecyclerView = view.findViewById(R.id.rv_product_list)
     private val rvVoucherList: RecyclerView = view.findViewById(R.id.rv_voucher_list)
 
-    private val productLineAdapter = ProductLineAdapter()
+    private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
+        override fun onBuyProduct(productId: String) {
+            listener.onBuyButtonClicked(this@ProductSheetView, productId)
+        }
+
+        override fun onAtcProduct(productId: String) {
+            listener.onAtcButtonClicked(this@ProductSheetView, productId)
+        }
+    })
     private val voucherAdapter = MerchantVoucherAdapter()
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
@@ -70,12 +79,10 @@ class ProductSheetView(
 
     override fun show() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
-        view.show()
     }
 
     override fun hide() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        view.gone()
     }
 
     internal fun setStateHidden() {
@@ -100,5 +107,7 @@ class ProductSheetView(
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetView)
+        fun onBuyButtonClicked(view: ProductSheetView, productId: String)
+        fun onAtcButtonClicked(view: ProductSheetView, productId: String)
     }
 }

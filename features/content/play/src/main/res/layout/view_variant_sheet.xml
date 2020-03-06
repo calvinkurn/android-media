@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/cl_product_sheet"
+        android:id="@+id/cl_variant_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/spacing_lvl4"
@@ -14,30 +14,27 @@
         app:behavior_skipCollapsed="true"
         app:behavior_hideable="true"
         app:layout_behavior="com.tokopedia.play.view.custom.behavior.LockableBottomSheetBehavior"
-        tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout"
-        >
+        tools:parentTag="androidx.coordinatorlayout.widget.CoordinatorLayout">
 
         <include layout="@layout/bottomsheet_header"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_voucher_list"
+            android:id="@+id/rv_variant_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/play_voucher_sheet_title_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_header"
             />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_product_list"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl0"
-            android:layout_marginTop="@dimen/play_product_voucher_margin"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rv_voucher_list"
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btn_action"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:unifyButtonType="transaction"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
