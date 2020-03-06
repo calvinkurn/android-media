@@ -36,6 +36,8 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
     @Inject
     lateinit var umrahTrackingAnalytics: UmrahTrackingAnalytics
 
+    var travelList : List<TravelAgent> = listOf()
+
     override fun getAdapterTypeFactory(): UmrahTravelListAdapterTypeFactory = UmrahTravelListAdapterTypeFactory(this)
 
     override fun getScreenName(): String = ""
@@ -60,6 +62,7 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
             when(it){
                 is Success -> {
                     onSuccessResult(it.data)
+                    travelList = it.data.umrahTravelAgents
                 }
 
                 is Fail -> {
@@ -133,8 +136,11 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
 
     }
 
-    override fun onItemClicked(t: TravelAgent) {
-         RouteManager.route(context, SALAM_UMRAH_AGEN, t.slugName)
+    override fun onItemClicked(travelAgent: TravelAgent) {
+         val position = travelList.indexOf(travelAgent)
+         umrahTrackingAnalytics.umrahTravelListClick(travelAgent,position)
+         RouteManager.route(context, SALAM_UMRAH_AGEN, travelAgent.slugName)
+
     }
 
     companion object{
