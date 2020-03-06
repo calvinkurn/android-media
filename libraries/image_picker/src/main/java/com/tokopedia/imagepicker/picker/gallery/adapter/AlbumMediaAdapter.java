@@ -31,9 +31,6 @@ public class AlbumMediaAdapter extends RecyclerViewCursorCustomAppendAdapter<Alb
     private boolean hasCounterLabel;
     private ArrayList<String> selectionImagePathList;
 
-    //custom image list that will be appended at the start of original imageList
-    private ArrayList<String> appendedImagePathList;
-
     public AlbumMediaAdapter(boolean supportMultipleSelection, ArrayList<String> selectionImagePathList,
                              OnMediaClickListener listener,
                              boolean hasCounterLabel,
@@ -43,7 +40,6 @@ public class AlbumMediaAdapter extends RecyclerViewCursorCustomAppendAdapter<Alb
         this.supportMultipleSelection = supportMultipleSelection;
         mOnMediaClickListener = listener;
         this.hasCounterLabel = hasCounterLabel;
-        setAppendedImagePathList(appendedImagePathList);
     }
 
     private void setSelectionIdList(ArrayList<String> selectionImagePathList) {
@@ -51,14 +47,6 @@ public class AlbumMediaAdapter extends RecyclerViewCursorCustomAppendAdapter<Alb
             this.selectionImagePathList = new ArrayList<>();
         } else {
             this.selectionImagePathList = selectionImagePathList;
-        }
-    }
-
-    private void setAppendedImagePathList(ArrayList<String> appendedImagePathList) {
-        if (appendedImagePathList == null) {
-            this.appendedImagePathList = new ArrayList<>();
-        } else {
-            this.appendedImagePathList = appendedImagePathList;
         }
     }
 

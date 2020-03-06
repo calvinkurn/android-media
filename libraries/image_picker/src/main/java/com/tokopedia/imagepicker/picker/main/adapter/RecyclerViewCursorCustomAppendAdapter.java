@@ -12,12 +12,22 @@ public abstract class RecyclerViewCursorCustomAppendAdapter<VH extends RecyclerV
 
     private Cursor mCursor;
     private int mRowIDColumn;
+
+    //custom image list that will be appended at the start of original imageList
     private ArrayList<String> appendedImagePathOrUrlList;
 
     public RecyclerViewCursorCustomAppendAdapter(Cursor c, ArrayList<String> appendedImagePathOrUrlList) {
         setHasStableIds(true);
         swapCursor(c);
-        this.appendedImagePathOrUrlList = appendedImagePathOrUrlList;
+        setAppendedImagePathList(appendedImagePathOrUrlList);
+    }
+
+    private void setAppendedImagePathList(ArrayList<String> appendedImagePathList) {
+        if (appendedImagePathList == null) {
+            this.appendedImagePathOrUrlList = new ArrayList<>();
+        } else {
+            this.appendedImagePathOrUrlList = appendedImagePathList;
+        }
     }
 
     protected abstract void onBindViewHolder(VH holder, Cursor cursor);
@@ -113,6 +123,10 @@ public abstract class RecyclerViewCursorCustomAppendAdapter<VH extends RecyclerV
             mCursor = null;
             mRowIDColumn = -1;
         }
+    }
+
+    public void setAppendedImagePathOrUrlList(ArrayList<String> appendedImagePathOrUrlList) {
+        this.appendedImagePathOrUrlList = appendedImagePathOrUrlList;
     }
 
     public Cursor getCursor() {

@@ -118,10 +118,16 @@ public class ImagePickerActivity extends BaseSimpleActivity
             if (imagePickerBuilder.supportMultipleSelection()) {
                 selectedImagePaths = imagePickerBuilder.getInitialSelectedImagePathList();
                 imageDescriptionList = new ArrayList<>();
+                appendedImagePaths = new ArrayList<>();
+
+                boolean appendInitialImage = imagePickerBuilder.appendInitialImage();
                 //create empty description for initial images
                 if (selectedImagePaths != null && selectedImagePaths.size() > 0) {
                     for (String path : selectedImagePaths) {
                         imageDescriptionList.add(null);
+                        if (appendInitialImage) {
+                            appendedImagePaths.add(path);
+                        }
                     }
                 }
             } else {

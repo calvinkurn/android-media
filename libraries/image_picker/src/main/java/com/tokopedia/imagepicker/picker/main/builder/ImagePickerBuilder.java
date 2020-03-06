@@ -120,6 +120,10 @@ public class ImagePickerBuilder implements Parcelable {
                 imagePickerMultipleSelectionBuilder.getPreviewExtension().showBiggerPreviewWhenThumbnailHidden;
     }
 
+    public boolean appendInitialImage() {
+        return imagePickerMultipleSelectionBuilder.getPreviewExtension().appendInitialSelectedImageInGallery;
+    }
+
     public int getMinResolution() {
         return minResolution;
     }
