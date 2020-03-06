@@ -40,6 +40,7 @@ ext {
             digitalTopupBills               : ":features:recharge:digital_topup_bills",
             rechargeGeneral                 : ":features:recharge:recharge_general",
             rechargeOcr                     : ":features:recharge:rechargeocr",
+            rechargeCreditCard              : ":features:recharge:recharge_credit_card",
             voucherGame                     : ":features:recharge:voucher_game",
 
             commonTravel                    : ":features:travel:common_travel",

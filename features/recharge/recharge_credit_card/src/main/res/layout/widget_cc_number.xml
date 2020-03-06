@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/dp_12"
+    android:paddingTop="@dimen/dp_12"
+    android:paddingRight="@dimen/dp_12"
+    android:paddingBottom="@dimen/dp_10">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/cc_label_input_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_8"
+        android:text="Masukkan nomor kredit anda:"
+        android:textColor="@color/Neutral_N700_96"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/cc_hint_input_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_8"
+        android:textColor="@color/font_black_disabled_38"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/cc_input_number"
+        app:layout_constraintEnd_toStartOf="@+id/cc_img_operator"
+        app:layout_constraintStart_toStartOf="@+id/cc_input_number"
+        app:layout_constraintTop_toTopOf="@+id/cc_input_number"
+        app:typographyType="body_1"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/cc_img_operator"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dp_25"
+        android:layout_marginEnd="@dimen/dp_5"
+        android:layout_marginRight="@dimen/dp_5"
+        android:contentDescription="@string/app_name"
+        android:paddingBottom="@dimen/dp_5"
+        app:layout_constraintBottom_toBottomOf="@+id/cc_input_number"
+        app:layout_constraintEnd_toStartOf="@+id/cc_btn_clear_input_number"
+        app:layout_constraintLeft_toRightOf="@+id/cc_hint_input_number"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cc_input_number" />
+
+    <ImageView
+        android:id="@+id/cc_btn_clear_input_number"
+        android:layout_width="@dimen/dp_25"
+        android:layout_height="@dimen/dp_25"
+        android:padding="@dimen/dp_5"
+        android:src="@drawable/unify_clear_ic"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/cc_input_number"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/cc_img_operator"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cc_input_number" />
+
+    <AutoCompleteTextView
+        android:id="@+id/cc_input_number"
+        style="@style/HintTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/dp_5"
+        android:hint="0123 3233 2412 1234"
+        android:inputType="phone"
+        android:maxLength="19"
+        android:maxLines="1"
+        android:popupBackground="@color/white"
+        android:textColor="@color/Neutral_N700_96"
+        android:textColorHint="@color/grey_400"
+        android:textSize="@dimen/sp_14"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintHorizontal_weight="9"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cc_label_input_number"
+        tools:layout_editor_absoluteY="12dp" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/cc_error_input_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_5"
+        android:layout_marginLeft="@dimen/dp_5"
+        android:layout_marginTop="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_4"
+        android:text="kosong"
+        android:textColor="@color/red_600"
+        android:textSize="@dimen/sp_14"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/cc_input_number"
+        app:typographyType="body_3"
+        tools:visibility="visible" />
+
+    <Button
+        android:id="@+id/cc_button_next"
+        style="@style/Button.Submit.Orange"
+        android:background="@drawable/grey_button_rounded"
+        android:text="Lanjut"
+        android:textColor="@color/cc_next_grey"
+        android:visibility="visible"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/cc_error_input_number"
+        app:layout_constraintStart_toStartOf="@+id/cc_error_input_number"
+        app:layout_constraintTop_toBottomOf="@+id/cc_error_input_number" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
