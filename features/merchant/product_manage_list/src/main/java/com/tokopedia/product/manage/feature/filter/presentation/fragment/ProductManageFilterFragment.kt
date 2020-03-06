@@ -81,7 +81,6 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
     private var filterAdapter: FilterAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
-    private var cacheManagerId: String = ""
 
     var isResultReady: Boolean = false
     var resultCacheManagerId: String = ""
@@ -90,6 +89,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        var cacheManagerId: String = ""
         arguments?.let {
             cacheManagerId = it.getString(CACHE_MANAGER_KEY) ?: ""
         }
@@ -224,15 +224,11 @@ class ProductManageFilterFragment : BottomSheetUnify(),
                     val dataToSave = ProductManageFilterMapper.mapFiltersToFilterOptions(data)
                     selectedFilterOptions = dataToSave
                     //TODO leo tanya hendry
-//                    val savedInstanceManager = SaveInstanceCacheManager(it, true)
-//                    savedInstanceManager.put(
-//                            customId = SELECTED_FILTER,
-//                            objectToPut = dataToSave,
-//                            cacheDuration = TimeUnit.MINUTES.toMillis(5))
-//                    resultCacheManagerId = savedInstanceManager.id ?: ""
+//                    val cacheManager = SaveInstanceCacheManager(it, true)
+//                    resultCacheManagerId = cacheManager.id ?: ""
+//                    cacheManager.put(SELECTED_FILTER, dataToSave)
                 }
             }
-            this.dismiss()
             super.dismiss()
         }
         initBottomSheetReset()

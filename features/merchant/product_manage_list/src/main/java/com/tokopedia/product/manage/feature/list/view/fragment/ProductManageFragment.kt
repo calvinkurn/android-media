@@ -278,15 +278,21 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun setupFilterProductBottomSheet() {
+//        filterProductBottomSheet?.let { bottomSheet ->
+//            bottomSheet.setOnDismissListener {
+//                if(bottomSheet.isResultReady) {
+//                    bottomSheet.isResultReady = false
+//                    val cacheManager = context?.let { SaveInstanceCacheManager(it, bottomSheet.resultCacheManagerId) }
+//                    val filterOptionWrapper: FilterOptionWrapper? = cacheManager?.get(ProductManageFilterFragment.SELECTED_FILTER, FilterOptionWrapper::class.java)
+//                    filterOptionWrapper?.let {
+//                        viewModel.getProductList(userSession.shopId, filterOptionWrapper.filterOptions, filterOptionWrapper.sortOption)
+//                    }
+//                }
+//            }
+//        }
         filterProductBottomSheet?.setOnDismissListener {
             if (filterProductBottomSheet != null && filterProductBottomSheet!!.isResultReady) {
                 filterProductBottomSheet!!.isResultReady = false
-//                val cacheManager = context?.let { SaveInstanceCacheManager(it, filterProductBottomSheet!!.resultCacheManagerId) }
-//                val filterOptionWrapper: FilterOptionWrapper? = cacheManager?.get(
-//                        ProductManageFilterFragment.SELECTED_FILTER, FilterOptionWrapper::class.java)
-//                filterOptionWrapper?.let {
-//                    viewModel.getProductList(userSession.shopId, filterOptionWrapper.filterOptions, filterOptionWrapper.sortOption)
-//                }
                 viewModel.getProductList(userSession.shopId, filterProductBottomSheet!!.selectedFilterOptions?.filterOptions, filterProductBottomSheet!!.selectedFilterOptions?.sortOption)
             }
         }

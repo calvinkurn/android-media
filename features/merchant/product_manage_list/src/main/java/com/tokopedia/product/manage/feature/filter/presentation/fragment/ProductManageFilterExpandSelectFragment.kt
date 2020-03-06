@@ -96,11 +96,8 @@ class ProductManageFilterExpandSelectFragment :
         productManageFilterExpandSelectViewModel.updateSelectedItem(element)
         val dataToSave = productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-        var cacheManagerId = ""
+        val cacheManagerId = cacheManager?.id
         if(flag == SORT_CACHE_MANAGER_KEY) {
-            cacheManager?.let {
-                cacheManagerId = it.id!!
-            }
             cacheManager?.put(SORT_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     SORT_CACHE_MANAGER_KEY,
                     dataToSave,
@@ -108,9 +105,6 @@ class ProductManageFilterExpandSelectFragment :
             ))
             this.activity?.setResult(ProductManageFilterFragment.UPDATE_SORT_SUCCESS_RESPONSE, Intent().putExtra(CACHE_MANAGER_KEY, cacheManagerId))
         } else {
-            cacheManager?.let {
-                cacheManagerId = it.id!!
-            }
             cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     ETALASE_CACHE_MANAGER_KEY,
                     dataToSave,
