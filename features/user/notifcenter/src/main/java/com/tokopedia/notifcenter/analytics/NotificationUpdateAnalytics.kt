@@ -196,42 +196,53 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     }
 
     // #11B
-    fun trackProductCheckoutCardClick(
+    fun trackSingleProductCheckoutCardClick(
             location: String = LABEL_LOCATION,
             notification: NotificationItemViewBean
     ) {
+        val eventLabel = getImpressionTrackLabel(
+                location,
+                notification.templateKey,
+                notification.notificationId,
+                notification.getAtcProduct()?.productId
+        )
         trackProductCheckoutCardClick(
-                location = location,
-                templateKey = notification.templateKey,
-                notificationId = notification.notificationId,
+                eventLabel = eventLabel,
                 product = notification.getAtcProduct()
         )
     }
 
-    fun trackProductCheckoutCardClick(
-            location: String = LABEL_LOCATION,
+    fun trackMultiProductCheckoutCardClick(
+            eventLocation: String = "notif_list",
+            notification: NotificationItemViewBean
+    ) {
+        val eventLabel = getMultipleProductImpressionLabel(
+                notificationId = notification.notificationId,
+                productNumber = notification.getAtcProduct()?.price?: "",
+                location = eventLocation
+        )
+        trackProductCheckoutCardClick(
+                eventLabel = eventLabel,
+                product = notification.getAtcProduct()
+        )
+    }
+
+    fun trackMultiProductCheckoutCardClick(
+            eventLocation: String = "notif_list",
             notification: MultipleProductCardViewBean
     ) {
-        trackProductCheckoutCardClick(
-                location = location,
-                templateKey = notification.templateKey,
+        val eventLabel = getMultipleProductImpressionLabel(
                 notificationId = notification.notificationId,
+                productNumber = notification.product.price,
+                location = eventLocation
+        )
+        trackProductCheckoutCardClick(
+                eventLabel = eventLabel,
                 product = notification.product
         )
     }
 
-    private fun trackProductCheckoutCardClick(
-            location: String,
-            templateKey: String,
-            notificationId: String,
-            product: ProductData?
-    ) {
-        val eventLabel = getImpressionTrackLabel(
-                location,
-                templateKey,
-                notificationId,
-                product?.productId
-        )
+    private fun trackProductCheckoutCardClick(eventLabel: String, product: ProductData?) {
         val productListName = "/notifcenter"
         val productTrack = arrayListOf<Map<String, Any>>()
         productTrack.add(
@@ -395,9 +406,9 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
             notification: MultipleProductCardViewBean
     ) {
         val eventLabel = getMultipleProductImpressionLabel(
-                location = eventLocation,
                 notificationId = notification.notificationId,
-                productNumber = notification.product.price
+                productNumber = notification.product.price,
+                location = eventLocation
         )
         trackAtcOnProductClick(
                 eventLabel,
@@ -407,7 +418,11 @@ class NotificationUpdateAnalytics @Inject constructor(): NotificationAnalytics()
     }
 
     // #NC6
-    private fun trackAtcOnProductClick(eventLabel: String, product: ProductData?, userInfo: UserInfo) {
+    private fun trackAtcOnProductClick(
+            eventLabel: String,
+            product: ProductData?,
+            userInfo: UserInfo
+    ) {
         val products = DataLayer.mapOf(
                 "name", product?.name,
                 "id", product?.productId,

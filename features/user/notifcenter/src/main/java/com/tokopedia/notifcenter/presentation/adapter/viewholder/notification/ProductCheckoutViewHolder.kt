@@ -5,7 +5,6 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
@@ -80,7 +79,15 @@ class ProductCheckoutViewHolder(
     }
 
     override fun bindProductCardClick(element: NotificationItemViewBean) {
-        listener.getAnalytic().trackProductCheckoutCardClick(notification = element)
+        if (element.totalProduct == SINGLE_PRODUCT) {
+            listener.getAnalytic().trackSingleProductCheckoutCardClick(
+                    notification = element
+            )
+        } else if (element.totalProduct > SINGLE_PRODUCT) {
+            listener.getAnalytic().trackMultiProductCheckoutCardClick(
+                    notification = element
+            )
+        }
     }
 
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {

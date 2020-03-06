@@ -80,9 +80,19 @@ class MultipleProductCardViewHolder(
         val notification = MultipleProductCardMapper.map(element)
         productContainer.setOnClickListener {
             listener.itemClicked(notification, adapterPosition)
-            listener.getAnalytic().trackProductCheckoutCardClick(
-                    notification = element
-            )
+            when(sourceView) {
+                is SourceMultipleProductView.NotificationCenter -> {
+                    listener.getAnalytic().trackMultiProductCheckoutCardClick(
+                            notification = element
+                    )
+                }
+                is SourceMultipleProductView.BottomSheetDetail -> {
+                    listener.getAnalytic().trackMultiProductCheckoutCardClick(
+                            eventLocation = LABEL_BOTTOM_SHEET_LOCATION,
+                            notification = element
+                    )
+                }
+            }
             RouteManager.route(
                     itemView.context,
                     ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
