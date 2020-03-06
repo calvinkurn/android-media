@@ -63,6 +63,7 @@ class ShippingDurationFragment : BaseDaggerFragment() {
         viewModel.shippingDuration.observe(this, Observer {
             when (it) {
                 is OccState.Success -> {
+                    swipe_refresh_layout.isRefreshing = false
                     global_error.gone()
                     content_layout.visible()
                     renderData(it.data.services)
@@ -70,11 +71,12 @@ class ShippingDurationFragment : BaseDaggerFragment() {
 
                 is OccState.Fail -> {
                     if (!it.isConsumed) {
+                        swipe_refresh_layout.isRefreshing = false
                         if (it.throwable != null) {
                             handleError(it.throwable)
                         }
                     }
-                }
+                } else -> swipe_refresh_layout.isRefreshing = true
             }
         })
     }
