@@ -105,18 +105,6 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     title = couponItem.title
                     subTitle = couponItem.expiryInfo
                     benefitAmount = couponItem.benefitAmount
-                    val tmpErrorMessage = StringBuilder()
-                    if (couponItem.clashingInfos.isNotEmpty()) {
-                        for ((index, data) in couponItem.clashingInfos.withIndex()) {
-                            tmpErrorMessage.append(data.message)
-                            if (index < couponItem.clashingInfos.size - 1) {
-                                tmpErrorMessage.append("\n")
-                            }
-                        }
-                    } else {
-                        tmpErrorMessage.append(couponItem.message)
-                    }
-                    errorMessage = if (couponItem.radioCheckState == PromoListItemUiModel.UiState.STATE_IS_DISABLED) tmpErrorMessage.toString() else ""
                     imageResourceUrls = couponItem.tagImageUrls
                     parentIdentifierId = headerIdentifierId
                     promoCode = couponItem.code
@@ -126,12 +114,22 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     }
                     clashingInfo = clashingInfoMap
                     val tmpCurrentClashingPromoList = ArrayList<String>()
+                    val tmpErrorMessage = StringBuilder()
                     selectedPromo.forEach {
                         if (clashingInfo.containsKey(it)) {
                             tmpCurrentClashingPromoList.add(it)
+                            if (tmpErrorMessage.isNotBlank()) {
+                                tmpErrorMessage.append("\n")
+                            }
+                            tmpErrorMessage.append(clashingInfo[it])
                         }
                     }
                     currentClashingPromo = tmpCurrentClashingPromoList
+
+                    if (tmpErrorMessage.isEmpty()) {
+                        tmpErrorMessage.append(couponItem.message)
+                    }
+                    errorMessage = if (couponItem.radioCheckState == PromoListItemUiModel.UiState.STATE_IS_DISABLED) tmpErrorMessage.toString() else ""
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isParentEnabled = parentEnabled
