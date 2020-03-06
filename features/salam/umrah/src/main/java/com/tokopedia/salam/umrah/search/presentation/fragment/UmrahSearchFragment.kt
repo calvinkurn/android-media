@@ -69,7 +69,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 18/10/2019
  */
-class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdapterTypeFactory>(),
+class UmrahSearchFragment : BaseListFragment<Visitable<UmrahSearchAdapterTypeFactory>, UmrahSearchAdapterTypeFactory>(),
         BaseEmptyViewHolder.Callback, UmrahSearchAdapter.OnClickListener, UmrahSearchActivity.OnBackListener,
         UmrahSearchEmptyViewHolder.OnClickListener {
 
@@ -131,7 +131,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun initializePerformance(){
+    private fun initializePerformance() {
         performanceMonitoring = PerformanceMonitoring.start(UMRAH_SEARCH_PAGE_PERFORMANCE)
     }
 
@@ -244,15 +244,15 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     override fun hasInitialSwipeRefresh(): Boolean = true
 
-    override fun getAdapterTypeFactory(): UmrahSearchAdapterTypeFactory = UmrahSearchAdapterTypeFactory(this,this)
+    override fun getAdapterTypeFactory(): UmrahSearchAdapterTypeFactory = UmrahSearchAdapterTypeFactory(this, this)
 
-    override fun onItemClicked(product: UmrahSearchProduct?) {}
+    override fun onItemClicked(product: Visitable<UmrahSearchAdapterTypeFactory>?) {}
     override fun onItemClicked(product: UmrahSearchProduct, position: Int) {
         umrahTrackingAnalytics.umrahSearchNCategoryProductClick(product, position, umrahSearchViewModel.getSortValue(), selectedFilter, searchOrCategory)
         startActivityForResult(context?.let { UmrahPdpActivity.createIntent(it, product.slugName) }, REQUEST_PDP)
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<UmrahSearchProduct, UmrahSearchAdapterTypeFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<UmrahSearchAdapterTypeFactory>, UmrahSearchAdapterTypeFactory> {
         val adapter = super.createAdapterInstance()
         adapter.errorNetworkModel = ErrorNetworkModel().apply {
             iconDrawableRes = R.drawable.umrah_img_empty_search_png
@@ -295,8 +295,9 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         }
         umrah_search_bottom_action_view.visible()
         renderList(data, data.size >= searchParam.limit)
-        if((adapter.data.size/searchParam.limit.toFloat()==1.0f))
-        emptyState(isPassingEmpty)
+        if (isPassingEmpty && data.isNotEmpty()) {
+            showEmptyState()
+        }
     }
 
     private fun trackImpression(startIndex: Int, lastIndex: Int, data: MutableList<out Any>) {
@@ -305,7 +306,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
                 if (data[i] is UmrahSearchProduct) {
                     val product = data[i] as UmrahSearchProduct
                     if (!product.isViewed) {
-                        umrahTrackingAnalytics.umrahSearchNCategoryProductListImpression(product, getIndexScrolled(isPassingEmpty,i), umrahSearchViewModel.getSortValue(), selectedFilter, searchOrCategory)
+                        umrahTrackingAnalytics.umrahSearchNCategoryProductListImpression(product, getIndexScrolled(i), umrahSearchViewModel.getSortValue(), selectedFilter, searchOrCategory)
                         product.isViewed = true
                     }
                 }
@@ -366,7 +367,7 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
 
     private fun openSortBottomSheets() {
         umrahSearchSortAdapter.setSelectedOption(umrahSearchViewModel.getSortValue())
-        sortBottomSheets.show(fragmentManager!!, "TEST")
+        sortBottomSheets.show(fragmentManager!!, "")
     }
 
     private fun loadSortData() {
@@ -430,13 +431,11 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         performanceMonitoring.stopTrace()
         super.onDestroyView()
     }
-    private fun showEmptyState() {
-        adapter.addElement(0,EmptyModel())
-    }
 
-    private fun emptyState(isPasssingEmpty:Boolean){
-        if(isPasssingEmpty){
-            showEmptyState()
+    private fun showEmptyState() {
+        if (adapter.data[0] is UmrahSearchProduct) {
+            adapter.data.add(0, EmptyModel() as Visitable<UmrahSearchAdapterTypeFactory>)
+            adapter.notifyItemChanged(0)
         }
     }
 
@@ -444,8 +443,8 @@ class UmrahSearchFragment : BaseListFragment<UmrahSearchProduct, UmrahSearchAdap
         openFilterFragment()
     }
 
-    private fun getIndexScrolled(isPassingEmpty: Boolean,index:Int):Int{
-        return if(isPassingEmpty) index-1
+    private fun getIndexScrolled(index: Int): Int {
+        return if (isPassingEmpty) index - 1
         else index
     }
 }
