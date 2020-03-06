@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import com.tokopedia.attachvoucher.data.EmptyVoucherUiModel
 import com.tokopedia.attachvoucher.data.GetVoucherResponse
 import com.tokopedia.attachvoucher.data.Voucher
 import com.tokopedia.attachvoucher.usecase.GetVoucherUseCase
@@ -20,9 +21,15 @@ class AttachVoucherViewModel @Inject constructor(
     val filter: LiveData<Int> get() = _filter
     val error: LiveData<Throwable> get() = _error
     val filteredVouchers: LiveData<List<Voucher>> = Transformations.map(_filter) {
-        _vouchers.value?.filter { voucher ->
-            (_filter.value == NO_FILTER || _filter.value == voucher.type)
+        val fVouchers = _vouchers.value?.filter { voucher ->
+            _filter.value == NO_FILTER || _filter.value == voucher.type
         } ?: emptyList()
+        _vouchers.value?.let { vouchers ->
+            if (fVouchers.isEmpty() && vouchers.isNotEmpty()) {
+                return@map listOf(EmptyVoucherUiModel())
+            }
+        }
+        return@map fVouchers
     }
 
     fun toggleFilter(filterType: Int) {
