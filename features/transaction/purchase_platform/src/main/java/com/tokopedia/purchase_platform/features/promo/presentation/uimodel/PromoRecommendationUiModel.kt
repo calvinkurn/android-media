@@ -31,28 +31,13 @@ data class PromoRecommendationUiModel(
     }
 
     data class UiData(
-            var title: String = "",
-            var subTitle: String = ""
+            var promoCodes: List<String> = emptyList(),
+            var promoCount: Int = 0,
+            var promoTotalBenefit: Int = 0
     )
 
     data class UiState(
             var isButtonSelectEnabled: Boolean = false
     )
-
-    companion object {
-
-        fun clone(oldData: PromoRecommendationUiModel): PromoRecommendationUiModel {
-            return PromoRecommendationUiModel(
-                    uiData = UiData().apply {
-                        title = oldData.uiData.title
-                        subTitle = oldData.uiData.subTitle
-                    },
-                    uiState = UiState().apply {
-                        isButtonSelectEnabled = oldData.uiState.isButtonSelectEnabled
-                    }
-            )
-        }
-
-    }
 
 }

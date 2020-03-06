@@ -6,8 +6,8 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 fun mockPromoRecommendation(): PromoRecommendationUiModel {
     return PromoRecommendationUiModel(
             uiData = PromoRecommendationUiModel.UiData().apply {
-                title = "Title aaaaaa"
-                subTitle = "Sub title aaaa"
+                promoCount = 10
+                promoTotalBenefit = 150000
             },
             uiState = PromoRecommendationUiModel.UiState().apply {
                 isButtonSelectEnabled = true
@@ -46,7 +46,7 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
             uiData = PromoListHeaderUiModel.UiData().apply {
                 title = "Kupon saya global"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_GLOBAL
+                iconUrl = ""
                 identifierId = 1
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -58,42 +58,39 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
 
     val promoListItemUiModel = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 0
                 parentIdentifierId = 1
                 title = "Promo pertama"
                 subTitle = "Berakhir 1 jam lagi"
                 promoCode = "TOKOPEDIACASHBACK"
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = true
+
             }
     )
     dataList.add(promoListItemUiModel)
 
     val promoListItemUiModel1 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 1
                 parentIdentifierId = 1
                 title = "Promo kedua"
                 subTitle = "Berakhir 2 jam lagi"
                 errorMessage = "Kena Error"
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel1)
 
     val promoListItemUiModel2 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 2
                 parentIdentifierId = 1
                 title = "Promo ketiga"
                 subTitle = "Berakhir 3 jam lagi"
-                imageResourceUrl = "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                imageResourceUrls = listOf("https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg")
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = true
+
             }
     )
     dataList.add(promoListItemUiModel2)
@@ -105,13 +102,12 @@ fun mockEligiblePromoGoldMerchantSection(): List<Visitable<*>> {
     val dataList = ArrayList<Visitable<*>>()
     val promoListItemUiModel3 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 3
                 parentIdentifierId = 2
                 title = "Promo pertama stage 2"
                 subTitle = "Berakhir 2 jam lagi"
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = true
+
             }
     )
     val promoListHeaderUiModel1 = PromoListHeaderUiModel(
@@ -119,7 +115,7 @@ fun mockEligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 identifierId = 2
                 title = "Ini promo power merchant"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_POWER_MERCHANT
+                iconUrl = ""
                 tmpPromoItemList = arrayListOf(promoListItemUiModel3)
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -136,14 +132,13 @@ fun mockEligiblePromoOfficialStoreSection(): List<Visitable<*>> {
     val dataList = ArrayList<Visitable<*>>()
     val promoListItemUiModel4 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 4
                 parentIdentifierId = 3
                 title = "Promo kedua"
                 subTitle = "Berakhir 2 jam lagi"
                 errorMessage = "Kena Error"
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     val promoListHeaderUiModel2 = PromoListHeaderUiModel(
@@ -151,7 +146,7 @@ fun mockEligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 identifierId = 3
                 title = "Ini promo official store"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_MERCHANT_OFFICIAL
+                iconUrl = ""
                 tmpPromoItemList = arrayListOf(promoListItemUiModel4)
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -182,7 +177,7 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
             uiData = PromoListHeaderUiModel.UiData().apply {
                 title = "Kupon saya global"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_GLOBAL
+                iconUrl = ""
                 identifierId = 11
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -194,43 +189,40 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
 
     val promoListItemUiModel = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 100
                 parentIdentifierId = 11
                 title = "Promo pertama"
                 subTitle = "Berakhir 1 jam lagi"
                 errorMessage = "Tambah Rp27.500 untuk pakai promo."
-                imageResourceUrl = "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                imageResourceUrls = listOf("https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg")
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel)
 
     val promoListItemUiModel1 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 101
                 parentIdentifierId = 11
                 title = "Promo kedua"
                 subTitle = "Berakhir 2 jam lagi"
                 errorMessage = "Tambah Rp10.000 untuk pakai promo."
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel1)
 
     val promoListItemUiModel2 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 102
                 parentIdentifierId = 11
                 title = "Promo ketiga"
                 subTitle = "Berakhir 3 jam lagi"
                 errorMessage = "Belanja di kategori fashion wanita, kecantikan atau fashion pria untuk pakai promo ini. "
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel2)
@@ -245,7 +237,7 @@ fun mockIneligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 identifierId = 22
                 title = "Ini promo power merchant"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_POWER_MERCHANT
+                iconUrl = ""
                 tmpPromoItemList = emptyList()
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -257,14 +249,13 @@ fun mockIneligiblePromoGoldMerchantSection(): List<Visitable<*>> {
 
     val promoListItemUiModel3 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 201
                 parentIdentifierId = 22
                 title = "Promo pertama stage 2"
                 subTitle = "Berakhir 2 jam lagi"
                 errorMessage = "Tambah Rp27.500 untuk pakai promo."
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel3)
@@ -279,7 +270,7 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 identifierId = 33
                 title = "Ini promo official store"
                 subTitle = "Hanya bisa pilih 1"
-                promoType = PromoListHeaderUiModel.UiData.PROMO_TYPE_MERCHANT_OFFICIAL
+                iconUrl = ""
                 tmpPromoItemList = emptyList()
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
@@ -291,14 +282,13 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
 
     val promoListItemUiModel4 = PromoListItemUiModel(
             uiData = PromoListItemUiModel.UiData().apply {
-                promoId = 301
                 parentIdentifierId = 33
                 title = "Promo kedua"
                 subTitle = "Berakhir 2 jam lagi"
                 errorMessage = "Tambah Rp27.500 untuk pakai promo."
             },
             uiState = PromoListItemUiModel.UiState().apply {
-                isEnabled = false
+
             }
     )
     dataList.add(promoListItemUiModel4)
@@ -306,7 +296,7 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
     return dataList
 }
 
-fun mockEmptyState(): Visitable<*> {
+fun mockEmptyState(): PromoEmptyStateUiModel {
     return PromoEmptyStateUiModel(
             uiData = PromoEmptyStateUiModel.UiData().apply {
                 title = "Yaah, kamu belum punya kupon belanja"
@@ -319,3 +309,244 @@ fun mockEmptyState(): Visitable<*> {
             }
     )
 }
+
+val MOCK_RESPONSE = """
+    {
+    "coupon_list_recommendation": {
+      "message": [],
+      "error_code": "200",
+      "status": "OK",
+      "data": {
+        "result_status": {
+          "code": "200",
+          "message": [
+            "Success"
+          ],
+          "reason": "OK"
+        },
+        "empty_state": {
+          "title": "Kuponnya tidak ada",
+          "description": "Banyakin belanja ya biar dapet kupon",
+          "image_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+        },
+        "title": "Pilih Promo",
+        "sub_title": "Kamu bisa gabungkan promo!",
+        "promo_recommendation": {
+          "codes": [
+            "PROMO1",
+            "PROMO2",
+            "PROMO3"
+          ],
+          "message": "Kamu bisa hemat 1000 rupiah"
+        },
+        "coupon_sections": [
+          {
+            "title": "Pilih Promo",
+            "sub_title": "Kamu bisa gabungkan promo biar makin hemat!",
+            "icon_url": "",
+            "is_enabled": true,
+            "is_collapsed": true,
+            "tags": [],
+            "coupons": [],
+            "sub_sections": [
+              {
+                "title": "Kupon Saya",
+                "sub_title": "Promo dipilih",
+                "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                "is_enabled": true,
+                "is_collapsed": true,
+                "tags": [],
+                "coupons": [
+                  {
+                    "code": "XXXXX",
+                    "title": "Gratis Ongkir 20rb",
+                    "message": "",
+                    "expiry_info": "berakhir 3 hari lagi",
+                    "expiry_count_down": 100000,
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpgm",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 0,
+                    "tag_image_urls": [
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                    ],
+                    "benefit_amount": 20000,
+                    "is_recommended": false,
+                    "is_selected": false,
+                    "is_attempted": false,
+                    "radio_check_state": "disabled",
+                    "clashing_infos": [
+                      {
+                        "code": "PROMO2",
+                        "message": "Kupon ini ga bisa dipake bersamaan dengan Promo PROMO2"
+                      },
+                      {
+                        "code": "PROMO3",
+                        "message": "Kupon ini ga bisa dipake bersamaan dengan Promo PROMO3"
+                      }
+                    ]
+                  },
+                  {
+                    "code": "PROMO1",
+                    "title": "Cashback 10rb",
+                    "message": "",
+                    "expiry_info": "berakhir 6 hari lagi",
+                    "expiry_count_down": 200000,
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 0,
+                    "tag_image_urls": [
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                    ],
+                    "benefit_amount": 50000,
+                    "is_recommended": false,
+                    "is_selected": false,
+                    "is_attempted": false,
+                    "radio_check_state": "enabled",
+                    "clashing_infos": []
+                  }
+                ]
+              },
+              {
+                "title": "Apple Store",
+                "sub_title": "Toko Apel",
+                "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                "is_enabled": true,
+                "is_collapsed": true,
+                "tags": [
+                  "Promo dipilih"
+                ],
+                "coupons": [
+                  {
+                    "code": "PROMO2",
+                    "title": "Gratis Ongkir 30rb",
+                    "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                    "expiry_info": "berakhir 10 jam lagi",
+                    "expiry_count_down": 10001,
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 102,
+                    "tag_image_urls": [
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                    ],
+                    "benefit_amount": 30000,
+                    "is_recommended": false,
+                    "is_selected": false,
+                    "is_attempted": false,
+                    "radio_check_state": "enabled",
+                    "clashing_infos": [
+                      {
+                        "code": "XXXXX",
+                        "message": "Kupon ini ga bisa dipake bersamaan dengan Promo XXXXX"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "Banana Store",
+                "sub_title": "Toko Pisang",
+                "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                "is_enabled": true,
+                "is_collapsed": true,
+                "tags": [],
+                "coupons": [
+                  {
+                    "code": "PROMO3",
+                    "title": "Gratis Ongkir 60rb",
+                    "message": "Kupon ini berlaku untuk pembelian mainan",
+                    "expiry_info": "berakhir 3 jam lagi",
+                    "expiry_count_down": 2345,
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 103,
+                    "tag_image_urls": [
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                    ],
+                    "benefit_amount": 60000,
+                    "is_recommended": false,
+                    "is_selected": false,
+                    "is_attempted": false,
+                    "radio_check_state": "enabled",
+                    "clashing_infos": [
+                      {
+                        "code": "XXXXX",
+                        "message": "Kupon ini ga bisa dipake bersamaan dengan Promo XXXXX"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "title": "Kupon yang tidak bisa dipakai",
+            "sub_title": "kuponnya ga bisa dipake ya",
+            "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+            "is_enabled": false,
+            "is_collapsed": false,
+            "tags": [],
+            "coupons": [],
+            "sub_sections": [
+              {
+                "title": "Kupon Saya",
+                "sub_title": "Promo dipilih",
+                "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                "is_enabled": false,
+                "is_collapsed": false,
+                "tags": [],
+                "coupons": [
+                  {
+                    "code": "YYYYYY",
+                    "title": "Gratis Ongkir 20rb",
+                    "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                    "expiry_info": "berakhir 3 hari lagi",
+                    "expiry_count_down": 100000,
+                    "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                    "coupon_app_link": "//tokopedia",
+                    "unique_id": "cart-string",
+                    "shop_id": 0,
+                    "tag_image_urls": [
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                    ],
+                    "benefit_amount": 20000,
+                    "is_recommended": false,
+                    "is_selected": false,
+                    "is_attempted": false,
+                    "radio_check_state": "hidden",
+                    "clashing_infos": []
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "additional_message": "Kamu bisa hemat",
+        "reward_points_info": {
+          "message": "Transaksi pakai promo ga bisa dapet tokopoints",
+          "gain_reward_points_tnc": {
+            "title": "Syarat dapat point",
+            "tnc_details": [
+              {
+                "icon_image_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                "description": "peraturan pertama"
+              },
+              {
+                "icon_image_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                "description": "peraturan kedua"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+""".trimIndent()

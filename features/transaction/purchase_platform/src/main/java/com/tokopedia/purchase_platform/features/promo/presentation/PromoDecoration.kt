@@ -45,8 +45,8 @@ class PromoDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
                         )
                     }
                 } catch (exception: ArrayIndexOutOfBoundsException) {
-                    outRect.top = parent.context?.resources?.getDimension(com.tokopedia.purchase_platform.R.dimen.dp_0)?.toInt() ?: 0
-                    outRect.bottom = parent.context?.resources?.getDimension(com.tokopedia.purchase_platform.R.dimen.dp_0)?.toInt() ?: 0
+                    outRect.top = parent.context?.resources?.getDimension(R.dimen.dp_2)?.toInt() ?: 0
+                    outRect.bottom = parent.context?.resources?.getDimension(R.dimen.dp_0)?.toInt() ?: 0
                 }
             }
             is PromoEmptyStateViewHolder -> {

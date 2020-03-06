@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.promo.presentation.viewholder
 import android.animation.Animator
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
@@ -22,7 +23,7 @@ class PromoRecommendationViewHolder(private val view: View,
         if (element.uiState.isButtonSelectEnabled) {
             itemView.button_apply_promo_recommendation.setOnClickListener {
                 itemView.button_apply_promo_recommendation.isLoading = true
-                listener.onClickApplyRecommendedPromo(element)
+                listener.onClickApplyRecommendedPromo()
             }
             itemView.image_check_promo_recommendation.gone()
             itemView.button_apply_promo_recommendation.isEnabled = true
@@ -34,8 +35,9 @@ class PromoRecommendationViewHolder(private val view: View,
             itemView.button_apply_promo_recommendation.isEnabled = false
             itemView.button_apply_promo_recommendation.text = "Dipilih"
         }
-        itemView.label_promo_recommendation_title.text = element.uiData.title
-        itemView.label_promo_recommendation_sub_title.text = element.uiData.subTitle
+        itemView.label_promo_recommendation_title.text = String.format(itemView.context.getString(R.string.promo_checkout_label_promo_recommendation_title, element.uiData.promoCount))
+        val totalBenefitFormatted = CurrencyFormatUtil.convertPriceValueToIdrFormat(element.uiData.promoTotalBenefit, false)
+        itemView.label_promo_recommendation_sub_title.text = String.format(itemView.context.getString(R.string.promo_checkout_label_recommendation_benefit, totalBenefitFormatted))
     }
 
     private fun playAnimation() {
