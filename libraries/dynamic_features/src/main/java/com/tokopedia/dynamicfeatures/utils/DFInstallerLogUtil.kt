@@ -70,7 +70,7 @@ object DFInstallerLogUtil {
     internal fun logStatus(context: Context,
                            message: String = "",
                            modulesName: String,
-                           previousFreeSpace: Long = 0,
+                           freeInternalStorageBeforeDownload: Long = 0,
                            moduleSize: Long = 0,
                            errorList: List<String> = emptyList(),
                            downloadTimes: Int = 1,
@@ -105,8 +105,8 @@ object DFInstallerLogUtil {
             }
 
             messageBuilder.append(";free_bef=")
-            if (previousFreeSpace > 0) {
-                messageBuilder.append(getSizeInMB(previousFreeSpace))
+            if (freeInternalStorageBeforeDownload > 0) {
+                messageBuilder.append(getSizeInMB(freeInternalStorageBeforeDownload))
             } else {
                 messageBuilder.append(-1)
             }

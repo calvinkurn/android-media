@@ -19,7 +19,6 @@ import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
 import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
@@ -61,7 +60,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     private lateinit var applink: String
     private var imageUrl: String? = null
     private var moduleSize = 0L
-    private var usableSpaceBeforeDownload = 0L
+    private var freeInternalStorageBeforeDownload = 0L
 
     private var errorList: MutableList<String> = mutableListOf()
     private var downloadTimes = 0
@@ -153,8 +152,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 .addModule(name)
                 .build()
 
-            if (usableSpaceBeforeDownload == 0L) {
-                usableSpaceBeforeDownload = withContext(Dispatchers.IO) {
+            if (freeInternalStorageBeforeDownload == 0L) {
+                freeInternalStorageBeforeDownload = withContext(Dispatchers.IO) {
                     DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
                 }
             }
@@ -169,8 +168,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
             }.addOnFailureListener { exception ->
                 val errorCode = (exception as? SplitInstallException)?.errorCode
                 sessionId = null
-                val message = getString(R.string.error_for_module_x, moduleName)
-                showFailedMessage(message, errorCode?.toString() ?: exception.toString())
+                showFailedMessage(errorCode?.toString() ?: exception.toString())
             }
         }
     }
@@ -232,8 +230,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 )
             }
             SplitInstallSessionStatus.FAILED -> {
-                val message = getString(R.string.error_for_module, state.moduleNames(), state.errorCode())
-                showFailedMessage(message, state.errorCode().toString())
+                showFailedMessage(state.errorCode().toString())
             }
         }
     }
@@ -247,58 +244,54 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         }
     }
 
-    private fun showFailedMessage(message: String, errorCode: String = "") {
-        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(this, errorCode, usableSpaceBeforeDownload)
+    private fun showFailedMessage(errorCode: String = "") {
+        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(this, errorCode, freeInternalStorageBeforeDownload)
         errorList.add(errorCodeTemp)
-        if (ErrorConstant.ERROR_PLAY_SERVICE_NOT_CONNECTED == errorCodeTemp) {
-            updateInformationView(R.drawable.ic_ill_general_error,
-                    getString(R.string.download_error_playservice_title),
-                    getString(R.string.download_error_playservice_subtitle),
-                    getString(R.string.start_download)) {
-                if (Utils.isPlayServiceConnected(this)) {
-                    downloadFeature()
-                } else {
-                    Utils.showPlayServiceErrorDialog(this)
+        when (errorCodeTemp) {
+            ErrorConstant.ERROR_PLAY_SERVICE_NOT_CONNECTED -> {
+                updateInformationView(R.drawable.ic_ill_general_error,
+                        getString(R.string.download_error_playservice_title),
+                        getString(R.string.download_error_playservice_subtitle),
+                        getString(R.string.start_download)) {
+                    if (Utils.isPlayServiceConnected(this)) {
+                        downloadFeature()
+                    } else {
+                        Utils.showPlayServiceErrorDialog(this)
+                    }
                 }
+                Utils.showPlayServiceErrorDialog(this)
             }
-        } else if (ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE == errorCodeTemp) {
-            updateInformationView(R.drawable.ic_ill_general_error,
+            ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE -> updateInformationView(R.drawable.ic_ill_general_error,
                     getString(R.string.download_error_play_store_title),
                     getString(R.string.download_error_play_store_subtitle),
                     getString(R.string.goto_playstore)) {
                 gotoPlayStore()
             }
-        } else if (ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE == errorCodeTemp &&
-                DFRemoteConfig().getConfig(this).showErrorInvalidInsufficientStorage) {
-            updateInformationView(R.drawable.ic_ill_general_error,
+            ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(R.drawable.ic_ill_general_error,
                     getString(R.string.download_error_os_and_play_store_title),
                     getString(R.string.download_error_os_and_play_store_subtitle),
-                    getString(R.string.goto_playstore)) {
-                gotoPlayStore()
+                    getString(R.string.goto_seting)) {
+                startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
             }
-        } else if (SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() == errorCodeTemp) {
-            updateInformationView(R.drawable.ic_ill_insuficient_memory,
+            SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() -> updateInformationView(R.drawable.ic_ill_insuficient_memory,
                     getString(R.string.download_error_insuficient_storage_title),
                     getString(R.string.download_error_insuficient_storage_subtitle),
                     getString(R.string.goto_seting)) {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
             }
-        } else if (SplitInstallErrorCode.NETWORK_ERROR.toString() == errorCodeTemp) {
-            updateInformationView(R.drawable.ic_ill_no_connection,
+            SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(R.drawable.ic_ill_no_connection,
                     getString(R.string.download_error_connection_title),
                     getString(R.string.download_error_connection_subtitle),
                     getString(R.string.df_installer_try_again)) {
                 downloadFeature()
             }
-        } else if (SplitInstallErrorCode.MODULE_UNAVAILABLE.toString() == errorCodeTemp) {
-            updateInformationView(R.drawable.ic_ill_module_unavailable,
+            SplitInstallErrorCode.MODULE_UNAVAILABLE.toString() -> updateInformationView(R.drawable.ic_ill_module_unavailable,
                     getString(R.string.download_error_module_unavailable_title),
                     getString(R.string.download_error_module_unavailable_subtitle),
                     getString(R.string.goto_playstore)) {
                 gotoPlayStore()
             }
-        } else {
-            updateInformationView(R.drawable.ic_ill_general_error,
+            else -> updateInformationView(R.drawable.ic_ill_general_error,
                     getString(R.string.download_error_general_title),
                     getString(R.string.download_error_general_subtitle),
                     getString(R.string.df_installer_try_again)) {
@@ -380,7 +373,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
             errorList,
             false)
         DFInstallerLogUtil.logStatus(applicationContext, TAG_LOG,
-            moduleName, usableSpaceBeforeDownload, moduleSize,
+            moduleName, freeInternalStorageBeforeDownload, moduleSize,
             errorList, downloadTimes, successInstall)
         job.cancel()
     }

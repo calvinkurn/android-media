@@ -45,7 +45,7 @@ class DFInstaller {
 
     private var listener: SplitInstallListener? = null
     internal var moduleSize = 0L
-    internal var usableSpaceBeforeDownload: Long = 0L
+    internal var freeInternalSpaceBeforeDownload: Long = 0L
 
     suspend fun startInstallInBackground(context: Context,
                                          moduleNames: List<String>,
@@ -63,7 +63,7 @@ class DFInstaller {
                 requestBuilder.addModule(name)
             }
             val request = requestBuilder.build()
-            usableSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
+            freeInternalSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
 
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) { suspendCoroutine<Boolean> { continuation ->
@@ -147,21 +147,21 @@ class DFInstaller {
     internal fun logSuccessStatus(tag: String, context: Context, moduleNameToDownload: List<String>) {
         DFTracking.trackDownloadDF(moduleNameToDownload, null, tag == TAG_LOG_DFM_BG)
         DFInstallerLogUtil.logStatus(context, tag, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, emptyList(), 1, true)
+                freeInternalSpaceBeforeDownload, moduleSize, emptyList(), 1, true)
     }
 
     internal fun logFailedStatus(tag: String, context: Context, moduleNameToDownload: List<String>,
                                  errorCode: List<String> = emptyList()) {
-        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, usableSpaceBeforeDownload)
+        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
         DFTracking.trackDownloadDF(moduleNameToDownload, errorCodeTemp, tag == TAG_LOG_DFM_BG)
         DFInstallerLogUtil.logStatus(context, tag, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false)
+                freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false)
     }
 
     private fun logDeferredStatus(context: Context, message: String, moduleNameToDownload: List<String>, errorCode: List<String> = emptyList()){
-        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, usableSpaceBeforeDownload)
+        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
         DFInstallerLogUtil.logStatus(context, message, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false, TAG_DFM_DEFERRED)
+                freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false, TAG_DFM_DEFERRED)
     }
 
     internal fun unregisterListener() {

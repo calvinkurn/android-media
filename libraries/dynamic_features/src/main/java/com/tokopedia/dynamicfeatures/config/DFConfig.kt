@@ -35,12 +35,10 @@ data class DFConfig(
         @Expose
         val downloadInBackgroundMaxRetry: Int = 3,
         /**
-         * Show info to user need update play store or os
-         * if got error -10 insufficient storage issue but actually it's sufficient
+         * Maximum valid insufficient storage
+         * Default 1.5 * 1024KB
          */
-        @SerializedName("show_err_invalid_insuff_storage")
+        @SerializedName("max_thld_insuf_strg")
         @Expose
-        val showErrorInvalidInsufficientStorage: Boolean = false
-
+        val maxThresholdInsufficientStorage: Long = 1536
 )
-
