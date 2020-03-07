@@ -352,6 +352,7 @@
 -dontwarn com.tokopedia.home.beranda.data.datasource.**inlined**
 -dontwarn com.tokopedia.home.beranda.data.usecase.**inlined**
 -dontwarn com.tokopedia.home.beranda.data.repository.**inlined**
+-dontwarn com.tokopedia.home.beranda.presentation.viewModel.**inlined**
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
