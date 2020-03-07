@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -48,7 +49,6 @@ import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
-import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
 import java.net.UnknownHostException
@@ -381,8 +381,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun loadData(page: Int) {
-        showLoading()
-        viewModel.loadData()
+        activity?.let {
+            showLoading()
+            viewModel.loadData(GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation))
+        }
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {

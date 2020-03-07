@@ -2,8 +2,12 @@ package com.tokopedia.purchase_platform.features.promo.presentation.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.purchase_platform.features.promo.data.response.GqlCouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
@@ -14,12 +18,13 @@ import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispatcher,
-                                                 val getCouponListRecommendationUseCase: GetCouponListRecommendationUseCase,
+class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
+                                                 private val graphqlRepository: GraphqlRepository,
                                                  val uiModelMapper: PromoCheckoutUiModelMapper)
     : BaseViewModel(dispatcher) {
 
@@ -60,17 +65,20 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
     val tmpListUiModel: LiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>
         get() = _tmpListUiModel
 
-    fun loadData() {
-        launch { getCouponRecommendation() }
+    fun loadData(mutation: String) {
+        launch { getCouponRecommendation(mutation) }
     }
 
-    suspend fun getCouponRecommendation() {
+    suspend fun getCouponRecommendation(mutation: String) {
         launchCatchError(block = {
             // Get response
-            val response = withContext(dispatcher) {
-                getCouponListRecommendationUseCase.params = HashMap()
-                getCouponListRecommendationUseCase.executeOnBackground()
+            val response = withContext(Dispatchers.IO) {
+                val filterRequest = GraphqlRequest(mutation, GqlCouponListRecommendationResponse::class.java)
+                graphqlRepository.getReseponse(listOf(filterRequest))
+                        .getSuccessData<GqlCouponListRecommendationResponse>()
             }
+
+//            val response = Gson().fromJson(MOCK_RESPONSE_PHONE_NOT_VERIF, GqlCouponListRecommendationResponse::class.java)
 
             if (response.couponListRecommendation.status == "OK") {
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
@@ -282,29 +290,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 it.uiData.errorMessage = errorMessageBuilder.toString()
             }
         }
-    }
-
-    private fun mockData() {
-        _promoRecommendationUiModel.value = mockPromoRecommendation()
-        _promoInputUiModel.value = mockPromoInput()
-
-        val promoListUiModel = ArrayList<Visitable<*>>().apply {
-            add(mockEligibleHeader())
-            addAll(mockEligiblePromoGlobalSection())
-            addAll(mockEligiblePromoGoldMerchantSection())
-            addAll(mockEligiblePromoOfficialStoreSection())
-
-            add(mockIneligibleHeader())
-            addAll(mockIneligiblePromoGlobalSection())
-            addAll(mockIneligiblePromoGoldMerchantSection())
-            addAll(mockIneligiblePromoOfficialStoreSection())
-        }
-
-        if (!promoListUiModel.isNullOrEmpty()) {
-            _promoListUiModel.value = promoListUiModel
-        }
-
-        //        _promoEmptyStateUiModel.value = mockEmptyState()
     }
 
     fun isPromoScopeHasAnySelectedItem(parentIdentifierId: Int): Boolean {
