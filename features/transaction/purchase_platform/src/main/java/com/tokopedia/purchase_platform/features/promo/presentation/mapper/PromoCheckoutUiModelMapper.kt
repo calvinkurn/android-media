@@ -67,10 +67,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 uiData = PromoEligibilityHeaderUiModel.UiData().apply {
                     title = couponSectionItem.title
                     subTitle = couponSectionItem.subTitle
-                    tmpPromo = emptyList() // Todo : baca dari backend
+                    tmpPromo = emptyList()
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
+                    isCollapsed = couponSectionItem.isCollapsed
                 }
         )
     }
@@ -94,7 +95,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         }
                     }
                     hasSelectedPromoItem = tmpHasSellectedPromoItem
-                    isCollapsed = false // Todo : baca dari backend
+                    isCollapsed = couponSubSection.isCollapsed
                 }
         )
     }
