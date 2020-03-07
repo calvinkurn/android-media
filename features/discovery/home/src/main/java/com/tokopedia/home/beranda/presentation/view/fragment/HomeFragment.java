@@ -73,14 +73,12 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.CashBackData;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BannerViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel;
-import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PopularKeywordListViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeAdapterFactory;
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeRecyclerDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
@@ -89,6 +87,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
+import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
@@ -537,7 +536,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         refreshLayout.post(() -> {
             viewModel.searchHint();
             viewModel.refreshHomeData();
-            /**
+            /*
              * set notification gimmick
              */
             homeMainToolbar.setNotificationNumber(0);
@@ -1043,7 +1042,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void getStickyContent(){
         boolean isShowSticky = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
-        if(isShowSticky) viewModel.getStickyContent();
+        if(isShowSticky && !userSession.isLoggedIn()) viewModel.getStickyContent();
     }
 
     private void hideLoading() {
@@ -1278,6 +1277,16 @@ public class HomeFragment extends BaseDaggerFragment implements
             intent.putExtra(EXTRA_URL, url);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void getTabBusinessWidget(int position) {
+        viewModel.getBusinessUnitTabData(position);
+    }
+
+    @Override
+    public void getBusinessUnit(int tabId, int position) {
+        viewModel.getBusinessUnitData(tabId, position);
     }
 
     public void openWebViewURL(String url) {
@@ -1614,6 +1623,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (trackingQueue!=null) {
             trackingQueue.putEETracking(data);
         }
+    }
+
+    @Override
+    public void sendEETracking(@NotNull HashMap<String, Object> data) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(data);
     }
 
     @Override

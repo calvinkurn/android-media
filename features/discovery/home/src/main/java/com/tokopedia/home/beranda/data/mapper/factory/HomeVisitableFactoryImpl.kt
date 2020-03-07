@@ -3,7 +3,6 @@ package com.tokopedia.home.beranda.data.mapper.factory
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.*
@@ -24,8 +23,7 @@ import com.tokopedia.topads.sdk.domain.model.ProductImage
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.home.ProductDynamicChannelViewModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) : HomeVisitableFactory {
     private var context: Context? = null
@@ -250,10 +248,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
 
     private fun createBusinessUnitWidget(position: Int) {
         if (!isCache) {
-            visitableList.add(BusinessUnitViewModel(
-                    context?.getString(R.string.digital_widget_title),
-                    position,
-                    false))}
+            visitableList.add(NewBusinessUnitWidgetDataModel(
+                    position = position,
+                    isCache = false))
+        }
     }
 
     private fun setDynamicChannelPromoName(position: Int, channel: DynamicHomeChannel.Channels) {
