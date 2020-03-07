@@ -32,8 +32,10 @@ class GetShopTotalFollowersUseCase @Inject constructor(private val gqlRepository
         }
     }
 
+    var params = HashMap<String, Any>()
+
     override suspend fun executeOnBackground(): Int {
-        val gqlRequest = GraphqlRequest(QUERY, ShopTotalFollowers::class.java)
+        val gqlRequest = GraphqlRequest(QUERY, ShopTotalFollowers::class.java, params)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
         val gqlErrors = gqlResponse.getError(ShopTotalFollowers::class.java)
@@ -42,7 +44,7 @@ class GetShopTotalFollowersUseCase @Inject constructor(private val gqlRepository
             val responseErrorMessage = shopTotalFollowersResponse.shopInfoById.error.message
             responseErrorMessage.run {
                 if (isNotEmpty()) throw MessageErrorException(this)
-                else return shopTotalFollowersResponse.shopInfoById.result.favoriteData.totalFavorite
+                else return shopTotalFollowersResponse.shopInfoById.result.firstOrNull()?.favoriteData?.totalFavorite?: 0
             }
         } else throw MessageErrorException(gqlErrors.firstOrNull()?.message)
     }

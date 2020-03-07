@@ -9,7 +9,6 @@
         android:id="@+id/shopStatusHeader"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@drawable/setting_regular_header"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.core.widget.NestedScrollView
@@ -32,6 +31,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
+
+            <include
+                android:id="@+id/saldoBalance"
+                layout="@layout/setting_balance"/>
+
+            <include
+                android:id="@+id/topAdsBalance"
+                layout="@layout/setting_balance"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"

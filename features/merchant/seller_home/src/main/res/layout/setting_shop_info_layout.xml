@@ -54,7 +54,7 @@
         app:typographyType="heading_2"
         app:typographyWeight="bold"/>
 
-    <ImageView
+    <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/shopBadges"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -122,6 +122,7 @@
         android:visibility="gone"/>
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
+        android:id="@+id/shimmerFollowing"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:gravity="center_vertical"

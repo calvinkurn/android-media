@@ -10,7 +10,7 @@ data class ShopTotalFollowers(
 
 data class ShopInfoById(
         @SerializedName("result")
-        val result: Result = Result(),
+        val result: List<Result> = listOf(),
         @SerializedName("error")
         val error: Error = Error()
 )

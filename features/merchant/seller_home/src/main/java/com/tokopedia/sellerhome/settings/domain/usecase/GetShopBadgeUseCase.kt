@@ -3,7 +3,6 @@ package com.tokopedia.sellerhome.settings.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.sellerhome.settings.domain.entity.ReputationShop
 import com.tokopedia.sellerhome.settings.domain.entity.ReputationShopsResult
 import com.tokopedia.sellerhome.settings.domain.mapReputationToBadgeUrl
 import com.tokopedia.usecase.coroutines.UseCase
@@ -34,7 +33,7 @@ class GetShopBadgeUseCase @Inject constructor(private val gqlRepository: Graphql
         val gqlRequest = GraphqlRequest(QUERY, ReputationShopsResult::class.java, params)
         val gqlResponse = gqlRepository.getReseponse(listOf(gqlRequest))
 
-        val errors = gqlResponse.getError(ReputationShop::class.java)
+        val errors = gqlResponse.getError(ReputationShopsResult::class.java)
         if (errors.isNullOrEmpty()) {
             val result: ReputationShopsResult = gqlResponse.getData(ReputationShopsResult::class.java)
             return result.mapReputationToBadgeUrl()

@@ -15,10 +15,11 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.di.DaggerOtherSettingComponent
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherSettingAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
-import com.tokopedia.sellerhome.settings.view.viewholder.ShopInfoViewHolder
+import com.tokopedia.sellerhome.settings.view.viewholder.OtherFragmentViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherSettingViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_other_setting.*
 import javax.inject.Inject
 
@@ -32,7 +33,7 @@ class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapter
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var shopInfoViewHolder: ShopInfoViewHolder? = null
+    private var otherFragmentViewHolder: OtherFragmentViewHolder? = null
 
     private val otherSettingViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherSettingViewModel::class.java)
@@ -41,6 +42,11 @@ class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         otherSettingViewModel.populateAdapterList()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAllShopInfoData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,21 +81,90 @@ class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapter
     }
 
     private fun observeLiveData() {
-        otherSettingViewModel.settingListLiveData.observe(viewLifecycleOwner, Observer { settingList ->
-            populateAdapterData(settingList)
-        })
+        with(otherSettingViewModel) {
+            settingListLiveData.observe(viewLifecycleOwner, Observer { settingList ->
+                populateAdapterData(settingList)
+            })
+            generalShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
+                when(result) {
+                    is Success -> showGeneralShopInfoSuccess(result.data)
+                    is Fail -> showGeneralShopInfoError()
+                }
+            })
+            shopBadgeLiveData.observe(viewLifecycleOwner, Observer { result ->
+                when(result) {
+                    is Success -> showShopBadgeSuccess(result.data)
+                    is Fail -> showShopBadgeError()
+                }
+            })
+            totalFollowersLiveData.observe(viewLifecycleOwner, Observer { result ->
+                when(result) {
+                    is Success -> showTotalFollowingSuccess(result.data)
+                    is Fail -> showTotalFollowingError()
+                }
+            })
+        }
     }
 
     private fun populateAdapterData(settingList: List<SettingUiModel>) {
         adapter.data.addAll(settingList)
         adapter.notifyDataSetChanged()
         renderList(settingList)
-        shopInfoViewHolder?.onSuccessGetShopGeneralInfoData(GeneralShopInfoUiModel("Adeedast Naiki", "https://www.bukalapak.com/images/logo-google-graph.png", PowerMerchantStatus.Active))
+    }
+
+    private fun getAllShopInfoData() {
+        showAllLoadingShimmering()
+        otherSettingViewModel.getAllSettingShopInfo()
+    }
+
+    private fun showAllLoadingShimmering() {
+        showGeneralShopInfoLoading()
+        showShopBadgeLoading()
+        showTotalFollowingLoading()
+    }
+
+    private fun showGeneralShopInfoSuccess(generalShopInfoUiModel: GeneralShopInfoUiModel) {
+        generalShopInfoUiModel.run {
+            otherFragmentViewHolder?.onSuccessGetShopGeneralInfoData(this)
+        }
+    }
+
+    private fun showShopBadgeSuccess(shopBadgeUrl: String) {
+        otherFragmentViewHolder?.onSuccessGetShopBadge(shopBadgeUrl)
+    }
+
+    private fun showTotalFollowingSuccess(totalFollowers: Int) {
+        otherFragmentViewHolder?.onSuccessGetTotalFollowing(totalFollowers)
+    }
+
+    private fun showGeneralShopInfoLoading() {
+        otherFragmentViewHolder?.onLoadingGetShopGeneralInfoData()
+    }
+
+    private fun showShopBadgeLoading() {
+        otherFragmentViewHolder?.onLoadingGetShopBadge()
+    }
+
+    private fun showTotalFollowingLoading() {
+        otherFragmentViewHolder?.onLoadingGetTotalFollowing()
+    }
+
+    private fun showGeneralShopInfoError() {
+
+    }
+
+    private fun showShopBadgeError() {
+
+    }
+
+    private fun showTotalFollowingError() {
+
     }
 
     private fun setupView(view: View) {
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { shopInfoViewHolder = ShopInfoViewHolder(view, it)}
+        context?.let { otherFragmentViewHolder = OtherFragmentViewHolder(view, it)}
+        otherFragmentViewHolder?.initBindView()
     }
 
 }

@@ -1,9 +1,11 @@
 package com.tokopedia.sellerhome.settings.view.viewholder
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
@@ -11,12 +13,13 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import kotlinx.android.synthetic.main.fragment_other_setting.view.*
+import kotlinx.android.synthetic.main.setting_balance.view.*
 import kotlinx.android.synthetic.main.setting_shop_info_layout.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
-class ShopInfoViewHolder(private val itemView: View,
-                         private val context: Context) {
+class OtherFragmentViewHolder(private val itemView: View,
+                              private val context: Context) {
 
     companion object {
         private val REGULAR_MERCHANT_LAYOUT = R.layout.setting_shop_status_regular
@@ -35,6 +38,13 @@ class ShopInfoViewHolder(private val itemView: View,
         private const val AKTIF = "Aktif"
         private const val TIDAK_AKTIF = "Tidak Aktif"
         private const val SEDANG_DIVERIFIKASI = "Sedang Diverifikasi"
+        private const val SALDO = "Saldo"
+        private const val KREDIT_TOPADS = "Kredit TopAds"
+    }
+
+    fun initBindView() {
+        itemView.saldoBalance.balanceTitle.text = SALDO
+        itemView.topAdsBalance.balanceTitle.text = KREDIT_TOPADS
     }
 
     fun onSuccessGetShopGeneralInfoData(uiModel: GeneralShopInfoUiModel) {
@@ -42,16 +52,37 @@ class ShopInfoViewHolder(private val itemView: View,
             setShopName(shopName)
             setShopAvatar(shopAvatarUrl)
             setShopStatusType(shopType)
+            setSaldoBalance(saldoBalance)
+            setKreditTopadsBalance(kreditTopAdsBalance)
         }
-        removeGeneralInfoDataShimmer()
+        itemView.removeGeneralInfoDataShimmer()
+    }
+
+    fun onSuccessGetShopBadge(shopBadgeUrl: String) {
+        itemView.shopInfoLayout.shopBadges.urlSrc = shopBadgeUrl
+    }
+
+    @SuppressLint("SetTextI18n")
+    fun onSuccessGetTotalFollowing(totalFollowing: Int) {
+        itemView.shopInfoLayout.shopFollowing.text = "$totalFollowing $FOLLOWERS"
     }
 
     fun onLoadingGetShopGeneralInfoData() {
         itemView.run {
             shopInfoLayout.shopName.text = null
             shopInfoLayout.shopImage.urlSrc = ""
+            saldoBalance.balanceValue.text = null
+            topAdsBalance.balanceValue.text = null
             showGeneralInfoDataShimmer()
         }
+    }
+
+    fun onLoadingGetShopBadge() {
+        itemView.shopInfoLayout.shopBadges.urlSrc = ""
+    }
+
+    fun onLoadingGetTotalFollowing() {
+        itemView.shopInfoLayout.shopFollowing.text = ""
     }
 
     private fun setShopName(shopName: String) {
@@ -62,22 +93,34 @@ class ShopInfoViewHolder(private val itemView: View,
         itemView.shopInfoLayout.shopImage.urlSrc = shopAvatarUrl
     }
 
+    private fun setSaldoBalance(balance: String) {
+        itemView.saldoBalance.balanceValue.text = balance
+    }
+
+    private fun setKreditTopadsBalance(balance: String) {
+        itemView.topAdsBalance.balanceValue.text = balance
+    }
+
     private fun setShopStatusType(shopType: ShopType) {
+        showShopStatusHeader(shopType)
+        val layoutInflater = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
         val shopStatusLayout: View = when(shopType) {
             is RegularMerchant -> {
-                val layoutInflater = LayoutInflater.from(context).inflate(REGULAR_MERCHANT_LAYOUT, null, false)
                 layoutInflater.setRegularMerchantShopStatus(shopType)
             }
             is PowerMerchantStatus -> {
-                val layoutInflater = LayoutInflater.from(context).inflate(POWER_MERCHANT_LAYOUT, null, false)
                 layoutInflater.setPowerMerchantShopStatus(shopType)
             }
-            is ShopType.OfficialStore -> LayoutInflater.from(context).inflate(OFFICIAL_STORE_LAYOUT, null, false)
+            is ShopType.OfficialStore -> layoutInflater
         }
         (itemView.shopStatus as LinearLayout).run {
             removeAllViews()
             addView(shopStatusLayout)
         }
+    }
+
+    private fun showShopStatusHeader(shopType: ShopType) {
+        itemView.shopStatusHeader.background = ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes)
     }
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
@@ -116,14 +159,14 @@ class ShopInfoViewHolder(private val itemView: View,
             removeAllViews()
             addView(statusShimmerLayout)
         }
+        saldoBalance.shimmeringBalanceValue.visibility = View.VISIBLE
+        topAdsBalance.shimmeringBalanceValue.visibility = View.VISIBLE
     }
 
-    private fun removeGeneralInfoDataShimmer() {
-        itemView.shopInfoLayout.shimmerShopName.visibility = View.GONE
-    }
-
-    interface Listener {
-
+    private fun View.removeGeneralInfoDataShimmer() {
+        shopInfoLayout.shimmerShopName.visibility = View.GONE
+        saldoBalance.shimmeringBalanceValue.visibility = View.GONE
+        topAdsBalance.shimmeringBalanceValue.visibility = View.GONE
     }
 
 }

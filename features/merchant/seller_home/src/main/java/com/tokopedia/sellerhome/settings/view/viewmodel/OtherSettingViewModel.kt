@@ -5,24 +5,35 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.view.uimodel.BalanceUiModel
+import com.tokopedia.sellerhome.settings.domain.mapToGeneralShopInfo
+import com.tokopedia.sellerhome.settings.domain.usecase.GetSettingShopInfoUseCase
+import com.tokopedia.sellerhome.settings.domain.usecase.GetShopBadgeUseCase
+import com.tokopedia.sellerhome.settings.domain.usecase.GetShopTotalFollowersUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
 
 class OtherSettingViewModel @Inject constructor(
-        @Named("Main") dispatcher: CoroutineDispatcher
+        @Named("Main") dispatcher: CoroutineDispatcher,
+        private val userSession: UserSessionInterface,
+        private val getSettingShopInfoUseCase: GetSettingShopInfoUseCase,
+        private val getShopBadgeUseCase: GetShopBadgeUseCase,
+        private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
 ): BaseViewModel(dispatcher) {
 
     companion object {
-        private const val SALDO = "Saldo"
-        private const val KREDIT_TOPADS = "Kredit TopAds"
         private const val TINGKATKAN_PENJUALAN = "TINGKATKAN PENJUALAN"
         private const val STATISTIK_TOKO = "Statistik Toko"
         private const val IKLAN_DAN_PROMOSI_TOKO = "Iklan & Promosi Toko"
@@ -37,21 +48,22 @@ class OtherSettingViewModel @Inject constructor(
     }
 
     private val _settingListLiveData = MutableLiveData<List<SettingUiModel>>()
-    private val _saldoBalanceLiveData = MutableLiveData<BalanceUiModel>()
-    private val _kreditTopAdsBalanceLiveData = MutableLiveData<BalanceUiModel>()
+    private val _generalShopInfoLiveData = MutableLiveData<Result<GeneralShopInfoUiModel>>()
+    private val _totalFollowersLiveData = MutableLiveData<Result<Int>>()
+    private val _shopBadgeLiveData = MutableLiveData<Result<String>>()
 
     val settingListLiveData: LiveData<List<SettingUiModel>>
         get() = _settingListLiveData
-    val saldoBalanceLiveData: LiveData<BalanceUiModel>
-        get() = _saldoBalanceLiveData
-    val kreditTopAdsBalanceLiveData: LiveData<BalanceUiModel>
-        get() = _kreditTopAdsBalanceLiveData
+    val generalShopInfoLiveData: LiveData<Result<GeneralShopInfoUiModel>>
+        get() = _generalShopInfoLiveData
+    val totalFollowersLiveData: LiveData<Result<Int>>
+        get() = _totalFollowersLiveData
+    val shopBadgeLiveData: LiveData<Result<String>>
+        get() = _shopBadgeLiveData
 
     fun populateAdapterList() {
-        val settingList = listOf(
+        val settingList = mutableListOf(
                 DividerUiModel(DividerType.THIN_FULL),
-                BalanceUiModel(SALDO),
-                BalanceUiModel(KREDIT_TOPADS),
                 DividerUiModel(),
                 SettingTitleUiModel(TINGKATKAN_PENJUALAN),
                 MenuItemUiModel(
@@ -85,6 +97,45 @@ class OtherSettingViewModel @Inject constructor(
                 MenuItemUiModel(PENGATURAN, R.drawable.ic_setting)
         )
         _settingListLiveData.value = settingList
+    }
+
+    fun getAllSettingShopInfo() {
+        userSession.run {
+            getSettingShopInfo(userId)
+            getShopTotalFollowers(shopId.toInt())
+            getShopBadge(shopId.toInt())
+        }
+    }
+
+    private fun getSettingShopInfo(userId: String) {
+        launchCatchError(block = {
+            getSettingShopInfoUseCase.params = GetSettingShopInfoUseCase.createRequestParams(userId.toInt())
+            val shopInfo = getSettingShopInfoUseCase.executeOnBackground()
+            val generalShopInfoUiModel = shopInfo.mapToGeneralShopInfo()
+            _generalShopInfoLiveData.value = Success(generalShopInfoUiModel)
+        }, onError = {
+            _generalShopInfoLiveData.value = Fail(it)
+        })
+    }
+
+    private fun getShopTotalFollowers(shopId: Int) {
+        launchCatchError(block = {
+            getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
+            val totalFollowers = getShopTotalFollowersUseCase.executeOnBackground()
+            _totalFollowersLiveData.value = Success(totalFollowers)
+        }, onError = {
+            _totalFollowersLiveData.value = Fail(it)
+        })
+    }
+
+    private fun getShopBadge(shopId: Int) {
+        launchCatchError(block = {
+            getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
+            val shopBadgeUrl = getShopBadgeUseCase.executeOnBackground()
+            _shopBadgeLiveData.value = Success(shopBadgeUrl)
+        }, onError = {
+            _shopBadgeLiveData.value = Fail(it)
+        })
     }
 
 }

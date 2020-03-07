@@ -31,8 +31,17 @@ data class Owner (
         @SerializedName("is_gold_merchant")
         var isGoldMerchant: Boolean? = false,
         @SerializedName("is_seller")
-        var isSeller: Boolean? = false
-)
+        var isSeller: Boolean? = false) {
+
+        companion object {
+                const val STATUS_ACTIVE = "active"
+                const val STATUS_INACTIVE = "inactive"
+                const val STATUS_IDLE = "idle"
+                const val STATUS_OFF = "off"
+                const val STATUS_ON = "on"
+                const val STATUS_PENDING = "pending"
+        }
+}
 
 data class Balance (
         @SerializedName("seller_usable")
