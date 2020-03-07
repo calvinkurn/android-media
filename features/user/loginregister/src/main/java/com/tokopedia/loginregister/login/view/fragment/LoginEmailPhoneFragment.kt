@@ -17,6 +17,7 @@ import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import androidx.fragment.app.Fragment
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.crashlytics.android.Crashlytics
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -358,6 +359,11 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
 
         if (ScanFingerprintDialog.isFingerprintAvailable(activity) && presenter.isLastUserRegistered()) {
+            activity?.run {
+                val icon = VectorDrawableCompat.create(this.resources, R.drawable.ic_fingerprint_thumb, this.theme)
+                fingerprint_btn.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+            }
+
             fingerprint_btn.visibility = View.VISIBLE
             fingerprint_btn.setOnClickListener {
                 activity?.run {

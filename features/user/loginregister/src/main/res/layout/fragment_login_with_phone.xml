@@ -75,8 +75,6 @@
             </RelativeLayout>
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:drawableLeft="@drawable/ic_fingerprint_thumb"
-                android:drawableStart="@drawable/ic_fingerprint_thumb"
                 android:id="@+id/fingerprint_btn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
