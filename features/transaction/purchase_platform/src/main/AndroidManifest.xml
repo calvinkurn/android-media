@@ -92,7 +92,7 @@
             android:theme="@style/Theme.White" />
 
         <activity
-            android:name="com.tokopedia.purchase_platform.features.promo.presentation.activity.PromoCheckoutMarketplaceActivity"
+            android:name="com.tokopedia.purchase_platform.features.promo.presentation.activity.PromoCheckoutActivity"
             android:label="@string/checkout_module_promo_activity_title"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">

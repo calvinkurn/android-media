@@ -20,7 +20,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.design.utils.CurrencyFormatUtil
@@ -39,10 +38,10 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
-import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutMarketplaceAdapterTypeFactory
+import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
-import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.FragmentUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibilityHeaderUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
@@ -53,8 +52,8 @@ import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(),
-        PromoCheckoutMarketplaceActionListener, ToolbarPromoCheckoutListener {
+class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapterTypeFactory>(),
+        PromoCheckoutActionListener, ToolbarPromoCheckoutListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -341,22 +340,22 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
     private fun toolbarPromoCheckout(): ToolbarPromoCheckout? {
         activity?.let {
             return ToolbarPromoCheckout(it).apply {
-                listener = this@PromoCheckoutMarketplaceFragment
+                listener = this@PromoCheckoutFragment
             }
         }
 
         return null
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory> {
+    override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, PromoCheckoutAdapterTypeFactory> {
         adapter = PromoCheckoutAdapter(adapterTypeFactory)
         itemDecorator.adapter = adapter
 
         return adapter
     }
 
-    override fun getAdapterTypeFactory(): PromoCheckoutMarketplaceAdapterTypeFactory {
-        return PromoCheckoutMarketplaceAdapterTypeFactory(this)
+    override fun getAdapterTypeFactory(): PromoCheckoutAdapterTypeFactory {
+        return PromoCheckoutAdapterTypeFactory(this)
     }
 
     override fun onItemClicked(t: Visitable<*>?) {

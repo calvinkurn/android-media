@@ -4,8 +4,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 
-class PromoCheckoutAdapter(adapterTypeFactory: PromoCheckoutMarketplaceAdapterTypeFactory) :
-        BaseListAdapter<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(adapterTypeFactory) {
+class PromoCheckoutAdapter(adapterTypeFactory: PromoCheckoutAdapterTypeFactory) :
+        BaseListAdapter<Visitable<*>, PromoCheckoutAdapterTypeFactory>(adapterTypeFactory) {
 
     fun addVisitable(visitable: Visitable<*>) {
         val newList: MutableList<Visitable<*>> = mutableListOf()

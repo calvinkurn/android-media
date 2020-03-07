@@ -389,9 +389,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                     modifiedData.add(oldPromoItem)
                 }
 
-                // Update header
-//                _tmpUiModel.value = Update(headerData)
-
                 // Store collapsed promo item to promo header as temporary value
                 headerData.uiData.tmpPromoItemList = modifiedData
 

@@ -9,7 +9,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.listener.Prom
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.*
 
-abstract class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionListener)
+class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionListener)
     : BaseAdapterTypeFactory(), PromoCheckoutTypeFactory {
 
     override fun type(uiModel: PromoRecommendationUiModel): Int {
