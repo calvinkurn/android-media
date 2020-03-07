@@ -9,6 +9,12 @@
             android:name=".preview.presentation.activity.AddEditProductPreviewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".description.presentation.AddEditProductDescriptionActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White">
+        </activity>
     </application>
 
 </manifest>

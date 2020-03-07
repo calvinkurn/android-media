@@ -10,4 +10,16 @@
     <string name="label_product_name">Nama Produk</string>
     <string name="label_product_price">Harga</string>
     <string name="label_product_stock">Stok</string>
+    <string name="label_description_title">Tulis deskripsi produk kamu</string>
+    <string name="label_description_placeholder">Deskripsi Produk</string>
+    <string name="label_add_product_description_tips">Tips buat deskripsi produk yang jelas</string>
+    <string name="label_variant_title">Varian</string>
+    <string name="label_variant_subtitle">Tambah varian warna, ukuran atau tipe lain agar pembeli mudah memilih</string>
+    <string name="label_add_variant">Ubah varian</string>
+    <string name="label_add_product_variant_tips">Tips buat deskripsi produk yang jelas</string>
+    <string name="label_video_title">Video</string>
+    <string name="label_video_subtitle">Tambah video agar pembeli lebih paham tentang produkmu</string>
+    <string name="label_add_video">+ Tambah video</string>
+    <string name="label_next_button">Lanjut</string>
+    <string name="label_video_url_placeholder">Link Video</string>
 </resources>
