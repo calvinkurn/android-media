@@ -126,7 +126,7 @@ class GetCouponListRecommendationUseCase @Inject constructor(private val gqlUseC
     }
 
     override suspend fun executeOnBackground(): GqlCouponListRecommendationResponse {
-        val couponListRecommendation = Gson().fromJson(MOCK_RESPONSE, GqlCouponListRecommendationResponse::class.java)
+        val couponListRecommendation = Gson().fromJson(MOCK_RESPONSE_PHONE_NOT_VERIF, GqlCouponListRecommendationResponse::class.java)
 //        val gqlRequest = GraphqlRequest(MUTATION, GqlCouponListRecommendationResponse::class.java, getParam())
 //        gqlUseCase.clearRequest()
 //        gqlUseCase.addRequest(gqlRequest)

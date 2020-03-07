@@ -109,6 +109,7 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                     } else {
                         initFragmentUiModel(false)
                         val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
+                        emptyState.uiData.emptyStateStatus = response.couponListRecommendation.data.resultStatus.code
                         if (response.couponListRecommendation.data.resultStatus.code == STATUS_COUPON_LIST_EMPTY) {
                             emptyState.uiState.isShowButton = false
                             initPromoInput()
@@ -421,9 +422,6 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                 headerData.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
                     promoListUiModel.value?.add(startIndex++, promoListItemUiModel)
                 }
-
-                // Update header
-//                _tmpUiModel.value = Update(headerData)
 
                 headerData.uiData.tmpPromoItemList = emptyList()
                 _tmpUiModel.value = Update(headerData)

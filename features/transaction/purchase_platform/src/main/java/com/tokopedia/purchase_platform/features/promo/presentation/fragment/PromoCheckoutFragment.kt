@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +23,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
@@ -35,6 +38,7 @@ import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
@@ -42,11 +46,9 @@ import com.tokopedia.purchase_platform.features.promo.presentation.adapter.Promo
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.FragmentUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibilityHeaderUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
+import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
 import java.net.UnknownHostException
@@ -71,8 +73,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     companion object {
-        private val HAS_ELEVATION = 6
-        private val NO_ELEVATION = 0
+        const val REQUEST_CODE_PHONE_VERIFICATION = 9999
+        const val HAS_ELEVATION = 6
+        const val NO_ELEVATION = 0
     }
 
     override fun initInjector() {
@@ -131,6 +134,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
         observeEmptyStateUiModel()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
+            reloadData()
+        }
     }
 
     private fun handleStickyPromoHeader(recyclerView: RecyclerView, lastHeaderUiModel: PromoListHeaderUiModel?) {
@@ -305,16 +315,20 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         } else {
             toolbar?.disableResetButton()
             fragmentUiModel.uiData.exception?.let {
-                    layout_global_error.setType(getGlobalErrorType(it))
+                layout_global_error.setType(getGlobalErrorType(it))
             }
             layout_global_error.setActionClickListener { view ->
                 layout_global_error.gone()
-                layout_main_container.show()
-                loadData(0)
+                reloadData()
             }
             layout_global_error.show()
             layout_main_container.gone()
         }
+    }
+
+    private fun reloadData() {
+        layout_main_container.show()
+        loadData(0)
     }
 
     private fun getGlobalErrorType(e: Throwable): Int {
@@ -454,6 +468,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickPromoEligibilityHeader(element: PromoEligibilityHeaderUiModel) {
         viewModel.updateIneligiblePromoList(element)
+    }
+
+    override fun onClickEmptyStateButton(element: PromoEmptyStateUiModel) {
+        if (element.uiData.emptyStateStatus == STATUS_PHONE_NOT_VERIFIED) {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+            startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION)
+        }
     }
 
 }

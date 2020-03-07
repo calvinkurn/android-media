@@ -22,6 +22,9 @@ class PromoEmptyStateViewHolder(private val view: View,
 
         if (element.uiState.isShowButton) {
             itemView.empty_state_promo.setPrimaryCTAText(element.uiData.buttonText)
+            itemView.empty_state_promo.setPrimaryCTAClickListener {
+                listener.onClickEmptyStateButton(element)
+            }
         } else {
             itemView.empty_state_promo.setPrimaryCTAText("")
         }
