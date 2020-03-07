@@ -345,7 +345,7 @@ val MOCK_RESPONSE = """
             "sub_title": "Kamu bisa gabungkan promo biar makin hemat!",
             "icon_url": "",
             "is_enabled": true,
-            "is_collapsed": true,
+            "is_collapsed": false,
             "tags": [],
             "coupons": [],
             "sub_sections": [
@@ -418,7 +418,7 @@ val MOCK_RESPONSE = """
                 "sub_title": "Toko Apel",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": true,
-                "is_collapsed": true,
+                "is_collapsed": false,
                 "tags": [
                   "Promo dipilih"
                 ],
@@ -493,7 +493,7 @@ val MOCK_RESPONSE = """
             "sub_title": "kuponnya ga bisa dipake ya",
             "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
             "is_enabled": false,
-            "is_collapsed": false,
+            "is_collapsed": true,
             "tags": [],
             "coupons": [],
             "sub_sections": [
@@ -502,7 +502,7 @@ val MOCK_RESPONSE = """
                 "sub_title": "Not avalibale",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": false,
-                "is_collapsed": false,
+                "is_collapsed": true,
                 "tags": [],
                 "coupons": [
                   {
@@ -527,7 +527,61 @@ val MOCK_RESPONSE = """
                     "clashing_infos": []
                   }
                 ]
-              }
+              },
+                {
+                  "title": "Kupon Saya Not available 2",
+                  "sub_title": "Not avalibale",
+                  "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                  "is_enabled": false,
+                  "is_collapsed": true,
+                  "tags": [],
+                  "coupons": [
+                    {
+                      "code": "YYYYYY1",
+                      "title": "Gratis Ongkir 400rb",
+                      "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                      "expiry_info": "berakhir 3 hari lagi",
+                      "expiry_count_down": 100000,
+                      "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "coupon_app_link": "//tokopedia",
+                      "unique_id": "cart-string",
+                      "shop_id": 0,
+                      "tag_image_urls": [
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                      ],
+                      "benefit_amount": 20000,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "hidden",
+                      "clashing_infos": []
+                    },
+                    {
+                      "code": "YYYYYY2",
+                      "title": "Gratis Ongkir 30rb",
+                      "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                      "expiry_info": "berakhir 3 hari lagi",
+                      "expiry_count_down": 100000,
+                      "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "coupon_app_link": "//tokopedia",
+                      "unique_id": "cart-string",
+                      "shop_id": 0,
+                      "tag_image_urls": [
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                      ],
+                      "benefit_amount": 20000,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "hidden",
+                      "clashing_infos": []
+                    }
+
+                  ]
+                }
+
             ]
           }
         ],

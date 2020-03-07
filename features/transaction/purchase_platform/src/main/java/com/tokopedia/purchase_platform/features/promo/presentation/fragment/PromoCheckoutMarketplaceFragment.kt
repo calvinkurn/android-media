@@ -453,7 +453,7 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
         startActivity(intent)
     }
 
-    override fun onClickPromoEligibilityHeader(position: Int, element: PromoEligibilityHeaderUiModel) {
+    override fun onClickPromoEligibilityHeader(element: PromoEligibilityHeaderUiModel) {
         viewModel.updateIneligiblePromoList(element)
     }
 

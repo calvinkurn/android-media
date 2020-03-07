@@ -70,7 +70,7 @@ class PromoListItemViewHolder(private val view: View,
         }
 
         itemView.card_promo_item.setOnClickListener {
-            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty()) {
+            if (adapterPosition != RecyclerView.NO_POSITION && element.uiData.currentClashingPromo.isNullOrEmpty() && element.uiState.isParentEnabled) {
                 listener.onClickPromoListItem(element)
             }
         }
