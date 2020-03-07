@@ -89,6 +89,7 @@ import com.tokopedia.network.service.AccountsService;
 import com.tokopedia.payment.router.IPaymentModuleRouter;
 import com.tokopedia.phoneverification.PhoneVerificationRouter;
 import com.tokopedia.phoneverification.view.activity.PhoneVerificationActivationActivity;
+import com.tokopedia.product.manage.feature.list.view.fragment.ProductManageFragment;
 import com.tokopedia.product.manage.item.common.di.component.DaggerProductComponent;
 import com.tokopedia.product.manage.item.common.di.component.ProductComponent;
 import com.tokopedia.product.manage.item.common.di.module.ProductModule;
@@ -1058,5 +1059,11 @@ public abstract class SellerRouterApplication extends MainApplication
         tabPage = (null == tabPage || "".equals(tabPage)) ? SomConsts.STATUS_ALL_ORDER : tabPage;
         bundle.putString(SomConsts.TAB_ACTIVE, tabPage);
         return SomListFragment.newInstance(bundle);
+    }
+
+    @NotNull
+    @Override
+    public Fragment getProductManageFragment() {
+        return ProductManageFragment.newInstance();
     }
 }

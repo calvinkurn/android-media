@@ -9,4 +9,6 @@ import androidx.fragment.app.Fragment
 interface SellerHomeRouter {
 
     fun getSomListFragment(tabPage: String?): Fragment
+
+    fun getProductManageFragment(): Fragment
 }

@@ -41,6 +41,9 @@ class ContainerFragment : Fragment() {
             null
     }
     private val homeFragment by lazy { SellerHomeFragment.newInstance() }
+    private val productManageFragment: Fragment? by lazy {
+        sellerHomeRouter?.getProductManageFragment()
+    }
     private var somListFragment: Fragment? = null
     private var currentFragment: Fragment? = null
     private val fragmentManger: FragmentManager by lazy { childFragmentManager }
@@ -56,6 +59,7 @@ class ContainerFragment : Fragment() {
     }
 
     private var hasAttachHomeFragment = false
+    private var hasAttachProductManagerFragment = false
     private var hasAttachSomFragment = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -74,7 +78,7 @@ class ContainerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupView()
-        observeCurrentSelectedMenu()
+        observeCurrentSelectedPage()
         observeToolbarTitle()
         setupDefaultPage()
     }
@@ -91,36 +95,36 @@ class ContainerFragment : Fragment() {
         sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.HOME))
     }
 
-    private fun observeCurrentSelectedMenu() {
+    private fun observeCurrentSelectedPage() {
         sharedViewModel?.currentSelectedPage?.observe(this, Observer { page ->
             when (page.type) {
-                FragmentType.HOME -> {
-                    if (!hasAttachHomeFragment) {
-                        addFragment(homeFragment)
-                        hasAttachHomeFragment = true
-                    }
-                    showFragment(homeFragment, getString(R.string.sah_home))
-                }
-                FragmentType.PRODUCT -> {
-                    if (!hasAttachHomeFragment) {
-                        addFragment(homeFragment)
-                        hasAttachHomeFragment = true
-                    }
-                    showFragment(homeFragment, getString(R.string.sah_product))
-                }
-                FragmentType.CHAT -> {
-                    if (!hasAttachHomeFragment) {
-                        addFragment(homeFragment)
-                        hasAttachHomeFragment = true
-                    }
-                    showFragment(homeFragment, getString(R.string.sah_chat))
-                }
-                FragmentType.ORDER -> showSomPageFragment(page)
+                FragmentType.HOME -> showSellerHomeFragment()
+                FragmentType.PRODUCT -> showProductManagerFragment()
+                FragmentType.CHAT -> showSellerHomeFragment()
+                FragmentType.ORDER -> showSomListFragment(page)
             }
         })
     }
 
-    private fun showSomPageFragment(page: PageFragment) {
+    private fun showSellerHomeFragment() {
+        if (!hasAttachHomeFragment) {
+            addFragment(homeFragment)
+            hasAttachHomeFragment = true
+        }
+        showFragment(homeFragment, getString(R.string.sah_home))
+    }
+
+    private fun showProductManagerFragment() {
+        productManageFragment?.let{ fragment ->
+            if (!hasAttachProductManagerFragment) {
+                addFragment(fragment)
+                hasAttachProductManagerFragment = true
+            }
+            showFragment(fragment, getString(R.string.sah_product_list))
+        }
+    }
+
+    private fun showSomListFragment(page: PageFragment) {
         if (null == somListFragment || (page.tabPage.isNotBlank() && SomTabConst.STATUS_ALL_ORDER != page.tabPage)) {
             somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
             hasAttachSomFragment = false

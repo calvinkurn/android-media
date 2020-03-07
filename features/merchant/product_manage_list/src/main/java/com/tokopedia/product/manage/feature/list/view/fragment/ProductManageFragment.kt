@@ -60,7 +60,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
-import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
+import com.tokopedia.product.manage.feature.list.di.ProductManageListInstance
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
@@ -174,6 +174,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     open fun getLayoutRes(): Int = R.layout.fragment_product_manage
+
+    override fun getSearchInputViewResourceId(): Int = R.id.search_input_view_list
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -366,7 +368,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        getComponent(ProductManageListComponent::class.java).inject(this)
+        ProductManageListInstance.getComponent((requireActivity().application))
+                .inject(this)
     }
 
     override fun loadData(page: Int) {
@@ -1176,5 +1179,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     companion object {
         private const val LOCAL_PATH_IMAGE_LIST = "loca_img_list"
         private const val DESC_IMAGE_LIST = "desc_img_list"
+
+        @JvmStatic
+        fun newInstance(): ProductManageFragment {
+            return ProductManageFragment()
+        }
     }
 }

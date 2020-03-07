@@ -17,6 +17,8 @@
     <string name="sah_sale">Penjualan</string>
     <string name="sah_others">Lainnya</string>
 
+    <string name="sah_product_list">Daftar Produk</string>
+
     <!--toolbar menu-->
     <string name="sah_notification">Notifikasi</string>
 
