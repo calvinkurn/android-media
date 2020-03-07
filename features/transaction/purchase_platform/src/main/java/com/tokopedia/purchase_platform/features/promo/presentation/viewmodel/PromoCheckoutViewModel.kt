@@ -72,13 +72,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     suspend fun getCouponRecommendation(mutation: String) {
         launchCatchError(block = {
             // Get response
-            val response = withContext(Dispatchers.IO) {
-                val filterRequest = GraphqlRequest(mutation, GqlCouponListRecommendationResponse::class.java)
-                graphqlRepository.getReseponse(listOf(filterRequest))
-                        .getSuccessData<GqlCouponListRecommendationResponse>()
-            }
+//            val response = withContext(Dispatchers.IO) {
+//                val filterRequest = GraphqlRequest(mutation, GqlCouponListRecommendationResponse::class.java)
+//                graphqlRepository.getReseponse(listOf(filterRequest))
+//                        .getSuccessData<GqlCouponListRecommendationResponse>()
+//            }
 
-//            val response = Gson().fromJson(MOCK_RESPONSE_PHONE_NOT_VERIF, GqlCouponListRecommendationResponse::class.java)
+            val response = Gson().fromJson(MOCK_RESPONSE, GqlCouponListRecommendationResponse::class.java)
 
             if (response.couponListRecommendation.status == "OK") {
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {

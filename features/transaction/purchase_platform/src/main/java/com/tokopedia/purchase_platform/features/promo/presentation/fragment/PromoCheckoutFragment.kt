@@ -153,9 +153,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
                 tmpLastHeaderUiModel = lastData
                 isShow = true
-            } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
+            } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId && lastData.uiState.isParentEnabled) {
                 isShow = true
-            } else if (lastData is PromoListItemUiModel) {
+            } else if (lastData is PromoListItemUiModel && lastData.uiState.isParentEnabled) {
                 if (tmpLastHeaderUiModel != null && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId) {
                     isShow = true
                 } else {

@@ -577,8 +577,49 @@ val MOCK_RESPONSE = """
                       "is_attempted": false,
                       "radio_check_state": "hidden",
                       "clashing_infos": []
+                    },
+                    {
+                      "code": "YYYYYY3",
+                      "title": "Gratis Ongkir 30rb",
+                      "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                      "expiry_info": "berakhir 3 hari lagi",
+                      "expiry_count_down": 100000,
+                      "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "coupon_app_link": "//tokopedia",
+                      "unique_id": "cart-string",
+                      "shop_id": 0,
+                      "tag_image_urls": [
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                      ],
+                      "benefit_amount": 20000,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "hidden",
+                      "clashing_infos": []
+                    },
+                    {
+                      "code": "YYYYYY2",
+                      "title": "Gratis Ongkir 30rb",
+                      "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                      "expiry_info": "berakhir 3 hari lagi",
+                      "expiry_count_down": 100000,
+                      "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "coupon_app_link": "//tokopedia",
+                      "unique_id": "cart-string",
+                      "shop_id": 0,
+                      "tag_image_urls": [
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                      ],
+                      "benefit_amount": 20000,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "hidden",
+                      "clashing_infos": []
                     }
-
                   ]
                 }
 
