@@ -194,7 +194,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setImageFilterNormal(section_image_promo_list_header)
                 section_label_promo_list_header_sub_title.show()
                 section_image_chevron.show()
-                section_image_chevron.setOnClickListener {
+                header_promo_section.setOnClickListener {
                     if (tmpLastHeaderUiModel != null) {
                         onClickPromoListHeader(tmpLastHeaderUiModel!!)
                     }
