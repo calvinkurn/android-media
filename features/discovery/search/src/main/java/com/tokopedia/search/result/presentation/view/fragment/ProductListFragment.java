@@ -844,12 +844,7 @@ public class ProductListFragment
     }
 
     public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
-        presenter.handleWishlistButtonClicked(item);
-        if (presenter.isUserLoggedIn()) {
-            RecommendationTracking.Companion.eventUserClickProductToWishlistForUserLogin(!isAddWishlist);
-        } else {
-            RecommendationTracking.Companion.eventUserClickProductToWishlistForNonLogin();
-        }
+        // Unused
     }
 
     @Override
