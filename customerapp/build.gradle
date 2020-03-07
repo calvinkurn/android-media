@@ -563,6 +563,7 @@ dependencies {
     }
     devImplementation project.ext.debugToolsDependencies.blockCanary
     debugImplementation project.ext.debugToolsDependencies.leakCanary
+    debugImplementation project.ext.debugToolsDependencies.dbInspector
 
     //[START] test and androidTest dependencies
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {

@@ -283,6 +283,7 @@ ext {
             stethoOkHttp: "com.facebook.stetho:stetho-okhttp3:1.4.2",
             chuck       : "com.github.ChuckerTeam.Chucker:library:3.0.1",
             chuckNoOp   : "com.github.ChuckerTeam.Chucker:library-no-op:3.0.1",
+            dbInspector : "im.dino:dbinspector:4.0.0",
             toolargetool: "com.gu.android:toolargetool:0.1.3@aar",
             timber      : "com.jakewharton.timber:timber:4.7.1",
             blockCanary : "com.github.moduth:blockcanary:1.4.3@aar",
