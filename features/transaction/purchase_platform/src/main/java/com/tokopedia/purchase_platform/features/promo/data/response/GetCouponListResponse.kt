@@ -13,7 +13,7 @@ data class CouponListRecommendation(
         @SerializedName("error_code")
         val errorCode: String = "",
         @SerializedName("status")
-        val status: String = "",
+        var status: String = "",
         @SerializedName("data")
         val data: Data = Data()
 )

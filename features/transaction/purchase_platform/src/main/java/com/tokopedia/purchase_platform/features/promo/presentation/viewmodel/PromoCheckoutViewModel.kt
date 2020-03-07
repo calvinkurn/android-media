@@ -94,24 +94,26 @@ class PromoCheckoutViewModel @Inject constructor(val dispatcher: CoroutineDispat
                     }
 
                     calculateAndRenderTotalBenefit()
-                } else if (response.couponListRecommendation.data.emptyState.title.isEmpty() &&
-                        response.couponListRecommendation.data.emptyState.description.isEmpty() &&
-                        response.couponListRecommendation.data.emptyState.imageUrl.isEmpty()) {
-                    initFragmentUiModel(true)
                 } else {
-                    initFragmentUiModel(false)
-                    val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
-                    if (response.couponListRecommendation.data.resultStatus.code == STATUS_COUPON_LIST_EMPTY) {
-                        emptyState.uiState.isShowButton = false
-                        initPromoInput()
-                    } else if (response.couponListRecommendation.data.resultStatus.code == STATUS_PHONE_NOT_VERIFIED) {
-                        emptyState.uiData.buttonText = "Verifikasi Nomor HP"
-                        emptyState.uiState.isShowButton = true
-                    } else if (response.couponListRecommendation.data.resultStatus.code == STATUS_USER_BLACKLISTED) {
-                        emptyState.uiState.isShowButton = false
-                    }
+                    if (response.couponListRecommendation.data.emptyState.title.isEmpty() &&
+                            response.couponListRecommendation.data.emptyState.description.isEmpty() &&
+                            response.couponListRecommendation.data.emptyState.imageUrl.isEmpty()) {
+                        initFragmentUiModel(true)
+                    } else {
+                        initFragmentUiModel(false)
+                        val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
+                        if (response.couponListRecommendation.data.resultStatus.code == STATUS_COUPON_LIST_EMPTY) {
+                            emptyState.uiState.isShowButton = false
+                            initPromoInput()
+                        } else if (response.couponListRecommendation.data.resultStatus.code == STATUS_PHONE_NOT_VERIFIED) {
+                            emptyState.uiData.buttonText = "Verifikasi Nomor HP"
+                            emptyState.uiState.isShowButton = true
+                        } else if (response.couponListRecommendation.data.resultStatus.code == STATUS_USER_BLACKLISTED) {
+                            emptyState.uiState.isShowButton = false
+                        }
 
-                    _promoEmptyStateUiModel.value = emptyState
+                        _promoEmptyStateUiModel.value = emptyState
+                    }
                 }
             } else {
                 initFragmentUiModel(true)

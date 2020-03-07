@@ -25,6 +25,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
+import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -41,10 +43,14 @@ import com.tokopedia.purchase_platform.features.promo.presentation.adapter.Promo
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
 import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutMarketplaceActionListener
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.FragmentUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibilityHeaderUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoCheckoutMarketplaceAdapterTypeFactory>(),
@@ -299,18 +305,24 @@ class PromoCheckoutMarketplaceFragment : BaseListFragment<Visitable<*>, PromoChe
             layout_main_container.show()
         } else {
             toolbar?.disableResetButton()
-//            fragmentUiModel.uiData.exception?.let {
-//                if (it is ) {
-//                    layout_global_error.setType(GlobalErrorsUnify.NO_CONNECTION)
-//                }
-//            }
+            fragmentUiModel.uiData.exception?.let {
+                    layout_global_error.setType(getGlobalErrorType(it))
+            }
             layout_global_error.setActionClickListener { view ->
-                if (activity != null) {
-                    RouteManager.route(context, ApplinkConst.HOME)
-                }
+                layout_global_error.gone()
+                layout_main_container.show()
+                loadData(0)
             }
             layout_global_error.show()
             layout_main_container.gone()
+        }
+    }
+
+    private fun getGlobalErrorType(e: Throwable): Int {
+        return if (e is UnknownHostException) {
+            NO_CONNECTION
+        } else {
+            SERVER_ERROR
         }
     }
 
