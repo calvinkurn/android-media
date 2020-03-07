@@ -371,6 +371,9 @@
 }
 -dontwarn kotlinx.coroutines.flow.**inlined**
 
+-dontwarn kotlinx.coroutines.flow.**
+-dontwarn kotlinx.coroutines.reactive.**
+
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
