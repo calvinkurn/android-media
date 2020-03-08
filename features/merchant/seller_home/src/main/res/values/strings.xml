@@ -12,6 +12,7 @@
 
     <string name="sah_ticker_warning">#ecdb77</string>
 
+    <string name="dot_string">&#160;\u2022&#160;</string>
     <string name="official_store">Official Store</string>
     <string name="power_merchant">Power Merchant:&#160;</string>
     <string name="regular_merchant">Regular Merchant</string>

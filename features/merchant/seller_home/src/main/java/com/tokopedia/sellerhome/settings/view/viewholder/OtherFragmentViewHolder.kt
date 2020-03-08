@@ -22,9 +22,6 @@ class OtherFragmentViewHolder(private val itemView: View,
                               private val context: Context) {
 
     companion object {
-        private val REGULAR_MERCHANT_LAYOUT = R.layout.setting_shop_status_regular
-        private val POWER_MERCHANT_LAYOUT = R.layout.setting_shop_status_pm
-        private val OFFICIAL_STORE_LAYOUT = R.layout.setting_shop_status_os
         private val SHIMMER_STATUS_LAYOUT = R.layout.setting_shop_status_shimmer
         private val GREEN_TIP = R.drawable.setting_pm_green_tip
         private val GREEN_TEXT_COLOR = R.color.setting_shop_status_green
@@ -65,6 +62,7 @@ class OtherFragmentViewHolder(private val itemView: View,
     @SuppressLint("SetTextI18n")
     fun onSuccessGetTotalFollowing(totalFollowing: Int) {
         itemView.shopInfoLayout.shopFollowing.text = "$totalFollowing $FOLLOWERS"
+        itemView.shimmerFollowing.visibility = View.GONE
     }
 
     fun onLoadingGetShopGeneralInfoData() {
@@ -83,6 +81,7 @@ class OtherFragmentViewHolder(private val itemView: View,
 
     fun onLoadingGetTotalFollowing() {
         itemView.shopInfoLayout.shopFollowing.text = ""
+        itemView.shimmerFollowing.visibility = View.VISIBLE
     }
 
     private fun setShopName(shopName: String) {

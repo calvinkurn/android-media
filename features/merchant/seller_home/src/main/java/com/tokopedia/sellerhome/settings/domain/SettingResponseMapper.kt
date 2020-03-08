@@ -8,7 +8,8 @@ import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
-import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
 
 fun ReputationShopsResult.mapReputationToBadgeUrl() : String {
     with(reputationShops) {
@@ -47,7 +48,7 @@ fun Owner.getShopStatusType(): ShopType {
 }
 
 fun Any?.toDecimalRupiahCurrency(): String {
-    val formatter = DecimalFormat("#.###")
-    val formattedValue = formatter.format(this)
-    return "Rp$formattedValue"
+    val localeIndonesia = Locale("in", "ID")
+    val numberFormatter = NumberFormat.getCurrencyInstance(localeIndonesia)
+    return numberFormatter.format(this)
 }

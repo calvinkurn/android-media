@@ -32,6 +32,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
 
+            <com.tokopedia.unifycomponents.DividerUnify
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_divider_thin"
+                android:paddingBottom="20dp"
+                android:background="@color/white"/>
+
             <include
                 android:id="@+id/saldoBalance"
                 layout="@layout/setting_balance"/>
