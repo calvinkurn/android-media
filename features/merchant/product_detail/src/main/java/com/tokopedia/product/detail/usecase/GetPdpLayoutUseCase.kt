@@ -43,9 +43,9 @@ open class GetPdpLayoutUseCase @Inject constructor(private val rawQueries: Map<S
         val data: PdpGetLayout = gqlResponse.getData<ProductDetailLayout>(ProductDetailLayout::class.java).data ?: PdpGetLayout()
 
         if (gqlResponse.isCached) {
-            Timber.w("P2#PDP_CACHE#cache=true;productId=$productId")
+            Timber.w("P2#PDP_CACHE#true;productId=$productId")
         } else {
-            Timber.w("P2#PDP_CACHE#cache=false;productId=$productId")
+            Timber.w("P2#PDP_CACHE#false;productId=$productId")
         }
         val blacklistMessage = data.basicInfo.blacklistMessage
 
