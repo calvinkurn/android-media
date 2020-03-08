@@ -110,7 +110,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         setupToolbar(view)
         button_apply_promo.setOnClickListener {
             setButtonLoading(button_apply_promo, true)
-            viewModel.applyPromo()
+            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
         }
         button_apply_no_promo.setOnClickListener {
             setButtonLoading(button_apply_no_promo, true)
@@ -135,6 +135,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
         observeEmptyStateUiModel()
+        observeApplyPromoResult()
         observeClearPromoResult()
     }
 
@@ -292,6 +293,20 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     it.data.forEach {
                         adapter.addVisitableList((adapter.data.indexOf(it.key) + 1), it.value)
                     }
+                }
+            }
+        })
+    }
+
+    private fun observeApplyPromoResult() {
+        viewModel.applyPromoResponse.observe(this, Observer {
+            setButtonLoading(button_apply_promo, false)
+            when (it) {
+                is Success -> {
+
+                }
+                is Fail -> {
+
                 }
             }
         })
@@ -488,7 +503,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
-        viewModel.applyPromo(promoCode)
+        activity?.let {
+            viewModel.updatePromoInputState(promoCode)
+            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), promoCode)
+        }
     }
 
     override fun onClickPromoListHeader(element: PromoListHeaderUiModel) {

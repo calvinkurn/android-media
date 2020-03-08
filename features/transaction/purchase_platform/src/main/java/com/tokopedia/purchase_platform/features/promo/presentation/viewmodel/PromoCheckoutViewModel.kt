@@ -70,63 +70,21 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     val tmpListUiModel: LiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>
         get() = _tmpListUiModel
 
+    // Live data to store clear promo result
     private val _clearPromoResponse = MutableLiveData<Result<ClearPromoResponse>>()
     val clearPromoResponse: LiveData<Result<ClearPromoResponse>>
         get() = _clearPromoResponse
+
+    // Live data to store apply promo result
+    private val _applyPromoResponse = MutableLiveData<Result<Any>>()
+    val applyPromoResponse: LiveData<Result<Any>>
+        get() = _applyPromoResponse
 
     fun loadData(mutation: String) {
         launch { getCouponRecommendation(mutation) }
     }
 
-    fun applyPromo(promoCode: String) {
-        launch { }
-    }
-
-    fun applyPromo() {
-        launch { }
-    }
-
-    fun clearPromo(mutation: String) {
-        launch { doClearPromo(mutation) }
-    }
-
-    suspend fun doClearPromo(mutation: String) {
-        launchCatchError(block = {
-            // Set param
-            val promoCodes = ArrayList<String>()
-            var tmpMutation = mutation
-            promoListUiModel.value?.forEach {
-                if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiState.isAlreadyApplied) {
-                    promoCodes.add(it.uiData.promoCode)
-                } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
-                    it.uiData.tmpPromoItemList.forEach {
-                        if (it.uiState.isParentEnabled && it.uiState.isAlreadyApplied) {
-                            promoCodes.add(it.uiData.promoCode)
-                        }
-                    }
-                }
-            }
-            val promoCodesJson = Gson().toJson(promoCodes)
-            tmpMutation = tmpMutation.replace("#promoCode", promoCodesJson)
-
-            // Get response
-            val response = withContext(Dispatchers.IO) {
-                val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
-                graphqlRepository.getReseponse(listOf(request))
-                        .getSuccessData<ClearPromoResponse>()
-            }
-
-            if (response.successData.success) {
-                _clearPromoResponse.value = Success(response)
-            } else {
-                _clearPromoResponse.value = Fail(RuntimeException())
-            }
-        }) {
-            _clearPromoResponse.value = Fail(it)
-        }
-    }
-
-    suspend fun getCouponRecommendation(mutation: String) {
+    private suspend fun getCouponRecommendation(mutation: String) {
         launchCatchError(block = {
             // Set param
             val param = HashMap<String, Any>()
@@ -205,6 +163,73 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }) {
             initFragmentUiModel(true)
             fragmentUiModel.value?.uiData?.exception = it
+        }
+    }
+
+    fun applyPromo(mutation: String, promoCode: String) {
+        launch { doApplyPromo(mutation, promoCode) }
+    }
+
+    fun applyPromo(mutation: String) {
+        launch { doApplyPromo(mutation, "") }
+    }
+
+    private suspend fun doApplyPromo(mutation: String, promoCode: String) {
+        launchCatchError(block = {
+            throw MessageErrorException("Gagal apply promo for the moment")
+        }) {
+            if (promoCode.isNotBlank()) {
+                // Notify promo input to stop loading
+                promoInputUiModel.value?.let { uiModel ->
+//                    uiModel.uiState.isLoading = false
+//                    uiModel.uiState.isError = true
+//                    uiModel.uiData.exception = it
+//                    _tmpUiModel.value = Update(uiModel)
+                }
+            } else {
+                // Notify fragment apply promo to stop loading
+                _applyPromoResponse.value = Fail(it)
+            }
+        }
+    }
+
+    fun clearPromo(mutation: String) {
+        launch { doClearPromo(mutation) }
+    }
+
+    private suspend fun doClearPromo(mutation: String) {
+        launchCatchError(block = {
+            // Set param
+            val promoCodes = ArrayList<String>()
+            var tmpMutation = mutation
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiState.isAlreadyApplied) {
+                    promoCodes.add(it.uiData.promoCode)
+                } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    it.uiData.tmpPromoItemList.forEach {
+                        if (it.uiState.isParentEnabled && it.uiState.isAlreadyApplied) {
+                            promoCodes.add(it.uiData.promoCode)
+                        }
+                    }
+                }
+            }
+            val promoCodesJson = Gson().toJson(promoCodes)
+            tmpMutation = tmpMutation.replace("#promoCode", promoCodesJson)
+
+            // Get response
+            val response = withContext(Dispatchers.IO) {
+                val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
+                graphqlRepository.getReseponse(listOf(request))
+                        .getSuccessData<ClearPromoResponse>()
+            }
+
+            if (response.successData.success) {
+                _clearPromoResponse.value = Success(response)
+            } else {
+                _clearPromoResponse.value = Fail(RuntimeException())
+            }
+        }) {
+            _clearPromoResponse.value = Fail(it)
         }
     }
 
@@ -668,6 +693,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     _tmpUiModel.value = Update(it)
                 }
             }
+        }
+    }
+
+    fun updatePromoInputState(promoCode: String) {
+        promoInputUiModel.value?.let {
+            it.uiState.isLoading = true
+            it.uiState.isButtonSelectEnabled = true
+            it.uiData.promoCode = promoCode
+
+            _tmpUiModel.value = Update(it)
         }
     }
 }
