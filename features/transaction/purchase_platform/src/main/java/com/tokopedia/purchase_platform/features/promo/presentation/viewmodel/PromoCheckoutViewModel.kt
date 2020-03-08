@@ -181,10 +181,10 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             if (promoCode.isNotBlank()) {
                 // Notify promo input to stop loading
                 promoInputUiModel.value?.let { uiModel ->
-//                    uiModel.uiState.isLoading = false
-//                    uiModel.uiState.isError = true
-//                    uiModel.uiData.exception = it
-//                    _tmpUiModel.value = Update(uiModel)
+                    uiModel.uiState.isLoading = false
+                    uiModel.uiState.isError = true
+                    uiModel.uiData.exception = it
+                    _tmpUiModel.value = Update(uiModel)
                 }
             } else {
                 // Notify fragment apply promo to stop loading
