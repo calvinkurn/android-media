@@ -68,7 +68,7 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
         initBankRecyclerView()
         startObservingViewModels()
         loadBankList()
-        tempFun()
+        setupSearchInputView()
     }
 
     private fun loadBankList() {
@@ -136,7 +136,7 @@ class SelectBankFragment : BaseDaggerFragment(), SearchInputView.Listener, Searc
             onBankSelectedListener.onBankSelected(bank)
     }
 
-    private fun tempFun() {
+    private fun setupSearchInputView() {
         searchInputTextView.searchImageView.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_search_grayscale_24))
         searchInputTextView.closeImageButton.setImageDrawable(resources.getDrawable(com.tokopedia.resources.common.R.drawable.ic_system_action_close_grayscale_16))
         searchInputTextView.setListener(this)

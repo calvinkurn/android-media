@@ -41,6 +41,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -61,12 +62,11 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
-import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
-import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewViewModel
-import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.viewmodel.SendableProductPreview
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
@@ -132,11 +132,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         initFireBase()
     }
 
-    private fun initFireBase() {
-        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
-        remoteConfig = FirebaseRemoteConfigImpl(activity)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupPresenter(savedInstanceState)
@@ -182,6 +177,11 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                     onError(),
                     onSuccessGetMessageId())
         }
+    }
+
+    private fun initFireBase() {
+        fpm = PerformanceMonitoring.start(TopChatAnalytics.FPM_DETAIL_CHAT)
+        remoteConfig = FirebaseRemoteConfigImpl(activity)
     }
 
     private fun setupPresenter(savedInstanceState: Bundle?) {
@@ -359,13 +359,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onProductClicked(element: ProductAttachmentViewModel) {
         super.onProductClicked(element)
-
-        analytics.eventClickProductThumbnailEE(element.blastId,
-                element.productId.toString(),
-                element.productName,
-                element.priceInt,
-                element.category, element.variants.toString())
-
+        analytics.eventClickProductThumbnailEE(element, session)
         analytics.trackProductAttachmentClicked()
     }
 
@@ -513,9 +507,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun pickImageToUpload() {
         activity?.let {
-            val builder = ImagePickerBuilder(it.getString(com.tokopedia.imagepicker.R.string.choose_image),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true, null, null)
+            val builder = ImagePickerBuilder(
+                    it.getString(com.tokopedia.imagepicker.R.string.choose_image),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
+                    GalleryType.IMAGE_ONLY,
+                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
+                    null,
+                    true,
+                    null,
+                    ImagePickerMultipleSelectionBuilder(null, null, 0, 1)
+            )
             val intent = ImagePickerActivity.getIntent(context, builder)
             startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)
         }
@@ -661,13 +663,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onClickBuyFromProductAttachment(element: ProductAttachmentViewModel) {
-        (viewState as TopChatViewState)?.sendAnalyticsClickBuyNow(element)
+        analytics.eventClickBuyProductAttachment(element)
         val buyPageIntent = presenter.getBuyPageIntent(context, element)
         startActivity(buyPageIntent)
     }
 
     override fun onClickATCFromProductAttachment(element: ProductAttachmentViewModel) {
-        (viewState as TopChatViewState).sendAnalyticsClickATC(element)
+        analytics.eventClickAddToCartProductAttachment(element, session)
         val atcPageIntent = presenter.getAtcPageIntent(context, element)
         startActivityForResult(atcPageIntent, REQUEST_GO_TO_NORMAL_CHECKOUT)
     }
@@ -804,7 +806,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun trackSeenProduct(element: ProductAttachmentViewModel) {
         if (seenAttachedProduct.add(element.productId)) {
-            analytics.eventSeenProductAttachment(element)
+            analytics.eventSeenProductAttachment(element, session)
         }
     }
 
@@ -842,7 +844,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         presenter.clearAttachmentPreview()
     }
 
-    override fun notifyAttachmentsSent() {
+    override fun clearAttachmentPreviews() {
         getViewState().clearAttachmentPreview()
     }
 
@@ -851,7 +853,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun sendAnalyticAttachmentSent(attachment: SendablePreview) {
-        if (attachment is InvoicePreviewViewModel) {
+        if (attachment is InvoicePreviewUiModel) {
             analytics.invoiceAttachmentSent(attachment)
         } else if (attachment is SendableProductPreview) {
             analytics.trackSendProductAttachment()
@@ -982,7 +984,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         })
     }
 
-    override fun trackClickQuotation(msg: QuotationViewModel) {
+    override fun trackClickQuotation(msg: QuotationUiModel) {
         analytics.eventClickQuotation(msg)
     }
 

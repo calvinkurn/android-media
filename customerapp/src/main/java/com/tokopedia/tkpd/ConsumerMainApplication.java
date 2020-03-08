@@ -32,6 +32,7 @@ import com.moengage.inapp.InAppMessage;
 import com.moengage.inapp.InAppTracker;
 import com.moengage.push.PushManager;
 import com.moengage.pushbase.push.MoEPushCallBacks;
+import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cacheapi.domain.interactor.CacheApiWhiteListUseCase;
@@ -124,12 +125,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
 
+        FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.MOENGAGE, MoengageAnalytics.class);
         TrackApp.getInstance().initializeAllApis();
-        initReact();
         createAndCallPreSeq();
 
         super.onCreate();
@@ -204,6 +205,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     @NotNull
     private Boolean executePreCreateSequence(){
+        initReact();
         UIBlockDebugger.init(ConsumerMainApplication.this);
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         PersistentCacheManager.init(ConsumerMainApplication.this);
@@ -440,7 +442,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initReact() {
-        SoLoader.init(this, false);
+        SoLoader.init(ConsumerMainApplication.this, false);
     }
 
     private void initCacheApi() {

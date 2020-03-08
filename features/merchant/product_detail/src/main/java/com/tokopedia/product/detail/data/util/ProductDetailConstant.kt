@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.data.util
 import com.tokopedia.url.TokopediaUrl
 
 object ProductDetailConstant {
+
+
     @JvmField
     var BASE_REST_URL = TokopediaUrl.getInstance().WS
 

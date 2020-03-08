@@ -15,7 +15,9 @@ import rx.Subscriber
 import java.util.HashMap
 import kotlin.collections.ArrayList
 
-class PromoCheckoutListPresenter(val graphqlUseCase: GraphqlUseCase) : BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
+class PromoCheckoutListPresenter(private val graphqlUseCase: GraphqlUseCase,
+                                 private val lastSeenPromoUseCase: GraphqlUseCase):
+        BaseDaggerPresenter<PromoCheckoutListContract.View>(), PromoCheckoutListContract.Presenter {
 
     override fun getListPromo(serviceId: String, categoryId: Int, page: Int, resources: Resources) {
         val variables = HashMap<String, Any>()
@@ -59,9 +61,9 @@ class PromoCheckoutListPresenter(val graphqlUseCase: GraphqlUseCase) : BaseDagge
         variables.put(CATEGORY_IDS, categoryIDs)
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(resources,
                 R.raw.promo_checkout_last_seen), PromoCheckoutLastSeenModel.Response::class.java, variables, false)
-        graphqlUseCase.clearRequest()
-        graphqlUseCase.addRequest(graphqlRequest)
-        graphqlUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
+        lastSeenPromoUseCase.clearRequest()
+        lastSeenPromoUseCase.addRequest(graphqlRequest)
+        lastSeenPromoUseCase.execute(RequestParams.create(), object : Subscriber<GraphqlResponse>() {
             override fun onCompleted() {
 
             }
@@ -81,6 +83,7 @@ class PromoCheckoutListPresenter(val graphqlUseCase: GraphqlUseCase) : BaseDagge
 
     override fun detachView() {
         graphqlUseCase.unsubscribe()
+        lastSeenPromoUseCase.unsubscribe()
         super.detachView()
     }
 
