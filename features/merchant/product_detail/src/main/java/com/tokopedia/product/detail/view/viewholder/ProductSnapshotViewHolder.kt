@@ -47,11 +47,17 @@ class ProductSnapshotViewHolder(private val view: View,
 
         renderWishlist(element.isAllowManage, element.isWishlisted)
 
-        renderCod(element.shouldShowCod, element.shouldShowTradein, element.dynamicProductInfoP1?.data?.campaign?.activeAndHasId
-                ?: false)
+        if (element.shouldShowTradein && element.dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false) {
+            renderTradein(true)
+        } else {
+            renderTradein(false)
+        }
 
-        renderTradein(element.shouldShowTradein, element.dynamicProductInfoP1?.data?.campaign?.activeAndHasId
-                ?: false)
+        if (element.shouldShowCod && !element.shouldShowTradein && element.dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false) {
+            renderCod(true)
+        } else {
+            renderCod(false)
+        }
 
         view.tv_trade_in_promo.setOnClickListener {
             listener.txtTradeinClicked(getComponentTrackData(element))
@@ -84,15 +90,19 @@ class ProductSnapshotViewHolder(private val view: View,
             ProductDetailConstant.PAYLOAD_WISHLIST -> renderWishlist(element.isAllowManage, element.isWishlisted)
             ProductDetailConstant.PAYLOAD_COD -> {
                 view.label_cod.visibility = if (element.shouldShowCod) View.VISIBLE else View.GONE
-                renderCod(element.shouldShowCod, element.shouldShowTradein, element.dynamicProductInfoP1?.data?.campaign?.isActive
-                        ?: false)
+                if (element.shouldShowCod && element.shouldShowTradein && element.dynamicProductInfoP1?.data?.campaign?.activeAndHasId == false) {
+                    renderCod(true)
+                } else {
+                    renderCod(false)
+                }
+
             }
             ProductDetailConstant.PAYLOAD_CONFIGURATION_CHANGED -> changeImageHeight(element.screenHeight)
         }
     }
 
-    private fun renderCod(shouldShowCod: Boolean, shouldShowTradein: Boolean, isCampaignActive: Boolean) {
-        if (::header.isInitialized && !shouldShowTradein && !isCampaignActive) {
+    private fun renderCod(shouldShowCod: Boolean) {
+        if (::header.isInitialized) {
             header.renderCod(shouldShowCod)
         }
     }
@@ -103,8 +113,8 @@ class ProductSnapshotViewHolder(private val view: View,
         }
     }
 
-    private fun renderTradein(shouldShowTradein: Boolean, isCampaignActive: Boolean) {
-        if (::header.isInitialized && !isCampaignActive) {
+    private fun renderTradein(shouldShowTradein: Boolean) {
+        if (::header.isInitialized) {
             view.tv_trade_in_promo.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(view.context, R.drawable.tradein_white), null, null, null)
             header.renderTradein(shouldShowTradein)
         }
