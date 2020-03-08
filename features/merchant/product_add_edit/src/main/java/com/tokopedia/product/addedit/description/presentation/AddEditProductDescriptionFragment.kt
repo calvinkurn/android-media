@@ -7,19 +7,27 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
 import com.tokopedia.product.addedit.description.adapter.VideoLinkTypeFactory
-import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 import com.tokopedia.product.addedit.description.model.VideoLinkModel
+import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
+import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.product.addedit.common.util.CurrencyTypeDef
+import com.tokopedia.product.addedit.common.util.ProductExtraConstant
+import com.tokopedia.product.addedit.stock.view.model.ProductStock
 
-class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(), VideoLinkTypeFactory.VideoLinkListener {
-
+class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
+        VideoLinkTypeFactory.VideoLinkListener {
     private var videoId = 0
     private var tooltipBottomSheet: TooltipBottomSheet<TooltipModel, TooltipTypeFactory>? = null
+
+    @CurrencyTypeDef
+    private var selectedCurrencyType: Int = CurrencyTypeDef.TYPE_IDR
 
     override fun getAdapterTypeFactory(): VideoLinkTypeFactory {
         val videoLinkTypeFactory = VideoLinkTypeFactory()
@@ -69,6 +77,10 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         layoutVariantTips.setOnClickListener {
             showDescriptionTips()
         }
+
+        tvAddVariant.setOnClickListener {
+            showEditPriceWhenHasVariantDialog()
+        }
     }
 
     override fun loadData(page: Int) {
@@ -95,8 +107,29 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         tooltipBottomSheet?.show(fragmentManager!!, null)
     }
 
+    private fun showEditPriceWhenHasVariantDialog(){
+        activity?.let {
+            val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
+            intent?.run {
+                putExtra(ProductExtraConstant.EXTRA_CURRENCY_TYPE, selectedCurrencyType)
+                putExtra(ProductExtraConstant.EXTRA_DEFAULT_PRICE, 0.0)
+                putExtra(ProductExtraConstant.EXTRA_STOCK_TYPE, ProductStock())
+                putExtra(ProductExtraConstant.EXTRA_IS_OFFICIAL_STORE, false)
+                putExtra(ProductExtraConstant.EXTRA_DEFAULT_SKU, "")
+                putExtra(ProductExtraConstant.EXTRA_NEED_RETAIN_IMAGE, false)
+                putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
+                putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
+                putExtra(ProductExtraConstant.EXTRA_HAS_WHOLESALE, false)
+                putExtra(ProductExtraConstant.EXTRA_IS_ADD, false)
+                startActivityForResult(this, REQUEST_CODE_VARIANT)
+            }
+        }
+    }
+
     companion object {
-        val MAX_VIDEOS = 3
+        const val MAX_VIDEOS = 3
+
+        const val REQUEST_CODE_VARIANT = 9
     }
 
 }

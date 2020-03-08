@@ -6,6 +6,8 @@
     <string name="label_add_product_shipment">Detail Pengiriman</string>
     <string name="action_start">Mulai</string>
     <string name="action_change">Ubah</string>
+
+    <!--Descripton-->
     <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
     <string name="label_product_name">Nama Produk</string>
     <string name="label_product_price">Harga</string>
