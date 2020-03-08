@@ -205,13 +205,16 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                     )
                     if(!isCache) trackingQueue?.putEETracking(HomePageTracking.getEventEnhanceImpressionBannerGif(channel))
                 }
-                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL-> {
+                DynamicHomeChannel.Channels.LAYOUT_LIST_CAROUSEL -> {
                     createDynamicChannel(
                             channel = channel,
                             trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel),
                             isCombined = false
                     )
                 }
+                DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
+                        channel = channel
+                )}
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
@@ -255,6 +258,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
         val PROMO_NAME_LEGO_6_IMAGE = "/ - p%s - lego banner - %s"
         val PROMO_NAME_LEGO_3_IMAGE = "/ - p%s - lego banner 3 image - %s"
         val PROMO_NAME_LEGO_4_IMAGE = "/ - p%s - lego banner 4 image - %s"
+        val PROMO_NAME_MIX_LEFT = "/ - p%s - mix left - %s"
         val PROMO_NAME_SPRINT = "/ - p%s - %s"
         val PROMO_NAME_SPOTLIGHT_BANNER = "/ - p%s - spotlight banner"
         val PROMO_NAME_GIF_BANNER = "/ - p%s - lego banner gif - %s"
@@ -289,6 +293,9 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 channel.setPosition(position)
             } else if (channel.layout == DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF) {
                 channel.promoName = String.format(PROMO_NAME_GIF_BANNER, position.toString(), channel.header.name)
+                channel.setPosition(position)
+            } else if(channel.layout == DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT) {
+                channel.promoName = String.format(PROMO_NAME_MIX_LEFT, position.toString(), channel.header.name)
                 channel.setPosition(position)
             } else {
                 val headerName = if (channel.header.name.isEmpty()) VALUE_BANNER_UNKNOWN else channel.header.name

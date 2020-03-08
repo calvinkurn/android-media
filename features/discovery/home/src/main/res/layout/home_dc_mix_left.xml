@@ -74,7 +74,7 @@
             tools:itemCount="10"
             tools:spanCount="3"
             tools:orientation="horizontal"
-            tools:listitem="@layout/layout_sprint_product_item"/>
+            tools:listitem="@layout/product_card_flashsale_layout"/>
 
     </FrameLayout>
 

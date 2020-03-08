@@ -14,6 +14,7 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.R
 import com.tokopedia.unifycomponents.Label
@@ -133,6 +134,18 @@ private fun Label.showLabel(labelGroup: ProductCardModel.LabelGroup) {
     }
 }
 
+internal fun Label.initLabelGroup(labelGroup: ProductCardFlashSaleModel.LabelGroup?) {
+    if (labelGroup == null) hide()
+    else showLabel(labelGroup)
+}
+
+private fun Label.showLabel(labelGroup: ProductCardFlashSaleModel.LabelGroup) {
+    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+        it.text = MethodChecker.fromHtml(labelGroup.title)
+        it.determineLabelType(labelGroup.type)
+    }
+}
+
 private fun Label.determineLabelType(labelGroupType: String) {
     val labelType = labelGroupType.toUnifyLabelType()
 
@@ -171,6 +184,18 @@ internal fun Typography.initLabelGroup(labelGroup: ProductCardModel.LabelGroup?)
 }
 
 private fun Typography.showTypography(labelGroup: ProductCardModel.LabelGroup) {
+    shouldShowWithAction(labelGroup.title.isNotEmpty()) {
+        it.text = MethodChecker.fromHtml(labelGroup.title)
+        it.setTextColor(safeParseColor(labelGroup.type.toUnifyTextColor()))
+    }
+}
+
+internal fun Typography.initLabelGroup(labelGroup: ProductCardFlashSaleModel.LabelGroup?) {
+    if (labelGroup == null) hide()
+    else showTypography(labelGroup)
+}
+
+private fun Typography.showTypography(labelGroup: ProductCardFlashSaleModel.LabelGroup) {
     shouldShowWithAction(labelGroup.title.isNotEmpty()) {
         it.text = MethodChecker.fromHtml(labelGroup.title)
         it.setTextColor(safeParseColor(labelGroup.type.toUnifyTextColor()))

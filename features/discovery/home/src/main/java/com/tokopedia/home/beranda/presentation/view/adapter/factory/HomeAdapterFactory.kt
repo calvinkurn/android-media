@@ -17,6 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_cha
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessUnitViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
@@ -35,6 +36,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
+                         private val flashSaleCardListener: FlashSaleCardListener,
                          private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val productLayout = HashSet(
@@ -230,7 +232,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener, countDownListener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
-            MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, countDownListener, parentRecycledViewPool)
+            MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, countDownListener, flashSaleCardListener, parentRecycledViewPool)
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }

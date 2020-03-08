@@ -73,6 +73,7 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener;
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
@@ -158,7 +159,7 @@ import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dy
 public class HomeFragment extends BaseDaggerFragment implements
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
-        HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener,
+        HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener, FlashSaleCardListener,
         HomeReviewListener, PopularKeywordViewHolder.PopularKeywordListener {
 
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
@@ -783,6 +784,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 this,
                 this,
                 homeRecyclerView.getRecycledViewPool(),
+                this,
                 this
         );
         AsyncDifferConfig<HomeVisitable> asyncDifferConfig =
@@ -1381,6 +1383,16 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onPopularKeywordItemClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
         RouteManager.route(getContext(),applink);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickItem(channel, position, keyword));
+    }
+
+    @Override
+    public void onSetTrackerClickSeeMore() {
+
+    }
+
+    @Override
+    public void onSetTrackerProductClick(int position) {
+
     }
 
     protected void registerBroadcastReceiverTokoCash() {
