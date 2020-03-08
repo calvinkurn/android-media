@@ -28,6 +28,8 @@ class OtherMenuViewHolder(private val itemView: View,
         private val GREY_TIP = R.drawable.setting_pm_grey_tip
         private val GREY_TEXT_COLOR = R.color.setting_grey_text
         private val RED_TEXT_COLOR = R.color.setting_red_text
+        private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
+        private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
 
         private const val FOLLOWERS = "Followers"
         private const val UPDATE = "Update"
@@ -135,10 +137,12 @@ class OtherMenuViewHolder(private val itemView: View,
         var statusText = SEDANG_DIVERIFIKASI
         var textColor = GREY_TEXT_COLOR
         var statusDrawable = GREY_TIP
+        var powerMerchantDrawableIcon = GREY_POWER_MERCHANT_ICON
         when(powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
                 statusText = AKTIF
                 textColor = GREEN_TEXT_COLOR
+                powerMerchantDrawableIcon = GREEN_POWER_MERCHANT_ICON
                 statusDrawable = GREEN_TIP }
             is PowerMerchantStatus.NotActive -> {
                 statusText = TIDAK_AKTIF
@@ -148,6 +152,7 @@ class OtherMenuViewHolder(private val itemView: View,
         powerMerchantStatusText.text = statusText
         powerMerchantStatusText.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
         powerMerchantLeftStatus.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
+        powerMerchantIcon.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
         return this
     }
 

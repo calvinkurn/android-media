@@ -75,6 +75,7 @@
                 android:background="@drawable/setting_image_circular"/>
 
             <ImageView
+                android:id="@+id/powerMerchantIcon"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="@dimen/setting_shop_badge_border_pm_margin"
