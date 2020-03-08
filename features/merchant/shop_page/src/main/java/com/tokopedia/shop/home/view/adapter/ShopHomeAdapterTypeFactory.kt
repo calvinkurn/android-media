@@ -2,6 +2,7 @@ package com.tokopedia.shop.home.view.adapter
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
@@ -10,11 +11,7 @@ import com.tokopedia.shop.home.WidgetName.PRODUCT
 import com.tokopedia.shop.home.WidgetName.SLIDER_BANNER
 import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
-import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.viewholder.*
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeCarousellProductViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductEtalaseTitleViewHolder
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
@@ -41,6 +38,10 @@ class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome
         return ShopHomeProductViewHolder.LAYOUT
     }
 
+    override fun type(viewModel: LoadingModel?): Int {
+        return ShopHomeLoadingShimmerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnViewHolder(
@@ -64,6 +65,10 @@ class ShopHomeAdapterTypeFactory : BaseAdapterTypeFactory(), TypeFactoryShopHome
             ShopHomeCarousellProductViewHolder.LAYOUT -> {
                 ShopHomeCarousellProductViewHolder(parent)
             }
+            ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
+                ShopHomeLoadingShimmerViewHolder(parent)
+            }
+
             else -> return super.createViewHolder(parent, type)
         }
     }
