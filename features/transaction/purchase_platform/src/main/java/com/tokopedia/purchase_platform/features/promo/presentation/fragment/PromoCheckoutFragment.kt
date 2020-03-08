@@ -49,6 +49,8 @@ import com.tokopedia.purchase_platform.features.promo.presentation.listener.Prom
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -107,12 +109,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view)
         button_apply_promo.setOnClickListener {
-            // Todo : add action to hit API
-            button_apply_promo.isLoading = !button_apply_promo.isLoading
+            button_apply_promo.isLoading = true
+            viewModel.applyPromo()
         }
         button_apply_no_promo.setOnClickListener {
-            // Todo : add action to hit API
-            button_apply_no_promo.isLoading = !button_apply_promo.isLoading
+            button_apply_no_promo.isLoading = true
+            viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
         }
 
         val lastHeaderUiModel: PromoListHeaderUiModel? = null
@@ -133,6 +135,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
         observeEmptyStateUiModel()
+        observeClearPromoResult()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -279,6 +282,20 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     it.data.forEach {
                         adapter.addVisitableList((adapter.data.indexOf(it.key) + 1), it.value)
                     }
+                }
+            }
+        })
+    }
+
+    private fun observeClearPromoResult() {
+        viewModel.clearPromoResponse.observe(this, Observer {
+            button_apply_no_promo.isLoading = false
+            when (it) {
+                is Success -> {
+                    activity?.finish()
+                }
+                is Fail -> {
+                    showToastMessage(it.throwable)
                 }
             }
         })
@@ -463,7 +480,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
-        // Todo : Hit API, then if success, reload page
+        viewModel.applyPromo(promoCode)
     }
 
     override fun onClickPromoListHeader(element: PromoListHeaderUiModel) {
@@ -472,10 +489,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickPromoListItem(element: PromoListItemUiModel) {
         viewModel.updatePromoListAfterClickPromoItem(element)
-    }
-
-    private fun isPromoScopeHasAnySelectedItem(parentIdentifierId: Int): Boolean {
-        return viewModel.isPromoScopeHasAnySelectedItem(parentIdentifierId)
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {

@@ -81,7 +81,7 @@ class PromoListItemViewHolder(private val view: View,
         itemView.label_promo_item_error_message.gone()
         itemView.label_promo_item_sub_title.setMargin(0, itemView.context.resources.getDimension(R.dimen.dp_2).toInt(),
                 itemView.context.resources.getDimension(R.dimen.dp_12).toInt(), 0)
-        if (element.uiState.isSellected) {
+        if (element.uiState.isSelected) {
             itemView.card_promo_item.cardType = CardUnify.TYPE_BORDER_ACTIVE
             itemView.image_select_promo.show()
         } else {

@@ -9,14 +9,19 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.purchase_platform.features.promo.data.response.GqlCouponListRecommendationResponse
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
+import com.tokopedia.purchase_platform.features.promo.data.response.ClearPromoResponse
+import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
-import com.tokopedia.purchase_platform.features.promo.domain.usecase.GetCouponListRecommendationUseCase
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -65,20 +70,75 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     val tmpListUiModel: LiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>
         get() = _tmpListUiModel
 
+    private val _clearPromoResponse = MutableLiveData<Result<ClearPromoResponse>>()
+    val clearPromoResponse: LiveData<Result<ClearPromoResponse>>
+        get() = _clearPromoResponse
+
     fun loadData(mutation: String) {
         launch { getCouponRecommendation(mutation) }
     }
 
+    fun applyPromo(promoCode: String) {
+        launch { }
+    }
+
+    fun applyPromo() {
+        launch { }
+    }
+
+    fun clearPromo(mutation: String) {
+        launch { doClearPromo(mutation) }
+    }
+
+    suspend fun doClearPromo(mutation: String) {
+        launchCatchError(block = {
+            // Set param
+            val promoCodes = ArrayList<String>()
+            var tmpMutation = mutation
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiState.isAlreadyApplied) {
+                    promoCodes.add(it.uiData.promoCode)
+                } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    it.uiData.tmpPromoItemList.forEach {
+                        if (it.uiState.isParentEnabled && it.uiState.isAlreadyApplied) {
+                            promoCodes.add(it.uiData.promoCode)
+                        }
+                    }
+                }
+            }
+            val promoCodesJson = Gson().toJson(promoCodes)
+            tmpMutation = tmpMutation.replace("#promoCode", promoCodesJson)
+
+            // Get response
+            val response = withContext(Dispatchers.IO) {
+                val request = GraphqlRequest(tmpMutation, ClearPromoResponse::class.java)
+                graphqlRepository.getReseponse(listOf(request))
+                        .getSuccessData<ClearPromoResponse>()
+            }
+
+            if (response.successData.success) {
+                _clearPromoResponse.value = Success(response)
+            } else {
+                _clearPromoResponse.value = Fail(RuntimeException())
+            }
+        }) {
+            _clearPromoResponse.value = Fail(it)
+        }
+    }
+
     suspend fun getCouponRecommendation(mutation: String) {
         launchCatchError(block = {
-            // Get response
-//            val response = withContext(Dispatchers.IO) {
-//                val filterRequest = GraphqlRequest(mutation, GqlCouponListRecommendationResponse::class.java)
-//                graphqlRepository.getReseponse(listOf(filterRequest))
-//                        .getSuccessData<GqlCouponListRecommendationResponse>()
-//            }
+            // Set param
+            val param = HashMap<String, Any>()
+            param["promo"] = CouponListRequest()
 
-            val response = Gson().fromJson(MOCK_RESPONSE, GqlCouponListRecommendationResponse::class.java)
+            // Get response
+            val response = withContext(Dispatchers.IO) {
+                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
+//                val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java)
+//                graphqlRepository.getReseponse(listOf(request))
+//                        .getSuccessData<CouponListRecommendationResponse>()
+            }
 
             if (response.couponListRecommendation.status == "OK") {
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
@@ -89,12 +149,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
                     var tmpHasPreSelectedPromo = false
                     promoListUiModel.value?.forEach {
-                        if (it is PromoListItemUiModel && it.uiState.isSellected) {
+                        if (it is PromoListItemUiModel && it.uiState.isSelected) {
                             tmpHasPreSelectedPromo = true
                             return@forEach
                         } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
                             it.uiData.tmpPromoItemList.forEach {
-                                if (it.uiState.isSellected) {
+                                if (it.uiState.isSelected) {
                                     tmpHasPreSelectedPromo = true
                                     return@forEach
                                 }
@@ -153,7 +213,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         _fragmentUiModel.value = fragmentUiModel
     }
 
-    private fun initPromoList(response: GqlCouponListRecommendationResponse) {
+    private fun initPromoList(response: CouponListRecommendationResponse) {
         // Get all sellected promo
         val selectedPromoList = ArrayList<String>()
         response.couponListRecommendation.data.couponSections.forEach { couponSectionItem ->
@@ -219,7 +279,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         _promoInputUiModel.value = promoInputUiModel
     }
 
-    private fun initPromoRecommendation(response: GqlCouponListRecommendationResponse) {
+    private fun initPromoRecommendation(response: CouponListRecommendationResponse) {
         // Initialize promo recommendation
         val promoRecommendation = response.couponListRecommendation.data.promoRecommendation
         if (promoRecommendation.codes.isNotEmpty()) {
@@ -228,7 +288,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     }
 
     private fun calculateClash(selectedItem: PromoListItemUiModel) {
-        if (selectedItem.uiState.isSellected) {
+        if (selectedItem.uiState.isSelected) {
             // Calculate clash on selection event
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel && it.uiData.promoCode != selectedItem.uiData.promoCode) {
@@ -303,7 +363,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     fun isPromoScopeHasAnySelectedItem(parentIdentifierId: Int): Boolean {
         var hasAnyPromoSellected = false
         promoListUiModel.value?.forEach {
-            if (it is PromoListItemUiModel && it.uiState.isSellected && it.uiData.parentIdentifierId == parentIdentifierId) {
+            if (it is PromoListItemUiModel && it.uiState.isSelected && it.uiData.parentIdentifierId == parentIdentifierId) {
                 hasAnyPromoSellected = true
                 return@forEach
             }
@@ -315,7 +375,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     fun updateResetButtonState() {
         var hasAnyPromoSellected = false
         promoListUiModel.value?.forEach {
-            if (it is PromoListItemUiModel && it.uiState.isSellected) {
+            if (it is PromoListItemUiModel && it.uiState.isSelected) {
                 hasAnyPromoSellected = true
                 return@forEach
             }
@@ -329,7 +389,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel) {
                 // Reset promo on expanded item
-                it.uiState.isSellected = false
+                it.uiState.isSelected = false
                 it.uiData.currentClashingPromo.clear()
                 it.uiData.errorMessage = ""
                 promoList.add(it)
@@ -338,7 +398,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 it.uiState.hasSelectedPromoItem = false
                 it.uiData.tmpPromoItemList.forEach { promoListItemUiModel ->
                     promoListItemUiModel.uiData.errorMessage = ""
-                    promoListItemUiModel.uiState.isSellected = false
+                    promoListItemUiModel.uiState.isSelected = false
                     promoListItemUiModel.uiData.currentClashingPromo.clear()
                 }
                 promoList.add(it)
@@ -428,7 +488,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         promoListUiModel.value?.indexOf(element)?.let {
             // Get the promo item data and set inverted collapsed value
             val promoItem = promoListUiModel.value?.get(it) as PromoListItemUiModel
-            promoItem.uiState.isSellected = !promoItem.uiState.isSellected
+            promoItem.uiState.isSelected = !promoItem.uiState.isSelected
 
             // Update view
             _tmpUiModel.value = Update(promoItem)
@@ -460,8 +520,8 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             break
                         } else {
                             val tmpPromoItem = promoListUiModel.value?.get(index) as PromoListItemUiModel
-                            if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSellected) {
-                                tmpPromoItem.uiState.isSellected = false
+                            if (tmpPromoItem.uiData.promoCode != element.uiData.promoCode && tmpPromoItem.uiState.isSelected) {
+                                tmpPromoItem.uiState.isSelected = false
                                 _tmpUiModel.value = Update(tmpPromoItem)
                                 // calculate clash after uncheck
                                 calculateClash(tmpPromoItem)
@@ -482,12 +542,12 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         var totalBenefit = 0
         var usedPromoCount = 0
         promoListUiModel.value?.forEach {
-            if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty() && it.uiState.isSellected) {
+            if (it is PromoListItemUiModel && it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty() && it.uiState.isSelected) {
                 totalBenefit += it.uiData.benefitAmount
                 usedPromoCount++
             } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
                 it.uiData.tmpPromoItemList.forEach {
-                    if (it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty() && it.uiState.isSellected) {
+                    if (it.uiState.isParentEnabled && it.uiData.currentClashingPromo.isNullOrEmpty() && it.uiState.isSelected) {
                         totalBenefit += it.uiData.benefitAmount
                         usedPromoCount++
                     }
@@ -518,7 +578,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             promoListUiModel.value?.forEach {
                 if (it is PromoListItemUiModel) {
                     if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
-                        it.uiState.isSellected = true
+                        it.uiState.isSelected = true
                         calculateClash(it)
                         expandedParentIdentifierList.add(it.uiData.parentIdentifierId)
                     }
@@ -526,7 +586,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     var hasSelectedPromoItem = false
                     it.uiData.tmpPromoItemList.forEach {
                         if (promoRecommendation.uiData.promoCodes.contains(it.uiData.promoCode)) {
-                            it.uiState.isSellected = true
+                            it.uiState.isSelected = true
                             calculateClash(it)
                             hasSelectedPromoItem = true
                         }

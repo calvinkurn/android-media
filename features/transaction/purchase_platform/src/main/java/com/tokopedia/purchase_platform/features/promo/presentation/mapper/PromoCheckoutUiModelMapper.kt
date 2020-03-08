@@ -132,8 +132,9 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isParentEnabled = parentEnabled
-                    isSellected = couponItem.isSelected
+                    isSelected = couponItem.isSelected
                     isAttempted = couponItem.isAttempted
+                    isAlreadyApplied = couponItem.isSelected
                 }
         )
     }

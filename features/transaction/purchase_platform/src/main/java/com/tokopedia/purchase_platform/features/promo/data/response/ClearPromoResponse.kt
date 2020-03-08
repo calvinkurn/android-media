@@ -1,0 +1,16 @@
+package com.tokopedia.purchase_platform.features.promo.data.response
+
+import com.google.gson.annotations.SerializedName
+
+data class ClearPromoResponse(
+        @SerializedName("clearCacheAutoApplyStack")
+        val successData: SuccessData = SuccessData()
+)
+
+data class SuccessData(
+        @SerializedName("Success")
+        val success: Boolean = false,
+
+        @SerializedName("ticker_message")
+        val tickerMessage: String = ""
+)

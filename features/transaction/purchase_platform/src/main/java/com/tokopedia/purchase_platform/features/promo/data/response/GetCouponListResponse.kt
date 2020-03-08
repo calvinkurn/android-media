@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.promo.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class GqlCouponListRecommendationResponse(
+data class CouponListRecommendationResponse(
         @SerializedName("coupon_list_recommendation")
         val couponListRecommendation: CouponListRecommendation = CouponListRecommendation()
 )
