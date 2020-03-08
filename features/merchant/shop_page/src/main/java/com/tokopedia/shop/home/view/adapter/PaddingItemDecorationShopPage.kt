@@ -3,7 +3,6 @@ package com.tokopedia.shop.home.view.adapter
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN

@@ -5,15 +5,11 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/spacing_lvl4"
-    android:paddingStart="@dimen/spacing_lvl4"
-    android:paddingRight="@dimen/spacing_lvl4"
-    android:paddingEnd="@dimen/spacing_lvl4"
-    android:layout_marginLeft="-12dp"
-    android:layout_marginRight="-12dp"
     android:orientation="vertical"
     android:clipToPadding="false"
-    android:layout_marginBottom="@dimen/spacing_lvl3"
+    android:paddingLeft="@dimen/dp_4"
+    android:paddingRight="@dimen/dp_4"
+    android:layout_marginBottom="@dimen/dp_8"
     android:clipChildren="false">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -23,7 +19,7 @@
         app:typographyType="body_1"
         app:typographyWeight="bold"
         android:layout_marginBottom="@dimen/dp_12"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/dp_16"
         android:textColor="@color/clr_f531353b"
         tools:text="New Axe Apollo" />
 

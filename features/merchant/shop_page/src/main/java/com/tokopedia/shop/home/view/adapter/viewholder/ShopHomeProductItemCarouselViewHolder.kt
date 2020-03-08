@@ -23,7 +23,7 @@ class ShopHomeProductItemCarouselViewHolder(
     companion object {
         const val RATIO_WITH_RELATIVE_TO_SCREEN = 2.3
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_newproduct_grid
+        val LAYOUT = R.layout.item_shop_home_product_card
     }
 
     override fun bind(shopHomeProductViewModel: ShopHomeProductViewModel) {

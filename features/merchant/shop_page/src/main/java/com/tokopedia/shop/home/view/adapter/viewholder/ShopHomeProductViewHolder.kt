@@ -33,7 +33,7 @@ open class ShopHomeProductViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_newproduct_grid
+        val LAYOUT = R.layout.item_shop_home_product_card
     }
 
     private fun findViews(view: View) {

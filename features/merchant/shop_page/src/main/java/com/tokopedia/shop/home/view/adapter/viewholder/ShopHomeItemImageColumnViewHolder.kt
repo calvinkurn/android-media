@@ -4,6 +4,7 @@ import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
@@ -11,11 +12,30 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
  * Created by rizqiaryansa on 2020-02-21.
  */
 
-class ShopHomeItemImageColumnViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+class ShopHomeItemImageColumnViewHolder(
+        itemView: View,
+        val listener: ShopHomeMultipleImageColumnViewHolder.ShopHomeMultipleImageColumnListener
+): RecyclerView.ViewHolder(itemView) {
 
     private val ivMultipleColumn: AppCompatImageView = itemView.findViewById(R.id.ivMultipleColumn)
+    private var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
+    private var parentPosition: Int = 0
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         ImageHandler.LoadImage(ivMultipleColumn, data.imageUrl)
+        ivMultipleColumn.setOnClickListener {
+            listener.onMultipleImageColumnItemClicked(displayWidgetUiModel, data)
+        }
+        ivMultipleColumn.addOnImpressionListener(data){
+            listener.onMultipleImageColumnItemImpression(displayWidgetUiModel, data, parentPosition, adapterPosition)
+        }
+    }
+
+    fun setShopHomeDisplayWidgetUiModelData(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?) {
+        this.displayWidgetUiModel =  displayWidgetUiModel
+    }
+
+    fun setParentPosition(parentPosition: Int) {
+        this.parentPosition = parentPosition
     }
 }

@@ -1,4 +1,5 @@
 query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $source: String){
+    status
     shopInfoByID(input: {
         shopIDs: $shopIds,
         fields: $fields,
@@ -80,6 +81,7 @@ query getShopInfo($shopIds: [Int!]!, $fields: [String!]!, $shopDomain: String, $
                 phone
                 fax
             }
+            shopHomeType
         }
     }
 }

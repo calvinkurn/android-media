@@ -1,12 +1,13 @@
 package com.tokopedia.shop.home.view.model
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
  */
 data class ShopHomeDisplayWidgetUiModel(
-        override val widgetId: Int = -1,
+        override val widgetId: String = "",
         override val layoutOrder: Int = -1,
         override val name: String = "",
         override val type: String = "",
@@ -15,11 +16,11 @@ data class ShopHomeDisplayWidgetUiModel(
 ) : BaseShopHomeWidgetUiModel {
 
     data class DisplayWidgetItem(
-            val imageUrl: String? = null,
-            val appLink: String? = null,
-            val webLinkL: String? = null,
-            val videoUrl: String? = null
-    )
+            val imageUrl: String = "",
+            val appLink: String = "",
+            val webLinkL: String = "",
+            val videoUrl: String = ""
+    ) : ImpressHolder()
 
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)

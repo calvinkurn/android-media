@@ -17,6 +17,8 @@ import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.Cir
 import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularPageChangeListener
 import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home_page_banner.presentation.widgets.pageIndicator.CircularPageIndicator
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.*
 
 /**
  * @author by errysuprayogi on 11/28/17.
@@ -32,6 +34,7 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     private val indicatorView: CircularPageIndicator = itemView.findViewById(R.id.indicator_banner)
     private val seeAllPromo: TextView = itemView.findViewById(R.id.see_all_promo)
     private val adapter = HomeBannerAdapter(listOf(), this)
+    private val irisSession  = IrisSession(context)
 
     override fun bind(element: BannerViewModel) {
         try {
@@ -47,11 +50,15 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     override fun bind(element: BannerViewModel, payloads: MutableList<Any>) {
-        slidesList = element.slides
-        this.isCache = element.isCache
-        element.slides?.let {
-            circularViewPager.setItemList(it.map { CircularModel(it.id, it.imageUrl) })
-            indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+        try {
+            slidesList = element.slides
+            this.isCache = element.isCache
+            element.slides?.let {
+                circularViewPager.setItemList(it.map { CircularModel(it.id, it.imageUrl) })
+                indicatorView.createIndicators(circularViewPager.indicatorCount, circularViewPager.indicatorPosition)
+            }
+        }catch (e: Exception){
+            e.printStackTrace()
         }
     }
 
@@ -99,20 +106,17 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
             slidesList?.let {
                 HomeTrackingUtils.homeSlidingBannerImpression(context, it[position], position)
                 listener.onPromoScrolled(it[position])
-
-                if (!isCache) {
-                    if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO &&
-                            !it[position].isInvoke) {
-                        listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
-                                it[position]
-                        ))
-                        it[position].invoke()
-                    } else if (!it[position].isInvoke) {
-                        listener.putEEToTrackingQueue(HomePageTracking.getBannerImpressionDataLayer(
-                                it[position]
-                        ))
-                        it[position].invoke()
-                    }
+                if (it[position].type == BannerSlidesModel.TYPE_BANNER_PERSO &&
+                        !it[position].isInvoke) {
+                    listener.putEEToTrackingQueue(HomePageTracking.getBannerOverlayPersoImpressionDataLayer(
+                            it[position]
+                    ))
+                } else if (!it[position].isInvoke) {
+                    val dataLayer = HomePageTracking.getBannerImpressionDataLayer(
+                            it[position]
+                    )
+                    dataLayer.put(KEY_SESSION_IRIS, irisSession.getSessionId())
+                    listener.putEEToTrackingQueue(dataLayer)
                 }
             }
         }
@@ -127,7 +131,12 @@ class BannerViewHolder(itemView: View, private val listener: HomeCategoryListene
     }
 
     fun onResume(){
+        circularViewPager.resetImpressions()
         circularViewPager.resumeAutoScroll()
+    }
+
+    fun resetImpression(){
+        circularViewPager.resetImpressions()
     }
 
     fun onPause(){

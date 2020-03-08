@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.shop.R
+import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
@@ -12,6 +13,7 @@ import com.tokopedia.shop.home.util.CoroutineDispatcherProviderImpl
 import com.tokopedia.shop.home.util.CoroutineDispatcherProvider
 import com.tokopedia.shop.product.data.GQLQueryConstant
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -55,6 +57,12 @@ class ShopPageHomeModule {
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
         return UserSession(context)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideShopPageHomeTracking(@ApplicationContext context: Context): ShopPageHomeTracking {
+        return ShopPageHomeTracking(TrackingQueue(context))
     }
 
 }

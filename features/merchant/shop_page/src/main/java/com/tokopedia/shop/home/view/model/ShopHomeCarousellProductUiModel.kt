@@ -8,7 +8,7 @@ import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel.Header
  */
 
 data class ShopHomeCarousellProductUiModel(
-        override val widgetId: Int = -1,
+        override val widgetId: String = "",
         override val layoutOrder: Int = -1,
         override val name: String = "",
         override val type: String = "",

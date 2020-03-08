@@ -26,7 +26,7 @@ data class ShopLayoutWidget(
 
     data class Widget(
             @SerializedName("widgetID")
-            val widgetID: Int = -1,
+            val widgetID: String = "",
             @SerializedName("layoutOrder")
             val layoutOrder: Int = -1,
             @SerializedName("name")
@@ -46,7 +46,11 @@ data class ShopLayoutWidget(
                 @SerializedName("ctaLink")
                 val ctaLink: String = "",
                 @SerializedName("cover")
-                val cover: String = ""
+                val cover: String = "",
+                @SerializedName("ratio")
+                val ratio: String = "",
+                @SerializedName("isAtc")
+                val isAtc: Int = 0
         )
 
         data class Data(
@@ -74,8 +78,8 @@ data class ShopLayoutWidget(
                 val voucherID: Int = -1,
                 @SerializedName("voucherType")
                 val voucherType: VoucherType,
-                @SerializedName("voucher_code")
-                val voucher_code: String = "",
+                @SerializedName("voucherCode")
+                val voucherCode: String = "",
                 @SerializedName("amount")
                 val amount: Amount = Amount(),
                 @SerializedName("minimumSpend")

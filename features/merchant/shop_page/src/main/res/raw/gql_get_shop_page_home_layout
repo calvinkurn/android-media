@@ -16,6 +16,8 @@ query get_shop_page_home_layout($shopId: String!,$status: String,$layoutId: Stri
         ctaText
         ctaLink
         cover
+        ratio
+        isATC
       }
       data {
         ... on DisplayWidget {

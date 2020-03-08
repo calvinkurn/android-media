@@ -14,7 +14,10 @@ import kotlinx.android.synthetic.main.widget_shop_home_multiple_image_column.vie
  * Created by rizqiaryansa on 2020-02-21.
  */
 
-class ShopHomeMultipleImageColumnViewHolder(itemView: View) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
+class ShopHomeMultipleImageColumnViewHolder(
+        itemView: View,
+        shopHomeMultipleImageColumnListener: ShopHomeMultipleImageColumnListener
+) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -25,7 +28,23 @@ class ShopHomeMultipleImageColumnViewHolder(itemView: View) : AbstractViewHolder
         private const val SPAN_SIZE_TRIPLE = 2
     }
 
-    private val shopHomeMultipleImageColumnAdapter by lazy { ShopHomeMultipleImageColumnAdapter() }
+    interface ShopHomeMultipleImageColumnListener{
+        fun onMultipleImageColumnItemImpression(
+                displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
+                displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
+                parentPosition: Int,
+                adapterPosition: Int
+        )
+
+        fun onMultipleImageColumnItemClicked(
+                displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
+                displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem
+        )
+    }
+
+    private val shopHomeMultipleImageColumnAdapter by lazy { ShopHomeMultipleImageColumnAdapter(
+            shopHomeMultipleImageColumnListener
+    ) }
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         val gridLayoutManager = GridLayoutManager(itemView.context, SPAN_SIZE_SINGLE)
@@ -45,6 +64,8 @@ class ShopHomeMultipleImageColumnViewHolder(itemView: View) : AbstractViewHolder
             }
             adapter = shopHomeMultipleImageColumnAdapter
         }
+        shopHomeMultipleImageColumnAdapter.setShopHomeDisplayWidgetUiModelData(element)
+        shopHomeMultipleImageColumnAdapter.setParentPosition(adapterPosition)
         shopHomeMultipleImageColumnAdapter.submitList(element.data)
     }
 }
