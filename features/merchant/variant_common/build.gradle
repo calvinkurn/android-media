@@ -18,4 +18,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
+    implementation project(rootProject.ext.libraries.tkpdabstraction)
+    implementation rootProject.ext.unifyDependencies.components
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation project(rootProject.ext.libraries.kotlinExtensions)
+
 }
