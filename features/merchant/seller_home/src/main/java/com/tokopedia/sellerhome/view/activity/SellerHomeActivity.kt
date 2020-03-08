@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.sellerhome.common.ShopStatus
+import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import com.tokopedia.sellerhomedrawer.R
 import com.tokopedia.sellerhomedrawer.data.GoldGetPmOsStatus
@@ -56,7 +57,7 @@ class SellerHomeActivity: BaseSellerReceiverDrawerActivity(), SellerHomeDashboar
     }
 
     override fun getNewFragment(): Fragment? {
-        return sellerHomeFragment
+        return OtherMenuFragment.createInstance()
     }
 
     override fun onResume() {

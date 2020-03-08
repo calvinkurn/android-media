@@ -5,7 +5,7 @@ import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.di.module.SellerHomeUseCaseModule
 import com.tokopedia.sellerhome.di.module.SellerHomeViewModelModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
-import com.tokopedia.sellerhome.settings.view.OtherMenuFragment
+import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import dagger.Component
 
 @SellerHomeScope

@@ -44,7 +44,6 @@ class OtherMenuViewModel @Inject constructor(
         private const val LAYANAN_KEUANGAN = "Layanan Keuangan"
         private const val PUSAT_EDUKASI_SELLER = "Pusat Edukasi Seller"
         private const val TOKOPEDIA_CARE = "Tokopedia Care"
-        private const val PENGATURAN = "Pengaturan"
     }
 
     private val _settingListLiveData = MutableLiveData<List<SettingUiModel>>()
@@ -93,8 +92,7 @@ class OtherMenuViewModel @Inject constructor(
                         R.drawable.ic_finance),
                 MenuItemUiModel(PUSAT_EDUKASI_SELLER, R.drawable.ic_seller_edu),
                 MenuItemUiModel(TOKOPEDIA_CARE, R.drawable.ic_tokopedia_care),
-                DividerUiModel(DividerType.THIN_PARTIAL),
-                MenuItemUiModel(PENGATURAN, R.drawable.ic_setting)
+                DividerUiModel(DividerType.THIN_PARTIAL)
         )
         _settingListLiveData.value = settingList
     }

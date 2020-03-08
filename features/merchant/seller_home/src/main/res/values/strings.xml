@@ -18,4 +18,6 @@
     <string name="regular_merchant">Regular Merchant</string>
     <string name="setting_upgrade">Upgrade</string>
     <string name="setting_verifikasi">Verifikasi</string>
+
+    <string name="menu_setting_title">Pengaturan</string>
 </resources>
