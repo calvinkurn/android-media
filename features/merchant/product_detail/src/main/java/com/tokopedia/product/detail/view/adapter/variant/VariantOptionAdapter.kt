@@ -25,10 +25,6 @@ class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.
 
     fun setData(data: VariantCategory) {
         this.variantCategory = data
-    }
-
-    fun setDataWithPayload(data: VariantCategory) {
-        this.variantCategory = data
         notifyDataSetChanged()
     }
 

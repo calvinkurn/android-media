@@ -5,14 +5,14 @@
     android:id="@+id/variantImgContainer"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/dp_4"
-    android:layout_marginRight="@dimen/dp_4"
+    android:layout_marginEnd="@dimen/dp_12"
+    android:layout_marginRight="@dimen/dp_12"
     android:background="@drawable/bg_variant_img_unselected">
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_6"
+        android:padding="@dimen/dp_4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,7 +22,7 @@
             android:id="@+id/variantImg"
             android:layout_width="@dimen/dp_60"
             android:layout_height="@dimen/dp_60"
-            app:borderRadius="@dimen/dp_8"
+            app:borderRadius="@dimen/dp_6"
             tools:src="@tools:sample/avatars" />
 
     </FrameLayout>
@@ -42,7 +42,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Kosong"
+            android:text="@string/variant_empty"
             android:textColor="@color/white"
             app:typographyType="body_3" />
     </FrameLayout>

@@ -1,6 +1,8 @@
 package com.tokopedia.product.detail.view.viewholder.variant
 
 import android.view.View
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -31,14 +33,17 @@ class VariantColorViewHolder(val view: View,
         when (element.currentState) {
             ProductDetailConstant.STATE_EMPTY -> {
                 variantColorItem.setColorNotAvailable()
+                txtVariantColorEmpty.show()
                 view.isEnabled = false
             }
             ProductDetailConstant.STATE_SELECTED -> {
                 variantColorItem.setColorSelected()
+                txtVariantColorEmpty.gone()
                 view.isEnabled = false
             }
             ProductDetailConstant.STATE_UNSELECTED -> {
                 variantColorItem.setColorAvailable()
+                txtVariantColorEmpty.gone()
                 view.isEnabled = true
             }
         }

@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.product.detail.R
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by Yehezkiel on 2020-02-27
@@ -37,7 +38,7 @@ class VariantCircleColorView @JvmOverloads constructor(
                 isAntiAlias = true
                 style = Paint.Style.STROKE
                 strokeWidth = 5f
-                color = MethodChecker.getColor(context, R.color.border_circle_grey)
+                color = MethodChecker.getColor(context, R.color.unify_N75)
                 // Border
             }
 
@@ -46,7 +47,7 @@ class VariantCircleColorView @JvmOverloads constructor(
                 isAntiAlias = true
                 style = Paint.Style.FILL
                 strokeWidth = 5f
-                color = MethodChecker.getColor(context, R.color.light_secondary)
+                color = MethodChecker.getColor(context, R.color.dark_N700_68)
             }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -57,8 +58,8 @@ class VariantCircleColorView @JvmOverloads constructor(
         val widthSize = MeasureSpec.getSize(widthMeasureSpec)
         val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
-        val defaultWidth = 150
-        val defaultHeight = 150
+        val defaultWidth = 58.toPx()
+        val defaultHeight = 58.toPx()
 
         val width = when (widthMode) {
             MeasureSpec.EXACTLY -> widthSize
@@ -89,14 +90,14 @@ class VariantCircleColorView @JvmOverloads constructor(
             canvas?.drawCircle(
                     width.toFloat() / 2,
                     height.toFloat() / 2,
-                    (width.toFloat() / 2) - 25,
+                    (width.toFloat() / 2) - 15,
                     innerBorderPaint
             )
         } else {
             canvas?.drawCircle(
                     width.toFloat() / 2,
                     height.toFloat() / 2,
-                    (width.toFloat() / 2) - 25,
+                    (width.toFloat() / 2) - 15,
                     innerCirclePaint
             )
         }
@@ -152,11 +153,11 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun setSelected(){
-        outerBorderPaint.color = MethodChecker.getColor(context, R.color.tkpd_main_green)
+        outerBorderPaint.color = MethodChecker.getColor(context, R.color.green_400)
     }
 
     private fun setUnselected(){
-        outerBorderPaint.color = MethodChecker.getColor(context, R.color.border_circle_grey)
+        outerBorderPaint.color = MethodChecker.getColor(context, R.color.unify_N75)
     }
 
     private fun clearOverlay() {
@@ -164,7 +165,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun addOverlay() {
-        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.light_secondary)
+        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.dark_N700_68)
     }
 
     interface CircleDrawInterface {

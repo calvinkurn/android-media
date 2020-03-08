@@ -4,27 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/dp_10"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/dp_16">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtVariantCategoryName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
+        android:textColor="@color/charcoal_grey_88"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"
         app:typographyWeight="bold"
-        android:textColor="@color/charcoal_grey_88"
         tools:text="Pilih Warna : " />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtVariantSelectedOption"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginLeft="@dimen/dp_10"
+        android:layout_marginStart="@dimen/dp_8"
+        android:layout_marginLeft="@dimen/dp_8"
+        android:textColor="@color/Neutral_N700_44"
         app:layout_constraintBottom_toBottomOf="@+id/txtVariantCategoryName"
         app:layout_constraintStart_toEndOf="@+id/txtVariantCategoryName"
         app:layout_constraintTop_toTopOf="@+id/txtVariantCategoryName"
@@ -37,26 +38,27 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
-        android:textColor="@color/tkpd_main_green"
+        android:textColor="@color/green_500"
         android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@+id/txtVariantCategoryName"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/txtVariantCategoryName"
         app:typographyType="body_2"
-        tools:text="Lihat Panduan" />
+        tools:text="Lihat Panduan"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txtVariantStockWording"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:text="HARDCODED"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rv_variant"
-        android:layout_marginBottom="@dimen/dp_5"
         app:typographyType="body_3"
-        android:text="HARDCODED"
-        tools:visibility="visible"/>
+        tools:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_variant"
@@ -64,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
-        android:layout_marginTop="@dimen/dp_24"
+        android:layout_marginTop="@dimen/dp_20"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"

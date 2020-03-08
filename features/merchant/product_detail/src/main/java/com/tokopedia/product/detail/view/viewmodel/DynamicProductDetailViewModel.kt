@@ -20,12 +20,15 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductIn
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
+import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
-import com.tokopedia.product.detail.data.model.datamodel.*
+import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
@@ -77,6 +80,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                              private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+                                                             private val getNearestWarehouseUseCase: GetNearestWarehouseUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
@@ -120,7 +124,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     var imageHeight: Int = 0
 
-    var multiOrigin: WarehouseInfo = WarehouseInfo()
+    var multiOrigin: Map<String, MultiOriginWarehouse> = mapOf()
+    var selectedMultiOrigin: MultiOriginWarehouse = MultiOriginWarehouse()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
     var installmentData: FinancingDataResponse? = null
@@ -205,7 +210,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             }
             // Then update the following, it will not throw anything when error
             getProductP2(forceRefresh, productParams.warehouseId)
-            getProductP3(productParams.shopDomain, forceRefresh)
+            getProductP3(productParams.shopDomain, forceRefresh, productParams.warehouseId)
+
         }) {
             _productLayout.value = Fail(it)
         }
@@ -237,7 +243,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return tradeInParams
     }
 
-
     private suspend fun getProductP2(forceRefresh: Boolean, warehouseId: String?) {
         getDynamicProductInfoP1?.let {
             val p2ShopDeferred = getProductInfoP2ShopAsync(it.basic.getShopId(),
@@ -268,28 +273,62 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 tradeInParams.widgetString = tradeInResponse.widgetString
             }
 
-            _p2General.value = p2GeneralAsync.await().also {
-                variantData = it.variantResp
+            _p2General.value = p2GeneralAsync.await().also { p2General ->
+                variantData = p2General.variantResp
             }
+
             p2LoginDeferred?.let {
                 _p2Login.value = it.await()
             }
         }
     }
 
-    private suspend fun getProductP3(shopDomain: String?, forceRefresh: Boolean) {
+    private suspend fun getNearestWarehouse(listOfProductIds: List<String>?, warehouseId: String?, forceRefresh: Boolean) {
+        listOfProductIds?.let {
+            getNearestWarehouseUseCase.requestParams = GetNearestWarehouseUseCase.createParams(listOfProductIds, warehouseId)
+            getNearestWarehouseUseCase.forceRefresh = forceRefresh
+            try {
+                multiOrigin = getNearestWarehouseUseCase.executeOnBackground().data.associateBy({
+                    it.productId
+                }, {
+                    it
+                })
+
+                selectedMultiOrigin = multiOrigin[getDynamicProductInfoP1?.basic?.productID
+                        ?: ""] ?: MultiOriginWarehouse()
+
+            } catch (e: Throwable) {
+            }
+        }
+    }
+
+    private suspend fun getProductP3(shopDomain: String?, forceRefresh: Boolean, warehouseId: String?) {
+        val productInfoP3 = ProductInfoP3()
         getDynamicProductInfoP1?.run {
+
+            if (data.variant.isVariant && p2General.value?.variantResp != null) {
+                getNearestWarehouse(p2General.value?.variantResp?.children?.map { it.productId.toString() }, warehouseId, forceRefresh)
+            } else {
+                getNearestWarehouse(listOf(basic.productID), warehouseId, forceRefresh)
+            }
+
+            productInfoP3.multiOrigin = selectedMultiOrigin
+
             _p2ShopDataResp.value?.let { p2Shop ->
-                multiOrigin = p2Shop.nearestWarehouse.warehouseInfo
                 val domain = shopDomain ?: p2Shop.shopInfo?.shopCore?.domain
                 ?: return@run
 
                 if (isUserSessionActive) {
-                    val origin = if (multiOrigin.isFulfillment) multiOrigin.origin else null
-                    _productInfoP3resp.value = getProductInfoP3(basic.getWeightUnit(), domain, forceRefresh,
+                    val origin = if (selectedMultiOrigin.warehouseInfo.isFulfillment) selectedMultiOrigin.warehouseInfo.origin else null
+                    val p3Temp = getProductInfoP3(basic.getWeightUnit(), domain, forceRefresh,
                             shouldShowCod, origin)
+                    productInfoP3.addressModel = p3Temp.addressModel
+                    productInfoP3.rateEstSummarizeText = p3Temp.rateEstSummarizeText
+                    productInfoP3.userCod = p3Temp.userCod
                 }
             }
+
+            _productInfoP3resp.value = productInfoP3
         }
     }
 
@@ -306,6 +345,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (!isOfficialStore && it.name() == ProductDetailConstant.VALUE_PROP) {
                 it
             } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO && !isUserSessionActive) {
+                it
+            } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
                 it
             } else {
                 null
@@ -374,11 +415,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     fun putChatProductInfoTo(
             intent: Intent?,
             productId: String?,
-            productInfo: DynamicProductInfoP1?,
-            userInputVariant: String?
+            productInfo: DynamicProductInfoP1?
     ) {
         if (intent == null || productId == null) return
-        val variants = mapSelectedProductVariants(userInputVariant)
+        val variants = mapSelectedProductVariants(productId)
         val productImageUrl = productInfo?.data?.getProductImageUrl() ?: ""
         val productName = productInfo?.getProductName ?: ""
         val productPrice = productInfo?.data?.price?.value?.getCurrencyFormatted() ?: ""
@@ -536,7 +576,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                           warehouseId: String,
                                           forceRefresh: Boolean = false): Deferred<ProductInfoP2ShopData> {
         return async {
-            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, warehouseId, forceRefresh, createTradeinParam(getDynamicProductInfoP1, deviceId))
+            getProductInfoP2ShopUseCase.requestParams = GetProductInfoP2ShopUseCase.createParams(shopId, productId, forceRefresh, createTradeinParam(getDynamicProductInfoP1, deviceId))
             getProductInfoP2ShopUseCase.executeOnBackground()
         }
     }

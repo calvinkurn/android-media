@@ -186,8 +186,9 @@
 
 
     //Variant section
-    <string name="variant_option_builder_1">Pilih %1$s : </string>
+    <string name="variant_option_builder_1">Pilih %1$s: </string>
     <string name="variant_option_builder_2">%1$d Pilihan</string>
+    <string name="variant_empty">Habis</string>
 
 
 </resources>

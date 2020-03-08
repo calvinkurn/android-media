@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
@@ -33,15 +34,10 @@ class ProductSnapshotViewHolder(private val view: View,
         element.dynamicProductInfoP1?.let {
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
-
             }
 
             header.renderData(it)
             header.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
-            element.nearestWarehouse?.let { nearestWarehouse ->
-                if (nearestWarehouse.warehouseInfo.id.isNotBlank())
-                    header.updateStockAndPriceWarehouse(nearestWarehouse, it.data.campaign)
-            }
             view.view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
                     it.basic.status)
         }
@@ -80,13 +76,22 @@ class ProductSnapshotViewHolder(private val view: View,
 
         when (payloads[0] as Int) {
             ProductDetailConstant.PAYLOAD_WISHLIST -> renderWishlist(element.isAllowManage, element.isWishlisted)
-            ProductDetailConstant.PAYLOAD_COD -> {
+            ProductDetailConstant.PAYLOAD_P3 -> {
                 view.label_cod.visibility = if (element.shouldShowCod) View.VISIBLE else View.GONE
+
+                renderStockWording(element.getNearestWarehouse(), element.getCampaignModular())
                 renderCod(element.shouldShowCod)
             }
+
             ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
             ProductDetailConstant.PAYLOAD_CONFIGURATION_CHANGED -> changeImageHeight(element.screenHeight)
         }
+    }
+
+    private fun renderStockWording(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular) {
+        if (nearestWarehouseData.nearestWarehouseId.isNotBlank())
+            header.updateStockAndPriceWarehouse(nearestWarehouseData, campaign)
+
     }
 
     private fun renderCod(shouldShowCod: Boolean) {

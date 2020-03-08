@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
@@ -24,13 +25,6 @@ class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerVi
         notifyDataSetChanged()
     }
 
-    fun setDataWithPayload(data: List<VariantCategory>?) {
-        data?.let {
-            variantContainerData = it
-        }
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariantContainerViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_variant_container_view_holder, parent, false)
@@ -41,19 +35,16 @@ class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerVi
         holder.bind(variantContainerData[position])
     }
 
-    override fun onBindViewHolder(holder: VariantContainerViewHolder, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isNotEmpty()) {
-            holder.bind(variantContainerData[position], payloads.firstOrNull() as? Int ?: 0)
-        } else {
-            super.onBindViewHolder(holder, position, payloads)
-        }
-    }
-
     override fun getItemCount(): Int = variantContainerData.size
 
     inner class VariantContainerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         fun bind(data: VariantCategory) = with(view) {
             variantOptionAdapter = VariantOptionAdapter(listener)
+            if (data.getPositionSelectedOption() >4) {
+                rv_variant.layoutManager?.scrollToPosition(data.getPositionSelectedOption())
+            }
+            rv_variant.adapter = variantOptionAdapter
+
             txtVariantCategoryName.text = context.getString(R.string.variant_option_builder_1, data.name)
 
             if (data.getSelectedOption() == null) {
@@ -62,9 +53,9 @@ class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerVi
                 txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
             }
 
-            if (data.isLeaf) {
+            if (data.isLeaf && listener.getStockWording() != "") {
                 txtVariantStockWording.show()
-                txtVariantStockWording.text = listener.getStockWording()
+                txtVariantStockWording.text = MethodChecker.fromHtml(listener.getStockWording())
             } else {
                 txtVariantStockWording.hide()
             }
@@ -79,13 +70,7 @@ class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerVi
             }
 
             rv_variant.itemAnimator = null
-            rv_variant.adapter = variantOptionAdapter
             variantOptionAdapter?.setData(data)
-        }
-
-        fun bind(data: VariantCategory, payload: Int) = with(view) {
-            rv_variant.itemAnimator = null
-            variantOptionAdapter?.setDataWithPayload(data)
         }
     }
 }

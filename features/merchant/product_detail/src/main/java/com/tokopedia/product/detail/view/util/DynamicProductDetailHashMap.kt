@@ -180,7 +180,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
 
             snapShotMap?.run {
                 isAllowManage = it.shopInfo?.isAllowManage ?: 0
-                nearestWarehouse = it.nearestWarehouse
                 statusTitle = it.shopInfo?.statusInfo?.statusTitle ?: ""
                 statusMessage = it.shopInfo?.statusInfo?.statusMessage ?: ""
                 shopStatus = it.shopInfo?.statusInfo?.shopStatus ?: 1

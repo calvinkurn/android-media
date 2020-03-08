@@ -12,7 +12,6 @@ import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.util.SparseIntArray
 import android.view.*
 import android.view.animation.AlphaAnimation
@@ -64,6 +63,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.gallery.ImageReviewGalleryActivity
 import com.tokopedia.gallery.viewmodel.ImageReviewItem
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
@@ -190,6 +190,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
     private lateinit var remoteConfig: RemoteConfig
+
+    // This productId is only use for backend hit
     private var productId: String? = null
     private var productKey: String? = null
     private var shopDomain: String? = null
@@ -201,7 +203,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var isFromDeeplink: Boolean = false
     private var userInputNotes = ""
     private var userInputQuantity = 0
-    private var userInputVariant: String? = null
     private var delegateTradeInTracking = false
     private var trackerAttribution: String? = ""
     private var trackerListName: String? = ""
@@ -285,7 +286,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             doActivityResult = savedInstanceState.getBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, true)
             userInputNotes = savedInstanceState.getString(ProductDetailConstant.SAVED_NOTE, "")
             userInputQuantity = savedInstanceState.getInt(ProductDetailConstant.SAVED_QUANTITY, 1)
-            userInputVariant = savedInstanceState.getString(ProductDetailConstant.SAVED_VARIANT)
         }
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -317,7 +317,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         outState.putBoolean(ProductDetailConstant.SAVED_ACTIVITY_RESULT, false)
         outState.putString(ProductDetailConstant.SAVED_NOTE, userInputNotes)
         outState.putInt(ProductDetailConstant.SAVED_QUANTITY, userInputQuantity)
-        outState.putString(ProductDetailConstant.SAVED_VARIANT, userInputVariant)
     }
 
     override fun onPause() {
@@ -432,9 +431,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     val selectedEtalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
                     val selectedEtalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
-                    if (productId != null && !selectedEtalaseName.isNullOrEmpty()) {
+                    val dynamicProductInfoData = viewModel.getDynamicProductInfoP1
+                            ?: DynamicProductInfoP1()
+                    if (dynamicProductInfoData.basic.productID.isNotEmpty() && !selectedEtalaseName.isNullOrEmpty()) {
                         showProgressDialog(onCancelClicked = { viewModel.cancelEtalaseUseCase() })
-                        viewModel.moveProductToEtalase(productId!!, selectedEtalaseId, selectedEtalaseName)
+                        viewModel.moveProductToEtalase(dynamicProductInfoData.basic.productID, selectedEtalaseId, selectedEtalaseName)
                     }
                 }
             }
@@ -477,15 +478,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         val selectedWarehouse: MultiOriginWarehouse? = cacheManager.get(NormalCheckoutConstant.RESULT_SELECTED_WAREHOUSE,
                                 MultiOriginWarehouse::class.java)
                         if (selectedProductInfo != null) {
-                            userInputVariant = data.getStringExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID)
                             val dynamicP1Copy = DynamicProductDetailMapper.mapProductInfoToDynamicProductInfo(selectedProductInfo, viewModel.getDynamicProductInfoP1
                                     ?: DynamicProductInfoP1())
                             viewModel.getDynamicProductInfoP1 = dynamicP1Copy
                             pdpHashMapUtil?.snapShotMap?.apply {
                                 shouldReinitVideoPicture = true
                                 selectedWarehouse?.let {
-                                    nearestWarehouse = it
-                                    viewModel.multiOrigin = it.warehouseInfo
+                                    //                                    viewModel.selectedMultiOrigin = it.warehouseInfo
                                 }
                             }
                             updateProductId()
@@ -594,6 +593,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.loadTopAdsProduct.removeObservers(this)
         viewModel.moveToWarehouseResult.removeObservers(this)
         viewModel.moveToEtalaseResult.removeObservers(this)
+        viewModel.updatedImageVariant.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -928,10 +928,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onImageClicked(position: Int) {
         val isWishlisted = pdpHashMapUtil?.snapShotMap?.isWishlisted ?: false
+        val dynamicProductInfoData = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
         activity?.let {
-            val intent = ImagePreviewPdpActivity.createIntent(it, productId.orEmpty(), isWishlisted,
-                    viewModel.getDynamicProductInfoP1?.data?.getImagePath()
-                            ?: arrayListOf(), null, position)
+            val intent = ImagePreviewPdpActivity.createIntent(it, dynamicProductInfoData.basic.productID, isWishlisted,
+                    dynamicProductInfoData.data.getImagePath(), null, position)
             startActivityForResult(intent, ProductDetailFragment.REQUEST_CODE_IMAGE_PREVIEW)
         }
     }
@@ -977,7 +977,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             } else if (productP3value != null) {
                 if (isActive) {
-                    productId?.let {
+                    productInfo?.basic?.productID?.let {
                         viewModel.removeWishList(it,
                                 onSuccessRemoveWishlist = this::onSuccessRemoveWishlist,
                                 onErrorRemoveWishList = this::onErrorRemoveWishList)
@@ -985,21 +985,20 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     }
 
                 } else {
-                    productId?.let {
+                    productInfo?.basic?.productID?.let {
                         viewModel.addWishList(it,
                                 onSuccessAddWishlist = this::onSuccessAddWishlist,
                                 onErrorAddWishList = this::onErrorAddWishList)
-                        productInfo?.let {
+                        productInfo.let {
                             DynamicProductDetailTracking.Moengage.eventPDPWishlistAppsFyler(it)
                         }
                         DynamicProductDetailTracking.Click.eventPDPAddToWishlist(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
                     }
                 }
-                if (isAffiliate && productId?.isNotEmpty() == true) {
+                if (isAffiliate && productInfo?.basic?.productID?.isNotEmpty() == true) {
                     productDetailTracking.eventClickWishlistOnAffiliate(
                             viewModel.userId,
-                            productId!!
-                    )
+                            productInfo.basic.productID)
                 }
             }
         } else {
@@ -1218,8 +1217,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     productInfo.data.preOrder)
 
             if (productInfo.basic.category.isAdult) {
-                AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productId
-                        ?: "")
+                AdultManager.showAdultPopUp(this, AdultManager.ORIGIN_PDP, productInfo.basic.productID)
             }
 
             actionButtonView.visibility = !isAffiliate
@@ -1250,7 +1248,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         irisSessionId,
                         shopInfo.shopCore.shopID,
                         shopInfo.goldOS.shopTypeString,
-                        productId ?: "")
+                        p1.basic.productID)
             }
         }
 
@@ -1258,7 +1256,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.removeGeneralInfo(pdpHashMapUtil?.productFullfilmentMap)
         }
 
-        val tradeinResponse = it.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInResponse()
+        val tradeinResponse = it.tradeinResponse?.validateTradeInPDP
+                ?: ValidateTradeInResponse()
 
         if (!tradeinResponse.isEligible) {
             dynamicAdapter.removeGeneralInfo(pdpHashMapUtil?.productTradeinMap)
@@ -1319,6 +1318,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onSuccessGetDataP3Resp(it: ProductInfoP3) {
+        val nearestWarehouse = viewModel.selectedMultiOrigin
+
         shouldShowCodP3 = it.userCod
         pdpHashMapUtil?.productShipingInfoMap?.let { productShippingInfoMap ->
             if (it.ratesModel?.getServicesSize() == 0) {
@@ -1329,8 +1330,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.notifyShipingInfo(productShippingInfoMap)
         }
 
+        pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(nearestWarehouse.warehouseInfo.id, nearestWarehouse.price, nearestWarehouse.stockWording)
         pdpHashMapUtil?.snapShotMap?.shouldShowCod = shouldShowCodP1 && shouldShowCodP3
-        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_COD)
+
+        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_P3)
     }
 
     private fun logException(t: Throwable) {
@@ -1378,16 +1381,24 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun onVariantGuideLineClicked(url: String) {
-        Log.e("guideline", "guideline clicked $url")
+        activity?.let {
+            startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
+        }
     }
 
     override fun getStockWording(): String {
-        return if (VariantMapper.selectedOptionId.size != viewModel.variantData?.variant?.size) {
-            ""
+        val updatedNearestWarehouse = pdpHashMapUtil?.snapShotMap?.getNearestWarehouse()?.nearestWarehouseStockWording
+
+        return if (updatedNearestWarehouse.isNullOrBlank()) {
+            if (VariantMapper.selectedOptionId.size != viewModel.variantData?.variant?.size) {
+                ""
+            } else {
+                viewModel.variantData?.children?.find {
+                    it.optionIds == VariantMapper.selectedOptionId
+                }?.stock?.stockWording ?: ""
+            }
         } else {
-            viewModel.variantData?.children?.find {
-                it.optionIds == VariantMapper.selectedOptionId
-            }?.stock?.stockWording ?: ""
+            updatedNearestWarehouse
         }
     }
 
@@ -1407,6 +1418,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             //If user select partialy and its colour type, only update image in snapshot
             if (variantOptions.variantOptionIdentifier == "colour" && variantOptions.hasCustomImages) {
                 viewModel.addPartialImage(variantOptions.image)
+            } else {
+                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel)
             }
         } else {
             val selectedChild = VariantMapper.selectedProductData(viewModel.variantData
@@ -1415,6 +1428,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             if (selectedChild?.hasPicture == true &&
                     updatedDynamicProductInfo?.data?.media?.firstOrNull()?.uRLOriginal != pdpHashMapUtil?.snapShotMap?.media?.firstOrNull()?.urlOriginal) pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
             pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo, viewModel.imageHeight)
+
+            viewModel.multiOrigin[selectedChild?.productId ?: ""]?.let {
+                viewModel.selectedMultiOrigin = it
+                pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(it.warehouseInfo.id, it.price, it.stockWording)
+            }
+            productId = updatedDynamicProductInfo?.basic?.productID
             viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
             adapter.notifyDataSetChanged()
         }
@@ -1422,7 +1441,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
         if (data == null || !data.hasChildren) {
-            dynamicAdapter.clearElement(pdpHashMapUtil?.productVariantInfoMap)
             dynamicAdapter.clearElement(pdpHashMapUtil?.productNewVariantDataModel)
             return
         }
@@ -1431,13 +1449,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val variantData = VariantMapper.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
         pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
 
-        // defaulting selecting variant
-        if (userInputVariant == data.parentId.toString() && data.defaultChild > 0) {
-            userInputVariant = data.defaultChild.toString()
-        }
-        val selectedVariantListString = data.getOptionListString(userInputVariant)?.joinToString(separator = ", ")
-                ?: ""
-        pdpHashMapUtil?.updateVariantInfo(data, selectedVariantListString)
     }
 
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
@@ -1651,7 +1662,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun warehouseProduct() {
-        productId?.let {
+        viewModel.getDynamicProductInfoP1?.basic?.productID?.let {
             showProgressDialog(onCancelClicked = { viewModel.cancelWarehouseUseCase() })
             viewModel.moveProductToWareHouse(it)
         }
@@ -1684,8 +1695,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             shopInfo.shopCore.domain,
                             productInfo.basic.weight.toFloat(),
                             productInfo.basic.weightUnit,
-                            if (viewModel.multiOrigin.isFulfillment)
-                                viewModel.multiOrigin.origin else null,
+                            if (viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment)
+                                viewModel.selectedMultiOrigin.warehouseInfo.origin else null,
                             productInfo.data.isFreeOngkir.isActive
                     ))
                 }
@@ -1803,7 +1814,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
                 DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListName, productInfo, shopInfo, trackerAttribution,
-                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.multiOrigin.isFulfillment, deeplinkUrl)
+                        isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment, deeplinkUrl)
                 return
             }
         }
@@ -1858,7 +1869,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, it.parentProductId)
                     putExtra(ApplinkConst.Transaction.EXTRA_NOTES, userInputNotes)
                     putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, userInputQuantity)
-                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, userInputVariant)
+//                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, userInputVariant)
                     putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
                     putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution)
                     putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)
@@ -1879,7 +1890,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.let {
             try {
                 val productInfo = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-                val warehouseId: Int = viewModel.multiOrigin.id.toIntOrZero()
+                val warehouseId: Int = viewModel.selectedMultiOrigin.warehouseInfo.id.toIntOrZero()
                 val atcRequestParam = AtcRequestParam()
                 atcRequestParam.setShopId(productInfo.basic.getShopId())
                 atcRequestParam.setProductId(productInfo.basic.getProductId())
@@ -2203,7 +2214,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         ApplinkConst.TOPCHAT_ASKSELLER,
                         shop.shopCore.shopID, "",
                         "product", shop.shopCore.name, shop.shopAssets.avatar)
-                viewModel.putChatProductInfoTo(intent, productId, product, userInputVariant)
+                viewModel.putChatProductInfoTo(intent, product.basic.productID, product)
                 startActivity(intent)
             } else {
                 startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
@@ -2384,15 +2395,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun updateProductId() {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
-            assignDefaultVariantId(productInfo)
-
             productId = productInfo.basic.productID
-        }
-    }
-
-    private fun assignDefaultVariantId(productInfo: DynamicProductInfoP1) {
-        if (userInputVariant == null && productInfo.data.variant.isVariant && productInfo.data.variant.parentID != productId) {
-            userInputVariant = productId
         }
     }
 

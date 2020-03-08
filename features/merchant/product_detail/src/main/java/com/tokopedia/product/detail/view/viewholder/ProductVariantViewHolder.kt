@@ -23,8 +23,9 @@ class ProductVariantViewHolder(val view: View,
     override fun bind(element: VariantDataModel) {
         with(view) {
             containerAdapter = VariantContainerAdapter(listener)
-            rvContainerVariant.itemAnimator = null
             rvContainerVariant.adapter = containerAdapter
+
+            rvContainerVariant.itemAnimator = null
             element.listOfVariantCategory?.let {
                 containerAdapter?.setData(it)
             }

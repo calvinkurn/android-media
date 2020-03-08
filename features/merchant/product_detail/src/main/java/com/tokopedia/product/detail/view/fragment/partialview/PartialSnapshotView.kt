@@ -10,13 +10,13 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -93,7 +93,7 @@ class PartialSnapshotView(private val view: View,
             if (product.data.variant.isVariant) {
                 text_stock_available.gone()
             } else {
-                text_stock_available.hide()
+                text_stock_available.show()
             }
         }
     }
@@ -110,16 +110,16 @@ class PartialSnapshotView(private val view: View,
         }
     }
 
-    fun updateStockAndPriceWarehouse(nearestWarehouse: MultiOriginWarehouse, campaign: CampaignModular) {
+    fun updateStockAndPriceWarehouse(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular) {
         with(view) {
             if (campaign.activeAndHasId) {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
-                        nearestWarehouse.price.getCurrencyFormatted())
-                sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouse.stockWording)
+                        nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
+                sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
             } else {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
-                        nearestWarehouse.price.getCurrencyFormatted())
-                text_stock_available.text = MethodChecker.fromHtml(nearestWarehouse.stockWording)
+                        nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
+                text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
             }
         }
     }

@@ -36,4 +36,8 @@ data class VariantCategory(
     fun getSelectedOption(): VariantOptionWithAttribute? {
         return variantOptions.find { it.currentState == ProductDetailConstant.STATE_SELECTED }
     }
+
+    fun getPositionSelectedOption(): Int {
+        return variantOptions.indexOf(getSelectedOption())
+    }
 }
