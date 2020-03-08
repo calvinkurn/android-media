@@ -5,35 +5,64 @@
     android:background="@color/product_manage_white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
-        android:id="@+id/quick_edit_stock_activate_switch"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/quick_edit_stock_activate_product_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/quick_edit_stock_active_product"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/product_manage_quick_edit_stock_active_product"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+            android:id="@+id/quick_edit_stock_activate_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/quick_edit_stock_quantity_editor_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
-        app:layout_constraintTop_toBottomOf="@id/quick_edit_stock_activate_switch">
+        app:layout_constraintTop_toBottomOf="@id/quick_edit_stock_activate_product_layout">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/quick_edit_total_stock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/quick_edit_stock_total_stock"
+            android:text="@string/product_manage_quick_edit_stock_total_stock"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"/>
 
         <com.tokopedia.unifycomponents.QuantityEditorUnify
-            android:id="@+id/quick_edit_quantity_editor"
+            android:id="@+id/quick_edit_stock_quantity_editor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/quick_edit_stock_error_message"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:visibility="gone"
+            android:textColor="@color/Red_R500"
+            app:typographyType="body_3"
+            app:typographyWeight="reguler"
+            app:layout_constraintTop_toBottomOf="@id/quick_edit_stock_quantity_editor"
+            app:layout_constraintStart_toStartOf="@id/quick_edit_stock_quantity_editor"
             app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

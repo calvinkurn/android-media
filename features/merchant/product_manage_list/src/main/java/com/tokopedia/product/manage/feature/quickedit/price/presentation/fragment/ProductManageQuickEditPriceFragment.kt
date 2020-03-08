@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
@@ -54,7 +55,7 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
 
     private fun initView(currentPrice: String) {
         context?.let {
-            quick_edit_price.prependText(it.resources.getString(R.string.quick_edit_currency))
+            quick_edit_price.prependText(it.resources.getString(R.string.product_manage_quick_edit_currency))
         }
         quick_edit_price.apply {
             textFieldInput.setText(formatText(currentPrice))
@@ -118,12 +119,12 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
 
     private fun showErrorPriceTooLow() {
         quick_edit_price.setError(true)
-        context?.getString(R.string.quick_edit_min_price_error)?.let { quick_edit_price.setMessage(it) }
+        context?.getString(R.string.product_manage_quick_edit_min_price_error)?.let { quick_edit_price.setMessage(it) }
     }
 
     private fun showErrorPriceTooHigh() {
         quick_edit_price.setError(true)
-        context?.getString(R.string.quick_edit_max_price_error)?.let { quick_edit_price.setMessage(it) }
+        context?.getString(R.string.product_manage_quick_edit_max_price_error)?.let { quick_edit_price.setMessage(it) }
     }
 
     private fun hideError() {

@@ -15,6 +15,8 @@ import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductEditPriceParam
@@ -51,6 +53,7 @@ class ProductManageViewModel(
     private val getProductListUseCase: GQLGetProductListUseCase,
     private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
     private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
+    private val editStockUseCase: EditStockUseCase,
     private val ioDispatcher: CoroutineDispatcher,
     mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
@@ -67,6 +70,8 @@ class ProductManageViewModel(
         get() = _deleteProductResult
     val editPriceResult : LiveData<Result<EditPriceResult>>
         get() = _editPriceResult
+    val editStockResult : LiveData<Result<EditStockResult>>
+        get() = _editStockResult
     val setCashBackResult : LiveData<Result<SetCashBackResult>>
         get() = _setCashBackResult
     val getFreeClaimResult : LiveData<Result<DataDeposit>>
@@ -82,6 +87,7 @@ class ProductManageViewModel(
     private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
     private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
     private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
+    private val _editStockResult = MutableLiveData<Result<EditStockResult>>()
     private val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
     private val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
     private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
@@ -149,7 +155,7 @@ class ProductManageViewModel(
         })
     }
 
-    fun editPrice(productId: String, price: String) {
+    fun editPrice(productId: String, price: String, productName: String) {
         showProgressDialog()
 
         val param = ProductEditPriceParam()
@@ -162,9 +168,9 @@ class ProductManageViewModel(
                 override fun onNext(data: ProductUpdateV3Response) {
                     hideProgressDialog()
                     if (data.productUpdateV3Data.isSuccess) {
-                        _editPriceResult.value = Success(EditPriceResult(productId, price))
+                        _editPriceResult.value = Success(EditPriceResult(productName, productId, price))
                     } else {
-                        _editPriceResult.value = Fail(EditPriceResult(productId, price, NetworkErrorException()))
+                        _editPriceResult.value = Fail(EditPriceResult(productName, productId, price, NetworkErrorException()))
                     }
                 }
 
@@ -173,9 +179,23 @@ class ProductManageViewModel(
                 }
 
                 override fun onError(e: Throwable) {
-                    _editPriceResult.value = Fail(EditPriceResult(productId, price, NetworkErrorException()))
+                    _editPriceResult.value = Fail(EditPriceResult(productName, productId, price, NetworkErrorException()))
                 }
             })
+    }
+
+    fun editStock(productId: String, stock: Int, productName: String) {
+        editStockUseCase.params = EditStockUseCase.createRequestParams(userSessionInterface.shopId, productId, stock)
+        launchCatchError(block = {
+            val result = editStockUseCase.executeOnBackground()
+            if(result.productUpdateV3Data.isSuccess) {
+                _editStockResult.value = Success(EditStockResult(productName, productId, stock))
+            } else {
+                _editPriceResult.value = Fail(EditStockResult(productName, productId, stock, NetworkErrorException()))
+            }
+        }) {
+            Fail(it)
+        }
     }
 
     fun setCashback(productId: String, cashback: Int) {

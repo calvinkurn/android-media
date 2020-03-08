@@ -10,6 +10,7 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
+import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
 import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl
@@ -58,7 +59,8 @@ class ProductManageListModule {
         popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
         getProductListUseCase: GQLGetProductListUseCase,
         bulkUpdateProductUseCase: BulkUpdateProductUseCase,
-        editFeaturedProductUseCase: EditFeaturedProductUseCase
+        editFeaturedProductUseCase: EditFeaturedProductUseCase,
+        editStockUseCase: EditStockUseCase
     ): ProductManageViewModel {
         return ProductManageViewModel(
             editPriceUseCase,
@@ -70,6 +72,7 @@ class ProductManageListModule {
             getProductListUseCase,
             bulkUpdateProductUseCase,
             editFeaturedProductUseCase,
+            editStockUseCase,
             Dispatchers.IO,
             Dispatchers.Main
         )
@@ -146,6 +149,11 @@ class ProductManageListModule {
     internal fun provideProductDraftDao(productDraftDB: ProductDraftDB): ProductDraftDao {
         return productDraftDB.getProductDraftDao()
     }
+
+    @ProductManageListScope
+    @Provides
+    fun provideEditStockUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
+            EditStockUseCase(multiRequestGraphqlUseCase)
 
     @ProductManageListScope
     @Provides
