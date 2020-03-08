@@ -25,7 +25,11 @@ class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionL
     }
 
     override fun type(uiModel: PromoListHeaderUiModel): Int {
-        return PromoListHeaderViewHolder.LAYOUT
+        if (uiModel.uiState.isEnabled) {
+            return PromoListHeaderEnabledViewHolder.LAYOUT
+        } else {
+            return PromoListHeaderDisabledViewHolder.LAYOUT
+        }
     }
 
     override fun type(uiModel: PromoListItemUiModel): Int {
@@ -45,7 +49,8 @@ class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionL
             PromoRecommendationViewHolder.LAYOUT -> PromoRecommendationViewHolder(view, listener)
             PromoInputViewHolder.LAYOUT -> PromoInputViewHolder(view, listener)
             PromoEligibilityHeaderViewHolder.LAYOUT -> PromoEligibilityHeaderViewHolder(view, listener)
-            PromoListHeaderViewHolder.LAYOUT -> PromoListHeaderViewHolder(view, listener)
+            PromoListHeaderEnabledViewHolder.LAYOUT -> PromoListHeaderEnabledViewHolder(view, listener)
+            PromoListHeaderDisabledViewHolder.LAYOUT -> PromoListHeaderDisabledViewHolder(view, listener)
             PromoListItemViewHolder.LAYOUT -> PromoListItemViewHolder(view, listener)
             PromoEmptyStateViewHolder.LAYOUT -> PromoEmptyStateViewHolder(view, listener)
             PromoLoadingViewHolder.LAYOUT -> PromoLoadingViewHolder(view)
