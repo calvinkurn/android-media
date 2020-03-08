@@ -48,6 +48,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.listener.Prom
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
@@ -108,11 +109,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view)
         button_apply_promo.setOnClickListener {
-            button_apply_promo.isLoading = true
+            setButtonLoading(button_apply_promo, true)
             viewModel.applyPromo()
         }
         button_apply_no_promo.setOnClickListener {
-            button_apply_no_promo.isLoading = true
+            setButtonLoading(button_apply_no_promo, true)
             viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
         }
 
@@ -141,6 +142,16 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_PHONE_VERIFICATION && resultCode == Activity.RESULT_OK) {
             reloadData()
+        }
+    }
+
+    private fun setButtonLoading(button: UnifyButton, isLoading: Boolean) {
+        if (isLoading) {
+            button.isLoading = true
+            button.isClickable = false
+        } else {
+            button.isLoading = false
+            button.isClickable = true
         }
     }
 
@@ -288,7 +299,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeClearPromoResult() {
         viewModel.clearPromoResponse.observe(this, Observer {
-            button_apply_no_promo.isLoading = false
+            setButtonLoading(button_apply_no_promo, false)
             when (it) {
                 is Success -> {
                     activity?.finish()
