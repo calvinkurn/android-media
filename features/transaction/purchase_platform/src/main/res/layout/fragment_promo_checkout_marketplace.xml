@@ -126,13 +126,25 @@
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/label_tokopoints"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_16"
+            app:drawableRightCompat="@drawable/info_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="body_3"
+            tools:text="Transaksi ini tidak mendapatkan TokoPoints" />
+
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_total_promo_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:text="Kamu bisa hemat"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_tokopoints"
             app:typographyType="body_3"
             app:typographyWeight="bold" />
 
@@ -153,7 +165,7 @@
             android:foreground="?selectableItemBackground"
             android:text="Pakai Promo (3)"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_tokopoints"
             app:unifyButtonVariant="filled" />
 
         <com.tokopedia.unifycomponents.UnifyButton
@@ -164,7 +176,8 @@
             android:text="Belanja Tanpa Promo"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unifyButtonVariant="filled" />
+            app:unifyButtonVariant="filled"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

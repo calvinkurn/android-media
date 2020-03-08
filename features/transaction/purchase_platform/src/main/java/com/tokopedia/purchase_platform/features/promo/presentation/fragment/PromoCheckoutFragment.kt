@@ -4,10 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.WindowManager
+import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
@@ -293,6 +291,22 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     label_total_promo_info.show()
                     label_total_promo_amount.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(fragmentUiModel.uiData.totalBenefit, false)
                     label_total_promo_amount.show()
+                    if (fragmentUiModel.uiData.tokopointsTncLabel.isNotBlank()) {
+                        label_tokopoints.text = fragmentUiModel.uiData.tokopointsTncLabel
+                        label_tokopoints.setOnTouchListener { v, event ->
+                            if (event.action == MotionEvent.ACTION_UP) {
+                                val textLocation = IntArray(2)
+                                label_tokopoints.getLocationOnScreen(textLocation)
+                                if (event.rawX >= textLocation[0] + label_tokopoints.width - label_tokopoints.totalPaddingRight) {
+                                    activity?.let {
+                                        Toast.makeText(it, "Clicked drawable right", Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                            }
+                            true
+                        }
+                        label_tokopoints.show()
+                    }
                     button_apply_promo.text = String.format(it.resources.getString(R.string.promo_checkout_label_button_apply_promo), fragmentUiModel.uiData.usedPromoCount)
                     button_apply_promo.show()
                     button_apply_no_promo.gone()
@@ -305,6 +319,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     label_total_promo_amount.gone()
                     button_apply_promo.gone()
                     button_apply_no_promo.show()
+                    label_tokopoints.gone()
                     container_action_bottom.show()
                 } else {
                     container_action_bottom.gone()
@@ -323,6 +338,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             }
             layout_global_error.show()
             layout_main_container.gone()
+            container_action_bottom.gone()
         }
     }
 

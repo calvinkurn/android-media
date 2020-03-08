@@ -11,7 +11,10 @@ data class FragmentUiModel(
     data class UiData(
             var totalBenefit: Int = 0,
             var usedPromoCount: Int = 0,
-            var exception: Throwable? = null
+            var exception: Throwable? = null,
+            var tokopointsTncLabel: String = "",
+            var tokopointsTncTitle: String = "",
+            var tokopointsTncDetails: LinkedHashMap<String, String> = LinkedHashMap()
     )
 
     data class UiState(

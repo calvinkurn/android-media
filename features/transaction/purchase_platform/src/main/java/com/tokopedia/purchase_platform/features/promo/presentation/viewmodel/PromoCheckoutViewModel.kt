@@ -105,6 +105,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     fragmentUiModel.value?.let {
                         it.uiState.hasPreselectedPromo = tmpHasPreSelectedPromo
                         it.uiState.hasAnyPromoSelected = tmpHasPreSelectedPromo
+                        val rewardPointInfo = response.couponListRecommendation.data.rewardPointsInfo
+                        if (rewardPointInfo.gainRewardPointsTnc.tncDetails.isNotEmpty()) {
+                            it.uiData.tokopointsTncLabel = rewardPointInfo.message
+                            it.uiData.tokopointsTncTitle = rewardPointInfo.gainRewardPointsTnc.title
+                            val mapTnc = LinkedHashMap<String, String>()
+                            rewardPointInfo.gainRewardPointsTnc.tncDetails.forEach {
+                                mapTnc[it.iconImageUrl] = it.description
+                            }
+                            it.uiData.tokopointsTncDetails = mapTnc
+                        }
                         _fragmentUiModel.value = it
                     }
 
@@ -114,6 +124,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                             response.couponListRecommendation.data.emptyState.description.isEmpty() &&
                             response.couponListRecommendation.data.emptyState.imageUrl.isEmpty()) {
                         initFragmentUiModel(true)
+                        fragmentUiModel.value?.uiData?.exception = RuntimeException()
                     } else {
                         initFragmentUiModel(false)
                         val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
@@ -137,6 +148,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         }) {
             initFragmentUiModel(true)
+            fragmentUiModel.value?.uiData?.exception = it
         }
     }
 
