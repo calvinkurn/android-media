@@ -12,5 +12,4 @@ interface TypeFactoryShopHome {
     fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int
     fun type(shopHomeProductViewModel: ShopHomeProductViewModel): Int
     fun type(shopHomeProductEtalaseTitleUiModel: ShopHomeProductEtalaseTitleUiModel): Int
-
 }
