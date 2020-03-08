@@ -16,27 +16,27 @@ import com.tokopedia.sellerhome.settings.di.DaggerOtherSettingComponent
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherSettingAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
-import com.tokopedia.sellerhome.settings.view.viewholder.OtherFragmentViewHolder
-import com.tokopedia.sellerhome.settings.view.viewmodel.OtherSettingViewModel
+import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
+import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_other_setting.*
+import kotlinx.android.synthetic.main.fragment_other_menu.*
 import javax.inject.Inject
 
-class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapterTypeFactory>() {
+class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherSettingAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic
-        fun createInstance(): OtherSettingFragment = OtherSettingFragment()
+        fun createInstance(): OtherMenuFragment = OtherMenuFragment()
     }
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private var otherFragmentViewHolder: OtherFragmentViewHolder? = null
+    private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
     private val otherSettingViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(OtherSettingViewModel::class.java)
+        ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,7 +50,7 @@ class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_other_setting, container, false)
+        return inflater.inflate(R.layout.fragment_other_menu, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -125,28 +125,28 @@ class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapter
 
     private fun showGeneralShopInfoSuccess(generalShopInfoUiModel: GeneralShopInfoUiModel) {
         generalShopInfoUiModel.run {
-            otherFragmentViewHolder?.onSuccessGetShopGeneralInfoData(this)
+            otherMenuViewHolder?.onSuccessGetShopGeneralInfoData(this)
         }
     }
 
     private fun showShopBadgeSuccess(shopBadgeUrl: String) {
-        otherFragmentViewHolder?.onSuccessGetShopBadge(shopBadgeUrl)
+        otherMenuViewHolder?.onSuccessGetShopBadge(shopBadgeUrl)
     }
 
     private fun showTotalFollowingSuccess(totalFollowers: Int) {
-        otherFragmentViewHolder?.onSuccessGetTotalFollowing(totalFollowers)
+        otherMenuViewHolder?.onSuccessGetTotalFollowing(totalFollowers)
     }
 
     private fun showGeneralShopInfoLoading() {
-        otherFragmentViewHolder?.onLoadingGetShopGeneralInfoData()
+        otherMenuViewHolder?.onLoadingGetShopGeneralInfoData()
     }
 
     private fun showShopBadgeLoading() {
-        otherFragmentViewHolder?.onLoadingGetShopBadge()
+        otherMenuViewHolder?.onLoadingGetShopBadge()
     }
 
     private fun showTotalFollowingLoading() {
-        otherFragmentViewHolder?.onLoadingGetTotalFollowing()
+        otherMenuViewHolder?.onLoadingGetTotalFollowing()
     }
 
     private fun showGeneralShopInfoError() {
@@ -163,8 +163,8 @@ class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapter
 
     private fun setupView(view: View) {
         recycler_view.layoutManager = LinearLayoutManager(context)
-        context?.let { otherFragmentViewHolder = OtherFragmentViewHolder(view, it)}
-        otherFragmentViewHolder?.initBindView()
+        context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it)}
+        otherMenuViewHolder?.initBindView()
     }
 
 }

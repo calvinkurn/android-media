@@ -25,7 +25,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 import javax.inject.Named
 
-class OtherSettingViewModel @Inject constructor(
+class OtherMenuViewModel @Inject constructor(
         @Named("Main") dispatcher: CoroutineDispatcher,
         private val userSession: UserSessionInterface,
         private val getSettingShopInfoUseCase: GetSettingShopInfoUseCase,

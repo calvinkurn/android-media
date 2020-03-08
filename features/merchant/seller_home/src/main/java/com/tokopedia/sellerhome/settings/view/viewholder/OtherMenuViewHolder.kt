@@ -12,14 +12,14 @@ import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
-import kotlinx.android.synthetic.main.fragment_other_setting.view.*
+import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import kotlinx.android.synthetic.main.setting_balance.view.*
 import kotlinx.android.synthetic.main.setting_shop_info_layout.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
-class OtherFragmentViewHolder(private val itemView: View,
-                              private val context: Context) {
+class OtherMenuViewHolder(private val itemView: View,
+                          private val context: Context) {
 
     companion object {
         private val SHIMMER_STATUS_LAYOUT = R.layout.setting_shop_status_shimmer
