@@ -109,11 +109,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         if (rewardPointInfo.gainRewardPointsTnc.tncDetails.isNotEmpty()) {
                             it.uiData.tokopointsTncLabel = rewardPointInfo.message
                             it.uiData.tokopointsTncTitle = rewardPointInfo.gainRewardPointsTnc.title
-                            val mapTnc = LinkedHashMap<String, String>()
-                            rewardPointInfo.gainRewardPointsTnc.tncDetails.forEach {
-                                mapTnc[it.iconImageUrl] = it.description
-                            }
-                            it.uiData.tokopointsTncDetails = mapTnc
+                            it.uiData.tokopointsTncDetails = uiModelMapper.mapTokoPointsTncDetails(rewardPointInfo.gainRewardPointsTnc.tncDetails)
                         }
                         _fragmentUiModel.value = it
                     }

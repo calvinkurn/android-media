@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.uimodel
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapterTypeFactory
+import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTncUiModel
 
 data class FragmentUiModel(
         var uiData: UiData,
@@ -14,7 +13,7 @@ data class FragmentUiModel(
             var exception: Throwable? = null,
             var tokopointsTncLabel: String = "",
             var tokopointsTncTitle: String = "",
-            var tokopointsTncDetails: LinkedHashMap<String, String> = LinkedHashMap()
+            var tokopointsTncDetails: ArrayList<TokoPointsTncUiModel> = ArrayList()
     )
 
     data class UiState(

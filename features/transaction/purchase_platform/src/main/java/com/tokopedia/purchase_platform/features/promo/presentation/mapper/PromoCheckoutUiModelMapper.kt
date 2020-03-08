@@ -1,9 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.mapper
 
-import com.tokopedia.purchase_platform.features.promo.data.response.Coupon
-import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendation
-import com.tokopedia.purchase_platform.features.promo.data.response.CouponSection
-import com.tokopedia.purchase_platform.features.promo.data.response.SubSection
+import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTncUiModel
+import com.tokopedia.purchase_platform.features.promo.data.response.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import javax.inject.Inject
 
@@ -151,5 +149,13 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
 
                 }
         )
+    }
+
+    fun mapTokoPointsTncDetails(tncDetail: List<TncDetail>): ArrayList<TokoPointsTncUiModel> {
+        val tokoPointsTncDetails = ArrayList<TokoPointsTncUiModel>()
+        tncDetail.forEach {
+            tokoPointsTncDetails.add(TokoPointsTncUiModel(imageUrl = it.iconImageUrl, description = it.description))
+        }
+        return tokoPointsTncDetails
     }
 }

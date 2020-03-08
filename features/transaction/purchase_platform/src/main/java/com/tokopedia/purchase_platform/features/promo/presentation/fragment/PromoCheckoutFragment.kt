@@ -37,6 +37,7 @@ import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTncBottomsheet
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.*
@@ -299,7 +300,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                                 label_tokopoints.getLocationOnScreen(textLocation)
                                 if (event.rawX >= textLocation[0] + label_tokopoints.width - label_tokopoints.totalPaddingRight) {
                                     activity?.let {
-                                        Toast.makeText(it, "Clicked drawable right", Toast.LENGTH_SHORT).show()
+                                        TokoPointsTncBottomsheet().apply {
+                                            setBottomsheetData(fragmentUiModel.uiData.tokopointsTncTitle, fragmentUiModel.uiData.tokopointsTncDetails)
+                                            show(it.supportFragmentManager, hashCode().toString())
+                                        }
                                     }
                                 }
                             }
