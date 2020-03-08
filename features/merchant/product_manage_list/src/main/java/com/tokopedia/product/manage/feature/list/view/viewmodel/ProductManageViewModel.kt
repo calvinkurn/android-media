@@ -263,7 +263,6 @@ class ProductManageViewModel(
     }
 
     fun setFeaturedProduct(productId: String, status: Int) {
-        showProgressDialog()
         val requestParams = EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status)
 
         editFeaturedProductUseCase.execute(requestParams,

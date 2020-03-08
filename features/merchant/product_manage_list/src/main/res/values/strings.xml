@@ -146,4 +146,14 @@
     <string name="product_stock_reminder_typography_desc">Pengingat akan aktif jika stok produk kurang dari"</string>
     <string name="product_stock_reminder_button">Simpan</string>
 
+    <string name="product_featured_add_dialog_title">Tambah Product Unggulan</string>
+    <string name="product_featured_add_dialog_desc">Produk Unggulan tampil di posisi teratas tokomu untuk lebih menarik perhatian pembeli.</string>
+    <string name="product_featured_add_dialog_primary_cta">Simpan</string>
+    <string name="product_featured_add_dialog_secondary_cta">Batalkan</string>
+
+    <string name="product_featured_special_dialog_title">Produk Unggulan khusus Power Merchant</string>
+    <string name="product_featured_special_dialog_desc">Produk Unggulan akan ditampilkan di posisi teratas etalase tokomu.</string>
+    <string name="product_featured_special_dialog_primary_cta">Pelajari Selengkapnya</string>
+    <string name="product_featured_special_dialog_secondary_cta">Batalkan</string>
+
 </resources>

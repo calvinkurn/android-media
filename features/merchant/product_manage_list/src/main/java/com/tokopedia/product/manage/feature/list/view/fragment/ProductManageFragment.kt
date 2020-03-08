@@ -26,6 +26,7 @@ import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Lifecycle
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -47,6 +48,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
@@ -60,6 +62,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
+import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
@@ -486,6 +489,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
+    private fun showMessageToastWithoutAction(message: String) {
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        }
+    }
+
     private fun showErrorToast(message: String, actionLabel: String, listener: () -> Unit = {}) {
         view?.let {
             val onClickActionLabel = View.OnClickListener { listener.invoke() }
@@ -645,9 +654,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             successMessage = getString(R.string.product_manage_success_add_featured_product)
             isFeaturedProduct = true
         }
-       productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
-        hideLoadingProgress()
-        showMessageToast(successMessage)
+        productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
+        showMessageToastWithoutAction(successMessage)
     }
 
     private fun onFailedChangeFeaturedProduct(e: Throwable) {
@@ -703,12 +711,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             is Delete -> clickDeleteProductMenu(productId, menuTitle)
             is SetTopAds -> onPromoTopAdsClicked(product)
             is SetCashBack -> onSetCashbackClicked(product)
-            is SetFeaturedProduct -> {
-                //handle SetFeaturedProduct here
-            }
-            is RemoveFeaturedProduct -> {
-                //handle RemoveFeaturedProduct here
-            }
+            is SetFeaturedProduct -> { onSetFeaturedProductClicked(product, ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)}
+            is RemoveFeaturedProduct -> { onSetFeaturedProductClicked(product, ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)}
         }
 
         manageProductBottomSheet?.dismiss()
@@ -756,7 +760,39 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onSetFeaturedProductClicked(productManageViewModel: ProductViewModel, setFeaturedType: Int) {
-        viewModel.setFeaturedProduct(productManageViewModel.id, setFeaturedType)
+        context?.let { context ->
+            var dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
+            if(viewModel.isPowerMerchant() || isOfficialStore) {
+                if(!productManageViewModel.isFeatured) {
+                    dialog = showDialogFeaturedProduct(
+                            dialog,
+                            ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
+                            getString(R.string.product_featured_add_dialog_title),
+                            getString(R.string.product_featured_add_dialog_desc),
+                            getString(R.string.product_featured_add_dialog_primary_cta),
+                            getString(R.string.product_featured_add_dialog_secondary_cta)
+                    )
+                    dialog.setPrimaryCTAClickListener {
+                        setFeaturedProduct(productManageViewModel.id, setFeaturedType)
+                        dialog.dismiss()
+                    }
+                    dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+                } else {
+                    setFeaturedProduct(productManageViewModel.id, setFeaturedType)
+                }
+            } else {
+                dialog = showDialogFeaturedProduct(
+                        dialog,
+                        ProductManageUrl.ILLUSTRATION_SPECIAL_FEATURED_PRODUCT_DOMAIN,
+                        getString(R.string.product_featured_special_dialog_title),
+                        getString(R.string.product_featured_special_dialog_desc),
+                        getString(R.string.product_featured_special_dialog_primary_cta),
+                        getString(R.string.product_featured_special_dialog_secondary_cta)
+                )
+                dialog.setPrimaryCTAClickListener { dialog.dismiss()}
+                dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+            }
+        }
     }
 
     private fun onSetStockReminderClicked(productManageViewModel: ProductViewModel) {
@@ -900,6 +936,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         startActivity(intent)
     }
 
+    private fun setFeaturedProduct(id: String, type: Int) {
+        viewModel.setFeaturedProduct(id, type)
+    }
+
     private fun showDialogActionDeleteProduct(onClickListener: DialogInterface.OnClickListener, onCancelListener: DialogInterface.OnClickListener) {
         activity?.let {
             val alertDialog = AlertDialog.Builder(it)
@@ -1032,12 +1072,25 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         viewModel.getGoldMerchantStatus()
     }
 
+    private fun showDialogFeaturedProduct(dialog: DialogUnify, imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String): DialogUnify {
+        dialog.setImageUrl(imageUrl)
+        dialog.setTitle(title)
+        dialog.setDescription(desc)
+        dialog.setPrimaryCTAText(primaryCta)
+        dialog.setSecondaryCTAText(secondaryCta)
+        dialog.show()
+        return dialog
+    }
+
     // region observers
     private fun observeSetFeaturedProduct() {
+        hideLoadingProgress()
         observe(viewModel.setFeaturedProductResult) {
-            when (it) {
-                is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
-                is Fail -> onFailedChangeFeaturedProduct(it.throwable)
+            if(viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                when (it) {
+                    is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
+                    is Fail -> onFailedChangeFeaturedProduct(it.throwable)
+                }
             }
         }
     }
