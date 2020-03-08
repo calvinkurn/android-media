@@ -10,6 +10,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.newproduct.view.viewholder.ShopProductViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 
 /**
  * Created by rizqiaryansa on 2020-02-21.
@@ -17,11 +18,13 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
 
 class ShopHomeAdapter(
         shopHomeAdapterTypeFactory: ShopHomeAdapterTypeFactory
-): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory) {
+): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener{
 
     companion object{
         private const val ALL_PRODUCT_STRING = "Semua Produk"
     }
+
+    private var productListViewModel: MutableList<ShopHomeProductViewModel> = mutableListOf()
 
     override fun onBindViewHolder(holder: AbstractViewHolder<*>, position: Int) {
         val layoutParams = holder.itemView.layoutParams
@@ -31,21 +34,20 @@ class ShopHomeAdapter(
         super.onBindViewHolder(holder, position)
     }
 
-    override fun getLastIndex() = visitables.size
-
     fun setProductListData(productList: List<ShopHomeProductViewModel>) {
-        val lastIndex = lastIndex
+        val lastIndex = visitables.size
+        productListViewModel.addAll(productList)
         visitables.addAll(productList)
         notifyItemRangeInserted(lastIndex, productList.size)
     }
 
     fun setEtalaseTitleData() {
         visitables.add(ShopHomeProductEtalaseTitleUiModel(ALL_PRODUCT_STRING, ""))
-        notifyItemInserted(lastIndex)
+        notifyItemInserted(visitables.size)
     }
 
     fun setHomeLayoutData(data: List<BaseShopHomeWidgetUiModel>) {
-        val lastIndex = lastIndex
+        val lastIndex = visitables.size
         visitables.addAll(data)
         notifyItemRangeInserted(lastIndex, data.size)
     }
@@ -62,29 +64,8 @@ class ShopHomeAdapter(
         }
     }
 
-//    override fun onViewAttachedToWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-//        super.onViewAttachedToWindow(holder)
-//
-//        val video = element.takeIf { it.name == WidgetYoutubeVideo }
-//        when(holder) {
-//            is ShopHomeVideoViewHolder -> {
-//                if (context != null) {
-//                    video?.binder?.bind(context, holder, fragmentManager)
-//                }
-//            }
-//        }
-//    }
-
-//    override fun onViewDetachedFromWindow(holder: AbstractViewHolder<out Visitable<*>>) {
-//        super.onViewDetachedFromWindow(holder)
-//        val video = element.takeIf { it.name == WidgetYoutubeVideo }
-//        when(holder) {
-//            is ShopHomeVideoViewHolder -> {
-//                if (context != null) {
-//                    video?.binder?.unBind(holder, fragmentManager)
-//                }
-//            }
-//        }
-//    }
+    override fun getEndlessDataSize(): Int {
+        return productListViewModel.size
+    }
 
 }

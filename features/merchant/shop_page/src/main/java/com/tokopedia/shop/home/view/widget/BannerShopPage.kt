@@ -1,4 +1,4 @@
-package com.tokopedia.shop.home.view
+package com.tokopedia.shop.home.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
@@ -22,8 +22,6 @@ class BannerShopPage(@NonNull context: Context, @Nullable attrs: AttributeSet) :
         val view = View.inflate(this.context, R.layout.widget_slider_banner, this)
         this.bannerRecyclerView = view.findViewById(R.id.viewpager_slider_banner)
         this.bannerIndicator = view.findViewById(R.id.indicator_slider_banner_container)
-        this.bannerSeeAll = view.findViewById(R.id.promo_link_slider_banner)
-        this.bannerSeeAll.gone()
         this.indicatorItems = ArrayList()
         this.impressionStatusList = ArrayList()
         this.promoImageUrls = ArrayList()

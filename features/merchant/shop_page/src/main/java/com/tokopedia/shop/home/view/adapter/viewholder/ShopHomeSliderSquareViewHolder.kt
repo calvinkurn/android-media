@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
+import android.content.res.Resources
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +29,9 @@ class ShopHomeSliderSquareViewHolder(itemView: View) : AbstractViewHolder<ShopHo
 
         itemView.rvCarouselShopPageHome.apply {
             layoutManager = linearLayoutManager
-            addItemDecoration(PaddingItemDecorationShopPage(element.name))
+            if(itemDecorationCount == 0) {
+                addItemDecoration(PaddingItemDecorationShopPage(element.name))
+            }
             adapter = shopHomeSliderSquareAdapter
         }
         shopHomeSliderSquareAdapter.submitList(element.data)

@@ -15,10 +15,12 @@ import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopHomeViewModel @Inject constructor(
@@ -94,5 +96,19 @@ class ShopHomeViewModel @Inject constructor(
                     )
                 }
         )
+    }
+
+    fun getNextProductList(
+            shopId: String,
+            page: Int
+    ) {
+        launchCatchError(block = {
+            val listProductData = withContext(Dispatchers.IO) {
+                getProductList(shopId, page)
+            }
+            _productListData.postValue(Success(listProductData))
+        }) {
+            _productListData.postValue(Fail(it))
+        }
     }
 }

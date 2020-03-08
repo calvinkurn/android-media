@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -27,6 +28,7 @@ import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColu
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
+import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
@@ -101,7 +103,6 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun loadInitialData() {
         showLoading()
         viewModel.getShopPageHomeData(shopId)
-
     }
 
     private fun getIntentData() {
@@ -133,7 +134,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onSuccessGetProductListData(hasNextPage: Boolean, productList: List<ShopHomeProductViewModel>) {
-        shopHomeAdapter.setEtalaseTitleData()
+        shopHomeAdapter.hideLoading()
+        if(shopHomeAdapter.endlessDataSize == 0) {
+            shopHomeAdapter.setEtalaseTitleData()
+        }
         shopHomeAdapter.setProductListData(productList)
     }
 
@@ -169,8 +173,21 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 .inject(this)
     }
 
-    override fun loadData(page: Int) {
+    override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
+        return object : DataEndlessScrollListener(recyclerViewLayoutManager, shopHomeAdapter) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                shopHomeAdapter.showLoading()
+                loadNextData(page)
+            }
+        }
     }
+
+    fun loadNextData(page: Int){
+        if(shopId.isNotEmpty()) {
+            viewModel.getNextProductList(shopId, page)
+        }
+    }
+    override fun loadData(page: Int) {}
 
     override fun onMultipleImageColumnItemImpression(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?, displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, parentPosition: Int, adapterPosition: Int) {
         shopPageHomeTracking.impressionDisplayWidget(
