@@ -3,7 +3,10 @@ package com.tokopedia.travelhomepage.homepage.presentation.adapter.factory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingViewholder
+import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder.*
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
@@ -22,9 +25,12 @@ open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemB
             TravelHomepageDestinationViewHolder.LAYOUT -> return TravelHomepageDestinationViewHolder(parent, onBindListener, onItemClickListener)
             TravelHomepageProductCardViewHolder.LAYOUT -> return TravelHomepageProductCardViewHolder(parent, onBindListener, onItemClickListener)
             TravelHomepageLegoBannerViewHolder.LAYOUT -> return TravelHomepageLegoBannerViewHolder(parent, onBindListener, onItemClickListener)
+            LOADING_LAYOUT -> return LoadingViewholder(parent)
         }
         return super.createViewHolder(parent, type)
     }
+
+    override fun type(viewModel: LoadingModel?): Int = LOADING_LAYOUT
 
     override fun type(viewModel: TravelHomepageBannerModel): Int = TravelHomepageBannerViewHolder.LAYOUT
 
@@ -37,4 +43,8 @@ open class TravelHomepageAdapterTypeFactory (private val onBindListener: OnItemB
     override fun type(model: TravelHomepageProductCardModel): Int = TravelHomepageProductCardViewHolder.LAYOUT
 
     override fun type(model: TravelHomepageLegoBannerModel): Int = TravelHomepageLegoBannerViewHolder.LAYOUT
+
+    companion object {
+        var LOADING_LAYOUT = R.layout.layout_subhomepage_loading
+    }
 }

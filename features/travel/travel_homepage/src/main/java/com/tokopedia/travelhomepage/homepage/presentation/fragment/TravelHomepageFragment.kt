@@ -152,8 +152,8 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun loadData(page: Int) {
-//        travelHomepageViewModel.getIntialList(swipeToRefresh?.isRefreshing ?: false)
-        travelHomepageViewModel.getListFromCloud(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_get_layout), true)
+        travelHomepageViewModel.getListFromCloud(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_get_layout), swipeToRefresh?.isRefreshing
+                ?: false)
     }
 
     fun loadDataFromCloud() {
@@ -175,7 +175,8 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
                 RouteManager.isSupportApplink(this, appUrl) -> RouteManager.route(this, appUrl)
                 DeeplinkMapper.getRegisteredNavigation(this, appUrl).isNotEmpty() -> RouteManager.route(this, DeeplinkMapper.getRegisteredNavigation(this, appUrl))
                 webUrl.isNotEmpty() -> RouteManager.route(this, webUrl)
-                else -> { /* do nothing */ }
+                else -> { /* do nothing */
+                }
             }
         }
     }
