@@ -43,7 +43,6 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         isOneWay = !flightDashboardCache.isRoundTrip
 
         setPassengerView(flightDashboardCache.passengerAdult, flightDashboardCache.passengerChild, flightDashboardCache.passengerInfant)
-        tvFlightPassenger.text = passengerString
         tvFlightClass.text = getClassTitleById(flightDashboardCache.classCache)
 
         renderTripView()
@@ -130,9 +129,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         }
 
         passengerString = passengerFmt
-
-        // save passenger to cache
         flightDashboardCache.putPassengerCount(adult, children, infant)
+        tvFlightPassenger.text = passengerString
     }
 
     private fun getClassTitleById(classId: Int): String {
@@ -146,6 +144,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun toggleOneWay() {
         isOneWay = !isOneWay
+        renderTripView()
     }
 
     private fun renderTripView() {
