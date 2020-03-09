@@ -352,6 +352,7 @@
 -dontwarn com.tokopedia.home.beranda.data.datasource.**inlined**
 -dontwarn com.tokopedia.home.beranda.data.usecase.**inlined**
 -dontwarn com.tokopedia.home.beranda.data.repository.**inlined**
+-dontwarn com.tokopedia.home.beranda.presentation.viewModel.**inlined**
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**
@@ -370,13 +371,14 @@
     volatile <fields>;
 }
 -dontwarn kotlinx.coroutines.flow.**inlined**
+-dontwarn kotlinx.coroutines.flow.**
+-dontwarn kotlinx.coroutines.reactive.**
 
 -keepnames class kotlinx.coroutines.internal.MainDispatcherFactory {}
 -keepnames class kotlinx.coroutines.CoroutineExceptionHandler {}
 
 # -- App indexing
 -dontwarn com.google.firebase.appindexing.**
-
 
 -dontwarn androidx.appcompat.widget.RebindReportingHolder
 
@@ -385,10 +387,6 @@
 -dontwarn com.scottyab.rootbeer.**
 -dontwarn com.laku6.tradeinsdk.api.Laku6TradeIn
 -dontwarn kotlinx.coroutines.flow.**inlined**
-
-#home
- -dontwarn com.tokopedia.home.beranda.data.datasource.**inlined**
- -dontwarn com.tokopedia.home.beranda.data.usecase.**inlined**
 
 # -- Unit Test
 -keep class junit.framework.** { *; }
