@@ -11,7 +11,7 @@ import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivit
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_flight_search_form.*
+import kotlinx.android.synthetic.main.bottom_sheet_flight_search_form.view.*
 import java.util.*
 
 /**
@@ -25,7 +25,6 @@ class FlightSearchFormBottomSheet : BottomSheetUnify(), FlightSearchFormView.Fli
         super.onCreate(savedInstanceState)
 
         initBottomSheet()
-        initSearchForm()
     }
 
     override fun onDepartureAirportClicked() {
@@ -60,7 +59,7 @@ class FlightSearchFormBottomSheet : BottomSheetUnify(), FlightSearchFormView.Fli
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        flightSearchFormView.removeFocus()
+        mChildView.flightSearchFormView.removeFocus()
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 REQUEST_CODE_AIRPORT_DEPARTURE -> {
@@ -70,13 +69,13 @@ class FlightSearchFormBottomSheet : BottomSheetUnify(), FlightSearchFormView.Fli
                 REQUEST_CODE_SELECT_PASSENGER -> {
                     val passengerModel = data?.getParcelableExtra<FlightPassengerViewModel>(FlightSelectPassengerActivity.EXTRA_PASS_DATA)
                     passengerModel?.let {
-                        flightSearchFormView.setPassengerView(it)
+                        mChildView.flightSearchFormView.setPassengerView(it)
                     }
                 }
                 REQUEST_CODE_SELECT_CLASSES -> {
                     val classModel = data?.getParcelableExtra<FlightClassViewModel>(FlightClassesActivity.EXTRA_FLIGHT_CLASS)
                     classModel?.let {
-                        flightSearchFormView.setClassView(it)
+                        mChildView.flightSearchFormView.setClassView(it)
                     }
                 }
             }
@@ -92,10 +91,11 @@ class FlightSearchFormBottomSheet : BottomSheetUnify(), FlightSearchFormView.Fli
 
         mChildView = View.inflate(requireContext(), R.layout.bottom_sheet_flight_search_form, null)
         setChild(mChildView)
+        initSearchForm()
     }
 
     private fun initSearchForm() {
-        flightSearchFormView.listener = this
+        mChildView.flightSearchFormView.listener = this
     }
 
     companion object {
