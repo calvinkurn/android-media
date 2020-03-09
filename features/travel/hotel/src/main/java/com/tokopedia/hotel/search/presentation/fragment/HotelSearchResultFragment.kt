@@ -175,7 +175,8 @@ class HotelSearchResultFragment : BaseListFragment<Property, PropertyAdapterType
                 searchDestinationName,
                 searchDestinationType,
                 searchParam,
-                data.properties)
+                data.properties,
+                adapter.dataSize)
 
         val searchProperties = data.properties
 

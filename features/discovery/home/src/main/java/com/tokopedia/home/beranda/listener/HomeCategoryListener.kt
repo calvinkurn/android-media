@@ -81,6 +81,8 @@ interface HomeCategoryListener {
 
     fun onCloseGeolocationView()
 
+    fun sendEETracking(data: HashMap<String, Any>)
+
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
     fun putEEToIris(data: HashMap<String, Any>)
@@ -88,4 +90,8 @@ interface HomeCategoryListener {
     fun getWindowWidth(): Int
 
     fun refreshHomeData()
+
+    fun getTabBusinessWidget(position: Int)
+
+    fun getBusinessUnit(tabId: Int, position: Int)
 }

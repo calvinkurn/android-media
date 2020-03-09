@@ -1,5 +1,5 @@
 task("configDebugTools") {
-    if (allowDistribution() == "true") {
+    if (allowDistributionLocal() == "true") {
         rootProject.ext.debugToolsEnabled = true
         println("Debug tools set true based on buildType Parameter")
         return
@@ -19,5 +19,12 @@ task("configDebugTools") {
             }
         }
     }
+}
+
+def allowDistributionLocal() {
+    if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
+        return "true";
+    }
+    return "false";
 }
 preBuild.dependsOn configDebugTools

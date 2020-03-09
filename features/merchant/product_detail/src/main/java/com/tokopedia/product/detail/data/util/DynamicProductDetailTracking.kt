@@ -14,12 +14,22 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
+import com.tokopedia.iris.util.IrisSession
+import com.tokopedia.iris.util.*
+
 
 object DynamicProductDetailTracking {
 
-    fun sendScreen(shopID: String, shopType: String, productId: String) {
-        TrackApp.getInstance().gtm.sendScreenAuthenticated(ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME, shopID,
-                shopType, "/product", productId)
+
+    fun sendScreen(irisSessionId:String, shopID: String, shopType: String, productId: String) {
+        val customDimension: MutableMap<String, String> = java.util.HashMap()
+        customDimension[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = shopID
+        customDimension[ProductTrackingConstant.Tracking.KEY_PAGE_TYPE] = "/product"
+        customDimension[ProductTrackingConstant.Tracking.KEY_SHOP_TYPE] = shopType
+        customDimension[ProductTrackingConstant.Tracking.KEY_PRODUCT_ID_] = productId
+        customDimension[KEY_SESSION_IRIS] = irisSessionId
+
+        TrackApp.getInstance().gtm.sendScreenAuthenticated(ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME, customDimension)
     }
 
     fun eventProductLandScape(productInfo: DynamicProductInfoP1?) {
@@ -452,10 +462,10 @@ object DynamicProductDetailTracking {
             eventClickBuyOrAddToCart(productInfo, isVariant, ProductTrackingConstant.Action.CLICK_BELI)
         }
 
-        fun eventAddToCart(productInfo: DynamicProductInfoP1?, isVariant: Boolean) {
+        fun eventAddToCart(irisSessionId:String, productInfo: DynamicProductInfoP1?, isVariant: Boolean) {
             if (productInfo?.basic?.productID?.isEmpty() == true) return
 
-            eventClickBuyOrAddToCart(productInfo, isVariant, ProductTrackingConstant.Action.CLICK_ADD_TO_CART)
+            eventClickBuyOrAddToCartWithIris(irisSessionId, productInfo, isVariant, ProductTrackingConstant.Action.CLICK_ADD_TO_CART)
         }
 
         fun eventClickBuyBeforeLogin(productInfo: DynamicProductInfoP1?) {
@@ -479,6 +489,21 @@ object DynamicProductDetailTracking {
             )
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, action)
 
+        }
+
+        private fun eventClickBuyOrAddToCartWithIris(irisSessionId:String, productInfo: DynamicProductInfoP1?, isVariant: Boolean, action: String) {
+            val mapEvent = TrackAppUtils.gtmData(
+                    ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
+                    ProductTrackingConstant.Category.PDP,
+                    action,
+                    "${productInfo?.basic?.productID ?: ""} - " + if (isVariant) {
+                        ProductTrackingConstant.Tracking.VARIANT
+                    } else {
+                        ProductTrackingConstant.Tracking.NON_VARIANT
+                    }
+            )
+            mapEvent[KEY_SESSION_IRIS] = irisSessionId
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, null, action)
         }
 
         private fun eventClickBuyOrAddToCart(productInfo: DynamicProductInfoP1?, isVariant: Boolean, action: String) {
@@ -729,7 +754,7 @@ object DynamicProductDetailTracking {
             trackingQueue?.putEETracking(mapEvent as HashMap<String, Any>?)
         }
 
-        fun eventEnhanceEcommerceProductDetail(trackerListName: String?, productInfo: DynamicProductInfoP1?,
+        fun eventEnhanceEcommerceProductDetail(irisSessionId: String, trackerListName: String?, productInfo: DynamicProductInfoP1?,
                                                shopInfo: ShopInfo?, trackerAttribution: String?,
                                                isTradeIn: Boolean, isDiagnosed: Boolean,
                                                multiOrigin: Boolean, deeplinkUrl: String) {
@@ -755,6 +780,7 @@ object DynamicProductDetailTracking {
             }?.firstOrNull()?.uRLOriginal ?: ""
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
+                    KEY_SESSION_IRIS,  irisSessionId,
                     ProductTrackingConstant.Tracking.KEY_EVENT, "viewProduct",
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, "product page",
                     ProductTrackingConstant.Tracking.KEY_ACTION, "view product page",

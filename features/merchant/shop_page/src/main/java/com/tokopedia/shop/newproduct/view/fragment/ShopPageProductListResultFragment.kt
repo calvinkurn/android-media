@@ -556,6 +556,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
     fun clickSortButton() {
         shopInfo?.let {
+            shopPageTracking?.clickSort(isMyShop,customDimensionShopPage)
             openShopProductSortPage()
         }
     }

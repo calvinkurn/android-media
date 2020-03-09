@@ -42,6 +42,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -138,14 +139,6 @@ project.ext {
     groupId = 'com.tokopedia.merchant'
     versionName = "0.0.1"
     artifactName = "product_detail-release"
-    unitTestJavaIncludes = [
-            '**/UrlParamUtils.*'
-    ]
-    unitTestKotlinIncludes = [
-            '**/SearchShopViewModel.*',
-            '**/SearchViewModel.*',
-            '**/SearchKotlinExtKt.*',
-    ]
 }
 
 apply from: '../../../publish_local.gradle'

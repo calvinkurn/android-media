@@ -1,0 +1,13 @@
+mutation ongkirOpenShopShipmentLocation($inputOpenShop: OngkirOpenShopInput!) {
+  ongkirOpenShopShipmentLocation(input: $inputOpenShop) {
+    data {
+        success
+        message
+    }
+    errors{
+        id
+        status
+        title
+    }
+  }
+}

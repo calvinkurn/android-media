@@ -16,6 +16,7 @@ if (hasProperty('buildScan')) {
 }
 
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'com.bugsnag.android.gradle'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 apply from: '../tools/set_debug_tools.gradle'
@@ -345,6 +346,7 @@ dependencies {
     implementation project(rootProject.ext.features.instantDebitBca)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.features.purchase_platform)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.logisticcart)
@@ -555,6 +557,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
+    implementation rootProject.ext.monitoringDependencies.bugSnag
     implementation 'com.facebook.soloader:soloader:0.8.0'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {

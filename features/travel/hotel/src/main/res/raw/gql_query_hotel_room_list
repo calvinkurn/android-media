@@ -50,6 +50,11 @@ query PropertySearchRoom($data:PropertySearchRoomRequest!){
             priceAmount
           }
         }
+        deals {
+          tagging
+          price
+          priceAmount
+        }
       }
       roomPolicy{
         class
@@ -95,5 +100,10 @@ query PropertySearchRoom($data:PropertySearchRoomRequest!){
     isCvCRequired
     isDirectPayment
     isEnabled
+    deals {
+      tagging
+      price
+      priceAmount
+    }
   }
 }

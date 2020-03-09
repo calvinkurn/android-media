@@ -13,6 +13,10 @@ buildscript {
     }
 }
 
+android {
+    compileSdkVersion 29
+}
+
 dependencies {
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)

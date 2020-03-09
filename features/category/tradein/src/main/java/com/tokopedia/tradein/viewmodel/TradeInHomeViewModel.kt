@@ -1,6 +1,7 @@
 package com.tokopedia.tradein.viewmodel
 
 import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
@@ -30,6 +31,8 @@ class TradeInHomeViewModel @Inject constructor(
     val homeResultData: MutableLiveData<HomeResult> = MutableLiveData()
     val askUserLogin = MutableLiveData<Int>()
     var tradeInParams = TradeInParams()
+    var imeiStateLiveData: MutableLiveData<Boolean> = MutableLiveData()
+
     var tradeInType: Int = TRADEIN_OFFLINE
 
     override fun doOnCreate() {
@@ -119,10 +122,16 @@ class TradeInHomeViewModel @Inject constructor(
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        if (tradeInType == 2) {
-            checkMoneyIn(modelId, jsonObject)
-        } else {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && (tradeInParams.deviceId == null || tradeInParams.deviceId == checkMoneyInUseCase.fcmDeviceId)) {
+            imeiStateLiveData.value = true
             setHomeResultData(jsonObject)
+        } else {
+            imeiStateLiveData.value = false
+            if (tradeInType == TRADEIN_MONEYIN) {
+                checkMoneyIn(modelId, jsonObject)
+            } else {
+                setHomeResultData(jsonObject)
+            }
         }
 
     }
@@ -187,5 +196,9 @@ class TradeInHomeViewModel @Inject constructor(
         progBarVisibility.value = true
         this.tradeInType = tradeinType
         laku6TradeIn.getMinMaxPrice(this)
+    }
+
+    fun setDeviceId(deviceId: String?) {
+        tradeInParams.deviceId = deviceId
     }
 }
