@@ -74,10 +74,10 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
             .build()
 
     override fun onBackPressed() {
-//        val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
-//        (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
+        val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
+        (fragment as? IOnBackPressed)?.onBackPressed()?.not()?.let {
             super.onBackPressed()
-//        }
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
