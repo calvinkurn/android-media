@@ -20,6 +20,7 @@ import com.tokopedia.play_common.util.PlayLifecycleObserver
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.variant_common.constant.VariantConstant
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
@@ -101,6 +102,13 @@ class PlayModule(val mContext: Context) {
     @Named(AtcConstant.MUTATION_UPDATE_CART_COUNTER)
     fun provideUpdateCartCounterMutation(): String {
         return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.gql_update_cart_counter)
+    }
+
+    @Provides
+    @PlayScope
+    @Named(VariantConstant.QUERY_VARIANT)
+    internal fun provideQueryVariant(): String {
+        return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.variant_common.R.raw.gql_product_variant)
     }
 
     @Provides

@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.PostAddtoCartUseCase
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
+import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
@@ -19,6 +20,7 @@ import javax.inject.Inject
  * Created by mzennis on 2020-03-06.
  */
 class PlayVariantViewModel @Inject constructor(
+        private val getProductVariantUseCase: GetProductVariantUseCase,
         private val postAddtoCartUseCase: PostAddtoCartUseCase,
         private val dispatchers: CoroutineDispatcherProvider
 ) : BaseViewModel(dispatchers.main) {
@@ -27,6 +29,17 @@ class PlayVariantViewModel @Inject constructor(
 
     private val _observableAddtoCart = MutableLiveData<CartFeedbackUiModel>()
     val observableAddtoCart: LiveData<CartFeedbackUiModel> = _observableAddtoCart
+
+    fun getProductVariant(productId: String) {
+        launchCatchError(block = {
+            val productVariant = withContext(dispatchers.io) {
+                getProductVariantUseCase.params = GetProductVariantUseCase.createParams(productId)
+                getProductVariantUseCase.executeOnBackground()
+            }
+
+
+        }){}
+    }
 
     fun addtoCart(productId: String, shopId: String, quantity: Int = 1, notes: String = "", isAtcOnly: Boolean = true) {
         launchCatchError(block = {

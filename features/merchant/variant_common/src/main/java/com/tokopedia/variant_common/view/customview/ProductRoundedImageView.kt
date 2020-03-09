@@ -5,14 +5,14 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.widget.ImageView
+import androidx.appcompat.widget.AppCompatImageView
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.variant_common.R
 
 /**
  * Created by Yehezkiel on 08/03/20
  */
-class ProductRoundedImageView : ImageView {
+class ProductRoundedImageView : AppCompatImageView {
 
     private val DEFAULT_RADIUS = 4f.toPx()
 
