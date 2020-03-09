@@ -490,6 +490,7 @@ class RegisterAnalytics @Inject constructor() {
     }
 
     private fun onSuccessRegisterEmail(userId: Int, name: String, email: String) {
+        trackSuccessClickEmailSignUpButton()
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 EVENT_REGISTER_SUCCESS,
                 CATEGORY_REGISTER,

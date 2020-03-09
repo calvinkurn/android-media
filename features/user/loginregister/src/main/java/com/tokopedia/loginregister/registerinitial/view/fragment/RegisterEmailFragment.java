@@ -262,9 +262,9 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
         registerInitialViewModel.getRegisterRequestResponse().observe(this, registerRequestDataResult -> {
             if(registerRequestDataResult instanceof Success){
                 RegisterRequestData data = ((Success<RegisterRequestData>) registerRequestDataResult).getData();
-                onSuccessRegister();
                 userSession.clearToken();
                 userSession.setToken(data.getAccessToken(), data.getTokenType(), data.getRefreshToken());
+                onSuccessRegister();
                 if(getActivity() != null){
                     Intent intent = new Intent();
                     intent.putExtra(ApplinkConstInternalGlobal.PARAM_ACTION, data.getAction());
@@ -640,7 +640,6 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             setActionsEnabled(true);
             lostViewFocus();
             registerAnalytics.trackSuccessClickSignUpButtonEmail();
-            registerAnalytics.trackSuccessClickEmailSignUpButton();
         }
     }
 
