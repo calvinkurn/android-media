@@ -467,8 +467,14 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             startActivity(intent);
             return true;
         } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost())) {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(intent);
+            Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.CONSUMER_SPLASH_SCREEN);
+            if (intent != null) {
+                intent.putExtra("branch", url);
+                intent.putExtra("branch_force_new_session", true);
+                startActivity(intent);
+            } else {
+                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+            }
             return true;
         }
         if (!allowOverride) {
