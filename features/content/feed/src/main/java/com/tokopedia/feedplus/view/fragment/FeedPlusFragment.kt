@@ -570,6 +570,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(activity)
         newFeed.setOnClickListener { v ->
             scrollToTop()
+            sendNewFeedClickEvent()
             showRefresh()
             onRefresh()
         }
@@ -610,6 +611,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 super.onScrolled(recyclerView, dx, dy)
             }
         })
+    }
+
+    private fun sendNewFeedClickEvent() {
+        analytics.eventNewPostClick()
     }
 
     private fun itemIsFullScreen(): Boolean {

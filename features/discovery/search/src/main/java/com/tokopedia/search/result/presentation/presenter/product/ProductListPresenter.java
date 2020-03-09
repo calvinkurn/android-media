@@ -19,6 +19,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
+import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
@@ -35,6 +36,7 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
+import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -122,6 +124,7 @@ final class ProductListPresenter
     public void initInjector(ProductListSectionContract.View view) {
         ProductListPresenterComponent component = DaggerProductListPresenterComponent.builder()
                 .baseAppComponent(view.getBaseAppComponent())
+                .searchContextModule(createSearchContextModule(view))
                 .build();
 
         component.inject(this);
@@ -136,6 +139,19 @@ final class ProductListPresenter
         return getView().getABTestRemoteConfig()
                 .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
                 .equals(AB_TEST_VARIANT_COMMA_STAR);
+    }
+
+    /**
+     * Very ugly hack.
+     * It is only intended for hotfix to reduce number of file changed
+    * */
+    @Deprecated
+    private SearchContextModule createSearchContextModule(ProductListSectionContract.View view) {
+        ProductListFragment fragment = (ProductListFragment)view;
+
+        if (fragment == null || fragment.getActivity() == null) return null;
+
+        return new SearchContextModule(fragment.getActivity());
     }
 
     @Override

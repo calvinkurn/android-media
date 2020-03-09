@@ -184,12 +184,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         //multiply with 2 to make first dy value on onScroll function greater than rv top padding
         recyclerView?.smoothScrollBy(0, recyclerViewTopPadding * 2)
         shopProductAdapter.refreshSticky()
-        recyclerView?.post {
-            gridLayoutManager.scrollToPositionWithOffset(
-                    shopProductAdapter.shopProductEtalaseTitlePosition,
-                    stickySingleHeaderView.containerHeight
-            )
-        }
+        gridLayoutManager.scrollToPositionWithOffset(
+                shopProductAdapter.shopProductEtalaseTitlePosition,
+                stickySingleHeaderView.containerHeight
+        )
         loadNewProductData()
     }
 
@@ -454,6 +452,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
                 val etalaseId = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
                 val etalaseName = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
                 val etalaseBadge = data.getStringExtra(ShopParamConstant.EXTRA_ETALASE_BADGE)
+                shopPageTracking?.clickMoreMenuChip(
+                        isOwner,
+                        etalaseName,
+                        customDimensionShopPage
+                )
                 if (shopPageTracking != null && shopInfo != null) {
                     shopPageTracking!!.clickMenuFromMoreMenu(
                             viewModel.isMyShop(shopInfo?.shopCore?.shopID ?: ""),
@@ -610,7 +613,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         shopPageTracking?.clickSeeAllMerchantVoucher(isOwner)
 
         context?.let {
-            val intent = MerchantVoucherListActivity.createIntent(it, shopInfo?.shopCore?.shopID ?: "",
+            val intent = MerchantVoucherListActivity.createIntent(it, shopInfo?.shopCore?.shopID
+                    ?: "",
                     shopInfo?.shopCore?.name ?: "")
             startActivityForResult(intent, REQUEST_CODE_MERCHANT_VOUCHER)
         }
@@ -682,7 +686,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun promoClicked(url: String?) {
         activity?.let {
-            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopInfo?.shopCore?.shopID ?: "",
+            val urlProceed = ShopProductOfficialStoreUtils.proceedUrl(it, url, shopInfo?.shopCore?.shopID
+                    ?: "",
                     viewModel.isLogin,
                     viewModel.userDeviceId,
                     viewModel.userId)
@@ -697,7 +702,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     private fun redirectToEtalasePicker() {
         activity?.let {
-            val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(it, shopInfo?.shopCore?.shopID ?: "",
+            val shopEtalaseIntent = ShopEtalasePickerActivity.createIntent(it, shopInfo?.shopCore?.shopID
+                    ?: "",
                     selectedEtalaseId, isShowDefault = true, isShowZeroProduct = isOwner)
             startActivityForResult(shopEtalaseIntent, REQUEST_CODE_ETALASE)
         }
@@ -757,8 +763,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         return if (shopInfo != null && isOwner) {
             if (selectedEtalaseId == ALL_ETALASE_ID) {
                 if (shopInfo != null) {
-                    shopPageTracking?.impressionZeroProduct(CustomDimensionShopPage.create(shopInfo?.shopCore?.shopID  ?: "",
-                            (shopInfo?.goldOS?.isOfficial ?: -1) == 1, (shopInfo?.goldOS?.isGold  ?: -1) == 1))
+                    shopPageTracking?.impressionZeroProduct(CustomDimensionShopPage.create(shopInfo?.shopCore?.shopID
+                            ?: "",
+                            (shopInfo?.goldOS?.isOfficial ?: -1) == 1, (shopInfo?.goldOS?.isGold
+                            ?: -1) == 1))
                 }
                 ShopSellerEmptyProductAllEtalaseViewModel()
             } else if (isOwner && selectedEtalaseId == SOLD_ETALASE_ID) {
