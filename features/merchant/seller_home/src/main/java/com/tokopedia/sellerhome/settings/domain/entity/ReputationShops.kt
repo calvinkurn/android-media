@@ -8,6 +8,6 @@ data class ReputationShopsResult(
 )
 
 data class ReputationShop(
-        @SerializedName("badge")
+        @SerializedName("badge_hd")
         val badge: String = ""
 )

@@ -13,10 +13,7 @@ class GetShopBadgeUseCase @Inject constructor(private val gqlRepository: Graphql
     companion object {
         const val QUERY = "query getShopBadge(\$shopIds: [Int!]!){\n" +
                 "     reputation_shops(shop_ids: \$shopIds) {\n" +
-                "         badge\n" +
                 "         badge_hd\n" +
-                "         score\n" +
-                "         score_map\n" +
                 "     }\n" +
                 " }"
 

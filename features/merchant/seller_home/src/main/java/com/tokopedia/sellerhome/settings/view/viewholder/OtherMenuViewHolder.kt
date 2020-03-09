@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
@@ -58,12 +59,14 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun onSuccessGetShopBadge(shopBadgeUrl: String) {
-        itemView.shopInfoLayout.shopBadges.urlSrc = shopBadgeUrl
+        ImageHandler.LoadImage(itemView.shopInfoLayout.shopBadges, shopBadgeUrl)
+        itemView.shopInfoLayout.shopBadges.visibility = View.VISIBLE
     }
 
     @SuppressLint("SetTextI18n")
     fun onSuccessGetTotalFollowing(totalFollowing: Int) {
         itemView.shopInfoLayout.shopFollowing.text = "$totalFollowing $FOLLOWERS"
+        itemView.shopInfoLayout.shopBadges.visibility = View.VISIBLE
         itemView.shimmerFollowing.visibility = View.GONE
     }
 
@@ -78,7 +81,8 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun onLoadingGetShopBadge() {
-        itemView.shopInfoLayout.shopBadges.urlSrc = ""
+//        itemView.shopInfoLayout.shopBadges.urlSrc = ""
+        itemView.shopInfoLayout.shopBadges.visibility = View.GONE
     }
 
     fun onLoadingGetTotalFollowing() {

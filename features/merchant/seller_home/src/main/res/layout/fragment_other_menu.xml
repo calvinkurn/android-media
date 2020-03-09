@@ -6,10 +6,11 @@
     android:background="@color/white"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     
-    <View
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shopStatusHeader"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:scaleType="fitXY"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.core.widget.NestedScrollView
