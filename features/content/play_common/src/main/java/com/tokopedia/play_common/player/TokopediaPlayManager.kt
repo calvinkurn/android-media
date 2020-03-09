@@ -90,8 +90,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
             val parsedException = exoPlaybackExceptionParser.parse(error)
             if (
                     parsedException.isBehindLiveWindowException ||
-                    parsedException.isInvalidResponseCodeException ||
-                    parsedException.isConnectException
+                    parsedException.isInvalidResponseCodeException
             ) {
 
                 val prepareState = currentPrepareState
@@ -99,7 +98,10 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                     stopPlayer()
                     safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
-            } else if (parsedException.isUnknownHostException) {
+            } else if (
+                    parsedException.isUnknownHostException ||
+                    parsedException.isConnectException
+            ) {
                 val prepareState = currentPrepareState
                 if (prepareState is TokopediaPlayPrepareState.Prepared) {
                     stopPlayer(resetState = false)
