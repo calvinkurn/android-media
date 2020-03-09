@@ -7,7 +7,7 @@
     <corners
         android:radius="@dimen/dp_20" />
 
-    <solid android:color="#F8F8F8" />
+    <solid android:color="@color/bg_contdown_white" />
 
 
 </shape>
