@@ -7,6 +7,8 @@ import com.tokopedia.flight.R
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.layout_flight_search_view.view.*
 import java.util.*
@@ -38,9 +40,13 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun renderFromCache() {
+        isOneWay = !flightDashboardCache.isRoundTrip
+
         setPassengerView(flightDashboardCache.passengerAdult, flightDashboardCache.passengerChild, flightDashboardCache.passengerInfant)
         tvFlightPassenger.text = passengerString
         tvFlightClass.text = getClassTitleById(flightDashboardCache.classCache)
+
+        renderTripView()
     }
 
     fun isOneWay(): Boolean = isOneWay
@@ -65,16 +71,15 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
                 passengerFmt += ", " + passengerModel.infant + " " + context.getString(R.string.flight_dashboard_adult_infant)
             }
         }
-
         passengerString = passengerFmt
-
-        // save passenger to cache
         flightDashboardCache.putPassengerCount(passengerModel.adult, passengerModel.children, passengerModel.infant)
+        tvFlightPassenger.text = passengerString
     }
 
     fun setClassView(classModel: FlightClassViewModel) {
         this.classModel = classModel
         flightDashboardCache.putClassCache(classModel.id)
+        tvFlightClass.text = classModel.title
     }
 
     fun removeFocus() {
@@ -93,6 +98,9 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setViewClickListener() {
+        switchFlightRoundTrip.setOnClickListener {
+            toggleOneWay()
+        }
         tvFlightOriginLabel.setOnClickListener { listener?.onDepartureAirportClicked() }
         tvFlightOriginAirport.setOnClickListener { listener?.onDepartureAirportClicked() }
         tvFlightDestinationLabel.setOnClickListener { listener?.onDestinationAirportClicked() }
@@ -134,6 +142,34 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             3 -> "Utama"
             else -> ""
         }
+    }
+
+    private fun toggleOneWay() {
+        isOneWay = !isOneWay
+    }
+
+    private fun renderTripView() {
+        if (isOneWay) {
+            switchFlightRoundTrip.isSelected = false
+            hideReturnDateView()
+        } else {
+            switchFlightRoundTrip.isSelected = true
+            showReturnDateView()
+        }
+    }
+
+    private fun showReturnDateView() {
+        icFlightReturnDate.show()
+        tvFlightReturnDateLabel.show()
+        tvFlightReturnDate.show()
+        separatorReturnDate.show()
+    }
+
+    private fun hideReturnDateView() {
+        icFlightReturnDate.hide()
+        tvFlightReturnDateLabel.hide()
+        tvFlightReturnDate.hide()
+        separatorReturnDate.hide()
     }
 
     interface FlightSearchFormListener {
