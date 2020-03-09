@@ -32,7 +32,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
-import com.tokopedia.weaver.WeaverFirebaseConditionCheck
 import org.jetbrains.annotations.NotNull
 import javax.inject.Inject
 
@@ -93,8 +92,10 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         return true
     }
 
-    private fun getAbTestVariant(): String =
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
+    private fun getAbTestVariant(): String = RemoteConfigInstance
+            .initAbTestPlatform(activity?.application)
+            .abTestPlatform
+            .getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
 
     private fun setViewByAbTestVariant() {
         when (abTestVariant) {
