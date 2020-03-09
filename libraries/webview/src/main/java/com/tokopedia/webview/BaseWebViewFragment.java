@@ -472,10 +472,8 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
                 intent.putExtra("branch", url);
                 intent.putExtra("branch_force_new_session", true);
                 startActivity(intent);
-            } else {
-                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                return true;
             }
-            return true;
         }
         if (!allowOverride) {
             return false;
