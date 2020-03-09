@@ -1,16 +1,14 @@
-package com.tokopedia.dynamicfeatures
+package com.tokopedia.dynamicfeatures.utils
 
 import android.app.usage.StorageStatsManager
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Environment
 import android.os.StatFs
 import android.os.storage.StorageManager
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import androidx.core.content.pm.PackageInfoCompat
-import com.google.android.gms.common.GoogleApiAvailability
+import com.tokopedia.dynamicfeatures.constant.CommonConstant
 import kotlinx.coroutines.*
 import timber.log.Timber
 import java.io.File
@@ -20,8 +18,6 @@ import java.io.File
  */
 object DFInstallerLogUtil {
     private const val DFM_TAG = "DFM"
-    private const val PLAY_STORE_PACKAGE_NAME = "com.android.vending"
-    private const val MEGA_BYTE = 1024 * 1024
     private var storageStatsManager: StorageStatsManager? = null
 
     internal suspend fun getFreeSpaceBytes(context: Context): Long {
@@ -74,7 +70,7 @@ object DFInstallerLogUtil {
     internal fun logStatus(context: Context,
                            message: String = "",
                            modulesName: String,
-                           previousFreeSpace: Long = 0,
+                           freeInternalStorageBeforeDownload: Long = 0,
                            moduleSize: Long = 0,
                            errorList: List<String> = emptyList(),
                            downloadTimes: Int = 1,
@@ -109,8 +105,8 @@ object DFInstallerLogUtil {
             }
 
             messageBuilder.append(";free_bef=")
-            if (previousFreeSpace > 0) {
-                messageBuilder.append(getSizeInMB(previousFreeSpace))
+            if (freeInternalStorageBeforeDownload > 0) {
+                messageBuilder.append(getSizeInMB(freeInternalStorageBeforeDownload))
             } else {
                 messageBuilder.append(-1)
             }
@@ -122,17 +118,17 @@ object DFInstallerLogUtil {
                 messageBuilder.append(-1)
             }
 
-            messageBuilder.append(";play_str='${getPlayStoreVersionName(context)}'")
-            messageBuilder.append(";play_str_l=${getPlayStoreLongVersionCode(context)}")
-            messageBuilder.append(";play_srv=${getPlayServiceLongVersionCode(context)}")
-            messageBuilder.append(";installer_pkg=${getInstallerPackageName(context)}")
+            messageBuilder.append(";play_str='${Utils.getPlayStoreVersionName(context)}'")
+            messageBuilder.append(";play_str_l=${Utils.getPlayStoreLongVersionCode(context)}")
+            messageBuilder.append(";play_srv=${Utils.getPlayServiceLongVersionCode(context)}")
+            messageBuilder.append(";installer_pkg=${Utils.getInstallerPackageName(context)}")
 
             Timber.w("P1#$tag#$messageBuilder")
         }
     }
 
     private fun getSizeInMB(size: Long) : String {
-        return String.format("%.2f", size.toDouble() / MEGA_BYTE)
+        return String.format("%.2f", size.toDouble() / CommonConstant.MEGA_BYTE)
     }
 
     private fun getError(errorList: List<String>):String {
@@ -145,48 +141,5 @@ object DFInstallerLogUtil {
             break
         }
         return errorText
-    }
-
-    private fun getPlayStoreVersionName(context: Context):String {
-        return try {
-            val pm: PackageManager = context.packageManager
-            val playStoreInfo = pm.getInstalledPackages(PackageManager.GET_META_DATA).first {
-                it.packageName == PLAY_STORE_PACKAGE_NAME
-            }
-            playStoreInfo.versionName
-        } catch (e: Exception) {
-            "-1"
-        }
-    }
-
-    private fun getPlayStoreLongVersionCode(context: Context):Long {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.P) return -1
-        return try {
-            val pm: PackageManager = context.packageManager
-            val playStoreInfo = pm.getInstalledPackages(PackageManager.GET_META_DATA).first {
-                it.packageName == PLAY_STORE_PACKAGE_NAME
-            }
-            playStoreInfo.longVersionCode
-        } catch (e: Exception) {
-            -1
-        }
-    }
-
-    private fun getPlayServiceLongVersionCode(context: Context):Long {
-        return try {
-            val pm: PackageManager = context.packageManager
-            PackageInfoCompat.getLongVersionCode(pm.getPackageInfo(GoogleApiAvailability.GOOGLE_PLAY_SERVICES_PACKAGE, 0))
-        } catch (e: Exception) {
-            -1
-        }
-    }
-
-    private fun getInstallerPackageName(context: Context):String {
-        return try {
-            val pm: PackageManager = context.packageManager
-            pm.getInstallerPackageName(context.packageName)
-        } catch (e: Exception) {
-            "-"
-        }
     }
 }
