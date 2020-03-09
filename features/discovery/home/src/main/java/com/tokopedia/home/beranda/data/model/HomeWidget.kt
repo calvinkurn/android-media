@@ -4,9 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
 import com.tokopedia.kotlin.model.ImpressHolder
 
 class HomeWidget(
@@ -147,11 +145,7 @@ class HomeWidget(
             @SerializedName("template_id")
             @Expose
             val templateId: Int = -1
-    ): Visitable<BusinessWidgetTypeFactory>, ImpressHolder() {
-
-        override fun type(typeFactory: BusinessWidgetTypeFactory?): Int {
-            return typeFactory!!.type(this)
-        }
+    ): ImpressHolder() {
 
         constructor(parcel: Parcel) : this(
                 parcel.readInt(),

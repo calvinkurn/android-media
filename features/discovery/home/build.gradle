@@ -116,7 +116,11 @@ dependencies {
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }
-    implementation (rootProject.ext.miscDependencies.viewPager2)
+    implementation (rootProject.ext.miscDependencies.viewPager2){
+        ['androidx.collection', 'androidx.fragment'].each {
+            exclude group: it
+        }
+    }
 
     implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true

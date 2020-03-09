@@ -189,6 +189,7 @@ ext {
             logout                          : ":features:user:logout",
             loginphone                      : ":features:user:loginphone",
             loginregister                   : ":features:user:loginregister",
+            loginfingerprint                : ":features:user:loginfingerprint",
             sessioncommon                   : ":features:user:sessioncommon",
             notifCenter                     : ":features:user:notifcenter",
 //            notifCenter                     : ":features:user:notifcenter_no_op",
@@ -210,9 +211,7 @@ ext {
             kyccentralized                  : ":features:user:kyc_centralized",
             vote                            : ":features:user:vote",
             liveness                        : ":features:user:liveness",
-
-            fcm_common                            : ":features:fcm_common",
-
+            fcm_common                      : ":features:fcm_common",
             tkpdcore                        : ":tkpdcore",
             tkpddiscovery                   : ":tkpddiscovery",
             tkpdinbox                       : ":tkpdinbox",

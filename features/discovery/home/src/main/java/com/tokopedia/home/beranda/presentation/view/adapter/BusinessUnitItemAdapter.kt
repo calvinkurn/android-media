@@ -4,32 +4,27 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.analytics.v2.BusinessUnitTracking
 import com.tokopedia.home.beranda.data.model.HomeWidget
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.BusinessUnitItemDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessWidgetTypeFactory
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.SizeLargeBusinessViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.SizeMiddleBusinessViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.SizeSmallBusinessViewHolder
-import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemView
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.*
 
 @SuppressLint("SyntheticAccessor")
-class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: String) : RecyclerView.Adapter<SizeSmallBusinessViewHolder>(){
+class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: String, private val listenerBusinessTrackerTracker: NewBusinessUnitViewHolder.BusinessUnitItemTrackerListener) : RecyclerView.Adapter<SizeSmallBusinessViewHolder>(){
     private var list: List<BusinessUnitItemDataModel> = listOf()
     private var positionWidgetOnHome = -1
 
-    private var listener = object: BusinessUnitItemView{
-        override fun onReloadButtonClick() {}
-
-        override fun onSuccessGetData(data: HomeWidget) {}
-
-        override fun onErrorGetData(throwable: Throwable) {}
+    private var listener = object: BusinessUnitItemViewListener{
+        override fun onClicked(position: Int) {
+            val element = getItem(position)
+            listenerBusinessTrackerTracker.onClickTracking(BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
+        }
 
         override fun onImpressed(element: BusinessUnitItemDataModel, position: Int) {
-            BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex, positionWidgetOnHome))
+            listenerBusinessTrackerTracker.onImpressTracking(BusinessUnitTracking.getBusinessUnitView(BusinessUnitTracking.mapToPromotionTracker(element, tabName, tabIndex, positionWidgetOnHome)) as HashMap<String, Any>)
         }
     }
-    private var adapterTypeFactory = BusinessWidgetTypeFactory(listener)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SizeSmallBusinessViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
@@ -44,11 +39,6 @@ class BusinessUnitItemAdapter(private val tabIndex: Int, private val tabName: St
     override fun onBindViewHolder(holder: SizeSmallBusinessViewHolder, position: Int) {
         getItem(position).let {businessUnit ->
             holder.bind(businessUnit)
-            if(!holder.itemView.hasOnClickListeners()){
-                holder.itemView.setOnClickListener {
-                    BusinessUnitTracking.getBusinessUnitClick(BusinessUnitTracking.mapToPromotionTracker(businessUnit, tabName, tabIndex, positionWidgetOnHome))
-                }
-            }
         }
     }
 

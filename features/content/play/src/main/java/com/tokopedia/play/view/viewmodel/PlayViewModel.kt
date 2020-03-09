@@ -52,10 +52,10 @@ class PlayViewModel @Inject constructor(
         get() = playManager.getObservableVideoPlayer()
     val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
-    val observableVideoStream: LiveData<VideoStreamUiModel>
-        get() = _observableVideoStream
     val observableSocketInfo: LiveData<PlaySocketInfo>
         get() = _observableSocketInfo
+    val observableVideoStream: LiveData<VideoStreamUiModel>
+        get() = _observableVideoStream
     val observableNewChat: LiveData<PlayChatUiModel>
         get() = _observableNewChat
     val observableTotalLikes: LiveData<TotalLikeUiModel>
@@ -78,8 +78,8 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
 
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
-    private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
+    private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
     private val _observableNewChat = MutableLiveData<PlayChatUiModel>()
     private val _observableTotalLikes = MutableLiveData<TotalLikeUiModel>()
     private val _observableIsLikeContent = MutableLiveData<Boolean>()
@@ -155,6 +155,9 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    val totalView: String?
+        get() = _observableTotalViews.value?.totalView
+
     init {
         stateHandler.observeForever(stateHandlerObserver)
     }
@@ -212,7 +215,7 @@ class PlayViewModel @Inject constructor(
             _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
             _observableQuickReply.value = completeInfoUiModel.quickReply
             _observableVideoStream.value = completeInfoUiModel.videoStream
-            _observableEvent.value = mapEvent(channel)
+            _observableEvent.value = completeInfoUiModel.event
             _observablePartnerInfo.value = getPartnerInfo(completeInfoUiModel.channelInfo)
         }) {
             if (retryCount++ < MAX_RETRY_CHANNEL_INFO) getChannelInfoResponse(channelId)
@@ -235,17 +238,16 @@ class PlayViewModel @Inject constructor(
             return
 
         val cleanMessage = message.trimMultipleNewlines()
-        playSocket.send(cleanMessage, onSuccess = {
-            _observableNewChat.value = mapPlayChat(
-                    PlayChat(
-                            message = cleanMessage,
-                            user = PlayChat.UserData(
-                                    id = userSession.userId,
-                                    name = userSession.name,
-                                    image = userSession.profilePicture)
-                    )
-            )
-        })
+        playSocket.send(cleanMessage)
+        _observableNewChat.value = mapPlayChat(
+                PlayChat(
+                        message = cleanMessage,
+                        user = PlayChat.UserData(
+                                id = userSession.userId,
+                                name = userSession.name,
+                                image = userSession.profilePicture)
+                )
+        )
     }
 
     fun changeLikeCount(shouldLike: Boolean) {
@@ -338,8 +340,10 @@ class PlayViewModel @Inject constructor(
                     }
                 }
             }
+        }, onReconnect = {
+            _observableSocketInfo.value = PlaySocketInfo.Reconnect
         }, onError = {
-            _observableSocketInfo.value = PlaySocketInfo.RECONNECT
+            _observableSocketInfo.value = PlaySocketInfo.Error(it)
             startWebSocket(channelId, gcToken, settings)
         })
     }
@@ -360,7 +364,8 @@ class PlayViewModel @Inject constructor(
                     channel.pinnedMessage
             ),
             quickReply = mapQuickReply(channel.quickReply),
-            totalView = mapTotalViews(channel.totalViews)
+            totalView = mapTotalViews(channel.totalViews),
+            event = mapEvent(channel)
     )
 
     private fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
@@ -417,8 +422,8 @@ class PlayViewModel @Inject constructor(
     )
 
     private fun mapEvent(channel: Channel) = EventUiModel(
-            isBanned = false,
-            isFreeze = channel.isFreeze,
+            isBanned = _observableEvent.value?.isBanned ?: false,
+            isFreeze = !channel.isActive || channel.isFreeze,
             bannedMessage = channel.banned.message,
             bannedTitle = channel.banned.title,
             bannedButtonTitle = channel.banned.buttonTitle,
@@ -442,7 +447,6 @@ class PlayViewModel @Inject constructor(
 
     private fun initiateVideo(channel: Channel) {
         startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
-        playManager.muteVideo(false)
         playManager.setRepeatMode(false)
     }
 

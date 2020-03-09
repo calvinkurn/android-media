@@ -21,7 +21,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.*
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.default_home_dc.ErrorPromptViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.MixTopBannerViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.BusinessUnitViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.widget_business.NewBusinessViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.EmptyBlankViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.GeolocationPromptViewHolder
@@ -69,10 +68,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
 
     override fun type(businessUnitWidgetDataModel: NewBusinessUnitWidgetDataModel): Int {
         return NewBusinessViewHolder.LAYOUT
-    }
-
-    override fun type(businessUnitViewModel: BusinessUnitViewModel): Int {
-        return BusinessUnitViewHolder.LAYOUT
     }
 
     override fun type(useCaseIconSectionViewModel: UseCaseIconSectionViewModel): Int {
@@ -217,7 +212,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             BannerViewHolder.LAYOUT -> viewHolder = BannerViewHolder(view, listener)
             TickerViewHolder.LAYOUT -> viewHolder = TickerViewHolder(view, listener)
             NewBusinessViewHolder.LAYOUT -> viewHolder = NewBusinessViewHolder(view, listener)
-            BusinessUnitViewHolder.LAYOUT -> viewHolder = BusinessUnitViewHolder(listener, view)
             UseCaseIconSectionViewHolder.LAYOUT -> viewHolder = UseCaseIconSectionViewHolder(view, listener)
             DynamicIconSectionViewHolder.LAYOUT -> viewHolder = DynamicIconSectionViewHolder(view, listener)
             DynamicIconTwoRowsSectionViewHolder.LAYOUT -> viewHolder = DynamicIconTwoRowsSectionViewHolder(view, listener)

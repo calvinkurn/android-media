@@ -79,6 +79,7 @@ open class HomeViewModel @Inject constructor(
         private const val ACTION_ADD = 1
         private const val ACTION_DELETE = 2
         private const val ACTION_UPDATE = 3
+        private const val ACTION_UPDATE_HOME_DATA = 4
         private const val HOME_LIMITER_KEY = "HOME_LIMITER_KEY"
         private val REQUEST_DELAY_SEND_GEOLOCATION = TimeUnit.HOURS.toMillis(1) // 1 hour
     }
@@ -218,6 +219,21 @@ open class HomeViewModel @Inject constructor(
         if (!userSession.isLoggedIn) return
         getTokocashBalance()
         getTokopoint()
+    }
+
+    fun updateBannerTotalView(totalView: String) {
+        val newList = mutableListOf<Visitable<*>>()
+        newList.addAll(_homeLiveData.value?.list ?: listOf())
+
+        val playCard = newList.firstOrNull { visitable -> visitable is PlayCardViewModel }
+        val playIndex = newList.indexOf(playCard)
+        if(playCard != null && playCard is PlayCardViewModel && playCard.playCardHome != null) {
+            val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome.copy(totalView = totalView))
+            newList[playIndex] = newPlayCard
+            _homeLiveData.postValue(_homeLiveData.value?.copy(
+                    list = newList
+            ))
+        }
     }
 
     private fun updateHeaderViewModel(tokopointsDrawer: TokopointsDrawer? = null,
@@ -456,23 +472,11 @@ open class HomeViewModel @Inject constructor(
     private fun evaluateBuWidgetData(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { homeViewModel ->
             val findBuWidgetViewModel =
-                    _homeLiveData.value?.list?.find { visitable -> visitable is BusinessUnitViewModel }
+                    _homeLiveData.value?.list?.find { visitable -> visitable is NewBusinessUnitWidgetDataModel }
             findBuWidgetViewModel?.let { findBu->
-                if (findBu is BusinessUnitViewModel) {
-                    val shouldForceRefresh = TimeUnit.MILLISECONDS.toMinutes(
-                            (System.currentTimeMillis()-findBu.updatedTime)) >= 3
-                    findBu.forceRefresh = shouldForceRefresh
-                    if (!shouldForceRefresh) {
-                        if (findBu.updatedTime == 0L) findBu.updatedTime = System.currentTimeMillis()
-                    } else {
-                        findBu.updatedTime = System.currentTimeMillis()
-                    }
-                }
-
                 val currentList = homeViewModel.list.toMutableList()
-
                 currentList.let {list ->
-                    val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
+                    val buwidgetIndex = list.indexOfFirst { visitable -> visitable is NewBusinessUnitWidgetDataModel }
                     if(buwidgetIndex != -1) {
                         list[buwidgetIndex] = findBu
                         return homeViewModel.copy(list = list)
@@ -482,16 +486,11 @@ open class HomeViewModel @Inject constructor(
 
             if (findBuWidgetViewModel == null) {
                 val findCurrentBuWidgetViewModel =
-                        homeViewModel.list.find { visitable -> visitable is BusinessUnitViewModel }
+                        homeViewModel.list.find { visitable -> visitable is NewBusinessUnitWidgetDataModel }
                 findCurrentBuWidgetViewModel?.let {
-                    if (findCurrentBuWidgetViewModel is BusinessUnitViewModel) {
-                        findCurrentBuWidgetViewModel.forceRefresh = false
-                        findCurrentBuWidgetViewModel.updatedTime = System.currentTimeMillis()
-                    }
                     val currentList = homeViewModel.list.toMutableList()
-
                     currentList.let {list ->
-                        val buwidgetIndex = list.indexOfFirst { visitable -> visitable is BusinessUnitViewModel }
+                        val buwidgetIndex = list.indexOfFirst { visitable -> visitable is NewBusinessUnitWidgetDataModel }
                         if(buwidgetIndex != -1) {
                             list[buwidgetIndex] = findCurrentBuWidgetViewModel
                             return homeViewModel.copy(list = list)
@@ -555,23 +554,16 @@ open class HomeViewModel @Inject constructor(
 
     private fun initFlow() {
         launchCatchError(coroutineContext, block = {
-            homeFlowData.collect {
-                var homeData = evaluateGeolocationComponent(it)
-                if (it?.isCache == false) {
-                    homeData = evaluateAvailableComponent(homeData)
-                    withContext(homeDispatcher.ui()){
-                        _homeLiveData.value = homeData
-                    }
+            homeFlowData.collect { homeDataModel ->
+                if (homeDataModel?.isCache == false) {
+                    channel.send(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
-
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
-                    withContext(homeDispatcher.ui()){
-                        _homeLiveData.value = homeData
-                    }
+                    channel.send(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     refreshHomeData()
                 }
             }
@@ -816,7 +808,7 @@ open class HomeViewModel @Inject constructor(
     private suspend fun updateChannel(channel: Channel<UpdateLiveDataModel>){
         for(data in channel){
             val newList = _homeLiveData.value?.list?.toMutableList()
-            data.visitable?.let {homeVisitable ->
+            data.visitable?.let { homeVisitable ->
                 if(newList != null && newList.size >  data.position) {
                     when (data.action) {
                         ACTION_ADD -> newList.add(homeVisitable)
@@ -833,6 +825,16 @@ open class HomeViewModel @Inject constructor(
                     }
                     withContext(homeDispatcher.ui()) {
                         _homeLiveData.value = _homeLiveData.value?.copy(list = newList)
+                    }
+                }
+            }
+            data.homeData?.let { homeData ->
+                if(data.action == ACTION_UPDATE_HOME_DATA){
+                    var homeDataModel = evaluateGeolocationComponent(homeData)
+                    homeDataModel = evaluateAvailableComponent(homeDataModel)
+
+                    withContext(homeDispatcher.ui()) {
+                        _homeLiveData.value = homeDataModel
                     }
                 }
             }

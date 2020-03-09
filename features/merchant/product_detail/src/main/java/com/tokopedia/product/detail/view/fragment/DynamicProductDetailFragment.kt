@@ -250,6 +250,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (::remoteConfig.isInitialized) {
+            viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
+        }
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
                 ?: viewModel.userSessionInterface.deviceId
         initPerformanceMonitoring()
@@ -1096,7 +1099,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     onSuccessGetDataP1(it.data)
                 }
                 is Fail -> {
-                    ErrorHelper.logDeeplinkError(it.throwable, isFromDeeplink, deeplinkUrl)
                     logException(it.throwable)
                     renderPageError(it.throwable)
                 }
@@ -1335,7 +1337,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun renderPageError(t: Throwable) {
         context?.let { ctx ->
             dynamicAdapter.clearAllElements()
-            dynamicAdapter.addElement(ErrorHelper.getErrorType(ctx, t))
+            dynamicAdapter.addElement(ErrorHelper.getErrorType(ctx, t, isFromDeeplink, deeplinkUrl))
             if (swipeToRefresh != null) {
                 swipeToRefresh.isEnabled = false
             }

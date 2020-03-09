@@ -152,6 +152,7 @@
 /features/user/stickylogin/                             @tokopedia/minion-kevin
 /features/user/campaign_shake_landing/                  @tokopedia/minion-kevin
 /features/home/account-home/                        	@tokopedia/minion-kevin
+/features/user/loginfingerprint/                        @tokopedia/minion-kevin
 
 /features/operational/contact_us        				@tokopedia/minion-darth
 
