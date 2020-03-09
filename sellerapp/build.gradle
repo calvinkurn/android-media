@@ -420,7 +420,6 @@ dependencies {
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
-    debugImplementation project.ext.debugToolsDependencies.dbInspector
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
