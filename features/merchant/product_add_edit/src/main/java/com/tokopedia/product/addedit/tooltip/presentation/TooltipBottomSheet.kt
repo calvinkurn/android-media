@@ -12,10 +12,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.addedit.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
+import kotlin.math.roundToInt
 
 class TooltipBottomSheet <T, F : AdapterTypeFactory> (typeFactory: F) : BottomSheetUnify() {
 
@@ -54,11 +55,14 @@ class TooltipBottomSheet <T, F : AdapterTypeFactory> (typeFactory: F) : BottomSh
     }
 
     private fun removeContainerPadding() {
-        bottomSheetWrapper.setPadding(0, 24.toPx(), 0, 0)
+        val paddingTop = resources.getDimension(R.dimen.tooltip_padding).toPx().roundToInt()
+        val padding = resources.getDimension(R.dimen.tooltip_padding_top).toPx().roundToInt()
+        bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
     }
 
     private fun addMarginCloseButton() {
-        val horizontalMargin = 16.toPx()
+        val horizontalMargin =
+                resources.getDimension(R.dimen.bottom_sheet_margin_close).toPx().roundToInt()
         (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
             setMargins(horizontalMargin, 0, horizontalMargin, 0)
             addRule(RelativeLayout.CENTER_VERTICAL)
