@@ -29,4 +29,11 @@ class FlightSearchFormBottomSheet : BottomSheetUnify() {
         setChild(mChildView)
     }
 
+    companion object {
+        const val TAG_SEARCH_FORM = "TagFlightSearchFormBottomSheet"
+
+        fun getInstance(): FlightSearchFormBottomSheet =
+                FlightSearchFormBottomSheet()
+    }
+
 }
