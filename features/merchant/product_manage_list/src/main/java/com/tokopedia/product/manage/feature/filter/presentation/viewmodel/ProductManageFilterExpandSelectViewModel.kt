@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
+import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter.Companion.MAXIMUM_CHIPS
 import javax.inject.Inject
 
 class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel() {
@@ -19,7 +20,7 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
 
     private var selectedElement: SelectViewModel? = null
 
-    fun updateSelectedItem(element: SelectViewModel) {
+    fun updateSelectedItem(element: SelectViewModel): Boolean {
         val currentData = _selectData.value
         if(selectedElement != null) {
             val selectIndex = currentData?.indexOf(selectedElement!!)
@@ -30,28 +31,17 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
             if(selected == element) {
                 selectedElement = null
                 _selectData.postValue(currentData)
-                return
+                return false
             }
         }
         val index = currentData?.indexOf(element)
         index?.let {
-            updateSpecificData(currentData, it)
-        }
-        _selectData.postValue(currentData)
-    }
-
-    private fun updateSpecificData(currentData:MutableList<SelectViewModel>, index: Int) {
-        index.let {
-            if(it < 5) {
-                currentData[it].isSelected = !currentData[it].isSelected
-            } else {
-                val dataToBeSelected = currentData[it]
-                dataToBeSelected.isSelected = !currentData[it].isSelected
-                currentData.removeAt(it)
-                currentData.add(0, dataToBeSelected)
-            }
+            currentData[it].isSelected = !currentData[it].isSelected
             selectedElement = currentData[it]
+            _selectData.postValue(currentData)
+            return it > (MAXIMUM_CHIPS - 1)
         }
+        return false
     }
 
     private fun findSelectedData(selectViewModels: List<SelectViewModel>): SelectViewModel? {

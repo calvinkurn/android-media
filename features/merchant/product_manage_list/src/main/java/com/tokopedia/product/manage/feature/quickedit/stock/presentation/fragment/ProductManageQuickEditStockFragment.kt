@@ -2,17 +2,13 @@ package com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragme
 
 import android.content.Context
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import android.widget.TextView
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
@@ -21,7 +17,6 @@ import com.tokopedia.product.manage.feature.quickedit.stock.di.DaggerProductMana
 import com.tokopedia.product.manage.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.fragment_quick_edit_price.*
 import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
 import javax.inject.Inject
 

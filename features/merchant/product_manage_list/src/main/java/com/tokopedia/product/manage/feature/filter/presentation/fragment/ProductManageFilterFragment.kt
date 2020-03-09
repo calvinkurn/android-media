@@ -59,7 +59,6 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         const val ITEM_ETALASE_INDEX = 1
         const val ITEM_CATEGORIES_INDEX = 2
         const val ITEM_OTHER_FILTER_INDEX = 3
-        const val SELECTED_FILTER = "selected_filters"
 
         fun createInstance(context: Context, cacheManagerId: String) : ProductManageFilterFragment {
             return ProductManageFilterFragment().apply{

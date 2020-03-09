@@ -8,12 +8,8 @@ import android.text.TextWatcher
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
-import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
-import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
-import com.tokopedia.product.manage.item.utils.ProductPriceRangeUtils
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_quick_edit_price.*
 import java.text.NumberFormat
@@ -67,6 +63,7 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
             }
             textFieldInput.addTextChangedListener( object: TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
+
                 }
 
                 override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
