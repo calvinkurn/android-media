@@ -76,7 +76,8 @@ class MainSliceProvider : SliceProvider() {
         val mainPendingIntent = PendingIntent.getActivity(
                 contextNonNull,
                 0,
-                RouteManager.getIntent(contextNonNull,ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME),
+                RouteManager.getIntent(contextNonNull,ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                        .putExtra(RECHARGE_HOME_PAGE_EXTRA, true),
                 0
         )
             if (recommendationModel == null) {
@@ -195,6 +196,7 @@ class MainSliceProvider : SliceProvider() {
     companion object {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
+        const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
         const val NOT_LOGIN = "401 - UNAUTHORIZED"
     }
 

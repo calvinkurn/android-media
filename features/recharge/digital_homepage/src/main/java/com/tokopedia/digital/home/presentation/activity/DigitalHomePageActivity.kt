@@ -56,8 +56,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
 
     companion object {
         const val DIGITAL_HOMEPAGE_SCREEN_NAME = "/digital/subhomepage/topup"
-        const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
-        const val RECHARGE_USER_EXTRA = "RECHARGE_USER_EXTRA"
+        const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
         const val RECHARGE_PATH_SLICE = "/recharge/home"
 
         fun getCallingIntent(context: Context): Intent = Intent(context, DigitalHomePageActivity::class.java)
@@ -66,6 +65,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     /* This Method is use to handle intent from Action
    */
     private fun Intent.handleIntent() {
+        handleTracking() 
         when (action) {
             Intent.ACTION_VIEW -> handleDeepLink(data)
             SearchIntents.ACTION_SEARCH -> {
@@ -74,11 +74,14 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
             }
         }
     }
-
+    
     /* This Method is use to tracking action click when user click open app in action
     */
     private fun handleTracking(){
+        val trackingClick = intent.getStringExtra(RECHARGE_HOME_PAGE_EXTRA)
+        if (trackingClick!=null) {
             Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#DigitalHomepage")
+        }
     }
 
 
@@ -98,7 +101,6 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
    */
     private fun notifyActionSuccess(succeed: Boolean) {
         intent.getStringExtra(actionTokenExtra)?.let { actionToken ->
-            handleTracking()
             val actionStatus = if (succeed) {
                 Action.Builder.STATUS_TYPE_COMPLETED
             } else {
