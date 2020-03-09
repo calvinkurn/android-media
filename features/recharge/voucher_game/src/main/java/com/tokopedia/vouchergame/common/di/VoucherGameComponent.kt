@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.promocheckout.common.domain.digital.DigitalCheckVoucherUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vouchergame.common.VoucherGameAnalytics
+import com.tokopedia.vouchergame.common.util.VoucherGameDispatchersProvider
 import com.tokopedia.vouchergame.common.view.BaseVoucherGameActivity
 import dagger.Component
 import kotlinx.coroutines.CoroutineDispatcher
@@ -22,6 +23,8 @@ interface VoucherGameComponent {
     fun userSessionInterface(): UserSessionInterface
 
     fun coroutineDispatcher(): CoroutineDispatcher
+
+    fun voucherGameDispatchersProvider(): VoucherGameDispatchersProvider
 
     fun graphqlRepository(): GraphqlRepository
 
