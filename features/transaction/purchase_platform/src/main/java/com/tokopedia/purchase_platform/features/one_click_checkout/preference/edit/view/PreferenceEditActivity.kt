@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_preference_edit.*
 class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent> {
 
     var preferenceIndex = -1
-    var profileId = -1
+    var profileId = 0
     var addressId = -1
     var shippingId = -1
     var gatewayCode = ""
@@ -47,14 +47,14 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         }
 
         preferenceIndex = intent.getIntExtra(EXTRA_PREFERENCE_INDEX, -1)
-        profileId = intent.getIntExtra(EXTRA_PROFILE_ID, -1)
+        profileId = intent.getIntExtra(EXTRA_PROFILE_ID, 0)
         addressId = intent.getIntExtra(EXTRA_ADDRESS_ID, -1)
         shippingId = intent.getIntExtra(EXTRA_SHIPPING_ID, -1)
         gatewayCode = intent.getStringExtra(EXTRA_GATEWAY_CODE) ?: ""
         shippingParam = intent.getParcelableExtra(EXTRA_SHIPPING_PARAM)
         listShopShipment = intent.getParcelableArrayListExtra(EXTRA_LIST_SHOP_SHIPMENT)
 
-        if (addressId == -1 || shippingId == -1 || gatewayCode.isBlank() || profileId == -1) {
+        if (addressId == -1 || shippingId == -1 || gatewayCode.isBlank() || profileId == 0) {
             supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment.newInstance()).commit()
         } else {
             supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()

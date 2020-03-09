@@ -8,9 +8,15 @@ import javax.inject.Inject
 
 class GetPreferenceByIdUseCase @Inject constructor(val graphqlUseCase: GraphqlUseCase<GetPreferenceByIdGqlResponse>, val mapper: PreferenceModelMapper) {
 
-    fun execute(param: Int, onSuccess: (GetPreferenceData) -> Unit, onError: (Throwable) -> Unit) {
+    fun execute(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String, onSuccess: (GetPreferenceData) -> Unit, onError: (Throwable) -> Unit) {
         graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(PARAM_KEY to param))
+        graphqlUseCase.setRequestParams(mapOf(
+                PARAM_PROFILE_ID to profileId,
+                PARAM_ADDRESS_ID to addressId,
+                PARAM_SERVICE_ID to serviceId,
+                PARAM_GATEWAY_CODE to gatewayCode,
+                PARAM_METADATA to metadata
+        ))
         graphqlUseCase.setTypeClass(GetPreferenceByIdGqlResponse::class.java)
         graphqlUseCase.execute({ response: GetPreferenceByIdGqlResponse ->
             if (response.response.status.equals("OK", true)) {
@@ -33,10 +39,14 @@ class GetPreferenceByIdUseCase @Inject constructor(val graphqlUseCase: GraphqlUs
     }
 
     companion object {
-        const val PARAM_KEY = "profileId"
+        const val PARAM_PROFILE_ID = "profileId"
+        const val PARAM_ADDRESS_ID = "addressId"
+        const val PARAM_SERVICE_ID = "serviceId"
+        const val PARAM_GATEWAY_CODE = "gatewayCode"
+        const val PARAM_METADATA = "metadata"
         val QUERY = """
-        query get_profile_by_id_occ(${"$"}profileId: Int) {
-          get_profile_by_id_occ(profile_id: ${"$"}profileId, dummy: 1){
+        query get_profile_by_id_occ(${"$"}profileId: Int, ${"$"}addressId: Int, ${"$"}serviceId: Int, ${"$"}gatewayCode: String, ${"$"}metadata: String) {
+          get_profile_by_id_occ(profile_id: ${"$"}profileId, address_id: ${"$"}addressId, service_id: ${"$"}serviceId, gateway_code: ${"$"}gatewayCode, metadata: ${"$"}metadata, dummy: 1){
                 error_message
                 status
                 data {

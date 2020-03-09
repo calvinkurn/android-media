@@ -29,22 +29,15 @@ class PreferenceSummaryViewModel @Inject constructor(private val getPreferenceBy
     val editResult: LiveData<OccState<String>>
         get() = _editResult
 
-    fun getPreferenceDetail(profileId: Int) {
+    fun getPreferenceDetail(profileId: Int, addressId: Int, serviceId: Int, gatewayCode: String, metadata: String) {
         _preference.value = OccState.Loading
-        getPreferenceByIdUseCase.execute(profileId, { getPreferenceData: GetPreferenceData ->
-            _preference.value = OccState.Success(getPreferenceData)
-        }, { throwable: Throwable ->
-            _preference.value = OccState.Fail(false, throwable, "")
-        })
-    }
-
-    fun getPreferenceDetail(addressId: Int, serviceId: Int, gatewayCode: String) {
-        _preference.value = OccState.Loading
-        getPreferenceByIdUseCase.execute(0, { getPreferenceData: GetPreferenceData ->
-            _preference.value = OccState.Success(getPreferenceData)
-        }, { throwable: Throwable ->
-            _preference.value = OccState.Fail(false, throwable, "")
-        })
+        getPreferenceByIdUseCase.execute(profileId, addressId, serviceId, gatewayCode, metadata,
+                { getPreferenceData: GetPreferenceData ->
+                    _preference.value = OccState.Success(getPreferenceData)
+                },
+                { throwable: Throwable ->
+                    _preference.value = OccState.Fail(false, throwable, "")
+                })
     }
 
     fun deletePreference() {

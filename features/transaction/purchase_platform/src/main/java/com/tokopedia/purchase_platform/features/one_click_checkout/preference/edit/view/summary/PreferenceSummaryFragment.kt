@@ -85,7 +85,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
     private fun getPreferenceDetail() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
-            viewModel.getPreferenceDetail(parent.profileId)
+            viewModel.getPreferenceDetail(parent.profileId, parent.addressId, parent.shippingId, parent.gatewayCode, parent.paymentQuery)
         }
     }
 
