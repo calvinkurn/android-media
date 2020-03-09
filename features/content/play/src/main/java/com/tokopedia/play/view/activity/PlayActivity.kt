@@ -74,7 +74,6 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun setupView(channelId: String?) {
@@ -84,16 +83,18 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     }
 
     override fun onBackPressed() {
-        if (isTaskRoot) {
-            val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-            startActivity(intent)
-            finish()
-        } else {
-            val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
-            if (fragment != null && fragment is PlayFragment) {
-                fragment.setResultBeforeFinish()
+        val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
+        if (fragment != null && fragment is PlayFragment) {
+            if (!fragment.onBackPressed()) {
+                if (isTaskRoot) {
+                    val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    fragment.setResultBeforeFinish()
+                    supportFinishAfterTransition()
+                }
             }
-            supportFinishAfterTransition()
-        }
+        } else super.onBackPressed()
     }
 }
