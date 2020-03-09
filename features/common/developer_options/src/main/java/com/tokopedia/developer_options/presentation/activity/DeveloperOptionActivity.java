@@ -295,18 +295,6 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleTimberDevOption.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
-                Timber.uprootAll();
-                Timber.plant(new Timber.DebugTree() {
-                    @Override
-                    protected String createStackElementTag(@NotNull StackTraceElement element) {
-                        return String.format("[%s:%s:%s]",
-                                super.createStackElementTag(element),
-                                element.getMethodName(),
-                                element.getLineNumber());
-                    }
-                });
-                Toast.makeText(this, "Timber is disabled", Toast.LENGTH_SHORT).show();
-            } else {
                 RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
                 String remoteConfigStringKey;
                 if (GlobalConfig.isSellerApp()) {
@@ -328,6 +316,18 @@ public class DeveloperOptionActivity extends BaseActivity {
                     }
                 }
                 Toast.makeText(this, "Timber is enabled", Toast.LENGTH_SHORT).show();
+            } else {
+                Timber.uprootAll();
+                Timber.plant(new Timber.DebugTree() {
+                    @Override
+                    protected String createStackElementTag(@NotNull StackTraceElement element) {
+                        return String.format("[%s:%s:%s]",
+                                super.createStackElementTag(element),
+                                element.getMethodName(),
+                                element.getLineNumber());
+                    }
+                });
+                Toast.makeText(this, "Timber is disabled", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -340,6 +340,8 @@ public class DeveloperOptionActivity extends BaseActivity {
                             "Timber message should not empty", Toast.LENGTH_SHORT).show();
                 } else {
                     Timber.w(timberMessage);
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            timberMessage + " has been sent" , Toast.LENGTH_LONG).show();
                 }
             }
         });
