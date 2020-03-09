@@ -69,12 +69,12 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
-                    isCollapsed = couponSectionItem.isCollapsed
+                    isExpanded = !couponSectionItem.isCollapsed
                 }
         )
     }
 
-    fun mapPromoListHeaderUiModel(couponSubSection: SubSection, headerIdentifierId: Int): PromoListHeaderUiModel {
+    fun mapPromoListHeaderUiModel(couponSubSection: SubSection, headerIdentifierId: Int, isHeaderEnabled: Boolean): PromoListHeaderUiModel {
         return PromoListHeaderUiModel(
                 uiData = PromoListHeaderUiModel.UiData().apply {
                     title = couponSubSection.title
@@ -93,7 +93,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         }
                     }
                     hasSelectedPromoItem = tmpHasSellectedPromoItem
-                    isCollapsed = couponSubSection.isCollapsed
+                    if (isHeaderEnabled) {
+                        isExpanded = !couponSubSection.isCollapsed
+                    } else {
+                        isExpanded = true
+                    }
                 }
         )
     }

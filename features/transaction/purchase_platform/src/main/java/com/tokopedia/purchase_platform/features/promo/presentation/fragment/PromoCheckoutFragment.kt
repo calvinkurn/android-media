@@ -36,7 +36,9 @@ import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTncBottomsheet
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.*
@@ -77,6 +79,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val REQUEST_CODE_PHONE_VERIFICATION = 9999
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
+
+        fun createInstance(promoRequest: PromoRequest): PromoCheckoutFragment {
+            return PromoCheckoutFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(ARGS_PROMO_REQUEST, promoRequest)
+                }
+            }
+        }
     }
 
     override fun initInjector() {
@@ -163,7 +173,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val lastData = adapter.data[topItemPosition]
 
             var isShow = false
-            if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isCollapsed) {
+            if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isExpanded) {
                 tmpLastHeaderUiModel = lastData
                 isShow = true
             } else if (tmpLastHeaderUiModel != null && lastData is PromoListItemUiModel && lastData.uiData.parentIdentifierId == tmpLastHeaderUiModel.uiData.identifierId && lastData.uiState.isParentEnabled) {
@@ -198,7 +208,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 section_label_promo_list_header_title.text = tmpLastHeaderUiModel?.uiData?.title
                 section_label_promo_list_header_sub_title.text = tmpLastHeaderUiModel?.uiData?.subTitle
 
-                if (tmpLastHeaderUiModel?.uiState?.isCollapsed == false) {
+                if (tmpLastHeaderUiModel?.uiState?.isExpanded == false) {
                     section_image_chevron.rotation = 180f
                 } else {
                     section_image_chevron.rotation = 0f
@@ -443,7 +453,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun loadData(page: Int) {
         activity?.let {
             showLoading()
-            viewModel.loadData(GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation))
+            val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
+            val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
+            viewModel.loadData(mutation, promoRequest)
         }
     }
 

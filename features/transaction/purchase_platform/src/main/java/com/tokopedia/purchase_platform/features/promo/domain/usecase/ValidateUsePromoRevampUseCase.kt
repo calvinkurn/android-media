@@ -1,27 +1,18 @@
 package com.tokopedia.purchase_platform.features.promo.domain.usecase
 
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
 import android.content.Context
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
-import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
-import com.tokopedia.purchase_platform.features.cart.domain.usecase.UpdateCartUseCase
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.Params
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.RequestParamsValidateUse
-import com.tokopedia.purchase_platform.features.promo.data.request.varidate_use.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.ValidateUseResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import rx.Observable
-import rx.Scheduler
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
@@ -39,7 +30,7 @@ class ValidateUsePromoRevampUseCase @Inject constructor (@ApplicationContext pri
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<ValidateUsePromoRevampUiModel> {
-        val paramValidateUse = requestParams?.getObject(PARAM_VALIDATE_USE) as CouponListRequest
+        val paramValidateUse = requestParams?.getObject(PARAM_VALIDATE_USE) as PromoRequest
 
         val variables = mapOf(
                 PARAM_PROMO to paramValidateUse

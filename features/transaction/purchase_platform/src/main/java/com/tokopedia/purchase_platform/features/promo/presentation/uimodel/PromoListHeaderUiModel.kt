@@ -46,7 +46,7 @@ class PromoListHeaderUiModel(
 
     data class UiState(
             var isEnabled: Boolean = false,
-            var isCollapsed: Boolean = false,
+            var isExpanded: Boolean = false,
             var hasSelectedPromoItem: Boolean = false
     )
 

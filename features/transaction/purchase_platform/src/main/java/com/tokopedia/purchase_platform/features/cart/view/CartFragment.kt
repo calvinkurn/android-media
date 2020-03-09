@@ -61,6 +61,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.ACTION_OK
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART
@@ -94,7 +95,7 @@ import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.Order
 import com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -106,7 +107,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
-import kotlinx.android.synthetic.main.fragment_cart.*
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -201,6 +201,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         private val CART_ALL_TRACE = "mp_cart_all"
         private val CART_PAGE = "cart"
         private val NAVIGATION_PDP = 64728
+        private val NAVIGATION_PROMO = 7451
         private val ADVERTISINGID = "ADVERTISINGID"
         private val KEY_ADVERTISINGID = "KEY_ADVERTISINGID"
         val GO_TO_DETAIL = 2
@@ -404,9 +405,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn = view.findViewById(R.id.promo_checkout_btn_cart)
 
         // Todo : Adjust this
-        promoCheckoutBtn.setOnClickListener {
-            RouteManager.route(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-        }
+//        promoCheckoutBtn.setOnClickListener {
+//            RouteManager.route(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+//        }
 
         activity?.let {
             refreshHandler = RefreshHandler(it, view.findViewById(R.id.swipe_refresh_layout), this)
@@ -1354,18 +1355,21 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 promoCheckoutBtn.title = lastApply.additionalInfoMsg
                 promoCheckoutBtn.desc = lastApply.additionalInfoDetailMsg
                 promoCheckoutBtn.setOnClickListener {
-                    val params = generateParamsCouponList()
-                    // TODO: intent ke coupon list page with params above
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                    val promoRequest = generateParamsCouponList()
+                    intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+
+                    startActivityForResult(intent, NAVIGATION_PROMO)
                 }
             }
         }
     }
 
-    override fun generateValidateUseParams(): CouponListRequest {
+    override fun generateValidateUseParams(): PromoRequest {
         return generateParamsCouponList()
     }
 
-    private fun generateParamsCouponList() : CouponListRequest {
+    private fun generateParamsCouponList() : PromoRequest {
         val globalPromo = arrayListOf<String>()
         cartListData?.lastApplyData?.code?.let { globalPromo.add(it) }
 
@@ -1409,7 +1413,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             }
         }
 
-        return CouponListRequest(
+        return PromoRequest(
                 codes = globalPromo,
                 state = CART,
                 orders = listOrder)

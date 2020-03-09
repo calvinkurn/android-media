@@ -3,6 +3,8 @@ package com.tokopedia.purchase_platform.features.promo.presentation.activity
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.presentation.fragment.PromoCheckoutFragment
 
 class PromoCheckoutActivity: BaseSimpleActivity() {
@@ -10,7 +12,8 @@ class PromoCheckoutActivity: BaseSimpleActivity() {
     lateinit var fragment: PromoCheckoutFragment
 
     override fun getNewFragment(): Fragment {
-        fragment = PromoCheckoutFragment()
+        val promoRequest = intent.getParcelableExtra(ARGS_PROMO_REQUEST) as PromoRequest
+        fragment = PromoCheckoutFragment.createInstance(promoRequest)
         return fragment
     }
 

@@ -1,18 +1,9 @@
 package com.tokopedia.purchase_platform.features.cart.domain.usecase
 
-import android.app.DownloadManager
-import com.google.gson.Gson
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndValidateUseData
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.Params
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.RequestParamsValidateUse
-import com.tokopedia.purchase_platform.features.promo.data.request.varidate_use.PromoRequest
-import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.ValidateUseResponse
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.usecase.RequestParams
 import rx.Observable
@@ -26,9 +17,9 @@ class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCart
                                                           private val schedulers: ExecutorSchedulers) : com.tokopedia.usecase.UseCase<UpdateAndValidateUseData>() {
     /*val variables = HashMap<String, Any?>()
 
-    fun setParams(couponListRequest: CouponListRequest) {
+    fun setParams(promoRequest: PromoRequest) {
         val checkPromoParam = RequestParamsValidateUse()
-        checkPromoParam.params?.promo = couponListRequest
+        checkPromoParam.params?.promo = promoRequest
         val jsonTreeCheckoutRequest = Gson().toJsonTree(checkPromoParam)
         val jsonObjectCheckoutRequest = jsonTreeCheckoutRequest.asJsonObject
         variables["params"] = jsonObjectCheckoutRequest
@@ -39,7 +30,7 @@ class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCart
         val requestParamUpdateCart = RequestParams.create()
         requestParamUpdateCart.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, paramUpdateList)
 
-        val paramValidateUse = requestParams.getObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE) as CouponListRequest
+        val paramValidateUse = requestParams.getObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE) as PromoRequest
         val requestParamValidateUse = RequestParams.create()
         requestParamValidateUse.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, paramValidateUse)
 
