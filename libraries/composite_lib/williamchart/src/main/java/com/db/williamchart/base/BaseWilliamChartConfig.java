@@ -44,14 +44,10 @@ public class BaseWilliamChartConfig {
     private BasicGraphConfiguration basicGraphConfiguration;
     private TooltipConfiguration tooltipConfiguration;
     private Drawable dotDrawable;
+    private int strokeDotColor = -1;
     private Tooltip tooltip;
     private XRenderer.XRendererListener xRendererListener;
     private int[] overlapOrder;
-    private LineSet lineSet = null;
-
-    public void setLineSet(LineSet lineSet) {
-        this.lineSet = lineSet;
-    }
 
     public BaseWilliamChartConfig() {
 //        baseWilliamChartModels = new ArrayList<>();
@@ -95,6 +91,11 @@ public class BaseWilliamChartConfig {
         return this;
     }
 
+    public BaseWilliamChartConfig setDotsStrokeColor(int resColor) {
+        this.strokeDotColor = resColor;
+        return this;
+    }
+
     public BaseWilliamChartConfig setTooltip(Tooltip tooltip, TooltipConfiguration tooltipConfiguration) {
         this.tooltipConfiguration = tooltipConfiguration;
         this.tooltip = tooltip;
@@ -118,7 +119,9 @@ public class BaseWilliamChartConfig {
             BaseWilliamChartModel baseWilliamChartModel = pairConfig.getModel1();
             DataSetConfiguration dataSetConfiguration = pairConfig.getModel2();
 
-            if (lineSet == null) lineSet = new LineSet();
+            LineSet lineSet = new LineSet();
+            if (strokeDotColor != -1)
+                lineSet.setDotsStrokeColor(strokeDotColor);
 
             lineSet.setmPointVisible(dataSetConfiguration.isVisible());
 
