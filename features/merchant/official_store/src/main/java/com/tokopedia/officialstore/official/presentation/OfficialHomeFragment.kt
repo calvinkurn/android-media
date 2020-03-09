@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.official.presentation
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -25,6 +26,7 @@ import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityRe
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
@@ -71,10 +73,13 @@ class OfficialHomeFragment :
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
+        private const val PERFORMANCE_OS_PAGE_NAME = "OS"
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
+    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -140,7 +145,13 @@ class OfficialHomeFragment :
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
+        recyclerView?.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_OS_PAGE_NAME) }
         return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -158,6 +169,12 @@ class OfficialHomeFragment :
     override fun onPause() {
         super.onPause()
         tracking?.sendAll()
+    }
+
+    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
+        return if (context is JankyFramesMonitoringListener) {
+            context
+        } else null
     }
 
     private fun resetData() {
