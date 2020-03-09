@@ -150,12 +150,6 @@ class OfficialHomeFragment :
         jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
     }
 
-    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
-        return if (context is JankyFramesMonitoringListener) {
-            context
-        } else null
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeBannerData()
@@ -171,6 +165,12 @@ class OfficialHomeFragment :
     override fun onPause() {
         super.onPause()
         tracking?.sendAll()
+    }
+
+    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
+        return if (context is JankyFramesMonitoringListener) {
+            context
+        } else null
     }
 
     private fun resetData() {
