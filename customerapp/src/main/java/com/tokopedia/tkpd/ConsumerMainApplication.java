@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bugsnag.android.Bugsnag;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
@@ -157,6 +158,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         NFCSubscriber nfcSubscriber = new NFCSubscriber();
         registerActivityLifecycleCallbacks(nfcSubscriber);
+        Bugsnag.init(this);
     }
 
     private void createAndCallPreSeq(){
