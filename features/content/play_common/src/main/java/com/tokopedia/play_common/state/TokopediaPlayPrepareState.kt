@@ -9,7 +9,12 @@ import com.tokopedia.play_common.types.TokopediaPlayVideoType
 sealed class TokopediaPlayPrepareState {
 
     data class Prepared(val uri: Uri, val positionHandle: VideoPositionHandle) : TokopediaPlayPrepareState()
-    data class Unprepared(val previousUri: Uri?, val previousType: TokopediaPlayVideoType, val lastPosition: Long?) : TokopediaPlayPrepareState()
+    data class Unprepared(
+            val previousUri: Uri?,
+            val previousType: TokopediaPlayVideoType,
+            val lastPosition: Long?,
+            val resetState: Boolean
+    ) : TokopediaPlayPrepareState()
 }
 
 sealed class VideoPositionHandle {
