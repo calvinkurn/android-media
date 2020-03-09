@@ -85,8 +85,6 @@ interface HomeCategoryListener {
 
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
-    fun sendEETracking(data: HashMap<String, Any>)
-
     fun putEEToIris(data: HashMap<String, Any>)
 
     fun getWindowWidth(): Int
