@@ -20,7 +20,8 @@ import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
 class OtherMenuViewHolder(private val itemView: View,
-                          private val context: Context) {
+                          private val context: Context,
+                          private val listener: Listener) {
 
     companion object {
         private val SHIMMER_STATUS_LAYOUT = R.layout.setting_shop_status_shimmer
@@ -45,6 +46,7 @@ class OtherMenuViewHolder(private val itemView: View,
     fun initBindView() {
         itemView.saldoBalance.balanceTitle.text = SALDO
         itemView.topAdsBalance.balanceTitle.text = KREDIT_TOPADS
+        itemView.setOnClickAction()
     }
 
     fun onSuccessGetShopGeneralInfoData(uiModel: GeneralShopInfoUiModel) {
@@ -65,9 +67,9 @@ class OtherMenuViewHolder(private val itemView: View,
 
     @SuppressLint("SetTextI18n")
     fun onSuccessGetTotalFollowing(totalFollowing: Int) {
-        itemView.shopInfoLayout.shopFollowing.text = "$totalFollowing $FOLLOWERS"
+        itemView.shopInfoLayout.shopFollowers.text = "$totalFollowing $FOLLOWERS"
         itemView.shopInfoLayout.shopBadges.visibility = View.VISIBLE
-        itemView.shimmerFollowing.visibility = View.GONE
+        itemView.shimmerFollowers.visibility = View.GONE
     }
 
     fun onLoadingGetShopGeneralInfoData() {
@@ -86,8 +88,8 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun onLoadingGetTotalFollowing() {
-        itemView.shopInfoLayout.shopFollowing.text = ""
-        itemView.shimmerFollowing.visibility = View.VISIBLE
+        itemView.shopInfoLayout.shopFollowers.text = ""
+        itemView.shimmerFollowers.visibility = View.VISIBLE
     }
 
     private fun setShopName(shopName: String) {
@@ -175,6 +177,20 @@ class OtherMenuViewHolder(private val itemView: View,
         shopInfoLayout.shimmerShopName.visibility = View.GONE
         saldoBalance.shimmeringBalanceValue.visibility = View.GONE
         topAdsBalance.shimmeringBalanceValue.visibility = View.GONE
+    }
+
+    fun View.setOnClickAction() {
+        shopInfoLayout.settingShopNext.setOnClickListener { listener.onShopNextClicked() }
+        shopInfoLayout.shopFollowers.setOnClickListener { listener.onFollowersCountClicked() }
+        saldoBalance.setOnClickListener { listener.onSaldoClicked() }
+        topAdsBalance.setOnClickListener { listener.onKreditTopadsClicked() }
+    }
+
+    interface Listener {
+        fun onShopNextClicked()
+        fun onFollowersCountClicked()
+        fun onSaldoClicked()
+        fun onKreditTopadsClicked()
     }
 
 }
