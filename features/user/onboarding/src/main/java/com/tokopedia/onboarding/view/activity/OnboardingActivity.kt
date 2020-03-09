@@ -133,8 +133,4 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
                 .replace(parentViewResourceID, fragment, tagFragment)
                 .commit()
     }
-
-    private fun timerTimeOut() {
-        // TODO :: counter timer for timeout API Request
-    }
 }
