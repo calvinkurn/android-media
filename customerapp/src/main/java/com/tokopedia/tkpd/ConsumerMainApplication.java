@@ -471,8 +471,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
                 if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
-                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
                     byte[] rawCertNative = bytesFromJNI();
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
                     return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 } else {
                     return false;
@@ -480,9 +484,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             } else {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
                 if (null != info && info.signatures.length > 0) {
-                    byte[] rawCertJava = info.signatures[0].toByteArray();
                     byte[] rawCertNative = bytesFromJNI();
-
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signatures[0].toByteArray();
                     return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 } else {
                     return false;
