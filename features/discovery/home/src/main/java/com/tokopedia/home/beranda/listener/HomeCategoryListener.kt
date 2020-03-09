@@ -83,9 +83,15 @@ interface HomeCategoryListener {
 
     fun putEEToTrackingQueue(data: HashMap<String, Any>)
 
+    fun sendEETracking(data: HashMap<String, Any>)
+
     fun putEEToIris(data: HashMap<String, Any>)
 
     fun getWindowWidth(): Int
 
     fun refreshHomeData()
+
+    fun getTabBusinessWidget(position: Int)
+
+    fun getBusinessUnit(tabId: Int, position: Int)
 }
