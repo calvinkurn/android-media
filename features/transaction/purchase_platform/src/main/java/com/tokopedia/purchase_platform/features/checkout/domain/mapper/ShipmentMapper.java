@@ -23,6 +23,7 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Addresses;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.LastApply;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DataAddressData;
@@ -270,11 +271,14 @@ public class ShipmentMapper implements IShipmentMapper {
         }
 
         if (shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData().getAdditionalInfo() != null) {
-            AdditionalInfo responseAdditionalInfo = shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData().getAdditionalInfo();
+            LastApply lastApply = shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply();
+            AdditionalInfo responseAdditionalInfo = lastApply.getData().getAdditionalInfo();
             LastApplyData lastApplyData = new LastApplyData();
             lastApplyData.setAdditionalInfoMsg(responseAdditionalInfo.getMessageInfo().getMessage());
             lastApplyData.setAdditionalInfoDetailMsg(responseAdditionalInfo.getMessageInfo().getDetail());
             lastApplyData.setErrorDetailMsg(responseAdditionalInfo.getErrorDetail().getMessage());
+            lastApplyData.setFinalBenefitText(lastApply.getData().getBenefitSummaryInfo().getFinalBenefitText());
+            lastApplyData.setFinalBenefitAmount(lastApply.getData().getBenefitSummaryInfo().getFinalBenefitAmountStr());
             dataResult.setLastApplyData(lastApplyData);
         }
 

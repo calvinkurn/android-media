@@ -9,17 +9,26 @@ import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
  */
 data class PromoCheckoutData (var promoLabel: String = "",
                               var promoUsageInfo: String = "",
-                              var state: ButtonPromoCheckoutView.State = ButtonPromoCheckoutView.State.ACTIVE) : Parcelable {
+                              var state: ButtonPromoCheckoutView.State = ButtonPromoCheckoutView.State.ACTIVE,
+                              var codes: List<String> = emptyList(),
+                              var totalBenefitLabel: String = "",
+                              var totalBenefitAmountStr: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readParcelable(ButtonPromoCheckoutView.State::class.java.classLoader)) {
+            parcel.readParcelable(ButtonPromoCheckoutView.State::class.java.classLoader),
+            parcel.createStringArrayList(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "") {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(promoLabel)
         parcel.writeString(promoUsageInfo)
         parcel.writeParcelable(state, flags)
+        parcel.writeStringList(codes)
+        parcel.writeString(totalBenefitLabel)
+        parcel.writeString(totalBenefitAmountStr)
     }
 
     override fun describeContents(): Int {
@@ -40,14 +49,23 @@ data class PromoCheckoutData (var promoLabel: String = "",
         var promoLabel: String = ""
         var promoUsageInfo: String = ""
         var state: ButtonPromoCheckoutView.State = ButtonPromoCheckoutView.State.ACTIVE
+        var codes: List<String> = emptyList()
+        var totalBenefitLabel: String = ""
+        var totalBenefitAmountStr: String = ""
 
         fun promoLabel(promoLabel: String) = apply { this.promoLabel = promoLabel }
         fun promoUsageInfo(promoUsageInfo: String) = apply { this.promoUsageInfo = promoUsageInfo }
         fun state(state: ButtonPromoCheckoutView.State) = apply { this.state = state }
+        fun codes(codes: List<String>) = apply { this.codes = codes }
+        fun totalBenefitLabel(totalBenefitLabel: String) = apply { this.totalBenefitLabel = totalBenefitLabel }
+        fun totalBenefitAmountStr(totalBenefitAmountStr: String) = apply { this.totalBenefitAmountStr = totalBenefitAmountStr }
 
         fun build() = PromoCheckoutData(
                 promoLabel,
                 promoUsageInfo,
-                state)
+                state,
+                codes,
+                totalBenefitLabel,
+                totalBenefitAmountStr)
     }
 }

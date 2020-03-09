@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.constant
 
 import android.text.PrecomputedText
+import androidx.arch.core.executor.DefaultTaskExecutor
 
 /**
  * @author okasurya on 8/10/18.

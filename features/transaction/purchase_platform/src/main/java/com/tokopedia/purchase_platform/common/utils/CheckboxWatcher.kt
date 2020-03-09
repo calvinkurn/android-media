@@ -22,6 +22,10 @@ class CheckboxWatcher: CompoundButton.OnCheckedChangeListener {
         checkboxWatcherListener?.onCheckboxChanged(isChecked)
     }
 
+    fun onCheckboxChanged(isChecked: Boolean) {
+
+    }
+
     interface CheckboxWatcherListener {
         fun onCheckboxChanged(isChecked: Boolean)
     }

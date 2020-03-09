@@ -32,6 +32,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.CartItemDecoration
 import com.tokopedia.purchase_platform.features.cart.view.CartListPresenter
 import com.tokopedia.purchase_platform.features.cart.view.ICartListPresenter
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
 import com.tokopedia.user.session.UserSessionInterface
@@ -185,6 +186,7 @@ class CartModule {
                                   seamlessLoginUsecase: SeamlessLoginUsecase,
                                   updateCartCounterUseCase: UpdateCartCounterUseCase,
                                   updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
+                                  validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                   schedulers: ExecutorSchedulers): ICartListPresenter {
         return CartListPresenter(getCartListSimplifiedUseCase, deleteCartUseCase,
                 updateCartUseCase, checkPromoStackingCodeUseCase, compositeSubscription,
@@ -193,7 +195,8 @@ class CartModule {
                 getWishlistUseCase, getRecommendationUseCase, addToCartUseCase,
                 getInsuranceCartUseCase, removeInsuranceProductUsecase,
                 updateInsuranceProductDataUsecase, seamlessLoginUsecase,
-                updateCartCounterUseCase, updateCartAndValidateUseUseCase, schedulers
+                updateCartCounterUseCase, updateCartAndValidateUseUseCase,
+                validateUsePromoRevampUseCase, schedulers
         )
     }
 

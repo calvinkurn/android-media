@@ -62,6 +62,8 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentBu
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentInsuranceTncModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -191,7 +193,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (viewType == ShipmentCostViewHolder.ITEM_VIEW_SHIPMENT_COST) {
             return new ShipmentCostViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == PromoCheckoutViewHolder.getITEM_VIEW_PROMO_CHECKOUT()) {
-            return new PromoCheckoutViewHolder(view);
+            return new PromoCheckoutViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentInsuranceTncViewHolder.ITEM_VIEW_INSURANCE_TNC) {
             return new ShipmentInsuranceTncViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentSellerCashbackViewHolder.ITEM_VIEW_SELLER_CASHBACK) {
@@ -969,8 +971,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         }
 
         // promo checkout
-        shipmentCostModel.setTotalPromoCheckoutLabel("Total Cashback");
-        shipmentCostModel.setTotalPromoCheckoutAmount("30.000");
+        shipmentCostModel.setTotalPromoCheckoutLabel(promoCheckoutData.getTotalBenefitLabel());
+        shipmentCostModel.setTotalPromoCheckoutAmount(promoCheckoutData.getTotalBenefitAmountStr());
 
         long macroInsurancePrice = 0;
         String macroInsurancLabel = "";
@@ -1036,6 +1038,15 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public int getFirstShopPosition() {
         for (int i = 0; i < shipmentDataList.size(); i++) {
             if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public int getPromoCheckoutPosition() {
+        for (int i = 0; i < shipmentDataList.size(); i++) {
+            if (shipmentDataList.get(i) instanceof PromoCheckoutData) {
                 return i;
             }
         }
@@ -1421,5 +1432,17 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return shipmentCartItemModelList.get(index);
         }
         return null;
+    }
+
+    public void updatePromoCheckoutData(PromoUiModel promoUiModel) {
+        if (shipmentCostModel != null) {
+            shipmentCostModel.setTotalPromoCheckoutLabel(promoUiModel.getBenefitSummaryInfoUiModel().getFinalBenefitText());
+            shipmentCostModel.setTotalPromoCheckoutAmount(promoUiModel.getBenefitSummaryInfoUiModel().getFinalBenefitAmountStr());
+        }
+        PromoCheckoutData  promoCheckoutData = new PromoCheckoutData();
+        promoCheckoutData.setPromoLabel(promoUiModel.getAdditionalInfoUiModel().getMessageInfoUiModel().getMessage());
+        promoCheckoutData.setPromoUsageInfo(promoUiModel.getAdditionalInfoUiModel().getMessageInfoUiModel().getDetail());
+        promoCheckoutData.setTotalBenefitAmountStr(promoUiModel.getBenefitSummaryInfoUiModel().getFinalBenefitAmountStr());
+        this.promoCheckoutData = promoCheckoutData;
     }
 }

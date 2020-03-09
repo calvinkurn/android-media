@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName
 data class MessageInfo(
 
 	@field:SerializedName("detail")
-	val detail: String? = null,
+	val detail: String? = "",
 
 	@field:SerializedName("message")
-	val message: String? = null
+	val message: String? = ""
 )

@@ -3,12 +3,13 @@ import android.os.Parcelable
 import android.os.Parcel
 
 data class AdditionalInfoUiModel(
-		var messageInfoUiModel: MessageInfoUiModel? = MessageInfoUiModel(),
-		var errorDetailUiModel: ErrorDetailUiModel? = ErrorDetailUiModel()
+		var messageInfoUiModel: MessageInfoUiModel = MessageInfoUiModel(),
+		var errorDetailUiModel: ErrorDetailUiModel = ErrorDetailUiModel()
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readParcelable(MessageInfoUiModel::class.java.classLoader),
-			parcel.readParcelable(ErrorDetailUiModel::class.java.classLoader))
+			parcel.readParcelable(ErrorDetailUiModel::class.java.classLoader)) {
+	}
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeParcelable(messageInfoUiModel, flags)
@@ -28,5 +29,4 @@ data class AdditionalInfoUiModel(
 			return arrayOfNulls(size)
 		}
 	}
-
 }

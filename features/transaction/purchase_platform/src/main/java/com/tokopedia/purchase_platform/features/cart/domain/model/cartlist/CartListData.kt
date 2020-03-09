@@ -6,6 +6,7 @@ import android.os.Parcelable
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.CartPromoData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 
@@ -30,6 +31,7 @@ data class CartListData(
         var isShowOnboarding: Boolean = false,
         var promoBenefitInfo: String? = null,
         var promoUsageInfo: String? = null,
+        var errorDefault: PromoCheckoutErrorDefault? = null,
         var lastApplyData: LastApplyData? = null
 ) : Parcelable {
 

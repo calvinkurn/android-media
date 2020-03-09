@@ -7,13 +7,16 @@ import android.os.Parcelable
  * Created by fwidjaja on 2020-03-03.
  */
 data class LastApplyData (
+    var code: String = "",
     var additionalInfoMsg: String = "",
     var additionalInfoDetailMsg: String = "",
     var errorDetailMsg: String = "",
     var emptyCartInfoImgUrl: String = "",
     var emptyCartInfoMsg: String = "",
     var emptyCartInfoDetail: String = "",
-    var listLastApply: List<String> = listOf()) : Parcelable {
+    var listLastApply: List<String> = listOf(),
+    var finalBenefitText: String = "",
+    var finalBenefitAmount: String = "") : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -21,9 +24,13 @@ data class LastApplyData (
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.createStringArrayList() ?: listOf())
+            parcel.readString() ?: "",
+            parcel.createStringArrayList() ?: listOf(),
+            parcel.readString() ?: "",
+            parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(code)
         parcel.writeString(additionalInfoMsg)
         parcel.writeString(additionalInfoDetailMsg)
         parcel.writeString(errorDetailMsg)
@@ -31,6 +38,8 @@ data class LastApplyData (
         parcel.writeString(emptyCartInfoMsg)
         parcel.writeString(emptyCartInfoDetail)
         parcel.writeStringList(listLastApply)
+        parcel.writeString(finalBenefitText)
+        parcel.writeString(finalBenefitAmount)
     }
 
     override fun describeContents(): Int {

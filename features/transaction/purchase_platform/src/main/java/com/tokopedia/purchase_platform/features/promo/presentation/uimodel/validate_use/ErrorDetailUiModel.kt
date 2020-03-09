@@ -4,7 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class ErrorDetailUiModel(
-	var message: String? = ""
+	var message: String = ""
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(parcel.readString() ?: "")
 

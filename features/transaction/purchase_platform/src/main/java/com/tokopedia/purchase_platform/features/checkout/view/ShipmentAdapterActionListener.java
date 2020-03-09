@@ -5,6 +5,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.promocheckout.common.view.model.PromoCheckoutData;
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.DataCheckoutRequest;
 
 import java.util.List;
@@ -125,4 +126,6 @@ public interface ShipmentAdapterActionListener {
     boolean isTradeInByDropOff();
 
     void onTradeInAddressTabChanged(int position);
+
+    void onClickPromoCheckout(PromoCheckoutData promoCheckoutData);
 }

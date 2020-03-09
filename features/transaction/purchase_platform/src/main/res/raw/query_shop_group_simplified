@@ -508,6 +508,10 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
           }
         }
         promo {
+          error_default {
+            title
+            description
+          }
           last_apply {
             code
             data {

@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.cart.domain.mapper
 import android.content.Context
 import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.data.model.response.Messages
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
@@ -13,7 +14,10 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.CartPromoData
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.ErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.LastApplyPromo
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.SimilarProductData
@@ -59,7 +63,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
         cartListData.autoApplyStackData = mapAutoApplyStackData(cartDataListResponse.autoApplyStack)
         cartListData.globalCouponAttrData = mapGlobalCouponAttr(cartDataListResponse.globalCouponAttr)
-        cartListData.lastApplyData = mapLastApply(cartDataListResponse.promo)
+        cartListData.lastApplyData = mapLastApply(cartDataListResponse.promo.lastApplyPromo)
+        cartListData.errorDefault = mapPromoCheckoutErrorDefault(cartDataListResponse.promo.errorDefault)
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
         cartListData.isShowOnboarding = false
 
@@ -330,6 +335,11 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
     }
 
     private fun mapShopInfoCartItemData(cartItemData: CartItemData.OriginData, shopGroupAvailable: ShopGroupAvailable) {
+        val listPromoCheckout = arrayListOf<String>()
+        shopGroupAvailable.promoCodes.forEach {
+            listPromoCheckout.add(it)
+        }
+
         cartItemData.let {
             it.shopName = shopGroupAvailable.shop.shopName
             it.shopCity = shopGroupAvailable.shop.cityName
@@ -342,6 +352,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
             it.isGoldMerchant = shopGroupAvailable.shop.goldMerchant.isGoldBadge
             it.cartString = shopGroupAvailable.cartString
             it.warehouseId = shopGroupAvailable.warehouse.warehouseId
+            it.listPromoCheckout = listPromoCheckout
         }
     }
 
@@ -513,14 +524,20 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         }
     }
 
-    private fun mapLastApply(cartPromoData: CartPromoData): LastApplyData {
+    private fun mapLastApply(lastApplyPromo: LastApplyPromo): LastApplyData {
         return LastApplyData(
-                additionalInfoMsg = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.messageInfo.message,
-                additionalInfoDetailMsg = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.messageInfo.detail,
-                errorDetailMsg = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.errorDetail.message,
-                emptyCartInfoImgUrl = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl,
-                emptyCartInfoMsg = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.message,
-                emptyCartInfoDetail = cartPromoData.lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.detail
-        )
+                code = lastApplyPromo.code,
+                additionalInfoMsg = lastApplyPromo.lastApplyPromoData.additionalInfo.messageInfo.message,
+                additionalInfoDetailMsg = lastApplyPromo.lastApplyPromoData.additionalInfo.messageInfo.detail,
+                errorDetailMsg = lastApplyPromo.lastApplyPromoData.additionalInfo.errorDetail.message,
+                emptyCartInfoImgUrl = lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl,
+                emptyCartInfoMsg = lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.message,
+                emptyCartInfoDetail = lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.detail)
+    }
+
+    private fun mapPromoCheckoutErrorDefault(errorDefault: ErrorDefault): PromoCheckoutErrorDefault {
+        return PromoCheckoutErrorDefault(
+                title = errorDefault.title,
+                desc = errorDefault.desc)
     }
 }
