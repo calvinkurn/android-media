@@ -89,7 +89,10 @@ data class Channel(
         val freezeChannelState: FreezeChannelState = FreezeChannelState(),
 
         @SerializedName("is_show_cart")
-        val isShowCart: Boolean = true // TODO("please make sure with backend")
+        val isShowCart: Boolean = true, // TODO("please make sure with backend")
+
+        @SerializedName("channel_type")
+        val channelType: String = "ecommerce" // TODO("please make sure with backend")
 
 ) {
 

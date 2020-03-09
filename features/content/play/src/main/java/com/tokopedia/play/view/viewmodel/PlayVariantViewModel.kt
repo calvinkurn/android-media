@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.PostAddtoCartUseCase
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
+import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -28,16 +29,18 @@ class PlayVariantViewModel @Inject constructor(
     private val job = SupervisorJob()
 
     private val _observableAddtoCart = MutableLiveData<CartFeedbackUiModel>()
+    private val _observableProductVariant = MutableLiveData<ProductDetailVariantCommonResponse>()
+
     val observableAddtoCart: LiveData<CartFeedbackUiModel> = _observableAddtoCart
+    val observableProductVariant: LiveData<ProductDetailVariantCommonResponse> = _observableProductVariant
 
     fun getProductVariant(productId: String) {
         launchCatchError(block = {
             val productVariant = withContext(dispatchers.io) {
-                getProductVariantUseCase.params = GetProductVariantUseCase.createParams(productId)
+                getProductVariantUseCase.params = getProductVariantUseCase.createParams(productId)
                 getProductVariantUseCase.executeOnBackground()
             }
-
-
+            _observableProductVariant.value = productVariant
         }){}
     }
 

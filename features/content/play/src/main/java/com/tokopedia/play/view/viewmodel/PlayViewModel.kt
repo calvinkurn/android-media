@@ -38,6 +38,7 @@ class PlayViewModel @Inject constructor(
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
         private val getIsLikeUseCase: GetIsLikeUseCase,
         private val getCartCountUseCase: GetCartCountUseCase,
+        private val getProductTagItemsUseCase: GetProductTagItemsUseCase,
         private val playSocket: PlaySocket,
         private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
@@ -198,9 +199,9 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
 
 //        startMockFreeze()
-        setMockProductSheetContent()
+//        setMockProductSheetContent()
 //        setMockVariantSheetContent()
-        setMockProductPinned()
+//        setMockProductPinned()
     }
 
     // lifecycle region
@@ -357,6 +358,7 @@ class PlayViewModel @Inject constructor(
             launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
             launch { getBadgeCart(channel.isShowCart) }
+            launch { if (channel.productTagging.isShowProductTagging) getProductTagItems(channelId) } //
 
             /**
              * If Live => start web socket
@@ -372,6 +374,7 @@ class PlayViewModel @Inject constructor(
             _observableGetChannelInfo.value = Success(completeInfoUiModel.channelInfo)
             _observableTotalViews.value = completeInfoUiModel.totalView
             _observablePinnedMessage.value = completeInfoUiModel.pinnedMessage
+            _observablePinnedProduct.value = completeInfoUiModel.pinnedProduct
             _observableQuickReply.value = completeInfoUiModel.quickReply
             _observableVideoStream.value = completeInfoUiModel.videoStream
             _observableEvent.value = completeInfoUiModel.event
@@ -465,6 +468,16 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private fun getProductTagItems(channelId: String) {
+        launchCatchError(block = {
+            val productTagsItems = withContext(dispatchers.io) {
+                getProductTagItemsUseCase.channelId = channelId
+                getProductTagItemsUseCase.executeOnBackground()
+            }
+            _observableProductSheetContent.value = PlayUiMapper.mapProductSheet(productTagsItems)
+        }) {}
+    }
+
     fun udpateBadgetCart() {
         val channelInfo = _observableGetChannelInfo.value
         if (channelInfo != null && channelInfo is Success) {
@@ -524,7 +537,9 @@ class PlayViewModel @Inject constructor(
                     _observablePartnerInfo.value?.name.orEmpty(),
                     channel.pinnedMessage
             ),
-            pinnedProduct = PlayUiMapper.mapPinnedProduct(_observablePartnerInfo.value?.name.orEmpty(), 2),
+            pinnedProduct = PlayUiMapper.mapPinnedProduct(
+                    _observablePartnerInfo.value?.name.orEmpty(),
+                    channel.productTagging),
             quickReply = PlayUiMapper.mapQuickReply(channel.quickReply),
             totalView = PlayUiMapper.mapTotalViews(channel.totalViews),
             event = mapEvent(channel)

@@ -6,5 +6,6 @@ package com.tokopedia.play.view.type
 enum class MerchantVoucherType {
 
     Shipping,
-    Discount
+    Discount,
+    Unknown
 }
