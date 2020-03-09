@@ -41,6 +41,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -510,9 +511,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun pickImageToUpload() {
         activity?.let {
-            val builder = ImagePickerBuilder(it.getString(com.tokopedia.imagepicker.R.string.choose_image),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true, null, null)
+            val builder = ImagePickerBuilder(
+                    it.getString(com.tokopedia.imagepicker.R.string.choose_image),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
+                    GalleryType.IMAGE_ONLY,
+                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
+                    null,
+                    true,
+                    null,
+                    ImagePickerMultipleSelectionBuilder(null, null, 0, 1)
+            )
             val intent = ImagePickerActivity.getIntent(context, builder)
             startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)
         }

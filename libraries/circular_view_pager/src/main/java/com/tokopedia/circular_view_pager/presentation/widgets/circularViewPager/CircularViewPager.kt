@@ -1,4 +1,4 @@
-package com.tokopedia.home_page_banner.presentation.widgets.circularViewPager
+package com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -80,7 +80,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
     protected fun init() {
         viewPager.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         viewPager.animation = null
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback(){
             var currentPosition = 0f
             override fun onPageSelected(position: Int) {
                 previousPosition = currentPagePosition
