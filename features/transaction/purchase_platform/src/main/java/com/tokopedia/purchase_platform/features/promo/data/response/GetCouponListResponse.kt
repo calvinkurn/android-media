@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.promo.data.response
 
 import com.google.gson.annotations.SerializedName
 
-data class GqlCouponListRecommendationResponse(
+data class CouponListRecommendationResponse(
         @SerializedName("coupon_list_recommendation")
         val couponListRecommendation: CouponListRecommendation = CouponListRecommendation()
 )
@@ -13,7 +13,7 @@ data class CouponListRecommendation(
         @SerializedName("error_code")
         val errorCode: String = "",
         @SerializedName("status")
-        val status: String = "",
+        var status: String = "",
         @SerializedName("data")
         val data: Data = Data()
 )
@@ -65,7 +65,13 @@ data class ResultStatus(
         val message: List<String> = emptyList(),
         @SerializedName("reason")
         val reason: String = ""
-)
+) {
+        companion object {
+                const val STATUS_COUPON_LIST_EMPTY = "42050"
+                const val STATUS_PHONE_NOT_VERIFIED = "42049"
+                const val STATUS_USER_BLACKLISTED = "42003"
+        }
+}
 
 data class EmptyStateResponse(
         @SerializedName("title")

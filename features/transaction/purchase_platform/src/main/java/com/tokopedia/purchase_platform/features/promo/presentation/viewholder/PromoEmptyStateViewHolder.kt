@@ -17,11 +17,14 @@ class PromoEmptyStateViewHolder(private val view: View,
 
     override fun bind(element: PromoEmptyStateUiModel) {
         itemView.empty_state_promo.setTitle(element.uiData.title)
-        itemView.empty_state_promo.setDescription(element.uiData.subTitle)
+        itemView.empty_state_promo.setDescription(element.uiData.description)
         itemView.empty_state_promo.setImageUrl(element.uiData.imageUrl)
 
         if (element.uiState.isShowButton) {
             itemView.empty_state_promo.setPrimaryCTAText(element.uiData.buttonText)
+            itemView.empty_state_promo.setPrimaryCTAClickListener {
+                listener.onClickEmptyStateButton(element)
+            }
         } else {
             itemView.empty_state_promo.setPrimaryCTAText("")
         }

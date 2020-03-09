@@ -43,7 +43,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_2"
             app:typographyWeight="bold"
-            tools:text="Ada 3 promo terbaik untukmu" />
+            tools:text="Ada xx promo terbaik untukmu" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/label_promo_recommendation_sub_title"
@@ -51,7 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_6"
             android:layout_marginLeft="@dimen/dp_6"
-            tools:text="Kamu bisa hemat Rp45.000"
+            tools:text="Kamu bisa hemat Rpxx.000"
             android:textColor="@color/white"
             app:layout_constraintEnd_toStartOf="@+id/button_apply_promo_recommendation"
             app:layout_constraintStart_toEndOf="@+id/image_check_promo_recommendation"

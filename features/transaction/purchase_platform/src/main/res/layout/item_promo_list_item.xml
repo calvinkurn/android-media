@@ -24,13 +24,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@+id/image_promo_item"
-                android:layout_width="@dimen/dp_30"
+            <LinearLayout
+                android:id="@+id/container_image_promo_item"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/dp_20"
+                android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_ovo_logo_purple" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/label_promo_item_title"
@@ -41,7 +41,7 @@
                 android:text="Gratis Ongkir hingga Rp1.200.000"
                 app:layout_constraintEnd_toStartOf="@+id/image_select_promo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_promo_item"
+                app:layout_constraintTop_toBottomOf="@+id/container_image_promo_item"
                 app:typographyType="body_2"
                 app:typographyWeight="bold" />
 

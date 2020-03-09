@@ -1,13 +1,25 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.mapper
 
-import com.tokopedia.purchase_platform.features.promo.data.response.Coupon
-import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendation
-import com.tokopedia.purchase_platform.features.promo.data.response.CouponSection
-import com.tokopedia.purchase_platform.features.promo.data.response.SubSection
+import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTncUiModel
+import com.tokopedia.purchase_platform.features.promo.data.response.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import javax.inject.Inject
 
 class PromoCheckoutUiModelMapper @Inject constructor() {
+
+    fun mapFragmentUiModel(failedToLoad: Boolean): FragmentUiModel {
+        return FragmentUiModel(
+                uiData = FragmentUiModel.UiData().apply {
+                    totalBenefit = 0
+                    usedPromoCount = 0
+                },
+                uiState = FragmentUiModel.UiState().apply {
+                    hasPreselectedPromo = false
+                    hasAnyPromoSelected = false
+                    hasFailedToLoad = failedToLoad
+                }
+        )
+    }
 
     fun mapPromoRecommendationUiModel(couponListRecommendation: CouponListRecommendation): PromoRecommendationUiModel {
         return PromoRecommendationUiModel(
@@ -53,10 +65,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 uiData = PromoEligibilityHeaderUiModel.UiData().apply {
                     title = couponSectionItem.title
                     subTitle = couponSectionItem.subTitle
-                    tmpPromo = emptyList() // Todo : baca dari backend
+                    tmpPromo = emptyList()
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
+                    isCollapsed = couponSectionItem.isCollapsed
                 }
         )
     }
@@ -80,7 +93,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                         }
                     }
                     hasSelectedPromoItem = tmpHasSellectedPromoItem
-                    isCollapsed = false // Todo : baca dari backend
+                    isCollapsed = couponSubSection.isCollapsed
                 }
         )
     }
@@ -91,18 +104,6 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     title = couponItem.title
                     subTitle = couponItem.expiryInfo
                     benefitAmount = couponItem.benefitAmount
-                    val tmpErrorMessage = StringBuilder()
-                    if (couponItem.clashingInfos.isNotEmpty()) {
-                        for ((index, data) in couponItem.clashingInfos.withIndex()) {
-                            tmpErrorMessage.append(data.message)
-                            if (index < couponItem.clashingInfos.size - 1) {
-                                tmpErrorMessage.append("\n")
-                            }
-                        }
-                    } else {
-                        tmpErrorMessage.append(couponItem.message)
-                    }
-                    errorMessage = if (couponItem.radioCheckState == PromoListItemUiModel.UiState.STATE_IS_DISABLED) tmpErrorMessage.toString() else ""
                     imageResourceUrls = couponItem.tagImageUrls
                     parentIdentifierId = headerIdentifierId
                     promoCode = couponItem.code
@@ -112,18 +113,50 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     }
                     clashingInfo = clashingInfoMap
                     val tmpCurrentClashingPromoList = ArrayList<String>()
+                    val tmpErrorMessage = StringBuilder()
                     selectedPromo.forEach {
                         if (clashingInfo.containsKey(it)) {
                             tmpCurrentClashingPromoList.add(it)
+                            if (tmpErrorMessage.isNotBlank()) {
+                                tmpErrorMessage.append("\n")
+                            }
+                            tmpErrorMessage.append(clashingInfo[it])
                         }
                     }
                     currentClashingPromo = tmpCurrentClashingPromoList
+
+                    if (tmpErrorMessage.isEmpty()) {
+                        tmpErrorMessage.append(couponItem.message)
+                    }
+                    errorMessage = if (couponItem.radioCheckState == PromoListItemUiModel.UiState.STATE_IS_DISABLED) tmpErrorMessage.toString() else ""
                 },
                 uiState = PromoListItemUiModel.UiState().apply {
                     isParentEnabled = parentEnabled
-                    isSellected = couponItem.isSelected
+                    isSelected = couponItem.isSelected
                     isAttempted = couponItem.isAttempted
+                    isAlreadyApplied = couponItem.isSelected
                 }
         )
+    }
+
+    fun mapEmptyState(couponListRecommendation: CouponListRecommendation): PromoEmptyStateUiModel {
+        return PromoEmptyStateUiModel(
+                uiData = PromoEmptyStateUiModel.UiData().apply {
+                    title = couponListRecommendation.data.emptyState.title
+                    description = couponListRecommendation.data.emptyState.description
+                    imageUrl = couponListRecommendation.data.emptyState.imageUrl
+                },
+                uiState = PromoEmptyStateUiModel.UiState().apply {
+
+                }
+        )
+    }
+
+    fun mapTokoPointsTncDetails(tncDetail: List<TncDetail>): ArrayList<TokoPointsTncUiModel> {
+        val tokoPointsTncDetails = ArrayList<TokoPointsTncUiModel>()
+        tncDetail.forEach {
+            tokoPointsTncDetails.add(TokoPointsTncUiModel(imageUrl = it.iconImageUrl, description = it.description))
+        }
+        return tokoPointsTncDetails
     }
 }

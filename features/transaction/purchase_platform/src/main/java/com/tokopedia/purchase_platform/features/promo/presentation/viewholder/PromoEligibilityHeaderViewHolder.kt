@@ -39,8 +39,7 @@ class PromoEligibilityHeaderViewHolder(private val view: View,
             }
             itemView.image_chevron.show()
             itemView.setOnClickListener {
-                val position = adapterPosition
-                if (position != RecyclerView.NO_POSITION) listener.onClickPromoEligibilityHeader(position, element)
+                if (adapterPosition != RecyclerView.NO_POSITION) listener.onClickPromoEligibilityHeader(element)
             }
         }
     }

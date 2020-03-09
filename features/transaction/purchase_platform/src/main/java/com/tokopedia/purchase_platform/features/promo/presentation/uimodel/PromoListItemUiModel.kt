@@ -46,8 +46,9 @@ data class PromoListItemUiModel(
 
     data class UiState(
             var isParentEnabled: Boolean = false,
-            var isSellected: Boolean = false,
-            var isAttempted: Boolean = false
+            var isSelected: Boolean = false,
+            var isAttempted: Boolean = false,
+            var isAlreadyApplied: Boolean = false
     ) {
         companion object {
             const val STATE_IS_ENABLED = "enabled"

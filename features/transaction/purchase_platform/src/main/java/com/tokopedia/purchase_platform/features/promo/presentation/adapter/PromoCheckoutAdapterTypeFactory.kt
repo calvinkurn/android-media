@@ -9,7 +9,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.listener.Prom
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.*
 
-abstract class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionListener)
+class PromoCheckoutAdapterTypeFactory(private val listener: PromoCheckoutActionListener)
     : BaseAdapterTypeFactory(), PromoCheckoutTypeFactory {
 
     override fun type(uiModel: PromoRecommendationUiModel): Int {
@@ -25,7 +25,11 @@ abstract class PromoCheckoutAdapterTypeFactory(private val listener: PromoChecko
     }
 
     override fun type(uiModel: PromoListHeaderUiModel): Int {
-        return PromoListHeaderViewHolder.LAYOUT
+        if (uiModel.uiState.isEnabled) {
+            return PromoListHeaderEnabledViewHolder.LAYOUT
+        } else {
+            return PromoListHeaderDisabledViewHolder.LAYOUT
+        }
     }
 
     override fun type(uiModel: PromoListItemUiModel): Int {
@@ -45,7 +49,8 @@ abstract class PromoCheckoutAdapterTypeFactory(private val listener: PromoChecko
             PromoRecommendationViewHolder.LAYOUT -> PromoRecommendationViewHolder(view, listener)
             PromoInputViewHolder.LAYOUT -> PromoInputViewHolder(view, listener)
             PromoEligibilityHeaderViewHolder.LAYOUT -> PromoEligibilityHeaderViewHolder(view, listener)
-            PromoListHeaderViewHolder.LAYOUT -> PromoListHeaderViewHolder(view, listener)
+            PromoListHeaderEnabledViewHolder.LAYOUT -> PromoListHeaderEnabledViewHolder(view, listener)
+            PromoListHeaderDisabledViewHolder.LAYOUT -> PromoListHeaderDisabledViewHolder(view, listener)
             PromoListItemViewHolder.LAYOUT -> PromoListItemViewHolder(view, listener)
             PromoEmptyStateViewHolder.LAYOUT -> PromoEmptyStateViewHolder(view, listener)
             PromoLoadingViewHolder.LAYOUT -> PromoLoadingViewHolder(view)

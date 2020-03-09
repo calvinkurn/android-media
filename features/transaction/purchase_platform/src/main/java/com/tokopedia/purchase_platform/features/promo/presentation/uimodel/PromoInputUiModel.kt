@@ -32,12 +32,13 @@ data class PromoInputUiModel(
 
     data class UiData(
             var promoCode: String = "",
-            var errorMessage: String = ""
+            var exception: Throwable? = null
     )
 
     data class UiState(
             var isButtonSelectEnabled: Boolean = false,
-            var isError: Boolean = false
+            var isError: Boolean = false,
+            var isLoading: Boolean = false
     )
 
 }

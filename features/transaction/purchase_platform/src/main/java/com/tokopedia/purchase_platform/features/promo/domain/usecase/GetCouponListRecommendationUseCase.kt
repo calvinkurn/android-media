@@ -2,16 +2,13 @@ package com.tokopedia.purchase_platform.features.promo.domain.usecase
 
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
-import com.tokopedia.purchase_platform.features.promo.data.response.GqlCouponListRecommendationResponse
-import com.tokopedia.purchase_platform.features.promo.presentation.MOCK_RESPONSE
+import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendationResponse
+import com.tokopedia.purchase_platform.features.promo.presentation.MOCK_RESPONSE_PHONE_NOT_VERIF
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class GetCouponListRecommendationUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<GqlCouponListRecommendationResponse>() {
+class GetCouponListRecommendationUseCase @Inject constructor(private val gqlUseCase: MultiRequestGraphqlUseCase) : UseCase<CouponListRecommendationResponse>() {
 
     var params = HashMap<String, Any>()
 
@@ -124,8 +121,8 @@ class GetCouponListRecommendationUseCase @Inject constructor(private val gqlUseC
         }
     }
 
-    override suspend fun executeOnBackground(): GqlCouponListRecommendationResponse {
-        val couponListRecommendation = Gson().fromJson(MOCK_RESPONSE, GqlCouponListRecommendationResponse::class.java)
+    override suspend fun executeOnBackground(): CouponListRecommendationResponse {
+        val couponListRecommendation = Gson().fromJson(MOCK_RESPONSE_PHONE_NOT_VERIF, CouponListRecommendationResponse::class.java)
 //        val gqlRequest = GraphqlRequest(MUTATION, GqlCouponListRecommendationResponse::class.java, getParam())
 //        gqlUseCase.clearRequest()
 //        gqlUseCase.addRequest(gqlRequest)

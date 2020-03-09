@@ -300,7 +300,7 @@ fun mockEmptyState(): PromoEmptyStateUiModel {
     return PromoEmptyStateUiModel(
             uiData = PromoEmptyStateUiModel.UiData().apply {
                 title = "Yaah, kamu belum punya kupon belanja"
-                subTitle = "Ini Sub Title"
+                description = "Ini Sub Title"
                 imageUrl = "https://ecs7.tokopedia.net/img/blog/seller/2019/06/newpm-cta-bottom-bg.jpg"
                 buttonText = "Click Me"
             },
@@ -325,9 +325,9 @@ val MOCK_RESPONSE = """
           "reason": "OK"
         },
         "empty_state": {
-          "title": "Kuponnya tidak ada",
-          "description": "Banyakin belanja ya biar dapet kupon",
-          "image_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+          "title": "",
+          "description": "",
+          "image_url": ""
         },
         "title": "Pilih Promo",
         "sub_title": "Kamu bisa gabungkan promo!",
@@ -345,7 +345,7 @@ val MOCK_RESPONSE = """
             "sub_title": "Kamu bisa gabungkan promo biar makin hemat!",
             "icon_url": "",
             "is_enabled": true,
-            "is_collapsed": true,
+            "is_collapsed": false,
             "tags": [],
             "coupons": [],
             "sub_sections": [
@@ -368,8 +368,10 @@ val MOCK_RESPONSE = """
                     "unique_id": "cart-string",
                     "shop_id": 0,
                     "tag_image_urls": [
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 20000,
                     "is_recommended": false,
@@ -398,11 +400,12 @@ val MOCK_RESPONSE = """
                     "unique_id": "cart-string",
                     "shop_id": 0,
                     "tag_image_urls": [
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 50000,
-                    "is_recommended": false,
+                    "is_recommended": true,
                     "is_selected": false,
                     "is_attempted": false,
                     "radio_check_state": "enabled",
@@ -415,7 +418,7 @@ val MOCK_RESPONSE = """
                 "sub_title": "Toko Apel",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": true,
-                "is_collapsed": true,
+                "is_collapsed": false,
                 "tags": [
                   "Promo dipilih"
                 ],
@@ -431,11 +434,10 @@ val MOCK_RESPONSE = """
                     "unique_id": "cart-string",
                     "shop_id": 102,
                     "tag_image_urls": [
-                      "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                       "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 30000,
-                    "is_recommended": false,
+                    "is_recommended": true,
                     "is_selected": false,
                     "is_attempted": false,
                     "radio_check_state": "enabled",
@@ -471,8 +473,8 @@ val MOCK_RESPONSE = """
                       "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
                     ],
                     "benefit_amount": 60000,
-                    "is_recommended": false,
-                    "is_selected": false,
+                    "is_recommended": true,
+                    "is_selected": true,
                     "is_attempted": false,
                     "radio_check_state": "enabled",
                     "clashing_infos": [
@@ -491,16 +493,16 @@ val MOCK_RESPONSE = """
             "sub_title": "kuponnya ga bisa dipake ya",
             "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
             "is_enabled": false,
-            "is_collapsed": false,
+            "is_collapsed": true,
             "tags": [],
             "coupons": [],
             "sub_sections": [
               {
-                "title": "Kupon Saya",
-                "sub_title": "Promo dipilih",
+                "title": "Kupon Saya Not available",
+                "sub_title": "Not avalibale",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": false,
-                "is_collapsed": false,
+                "is_collapsed": true,
                 "tags": [],
                 "coupons": [
                   {
@@ -525,7 +527,102 @@ val MOCK_RESPONSE = """
                     "clashing_infos": []
                   }
                 ]
-              }
+              },
+                {
+                  "title": "Kupon Saya Not available 2",
+                  "sub_title": "Not avalibale",
+                  "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                  "is_enabled": false,
+                  "is_collapsed": true,
+                  "tags": [],
+                  "coupons": [
+                    {
+                      "code": "YYYYYY1",
+                      "title": "Gratis Ongkir 400rb",
+                      "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                      "expiry_info": "berakhir 3 hari lagi",
+                      "expiry_count_down": 100000,
+                      "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "coupon_app_link": "//tokopedia",
+                      "unique_id": "cart-string",
+                      "shop_id": 0,
+                      "tag_image_urls": [
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                      ],
+                      "benefit_amount": 20000,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "hidden",
+                      "clashing_infos": []
+                    },
+                    {
+                      "code": "YYYYYY2",
+                      "title": "Gratis Ongkir 30rb",
+                      "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                      "expiry_info": "berakhir 3 hari lagi",
+                      "expiry_count_down": 100000,
+                      "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "coupon_app_link": "//tokopedia",
+                      "unique_id": "cart-string",
+                      "shop_id": 0,
+                      "tag_image_urls": [
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                      ],
+                      "benefit_amount": 20000,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "hidden",
+                      "clashing_infos": []
+                    },
+                    {
+                      "code": "YYYYYY3",
+                      "title": "Gratis Ongkir 30rb",
+                      "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                      "expiry_info": "berakhir 3 hari lagi",
+                      "expiry_count_down": 100000,
+                      "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "coupon_app_link": "//tokopedia",
+                      "unique_id": "cart-string",
+                      "shop_id": 0,
+                      "tag_image_urls": [
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                      ],
+                      "benefit_amount": 20000,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "hidden",
+                      "clashing_infos": []
+                    },
+                    {
+                      "code": "YYYYYY2",
+                      "title": "Gratis Ongkir 30rb",
+                      "message": "Kupon ini berlaku untuk pembelian kategori fashion",
+                      "expiry_info": "berakhir 3 hari lagi",
+                      "expiry_count_down": 100000,
+                      "coupon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                      "coupon_app_link": "//tokopedia",
+                      "unique_id": "cart-string",
+                      "shop_id": 0,
+                      "tag_image_urls": [
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
+                        "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg"
+                      ],
+                      "benefit_amount": 20000,
+                      "is_recommended": false,
+                      "is_selected": false,
+                      "is_attempted": false,
+                      "radio_check_state": "hidden",
+                      "clashing_infos": []
+                    }
+                  ]
+                }
+
             ]
           }
         ],
@@ -544,6 +641,123 @@ val MOCK_RESPONSE = """
                 "description": "peraturan kedua"
               }
             ]
+          }
+        }
+      }
+    }
+  }
+""".trimIndent()
+
+val MOCK_RESPONSE_PHONE_NOT_VERIF = """
+    {
+    "coupon_list_recommendation": {
+      "message": [],
+      "error_code": "200",
+      "status": "OK",
+      "data": {
+        "result_status": {
+          "code": "42049",
+          "message": [
+            "Nomor telepon anda belum terverifikasi, silahkan lengkapi Profil Anda"
+          ],
+          "reason": "MSISDN not verified"
+        },
+        "empty_state": {
+          "title": "Nomor belum diverifikasi",
+          "description": "Verifikasi nomor dulu ya",
+          "image_url": "https://ecs7.tokopedia.net/img/ovo/icon-benefit-2.png"
+        },
+        "title": "",
+        "sub_title": "",
+        "promo_recommendation": {
+          "codes": [],
+          "message": ""
+        },
+        "coupon_sections": [],
+        "additional_message": "",
+        "reward_points_info": {
+          "message": "",
+          "gain_reward_points_tnc": {
+            "title": "",
+            "tnc_details": []
+          }
+        }
+      }
+    }
+  }
+""".trimIndent()
+
+val MOCK_RESPONSE_BLACKLIST = """
+    {
+    "coupon_list_recommendation": {
+      "message": [],
+      "error_code": "200",
+      "status": "OK",
+      "data": {
+        "result_status": {
+          "code": "42003",
+          "message": [
+            "Alamat e-mail telah melanggar Syarat & Ketentuan Tokopedia."
+          ],
+          "reason": "Blacklisted Account"
+        },
+        "empty_state": {
+          "title": "Akun Anda terblacklist",
+          "description": "Silahkan hubungi Tokopedia",
+          "image_url": "https://ecs7.tokopedia.net/img/ovo/icon-benefit-2.png"
+        },
+        "title": "",
+        "sub_title": "",
+        "promo_recommendation": {
+          "codes": [],
+          "message": ""
+        },
+        "coupon_sections": [],
+        "additional_message": "",
+        "reward_points_info": {
+          "message": "",
+          "gain_reward_points_tnc": {
+            "title": "",
+            "tnc_details": []
+          }
+        }
+      }
+    }
+  }
+""".trimIndent()
+
+val MOCK_RESPONSE_EMPTY_PROMO = """
+    {
+    "coupon_list_recommendation": {
+      "message": [],
+      "error_code": "200",
+      "status": "OK",
+      "data": {
+        "result_status": {
+          "code": "42050",
+          "message": [
+            "Anda tidak memiliki kupon"
+          ],
+          "reason": "Coupon List Empty"
+        },
+        "empty_state": {
+            "title": "Kuponnya tidak ada",
+            "description": "Banyakin belanja ya biar dapet kupon",
+            "image_url": "https://ecs7.tokopedia.net/img/ovo/icon-benefit-2.png"
+        },
+        "title": "",
+        "sub_title": "",
+        "promo_recommendation": {
+          "codes": [],
+          "message": ""
+        },
+        "coupon_sections": [],
+        "additional_message": "",
+        "reward_points_info": {
+          "message": "",
+          "gain_reward_points_tnc": {
+            "title": "",
+            "tnc_details": []
           }
         }
       }
