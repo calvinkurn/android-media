@@ -3,8 +3,11 @@ package com.tokopedia.flight.search.presentation.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.view.Menu
+import android.view.MenuItem
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
@@ -14,6 +17,7 @@ import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.common.util.FlightFlowUtil
 import com.tokopedia.flight.common.view.BaseFlightActivity
+import com.tokopedia.flight.common.view.FlightSearchFormBottomSheet
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
 import com.tokopedia.flight.search.presentation.fragment.FlightSearchFragment
 import com.tokopedia.flight.search.presentation.model.FlightPriceViewModel
@@ -137,6 +141,26 @@ open class FlightSearchActivity : BaseFlightActivity(),
                     .getCallingIntent(this, passDataViewModel, selectedFlightID, selectedTerm,
                             isBestPairing, flightPriceViewModel, isCombineDone),
                     REQUEST_CODE_RETURN)
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menu.clear()
+        menuInflater.inflate(R.menu.menu_flight_search, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_change_search -> {
+                val flightChangeSearchBottomSheet = FlightSearchFormBottomSheet.getInstance()
+                flightChangeSearchBottomSheet.setShowListener { flightChangeSearchBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
+                flightChangeSearchBottomSheet.show(supportFragmentManager, FlightSearchFormBottomSheet.TAG_SEARCH_FORM)
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
         }
     }
 
