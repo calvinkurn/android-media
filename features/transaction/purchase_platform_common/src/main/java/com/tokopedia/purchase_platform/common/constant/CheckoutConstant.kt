@@ -1,5 +1,7 @@
 package com.tokopedia.purchase_platform.common.constant
 
+import androidx.arch.core.executor.DefaultTaskExecutor
+
 /**
  * Created by Irfan Khoirul on 2019-09-24.
  */
@@ -7,6 +9,7 @@ package com.tokopedia.purchase_platform.common.constant
 class CheckoutConstant {
 
     companion object {
+        const val CHECKOUT = "CHECKOUT"
         const val REQUEST_CODE_CHECKOUT_ADDRESS = 981
         const val RESULT_CODE_ACTION_SELECT_ADDRESS = 100
         const val TYPE_REQUEST_SELECT_ADDRESS_FROM_COMPLETE_LIST_FOR_MONEY_IN = 5

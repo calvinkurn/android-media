@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
@@ -12,6 +13,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartI
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
+import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import java.util.*
@@ -120,4 +122,10 @@ interface ICartListView : CustomerView {
     fun goToLite(url: String)
 
     fun updateCartCounter(counter: Int)
+
+    fun updatePromoCheckoutStickyButton(additionalInfoUiModel: AdditionalInfoUiModel)
+
+    fun showPromoCheckoutStickyButtonInactive()
+
+    fun generateValidateUseParams(): CouponListRequest
 }

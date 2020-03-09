@@ -26,6 +26,8 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.GlobalScope;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -87,6 +89,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                System.out.println("++ onchange nih");
                 CartShopViewHolder.this.renderPromoMerchant(cartShopHolderData, checked);
             }
         });

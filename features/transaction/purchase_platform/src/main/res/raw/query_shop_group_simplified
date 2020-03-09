@@ -508,6 +508,10 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
           }
         }
         promo {
+          error_default {
+            title
+            description
+          }
           last_apply {
             code
             data {
@@ -519,6 +523,11 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
                 error_detail {
                   message
                 }
+                empty_cart_info {
+                    image_url
+                    message
+                    detail
+                 }
               }
             }
           }

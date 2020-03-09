@@ -29,6 +29,7 @@ import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCa
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
+import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.UpdateAndValidateUseData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceClickData
@@ -36,6 +37,10 @@ import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECom
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.purchase_platform.features.cart.view.subscriber.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
+import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.RequestParamsValidateUse
+import com.tokopedia.purchase_platform.features.promo.data.request.varidate_use.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase
@@ -46,6 +51,7 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
+import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -73,6 +79,8 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                             private val updateInsuranceProductDataUsecase: UpdateInsuranceProductDataUsecase?,
                                             private val seamlessLoginUsecase: SeamlessLoginUsecase,
                                             private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+                                            private val updateCartAndValidateUseUseCase: UpdateCartAndValidateUseUseCase,
+                                            private val validateUsePromoRevampUseCase: ValidateUsePromoRevampUseCase,
                                             private val schedulers: ExecutorSchedulers) : ICartListPresenter {
 
     private var view: ICartListView? = null
@@ -1279,4 +1287,34 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         )
     }
 
+    override fun doValidateUse(couponListRequest: CouponListRequest) {
+        val requestParams = RequestParams.create()
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, couponListRequest)
+        validateUsePromoRevampUseCase.createObservable(requestParams)
+                .subscribeOn(schedulers.io)
+                .unsubscribeOn(schedulers.io)
+                .observeOn(schedulers.main)
+                .subscribe(ValidateUseSubscriber(view))
+    }
+
+    override fun doUpdateCartAndValidateUse(couponListRequest: CouponListRequest) {
+        view?.let { cartListView ->
+            val cartItemDataList = ArrayList<CartItemData>()
+            for (data in cartListView.getAllAvailableCartDataList()) {
+                if (!data.isError) {
+                    cartItemDataList.add(data)
+                }
+            }
+
+            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
+            val requestParams = RequestParams.create()
+            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
+            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, couponListRequest)
+
+            compositeSubscription.add(
+                    updateCartAndValidateUseUseCase.createObservable(requestParams)
+                            .subscribe(UpdateCartAndValidateUseSubscriber(cartListView))
+            )
+        }
+    }
 }

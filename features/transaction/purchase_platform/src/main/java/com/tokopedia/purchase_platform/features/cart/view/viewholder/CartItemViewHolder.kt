@@ -23,6 +23,7 @@ import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapte
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
+import kotlinx.coroutines.*
 import org.apache.commons.lang3.StringUtils
 import rx.Observable
 import rx.Subscriber
@@ -93,8 +94,9 @@ class CartItemViewHolder constructor(itemView: View,
     private var parentPosition: Int = 0
     private var dataSize: Int = 0
     private var quantityDebounceSubscription: Subscription? = null
-    private var checkboxDebounceSubscription: Subscription? = null
     private var noteDebounceSubscription: Subscription? = null
+    private var cbChangeJob: Job? = null
+    private var prevShopIsChecked: Boolean? = null
 
     init {
         context = itemView.context
@@ -160,33 +162,7 @@ class CartItemViewHolder constructor(itemView: View,
         viewHolderListener = null
         compositeSubscription.remove(quantityDebounceSubscription)
         compositeSubscription.remove(noteDebounceSubscription)
-        compositeSubscription.remove(checkboxDebounceSubscription)
     }
-
-    /*private fun initCheckboxWatcherDebouncer(compositeSubscription: CompositeSubscription) {
-        checkboxDebounceSubscription = Observable.create(Observable.OnSubscribe<CheckboxWrapper> { subscriber ->
-            checkboxWatcherListener = CheckboxWatcher.CheckboxWatcherListener { checkbox -> subscriber.onNext(checkbox) }
-        })
-                .debounce(CHECKBOX_WATCHER_DEBOUNCE_TIME.toLong(), TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Subscriber<CheckboxWrapper>() {
-                    override fun onNext(t: CheckboxWrapper?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
-
-                    override fun onCompleted() {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
-
-                })
-
-        compositeSubscription.add(quantityDebounceSubscription)
-    }*/
 
     private fun initTextWatcherDebouncer(compositeSubscription: CompositeSubscription) {
         quantityDebounceSubscription = Observable.create(Observable.OnSubscribe<QuantityWrapper> { subscriber ->
@@ -248,12 +224,26 @@ class CartItemViewHolder constructor(itemView: View,
     private fun renderSelection(data: CartItemHolderData, parentPosition: Int) {
         cbSelectItem.isEnabled = data.cartItemData?.isError == false
         cbSelectItem.isChecked = data.cartItemData?.isError == false && data.isSelected
+
+        var prevIsChecked: Boolean = cbSelectItem.isChecked
         cbSelectItem.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (data.cartItemData?.isError == false) {
-                data.isSelected = isChecked
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
-                    viewHolderListener?.onNeedToRefreshAllShop()
+            if (isChecked != prevIsChecked)  {
+                prevIsChecked = isChecked
+
+                cbChangeJob?.cancel()
+                cbChangeJob = GlobalScope.launch(Dispatchers.Main) {
+                    delay(500L)
+                    if (isChecked == prevIsChecked) {
+                        if (isChecked != data.isSelected) {
+                            if (data.cartItemData?.isError == false) {
+                                data.isSelected = isChecked
+                                if (adapterPosition != RecyclerView.NO_POSITION) {
+                                    actionListener?.onCartItemCheckChanged(adapterPosition, parentPosition, data.isSelected)
+                                    viewHolderListener?.onNeedToRefreshAllShop()
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

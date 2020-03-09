@@ -531,8 +531,7 @@
             android:paddingTop="@dimen/dp_16"
             android:text="@string/promo_checkout_summary_label"
             android:textColor="@color/text_black"
-            app:typographyType="body_2"
-            app:typographyWeight="bold" />
+            app:typographyType="body_2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_total_promo_checkout_label"
@@ -574,7 +573,7 @@
         android:id="@+id/rl_total_cashback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_product_discount_price">
+        android:layout_below="@+id/rl_total_promo_checkout">
 
         <View
             android:id="@+id/item_shipment_divider"

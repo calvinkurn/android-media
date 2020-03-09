@@ -6,13 +6,13 @@ data class CouponListRequest(
         @SerializedName("codes")
         var codes: List<String> = emptyList(),
         @SerializedName("skip_apply")
-        var skipApply: Int = 0,
+        var skipApply: Int = 1,
         @SerializedName("is_suggested")
-        var isSuggested: Int = 0,
+        var isSuggested: Int = 1,
         @SerializedName("cart_type")
-        var cartType: String = "",
+        var cartType: String = "default", // ocs & default
         @SerializedName("state")
-        var state: String = "",
+        var state: String = "", // cart & checkout & occ
         @SerializedName("orders")
         var orders: List<Order> = emptyList()
 )
@@ -23,14 +23,16 @@ data class Order(
         @SerializedName("unique_id")
         var uniqueId: String = "",
         @SerializedName("product_details")
-        var product_details: List<ProdustDetail> = emptyList(),
+        var product_details: List<ProductDetail> = emptyList(),
         @SerializedName("codes")
-        var codes: List<String> = emptyList()
+        var codes: List<String> = emptyList(),
+        @SerializedName("is_checked")
+        var isChecked: Boolean = false
 )
 
-data class ProdustDetail(
+data class ProductDetail(
         @SerializedName("product_id")
-        var productId: Long,
+        var productId: Long = 0,
         @SerializedName("quantity")
-        var quantity: Int
+        var quantity: Int = -1
 )

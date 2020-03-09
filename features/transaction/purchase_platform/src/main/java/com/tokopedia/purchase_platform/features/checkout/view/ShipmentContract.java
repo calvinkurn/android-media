@@ -29,6 +29,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
@@ -39,6 +40,9 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttri
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,7 +138,7 @@ public interface ShipmentContract {
 
         void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
-        void setPromoRevampData();
+        void setLastApplyData(LastApplyData lastApplyData);
 
         void showToastFailedTickerPromo(String text);
 
@@ -173,6 +177,8 @@ public interface ShipmentContract {
         void setPromoBenefit(List<SummariesUiModel> summariesUiModels);
 
         boolean isTradeInByDropOff();
+
+        void updateButtonPromoCheckout(PromoUiModel promoUiModel);
     }
 
     interface AnalyticsActionListener {
@@ -278,6 +284,8 @@ public interface ShipmentContract {
 
         void processCheckPromoStackingLogisticPromo(int cartPosition, String cartString, String code);
 
+        void doValidateuseLogisticPromo(int cartPosition, String cartString, CouponListRequest couponListRequest);
+
         void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
@@ -381,6 +389,10 @@ public interface ShipmentContract {
         void getInsuranceTechCartOnCheckout();
 
         ShipmentDataConverter getShipmentDataConverter();
+
+        void setLastApplyData(LastApplyData lastApplyData);
+
+        LastApplyData getLastApplyData();
     }
 
 }
