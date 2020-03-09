@@ -62,6 +62,7 @@ import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 import java.lang.Exception
 import javax.inject.Inject
 

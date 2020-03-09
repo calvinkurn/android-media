@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.item.main.add.view.presenter;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.abstraction.common.utils.network.TextApiUtils;
 import com.tokopedia.product.manage.item.common.util.AddEditPageType;
 import com.tokopedia.product.manage.item.common.util.ViewUtils;
 import com.tokopedia.product.manage.item.main.add.view.listener.ProductAddView;
@@ -9,6 +10,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.SaveDraftProductUseCa
 import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel;
 import com.tokopedia.product.manage.item.variant.domain.FetchProductVariantByCatUseCase;
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase;
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
