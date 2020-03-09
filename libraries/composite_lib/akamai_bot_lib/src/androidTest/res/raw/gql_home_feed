@@ -1,0 +1,69 @@
+query getHomeRecom($recomID: Int!, $count: Int!, $page: Int!){
+  get_home_recommendation{
+    recommendation_product(recomID:$recomID, count:$count, page:$page, type:"banner,position"){
+      product{
+        id
+          name
+          category_breadcrumbs
+          url
+          click_url
+          image_url
+          is_wishlist
+          wishlist_url
+          applink
+          is_topads
+          tracker_image_url
+          price
+          price_int
+          discount_percentage
+          slashed_price
+          slashed_price_int
+          rating
+          count_review
+          recommendation_type
+          shop{
+            id
+            name
+            url
+            applink
+            city
+            reputation
+          }
+          labels{
+            title
+            color
+          }
+          label_group {
+            type
+            title
+            position
+          }
+          badges{
+            title
+            image_url
+          }
+          free_ongkir {
+            is_active
+            image_url
+          }
+      }
+      banner {
+            id
+            galaxy_attribution
+            persona
+            brand_id
+            name
+            image_url
+            url
+            applink
+            bu_attribution
+            creative_name
+            target
+      }
+      position {
+            type
+      }
+      has_next_page
+    }
+  }
+}
