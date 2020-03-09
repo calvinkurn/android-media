@@ -68,7 +68,7 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
     override fun setupDialog(dialog: Dialog, style: Int) {
         super.setupDialog(dialog, style)
         actionListener.onShow()
-        dialog?.run {
+        dialog.run {
             findViewById<FrameLayout>(R.id.design_bottom_sheet).setBackgroundResource(android.R.color.transparent)
         }
     }
