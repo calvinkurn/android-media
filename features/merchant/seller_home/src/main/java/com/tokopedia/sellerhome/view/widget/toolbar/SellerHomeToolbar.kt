@@ -6,6 +6,7 @@ import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.util.AttributeSet
 import androidx.appcompat.widget.Toolbar
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.sellerhome.R
 
 /**
@@ -14,25 +15,55 @@ import com.tokopedia.sellerhome.R
 
 class SellerHomeToolbar(context: Context?, attrs: AttributeSet?) : Toolbar(context, attrs) {
 
-    private var onNotifClickListener: () -> Unit = {}
     private val notificationMenuId = R.id.menu_sah_notification
+    private val addProductMenuId = R.id.menu_sah_add_product
+    private val chatSettingsMenuId = R.id.menu_sah_chat_settings
 
     init {
         inflateMenu(R.menu.sah_menu_toolbar_notification)
 
-        setOnMenuItemClickListener {
-            if (it.itemId == notificationMenuId)
-                onNotifClickListener()
-            return@setOnMenuItemClickListener true
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            elevation = 12f
+            elevation = context?.dpToPx(8) ?: 12f
         }
     }
 
-    fun setOnNotificationClickListener(action: () -> Unit) {
-        this.onNotifClickListener = action
+    fun showNotificationActionMenu(onClick: () -> Unit) {
+        menu.findItem(notificationMenuId)?.isVisible = true
+        menu.findItem(addProductMenuId)?.isVisible = false
+        menu.findItem(chatSettingsMenuId)?.isVisible = false
+        setOnMenuItemClickListener {
+            if (it.itemId == notificationMenuId)
+                onClick()
+            return@setOnMenuItemClickListener true
+        }
+    }
+
+    fun showAddProductActionMenu(onClick: () -> Unit) {
+        menu.findItem(notificationMenuId)?.isVisible = false
+        menu.findItem(addProductMenuId)?.isVisible = true
+        menu.findItem(chatSettingsMenuId)?.isVisible = false
+        setOnMenuItemClickListener {
+            if (it.itemId == addProductMenuId)
+                onClick()
+            return@setOnMenuItemClickListener true
+        }
+    }
+
+    fun showChatSettingsActionMenu(onClick: () -> Unit) {
+        menu.findItem(notificationMenuId)?.isVisible = false
+        menu.findItem(addProductMenuId)?.isVisible = false
+        menu.findItem(chatSettingsMenuId)?.isVisible = true
+        setOnMenuItemClickListener {
+            if (it.itemId == chatSettingsMenuId)
+                onClick()
+            return@setOnMenuItemClickListener true
+        }
+    }
+
+    fun hideAllActionMenu() {
+        menu.findItem(notificationMenuId)?.isVisible = false
+        menu.findItem(addProductMenuId)?.isVisible = false
+        menu.findItem(chatSettingsMenuId)?.isVisible = false
     }
 
     fun showBadge() {

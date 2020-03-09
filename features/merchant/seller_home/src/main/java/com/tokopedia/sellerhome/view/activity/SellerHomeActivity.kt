@@ -15,11 +15,11 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
-import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.OtherSettingFragment
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
+import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
@@ -148,7 +148,7 @@ class SellerHomeActivity : BaseActivity() {
     private fun observeNotificationsLiveData() {
         homeViewModel.notifications.observe(this, Observer {
             if (it is Success) {
-                containerFragment.showChatNotificationBadge(it.data.chat)
+                showChatNotificationCounter(it.data.chat)
                 showOrderNotificationCounter(it.data.sellerOrderStatus)
             }
         })
@@ -157,14 +157,19 @@ class SellerHomeActivity : BaseActivity() {
     private fun observeShopInfoLiveData() {
         homeViewModel.shopInfo.observe(this, Observer {
             if (it is Success) {
-                val shopName = it.data.shopName
-                //set shopName as toolbar
+                containerFragment.showShopName(it.data.shopName)
             }
         })
         homeViewModel.getShopInfo()
     }
 
+    private fun showChatNotificationCounter(chat: NotificationChatUiModel) {
+        containerFragment.showChatNotificationBadge(chat)
+        sahBottomNav.setNotification(chat.unreads, FragmentType.CHAT)
+    }
+
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
-        sahBottomNav.setNotification(orderStatus.newOrder.plus(orderStatus.readyToShip), FragmentType.ORDER)
+        val notificationCount = orderStatus.newOrder.plus(orderStatus.readyToShip)
+        sahBottomNav.setNotification(notificationCount, FragmentType.ORDER)
     }
 }

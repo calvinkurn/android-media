@@ -27,6 +27,11 @@ object DeepLinkHandler {
             data.startsWith(ApplinkConstInternalMarketplace.SELLER_HOME_SOM_READY_TO_SHIP) -> {
                 callback(PageFragment(FragmentType.ORDER, SomTabConst.STATUS_READY_TO_SHIP))
             }
+
+            //Top Chat
+            data.startsWith(ApplinkConstInternalMarketplace.SELLER_HOME_CHAT) -> {
+                callback(PageFragment(FragmentType.CHAT))
+            }
         }
     }
 }
