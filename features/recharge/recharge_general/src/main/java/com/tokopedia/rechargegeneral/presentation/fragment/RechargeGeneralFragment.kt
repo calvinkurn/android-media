@@ -34,6 +34,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
@@ -76,6 +77,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     lateinit var viewModel: RechargeGeneralViewModel
     @Inject
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
     @Inject
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
     private var saveInstanceManager: SaveInstanceCacheManager? = null
@@ -764,8 +767,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
-        categoryName = data.catalog.name.toLowerCase()
+        with (data.catalog) {
+            (activity as? BaseSimpleActivity)?.updateTitle(label)
+            categoryName = name.toLowerCase()
+            rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName, categoryId.toString())
+        }
         renderTickers(data.tickers)
         // Set recommendation data if available
         hasFavoriteNumbers = data.recommendations.isNotEmpty()
