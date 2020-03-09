@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.sellerhome.data.remote.TickerService
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.user.session.UserSession
@@ -59,4 +60,9 @@ class SellerHomeModule {
     fun provideTickerService(retrofit: Retrofit): TickerService {
         return retrofit.create(TickerService::class.java)
     }
+
+    @SellerHomeScope
+    @Provides
+    fun provideRemoteConfig(@ApplicationContext context: Context): FirebaseRemoteConfigImpl =
+            FirebaseRemoteConfigImpl(context)
 }

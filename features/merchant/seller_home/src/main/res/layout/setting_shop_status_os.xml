@@ -29,7 +29,7 @@
                 android:text="@string/official_store"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                app:typographyType="body_2"
+                app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
 
@@ -47,7 +47,7 @@
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-                android:background="@drawable/setting_shop_os_tip"/>
+                android:background="@drawable/setting_os_tip"/>
 
             <View
                 android:id="@+id/badgeBorder"
@@ -64,7 +64,7 @@
             <ImageView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_margin="@dimen/setting_shop_badge_border_pm_margin"
+                android:layout_margin="@dimen/setting_shop_badge_border_os_margin"
                 app:layout_constraintTop_toTopOf="@id/badgeBorder"
                 app:layout_constraintBottom_toBottomOf="@id/badgeBorder"
                 app:layout_constraintStart_toStartOf="@id/badgeBorder"
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.085"/>
+                app:layout_constraintGuide_percent="0.1"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

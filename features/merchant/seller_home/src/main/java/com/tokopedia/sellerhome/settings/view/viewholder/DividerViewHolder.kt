@@ -22,16 +22,25 @@ class DividerViewHolder(itemView: View) : AbstractViewHolder<DividerUiModel>(ite
                     thickDivider.visibility = View.VISIBLE
                     thinPartialDivider.visibility = View.GONE
                     thinFullDivider.visibility = View.GONE
+                    thinIndentedDivider.visibility = View.GONE
                 }
                 DividerType.THIN_PARTIAL -> {
                     thickDivider.visibility = View.GONE
                     thinPartialDivider.visibility = View.VISIBLE
                     thinFullDivider.visibility = View.GONE
+                    thinIndentedDivider.visibility = View.GONE
                 }
                 DividerType.THIN_FULL -> {
                     thickDivider.visibility = View.GONE
                     thinPartialDivider.visibility = View.GONE
                     thinFullDivider.visibility = View.VISIBLE
+                    thinIndentedDivider.visibility = View.GONE
+                }
+                DividerType.THIN_INDENTED -> {
+                    thickDivider.visibility = View.GONE
+                    thinPartialDivider.visibility = View.GONE
+                    thinFullDivider.visibility = View.GONE
+                    thinIndentedDivider.visibility = View.VISIBLE
                 }
             }
         }

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
-import com.tokopedia.sellerhome.settings.view.viewmodel.OtherSettingViewModel
+import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import dagger.Binds
 import dagger.Module
@@ -30,6 +30,6 @@ abstract class SellerHomeViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(OtherSettingViewModel::class)
-    abstract fun otherSettingViewModel(otherSettingViewModel: OtherSettingViewModel): ViewModel
+    @ViewModelKey(OtherMenuViewModel::class)
+    abstract fun otherSettingViewModel(otherMenuViewModel: OtherMenuViewModel): ViewModel
 }
