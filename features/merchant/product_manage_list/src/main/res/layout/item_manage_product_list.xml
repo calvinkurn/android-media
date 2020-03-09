@@ -11,17 +11,14 @@
     <androidx.appcompat.widget.AppCompatCheckBox
         android:id="@+id/checkBoxSelect"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="@dimen/product_manage_checkbox_select_horizontal_spacing"
-        android:layout_marginStart="@dimen/product_manage_checkbox_select_horizontal_spacing"
-        android:layout_marginTop="@dimen/product_manage_checkbox_select_vertical_spacing"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/product_manage_checkbox_select_horizontal_spacing"
         android:layout_marginRight="@dimen/product_manage_checkbox_select_horizontal_spacing"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@id/imageProduct"
+        app:layout_constraintBottom_toBottomOf="@id/imageProduct"
         app:layout_constraintLeft_toLeftOf="@id/leftGuideline"
         app:layout_constraintRight_toLeftOf="@id/imageProduct"
-        android:gravity="top"
-        android:theme="@style/checkBoxStyle"
+        android:theme="@style/ProductManageCheckBoxStyle"
         android:visibility="gone"
         tools:visibility="visible"
         />
@@ -268,7 +265,8 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/layout_lvl1"
+        app:layout_goneMarginTop="@dimen/product_manage_more_option_vertical_spacing"
         app:layout_constraintTop_toBottomOf="@id/btnMoreOptions"
         app:layout_constraintBottom_toBottomOf="parent" />
 
