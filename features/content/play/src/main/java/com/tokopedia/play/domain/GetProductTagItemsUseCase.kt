@@ -22,7 +22,24 @@ class GetProductTagItemsUseCase @Inject constructor(val multiRequestGraphqlUseCa
         params.putString("channelId", channelId)
 
         return ProductTaggingItems(
+                title = "Jangan Sampai Kehabisan Barang & Promo Pilihan",
                 listOfProducts = listOf(
+                        Product(id = 14265830,
+                                appLink = "tokopedia://product/14265830",
+                                discount = 50,
+                                image = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg",
+                                isAvailable = true,
+                                isVariant = true,
+                                minimumQuantity = 1,
+                                name = "Ramayana - Kemeja Pria Blue Camouflage RAF (07901447)",
+                                order = 0,
+                                originalPrice = 400000,
+                                originalPriceFormatted = "Rp 400.000",
+                                price = 200000,
+                                priceFormatted = "Rp 200.000",
+                                quantity = 0,
+                                shopId = "479057",
+                                webLink = "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"),
                         Product(id = 14265830,
                                 appLink = "tokopedia://product/14265830",
                                 discount = 0,
@@ -36,6 +53,22 @@ class GetProductTagItemsUseCase @Inject constructor(val multiRequestGraphqlUseCa
                                 originalPriceFormatted = "Rp 400.000",
                                 price = 0,
                                 priceFormatted = "",
+                                quantity = 0,
+                                shopId = "479057",
+                                webLink = "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"),
+                        Product(id = 14265830,
+                                appLink = "tokopedia://product/14265830",
+                                discount = 50,
+                                image = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg",
+                                isAvailable = true,
+                                isVariant = true,
+                                minimumQuantity = 1,
+                                name = "Ramayana - Kemeja Pria Blue Camouflage RAF (07901447)",
+                                order = 0,
+                                originalPrice = 400000,
+                                originalPriceFormatted = "Rp 400.000",
+                                price = 200000,
+                                priceFormatted = "Rp 200.000",
                                 quantity = 0,
                                 shopId = "479057",
                                 webLink = "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"),
@@ -58,24 +91,24 @@ class GetProductTagItemsUseCase @Inject constructor(val multiRequestGraphqlUseCa
                 ),
                 listOfVouchers = listOf(
                         Voucher(
-                                title = "Cashback 2rb",
+                                title = "Free Ongkir",
                                 subtitle = "min. pembelian 100rb",
-                                thumbnailUrl = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg"
+                                voucherType = 1
                         ),
                         Voucher(
                                 title = "Cashback 2rb",
                                 subtitle = "min. pembelian 100rb",
-                                thumbnailUrl = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg"
+                                voucherType = 2
                         ),
                         Voucher(
                                 title = "Cashback 2rb",
                                 subtitle = "min. pembelian 100rb",
-                                thumbnailUrl = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg"
+                                voucherType = 3
                         ),
                         Voucher(
                                 title = "Cashback 2rb",
                                 subtitle = "min. pembelian 100rb",
-                                thumbnailUrl = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg"
+                                voucherType = 2
                         )
                 )
         )

@@ -8,9 +8,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class ProductTagging(
         @SerializedName("title")
-        val title: String = "Ayo belanja barang pilihan kamu sebelum kehabisan!",  // TODO("for testing")
-        @SerializedName("title_bottom_sheet")
-        val titleBottomSheet: String = "Barang & Promo Pilihan",  // TODO("for testing")
+        val title: String = "Ayo belanja barang pilihan kami sebelum kehabisan!",  // TODO("for testing")
         @SerializedName("is_show_product_tagging")
         val isShowProductTagging: Boolean = true, // TODO("for testing")
         @SerializedName("is_show_discount")
@@ -18,6 +16,8 @@ data class ProductTagging(
 )
 
 data class ProductTaggingItems(
+        @SerializedName("title")
+        val title: String = "",
         @SerializedName("product")
         val listOfProducts: List<Product> = emptyList(),
         @SerializedName("voucher")

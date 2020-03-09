@@ -26,6 +26,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.viewmodel.PlayVariantViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
@@ -62,6 +63,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
 
     private lateinit var playViewModel: PlayViewModel
+    private lateinit var playVariantViewModel: PlayVariantViewModel
 
     private lateinit var productSheetComponent: UIComponent<*>
     private lateinit var variantSheetComponent: UIComponent<*>
@@ -86,7 +88,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        playVariantViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayVariantViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

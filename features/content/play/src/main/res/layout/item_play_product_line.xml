@@ -19,10 +19,12 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_product_title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/play_product_line_title_image_margin"
         android:layout_marginLeft="@dimen/play_product_line_title_image_margin"
+        android:layout_marginRight="@dimen/play_product_line_title_image_margin"
+        android:layout_marginEnd="@dimen/play_product_line_title_image_margin"
         android:layout_marginTop="@dimen/spacing_lvl1"
         android:ellipsize="end"
         android:maxLines="1"
@@ -31,8 +33,9 @@
         app:layout_constraintStart_toEndOf="@id/iv_product_image"
         app:layout_constraintTop_toTopOf="@id/iv_product_image"
         app:layout_constraintBottom_toTopOf="@id/ll_product_discount"
+        app:layout_constraintEnd_toStartOf="@+id/btn_product_buy"
         app:typographyType="body_2"
-        tools:text="Alyssa Suede Flats"
+        tools:text="Alyssa Suede Flats "
         />
 
     <LinearLayout

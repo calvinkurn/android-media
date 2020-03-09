@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.play.view.viewmodel.PlayInteractionViewModel
+import com.tokopedia.play.view.viewmodel.PlayVariantViewModel
 import com.tokopedia.play.view.viewmodel.PlayVideoViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import dagger.Binds
@@ -35,4 +36,9 @@ abstract class PlayViewModelModule {
     @IntoMap
     @ViewModelKey(PlayInteractionViewModel::class)
     abstract fun getPlayInteractionViewModel(viewModel: PlayInteractionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(PlayVariantViewModel::class)
+    abstract fun getPlayVariantViewModel(viewModel: PlayVariantViewModel): ViewModel
 }

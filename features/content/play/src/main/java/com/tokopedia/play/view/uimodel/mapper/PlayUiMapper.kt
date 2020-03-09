@@ -3,7 +3,7 @@ package com.tokopedia.play.view.uimodel.mapper
 import com.tokopedia.play.data.*
 import com.tokopedia.play.ui.chatlist.model.PlayChat
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 
 
@@ -34,10 +34,11 @@ object PlayUiMapper {
         )
     } else null
 
-    fun mapPinnedProduct(partnerName: String, productCount: Int) = if (productCount > 0) PinnedProductUiModel(
+    fun mapPinnedProduct(partnerName: String, productTagging: ProductTagging) = if (productTagging.isShowProductTagging)
+        PinnedProductUiModel(
             partnerName = partnerName,
-            title = "",
-            isPromo = true
+            title = productTagging.title,
+            isPromo = productTagging.isShowDiscount
     ) else null
 
     fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
@@ -72,4 +73,53 @@ object PlayUiMapper {
             isFollowed = shopInfo.favoriteData.alreadyFavorited == 1,
             isFollowable = shopId != shopInfo.shopCore.shopId
     )
+
+    fun mapProductSheet(productTaggingItems: ProductTaggingItems): ProductSheetUiModel {
+        return ProductSheetUiModel(
+                title = productTaggingItems.title,
+                productList = mapItemProducts(productTaggingItems.listOfProducts),
+                voucherList = mapItemVouchers(productTaggingItems.listOfVouchers)
+        )
+    }
+
+    private fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
+        val productsUiModel = mutableListOf<ProductLineUiModel>()
+        products.forEach {
+            if (it.isAvailable) {
+                productsUiModel.add(ProductLineUiModel(
+                        id = it.id.toString(),
+                        imageUrl = it.image,
+                        title = it.name,
+                        price = if (it.price != 0) {
+                            DiscountedPrice(
+                                    originalPrice = it.originalPriceFormatted,
+                                    discountedPrice = it.priceFormatted,
+                                    discountPercent = it.discount
+                            )
+                        } else {
+                            OriginalPrice(price = it.originalPriceFormatted)
+                        }
+                ))
+            }
+        }
+        return productsUiModel
+    }
+
+    private fun mapItemVouchers(vouchers: List<Voucher>): List<MerchantVoucherUiModel> {
+        val merchantVouchersUiModel = mutableListOf<MerchantVoucherUiModel>()
+        vouchers.forEach {
+            merchantVouchersUiModel.add(
+                    MerchantVoucherUiModel(
+                            title = it.title,
+                            description = it.subtitle,
+                            type = when(it.voucherType) {
+                                1 -> MerchantVoucherType.Shipping
+                                2,3 -> MerchantVoucherType.Discount
+                                else -> MerchantVoucherType.Unknown
+                            }
+                    )
+            )
+        }
+        return merchantVouchersUiModel
+    }
 }
