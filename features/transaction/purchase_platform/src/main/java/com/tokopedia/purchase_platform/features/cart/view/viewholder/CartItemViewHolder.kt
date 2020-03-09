@@ -181,6 +181,8 @@ class CartItemViewHolder constructor(itemView: View,
 
                     override fun onNext(quantity: QuantityWrapper) {
                         itemQuantityTextWatcherAction(quantity)
+                        // TODO : hit  updateCartAndValidateUse
+                        actionListener?.onCartItemQuantityChangedThenHitUpdateCartAndValidateUse()
                     }
                 })
 

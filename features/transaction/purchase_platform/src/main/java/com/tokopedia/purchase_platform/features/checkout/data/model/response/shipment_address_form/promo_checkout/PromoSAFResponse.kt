@@ -8,5 +8,8 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 data class PromoSAFResponse(
 
 	@field:SerializedName("last_apply")
-	val lastApply: LastApply? = null
+	val lastApply: LastApply? = null,
+
+	@field:SerializedName("error_default")
+	val errorDefault: ErrorDefault? = null
 )

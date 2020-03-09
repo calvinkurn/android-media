@@ -1,9 +1,9 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use
 
 data class ValidateUsePromoRevampUiModel(
-        var promoUiModel: PromoUiModel? = PromoUiModel(),
-        var code: String? = "",
-        var errorCode: String? = "",
-        var message: List<Any?>? = listOf(),
-        var status: String? = ""
+        var promoUiModel: PromoUiModel = PromoUiModel(),
+        var code: String = "",
+        var errorCode: String = "",
+        var message: List<MessageUiModel> = listOf(),
+        var status: String = ""
 )

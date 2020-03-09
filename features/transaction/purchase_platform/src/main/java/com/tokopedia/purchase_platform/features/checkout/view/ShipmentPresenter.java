@@ -1109,8 +1109,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                     if (validateUsePromoRevampUiModel.getStatus() != null) {
                                         if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
-                                            //TODO : gimana klo clash?
-                                            //else :
                                             getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
                                         } else {
                                             if (validateUsePromoRevampUiModel.getMessage() != null && validateUsePromoRevampUiModel.getMessage().size() > 0) {

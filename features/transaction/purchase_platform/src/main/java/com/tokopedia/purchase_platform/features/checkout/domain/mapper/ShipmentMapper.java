@@ -6,6 +6,7 @@ import com.tokopedia.logisticcart.shipping.model.AnalyticsProductCheckoutData;
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.logisticcart.shipping.model.ShipProd;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.data.model.response.TrackingDetail;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message;
@@ -14,6 +15,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
 import com.tokopedia.purchase_platform.common.utils.UtilsKt;
@@ -23,7 +25,9 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Addresses;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.CheckoutDisabledFeaturesKt;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipmentAddressFormDataResponse;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.Data;
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.LastApply;
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.SummariesItem;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartshipmentform.DataAddressData;
@@ -46,8 +50,12 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
+
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.STATE_RED;
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.TYPE_CASHBACK;
 
 /**
  * @author anggaprasetiyo on 21/02/18.
@@ -277,9 +285,26 @@ public class ShipmentMapper implements IShipmentMapper {
             lastApplyData.setAdditionalInfoMsg(responseAdditionalInfo.getMessageInfo().getMessage());
             lastApplyData.setAdditionalInfoDetailMsg(responseAdditionalInfo.getMessageInfo().getDetail());
             lastApplyData.setErrorDetailMsg(responseAdditionalInfo.getErrorDetail().getMessage());
-            lastApplyData.setFinalBenefitText(lastApply.getData().getBenefitSummaryInfo().getFinalBenefitText());
-            lastApplyData.setFinalBenefitAmount(lastApply.getData().getBenefitSummaryInfo().getFinalBenefitAmountStr());
+
+            if  (lastApply.getData().getBenefitSummaryInfo().getSummaries().size() > 0) {
+                for (int i=0; i<lastApply.getData().getBenefitSummaryInfo().getSummaries().size(); i++) {
+                    SummariesItem summariesItem = lastApply.getData().getBenefitSummaryInfo().getSummaries().get(i);
+                    if (summariesItem.getType().equalsIgnoreCase(TYPE_CASHBACK)) {
+                        lastApplyData.setFinalBenefitText(summariesItem.getDescription());
+                        lastApplyData.setFinalBenefitAmount(summariesItem.getAmountStr());
+                        break;
+                    }
+                }
+            }
+            lastApplyData.setListRedPromos(mapCreateListRedPromosCheckout(lastApply.getData()));
             dataResult.setLastApplyData(lastApplyData);
+        }
+
+        if (shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault() != null) {
+            PromoCheckoutErrorDefault promoCheckoutErrorDefault = new PromoCheckoutErrorDefault();
+            promoCheckoutErrorDefault.setTitle(shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault().getMessage());
+            promoCheckoutErrorDefault.setDesc(shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault().getDescription());
+            dataResult.setPromoCheckoutErrorDefault(promoCheckoutErrorDefault);
         }
 
         if (!UtilsKt.isNullOrEmpty(shipmentAddressFormDataResponse.getGroupAddress())) {
@@ -715,4 +740,28 @@ public class ShipmentMapper implements IShipmentMapper {
         return messageData;
     }
 
+    private ArrayList<String> mapCreateListRedPromosCheckout(Data data) {
+        ArrayList<String> listRedPromos = new ArrayList<>();
+        if (data.getMessage() != null && data.getMessage().getState() != null && data.getCodes() != null && data.getCodes().size() > 0) {
+            if (data.getMessage().getState().equalsIgnoreCase(STATE_RED)) {
+                listRedPromos.addAll(data.getCodes());
+            }
+        }
+
+        if (data.getVoucherOrders() != null && data.getVoucherOrders().size() > 0) {
+            for (int j=0; j<data.getVoucherOrders().size(); j++) {
+                if (data.getVoucherOrders().get(j) != null) {
+                    if (data.getVoucherOrders().get(j).getMessage() != null) {
+                        if (Objects.requireNonNull(data.getVoucherOrders().get(j).getMessage()).getState() != null) {
+                            if (Objects.requireNonNull(Objects.requireNonNull(data.getVoucherOrders().get(j).getMessage()).getState()).equalsIgnoreCase(STATE_RED)) {
+                                listRedPromos.add(data.getVoucherOrders().get(j).getCode());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return listRedPromos;
+    }
 }

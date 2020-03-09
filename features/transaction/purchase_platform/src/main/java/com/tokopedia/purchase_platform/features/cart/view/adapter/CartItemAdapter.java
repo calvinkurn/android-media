@@ -124,5 +124,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         void onCartItemSimilarProductUrlClicked(String similarProductUrl);
 
         CompositeSubscription onGetCompositeSubscriber();
+
+        void onCartItemQuantityChangedThenHitUpdateCartAndValidateUse();
     }
 }

@@ -66,6 +66,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant.ACTION_OK
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_DEFAULT_IMG_URL
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART_EMPTY_WITH_PROMO_IMG_URL
+import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.data.api.CartApiInterceptor
 import com.tokopedia.purchase_platform.common.data.api.CartResponseErrorException
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
@@ -97,6 +98,10 @@ import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.Order
 import com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -185,6 +190,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isInsuranceEnabled = false
     private var isToolbarWithBackButton = true
     private var noAvailableItems = false
+    private var listRedPromos: List<String> = emptyList()
 
     companion object {
 
@@ -606,21 +612,36 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun checkGoToShipment(message: String?) {
         if (message.isNullOrEmpty()) {
-            val insuranceCartShopsArrayList = cartAdapter.isInsuranceCartProductUnSelected
-
-            if (insuranceCartShopsArrayList.isNotEmpty()) {
-                deleteMacroInsurance(insuranceCartShopsArrayList, false)
-            } else if (cartAdapter.isInsuranceSelected) {
-                cartPageAnalytics.sendEventPurchaseInsurance(userSession.userId,
-                        cartAdapter.selectedInsuranceProductId,
-                        cartAdapter.selectedInsuranceProductTitle)
+            cartListData?.lastApplyData?.listRedPromos?.let {
+                if (it.isNotEmpty()) {
+                    dPresenter.doClearRedPromosBeforeGoToCheckout(cartListData?.lastApplyData?.listRedPromos as ArrayList<String>)
+                } else {
+                    goToCheckoutPage()
+                }
             }
-            dPresenter.processUpdateCartData(false)
+
         } else {
             showToastMessageRed(message)
             sendAnalyticsOnButtonCheckoutClickedFailed()
             sendAnalyticsOnGoToShipmentFailed(message)
         }
+    }
+
+    override fun onSuccessClearRedPromosThenGoToCheckout() {
+        goToCheckoutPage()
+    }
+
+    private fun goToCheckoutPage() {
+        val insuranceCartShopsArrayList = cartAdapter.isInsuranceCartProductUnSelected
+
+        if (insuranceCartShopsArrayList.isNotEmpty()) {
+            deleteMacroInsurance(insuranceCartShopsArrayList, false)
+        } else if (cartAdapter.isInsuranceSelected) {
+            cartPageAnalytics.sendEventPurchaseInsurance(userSession.userId,
+                    cartAdapter.selectedInsuranceProductId,
+                    cartAdapter.selectedInsuranceProductTitle)
+        }
+        dPresenter.processUpdateCartData(false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -1159,7 +1180,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean): Boolean {
         dPresenter.setHasPerformChecklistChange(true)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-        dPresenter.doUpdateCartAndValidateUse(generateParamsCouponList())
+        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp())
         cartAdapter.checkForShipmentForm()
         return cartAdapter.setItemSelected(position, parentPosition, checked)
     }
@@ -1291,13 +1312,14 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun renderCartEmpty(cartListData: CartListData) {
         FLAG_IS_CART_EMPTY = true
 
-        cartListData.lastApplyData?.emptyCartInfoMsg?.let {
-            if (it.isNotEmpty()) {
-                renderCartEmptyWithPromo(cartListData.lastApplyData!!)
+        cartListData.lastApplyData?.let { lastApplyData ->
+            if (lastApplyData.emptyCartInfoMsg.isNotEmpty()) {
+                renderCartEmptyWithPromo(lastApplyData)
             } else {
                 renderCartEmptyDefault()
             }
         }
+
         enableSwipeRefresh()
         sendAnalyticsOnDataCartIsEmpty()
         showEmptyCartContainer()
@@ -1324,7 +1346,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 promoCheckoutBtn.desc = errorDefault.desc
                 promoCheckoutBtn.setOnClickListener {
                     renderPromoCheckoutLoading()
-                    dPresenter.doValidateUse(generateParamsCouponList())
+                    dPresenter.doValidateUse(generateParamValidateUsePromoRevamp())
                 }
             } else {
                 renderPromoCheckoutSuccess(cartListData)
@@ -1339,6 +1361,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             renderPromoCheckoutLoading()
             dPresenter.doValidateUse(generateParamsCouponList())
         }*/
+    }
+
+    private fun updateListRedPromo() {
+
     }
 
     private fun renderPromoCheckoutLoading() {
@@ -1361,8 +1387,58 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun generateValidateUseParams(): CouponListRequest {
-        return generateParamsCouponList()
+    override fun generateValidateUseParams(): PromoRequest {
+        return generateParamValidateUsePromoRevamp()
+    }
+
+    private fun generateParamValidateUsePromoRevamp(): PromoRequest {
+        val globalPromo = arrayListOf<String>()
+        cartListData?.lastApplyData?.code?.let { globalPromo.add(it) }
+
+        val listProductDetail = arrayListOf<ProductDetailsItem>()
+        var isCheckedItem: Boolean = false
+        var listPromoCodes = listOf<String>()
+        cartListData?.shopGroupAvailableDataList?.forEach { shopGroupAvailableData ->
+            shopGroupAvailableData.cartItemDataList?.forEach { cartItemHolderData ->
+                cartItemHolderData.cartItemData?.originData?.productId?.let { productId ->
+                    cartItemHolderData.cartItemData?.updatedData?.quantity?.let { qty ->
+                        val productDetail = ProductDetailsItem(
+                                productId = productId.toInt(),
+                                quantity = qty
+                        )
+                        listProductDetail.add(productDetail)
+
+                        cartItemHolderData.cartItemData?.originData?.isCheckboxState?.let { isChecked ->
+                            isCheckedItem = isChecked
+                        }
+
+                        cartItemHolderData.cartItemData?.originData?.listPromoCheckout?.let {
+                            listPromoCodes = it
+                        }
+                    }
+                }
+            }
+        }
+
+        val listOrder = ArrayList<OrdersItem>()
+        cartListData?.shopGroupAvailableDataList?.forEach { shop ->
+            val order = shop.shopId?.toLong()?.let { shopId ->
+                shop.cartString?.let { cartString ->
+                    val order = OrdersItem(
+                            shopId = shopId.toInt(),
+                            uniqueId = cartString,
+                            productDetails = listProductDetail,
+                            codes = listPromoCodes,
+                            isChecked = isCheckedItem)
+                    listOrder.add(order)
+                }
+            }
+        }
+
+        return PromoRequest(
+                codes = globalPromo,
+                state = CART,
+                orders = listOrder)
     }
 
     private fun generateParamsCouponList() : CouponListRequest {
@@ -2593,7 +2669,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.desc = getString(R.string.promo_checkout_inactive_desc)
         promoCheckoutBtn.setOnClickListener {
             renderPromoCheckoutLoading()
-            dPresenter.doValidateUse(generateParamsCouponList())
+            dPresenter.doValidateUse(generateParamValidateUsePromoRevamp())
         }
     }
 
@@ -2636,5 +2712,28 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         view?.let { v ->
             toasterInfo.make(v, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ACTION_OK)
         }
+    }
+
+    override fun updateListRedPromos(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel) {
+        cartListData?.lastApplyData?.listRedPromos = mapCreateListRedPromos(validateUsePromoRevampUiModel)
+    }
+
+    private fun mapCreateListRedPromos(validateUseUiModel: ValidateUsePromoRevampUiModel) : List<String> {
+        val listRedPromos = arrayListOf<String>()
+        if (validateUseUiModel.promoUiModel.messageUiModel.state.equals(STATE_RED, true)) {
+            validateUseUiModel.promoUiModel.codes.forEach {
+                listRedPromos.add(it)
+            }
+        }
+        validateUseUiModel.promoUiModel.voucherOrderUiModels.forEach {
+            if (it?.messageUiModel?.state.equals(STATE_RED, true)) {
+                it?.code?.let { it1 -> listRedPromos.add(it1) }
+            }
+        }
+        return listRedPromos
+    }
+
+    override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse() {
+        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp())
     }
 }

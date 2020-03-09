@@ -64,6 +64,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentIn
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.SummariesItemUiModel;
 import com.tokopedia.showcase.ShowCaseBuilder;
 import com.tokopedia.showcase.ShowCaseDialog;
 import com.tokopedia.showcase.ShowCaseObject;
@@ -74,6 +75,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.TYPE_CASHBACK;
 import static com.tokopedia.purchase_platform.common.insurance.utils.TransactionalInsuranceUtilsKt.PAGE_TYPE_CHECKOUT;
 
 
@@ -1435,14 +1437,25 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updatePromoCheckoutData(PromoUiModel promoUiModel) {
-        if (shipmentCostModel != null) {
-            shipmentCostModel.setTotalPromoCheckoutLabel(promoUiModel.getBenefitSummaryInfoUiModel().getFinalBenefitText());
-            shipmentCostModel.setTotalPromoCheckoutAmount(promoUiModel.getBenefitSummaryInfoUiModel().getFinalBenefitAmountStr());
-        }
         PromoCheckoutData  promoCheckoutData = new PromoCheckoutData();
         promoCheckoutData.setPromoLabel(promoUiModel.getAdditionalInfoUiModel().getMessageInfoUiModel().getMessage());
         promoCheckoutData.setPromoUsageInfo(promoUiModel.getAdditionalInfoUiModel().getMessageInfoUiModel().getDetail());
-        promoCheckoutData.setTotalBenefitAmountStr(promoUiModel.getBenefitSummaryInfoUiModel().getFinalBenefitAmountStr());
+
+        if (shipmentCostModel != null) {
+            if (promoUiModel.getBenefitSummaryInfoUiModel().getSummaries().size() > 0) {
+                for (int i=0; i<promoUiModel.getBenefitSummaryInfoUiModel().getSummaries().size(); i++) {
+                    SummariesItemUiModel summariesUiModel = promoUiModel.getBenefitSummaryInfoUiModel().getSummaries().get(i);
+                    if (summariesUiModel.getType().equalsIgnoreCase(TYPE_CASHBACK)) {
+                        shipmentCostModel.setTotalPromoCheckoutLabel(summariesUiModel.getDescription());
+                        shipmentCostModel.setTotalPromoCheckoutAmount(summariesUiModel.getAmountStr());
+
+                        promoCheckoutData.setTotalBenefitLabel(summariesUiModel.getDescription());
+                        promoCheckoutData.setTotalBenefitAmountStr(summariesUiModel.getAmountStr());
+                        break;
+                    }
+                }
+            }
+        }
         this.promoCheckoutData = promoCheckoutData;
     }
 }

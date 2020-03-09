@@ -16,7 +16,7 @@ data class ValidateUsePromoRevamp(
 	val errorCode: String? = null,
 
 	@field:SerializedName("message")
-	val message: List<Any?>? = null,
+	val message: List<Message?>? = listOf(),
 
 	@field:SerializedName("status")
 	val status: String? = null

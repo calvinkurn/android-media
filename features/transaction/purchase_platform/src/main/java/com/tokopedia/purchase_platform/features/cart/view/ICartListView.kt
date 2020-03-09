@@ -14,6 +14,8 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartL
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import java.util.*
@@ -123,9 +125,13 @@ interface ICartListView : CustomerView {
 
     fun updateCartCounter(counter: Int)
 
+    fun updateListRedPromos(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel)
+
     fun updatePromoCheckoutStickyButton(additionalInfoUiModel: AdditionalInfoUiModel)
 
     fun showPromoCheckoutStickyButtonInactive()
 
-    fun generateValidateUseParams(): CouponListRequest
+    fun generateValidateUseParams(): PromoRequest
+
+    fun onSuccessClearRedPromosThenGoToCheckout()
 }

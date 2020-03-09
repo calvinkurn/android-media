@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.promo.data.request.varidate_use
+package com.tokopedia.purchase_platform.features.promo.data.request.validate_use
 
 import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
@@ -22,5 +22,8 @@ data class OrdersItem(
 	var spId: Int? = -1,
 
 	@field:SerializedName("product_details")
-	var productDetails: List<ProductDetailsItem?>? = listOf()
+	var productDetails: List<ProductDetailsItem?>? = listOf(),
+
+	@SerializedName("is_checked")
+	var isChecked: Boolean = false
 )

@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.promo.data.request.varidate_use
+package com.tokopedia.purchase_platform.features.promo.data.request.validate_use
 
 import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName

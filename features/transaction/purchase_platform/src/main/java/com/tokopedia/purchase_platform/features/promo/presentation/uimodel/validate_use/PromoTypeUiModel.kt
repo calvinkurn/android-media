@@ -4,12 +4,12 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class PromoTypeUiModel(
-	var isExclusiveShipping: Boolean? = false,
-	var isBebasOngkir: Boolean? = false
+	var isExclusiveShipping: Boolean = false,
+	var isBebasOngkir: Boolean = false
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
-			parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-			parcel.readValue(Boolean::class.java.classLoader) as? Boolean)
+			parcel.readValue(Boolean::class.java.classLoader) as Boolean,
+			parcel.readValue(Boolean::class.java.classLoader) as Boolean)
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeValue(isExclusiveShipping)

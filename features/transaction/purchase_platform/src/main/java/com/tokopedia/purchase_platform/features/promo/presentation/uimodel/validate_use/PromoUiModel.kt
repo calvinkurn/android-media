@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use
 
 data class PromoUiModel(
-        var codes: List<String?> = listOf(),
+        var codes: List<String> = listOf(),
         var promoCodeId: Int = -1,
         var voucherOrderUiModels: List<PromoCheckoutVoucherOrdersItemUiModel?> = listOf(),
         var cashbackAdvocateReferralAmount: Int = -1,

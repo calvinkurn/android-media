@@ -38,6 +38,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
 import com.tokopedia.promocheckout.common.data.entity.request.Order;
 import com.tokopedia.promocheckout.common.view.model.PromoCheckoutData;
+import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
@@ -1030,20 +1031,29 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     public void setLastApplyData(LastApplyData lastApplyData) {
         PromoCheckoutData.Builder builder = new PromoCheckoutData.Builder();
 
-        String label = getString(R.string.promo_funnel_label);
-        if (!lastApplyData.getAdditionalInfoMsg().isEmpty()) label = lastApplyData.getAdditionalInfoMsg();
+        if (!lastApplyData.getErrorDetailMsg().isEmpty() && !lastApplyData.getErrorDetailDesc().isEmpty()) {
+            builder.setState(ButtonPromoCheckoutView.State.INACTIVE);
+            builder.promoLabel(lastApplyData.getErrorDetailMsg());
+            builder.promoUsageInfo(lastApplyData.getErrorDetailDesc());
 
-        String usageInfo = getString(R.string.promo_benefit_info);
-        if (!lastApplyData.getAdditionalInfoDetailMsg().isEmpty()) usageInfo = lastApplyData.getAdditionalInfoDetailMsg();
+        } else {
+            String label = getString(R.string.promo_funnel_label);
+            if (!lastApplyData.getAdditionalInfoMsg().isEmpty()) label = lastApplyData.getAdditionalInfoMsg();
 
-        ArrayList<String> listCodes = new ArrayList<>();
-        listCodes.add(lastApplyData.getCode());
+            String usageInfo = getString(R.string.promo_benefit_info);
+            if (!lastApplyData.getAdditionalInfoDetailMsg().isEmpty()) usageInfo = lastApplyData.getAdditionalInfoDetailMsg();
 
-        builder.promoLabel(label);
-        builder.promoUsageInfo(usageInfo);
-        builder.codes(listCodes);
-        builder.totalBenefitLabel(lastApplyData.getFinalBenefitText());
-        builder.totalBenefitAmountStr(lastApplyData.getFinalBenefitAmount());
+            ArrayList<String> listCodes = new ArrayList<>();
+            listCodes.add(lastApplyData.getCode());
+
+            builder.setState(ButtonPromoCheckoutView.State.ACTIVE);
+            builder.promoLabel(label);
+            builder.promoUsageInfo(usageInfo);
+            builder.codes(listCodes);
+            builder.totalBenefitLabel(lastApplyData.getFinalBenefitText());
+            builder.totalBenefitAmountStr(lastApplyData.getFinalBenefitAmount());
+        }
+
         shipmentAdapter.addPromoCheckoutData(builder.build());
         shipmentAdapter.notifyDataSetChanged();
     }

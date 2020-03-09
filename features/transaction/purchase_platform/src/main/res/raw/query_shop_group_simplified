@@ -515,6 +515,20 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
           last_apply {
             code
             data {
+                message {
+                  state
+                  color
+                  text
+                }
+                codes
+                voucher_orders {
+                  code
+                  message {
+                    state
+                    color
+                    text
+                  }
+                }
               additional_info {
                 message_info {
                   message
