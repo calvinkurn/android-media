@@ -438,6 +438,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onErrorEditPrice(editPriceResult: EditPriceResult) {
+        viewModel.hideProgressDialog()
         editPriceResult.let {result ->
             Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
@@ -448,6 +449,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onErrorEditStock(editStockResult: EditStockResult) {
+        viewModel.hideProgressDialog()
         editStockResult.let { result ->
             Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
@@ -521,6 +523,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onErrorDeleteProduct(deleteProductResult: DeleteProductResult) {
+        viewModel.hideProgressDialog()
         deleteProductResult.let {result ->
             Toaster.make(coordinatorLayout, getString(R.string.product_manage_delete_product_fail),
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),

@@ -2,7 +2,13 @@ package com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragme
 
 import android.content.Context
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.TextView
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -79,22 +85,33 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
     }
 
     private fun initView() {
-        quick_edit_stock_quantity_editor.maxValue = MAXIMUM_STOCK
-        quick_edit_stock_quantity_editor.minValue = MINIMUM_STOCK
-        quick_edit_stock_quantity_editor.setOnFocusChangeListener { v, hasFocus ->
-            if (hasFocus) {
-                activity.let {
-                    KeyboardHandler.showSoftKeyboard(it)
-                }
-            } else {
-                activity.let {
-                    KeyboardHandler.hideSoftKeyboard(it)
+        quick_edit_stock_quantity_editor.apply {
+            maxValue = MAXIMUM_STOCK
+            minValue = MINIMUM_STOCK
+            setOnFocusChangeListener { v, hasFocus ->
+                if (hasFocus) {
+                    activity.let {
+                        KeyboardHandler.showSoftKeyboard(it)
+                    }
+                } else {
+                    activity.let {
+                        KeyboardHandler.hideSoftKeyboard(it)
+                    }
                 }
             }
+            (editText as EditText).setOnEditorActionListener { _, actionId, _ ->
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    quick_edit_stock_quantity_editor.clearFocus()
+                    val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(quick_edit_stock_quantity_editor.editText.windowToken, 0)
+                }
+                true
+            }
+            setValueChangedListener { newValue, _, _ ->
+                viewModel.updateStock(newValue)
+            }
         }
-        quick_edit_stock_quantity_editor.setValueChangedListener { newValue, _, _ ->
-            viewModel.updateStock(newValue)
-        }
+
         quick_edit_stock_save_button.setOnClickListener {
             val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
             cacheManager?.let {

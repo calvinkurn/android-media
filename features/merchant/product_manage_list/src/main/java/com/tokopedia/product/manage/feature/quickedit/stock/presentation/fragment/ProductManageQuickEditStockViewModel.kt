@@ -38,7 +38,7 @@ class ProductManageQuickEditStockViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun isStockTooLow(stock: Int): Boolean {
-        if(stock < ProductManageQuickEditStockFragment.MINIMUM_STOCK) {
+        if(stock <= ProductManageQuickEditStockFragment.MINIMUM_STOCK) {
             return true
         }
         return false
