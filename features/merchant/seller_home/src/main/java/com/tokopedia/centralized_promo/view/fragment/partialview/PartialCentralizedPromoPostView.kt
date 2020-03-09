@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
+import com.tokopedia.centralized_promo.view.fragment.CoachMarkListener
 import com.tokopedia.centralized_promo.view.model.PostListUiModel
 import com.tokopedia.centralized_promo.view.model.PostUiModel
 import com.tokopedia.kotlin.extensions.view.gone
@@ -18,8 +19,10 @@ import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view
 
 class PartialCentralizedPromoPostView(
         private val view: View,
-        adapterTypeFactory: CentralizedPromoAdapterTypeFactory
-) : PartialView<PostListUiModel, CentralizedPromoAdapterTypeFactory, PostUiModel>(adapterTypeFactory) {
+        adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
+        coachMarkListener: CoachMarkListener,
+        shouldWaitForCoachMark: Boolean
+) : PartialView<PostListUiModel, CentralizedPromoAdapterTypeFactory, PostUiModel>(adapterTypeFactory, coachMarkListener, shouldWaitForCoachMark) {
 
     init {
         setupPostRecycler()
@@ -43,9 +46,6 @@ class PartialCentralizedPromoPostView(
             } else {
                 gone()
             }
-            layoutCentralizedPromoPostListShimmering.hide()
-            layoutCentralizedPromoPostListError?.hide()
-            layoutCentralizedPromoPostListSuccess.show()
         }
     }
 
@@ -68,6 +68,14 @@ class PartialCentralizedPromoPostView(
             layoutCentralizedPromoPostListSuccess.hide()
             layoutCentralizedPromoPostListError?.hide()
             layoutCentralizedPromoPostListShimmering.show()
+        }
+    }
+
+    override fun onRecyclerViewResultDispatched() {
+        with(view) {
+            layoutCentralizedPromoPostListShimmering.hide()
+            layoutCentralizedPromoPostListError?.hide()
+            layoutCentralizedPromoPostListSuccess.show()
         }
     }
 }

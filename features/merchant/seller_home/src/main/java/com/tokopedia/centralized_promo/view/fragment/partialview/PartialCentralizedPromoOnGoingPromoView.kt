@@ -4,6 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
+import com.tokopedia.centralized_promo.view.fragment.CoachMarkListener
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoListUiModel
 import com.tokopedia.centralized_promo.view.model.OnGoingPromoUiModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -17,8 +18,10 @@ import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_pro
 class PartialCentralizedPromoOnGoingPromoView(
         private val view: View,
         private val refreshButtonClickListener: RefreshButtonClickListener,
-        adapterTypeFactory: CentralizedPromoAdapterTypeFactory
-) : PartialView<OnGoingPromoListUiModel, CentralizedPromoAdapterTypeFactory, OnGoingPromoUiModel>(adapterTypeFactory) {
+        adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
+        coachMarkListener: CoachMarkListener,
+        shouldWaitForCoachMark: Boolean
+) : PartialView<OnGoingPromoListUiModel, CentralizedPromoAdapterTypeFactory, OnGoingPromoUiModel>(adapterTypeFactory, coachMarkListener, shouldWaitForCoachMark) {
 
     init {
         setupOnGoingPromo()
@@ -30,13 +33,18 @@ class PartialCentralizedPromoOnGoingPromoView(
                 if (data.promotions.isNotEmpty()) {
                     tvOnGoingPromo.text = data.title
                     adapter.setElements(data.promotions)
-                    layoutCentralizedPromoOnGoingPromoSuccess.show()
                 } else {
                     layoutCentralizedPromoOnGoingPromoSuccess.hide()
+                    layoutCentralizedPromoOnGoingPromoShimmering.hide()
+                    layoutCentralizedPromoOnGoingPromoError?.hide()
+                    localLoadOnGoingPromo?.progressState = false
+                    onGoingPromoLayoutDivider.hide()
+
+                    if (shouldWaitForCoachMark) {
+                        shouldWaitForCoachMark = false
+                        coachMarkListener.onViewReadyForCoachMark()
+                    }
                 }
-                layoutCentralizedPromoOnGoingPromoShimmering.hide()
-                localLoadOnGoingPromo?.progressState = false
-                layoutCentralizedPromoOnGoingPromoError?.hide()
             }
         } else {
             renderError(MessageErrorException(data.errorMessage))
@@ -45,6 +53,7 @@ class PartialCentralizedPromoOnGoingPromoView(
 
     override fun renderError(cause: Throwable) {
         with(view) {
+            shouldWaitForCoachMark = false
             show()
             layoutCentralizedPromoOnGoingPromoSuccess.hide()
             layoutCentralizedPromoOnGoingPromoShimmering.hide()
@@ -52,8 +61,9 @@ class PartialCentralizedPromoOnGoingPromoView(
                 stubLayoutCentralizedPromoOnGoingPromoError.inflate()
             }
             layoutCentralizedPromoOnGoingPromoError?.show()
-            tvCentralizedPromoOnGoingTitleError.text = context.getString(R.string.sah_label_promo_and_ads)
+            onGoingPromoLayoutDivider.show()
             localLoadOnGoingPromo.progressState = false
+            tvCentralizedPromoOnGoingTitleError.text = context.getString(R.string.sah_label_promo_and_ads)
             localLoadOnGoingPromo.description?.text = context.getString(R.string.sah_label_on_going_promotion_retry)
             localLoadOnGoingPromo.refreshBtn?.setOnClickListener {
                 localLoadOnGoingPromo.progressState = true
@@ -76,6 +86,17 @@ class PartialCentralizedPromoOnGoingPromoView(
             layoutCentralizedPromoOnGoingPromoSuccess.hide()
             layoutCentralizedPromoOnGoingPromoError?.hide()
             layoutCentralizedPromoOnGoingPromoShimmering.show()
+            onGoingPromoLayoutDivider.show()
+        }
+    }
+
+    override fun onRecyclerViewResultDispatched() {
+        with(view) {
+            layoutCentralizedPromoOnGoingPromoSuccess.show()
+            onGoingPromoLayoutDivider.show()
+            layoutCentralizedPromoOnGoingPromoShimmering.hide()
+            localLoadOnGoingPromo?.progressState = false
+            layoutCentralizedPromoOnGoingPromoError?.hide()
         }
     }
 

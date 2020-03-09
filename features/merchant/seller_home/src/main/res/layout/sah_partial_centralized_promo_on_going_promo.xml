@@ -12,6 +12,7 @@
         android:layout="@layout/sah_partial_centralized_promo_on_going_promo_error" />
 
     <View
+        android:id="@+id/onGoingPromoLayoutDivider"
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:background="@color/Neutral_N50" />

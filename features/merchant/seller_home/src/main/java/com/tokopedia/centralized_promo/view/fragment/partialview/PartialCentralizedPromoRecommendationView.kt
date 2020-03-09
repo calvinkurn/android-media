@@ -3,6 +3,7 @@ package com.tokopedia.centralized_promo.view.fragment.partialview
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.centralized_promo.view.adapter.CentralizedPromoAdapterTypeFactory
+import com.tokopedia.centralized_promo.view.fragment.CoachMarkListener
 import com.tokopedia.centralized_promo.view.item_decoration.OnGoingPromotionItemDecoration
 import com.tokopedia.centralized_promo.view.model.RecommendedPromotionListUiModel
 import com.tokopedia.centralized_promo.view.model.RecommendedPromotionUiModel
@@ -14,8 +15,10 @@ import kotlinx.android.synthetic.main.sah_partial_centralized_promo_recommendati
 
 class PartialCentralizedPromoRecommendationView(
         private val view: View,
-        adapterTypeFactory: CentralizedPromoAdapterTypeFactory
-) : PartialView<RecommendedPromotionListUiModel, CentralizedPromoAdapterTypeFactory, RecommendedPromotionUiModel>(adapterTypeFactory) {
+        adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
+        coachMarkListener: CoachMarkListener,
+        shouldWaitForCoachMark: Boolean
+) : PartialView<RecommendedPromotionListUiModel, CentralizedPromoAdapterTypeFactory, RecommendedPromotionUiModel>(adapterTypeFactory, coachMarkListener, shouldWaitForCoachMark) {
 
     init {
         setupPromoRecommendation()
@@ -32,12 +35,7 @@ class PartialCentralizedPromoRecommendationView(
     }
 
     override fun renderData(data: RecommendedPromotionListUiModel) {
-        with(view) {
-            adapter.setElements(data.promotions)
-            partialSuccess.show()
-            rvCentralizedPromoRecommendation.show()
-            layoutCentralizedPromoRecommendationShimmering.hide()
-        }
+        adapter.setElements(data.promotions)
     }
 
     override fun renderError(cause: Throwable) {}
@@ -47,6 +45,14 @@ class PartialCentralizedPromoRecommendationView(
             partialSuccess.hide()
             rvCentralizedPromoRecommendation.hide()
             layoutCentralizedPromoRecommendationShimmering.show()
+        }
+    }
+
+    override fun onRecyclerViewResultDispatched() {
+        with(view) {
+            partialSuccess.show()
+            rvCentralizedPromoRecommendation.show()
+            layoutCentralizedPromoRecommendationShimmering.hide()
         }
     }
 }

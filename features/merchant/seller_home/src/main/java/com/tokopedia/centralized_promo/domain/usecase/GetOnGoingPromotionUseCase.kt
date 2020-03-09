@@ -10,7 +10,7 @@ import com.tokopedia.sellerhome.domain.usecase.BaseGqlUseCase
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetOnGoingPromoUseCase @Inject constructor(
+class GetOnGoingPromotionUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val onGoingPromotionMapper: OnGoingPromotionMapper
 ) : BaseGqlUseCase<OnGoingPromoListUiModel>() {
@@ -22,7 +22,7 @@ class GetOnGoingPromoUseCase @Inject constructor(
         val errors = gqlResponse.getError(GetPromotionListResponseWrapper::class.java)
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetPromotionListResponseWrapper>()
-            return onGoingPromotionMapper.mapRemoteModelToUiModel(data.response)
+            return onGoingPromotionMapper.mapDomainDataModelToUiDataModel(data.response)
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

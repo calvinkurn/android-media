@@ -2,8 +2,8 @@ package com.tokopedia.centralized_promo.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.centralized_promo.domain.usecase.GetCentralizedPromoPostUseCase
-import com.tokopedia.centralized_promo.domain.usecase.GetOnGoingPromoUseCase
+import com.tokopedia.centralized_promo.domain.usecase.GetPostUseCase
+import com.tokopedia.centralized_promo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralized_promo.view.LayoutType
 import com.tokopedia.centralized_promo.view.RecommendedPromotionStaticData
 import com.tokopedia.centralized_promo.view.model.BaseUiModel
@@ -19,8 +19,8 @@ import javax.inject.Named
 
 class CentralizedPromoViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
-        private val getOnGoingPromoUseCase: GetOnGoingPromoUseCase,
-        private val getCentralizedPromoPostUseCase: GetCentralizedPromoPostUseCase,
+        private val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase,
+        private val getPostUseCase: GetPostUseCase,
         @Named("Main") dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -63,8 +63,8 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getOnGoingPromotion(): Result<BaseUiModel> {
         return try {
-            getOnGoingPromoUseCase.params = GetOnGoingPromoUseCase.getRequestParams(false)
-            Success(getOnGoingPromoUseCase.executeOnBackground())
+            getOnGoingPromotionUseCase.params = GetOnGoingPromotionUseCase.getRequestParams(false)
+            Success(getOnGoingPromotionUseCase.executeOnBackground())
 //            Success(OnGoingPromoStaticData.provideStaticData())
         } catch (t: Throwable) {
             Fail(t)
@@ -73,8 +73,8 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getPostList(): Result<BaseUiModel> {
         return try {
-            getCentralizedPromoPostUseCase.params = GetCentralizedPromoPostUseCase.getRequestParams(if (shopId.isBlank()) 0 else shopId.toIntOrZero(), listOf("article"), startDate, endDate)
-            Success(getCentralizedPromoPostUseCase.executeOnBackground())
+            getPostUseCase.params = GetPostUseCase.getRequestParams(if (shopId.isBlank()) 0 else shopId.toIntOrZero(), listOf("article"), startDate, endDate)
+            Success(getPostUseCase.executeOnBackground())
         } catch (t: Throwable) {
             Fail(t)
         }

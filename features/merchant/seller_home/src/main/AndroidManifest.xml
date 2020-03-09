@@ -31,7 +31,7 @@
         <activity
             android:name="com.tokopedia.centralized_promo.view.activity.CentralizedPromoActivity"
             android:exported="true"
-            android:label="Promotion"
+            android:label="@string/sh_centralized_promo_title"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White.Background"/>

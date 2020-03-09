@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.rules.ExpectedException
 
 @ExperimentalCoroutinesApi
-class GetCentralizedPromoPostUseCaseTest {
+class GetPostUseCaseTest {
     companion object {
         private const val SUCCESS_RESPONSE = "json/get_centralized_promo_post_usecase_success_response.json"
 
@@ -59,10 +59,10 @@ class GetCentralizedPromoPostUseCaseTest {
     lateinit var gqlRepository: GraphqlRepository
     private val postMapper: PostMapper = PostMapper()
     private val usecase by lazy {
-        GetCentralizedPromoPostUseCase(gqlRepository, postMapper)
+        GetPostUseCase(gqlRepository, postMapper)
     }
 
-    private val params = GetCentralizedPromoPostUseCase.getRequestParams(
+    private val params = GetPostUseCase.getRequestParams(
             shopId = 0,
             dataKey = emptyList(),
             startDate = "",

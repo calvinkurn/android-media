@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.rules.ExpectedException
 
 @ExperimentalCoroutinesApi
-class GetOnGoingPromoUseCaseTest {
+class GetOnGoingPromotionUseCaseTest {
     companion object {
         private const val SUCCESS_RESPONSE = "json/get_centralized_promo_on_going_usecase_success_response.json"
         private const val ERROR_RESPONSE_WITH_MESSAGE_ON_HEADER = "json/get_centralized_promo_on_going_usecase_failed_response.json"
@@ -62,10 +62,10 @@ class GetOnGoingPromoUseCaseTest {
     private val onGoingPromotionMapper: OnGoingPromotionMapper = OnGoingPromotionMapper()
 
     private val usecase by lazy {
-        GetOnGoingPromoUseCase(gqlRepository, onGoingPromotionMapper)
+        GetOnGoingPromotionUseCase(gqlRepository, onGoingPromotionMapper)
     }
 
-    private val params = GetOnGoingPromoUseCase.getRequestParams(false)
+    private val params = GetOnGoingPromotionUseCase.getRequestParams(false)
 
     @Before
     fun setUp() {

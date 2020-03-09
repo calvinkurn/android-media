@@ -6,7 +6,7 @@ import com.tokopedia.sellerhome.domain.model.PostDataModel
 import javax.inject.Inject
 
 class PostMapper @Inject constructor() {
-    fun mapRemoteDataModelToUiDataModel(widgetDataList: List<PostDataModel>): List<PostListUiModel> {
+    fun mapDomainDataModelToUiDataModel(widgetDataList: List<PostDataModel>): List<PostListUiModel> {
         return widgetDataList.map {
             PostListUiModel(
                     posts = it.list?.map { postItem ->

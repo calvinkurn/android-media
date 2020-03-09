@@ -3,8 +3,8 @@ package com.tokopedia.centralized_promo.view.viewmodel
 import androidx.arch.core.executor.ArchTaskExecutor
 import androidx.arch.core.executor.TaskExecutor
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.centralized_promo.domain.usecase.GetCentralizedPromoPostUseCase
-import com.tokopedia.centralized_promo.domain.usecase.GetOnGoingPromoUseCase
+import com.tokopedia.centralized_promo.domain.usecase.GetPostUseCase
+import com.tokopedia.centralized_promo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralized_promo.view.LayoutType
 import com.tokopedia.centralized_promo.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -44,12 +44,12 @@ class CentralizedPromoViewModelTest : Spek({
 
     Feature("CentralizedPromoViewModel") {
         val userSession: UserSessionInterface = mockk(relaxed = true)
-        val getOnGoingPromoUseCase: GetOnGoingPromoUseCase = mockk(relaxed = true)
-        val getCentralizedPromoPostUseCase: GetCentralizedPromoPostUseCase = mockk(relaxed = true)
+        val getOnGoingPromotionUseCase: GetOnGoingPromotionUseCase = mockk(relaxed = true)
+        val getPostUseCase: GetPostUseCase = mockk(relaxed = true)
 
         val dispatcher: CoroutineDispatcher = Dispatchers.Unconfined
 
-        val viewModel = CentralizedPromoViewModel(userSession, getOnGoingPromoUseCase, getCentralizedPromoPostUseCase, dispatcher)
+        val viewModel = CentralizedPromoViewModel(userSession, getOnGoingPromotionUseCase, getPostUseCase, dispatcher)
 
         CentralizedPromoViewModel::class.declaredMemberProperties.filter { it.name in arrayOf("startDate", "endDate") }.forEach {
             it.isAccessible = true
@@ -83,7 +83,7 @@ class CentralizedPromoViewModelTest : Spek({
 
             Given("getOnGoingPromoUseCase return 1 on going promo") {
                 coEvery {
-                    getOnGoingPromoUseCase.executeOnBackground()
+                    getOnGoingPromotionUseCase.executeOnBackground()
                 } returns successResult
             }
 
@@ -93,7 +93,7 @@ class CentralizedPromoViewModelTest : Spek({
 
             Then("run usecase") {
                 coVerify {
-                    getOnGoingPromoUseCase.executeOnBackground()
+                    getOnGoingPromotionUseCase.executeOnBackground()
                 }
             }
 
@@ -106,7 +106,7 @@ class CentralizedPromoViewModelTest : Spek({
         Scenario("Failed get layout data for on going promotion") {
             Given("getOnGoingPromoUseCase throw a throwable") {
                 coEvery {
-                    getOnGoingPromoUseCase.executeOnBackground()
+                    getOnGoingPromotionUseCase.executeOnBackground()
                 } throws MessageErrorException("")
             }
 
@@ -116,7 +116,7 @@ class CentralizedPromoViewModelTest : Spek({
 
             Then("run usecase") {
                 coVerify {
-                    getOnGoingPromoUseCase.executeOnBackground()
+                    getOnGoingPromotionUseCase.executeOnBackground()
                 }
             }
 
@@ -155,7 +155,7 @@ class CentralizedPromoViewModelTest : Spek({
 
             Given("getCentralizedPromoPostUseCase return 3 posts") {
                 coEvery {
-                    getCentralizedPromoPostUseCase.executeOnBackground()
+                    getPostUseCase.executeOnBackground()
                 } returns successResult
             }
 
@@ -165,7 +165,7 @@ class CentralizedPromoViewModelTest : Spek({
 
             Then("run usecase") {
                 coVerify {
-                    getCentralizedPromoPostUseCase.executeOnBackground()
+                    getPostUseCase.executeOnBackground()
                 }
             }
 
@@ -178,7 +178,7 @@ class CentralizedPromoViewModelTest : Spek({
         Scenario("Failed get layout data for posts") {
             Given("getCentralizedPromoPostUseCase throw a throwable") {
                 coEvery {
-                    getCentralizedPromoPostUseCase.executeOnBackground()
+                    getPostUseCase.executeOnBackground()
                 } throws MessageErrorException("")
             }
 
@@ -188,7 +188,7 @@ class CentralizedPromoViewModelTest : Spek({
 
             Then("run usecase") {
                 coVerify {
-                    getCentralizedPromoPostUseCase.executeOnBackground()
+                    getPostUseCase.executeOnBackground()
                 }
             }
 

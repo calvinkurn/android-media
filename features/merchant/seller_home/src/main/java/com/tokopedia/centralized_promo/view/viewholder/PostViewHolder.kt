@@ -21,7 +21,7 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
         with(itemView) {
             tvPromotionPostTitle.text = element.title.parseAsHtml()
             tvPromotionPostTitleDescription.text = element.subtitle.parseAsHtml()
-            setOnClickListener { openApplink(element.applink) }
+            setOnClickListener { openAppLink(element.applink) }
             loadImage(element.featuredMediaUrl)
         }
     }
@@ -34,7 +34,7 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
         }
     }
 
-    private fun openApplink(url: String) {
+    private fun openAppLink(url: String) {
         with(itemView) {
             RouteManager.route(context, url)
         }

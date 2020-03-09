@@ -12,7 +12,7 @@ import com.tokopedia.sellerhome.domain.usecase.BaseGqlUseCase
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class GetCentralizedPromoPostUseCase @Inject constructor(
+class GetPostUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository,
         private val postMapper: PostMapper
 ) : BaseGqlUseCase<PostListUiModel>() {
@@ -25,7 +25,7 @@ class GetCentralizedPromoPostUseCase @Inject constructor(
         if (errors.isNullOrEmpty()) {
             val data = gqlResponse.getData<GetPostDataResponse>()
             val widgetDataList = data.getPostWidgetData?.data.orEmpty()
-            return postMapper.mapRemoteDataModelToUiDataModel(widgetDataList).first()
+            return postMapper.mapDomainDataModelToUiDataModel(widgetDataList).first()
         } else {
             throw MessageErrorException(errors.joinToString(", ") { it.message })
         }

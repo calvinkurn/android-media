@@ -1,7 +1,6 @@
 package com.tokopedia.centralized_promo.view.fragment
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -22,6 +21,7 @@ import com.tokopedia.centralized_promo.view.fragment.partialview.PartialCentrali
 import com.tokopedia.centralized_promo.view.fragment.partialview.PartialView
 import com.tokopedia.centralized_promo.view.model.BaseUiModel
 import com.tokopedia.centralized_promo.view.viewmodel.CentralizedPromoViewModel
+import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.sellerhome.R
@@ -30,45 +30,49 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_centralized_promo.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_success.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_recommendation.*
-import java.util.ArrayList
+import java.util.*
 import javax.inject.Inject
 
-class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener {
+class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOnGoingPromoView.RefreshButtonClickListener, CoachMarkListener {
 
     companion object {
         private const val TOAST_DURATION: Long = 5000
 
         private const val TAG_COACH_MARK = "CentralizedPromoCoachMark"
 
-        private const val SHARED_PREF_COACH_MARK_ON_GOING_PROMOION = "onBoardingAdsAndPromotions"
-        private const val SHARED_PREF_COACH_MARK_PROMOTION_CREATION = "onBoardingPromotionCreation"
+        private const val SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION = "onBoardingAdsAndPromotions"
+        private const val SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION = "onBoardingPromoRecommendation"
 
         @JvmStatic
         fun createInstance(): CentralizedPromoFragment = CentralizedPromoFragment()
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
     private val adapterTypeFactory by lazy { CentralizedPromoAdapterTypeFactory() }
 
     private val partialViews by lazy {
         return@lazy mapOf(
-                LayoutType.ON_GOING_PROMO to PartialCentralizedPromoOnGoingPromoView(container, this, adapterTypeFactory),
-                LayoutType.RECOMMENDED_PROMO to PartialCentralizedPromoRecommendationView(layoutCentralizedPromoRecommendation, adapterTypeFactory),
-                LayoutType.POST to PartialCentralizedPromoPostView(layoutCentralizedPromoPostList, adapterTypeFactory)
+                LayoutType.ON_GOING_PROMO to createOnGoingPromoView(),
+                LayoutType.RECOMMENDED_PROMO to createPromoRecommendationView(),
+                LayoutType.POST to createPromoPostView()
         )
     }
 
-    private var isErrorToastShown: Boolean = false
-    private var sharedPref: SharedPreferences? = null
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
     private val centralizedPromoViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(CentralizedPromoViewModel::class.java)
     }
+
+    private val sharedPref by lazy { requireContext().getSharedPreferences("${this.javaClass.simpleName}.pref", Context.MODE_PRIVATE) }
+
+    private val coachMark by lazy { createCoachMark() }
+
+    private var isErrorToastShown: Boolean = false
+    private var isCoachMarkShowed: Boolean = false
 
     override fun getScreenName(): String = this::class.java.simpleName
 
@@ -86,13 +90,6 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        context?.run {
-            sharedPref = getSharedPreferences("${this.javaClass.simpleName}.pref", Context.MODE_PRIVATE)
-            sharedPref?.run {
-                edit().clear().apply()
-            }
-        }
-
         setupView()
         observeGetLayoutDataResult()
         refreshLayout()
@@ -101,6 +98,33 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     override fun onRefreshButtonClicked() {
         getLayoutData(LayoutType.ON_GOING_PROMO)
     }
+
+    override fun onViewReadyForCoachMark() {
+        partialViews.forEach { if (it.value.shouldWaitForCoachMark) return }
+
+        view?.post {
+            showCoachMark()
+        }
+    }
+
+    private fun createOnGoingPromoView() = PartialCentralizedPromoOnGoingPromoView(
+            view = container,
+            refreshButtonClickListener = this,
+            adapterTypeFactory = adapterTypeFactory,
+            coachMarkListener = this,
+            shouldWaitForCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION, true))
+
+    private fun createPromoRecommendationView() = PartialCentralizedPromoRecommendationView(
+            view = layoutCentralizedPromoRecommendation,
+            adapterTypeFactory = adapterTypeFactory,
+            coachMarkListener = this,
+            shouldWaitForCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true))
+
+    private fun createPromoPostView() = PartialCentralizedPromoPostView(
+            view = layoutCentralizedPromoPostList,
+            adapterTypeFactory = adapterTypeFactory,
+            coachMarkListener = this,
+            shouldWaitForCoachMark = false)
 
     private fun setupView() {
         swipeRefreshLayout.setOnRefreshListener {
@@ -131,9 +155,6 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             }
 
             swipeRefreshLayout.isRefreshing = false
-            view?.post {
-                showCoachMark()
-            }
         })
     }
 
@@ -150,22 +171,41 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
         showErrorToaster()
     }
 
-    private fun showCoachMark() = sharedPref?.run {
+    private fun showCoachMark() {
+        if (!isCoachMarkShowed) {
+            isCoachMarkShowed = true
+            val coachMarkItem = ArrayList<CoachMarkItem>()
+            if (layoutCentralizedPromoOnGoingPromoSuccess.isShown && sharedPref.getBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION, true)) {
+                coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoOnGoingPromoSuccess,
+                        getString(R.string.sh_coachmark_title_on_going_promo),
+                        getString(R.string.sh_coachmark_desc_on_going_promo)))
+            }
+            if (layoutCentralizedPromoRecommendation.isShown && sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true)) {
+                coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoRecommendation,
+                        getString(R.string.sh_coachmark_title_promo_recommendation),
+                        getString(R.string.sh_coachmark_desc_promo_recommendation)))
+            }
+            coachMark.show(activity, TAG_COACH_MARK, coachMarkItem)
+        }
+    }
+
+    private fun updateCoachMarkStatus(key: String) {
+        sharedPref.edit().putBoolean(key, false).apply()
+    }
+
+    private fun createCoachMark(): CoachMark {
         val coachMark = CoachMarkBuilder().build()
-        val coachMarkItem = ArrayList<CoachMarkItem>()
-        if (layoutCentralizedPromoOnGoingPromoSuccess.isShown && !getBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOION, false)) {
-            coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoOnGoingPromoSuccess,
-                    getString(R.string.sh_coachmark_title_on_going_promo),
-                    getString(R.string.sh_coachmark_desc_on_going_promo)))
-            edit().putBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOION, true).apply()
-        }
-        if (layoutCentralizedPromoRecommendation.isShown && !getBoolean(SHARED_PREF_COACH_MARK_PROMOTION_CREATION, false)) {
-            coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoRecommendation,
-                    getString(R.string.sh_coachmark_title_promo_creation),
-                    getString(R.string.sh_coachmark_desc_promo_creation)))
-            edit().putBoolean(SHARED_PREF_COACH_MARK_PROMOTION_CREATION, true).apply()
-        }
-        coachMark.show(activity, TAG_COACH_MARK, coachMarkItem)
+        coachMark.setShowCaseStepListener(object : CoachMark.OnShowCaseStepListener {
+            override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
+                when (coachMarkItem.title) {
+                    getString(R.string.sh_coachmark_title_on_going_promo) -> updateCoachMarkStatus(SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION)
+                    getString(R.string.sh_coachmark_title_promo_recommendation) -> updateCoachMarkStatus(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION)
+                }
+                return false
+            }
+        })
+
+        return coachMark
     }
 
     private fun showErrorToaster() = view?.run {
@@ -183,4 +223,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             isErrorToastShown = false
         }, TOAST_DURATION)
     }
+}
+
+interface CoachMarkListener {
+    fun onViewReadyForCoachMark()
 }

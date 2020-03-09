@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import javax.inject.Inject
 
 class OnGoingPromotionMapper @Inject constructor() {
-    fun mapRemoteModelToUiModel(data: GetPromotionListResponse?): OnGoingPromoListUiModel {
+    fun mapDomainDataModelToUiDataModel(data: GetPromotionListResponse?): OnGoingPromoListUiModel {
         return OnGoingPromoListUiModel(
                 title = data?.data?.title.orEmpty(),
                 promotions = data?.data?.promotions?.map {

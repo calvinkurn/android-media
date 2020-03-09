@@ -7,6 +7,7 @@ import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.centralized_promo.view.fragment.CentralizedPromoFragment
+import com.tokopedia.sellerhome.R
 
 class CentralizedPromoActivity : BaseSimpleActivity() {
 
@@ -25,7 +26,7 @@ class CentralizedPromoActivity : BaseSimpleActivity() {
     private fun setupToolbar() {
         toolbar.apply {
             removeAllViews()
-            title = "Promotion"
+            title = getString(R.string.sh_centralized_promo_title)
         }
         setSupportActionBar(toolbar)
         supportActionBar?.apply {
