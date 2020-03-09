@@ -41,13 +41,12 @@ class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.
                 return VariantColorViewHolder(view, listener)
             }
             TYPE_IMAGE -> {
-
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(VariantImageViewHolder.LAYOUT, parent, false)
+                return VariantImageViewHolder(view, listener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
-        val view = LayoutInflater.from(parent.context)
-                .inflate(VariantImageViewHolder.LAYOUT, parent, false)
-        return VariantImageViewHolder(view, listener)
     }
 
     override fun getItemCount(): Int = variantCategory.variantOptions.size
