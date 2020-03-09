@@ -9,9 +9,6 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.description.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.model.VideoLinkModel
-import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
-import com.tokopedia.product.addedit.tooltip.model.TooltipModel
-import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
@@ -24,7 +21,6 @@ import com.tokopedia.product.addedit.stock.view.model.ProductStock
 class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
         VideoLinkTypeFactory.VideoLinkListener {
     private var videoId = 0
-    private var tooltipBottomSheet: TooltipBottomSheet<TooltipModel, TooltipTypeFactory>? = null
 
     @CurrencyTypeDef
     private var selectedCurrencyType: Int = CurrencyTypeDef.TYPE_IDR
@@ -44,7 +40,7 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
     }
 
     override fun onTextChanged(url: String, position: Int) {
-        adapter.data[position].inputName = url
+        adapter.data[position].inputUrl = url
     }
 
     override fun onItemClicked(t: VideoLinkModel?) {
@@ -71,11 +67,11 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         }
 
         layoutDescriptionTips.setOnClickListener {
-            showDescriptionTips()
+            // no-op
         }
 
         layoutVariantTips.setOnClickListener {
-            showDescriptionTips()
+            // no-op
         }
 
         tvAddVariant.setOnClickListener {
@@ -90,21 +86,6 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
 
         textViewAddVideo.visibility =
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
-    }
-
-    private fun showDescriptionTips() {
-        val choosingTipsFactory = TooltipTypeFactory()
-        tooltipBottomSheet = TooltipBottomSheet(choosingTipsFactory)
-        tooltipBottomSheet?.apply {
-            setTitle("Tips memilih produk")
-        }
-        val tips: ArrayList<TooltipModel> = ArrayList()
-        tips.add(TooltipModel(1, "Pastikan kualitas image tidak pecah", "Kamu bisa cek kembali fotomu ketika dilihat lebih detail", "https://placekitten.com/300/300"))
-        tips.add(TooltipModel(2, "Atur fotomu semenarik mungkin", "tentukan foto yang menarik menurutmu agar pembeli dengan mudah menemukan", "https://placekitten.com/300/301"))
-        tips.add(TooltipModel(3, "Tentukan komposisi dan sudut foto", "kamu bisa mengatur komposisi objek pada saat foto dan sudut menarik", "https://placekitten.com/300/302"))
-
-        tooltipBottomSheet?.setItemMenuList(tips)
-        tooltipBottomSheet?.show(fragmentManager!!, null)
     }
 
     private fun showEditPriceWhenHasVariantDialog(){

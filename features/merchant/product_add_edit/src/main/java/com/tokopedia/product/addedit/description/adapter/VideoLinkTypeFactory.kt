@@ -16,25 +16,27 @@ class VideoLinkTypeFactory: BaseAdapterTypeFactory(){
         this.listener = listener
     }
 
-    fun type(videoLinkModel: VideoLinkModel): Int = FormInputViewHolder.LAYOUT
+    fun type(videoLinkModel: VideoLinkModel): Int = VideoLinkViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
-            FormInputViewHolder.LAYOUT -> FormInputViewHolder(parent, listener)
+            VideoLinkViewHolder.LAYOUT -> VideoLinkViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }
 
-    class FormInputViewHolder(val view: View?, private val listener: VideoLinkListener?): AbstractViewHolder<VideoLinkModel>(view) {
+    class VideoLinkViewHolder(val view: View?, private val listener: VideoLinkListener?)
+        : AbstractViewHolder<VideoLinkModel>(view) {
         override fun bind(element: VideoLinkModel) {
-            itemView.textFieldUrl.textFieldInput.setText(element.inputName)
-            loadLayout(element.inputName, element.inputImage)
+            itemView.textFieldUrl.textFieldInput.setText(element.inputUrl)
+            loadLayout(element.inputUrl, element.inputImage)
             itemView.textFieldUrl.textFieldInput.afterTextChanged {
                 loadLayout(it, element.inputImage)
-                if (adapterPosition >= 0)
-                    listener?.onTextChanged(itemView.textFieldUrl.textFieldInput.text.toString(), adapterPosition)
+                if (adapterPosition >= 0) {
+                    val inputUrl = itemView.textFieldUrl.textFieldInput.text.toString()
+                    listener?.onTextChanged(inputUrl, adapterPosition)
+                }
             }
-
             itemView.textFieldUrl.getSecondIcon().setOnClickListener {
                 itemView.textFieldUrl.clearFocus()
                 listener?.onDeleteClicked(element, adapterPosition)
