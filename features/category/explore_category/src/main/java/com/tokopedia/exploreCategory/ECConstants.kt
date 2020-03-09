@@ -9,7 +9,7 @@ class ECConstants {
         const val TYPE_BELANJA = 1
         const val TYPE_LAYANAN = 2
 
-        const val LAYANAN_SCREEN = "/digital"
+        const val LAYANAN_SCREEN = "/semua-kategori"
         const val DEFAULT_SCREEN = "/kategori-belanja"
 
         const val gql_ec_dynamic_home_icon_query = "gql_ec_dynamic_home_icon_query"

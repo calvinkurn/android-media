@@ -7,6 +7,7 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.exploreCategory.R
+import com.tokopedia.exploreCategory.model.ECDynamicHomeIconData.DynamicHomeIcon.CategoryGroup.CategoryRow
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECImageIconVHViewModel
 import com.tokopedia.unifyprinciples.Typography
 
@@ -29,11 +30,14 @@ class ECImageIconViewHolder(itemView: View?, private val iconListener: IconListe
                 R.drawable.status_no_result)
         itemView.setOnClickListener {
             iconListener?.onIconClick(element?.categoryRow?.applinks, element?.categoryRow?.url)
+            iconListener?.onIconClickEvent(element?.categoryTitle, element?.categoryId, element?.categoryRow, adapterPosition)
         }
         tvNewLabel?.visibility = if (element?.categoryRow?.categoryLabel == NEW_CATEGORY) View.VISIBLE else View.GONE
     }
 
     interface IconListener {
         fun onIconClick(appLink: String?, url: String?)
+
+        fun onIconClickEvent(categoryTitle: String?, categoryId: Int?, categoryRow: CategoryRow?, position: Int)
     }
 }

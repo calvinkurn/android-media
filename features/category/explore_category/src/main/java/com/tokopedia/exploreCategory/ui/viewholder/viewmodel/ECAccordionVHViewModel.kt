@@ -15,7 +15,7 @@ class ECAccordionVHViewModel(val categoryGroup: CategoryGroup?) : Visitable<ECSe
         val visitable = ArrayList<Visitable<*>>()
         if (categoryGroup?.categoryRows?.isNullOrEmpty() == false) {
             for (item in categoryGroup.categoryRows) {
-                visitable.add(ECImageIconVHViewModel(item))
+                visitable.add(ECImageIconVHViewModel(item, categoryGroup.title, categoryGroup.id))
             }
         }
         return visitable

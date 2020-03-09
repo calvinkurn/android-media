@@ -19,6 +19,7 @@ import com.tokopedia.exploreCategory.adapter.ECServiceAdapter
 import com.tokopedia.exploreCategory.adapter.ECServiceAdapterFactory
 import com.tokopedia.exploreCategory.di.DaggerECComponent
 import com.tokopedia.exploreCategory.di.ECComponent
+import com.tokopedia.exploreCategory.model.ECDynamicHomeIconData
 import com.tokopedia.exploreCategory.ui.viewholder.ECAccordionViewHolder
 import com.tokopedia.exploreCategory.ui.viewholder.ECImageIconViewHolder
 import com.tokopedia.exploreCategory.viewmodel.ECServiceViewModel
@@ -110,6 +111,10 @@ class ECServiceFragment : BaseViewModelFragment<ECServiceViewModel>(), ECImageIc
         } else {
             RouteManager.route(context, url)
         }
+    }
+
+    override fun onIconClickEvent(categoryTitle: String?, categoryId: Int?, categoryRow: ECDynamicHomeIconData.DynamicHomeIcon.CategoryGroup.CategoryRow?, position: Int) {
+        ecServiceViewModel.fireOnIconClickEvent(categoryTitle, categoryId, categoryRow, position)
     }
 
     override fun getViewModelType(): Class<ECServiceViewModel> {

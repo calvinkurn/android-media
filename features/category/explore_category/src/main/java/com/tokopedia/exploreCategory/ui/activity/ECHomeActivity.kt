@@ -115,6 +115,11 @@ class ECHomeActivity : BaseECActivity<ECHomeViewModel>() {
         finish()
     }
 
+    override fun onBackPressed() {
+        ecHomeHomeViewModel.fireBackEvent()
+        super.onBackPressed()
+    }
+
     companion object {
         const val TITLE_BELANJA = "Belanja di Tokopedia"
         const val TITLE_LAYANAN = "Jelajah Tokopedia"
