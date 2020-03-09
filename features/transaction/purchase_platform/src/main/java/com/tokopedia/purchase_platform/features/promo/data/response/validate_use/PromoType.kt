@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName
 data class PromoType(
 
 	@field:SerializedName("is_exclusive_shipping")
-	val isExclusiveShipping: Boolean? = null,
+	val isExclusiveShipping: Boolean = false,
 
 	@field:SerializedName("is_bebas_ongkir")
-	val isBebasOngkir: Boolean? = null
+	val isBebasOngkir: Boolean = false
 )

@@ -7,23 +7,23 @@ import com.google.gson.annotations.SerializedName
 data class DetailsItem(
 
 	@field:SerializedName("amount")
-	val amount: Int? = null,
+	val amount: Int = 0,
 
 	@field:SerializedName("section_name")
-	val sectionName: String? = null,
+	val sectionName: String = "",
 
 	@field:SerializedName("description")
-	val description: String? = null,
+	val description: String = "",
 
 	@field:SerializedName("type")
-	val type: String? = null,
+	val type: String = "",
 
 	@field:SerializedName("amount_str")
-	val amountStr: String? = null,
+	val amountStr: String = "",
 
 	@field:SerializedName("points")
-	val points: Int? = null,
+	val points: Int = 0,
 
 	@field:SerializedName("points_str")
-	val pointsStr: String? = null
+	val pointsStr: String = ""
 )

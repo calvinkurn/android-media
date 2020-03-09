@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName
 data class DiscountDetailsItem(
 
 	@field:SerializedName("amount")
-	val amount: Int? = null,
+	val amount: Int = 0,
 
 	@field:SerializedName("data_type")
-	val dataType: String? = null
+	val dataType: String = ""
 )

@@ -7,11 +7,11 @@ import com.google.gson.annotations.SerializedName
 data class ConversionRate(
 
 	@field:SerializedName("points_coefficient")
-	val pointsCoefficient: Int? = null,
+	val pointsCoefficient: Int = 0,
 
 	@field:SerializedName("rate")
-	val rate: Int? = null,
+	val rate: Int = 0,
 
 	@field:SerializedName("external_currency_coefficient")
-	val externalCurrencyCoefficient: Int? = null
+	val externalCurrencyCoefficient: Int = 0
 )

@@ -7,14 +7,14 @@ import com.google.gson.annotations.SerializedName
 data class ClashingInfoDetail(
 
 	@field:SerializedName("is_clashed_promos")
-	val isClashedPromos: Boolean? = false,
+	val isClashedPromos: Boolean = false,
 
 	@field:SerializedName("options")
-	val options: List<Any?>? = null,
+	val options: List<Any> = emptyList(),
 
 	@field:SerializedName("clash_reason")
-	val clashReason: String? = "",
+	val clashReason: String = "",
 
 	@field:SerializedName("clash_message")
-	val clashMessage: String? = ""
+	val clashMessage: String = ""
 )

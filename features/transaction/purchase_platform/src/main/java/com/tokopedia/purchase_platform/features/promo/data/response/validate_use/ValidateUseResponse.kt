@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
 data class ValidateUseResponse(
 
 	@field:SerializedName("validate_use_promo_revamp")
-	val validateUsePromoRevamp: ValidateUsePromoRevamp? = null
+	val validateUsePromoRevamp: ValidateUsePromoRevamp = ValidateUsePromoRevamp()
 )

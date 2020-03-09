@@ -7,17 +7,17 @@ import com.google.gson.annotations.SerializedName
 data class BenefitProductDetailsItem(
 
 	@field:SerializedName("cashback_amount_idr")
-	val cashbackAmountIdr: Int? = null,
+	val cashbackAmountIdr: Int = 0,
 
 	@field:SerializedName("cashback_amount")
-	val cashbackAmount: Int? = null,
+	val cashbackAmount: Int = 0,
 
 	@field:SerializedName("discount_amount")
-	val discountAmount: Int? = null,
+	val discountAmount: Int = 0,
 
 	@field:SerializedName("product_id")
-	val productId: Int? = null,
+	val productId: Int = 0,
 
 	@field:SerializedName("is_bebas_ongkir")
-	val isBebasOngkir: Boolean? = null
+	val isBebasOngkir: Boolean = false
 )

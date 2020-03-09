@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
 data class RequestParamsValidateUse(
 
 	@field:SerializedName("params")
-	var params: Params? = Params()
+	var params: Params = Params()
 )
