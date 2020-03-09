@@ -59,6 +59,8 @@ class ProductManageViewModel(
         get() = _viewState
     val productListResult : LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
+    val productListFeaturedOnlyResult : LiveData<Result<List<ProductViewModel>>>
+        get() = _productListFeaturedOnlyResult
     val shopInfoResult : LiveData<Result<ShopInfoResult>>
         get() = _shopInfoResult
     val updateProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
@@ -78,6 +80,7 @@ class ProductManageViewModel(
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
+    private val _productListFeaturedOnlyResult = MutableLiveData<Result<List<ProductViewModel>>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
     private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
     private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
@@ -142,10 +145,19 @@ class ProductManageViewModel(
                 productListResponse?.data
             }
 
+            val productListFeaturedOnly = withContext(ioDispatcher) {
+                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), sortOption)
+                val getProductList = getProductListUseCase.execute(requestParams)
+                val productListResponse = getProductList.productList
+                productListResponse?.data
+            }
+
             refreshList(isRefresh)
             showProductList(productList)
+            showProductListFeaturedOnly(productListFeaturedOnly)
         }, onError = {
-            _productListResult.value = Fail(it)
+            _productListResult.postValue(Fail(it))
+            _productListFeaturedOnlyResult.postValue(Fail(it))
         })
     }
 
@@ -365,6 +377,11 @@ class ProductManageViewModel(
     private fun showProductList(products: List<Product>?) {
         val productList = mapToViewModels(products)
         _productListResult.value = Success(productList)
+    }
+
+    private fun showProductListFeaturedOnly(products: List<Product>?){
+        val productListFeaturedOnly = mapToViewModels(products)
+        _productListFeaturedOnlyResult.value = Success(productListFeaturedOnly)
     }
 
     private fun refreshList(isRefresh: Boolean) {

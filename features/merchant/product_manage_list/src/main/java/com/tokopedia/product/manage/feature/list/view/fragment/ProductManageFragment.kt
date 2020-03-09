@@ -154,9 +154,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var shopDomain: String = ""
     private var goldMerchant: Boolean = false
     private var isOfficialStore: Boolean = false
+    private var productListFeaturedOnlySize: Int = 0
     private var manageProductBottomSheet: ManageProductBottomSheet? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
-
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
 
@@ -198,6 +198,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         observeUpdateProduct()
         observeDeleteProduct()
         observeProductList()
+        observeProductListFeatured()
 
         observeEditPrice()
         observeGetFreeClaim()
@@ -763,7 +764,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         context?.let { context ->
             var dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
             if(viewModel.isPowerMerchant() || isOfficialStore) {
-                if(!productManageViewModel.isFeatured) {
+                if(productListFeaturedOnlySize == 5 && !productManageViewModel.isFeatured) {
+                    dialog = showDialogFeaturedProduct(
+                            dialog,
+                            ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
+                            getString(R.string.product_featured_max_dialog_title),
+                            getString(R.string.product_featured_max_dialog_desc),
+                            getString(R.string.product_featured_max_dialog_primary_cta),
+                            getString(R.string.product_featured_max_dialog_secondary_cta)
+                    )
+                    dialog.setPrimaryCTAClickListener { dialog.dismiss() }
+                    dialog.setSecondaryCTAClickListener {
+                        dialog.dismiss()
+                        RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_FEATURED_PRODUCT)
+                    }
+                }
+                else if(!productManageViewModel.isFeatured) {
                     dialog = showDialogFeaturedProduct(
                             dialog,
                             ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
@@ -773,11 +789,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                             getString(R.string.product_featured_add_dialog_secondary_cta)
                     )
                     dialog.setPrimaryCTAClickListener {
+                        productListFeaturedOnlySize += 1
+                        showLoadingProgress()
                         setFeaturedProduct(productManageViewModel.id, setFeaturedType)
                         dialog.dismiss()
                     }
                     dialog.setSecondaryCTAClickListener { dialog.dismiss() }
                 } else {
+                    productListFeaturedOnlySize -= 1
+                    showLoadingProgress()
                     setFeaturedProduct(productManageViewModel.id, setFeaturedType)
                 }
             } else {
@@ -789,7 +809,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                         getString(R.string.product_featured_special_dialog_primary_cta),
                         getString(R.string.product_featured_special_dialog_secondary_cta)
                 )
-                dialog.setPrimaryCTAClickListener { dialog.dismiss()}
+                dialog.setPrimaryCTAClickListener {
+                    dialog.dismiss()
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                }
                 dialog.setSecondaryCTAClickListener { dialog.dismiss() }
             }
         }
@@ -1091,6 +1114,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
                     is Fail -> onFailedChangeFeaturedProduct(it.throwable)
                 }
+                hideLoadingProgress()
             }
         }
     }
@@ -1144,6 +1168,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     showProductList(it.data)
                     showTabFilters()
                 }
+                is Fail -> loadEmptyList()
+            }
+        }
+    }
+
+    private fun observeProductListFeatured() {
+        observe(viewModel.productListFeaturedOnlyResult) {
+            when (it) {
+                is Success -> productListFeaturedOnlySize = it.data.size
                 is Fail -> loadEmptyList()
             }
         }

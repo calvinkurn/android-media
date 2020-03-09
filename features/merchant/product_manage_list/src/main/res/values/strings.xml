@@ -156,4 +156,9 @@
     <string name="product_featured_special_dialog_primary_cta">Pelajari Selengkapnya</string>
     <string name="product_featured_special_dialog_secondary_cta">Batalkan</string>
 
+    <string name="product_featured_max_dialog_title">Maksimum Produk Unggulan Aktif (5/5)</string>
+    <string name="product_featured_max_dialog_desc">Hapus salah satu Produk Unggulan sebelum menambahkan produk yang ingin ditampilkan di tokomu.</string>
+    <string name="product_featured_max_dialog_primary_cta">Mengerti</string>
+    <string name="product_featured_max_dialog_secondary_cta">Lihat Produk Unggulan</string>
+
 </resources>
