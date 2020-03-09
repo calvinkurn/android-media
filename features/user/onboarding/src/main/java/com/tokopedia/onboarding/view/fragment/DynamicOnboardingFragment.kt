@@ -106,6 +106,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), TabConfigurationStrategy
         }
 
         TabLayoutMediator(indicatorDynamicOnbaording, viewPagerDynamicOnboarding, this)
+                .attach()
 
         navigationDynamicOnbaording?.apply {
             visibility = if (dynamicOnboardingDataModel.navigationDataModel.visibility) {
