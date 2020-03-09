@@ -379,7 +379,6 @@ class OfficialHomeFragment :
             lastParentPosition = null
         }
 
-        // ProductCardOptionsManager
         handleProductCardOptionsActivityResult(
                 requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
                     override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
