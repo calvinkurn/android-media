@@ -88,17 +88,6 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
         quick_edit_stock_quantity_editor.apply {
             maxValue = MAXIMUM_STOCK
             minValue = MINIMUM_STOCK
-            setOnFocusChangeListener { v, hasFocus ->
-                if (hasFocus) {
-                    activity.let {
-                        KeyboardHandler.showSoftKeyboard(it)
-                    }
-                } else {
-                    activity.let {
-                        KeyboardHandler.hideSoftKeyboard(it)
-                    }
-                }
-            }
             (editText as EditText).setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
                     quick_edit_stock_quantity_editor.clearFocus()
@@ -140,7 +129,7 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
         }
         observeStatus()
         observeStock()
-        quick_edit_stock_quantity_editor.requestFocus()
+        quick_edit_stock_quantity_editor.editText.requestFocus()
     }
 
     private fun observeStock() {
