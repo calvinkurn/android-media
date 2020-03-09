@@ -325,7 +325,7 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
     }
 
     private fun determineFragmentByTag(fromUid: String, tag: String): ChatListFragment? {
-        if (isBuyerOnly()) return getBuyerFragment()
+        if (isBuyerOnly() && isFromSeller(fromUid, tag)) return getBuyerFragment()
         if (isFromBuyer(fromUid, tag)) return getSellerFragment()
         if (isFromSeller(fromUid, tag)) return getBuyerFragment()
         return null
