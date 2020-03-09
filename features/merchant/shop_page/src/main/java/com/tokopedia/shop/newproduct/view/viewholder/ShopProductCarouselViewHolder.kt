@@ -69,7 +69,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
     private fun bindShopProductCarousel(shopProductViewModelList: List<ShopProductViewModel>) {
         recyclerView?.bindCarouselProductCardViewGrid(
                 productCardModelList = shopProductViewModelList.map {
-                    ShopPageProductListMapper.mapToProductCardModel(it)
+                    ShopPageProductListMapper.mapToProductCardModel(it, false)
                 },
                 carouselProductCardOnItemClickListener = object: CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {

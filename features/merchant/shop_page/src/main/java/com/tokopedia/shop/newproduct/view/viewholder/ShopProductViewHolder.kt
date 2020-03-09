@@ -71,7 +71,7 @@ class ShopProductViewHolder(
 
     override fun bind(shopProductViewModel: ShopProductViewModel) {
         productCard.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductViewModel)
+                ShopPageProductListMapper.mapToProductCardModel(shopProductViewModel, true)
         )
 
         productCard.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {
@@ -94,5 +94,9 @@ class ShopProductViewHolder(
             }
 
         })
+
+        productCard.setThreeDotsOnClickListener {
+            shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
+        }
     }
 }

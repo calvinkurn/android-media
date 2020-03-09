@@ -134,7 +134,7 @@ object ShopPageProductListMapper {
         return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
     }
 
-    fun mapToProductCardModel(shopProductViewModel: ShopProductViewModel): ProductCardModel {
+    fun mapToProductCardModel(shopProductViewModel: ShopProductViewModel, hasThreeDots: Boolean): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
         } catch (ignored: ParseException) {
@@ -160,7 +160,8 @@ object ShopPageProductListMapper {
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
-                }
+                },
+                hasThreeDots = hasThreeDots
         )
     }
 
