@@ -58,6 +58,12 @@ object VariantCommonMapper {
         return listOfVariant
     }
 
+    fun selectedProductData(variantData: ProductVariantCommon): VariantChildCommon? {
+        return variantData.children.find {
+            it.optionIds == selectedOptionId
+        }
+    }
+
     private fun updateSelectedOptionsIds(variantData: ProductVariantCommon, updatedSelectedOptionsId: List<Int>, mapOfSelectedVariant: MutableMap<String, Int>?) {
         variantData.variant.forEachIndexed { index, variant ->
             mapOfSelectedVariant?.set(variant.identifier ?: "", updatedSelectedOptionsId[index])
