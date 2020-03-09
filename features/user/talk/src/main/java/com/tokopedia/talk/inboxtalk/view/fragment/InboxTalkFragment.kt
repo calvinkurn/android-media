@@ -120,22 +120,19 @@ open class InboxTalkFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //TODO milhamj remove after testing
-        throw IllegalStateException("Lagi nyobain crashlytics kakak. Mohon ampuni hamba")
+        var nav: String = ""
+        savedInstanceState?.run {
+            nav = savedInstanceState.getString(InboxTalkActivity.NAVIGATION, "")
+        } ?: arguments?.run {
+            nav = getString(InboxTalkActivity.NAVIGATION, "")
+        } ?: activity?.run {
+            finish()
+        }
 
-//        var nav: String = ""
-//        savedInstanceState?.run {
-//            nav = savedInstanceState.getString(InboxTalkActivity.NAVIGATION, "")
-//        } ?: arguments?.run {
-//            nav = getString(InboxTalkActivity.NAVIGATION, "")
-//        } ?: activity?.run {
-//            finish()
-//        }
-//
-//        viewModel = InboxTalkViewModel(nav)
-//
-//        setupView()
-//        initData()
+        viewModel = InboxTalkViewModel(nav)
+
+        setupView()
+        initData()
     }
 
     private fun setupView() {
