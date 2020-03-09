@@ -4,9 +4,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductParam
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResponse
-import com.tokopedia.product.manage.feature.quickedit.stock.data.model.ProductEditStockParam
-import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject

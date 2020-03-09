@@ -11,6 +11,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
+import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
@@ -24,7 +25,6 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditPriceUseCase
 import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
@@ -162,6 +162,11 @@ class ProductManageListModule {
     @Provides
     fun provideDeleteProductkUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
             DeleteProductUseCase(multiRequestGraphqlUseCase)
+
+    @ProductManageListScope
+    @Provides
+    fun provideEditPriceUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
+            EditPriceUseCase(multiRequestGraphqlUseCase)
 
     @ProductManageListScope
     @Provides

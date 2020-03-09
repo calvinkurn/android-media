@@ -33,6 +33,7 @@ class ProductManageListAdapter(
     fun deleteProduct(productId: String) {
         data.forEachIndexed { index, it ->
             if (it.id.equals(productId, ignoreCase = true)) {
+                data.removeAt(index)
                 notifyItemRemoved(index)
                 return
             }

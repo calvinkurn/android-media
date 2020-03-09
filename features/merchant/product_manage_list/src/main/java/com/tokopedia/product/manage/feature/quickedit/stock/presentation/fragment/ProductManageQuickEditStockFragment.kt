@@ -20,7 +20,7 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
         const val EDIT_STOCK_CACHE_ID = "edit_stock_cache_id"
         const val EDIT_STOCK_PRODUCT = "edit_stock_product"
         private const val MAXIMUM_STOCK = 999999
-        private const val MINIMUM_STOCK = 1
+        private const val MINIMUM_STOCK = 0
 
         fun createInstance(context: Context, cacheManagerId: String) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment().apply{
@@ -57,17 +57,17 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
     private fun initView() {
         quick_edit_stock_activate_switch.setTextBold(true)
         product?.let {
-            quick_edit_stock_activate_switch.isSelected = it.isActive()
+            quick_edit_stock_activate_switch.isChecked = it.isActive()
             it.stock?.let { stock -> quick_edit_stock_quantity_editor.setValue(stock) }
             quick_edit_stock_quantity_editor.maxValue = MAXIMUM_STOCK
         }
         quick_edit_stock_quantity_editor.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
-                hideError()
                 activity.let {
                     KeyboardHandler.showSoftKeyboard(it)
                 }
             } else {
+                stock = quick_edit_stock_quantity_editor.getValue()
                 activity.let {
                     KeyboardHandler.hideSoftKeyboard(it)
                 }
@@ -76,8 +76,12 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
         quick_edit_stock_save_button.setOnClickListener {
             stock = quick_edit_stock_quantity_editor.getValue()
             when {
-                isStockTooHigh() -> showErrorStockTooHigh()
-                isStockTooLow() -> showErrorStockTooLow()
+                isStockTooHigh() -> {
+
+                }
+                isStockTooLow() -> {
+
+                }
                 else -> onSuccessSetStock()
             }
         }
@@ -103,20 +107,6 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
             return true
         }
         return false
-    }
-
-    private fun showErrorStockTooLow() {
-        quick_edit_stock_error_message.text = context?.let { it.resources.getString(R.string.product_manage_quick_edit_stock_min_stock_error)}
-        quick_edit_stock_error_message.visibility = View.VISIBLE
-    }
-
-    private fun showErrorStockTooHigh() {
-        quick_edit_stock_error_message.text = context?.let { it.resources.getString(R.string.product_manage_quick_edit_stock_max_stock_error)}
-        quick_edit_stock_error_message.visibility = View.VISIBLE
-    }
-
-    private fun hideError() {
-        quick_edit_stock_error_message.visibility = View.GONE
     }
 
     private fun onSuccessSetStock() {

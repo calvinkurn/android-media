@@ -1,28 +1,28 @@
-package com.tokopedia.product.manage.feature.quickedit.stock.domain
+package com.tokopedia.product.manage.feature.quickedit.price.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
-import com.tokopedia.product.manage.feature.quickedit.stock.data.model.ProductEditStockParam
+import com.tokopedia.product.manage.feature.quickedit.price.data.model.ProductEditPriceParam
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class EditStockUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductUpdateV3Response>() {
+class EditPriceUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase): UseCase<ProductUpdateV3Response>() {
 
     companion object {
 
-        const val PARAM_EDIT_STOCK = "param_edit_stock"
+        const val PARAM_EDIT_PRICE = "param_edit_price"
         const val PARAM_INPUT = "input"
 
         @JvmStatic
-        fun createRequestParams(shopId: String, productId: String, stock: Int): RequestParams {
+        fun createRequestParams(shopId: String, productId: String, price: Float): RequestParams {
             val requestParams = RequestParams.create()
-            val productEditStockParam = ProductEditStockParam()
-            productEditStockParam.shop.shopId = shopId
-            productEditStockParam.productId = productId
-            productEditStockParam.stock = stock
-            requestParams.putObject(PARAM_EDIT_STOCK, productEditStockParam)
+            val productEditPriceParam = ProductEditPriceParam()
+            productEditPriceParam.shop.shopId = shopId
+            productEditPriceParam.productId = productId
+            productEditPriceParam.price = price
+            requestParams.putObject(PARAM_EDIT_PRICE, productEditPriceParam)
             return requestParams
         }
 
@@ -44,7 +44,7 @@ class EditStockUseCase @Inject constructor(private val graphqlUseCase: MultiRequ
 
     override suspend fun executeOnBackground(): ProductUpdateV3Response {
         val variables = HashMap<String, Any>()
-        variables[PARAM_INPUT] = params.getObject(PARAM_EDIT_STOCK)
+        variables[PARAM_INPUT] = params.getObject(PARAM_EDIT_PRICE)
         val gqlRequest = GraphqlRequest(query, ProductUpdateV3Response::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
@@ -53,6 +53,5 @@ class EditStockUseCase @Inject constructor(private val graphqlUseCase: MultiRequ
             getData<ProductUpdateV3Response>(ProductUpdateV3Response::class.java)
         }
     }
-
 
 }

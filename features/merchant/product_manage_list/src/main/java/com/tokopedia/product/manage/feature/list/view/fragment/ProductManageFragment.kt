@@ -68,7 +68,6 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterV
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
-import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
@@ -86,6 +85,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
+import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
@@ -458,6 +458,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onSuccessEditPrice(productId: String, price: String, productName: String) {
+        viewModel.hideProgressDialog()
         Toaster.make(coordinatorLayout, getString(
                 R.string.product_manage_quick_edit_price_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
@@ -465,6 +466,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onSuccessEditStock(productId: String, stock: Int, productName: String) {
+        viewModel.hideProgressDialog()
         Toaster.make(coordinatorLayout, getString(
                 R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
@@ -529,6 +531,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onSuccessDeleteProduct(productName: String, productId: String) {
+        viewModel.hideProgressDialog()
         Toaster.make(coordinatorLayout, getString(
                 R.string.product_manage_delete_product_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
