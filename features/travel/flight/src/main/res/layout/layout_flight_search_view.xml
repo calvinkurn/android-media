@@ -14,24 +14,26 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightOriginLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
             android:text="@string/flight_search_origin_label"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/imgFlightReverseAirport"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightOriginAirport"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="start"
             app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/imgFlightReverseAirport"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightOriginLabel"
             app:typographyType="body_2"
-            android:text="SUB\nSurabaya" />
+            tools:text="SUB\nSurabaya" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imgFlightReverseAirport"
@@ -47,24 +49,26 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightDestinationLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="end"
             android:text="@string/flight_search_origin_label"
             android:textColor="@color/Neutral_N700_68"
+            app:layout_constraintLeft_toRightOf="@+id/imgFlightReverseAirport"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightDestinationAirport"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="end"
+            app:layout_constraintLeft_toRightOf="@+id/imgFlightReverseAirport"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightDestinationLabel"
             app:typographyType="body_2"
-            android:text="SUB\nSurabaya" />
+            tools:text="SUB\nSurabaya" />
 
         <View
             android:id="@+id/separatorAirport"
@@ -87,7 +91,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightDepartureDateLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -96,21 +100,23 @@
             android:text="@string/flight_search_departure_label"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintLeft_toRightOf="@+id/icFlightDepartureDate"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/separatorAirport"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightDepartureDate"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:gravity="start"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toRightOf="@+id/icFlightDepartureDate"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightDepartureDateLabel"
             app:typographyType="body_1"
-            android:text="11 Nov 2019" />
+            tools:text="11 Nov 2019" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightRoundTripLabel"
@@ -160,7 +166,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightReturnDateLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -169,21 +175,23 @@
             android:text="@string/flight_search_return_label"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintLeft_toRightOf="@+id/icFlightReturnDate"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/separatorDepartureDate"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightReturnDate"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:gravity="start"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toRightOf="@+id/icFlightReturnDate"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightReturnDateLabel"
             app:typographyType="body_1"
-            android:text="11 Nov 2020" />
+            tools:text="11 Nov 2020" />
 
         <View
             android:id="@+id/separatorReturnDate"
@@ -208,7 +216,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightPassengerLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -217,18 +225,20 @@
             android:text="@string/flight_search_passenger_label"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintLeft_toRightOf="@+id/icFlightPassenger"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/separatorReturnDate"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightPassenger"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:gravity="start"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toRightOf="@+id/icFlightPassenger"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightPassengerLabel"
             app:typographyType="body_1"
             tools:text="2 dewasa, 1 anak, 0 bayi" />
@@ -256,7 +266,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightClassLabel"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
@@ -265,21 +275,23 @@
             android:text="@string/flight_search_passenger_class_title"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintLeft_toRightOf="@+id/icFlightClass"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/separatorPassenger"
             app:typographyType="body_3" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvFlightClass"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:layout_marginLeft="@dimen/spacing_lvl3"
             android:gravity="start"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintLeft_toRightOf="@+id/icFlightClass"
+            app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFlightClassLabel"
             app:typographyType="body_1"
-            android:text="Ekonomi" />
+            tools:text="Ekonomi" />
 
         <View
             android:id="@+id/separatorClass"
