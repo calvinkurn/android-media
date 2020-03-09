@@ -12,12 +12,13 @@ import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 
 /**
  * Created by mzennis on 2020-03-06.
  */
-class PlayVariantViewModel(
+class PlayVariantViewModel @Inject constructor(
         private val postAddtoCartUseCase: PostAddtoCartUseCase,
         private val dispatchers: CoroutineDispatcherProvider
 ) : BaseViewModel(dispatchers.main) {
@@ -29,16 +30,16 @@ class PlayVariantViewModel(
 
     fun addtoCart(productId: String, shopId: String, quantity: Int = 1, notes: String = "", isAtcOnly: Boolean = true) {
         launchCatchError(block = {
-            val cartFeedback = withContext(dispatchers.io) {
+            val responseCart = withContext(dispatchers.io) {
                 postAddtoCartUseCase.parameters = AddToCartUseCase.getMinimumParams(productId, shopId, quantity, notes)
                 postAddtoCartUseCase.executeOnBackground()
             }
 
-            _observableAddtoCart.value = mapCartFeedback(cartFeedback)
+            _observableAddtoCart.value = mappingResponseCart(responseCart)
         }) { }
     }
 
-    private fun mapCartFeedback(addToCartDataModel: AddToCartDataModel) =
+    private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel) =
             CartFeedbackUiModel(
                     isSuccess = addToCartDataModel.data.success == 1,
                     errorMessage = if (addToCartDataModel.errorMessage.size > 0)
