@@ -114,6 +114,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -159,6 +160,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         EmptyFeedViewHolder.EmptyFeedListener,
         FeedPlusAdapter.OnLoadListener{
 
+    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
+    private val PERFORMANCE_FEED_PAGE_NAME = "feed"
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var mainContent: View
@@ -167,7 +170,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private lateinit var adapter: FeedPlusAdapter
     private lateinit var performanceMonitoring: PerformanceMonitoring
-    private lateinit var jankyFrameMonitoringUtil: JankyFrameMonitoringUtil
     private lateinit var infoBottomSheet: TopAdsInfoBottomSheet
     private lateinit var createPostBottomSheet: CloseableBottomSheetDialog
 
@@ -287,6 +289,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         initVar()
         retainInstance = true
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
+    }
+
+    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
+        return if (context is JankyFramesMonitoringListener) {
+            context
+        } else null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -509,7 +522,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (arguments != null) {
             afterPost = TextUtils.equals(arguments!!.getString(AFTER_POST, ""), TRUE)
         }
-        jankyFrameMonitoringUtil = JankyFrameMonitoringUtil(activity as Activity, KEY_JANKY_FRAME_SCROLL)
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -539,6 +551,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         mainContent = parentView.findViewById(R.id.main)
         newFeed = parentView.findViewById(R.id.layout_new_feed)
 
+        recyclerView.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_FEED_PAGE_NAME) }
+
         prepareView()
         return parentView
 
@@ -566,7 +580,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     if (hasFeed()) {
                         when (newState) {
                             RecyclerView.SCROLL_STATE_IDLE -> {
-                                stopFeedScrollJankyFrameCounter()
                                 var position = 0
                                 val item: Visitable<*>
                                 if (itemIsFullScreen()) {
@@ -586,10 +599,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 }
                                 FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
                             }
-                            RecyclerView.SCROLL_STATE_DRAGGING -> {
-                                startFeedScrollJankyFrameCounter()
-                            }
-
                         }
                     }
                 } catch (e: IndexOutOfBoundsException) {
@@ -1996,13 +2005,5 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (context != null) {
             Toast.makeText(context, R.string.feed_after_post, Toast.LENGTH_LONG).show()
         }
-    }
-
-    private fun startFeedScrollJankyFrameCounter() {
-        jankyFrameMonitoringUtil.startFrameMetrics()
-    }
-
-    private fun stopFeedScrollJankyFrameCounter() {
-        jankyFrameMonitoringUtil.stopFrameMetrics()
     }
 }

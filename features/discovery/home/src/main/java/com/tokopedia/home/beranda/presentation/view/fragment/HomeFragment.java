@@ -177,8 +177,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     private static final String DEFAULT_UTM_SOURCE = "home_notif";
-    private static final String KEY_JANKY_FRAME_INIT = "janky_frames_init_home";
-    private static final String KEY_JANKY_FRAME_SCROLL = "janky_frames_scroll_home";
+    private static final String PERFORMANCE_PAGE_NAME_HOME = "home";
     @NonNull
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
@@ -274,7 +273,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-        homeScrollJankyMonitoringUtil = new JankyFrameMonitoringUtil(getActivity(), KEY_JANKY_FRAME_SCROLL);
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
@@ -283,6 +281,19 @@ public class HomeFragment extends BaseDaggerFragment implements
         setGeolocationPermission();
         needToShowGeolocationComponent();
         getStickyContent();
+        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().startInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopHomeInitPerformanceMonitoring();
+    }
+
+    private void stopHomeInitPerformanceMonitoring() {
+        if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) {
+            jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().stopInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        }
     }
 
     @Override
@@ -366,12 +377,14 @@ public class HomeFragment extends BaseDaggerFragment implements
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     evaluateFloatingTextButtonOnStateChanged();
                     evaluateInheritScrollForHomeRecommendation();
-                    stopHomeScrollingJankyFrameCount();
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    startHomeScrollingJankyFrameCount();
+                    stopHomeInitPerformanceMonitoring();
                 }
             }
         });
+        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().recordRecyclerViewScrollPerformance(
+                homeRecyclerView,
+                PERFORMANCE_PAGE_NAME_HOME, "");
     }
 
     private void setupStatusBar() {
@@ -661,24 +674,6 @@ public class HomeFragment extends BaseDaggerFragment implements
             }
 
             adapter.submitList(data);
-            if (jankyFramesMonitoringListener != null && !isCache && jankyFramesMonitoringListener.needToSubmitDynamicChannelCount()) {
-                Map<String, Integer> layoutCounter = new HashMap<>();
-                for (Visitable visitable: data) {
-                    if (visitable instanceof DynamicChannelViewModel) {
-                        DynamicChannelViewModel dynamicChannelViewModel = (((DynamicChannelViewModel) visitable));
-                        DynamicHomeChannel.Channels channel = dynamicChannelViewModel.getChannel();
-                        if (channel != null && layoutCounter.get(channel.getLayout()) != null) {
-                            int currentCount = layoutCounter.get(channel.getLayout());
-                            layoutCounter.put(channel.getLayout(), ++currentCount);
-                        } else if (layoutCounter.get(channel.getLayout()) == null) {
-                            layoutCounter.put(channel.getLayout(), 1);
-                        }
-                    }
-                }
-
-                jankyFramesMonitoringListener.submitDynamicChannelCount(layoutCounter);
-            }
-
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {
@@ -1307,6 +1302,9 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (getUserVisibleHint()) {
             viewModel.hitBannerImpression(bannerSlidesModel);
         }
+        if (bannerSlidesModel.getPosition() > 1) {
+            stopHomeInitPerformanceMonitoring();
+        }
     }
 
     @Override
@@ -1841,13 +1839,9 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
     }
 
-    private void startHomeScrollingJankyFrameCount() {
-        homeScrollJankyMonitoringUtil.startFrameMetrics();
-
+    @Override
+    public JankyFrameMonitoringUtil getHomeJankyFramesUtil() {
+        if (jankyFramesMonitoringListener != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
+        return null;
     }
-
-    private void stopHomeScrollingJankyFrameCount() {
-        homeScrollJankyMonitoringUtil.stopFrameMetrics();
-    }
-
 }
