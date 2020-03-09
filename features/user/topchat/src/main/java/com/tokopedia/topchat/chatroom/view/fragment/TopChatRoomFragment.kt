@@ -447,12 +447,22 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().showRetryUploadImages(it, true)
     }
 
+    override fun prepareListener() {
+        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
+            onSendButtonClicked()
+        }
+    }
+
     override fun onSendButtonClicked() {
         val sendMessage = view?.findViewById<EditText>(com.tokopedia.chat_common.R.id.new_comment)?.text.toString()
         val startTime = SendableViewModel.generateStartTime()
-
-        presenter.sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage
-        (sendMessage, startTime))
+        presenter.sendAttachmentsAndMessage(
+                messageId,
+                sendMessage,
+                startTime,
+                opponentId,
+                onSendingMessage(sendMessage, startTime)
+        )
     }
 
     private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
@@ -482,16 +492,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onStopTyping() {
         presenter.stopTyping()
-    }
-
-    override fun onSendClicked(message: String, generateStartTime: String) {
-        presenter.sendAttachmentsAndMessage(
-                messageId,
-                message,
-                generateStartTime,
-                "",
-                onSendingMessage(message, generateStartTime)
-        )
     }
 
     override fun addTemplateString(message: String?) {
