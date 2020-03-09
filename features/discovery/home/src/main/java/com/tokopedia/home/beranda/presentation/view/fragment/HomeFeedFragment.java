@@ -136,6 +136,11 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         getRecyclerView(getView()).addItemDecoration(
                 new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_4))
         );
+        if (homeCategoryListener.getHomeJankyFramesUtil() != null) {
+            homeCategoryListener.getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
+                    getRecyclerView(getView()),
+                    "home", "feed");
+        }
         if (parentPool != null) {
             parentPool.setMaxRecycledViews(
                     HomeFeedViewHolder.Companion.getLAYOUT(),

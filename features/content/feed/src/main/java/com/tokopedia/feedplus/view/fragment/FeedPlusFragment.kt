@@ -32,6 +32,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -113,6 +114,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -158,6 +160,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         EmptyFeedViewHolder.EmptyFeedListener,
         FeedPlusAdapter.OnLoadListener{
 
+    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
+    private val PERFORMANCE_FEED_PAGE_NAME = "feed"
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var mainContent: View
@@ -243,6 +247,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
         //endregion
 
+        //Monitoring Performance Static
+        private const val KEY_JANKY_FRAME_SCROLL = "janky_frames_scroll_feed"
+
         fun newInstance(bundle: Bundle?): FeedPlusFragment {
             val fragment = FeedPlusFragment()
             fragment.arguments = bundle
@@ -282,6 +289,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         initVar()
         retainInstance = true
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
+    }
+
+    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
+        return if (context is JankyFramesMonitoringListener) {
+            context
+        } else null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -533,6 +551,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         mainContent = parentView.findViewById(R.id.main)
         newFeed = parentView.findViewById(R.id.layout_new_feed)
 
+        recyclerView.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_FEED_PAGE_NAME) }
+
         prepareView()
         return parentView
 
@@ -557,32 +577,38 @@ class FeedPlusFragment : BaseDaggerFragment(),
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    if (hasFeed()
-                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        var position = 0
-                        val item: Visitable<*>
-                        if (itemIsFullScreen()) {
-                            position = layoutManager?.findLastVisibleItemPosition() ?: 0
-                        } else if (layoutManager?.findFirstCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
-                        } else if (layoutManager?.findLastCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
-                        }
+                    if (hasFeed()) {
+                        when (newState) {
+                            RecyclerView.SCROLL_STATE_IDLE -> {
+                                var position = 0
+                                val item: Visitable<*>
+                                if (itemIsFullScreen()) {
+                                    position = layoutManager?.findLastVisibleItemPosition() ?: 0
+                                } else if (layoutManager?.findFirstCompletelyVisibleItemPosition() != -1) {
+                                    position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
+                                } else if (layoutManager?.findLastCompletelyVisibleItemPosition() != -1) {
+                                    position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
+                                }
 
-                        item = adapter.getlist()[position]
+                                item = adapter.getlist()[position]
 
-                        if (item is DynamicPostViewModel) {
-                            if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
-                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+                                if (item is DynamicPostViewModel) {
+                                    if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
+                                        adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+                                    }
+                                }
+                                FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
                             }
                         }
-                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
 
             }
 
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+            }
         })
     }
 
