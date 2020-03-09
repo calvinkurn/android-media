@@ -65,6 +65,13 @@ class MainSliceProvider : SliceProvider() {
         }
     }
 
+    private fun createPendingIntentLogin() = PendingIntent.getActivity(
+            contextNonNull,
+            0,
+             RouteManager.getIntent(contextNonNull,ApplinkConst.LOGIN),
+            0
+    )
+
     private fun createGetInvoiceV3Slice(sliceUri: Uri): Slice? {
         val mainPendingIntent = PendingIntent.getActivity(
                 contextNonNull,
@@ -80,6 +87,14 @@ class MainSliceProvider : SliceProvider() {
                         setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                         header {
                             title = loadString
+                            primaryAction = createPendingIntentLogin()?.let {
+                                SliceAction.create(
+                                        it,
+                                        createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                                        SMALL_IMAGE,
+                                        ""
+                                )
+                            }
                         }
                     }
             } else {
@@ -180,7 +195,6 @@ class MainSliceProvider : SliceProvider() {
     companion object {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
-        const val RECHARGE_USER_EXTRA = "RECHARGE_USER_EXTRA"
         const val NOT_LOGIN = "401 - UNAUTHORIZED"
     }
 
