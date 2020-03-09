@@ -88,8 +88,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
-        playVariantViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayVariantViewModel::class.java)
+        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
+        playVariantViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayVariantViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
