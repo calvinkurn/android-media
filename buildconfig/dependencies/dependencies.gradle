@@ -80,13 +80,13 @@ ext {
     ]
 
     unifyIconVersion = '0.0.4'
-    unifyPrinciplesVersion = '1.0.0'
-    unifyComponentsVersion = '1.1.10'
+    unifyPrinciplesVersion = '1.1.1'
+    unifyComponentsVersion = '1.1.12'
     unifyCoachMarkVersion = '1.2.0'
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.0'
-    unifyDatePickerVersion = '1.0.2'
+    unifyDatePickerVersion = '1.0.3'
     unifyEmptyStateVersion = '1.0.2'
     unifyGlobalErrorVersion = '1.0.6'
 
@@ -226,12 +226,13 @@ ext {
             archCoreRuntime       : "androidx.arch.core:core-runtime:$lifeCycleVersion",
             archCoreCommon        : "androidx.arch.core:core-common:$lifeCycleVersion",
             twitter               : "org.twitter4j:twitter4j-core:$twitter4JVersion",
-            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.5",
+            laku6Sdk              : "com.gitlab.Laku6:laku6-trade-in-sdk-android:1.3.9",
             androidjunit5         : "de.mannodermaus.gradle.plugins:android-junit5:1.5.1.0",
             rootbeer              : "com.scottyab:rootbeer-lib:0.0.7",
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
-            stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion"
+            stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
+            liveness              : "ai.advance.liveness:guardian_core_v1.6@aar"
     ]
 
     testDependencies = [

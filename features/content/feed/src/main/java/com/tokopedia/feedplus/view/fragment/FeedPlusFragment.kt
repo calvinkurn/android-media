@@ -20,7 +20,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -550,6 +550,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(activity)
         newFeed.setOnClickListener { v ->
             scrollToTop()
+            sendNewFeedClickEvent()
             showRefresh()
             onRefresh()
         }
@@ -584,6 +585,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
 
         })
+    }
+
+    private fun sendNewFeedClickEvent() {
+        analytics.eventNewPostClick()
     }
 
     private fun itemIsFullScreen(): Boolean {
