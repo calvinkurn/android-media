@@ -21,6 +21,7 @@ import com.tokopedia.saldodetails.di.SaldoDetailsComponentInstance
 import com.tokopedia.saldodetails.presenter.SaldoHoldInfoPresenter
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldDepositHistory
 import com.tokopedia.saldodetails.response.model.saldoholdinfo.response.SaldoHoldInfoItem
+import com.tokopedia.saldodetails.utils.CurrencyUtils
 import com.tokopedia.saldodetails.view.fragment.SaldoHoldInfoFragment
 import com.tokopedia.saldodetails.view.ui.SaldoHistoryTabItem
 import kotlinx.android.synthetic.main.saldo_hold_info_tabview.*
@@ -37,8 +38,8 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     var viewPager: ViewPager? = null
     var arrayListSeller: ArrayList<SaldoHoldInfoItem>? = null
     var arrayListBuyer: ArrayList<SaldoHoldInfoItem>? = null
-    var sellerAmount: Double? = 0.0
-    var buyerAmount: Double? = 0.0
+    var sellerAmount: Long = 0
+    var buyerAmount: Long = 0
     var item: ArrayList<SaldoHistoryTabItem>? = null
     lateinit var tabLayout: Tabs
     lateinit var helpdialog: CloseableBottomSheetDialog
@@ -99,12 +100,12 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
 
             sellerListSize?.let {
                 for (i in 0 until it) {
-                    sellerAmount = arrayListSeller?.get(i)?.amountFmt?.removeRP()?.let { it1 -> sellerAmount?.plus(it1) }
+                    sellerAmount = CurrencyUtils.convertToCurrencyLongFromString(arrayListSeller?.get(i)?.amountFmt ?: "0" ).let { it1 -> sellerAmount.plus(it1) }
                 }
             }
             buyerListSize?.let {
                 for (i in 0 until it) {
-                    buyerAmount = arrayListBuyer?.get(i)?.amountFmt?.removeRP()?.let { it1 -> buyerAmount?.plus(it1) }
+                    buyerAmount = CurrencyUtils.convertToCurrencyLongFromString(arrayListBuyer?.get(i)?.amountFmt ?: "0" ).let { it1 -> buyerAmount.plus(it1) }
                 }
             }
             isTickerShow = it.tickerMessageIsshow
@@ -133,9 +134,10 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             saveInstanceCacheManagerBuyer.apply {
                 put(KEY_TYPE, VALUE_BUYER_TYPE)
                 put(TAG, arrayListBuyer)
-                buyerAmount?.let {
+                buyerAmount.let {
                     put(SALDO_BUYER_AMOUNT, it)
                 }
+                put(SaldoHoldInfoFragment.TRANSACTION_TYPE, SaldoHoldInfoFragment.FOR_BUYER)
                 this.id?.let {
                     bundleBuyer.putString(SAVE_INSTANCE_CACHEMANAGER_ID, id)
                 }
@@ -153,9 +155,10 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
             saveInstanceCacheManagerSeller.apply {
                 put(KEY_TYPE, VALUE_SELLER_TYPE)
                 put(TAG, arrayListSeller)
-                sellerAmount?.let {
+                sellerAmount.let {
                     put(SALDO_SELLER_AMOUNT, it)
                 }
+                put(SaldoHoldInfoFragment.TRANSACTION_TYPE, SaldoHoldInfoFragment.FOR_SELLER)
                 this.id?.let {
                     bundleSeller.putString(SAVE_INSTANCE_CACHEMANAGER_ID, id)
                 }
@@ -193,7 +196,7 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
                 put(TAG, arrayListSeller)
                 sellerAmount?.let {
                     put(SALDO_SELLER_AMOUNT, it)
-                    bundleSeller.putInt("SELLER_TYPE", 0)
+                    bundleSeller.putInt("SELLER_ll_containerTYPE", 0)
 
                 }
                 this.id?.let {
@@ -262,8 +265,3 @@ class SaldoHoldInfoActivity : BaseSimpleActivity(), HasComponent<SaldoDetailsCom
     }
 
 }
-
-private fun String?.removeRP(): Double? {
-    return this?.substring(2)?.trim()?.toDouble()?.times(1000)
-}
-
