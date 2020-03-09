@@ -549,7 +549,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             onSuccessAddWishlist(productCardOptionsModel.productId)
         }
         else {
-            onErrorAddWishList(getString(R.string.msg_add_wishlist_failed), productCardOptionsModel.productId)
+            onErrorAddWishList(getString(R.string.msg_error_add_wishlist), productCardOptionsModel.productId)
         }
     }
 
@@ -558,7 +558,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             onSuccessRemoveWishlist(productCardOptionsModel.productId)
         }
         else {
-            onErrorRemoveWishlist(getString(R.string.msg_remove_wishlist_failed), productCardOptionsModel.productId)
+            onErrorRemoveWishlist(getString(R.string.msg_error_remove_wishlist), productCardOptionsModel.productId)
         }
     }
 
