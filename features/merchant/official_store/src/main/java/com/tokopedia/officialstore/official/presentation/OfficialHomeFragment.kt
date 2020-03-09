@@ -21,7 +21,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
-import com.tokopedia.discovery.common.manager.handleActivityResult
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
@@ -380,7 +380,7 @@ class OfficialHomeFragment :
         }
 
         // ProductCardOptionsManager
-        handleActivityResult(
+        handleProductCardOptionsActivityResult(
                 requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
                     override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                         handleWishlistAction(productCardOptionsModel)
