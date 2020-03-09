@@ -31,17 +31,11 @@ class ProductCheckoutViewHolder(
     private val btnCheckout: UnifyButton = itemView.findViewById(R.id.btn_checkout)
     private val campaignTag: ImageView = itemView.findViewById(R.id.img_campaign)
 
-    private val multiProductAdapter by lazy {
-        val factory = MultipleProductCardFactoryImpl(
-                sourceView = SourceMultipleProductView.NotificationCenter,
-                listener = listener
-        )
-        MultipleProductCardAdapter(factory, true)
-    }
+    private var multiProductAdapter: MultipleProductCardAdapter? = null
 
     override fun bindProductView(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
-        lstProduct.adapter = multiProductAdapter
+        snapMultiProductItem()
         onProductCheckoutClick(element)
         productCardItemView(element)
 
@@ -52,6 +46,12 @@ class ProductCheckoutViewHolder(
                 campaignTag.show()
             }
             productCampaign.setCampaign(campaign)
+        }
+    }
+
+    private fun snapMultiProductItem() {
+        if (lstProduct.onFlingListener == null) {
+            ProductCardSnapHelper().attachToRecyclerView(lstProduct)
         }
     }
 
@@ -68,12 +68,20 @@ class ProductCheckoutViewHolder(
                     location = LABEL_BOTTOM_SHEET_LOCATION,
                     notification = element
             )
-            multiProductAdapter.removeAllItem()
-            multiProductAdapter.insertData(
-                    MultipleProductCardMapper.map(element)
+            val factory = MultipleProductCardFactoryImpl(
+                    sourceView = SourceMultipleProductView.NotificationCenter,
+                    listener = listener
             )
-            if (lstProduct.onFlingListener == null) {
-                ProductCardSnapHelper().attachToRecyclerView(lstProduct)
+            if (multiProductAdapter == null) {
+                multiProductAdapter = MultipleProductCardAdapter(
+                        multipleProductCardFactory = factory,
+                        isResizable = true
+                )
+                lstProduct.adapter = multiProductAdapter
+                multiProductAdapter?.removeAllItem()
+                multiProductAdapter?.insertData(
+                        MultipleProductCardMapper.map(element)
+                )
             }
         }
     }
