@@ -5,7 +5,7 @@
     <dimen name="product_card_padding_bottom">8dp</dimen>
 
     <dimen name="product_card_list_image_size">96dp</dimen>
-    <dimen name="product_card_carousel_list_image_size">64dp</dimen>
+    <dimen name="product_card_carousel_list_image_size">80dp</dimen>
 
     <dimen name="product_card_content_margin">8dp</dimen>
 
