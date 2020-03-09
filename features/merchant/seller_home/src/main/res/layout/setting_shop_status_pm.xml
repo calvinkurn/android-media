@@ -4,6 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
+    android:paddingTop="@dimen/setting_status_margin"
+    android:paddingBottom="@dimen/setting_status_margin"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -18,14 +20,14 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/statusCard"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/setting_card_height"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/powerMerchantText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Power Merchant: "
+                android:text="@string/power_merchant"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
                 app:typographyType="body_2"
@@ -33,6 +35,7 @@
                 app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/powerMerchantStatusText"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Aktif"

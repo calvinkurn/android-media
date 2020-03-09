@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="@dimen/setting_status_margin"
     android:paddingBottom="@dimen/setting_status_margin"
     android:layout_width="match_parent"
     android:background="@color/white"
@@ -19,13 +20,13 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/statusCard"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="@dimen/setting_card_height"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="Regular Merchant"
+                android:text="@string/regular_merchant"
                 android:gravity="center_vertical"
                 android:textColor="@color/setting_black_text"
                 app:typographyType="body_2"
@@ -74,7 +75,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center_vertical"
-                android:text="Verifikasi"
+                android:text="@string/setting_verifikasi"
                 android:textColor="@color/setting_shop_status_green"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"

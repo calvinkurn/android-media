@@ -41,7 +41,6 @@ import com.tokopedia.profile.view.activity.ProfileActivity;
 import com.tokopedia.profilecompletion.view.activity.ProfileCompletionActivity;
 import com.tokopedia.seller.SellerModuleRouter;
 import com.tokopedia.seller.product.draft.view.activity.ProductDraftListActivity;
-import com.tokopedia.seller.seller.info.view.activity.SellerInfoActivity;
 import com.tokopedia.sellerapp.R;
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity;
 import com.tokopedia.track.TrackApp;
@@ -390,8 +389,7 @@ public class DrawerSellerHelper extends DrawerHelper
                     break;
                 case TkpdState.DrawerPosition.SELLER_INFO:
                     eventSellerInfo(AppEventTracking.Action.CLICK_HAMBURGER_ICON, AppEventTracking.EventLabel.SELLER_INFO);
-                    intent = new Intent(context, SellerInfoActivity.class);
-                    context.startActivity(intent);
+                    RouteManager.route(context, ApplinkConst.SELLER_INFO);
                     break;
                 case TkpdState.DrawerPosition.RESOLUTION_CENTER:
                     if (context.getApplication() instanceof TkpdCoreRouter) {

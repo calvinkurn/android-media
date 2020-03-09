@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/setting_menu_list_height"
     android:background="?attr/selectableItemBackground"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/settingMenuIcon"
@@ -13,8 +12,7 @@
         android:scaleType="center"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/settingMenuTitle"
-        app:layout_constraintWidth_percent="0.15"
-        tools:src="@drawable/unify_wishlist_avd"/>
+        app:layout_constraintWidth_percent="0.15"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/settingMenuTitle"
