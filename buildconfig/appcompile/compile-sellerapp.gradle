@@ -17,12 +17,13 @@ include "features:communication:broadcast_message_common"
 
 include "features:content:affiliate_common"
 include "features:content:feed_component"
+include "features:content:createpost"
 include "features:content:kol"
 include "features:content:kol_common"
 include "features:content:profile"
 
-include "features:digital:common_digital"
-include "features:digital:digitalproduct"
+include "features:recharge:common_digital"
+include "features:recharge:digitalproduct"
 
 include "features:discovery:discovery_common"
 include "features:discovery:category_common"
@@ -120,6 +121,7 @@ include "features:transaction:opportunity"
 include "features:top_ads:top_ads_widget"
 
 include "features:user:attachproduct"
+include "features:user:attachcommon"
 include "features:user:chat_common"
 include "features:user:chatbot"
 include "features:user:changepassword"

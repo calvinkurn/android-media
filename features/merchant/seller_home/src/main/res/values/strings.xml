@@ -11,6 +11,13 @@
     <string name="sah_reload">Muat ulang</string>
 
     <string name="sah_ticker_warning">#ecdb77</string>
+
+    <string name="official_store">Official Store</string>
+    <string name="power_merchant">Power Merchant:&#160;</string>
+    <string name="regular_merchant">Regular Merchant</string>
+    <string name="setting_upgrade">Upgrade</string>
+    <string name="setting_verifikasi">Verifikasi</string>
+
     <string name="sh_lbl_create_promotion">Buat Promosi</string>
     <string name="sh_lbl_create_promotion_desc">Beragam promosi untuk tingkatkan performa toko.</string>
     <string name="sah_label_promo_and_ads">Iklan dan Promosimu</string>

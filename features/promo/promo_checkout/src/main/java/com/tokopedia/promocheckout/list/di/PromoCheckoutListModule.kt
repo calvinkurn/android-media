@@ -13,6 +13,8 @@ import com.tokopedia.promocheckout.common.domain.mapper.CheckPromoStackingCodeMa
 import com.tokopedia.promocheckout.common.domain.mapper.DigitalCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.mapper.FlightCheckVoucherMapper
 import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
+import com.tokopedia.promocheckout.common.domain.mapper.UmrahCheckPromoMapper
+import com.tokopedia.promocheckout.common.domain.umroh.UmrahCheckPromoUseCase
 import com.tokopedia.promocheckout.list.view.presenter.*
 import dagger.Module
 import dagger.Provides
@@ -28,8 +30,9 @@ class PromoCheckoutListModule {
 
     @PromoCheckoutListScope
     @Provides
-    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context): CheckPromoStackingCodeUseCase {
-        return CheckPromoStackingCodeUseCase(context.resources)
+    fun provideCheckPromoStackingCodeUseCase(@ApplicationContext context: Context,
+                                             mapper: CheckPromoStackingCodeMapper): CheckPromoStackingCodeUseCase {
+        return CheckPromoStackingCodeUseCase(context.resources, mapper)
     }
 
     @PromoCheckoutListScope
@@ -48,6 +51,12 @@ class PromoCheckoutListModule {
     @Provides
     fun provideHotelCheckVoucherUseCase(@ApplicationContext context: Context): HotelCheckVoucherUseCase {
         return HotelCheckVoucherUseCase(context, GraphqlUseCase())
+    }
+
+    @PromoCheckoutListScope
+    @Provides
+    fun provideUmrahCheckPromoUseCase(@ApplicationContext context: Context): UmrahCheckPromoUseCase {
+        return UmrahCheckPromoUseCase(context, GraphqlUseCase())
     }
 
     @PromoCheckoutListScope
@@ -74,6 +83,13 @@ class PromoCheckoutListModule {
     fun provideHotelPresenter(hotelCheckVoucherUseCase: HotelCheckVoucherUseCase,
                               hotelCheckVoucherMapper: HotelCheckVoucherMapper) : PromoCheckoutListHotelPresenter {
         return PromoCheckoutListHotelPresenter(hotelCheckVoucherUseCase, hotelCheckVoucherMapper)
+    }
+
+    @PromoCheckoutListScope
+    @Provides
+    fun provideUmrahPresenter(umrahCheckPromoUseCase: UmrahCheckPromoUseCase,
+                              umrahCheckPromoMapper: UmrahCheckPromoMapper) : PromoCheckoutListUmrahPresenter {
+        return PromoCheckoutListUmrahPresenter(umrahCheckPromoUseCase, umrahCheckPromoMapper)
     }
 
     @PromoCheckoutListScope

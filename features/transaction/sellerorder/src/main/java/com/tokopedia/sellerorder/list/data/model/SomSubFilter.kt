@@ -15,7 +15,8 @@ data class SomSubFilter(
         val key: String = "",
         val typeView: String = "",
         val typeFilter: String = "",
-        val listValue: List<Int> = arrayListOf()
+        val listValue: List<Int> = arrayListOf(),
+        var isChecked: Boolean = false
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -24,7 +25,9 @@ data class SomSubFilter(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.createIntList())
+            parcel.createIntList(),
+            parcel.readByte() != 0.toByte()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(id)
@@ -33,6 +36,7 @@ data class SomSubFilter(
         parcel.writeString(typeView)
         parcel.writeString(typeFilter)
         parcel.writeIntList(listValue)
+        parcel.writeByte(if (isChecked) 1 else 0)
     }
 
     override fun describeContents(): Int {

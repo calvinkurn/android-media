@@ -20,12 +20,15 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.coachmark.CoachMark
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.datepicker.DatePickerUnify
-import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.dialog.DialogUnify.Companion.HORIZONTAL_ACTION
 import com.tokopedia.dialog.DialogUnify.Companion.NO_IMAGE
@@ -87,6 +90,7 @@ import com.tokopedia.sellerorder.confirmshipping.presentation.activity.SomConfir
 import com.tokopedia.sellerorder.detail.data.model.*
 import com.tokopedia.sellerorder.detail.di.SomDetailComponent
 import com.tokopedia.sellerorder.detail.presentation.activity.SomDetailBookingCodeActivity
+import com.tokopedia.sellerorder.detail.presentation.activity.SomSeeInvoiceActivity
 import com.tokopedia.sellerorder.detail.presentation.adapter.SomDetailAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetCourierProblemsAdapter
 import com.tokopedia.sellerorder.detail.presentation.bottomsheet.SomBottomSheetRejectOrderAdapter
@@ -103,6 +107,8 @@ import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.webview.KEY_TITLE
+import com.tokopedia.webview.KEY_URL
 import kotlinx.android.synthetic.main.bottomsheet_buyer_request_cancel_order.view.*
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_canceled
 import kotlinx.android.synthetic.main.bottomsheet_cancel_order.view.btn_cancel_order_confirmed
@@ -114,6 +120,7 @@ import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
+import kotlinx.android.synthetic.main.fragment_som_detail.swipe_refresh_layout
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
@@ -123,10 +130,30 @@ import kotlin.collections.HashMap
 /**x
  * Created by fwidjaja on 2019-09-30.
  */
-class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
+class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, SomBottomSheetRejectOrderAdapter.ActionListener, SomDetailAdapter.ActionListener, SomBottomSheetRejectReasonsAdapter.ActionListener,
         SomBottomSheetCourierProblemsAdapter.ActionListener {
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val coachMark: CoachMark by lazy {
+        CoachMarkBuilder().build()
+    }
+
+    private val coachMarkEdit: CoachMarkItem by lazy {
+        CoachMarkItem(btn_secondary, getString(R.string.coachmark_edit), getString(R.string.coachmark_edit_info))
+    }
+
+    private val coachMarkAccept: CoachMarkItem by lazy {
+        CoachMarkItem(btn_primary, getString(R.string.coachmark_terima_pesanan), getString(R.string.coachmark_terima_pesanan_info))
+    }
+
+    private val coachMarkChat: CoachMarkItem by lazy {
+        CoachMarkItem(view?.rootView?.findViewById(R.id.som_action_chat),
+                getString(R.string.coachmark_chat),
+                getString(R.string.coachmark_chat_info)
+        )
+    }
 
     private var orderId = ""
     private var detailResponse = SomDetailOrder.Data.GetSomDetail()
@@ -146,12 +173,16 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     private val FLAG_CONFIRM_SHIPPING = 3553
     private lateinit var reasonCourierProblemText: String
     private val tagConfirm = "tag_confirm"
+    private var refreshHandler: RefreshHandler? = null
+
+    private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
 
     companion object {
+        private val TAG_COACHMARK_DETAIL = "coachmark"
         @JvmStatic
         fun newInstance(bundle: Bundle): SomDetailFragment {
             return SomDetailFragment().apply {
@@ -203,13 +234,30 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater?.inflate(R.menu.chat_menu, menu)
+        inflater.inflate(R.menu.chat_menu, menu)
+    }
+
+    override fun onAddedCoachMarkHeader(coachMarkItemHeader: CoachMarkItem) {
+        coachMarkItems.add(coachMarkChat)
+        coachMarkItems.add(coachMarkItemHeader)
+    }
+
+    override fun onAddedCoachMarkProducts(coachMarkItemProduct: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemProduct)
+    }
+
+    override fun onAddedCoachMarkShipping(coachMarkItemShipping: CoachMarkItem) {
+        coachMarkItems.add(coachMarkItemShipping)
+        addedCoachMark()
     }
 
     private fun prepareLayout() {
+        refreshHandler = RefreshHandler(swipe_refresh_layout, this)
+        refreshHandler?.setPullEnabled(true)
         somDetailAdapter = SomDetailAdapter().apply {
             setActionListener(this@SomDetailFragment)
         }
@@ -301,6 +349,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
     }
 
     private fun renderDetail() {
+        refreshHandler?.finishRefresh()
+        listDetailData = arrayListOf()
+        somDetailAdapter.listDataDetail = arrayListOf()
         renderHeader()
         renderProducts()
         renderShipment()
@@ -309,6 +360,22 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
         somDetailAdapter.listDataDetail = listDetailData.toMutableList()
         somDetailAdapter.notifyDataSetChanged()
+    }
+
+    private fun addedCoachMark(){
+        if(detailResponse.button.isNotEmpty()){
+            coachMarkItems.add(coachMarkEdit)
+            coachMarkItems.add(coachMarkAccept)
+            showCoachMark()
+        } else {
+            showCoachMark()
+        }
+    }
+
+    private fun showCoachMark(){
+        if(!coachMark.hasShown(activity, TAG_COACHMARK_DETAIL)){
+            coachMark.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
+        }
     }
 
     private fun renderHeader() {
@@ -344,21 +411,6 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     private fun renderShipment() {
         // shipping
-        val receiverStreet = detailResponse.receiver.street
-        var notesValue = ""
-        if (receiverStreet.contains(RECEIVER_NOTES_START)) {
-            val indexStart = receiverStreet.indexOf(RECEIVER_NOTES_START)
-            val indexEnd = receiverStreet.indexOf(RECEIVER_NOTES_END)
-            if (receiverStreet.length > indexStart && receiverStreet.length >= indexEnd + 1) {
-                val getAllNotes = receiverStreet.substring(indexStart, indexEnd+1)
-                val indexValueStart = getAllNotes.indexOf(RECEIVER_NOTES_COLON)
-                val indexValueEnd = getAllNotes.indexOf(RECEIVER_NOTES_END)
-                if (getAllNotes.length > indexValueStart+1 && getAllNotes.length >= indexValueEnd-1) {
-                    notesValue = getAllNotes.substring(indexValueStart+1, indexValueEnd-1)
-                }
-            }
-        }
-
         val dataShipping = SomDetailShipping(
                 detailResponse.shipment.name + " - " + detailResponse.shipment.productName,
                 detailResponse.paymentSummary.shippingPriceText,
@@ -477,7 +529,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
                 dialogView.label_confirmation_msg_3?.text = msg3
 
                 dialogView.btn_batal?.setOnClickListener { dialogUnify.dismiss() }
-                dialogView.btn_batal?.btn_terima?.setOnClickListener {
+                dialogView.btn_terima?.setOnClickListener {
                     val mapParam = buttonResp.param.convertStrObjToHashMap()
                     if (mapParam.containsKey(PARAM_ORDER_ID) && mapParam.containsKey(PARAM_SHOP_ID)) {
                         somDetailViewModel.acceptOrder(GraphqlHelper.loadRawString(resources, R.raw.gql_som_accept_order),
@@ -536,7 +588,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             val btSheet = BottomSheetUnify()
             val infoLayout = View.inflate(context, R.layout.partial_info_layout, null)
             infoLayout.tv_confirm_info?.text = detailResponse.onlineBooking.infoText
-            infoLayout.button_understand.setOnClickListener { btSheet.dismiss() }
+            infoLayout.button_understand?.setOnClickListener { btSheet.dismiss() }
 
             fragmentManager?.let {
                 btSheet.setTitle(context?.getString(R.string.automatic_shipping) ?: "")
@@ -824,9 +876,24 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
         startActivity(intent)
     }
 
-    override fun onSeeInvoice(invoiceUrl: String) {
-        RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, invoiceUrl))
-        SomAnalytics.eventClickViewInvoice()
+    override fun onSeeInvoice(url: String) {
+        Intent(activity, SomSeeInvoiceActivity::class.java).apply {
+            putExtra(KEY_URL, url)
+            putExtra(KEY_TITLE, resources.getString(R.string.title_som_invoice))
+            startActivity(this)
+        }
+    }
+
+    override fun onCopiedInvoice(invoice: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.primaryClip = ClipData.newPlainText(invoice, str)
+        showCommonToaster(getString(R.string.invoice_tersalin))
+    }
+
+    override fun onCopiedAddress(address: String, str: String) {
+        val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        clipboardManager.primaryClip = ClipData.newPlainText(address, str)
+        showCommonToaster(getString(R.string.alamat_pengiriman_tersalin))
     }
 
     private fun setProductEmpty(rCode: String) {
@@ -974,7 +1041,7 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
             orderRejectRequest.orderId = detailResponse.orderId.toString()
             orderRejectRequest.rCode = rCode
 
-            if (viewBottomSheet.tf_extra_notes.visibility == View.VISIBLE) {
+            if (viewBottomSheet.tf_extra_notes?.visibility == View.VISIBLE) {
                 orderRejectRequest.reason = viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString()
                 if (checkReasonRejectIsNotEmpty(viewBottomSheet.tf_extra_notes?.textFieldInput?.text.toString())) {
                     doRejectOrder(orderRejectRequest)
@@ -1197,5 +1264,9 @@ class SomDetailFragment : BaseDaggerFragment(), SomBottomSheetRejectOrderAdapter
 
     override fun onClickProduct(productId: Int) {
         startActivity(RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId.toString()))
+    }
+
+    override fun onRefresh(view: View?) {
+        loadDetail()
     }
 }

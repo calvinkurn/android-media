@@ -7,9 +7,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
+import com.tokopedia.analytics.database.GtmErrorLogDB;
+import com.tokopedia.analytics.debugger.data.source.GtmErrorLogDBSource;
 import com.tokopedia.analytics.debugger.data.source.GtmLogDBSource;
 import com.tokopedia.analytics.debugger.domain.model.AnalyticsLogData;
 import com.tokopedia.analytics.debugger.ui.activity.AnalyticsDebuggerActivity;
+import com.tokopedia.analytics.debugger.ui.activity.AnalyticsGtmErrorDebuggerActivity;
 
 import java.net.URLDecoder;
 import java.util.Map;
@@ -28,11 +31,13 @@ public class GtmLogger implements AnalyticsLogger {
 
     private Context context;
     private GtmLogDBSource dbSource;
+    private GtmErrorLogDBSource dbErrorSource;
     private LocalCacheHandler cache;
 
     private GtmLogger(Context context) {
         this.context = context;
         this.dbSource = new GtmLogDBSource(context);
+        this.dbErrorSource = new GtmErrorLogDBSource(context);
         this.cache = new LocalCacheHandler(context, ANALYTICS_DEBUGGER);
     }
 
@@ -71,6 +76,22 @@ public class GtmLogger implements AnalyticsLogger {
     }
 
     @Override
+    public void saveError(String errorData) {
+        GtmErrorLogDB gtmErrorLogDB = new GtmErrorLogDB();
+        gtmErrorLogDB.setData(errorData);
+        gtmErrorLogDB.setTimestamp(System.currentTimeMillis());
+        if(cache.getBoolean(IS_ANALYTICS_DEBUGGER_NOTIF_ENABLED, false)) {
+            AnalyticsLogData data = new AnalyticsLogData();
+            data.setCategory("");
+            data.setName("error GTM v5");
+            data.setData(errorData);
+            NotificationHelper.show(context, data);
+        }
+        dbErrorSource.insertAll(gtmErrorLogDB).subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
+    }
+
+    @Override
     public void wipe() {
         dbSource.deleteAll().subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
     }
@@ -78,6 +99,11 @@ public class GtmLogger implements AnalyticsLogger {
     @Override
     public void openActivity() {
         context.startActivity(AnalyticsDebuggerActivity.newInstance(context));
+    }
+
+    @Override
+    public void openErrorActivity() {
+        context.startActivity(AnalyticsGtmErrorDebuggerActivity.newInstance(context));
     }
 
     @Override
@@ -118,12 +144,22 @@ public class GtmLogger implements AnalyticsLogger {
             }
 
             @Override
+            public void saveError(String errorData) {
+
+            }
+
+            @Override
             public void wipe() {
 
             }
 
             @Override
             public void openActivity() {
+
+            }
+
+            @Override
+            public void openErrorActivity() {
 
             }
 

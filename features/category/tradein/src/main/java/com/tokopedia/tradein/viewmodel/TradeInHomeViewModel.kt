@@ -210,8 +210,7 @@ class TradeInHomeViewModel(application: Application, val intent: Intent) : BaseV
             }
             result.displayMessage = CurrencyFormatUtil.convertPriceValueToIdrFormat(diagnosedPrice, true)
         } else {
-            result.displayMessage = String.format("%1\$s - %2\$s",
-                    CurrencyFormatUtil.convertPriceValueToIdrFormat(minPrice, true),
+            result.displayMessage = String.format("%1\$s",
                     CurrencyFormatUtil.convertPriceValueToIdrFormat(maxPrice, true))
             result.priceStatus = HomeResult.PriceState.NOT_DIAGNOSED
 

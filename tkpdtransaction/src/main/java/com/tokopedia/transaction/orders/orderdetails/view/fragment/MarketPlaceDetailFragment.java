@@ -71,6 +71,7 @@ import com.tokopedia.transaction.orders.orderdetails.data.recommendationPojo.Rec
 import com.tokopedia.transaction.orders.orderdetails.di.OrderDetailsComponent;
 import com.tokopedia.transaction.orders.orderdetails.view.OrderListAnalytics;
 import com.tokopedia.transaction.orders.orderdetails.view.activity.RequestCancelActivity;
+import com.tokopedia.transaction.orders.orderdetails.view.activity.SeeInvoiceActivity;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.ProductItemAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.adapter.RecommendationMPAdapter;
 import com.tokopedia.transaction.orders.orderdetails.view.presenter.OrderListDetailContract;
@@ -81,6 +82,7 @@ import com.tokopedia.transaction.orders.orderlist.data.PaymentData;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifycomponents.ticker.TickerCallback;
+import com.tokopedia.webview.ConstantKt;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -113,6 +115,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
     private static final String  CLICK_SUBMIT_CANCELATION = "click submit cancelation";
     private static final String CLICK_VIEW_COMPLAIN ="click view complain";
     private static final String TOTAL_SHIPPING_PRICE = "Total Ongkos Kirim";
+    private static final String CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER = "click lihat produk serupa - order";
+
+    public static final String SIMILAR_PRODUCTS_ACTION_BUTTON_KEY = "see_similar_products";
 
     public static final int REQUEST_CANCEL_ORDER = 101;
     public static final int REJECT_BUYER_REQUEST = 102;
@@ -301,13 +306,10 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
         lihat.setOnClickListener(view -> {
             orderListAnalytics.sendViewInvoiceClickEvent();
             orderListAnalytics.sendLihatInvoiceClick(status.status());
-            try {
-                startActivity(((UnifiedOrderListRouter) getActivity()
-                        .getApplication()).getWebviewActivityWithIntent(getContext(),
-                        URLEncoder.encode(invoice.invoiceUrl(), ORDER_LIST_URL_ENCODING)));
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+
+            Intent intent = SeeInvoiceActivity.newInstance(getContext(), status, invoice,
+                    getString(R.string.title_invoice));
+            startActivity(intent);
         });
     }
 
@@ -739,6 +741,9 @@ public class MarketPlaceDetailFragment extends BaseDaggerFragment implements Ref
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_ASK_SELLER, statusValue.getText().toString());
                 } else if (actionButton.getKey().contains("view_complaint")) {
                     orderListAnalytics.sendActionButtonClickEvent(CLICK_VIEW_COMPLAIN, statusValue.getText().toString());
+                    RouteManager.route(getContext(), actionButton.getUri());
+                } else if (actionButton.getKey().equalsIgnoreCase(SIMILAR_PRODUCTS_ACTION_BUTTON_KEY)) {
+                    orderListAnalytics.sendActionButtonClickEvent(CLICK_LIHAT_PRODUK_SERUPA_LEVEL_ORDER, presenter.getFirstProductId());
                     RouteManager.route(getContext(), actionButton.getUri());
                 } else if (!TextUtils.isEmpty(actionButton.getUri())) {
                     Intent intent = new Intent(getContext(), RequestCancelActivity.class);

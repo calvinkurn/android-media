@@ -25,7 +25,6 @@ public class AnalyticsDebuggerPresenter implements AnalyticsDebugger.Presenter {
     private int page = 0;
     private RequestParams requestParams;
 
-    @Inject
     public AnalyticsDebuggerPresenter(GetGtmLogUseCase getGtmLogUseCase,
                                       DeleteGtmLogUseCase deleteGtmLogUseCase) {
         this.getGtmLogUseCase = getGtmLogUseCase;

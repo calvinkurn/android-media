@@ -1,7 +1,7 @@
 package com.tokopedia.vote.data;
 
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.vote.domain.pojo.SendVotePojo;
 
 import java.util.Map;

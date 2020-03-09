@@ -294,6 +294,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val CHANGE_EMAIL_REGISTER = "$INTERNAL_GLOBAL/change-email-register"
 
+    // RegisterInitialActivity
+    // tokopedia-android-internal://global/init-register
+    @JvmField
+    val INIT_REGISTER = "$INTERNAL_GLOBAL/init-register"
+
     // RegisterEmailActivity
     // tokopedia-android-internal://global/email-register
     @JvmField
@@ -353,6 +358,11 @@ object ApplinkConstInternalGlobal {
     @JvmField
     val ADVANCED_SETTING = "$INTERNAL_GLOBAL/advanced-setting"
 
+    // GeneralSettingActivity
+    // tokopedia-android-internal://global/general-setting
+    @JvmField
+    val GENERAL_SETTING = "$INTERNAL_GLOBAL/general-setting"
+
     // PushNotificationCheckerActivity
     // tokopedia-android-internal://global/push-notification-troubleshooter
     @JvmField
@@ -364,6 +374,16 @@ object ApplinkConstInternalGlobal {
     val SETTING_REFERRAL_PHONE_VERIFICATION = "$INTERNAL_GLOBAL/setting-referral-phone-verification"
     @JvmField
     val REFERRAL_WELCOME_FRIENDS = "${DeeplinkConstant.SCHEME_TOKOPEDIA}://referral/{code}/{owner}"
+
+    // CrackTokenActivity
+    // tokopedia-android-internal://global/gamification
+    @JvmField
+    val GAMIFICATION = "$INTERNAL_GLOBAL/gamification"
+
+    // TapTapTokenActivity
+    // tokopedia-android-internal://global/gamification2
+    @JvmField
+    val GAMIFICATION_TAP_TAP_MANTAP = "$INTERNAL_GLOBAL/gamification2"
 
     //ManageGeneral Activity
     @JvmField
