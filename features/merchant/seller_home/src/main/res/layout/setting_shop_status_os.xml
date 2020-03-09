@@ -29,7 +29,7 @@
                 android:text="@string/official_store"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                app:typographyType="body_2"
+                app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
 

@@ -5,6 +5,8 @@ import com.tokopedia.sellerhome.di.module.SellerHomeModule
 import com.tokopedia.sellerhome.di.module.SellerHomeUseCaseModule
 import com.tokopedia.sellerhome.di.module.SellerHomeViewModelModule
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
+import com.tokopedia.sellerhome.settings.view.fragment.MenuSettingFragment
+import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.SellerHomeFragment
 import dagger.Component
 
@@ -24,4 +26,6 @@ import dagger.Component
 interface SellerHomeComponent {
 
     fun inject(sellerHomeFragment: SellerHomeFragment)
+    fun inject(sellerHomeFragment: MenuSettingFragment)
+    fun inject(sellerHomeFragment: OtherMenuFragment)
 }

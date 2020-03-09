@@ -11,13 +11,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.di.DaggerOtherSettingComponent
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
+import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
@@ -29,7 +36,19 @@ import javax.inject.Inject
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>() {
 
     companion object {
+        const val URL_KEY = "url"
+
         private const val PENGATURAN = "Pengaturan"
+        private const val TINGKATKAN_PENJUALAN = "TINGKATKAN PENJUALAN"
+        private const val STATISTIK_TOKO = "Statistik Toko"
+        private const val IKLAN_DAN_PROMOSI_TOKO = "Iklan & Promosi Toko"
+        private const val KABAR_PEMBELI = "KABAR PEMBELI"
+        private const val ULASAN = "Ulasan"
+        private const val DISKUSI = "Diskusi"
+        private const val KOMPLAIN = "Komplain"
+        private const val LAYANAN_KEUANGAN = "Layanan Keuangan"
+        private const val PUSAT_EDUKASI_SELLER = "Pusat Edukasi Seller"
+        private const val TOKOPEDIA_CARE = "Tokopedia Care"
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
     }
@@ -41,11 +60,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private val otherSettingViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        otherSettingViewModel.populateAdapterList()
     }
 
     override fun onResume() {
@@ -74,7 +88,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerOtherSettingComponent.builder()
+        DaggerSellerHomeComponent.builder()
                 .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
                 .build()
                 .inject(this)
@@ -86,9 +100,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun observeLiveData() {
         with(otherSettingViewModel) {
-            settingListLiveData.observe(viewLifecycleOwner, Observer { settingList ->
-                populateAdapterData(settingList)
-            })
             generalShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
                     is Success -> showGeneralShopInfoSuccess(result.data)
@@ -110,16 +121,37 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
-    private fun populateAdapterData(settingList: List<SettingUiModel>) {
-        val fullSettingList = settingList.toMutableList()
-        val goToMenuSetting : () -> Unit = {
-            startActivity(Intent(context, MenuSettingActivity::class.java))
-        }
-        fullSettingList.add(
-                MenuItemUiModel(PENGATURAN, R.drawable.ic_setting, null, goToMenuSetting))
-        adapter.data.addAll(fullSettingList)
+    private fun populateAdapterData() {
+        val settingList = mutableListOf(
+                DividerUiModel(DividerType.THIN_FULL),
+                DividerUiModel(),
+                SettingTitleUiModel(TINGKATKAN_PENJUALAN),
+                MenuItemUiModel(STATISTIK_TOKO, R.drawable.ic_statistic_setting, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
+                MenuItemUiModel(IKLAN_DAN_PROMOSI_TOKO, R.drawable.ic_ads_promotion, null /* TODO("Masukkin applink lw di sini cup, ganti nullnya. Utk saat ini hanya support applink") */),
+                SettingTitleUiModel(KABAR_PEMBELI),
+                MenuItemUiModel(ULASAN, R.drawable.ic_star_setting, ApplinkConst.REPUTATION),
+                MenuItemUiModel(DISKUSI, R.drawable.ic_setting_discussion, ApplinkConst.TALK),
+                MenuItemUiModel(KOMPLAIN, R.drawable.ic_complaint, null) {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.SellerApp.WEBVIEW)
+                    intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER)
+                    context?.startActivity(intent)
+                },
+                DividerUiModel(),
+                MenuItemUiModel(LAYANAN_KEUANGAN, R.drawable.ic_finance),
+                MenuItemUiModel(PUSAT_EDUKASI_SELLER, R.drawable.ic_seller_edu) {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
+                    intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.SELLER_EDU)
+                    context?.startActivity(intent)
+                },
+                MenuItemUiModel(TOKOPEDIA_CARE, R.drawable.ic_tokopedia_care, ApplinkConst.CONTACT_US_NATIVE),
+                DividerUiModel(DividerType.THIN_PARTIAL),
+                MenuItemUiModel(PENGATURAN, R.drawable.ic_setting, null) {
+                    startActivity(Intent(context, MenuSettingActivity::class.java))
+                }
+        )
+        adapter.data.addAll(settingList)
         adapter.notifyDataSetChanged()
-        renderList(fullSettingList)
+        renderList(settingList)
     }
 
     private fun getAllShopInfoData() {
@@ -172,6 +204,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun setupView(view: View) {
+        populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it)}
         otherMenuViewHolder?.initBindView()

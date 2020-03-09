@@ -3,20 +3,12 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.domain.mapToGeneralShopInfo
 import com.tokopedia.sellerhome.settings.domain.usecase.GetSettingShopInfoUseCase
 import com.tokopedia.sellerhome.settings.domain.usecase.GetShopBadgeUseCase
 import com.tokopedia.sellerhome.settings.domain.usecase.GetShopTotalFollowersUseCase
-import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -34,68 +26,18 @@ class OtherMenuViewModel @Inject constructor(
 ): BaseViewModel(dispatcher) {
 
     companion object {
-        private const val TINGKATKAN_PENJUALAN = "TINGKATKAN PENJUALAN"
-        private const val STATISTIK_TOKO = "Statistik Toko"
-        private const val IKLAN_DAN_PROMOSI_TOKO = "Iklan & Promosi Toko"
-        private const val KABAR_PEMBELI = "KABAR PEMBELI"
-        private const val ULASAN = "Ulasan"
-        private const val DISKUSI = "Diskusi"
-        private const val KOMPLAIN = "Komplain"
-        private const val LAYANAN_KEUANGAN = "Layanan Keuangan"
-        private const val PUSAT_EDUKASI_SELLER = "Pusat Edukasi Seller"
-        private const val TOKOPEDIA_CARE = "Tokopedia Care"
     }
 
-    private val _settingListLiveData = MutableLiveData<List<SettingUiModel>>()
     private val _generalShopInfoLiveData = MutableLiveData<Result<GeneralShopInfoUiModel>>()
     private val _totalFollowersLiveData = MutableLiveData<Result<Int>>()
     private val _shopBadgeLiveData = MutableLiveData<Result<String>>()
 
-    val settingListLiveData: LiveData<List<SettingUiModel>>
-        get() = _settingListLiveData
     val generalShopInfoLiveData: LiveData<Result<GeneralShopInfoUiModel>>
         get() = _generalShopInfoLiveData
     val totalFollowersLiveData: LiveData<Result<Int>>
         get() = _totalFollowersLiveData
     val shopBadgeLiveData: LiveData<Result<String>>
         get() = _shopBadgeLiveData
-
-    fun populateAdapterList() {
-        val settingList = mutableListOf(
-                DividerUiModel(DividerType.THIN_FULL),
-                DividerUiModel(),
-                SettingTitleUiModel(TINGKATKAN_PENJUALAN),
-                MenuItemUiModel(
-                        STATISTIK_TOKO,
-                        R.drawable.ic_statistic_setting,
-                        ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
-                MenuItemUiModel(
-                        IKLAN_DAN_PROMOSI_TOKO,
-                        R.drawable.ic_ads_promotion,
-                        null /* TODO("Masukkin applink lw di sini cup, ganti nullnya. Utk saat ini hanya support applink") */),
-                SettingTitleUiModel(KABAR_PEMBELI),
-                MenuItemUiModel(
-                        ULASAN,
-                        R.drawable.ic_star_setting,
-                        "tokopedia://review"),
-                MenuItemUiModel(
-                        DISKUSI,
-                        R.drawable.ic_setting_discussion,
-                        ApplinkConst.TALK),
-                MenuItemUiModel(
-                        KOMPLAIN,
-                        R.drawable.ic_complaint,
-                        ""),
-                DividerUiModel(),
-                MenuItemUiModel(
-                        LAYANAN_KEUANGAN,
-                        R.drawable.ic_finance),
-                MenuItemUiModel(PUSAT_EDUKASI_SELLER, R.drawable.ic_seller_edu),
-                MenuItemUiModel(TOKOPEDIA_CARE, R.drawable.ic_tokopedia_care),
-                DividerUiModel(DividerType.THIN_PARTIAL)
-        )
-        _settingListLiveData.value = settingList
-    }
 
     fun getAllSettingShopInfo() {
         userSession.run {

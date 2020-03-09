@@ -29,7 +29,7 @@
                 android:text="@string/regular_merchant"
                 android:gravity="center_vertical"
                 android:textColor="@color/setting_black_text"
-                app:typographyType="body_2"
+                app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toStartOf="@id/leftGuideline"/>
 

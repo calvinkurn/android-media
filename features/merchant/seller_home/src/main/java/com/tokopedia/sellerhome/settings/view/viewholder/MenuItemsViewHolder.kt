@@ -20,13 +20,13 @@ class MenuItemsViewHolder(itemView: View) : AbstractViewHolder<MenuItemUiModel>(
         with(itemView) {
             element.drawableReference?.let { settingMenuIcon.setImageDrawable(ContextCompat.getDrawable(context, it)) }
             settingMenuTitle.text = element.title
-            if (element.onClickApplink != null) {
+            if (element.onClickApplink.isNullOrEmpty()) {
                 setOnClickListener {
-                    RouteManager.route(context, element.onClickApplink)
+                    element.clickAction.invoke()
                 }
             } else {
                 setOnClickListener {
-                    element.clickAction.invoke()
+                    RouteManager.route(context, element.onClickApplink)
                 }
             }
         }
