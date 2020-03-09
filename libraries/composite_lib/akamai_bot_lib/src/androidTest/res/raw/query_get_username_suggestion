@@ -1,0 +1,10 @@
+{
+  bymeGetRecommendedAffiliateName {
+    suggestions
+    error {
+      message
+      type
+      code
+    }
+  }
+}

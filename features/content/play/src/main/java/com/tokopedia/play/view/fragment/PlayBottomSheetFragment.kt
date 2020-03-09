@@ -160,6 +160,17 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     private fun initComponents(container: ViewGroup) {
         productSheetComponent = initProductSheetComponent(container)
         variantSheetComponent = initVariantSheetComponent(container)
+
+        sendInitState()
+    }
+
+    private fun sendInitState() {
+        launch(dispatchers.immediate) {
+            EventBusFactory.get(viewLifecycleOwner).emit(
+                    ScreenStateEvent::class.java,
+                    ScreenStateEvent.Init
+            )
+        }
     }
 
     private fun initProductSheetComponent(container: ViewGroup): UIComponent<ProductSheetInteractionEvent> {

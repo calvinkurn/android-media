@@ -3,8 +3,10 @@ package com.tokopedia.play.ui.variantsheet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -30,9 +32,12 @@ class VariantSheetView(
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_variant_sheet, container, true)
             .findViewById(R.id.cl_variant_sheet)
 
+    private val clVariantContent: ConstraintLayout = view.findViewById(R.id.cl_variant_content)
     private val tvSheetTitle: TextView = view.findViewById(R.id.tv_sheet_title)
     private val rvVariantList: RecyclerView = view.findViewById(R.id.rv_variant_list)
     private val btnAction: UnifyButton = view.findViewById(R.id.btn_action)
+    private val btnContainer: FrameLayout = view.findViewById(R.id.btn_container)
+    private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
 
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
 
@@ -44,7 +49,10 @@ class VariantSheetView(
 
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
 
-            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, insets.systemWindowInsetBottom)
+            vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
+                height = insets.systemWindowInsetBottom
+            }
+            btnContainer.setPadding(btnContainer.paddingLeft, btnContainer.paddingTop, btnContainer.paddingRight, insets.systemWindowInsetBottom)
 
             insets
         }

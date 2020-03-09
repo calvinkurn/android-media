@@ -320,6 +320,16 @@ class PlayFragment : BaseDaggerFragment() {
         })
     }
 
+    /**
+     * @return true means the onBackPressed() has been handled by this fragment
+     */
+    fun onBackPressed(): Boolean {
+        return if (flVideo.scaleY != FULL_SCALE_FACTOR) {
+            hideAllInsets()
+            true
+        } else false
+    }
+
     private fun hideKeyboard() {
         val view = activity?.currentFocus
         view?.let { v ->

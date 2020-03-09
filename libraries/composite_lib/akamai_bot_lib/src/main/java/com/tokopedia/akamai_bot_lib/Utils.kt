@@ -4,6 +4,7 @@ import android.app.Application
 import android.os.Build
 import com.akamai.botman.CYFMonitor
 import com.tokopedia.config.GlobalConfig
+import java.util.concurrent.ConcurrentHashMap
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -23,7 +24,7 @@ fun getUserAgent(): String {
 fun getMutation(input: String, match:String) : Boolean{
     val input2 = input.replace("\n", "")
     val input3 = input2.replace("\\s+", " ")
-    val m: Matcher = p.matcher(input3)
+    val m: Matcher = getMutationPattern.matcher(input3)
     while (m.find()) {
         if( m.group(0).equals(match, ignoreCase = true))
             return true
@@ -31,5 +32,21 @@ fun getMutation(input: String, match:String) : Boolean{
     return false
 }
 
+val map = ConcurrentHashMap<String, String>()
 
-val p: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")
+fun getAny(input:String) : MutableList<String>{
+    if(map.get(input)?.isEmpty()?:false )
+        return map.get(input)?.let { mutableListOf(it) } ?: mutableListOf()
+
+    val m = getAnyPattern.matcher(input.replace("\n", " "))
+    val any = mutableListOf<String>()
+    while (m.find()) {
+        any.add(m.group(1))
+        map.putIfAbsent(input, m.group(1))
+    }
+    return any;
+}
+
+val getAnyPattern = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_\\s]+)((?=\\()|(?=\\{)).*(?=\\{)")
+
+val getMutationPattern: Pattern = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()")

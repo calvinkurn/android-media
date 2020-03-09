@@ -191,6 +191,7 @@ include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
+include "features:user:loginfingerprint"
 
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
