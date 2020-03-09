@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.design.text.SearchInputView
@@ -29,6 +30,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.preference.ed
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.empty_list_address.*
 import kotlinx.android.synthetic.main.fragment_choose_address.*
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -50,6 +52,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
         const val EXTRA_IS_FULL_FLOW = "EXTRA_IS_FULL_FLOW"
 
+        private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
         private const val ARG_IS_EDIT = "is_edit"
 
         fun newInstance(isEdit: Boolean = false): AddressListFragment {
@@ -120,6 +123,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         super.onViewCreated(view, savedInstanceState)
         initHeader()
         initViewModel()
+        initView()
         initSearch()
         address_list_rv.adapter = adapter
         address_list_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -165,6 +169,10 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         search_input_view.searchText = searchKey
 
         performSearch(searchKey)
+    }
+
+    private fun initView() {
+        ImageHandler.LoadImage(iv_empty_state, EMPTY_STATE_PICT_URL)
     }
 
     private fun goBack() {
