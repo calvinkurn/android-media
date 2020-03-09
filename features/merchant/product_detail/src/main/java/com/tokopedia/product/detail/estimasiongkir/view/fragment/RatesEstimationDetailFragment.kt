@@ -189,8 +189,8 @@ class RatesEstimationDetailFragment : BaseDaggerFragment() {
                         putString(RatesEstimationConstant.PARAM_PRODUCT_WEIGHT_UNIT, productWeightUnit)
                         putString(RatesEstimationConstant.PARAM_ORIGIN, origin)
                         putBoolean(RatesEstimationConstant.PARAM_ISFREEONGKIR, isFreeOngkir)
-                        putString(RatesEstimationConstant.PARAM_ISFREEONGKIR, shopId)
-                        putString(RatesEstimationConstant.PARAM_ISFREEONGKIR, productId)
+                        putString(RatesEstimationConstant.PARAM_SHOP_ID, shopId)
+                        putString(RatesEstimationConstant.PARAM_PRODUCT_ID, productId)
                     }
                 }
     }
