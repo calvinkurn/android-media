@@ -1,6 +1,7 @@
 package com.tokopedia.analyticsdebugger.debugger;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticsdebugger.debugger.data.source.ApplinkLogDBSource;
@@ -22,6 +23,9 @@ public class ApplinkLogger implements ApplinkLoggerInterface {
     private ApplinkLogDBSource dbSource;
     private LocalCacheHandler cache;
 
+    private String applink = "";
+    private String traces = "";
+
     private ApplinkLogger(Context context) {
         this.context = context;
         this.dbSource = new ApplinkLogDBSource(context);
@@ -41,12 +45,27 @@ public class ApplinkLogger implements ApplinkLoggerInterface {
     }
 
     @Override
-    public void save(String applink,
-                     String trace) {
+    public void startTrace(String applink) {
+        this.applink = applink;
+        traces = "";
+    }
+
+    @Override
+    public void appendTrace(String trace) {
+        traces += trace + "\n";
+    }
+
+    @Override
+    public void save() {
+
+        if (TextUtils.isEmpty(applink)) {
+            return;
+        }
+
         try {
             ApplinkLogModel applinkLogModel = new ApplinkLogModel();
             applinkLogModel.setApplink(applink);
-            applinkLogModel.setTraces(trace);
+            applinkLogModel.setTraces(traces);
 
             dbSource.insertAll(applinkLogModel).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber());
 
@@ -56,6 +75,9 @@ public class ApplinkLogger implements ApplinkLoggerInterface {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        applink = "";
+        traces = "";
     }
 
     @Override
@@ -101,7 +123,17 @@ public class ApplinkLogger implements ApplinkLoggerInterface {
     private static ApplinkLoggerInterface emptyInstance() {
         return new ApplinkLoggerInterface() {
             @Override
-            public void save(String applink, String trace) {
+            public void startTrace(String applink) {
+
+            }
+
+            @Override
+            public void appendTrace(String trace) {
+
+            }
+
+            @Override
+            public void save() {
 
             }
 

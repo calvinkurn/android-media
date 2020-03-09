@@ -1,9 +1,12 @@
 package com.tokopedia.analyticsdebugger.debugger;
 
-import java.util.Map;
-
 public interface ApplinkLoggerInterface {
-    void save(String applink, String trace);
+
+    void startTrace(String applink);
+
+    void appendTrace(String trace);
+
+    void save();
 
     void wipe();
 

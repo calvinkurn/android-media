@@ -14,7 +14,17 @@ public class ApplinkLogger {
     public static void init(Context context) {
         instance = new ApplinkLoggerInterface() {
             @Override
-            public void save(String applink, String trace) {
+            public void startTrace(String applink) {
+
+            }
+
+            @Override
+            public void appendTrace(String trace) {
+
+            }
+
+            @Override
+            public void save() {
 
             }
 
