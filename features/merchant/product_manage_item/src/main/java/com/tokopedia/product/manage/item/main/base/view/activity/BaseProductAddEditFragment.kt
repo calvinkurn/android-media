@@ -62,7 +62,6 @@ import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.Product
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.fragment_base_product_edit.*
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -101,7 +100,7 @@ abstract class BaseProductAddEditFragment<T : ProductAddPresenterImpl<P>, P : Pr
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        presenter.getShopInfo()
+        presenter.getShopInfo(addEditPageType)
 
         savedInstanceState?.run {
             if (containsKey(EXTRA_IS_OFFICIAL_STORE)) {
