@@ -505,4 +505,9 @@
     <string name="flight_filter_highest_price_label">Tertinggi</string>
 
     <string name="flight_search_origin_label">Asal</string>
+    <string name="flight_search_departure_label">Berangkat</string>
+    <string name="flight_search_return_label">Pulang</string>
+    <string name="flight_search_passenger_label">Jumlah Penumpang</string>
+
+    <string name="flight_change_search_label">Ubah pencarian</string>
 </resources>
