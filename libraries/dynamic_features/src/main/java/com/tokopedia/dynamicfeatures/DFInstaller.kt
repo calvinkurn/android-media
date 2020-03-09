@@ -8,6 +8,8 @@ import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.dynamicfeatures.config.DFRemoteConfig
 import com.tokopedia.dynamicfeatures.service.DFDownloader
 import com.tokopedia.dynamicfeatures.track.DFTracking
+import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil
+import com.tokopedia.dynamicfeatures.utils.ErrorUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.Continuation
@@ -43,7 +45,7 @@ class DFInstaller {
 
     private var listener: SplitInstallListener? = null
     internal var moduleSize = 0L
-    internal var usableSpaceBeforeDownload: Long = 0L
+    internal var freeInternalSpaceBeforeDownload: Long = 0L
 
     suspend fun startInstallInBackground(context: Context,
                                          moduleNames: List<String>,
@@ -61,7 +63,7 @@ class DFInstaller {
                 requestBuilder.addModule(name)
             }
             val request = requestBuilder.build()
-            usableSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
+            freeInternalSpaceBeforeDownload = DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
 
             // SplitInstallManager only allow the installation from Main Thread.
             withContext(Dispatchers.Main) { suspendCoroutine<Boolean> { continuation ->
@@ -145,19 +147,21 @@ class DFInstaller {
     internal fun logSuccessStatus(tag: String, context: Context, moduleNameToDownload: List<String>) {
         DFTracking.trackDownloadDF(moduleNameToDownload, null, tag == TAG_LOG_DFM_BG)
         DFInstallerLogUtil.logStatus(context, tag, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, emptyList(), 1, true)
+                freeInternalSpaceBeforeDownload, moduleSize, emptyList(), 1, true)
     }
 
-    internal fun logFailedStatus(tag: String, applicationContext: Context, moduleNameToDownload: List<String>,
+    internal fun logFailedStatus(tag: String, context: Context, moduleNameToDownload: List<String>,
                                  errorCode: List<String> = emptyList()) {
-        DFTracking.trackDownloadDF(moduleNameToDownload, errorCode, tag == TAG_LOG_DFM_BG)
-        DFInstallerLogUtil.logStatus(applicationContext, tag, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, errorCode, 0, false)
+        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
+        DFTracking.trackDownloadDF(moduleNameToDownload, errorCodeTemp, tag == TAG_LOG_DFM_BG)
+        DFInstallerLogUtil.logStatus(context, tag, moduleNameToDownload.joinToString(),
+                freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false)
     }
 
-    private fun logDeferredStatus(applicationContext: Context, message: String, moduleNameToDownload: List<String>, errorCode: List<String> = emptyList()){
-        DFInstallerLogUtil.logStatus(applicationContext, message, moduleNameToDownload.joinToString(),
-                usableSpaceBeforeDownload, moduleSize, errorCode, 0, false, TAG_DFM_DEFERRED)
+    private fun logDeferredStatus(context: Context, message: String, moduleNameToDownload: List<String>, errorCode: List<String> = emptyList()){
+        val errorCodeTemp = ErrorUtils.getValidatedErrorCode(context, errorCode, freeInternalSpaceBeforeDownload)
+        DFInstallerLogUtil.logStatus(context, message, moduleNameToDownload.joinToString(),
+                freeInternalSpaceBeforeDownload, moduleSize, errorCodeTemp, 0, false, TAG_DFM_DEFERRED)
     }
 
     internal fun unregisterListener() {
@@ -201,7 +205,6 @@ private class SplitInstallListener(val dfInstaller: DFInstaller,
                 continuation.resume(true)
             }
             SplitInstallSessionStatus.FAILED -> {
-                DFTracking.trackDownloadDF(moduleNameToDownload, listOf(it.errorCode().toString()), true)
                 dfInstaller.logFailedStatus(DFInstaller.TAG_LOG_DFM_BG, context, moduleNameToDownload, listOf(it.errorCode().toString()))
                 onFailedInstall?.invoke()
                 dfInstaller.unregisterListener()

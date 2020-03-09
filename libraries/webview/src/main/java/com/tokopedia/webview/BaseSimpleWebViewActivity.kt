@@ -53,12 +53,25 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
             needLogin = getBoolean(KEY_NEED_LOGIN, false)
             title = getString(KEY_TITLE, DEFAULT_TITLE)
         }
+
         intent.data?.run {
             url = getEncodedParameterUrl(this)
-            showTitleBar = getQueryParameter(KEY_TITLEBAR)?.toBoolean() ?: true
-            allowOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)?.toBoolean() ?: true
-            needLogin = getQueryParameter(KEY_NEED_LOGIN)?.toBoolean() ?: false
-            title = getQueryParameter(KEY_TITLE) ?: DEFAULT_TITLE
+
+            val needTitleBar = getQueryParameter(KEY_TITLEBAR)
+            needTitleBar?.let {
+                showTitleBar = it.toBoolean();
+            }
+
+            val needOverride = getQueryParameter(KEY_ALLOW_OVERRIDE)
+            needOverride?.let {
+                allowOverride = it.toBoolean();
+            }
+
+            val isLoginRequire = getQueryParameter(KEY_NEED_LOGIN)
+            isLoginRequire?.let { needLogin = it.toBoolean() }
+
+            val needTitle = getQueryParameter(KEY_TITLE)
+            needTitle?.let { title = it }
         }
     }
 
@@ -90,8 +103,8 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
                 val url2BeforeAnd = url2.substringBefore("&")
                 val uriFromUrl = Uri.parse(url.replaceFirst("$KEY_URL=$url2BeforeAnd", "").validateAnd() )
                 uriFromUrl.buildUpon()
-                    .appendQueryParameter(KEY_URL, url2.encodeOnce())
-                    .build().toString()
+                        .appendQueryParameter(KEY_URL, url2.encodeOnce())
+                        .build().toString()
             } else {
                 url
             }
@@ -202,12 +215,12 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
     companion object {
 
         fun getStartIntent(
-            context: Context,
-            url: String,
-            showToolbar: Boolean = true,
-            allowOverride: Boolean = true,
-            needLogin: Boolean = false,
-            title: String = ""
+                context: Context,
+                url: String,
+                showToolbar: Boolean = true,
+                allowOverride: Boolean = true,
+                needLogin: Boolean = false,
+                title: String = ""
         ): Intent {
             return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())
@@ -237,7 +250,7 @@ open class BaseSimpleWebViewActivity : BaseSimpleActivity() {
         @JvmStatic
         fun getInstanceIntentAppLink(context: Context, extras: Bundle): Intent {
             var webUrl = extras.getString(
-                KEY_URL, TokopediaUrl.Companion.getInstance().WEB
+                    KEY_URL, TokopediaUrl.Companion.getInstance().WEB
             )
             var showToolbar: Boolean
             var needLogin: Boolean

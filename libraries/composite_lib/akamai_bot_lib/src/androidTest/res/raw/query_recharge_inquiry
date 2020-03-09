@@ -1,0 +1,19 @@
+query enquiry ($fields: [RechargeKeyValue]!) {
+  status
+  rechargeInquiry(fields: $fields) {
+    status: Status
+    retrySec: RetrySec
+    attributes: Attributes {
+      UserID
+      ProductID
+      ClientNumber
+      Title
+      Price
+      PricePlain
+      mainInfo: MainInfo {
+        label: Label
+        value: Value
+      }
+    }
+  }
+}

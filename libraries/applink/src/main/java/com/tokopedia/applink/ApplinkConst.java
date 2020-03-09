@@ -255,6 +255,7 @@ public interface ApplinkConst {
     String PHONE_VERIFICATION = "tokopedia://phoneverification";
     String CHANGE_INACTIVE_PHONE = "tokopedia://changeinactivephone";
     String ADD_PIN_ONBOARD = "tokopedia://add-pin-onboarding";
+    String ADD_FINGERPRINT_ONBOARDING = "tokopedia://add-fingerprint-onboarding";
 
     String KYC_NO_PARAM = "tokopedia://kyc";
     String KYC_SELLER_DASHBOARD = "tokopedia://kyc?source=seller";

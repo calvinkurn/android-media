@@ -32,16 +32,7 @@ class HomeFeedViewModel(val productId: String,
                         var isWishList: Boolean,
                         val isFreeOngkirActive: Boolean,
                         val freeOngkirImageUrl: String) :
-    Visitable<HomeFeedTypeFactory>,
-    BaseTracking.Product(
-            productId,
-            productName,
-            priceNumber.toString(),
-            "none / other",
-            "none / other",
-            categoryBreadcrumbs,
-            position.toString(),
-            isFreeOngkirActive)
+    Visitable<HomeFeedTypeFactory>, ImpressHolder()
 {
 
     override fun type(typeFactory: HomeFeedTypeFactory): Int {
