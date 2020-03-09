@@ -4,23 +4,30 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.feature.quickedit.stock.di.DaggerProductManageQuickEditStockComponent
+import com.tokopedia.product.manage.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_quick_edit_price.*
 import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
+import javax.inject.Inject
 
-class ProductManageQuickEditStockFragment : BottomSheetUnify() {
+class ProductManageQuickEditStockFragment : BottomSheetUnify(),
+        HasComponent<ProductManageQuickEditStockComponent> {
 
     companion object {
 
         const val EDIT_STOCK_CACHE_ID = "edit_stock_cache_id"
         const val EDIT_STOCK_PRODUCT = "edit_stock_product"
-        private const val MAXIMUM_STOCK = 999999
-        private const val MINIMUM_STOCK = 0
+        const val MAXIMUM_STOCK = 999999
+        const val MINIMUM_STOCK = 0
 
         fun createInstance(context: Context, cacheManagerId: String) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment().apply{
@@ -35,13 +42,17 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
         }
     }
 
+    @Inject
+    lateinit var viewModel: ProductManageQuickEditStockViewModel
+
     var editStockSuccess = false
-    var stock = 1
+    var cacheManagerId: String? = ""
 
     private var product: ProductViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initInjector()
         arguments?.let {
             val cacheManagerId: String? = it.getString(EDIT_STOCK_CACHE_ID)
             val cacheManager = context?.let {context -> SaveInstanceCacheManager(context, cacheManagerId) }
@@ -54,64 +65,78 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
         initView()
     }
 
-    private fun initView() {
-        quick_edit_stock_activate_switch.setTextBold(true)
-        product?.let {
-            quick_edit_stock_activate_switch.isChecked = it.isActive()
-            it.stock?.let { stock -> quick_edit_stock_quantity_editor.setValue(stock) }
-            quick_edit_stock_quantity_editor.maxValue = MAXIMUM_STOCK
+    override fun getComponent(): ProductManageQuickEditStockComponent? {
+        return activity?.run {
+            DaggerProductManageQuickEditStockComponent
+                    .builder()
+                    .productManageComponent(ProductManageInstance.getComponent(application))
+                    .build()
         }
+    }
+
+    private fun initInjector() {
+        component?.inject(this)
+    }
+
+    private fun initView() {
+        quick_edit_stock_quantity_editor.maxValue = MAXIMUM_STOCK
+        quick_edit_stock_quantity_editor.minValue = MINIMUM_STOCK
         quick_edit_stock_quantity_editor.setOnFocusChangeListener { v, hasFocus ->
             if (hasFocus) {
                 activity.let {
                     KeyboardHandler.showSoftKeyboard(it)
                 }
             } else {
-                stock = quick_edit_stock_quantity_editor.getValue()
                 activity.let {
                     KeyboardHandler.hideSoftKeyboard(it)
                 }
             }
         }
+        quick_edit_stock_quantity_editor.setValueChangedListener { newValue, _, _ ->
+            viewModel.updateStock(newValue)
+        }
         quick_edit_stock_save_button.setOnClickListener {
-            stock = quick_edit_stock_quantity_editor.getValue()
-            when {
-                isStockTooHigh() -> {
-
-                }
-                isStockTooLow() -> {
-
-                }
-                else -> onSuccessSetStock()
+            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+            cacheManager?.let {
+                cacheManagerId = it.id
+                it.put(EDIT_STOCK_PRODUCT, product)
             }
+            editStockSuccess = true
+            super.dismiss()
         }
-        quick_edit_stock_activate_switch.setOnCheckedChangeListener { buttonView, isChecked ->
-            product = if (isChecked) {
-                product?.copy(status = ProductStatus.ACTIVE)
+        quick_edit_stock_activate_switch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                viewModel.updateStatus(ProductStatus.ACTIVE)
             } else {
-                product?.copy(status = ProductStatus.INACTIVE)
+                viewModel.updateStatus(ProductStatus.INACTIVE)
             }
         }
+        product?.let {
+            quick_edit_stock_activate_switch.isChecked = it.isActive()
+            it.stock?.let { stock ->
+                quick_edit_stock_quantity_editor.setValue(stock)
+                viewModel.updateStock(stock)
+            }
+            it.status?.let { status ->
+                viewModel.updateStatus(status)
+            }
+        }
+        observeStatus()
+        observeStock()
         quick_edit_stock_quantity_editor.requestFocus()
     }
 
-    private fun isStockTooLow(): Boolean {
-        if(stock < MINIMUM_STOCK) {
-            return true
-        }
-        return false
+    private fun observeStock() {
+        viewModel.stock.observe(this, Observer {
+            product = product?.copy(stock = it)
+        })
     }
 
-    private fun isStockTooHigh(): Boolean {
-        if(stock > MAXIMUM_STOCK) {
-            return true
-        }
-        return false
-    }
-
-    private fun onSuccessSetStock() {
-        editStockSuccess = true
-        super.dismiss()
+    private fun observeStatus() {
+        viewModel.status.observe(this, Observer {
+            quick_edit_stock_activate_switch.isChecked = it == ProductStatus.ACTIVE
+            product = product?.copy(status = it)
+        })
     }
 
 

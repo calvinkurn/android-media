@@ -2,13 +2,13 @@ package com.tokopedia.product.manage.feature.quickedit.delete.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductParam
-import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
-class DeleteProductUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<DeleteProductResponse>() {
+class DeleteProductUseCase @Inject constructor(private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<ProductUpdateV3Response>() {
 
     companion object {
 
@@ -40,15 +40,15 @@ class DeleteProductUseCase @Inject constructor(private val graphqlUseCase: Multi
 
     var params: RequestParams = RequestParams.EMPTY
 
-    override suspend fun executeOnBackground(): DeleteProductResponse {
+    override suspend fun executeOnBackground(): ProductUpdateV3Response {
         val variables = HashMap<String, Any>()
         variables[PARAM_INPUT] = params.getObject(PARAM_DELETE_PRODUCT)
-        val gqlRequest = GraphqlRequest(query, DeleteProductResponse::class.java, variables)
+        val gqlRequest = GraphqlRequest(query, ProductUpdateV3Response::class.java, variables)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(gqlRequest)
         val graphqlResponse = graphqlUseCase.executeOnBackground()
         return graphqlResponse.run {
-            getData<DeleteProductResponse>(DeleteProductResponse::class.java)
+            getData<ProductUpdateV3Response>(ProductUpdateV3Response::class.java)
         }
     }
 }

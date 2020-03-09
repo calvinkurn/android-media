@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.product.manage.feature.quickedit.common.data.model.ProductUpdateV3Response
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.ProductEditStockParam
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -16,12 +17,13 @@ class EditStockUseCase @Inject constructor(private val graphqlUseCase: MultiRequ
         const val PARAM_INPUT = "input"
 
         @JvmStatic
-        fun createRequestParams(shopId: String, productId: String, stock: Int): RequestParams {
+        fun createRequestParams(shopId: String, productId: String, stock: Int, status: ProductStatus): RequestParams {
             val requestParams = RequestParams.create()
             val productEditStockParam = ProductEditStockParam()
             productEditStockParam.shop.shopId = shopId
             productEditStockParam.productId = productId
             productEditStockParam.stock = stock
+            productEditStockParam.status = status.name
             requestParams.putObject(PARAM_EDIT_STOCK, productEditStockParam)
             return requestParams
         }

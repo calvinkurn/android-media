@@ -452,7 +452,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
                     Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
                     View.OnClickListener {
-                        viewModel.editStock(result.productId, result.stock, result.productName)
+                        viewModel.editStock(result.productId, result.stock, result.productName, result.status)
                     })
         }
     }
@@ -747,7 +747,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             cacheId -> ProductManageQuickEditStockFragment.createInstance(it, cacheId) } }
         editStockBottomSheet?.setOnDismissListener {
             if(editStockBottomSheet.editStockSuccess) {
-                product.title?.let { viewModel.editStock(product.id, editStockBottomSheet.stock, it) }
+                editStockBottomSheet.editStockSuccess = false
+                val editStockCacheManager = context?.let { SaveInstanceCacheManager(it, editStockBottomSheet.cacheManagerId) }
+                val modifiedProduct: ProductViewModel? = editStockCacheManager?.get(
+                        EDIT_STOCK_PRODUCT, ProductViewModel::class.java)
+                modifiedProduct?.let { product ->
+                    product.stock?.let { stock ->
+                        product.title?.let { title ->
+                            product.status?.let { status ->
+                                viewModel.editStock( product.id, stock, title, status) } } }
+                }
             }
         }
         editStockBottomSheet?.show(childFragmentManager, "quick_edit_stock")

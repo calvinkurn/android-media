@@ -25,6 +25,7 @@ import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
@@ -157,7 +158,9 @@ class ProductManageViewModel(
         showProgressDialog()
         editPriceUseCase.params = EditPriceUseCase.createRequestParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
         launchCatchError(block = {
-            val result = editPriceUseCase.executeOnBackground()
+            val result = withContext(ioDispatcher) {
+                editPriceUseCase.executeOnBackground()
+            }
             if (result.productUpdateV3Data.isSuccess) {
                 _editPriceResult.postValue(Success(EditPriceResult(productName, productId, price)))
             } else {
@@ -168,18 +171,20 @@ class ProductManageViewModel(
         }
     }
 
-    fun editStock(productId: String, stock: Int, productName: String) {
+    fun editStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
         showProgressDialog()
-        editStockUseCase.params = EditStockUseCase.createRequestParams(userSessionInterface.shopId, productId, stock)
+        editStockUseCase.params = EditStockUseCase.createRequestParams(userSessionInterface.shopId, productId, stock, status)
         launchCatchError(block =  {
-            val result = editStockUseCase.executeOnBackground()
+            val result = withContext(ioDispatcher) {
+                editStockUseCase.executeOnBackground()
+            }
             if (result.productUpdateV3Data.isSuccess) {
-                _editStockResult.postValue(Success(EditStockResult(productName, productId, stock)))
+                _editStockResult.postValue(Success(EditStockResult(productName, productId, stock, status)))
             } else {
-                _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, NetworkErrorException())))
+                _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
             }
         }) {
-            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, NetworkErrorException())))
+            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
         }
     }
 
@@ -248,8 +253,10 @@ class ProductManageViewModel(
         showProgressDialog()
         deleteProductUseCase.params = DeleteProductUseCase.createParams(userSessionInterface.shopId, productId)
         launchCatchError( block = {
-            val result = deleteProductUseCase.executeOnBackground()
-            if(result.productMenuResponse.isSuccess) {
+            val result = withContext(ioDispatcher) {
+                deleteProductUseCase.executeOnBackground()
+            }
+            if(result.productUpdateV3Data.isSuccess) {
                 _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
             } else {
                 _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
