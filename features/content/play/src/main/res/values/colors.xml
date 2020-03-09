@@ -21,4 +21,6 @@
     <color name="play_live_ended_title">#F5FFFFFF</color>
 
     <color name="play_product_sheet_divider">#E0E0E0</color>
+
+    <color name="play_product_action_container_shadow">#1E31353B</color>
 </resources>

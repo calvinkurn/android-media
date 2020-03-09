@@ -200,7 +200,7 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     //endregion
 
     private fun sendInitState() {
-        launch {
+        launch(dispatchers.immediate) {
             EventBusFactory.get(viewLifecycleOwner).emit(
                     ScreenStateEvent::class.java,
                     ScreenStateEvent.Init

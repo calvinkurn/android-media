@@ -4,8 +4,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -32,9 +35,11 @@ class ProductSheetView(
     private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_product_sheet, container, true)
             .findViewById(R.id.cl_product_sheet)
 
+    private val clProductContent: ConstraintLayout = view.findViewById(R.id.cl_product_content)
     private val tvSheetTitle: TextView = view.findViewById(R.id.tv_sheet_title)
     private val rvProductList: RecyclerView = view.findViewById(R.id.rv_product_list)
     private val rvVoucherList: RecyclerView = view.findViewById(R.id.rv_voucher_list)
+    private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(productId: String) {
@@ -69,7 +74,10 @@ class ProductSheetView(
 
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
 
-            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, insets.systemWindowInsetBottom)
+            vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
+                height = insets.systemWindowInsetBottom
+            }
+            clProductContent.setPadding(clProductContent.paddingLeft, clProductContent.paddingTop, clProductContent.paddingRight, insets.systemWindowInsetBottom)
 
             insets
         }
