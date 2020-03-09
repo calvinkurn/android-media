@@ -26,7 +26,6 @@ class TopChatRoomPresenterTest : Spek({
         val tkpdAuthInterceptor by memoized { mockk<TkpdAuthInterceptor>(relaxed = true) }
         val fingerprintInterceptor by memoized { mockk<FingerprintInterceptor>(relaxed = true) }
         val topChatRoomWebSocketMessageMapper by memoized { mockk<TopChatRoomWebSocketMessageMapper>(relaxed = true) }
-        val uploadImageUseCase by memoized { mockk<UploadImageUseCase<TopChatImageUploadPojo>>(relaxed = true) }
         val getTemplateChatRoomUseCase by memoized { mockk<GetTemplateChatRoomUseCase>(relaxed = true) }
         val replyChatUseCase by memoized { mockk<ReplyChatUseCase>(relaxed = true) }
         val getExistingMessageIdUseCase by memoized { mockk<GetExistingMessageIdUseCase>(relaxed = true) }

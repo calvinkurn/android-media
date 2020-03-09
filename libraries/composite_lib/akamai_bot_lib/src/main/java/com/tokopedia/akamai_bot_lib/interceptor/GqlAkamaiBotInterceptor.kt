@@ -1,14 +1,21 @@
 package com.tokopedia.akamai_bot_lib.interceptor
 
+import android.util.Log
 import com.akamai.botman.CYFMonitor
+import com.tokopedia.akamai_bot_lib.getAny
 import okhttp3.Headers
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 import okio.Buffer
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
+import timber.log.Timber
 import java.io.EOFException
 import java.io.IOException
 import java.nio.charset.Charset
+import kotlin.system.measureTimeMillis
 
 class GqlAkamaiBotInterceptor : Interceptor {
     @Throws(IOException::class)
@@ -32,33 +39,64 @@ class GqlAkamaiBotInterceptor : Interceptor {
             if (isPlaintext(buffer)) {
                 charset?.let {
                     readFromBuffer(buffer, it).let {
-                        if (it.contains("login")) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI","login")
-                        }else if (it.contains("register") ){
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI","register")
-                        }else if (it.contains("getPDPInfo") ) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI", "product_info")
-                        }else if (it.contains("shopInfoByID") ) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI", "shop_info")
-                        } else if(it.contains("followShop")){
-                            newRequest.addHeader("X-TKPD-AKAMAI", "followshop")
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                        } else if (it.contains("add_to_cart") || it.contains("atcOCS") || it.contains("AddToCartTransactional")) {
-                            newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
-                                    ?: "")
-                            newRequest.addHeader("X-TKPD-AKAMAI", "atc")
-                        } else {
-                            // none
+
+                        // start time
+                        var functionNames: List<String> = mutableListOf();
+                        try {
+                            val time = measureTimeMillis {
+                                val jsonArray = JSONArray(it)
+                                val jsonObject: JSONObject = jsonArray.getJSONObject(0)
+                                val query = jsonObject.getString("query")
+                                functionNames = getAny(query)
+                            }
+                            println("P2#AKAMAI_REGEX_PERFORMANCE#query;function_name=$functionNames;read_time=$time")
+                            Timber.w("P2#AKAMAI_REGEX_PERFORMANCE#query;function_name=$functionNames;read_time=$time")
+                            Log.d("TIMBER", "P2#AKAMAI_REGEX_PERFORMANCE#query;function_name=$functionNames;read_time=$time")
+                        } catch (e: JSONException) {
+                            e.printStackTrace()
                         }
+                        // end time and elapse time
+
+                        for(functionName in functionNames){
+
+                            if (functionName.equals("login_token")) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI","login")
+                            }else if (functionName.equals("register") ){
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI","register")
+                            }else if (functionName.equals("pdpGetLayout") ){
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI","pdp")
+                            }else if (functionName.equals("checkout_general") ) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "checkout")
+                            }else if (functionName.equals("getPDPInfo") ) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "product_info")
+                            }else if (functionName.equals("shopInfoByID") ) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "shop_info")
+                            } else if(functionName.equals("followShop")){
+                                newRequest.addHeader("X-TKPD-AKAMAI", "followshop")
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                            } else if (functionName.equals("add_to_cart_transactional")) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "atc")
+                            } else {
+                                // none
+                            }
+                        }
+
+
 
                     }
                 }

@@ -76,7 +76,6 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
-import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitable;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeVisitableDiffUtil;
@@ -91,6 +90,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
+import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.constant.BerandaUrl;
 import com.tokopedia.home.constant.ConstantKey;
 import com.tokopedia.home.widget.FloatingTextButton;
@@ -175,8 +175,10 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String EXTRA_URL = "url";
     private static final String EXTRA_TITLE = "core_web_view_extra_title";
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
+    private static final String EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     private static final String DEFAULT_UTM_SOURCE = "home_notif";
+    private static final int REQUEST_CODE_PLAY_ROOM = 256;
     private static final String PERFORMANCE_PAGE_NAME_HOME = "home";
     @NonNull
     public static Boolean HIDE_TICKER = false;
@@ -556,7 +558,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         refreshLayout.post(() -> {
             viewModel.searchHint();
             viewModel.refreshHomeData();
-            /**
+            /*
              * set notification gimmick
              */
             homeMainToolbar.setNotificationNumber(0);
@@ -980,6 +982,9 @@ public class HomeFragment extends BaseDaggerFragment implements
                     viewModel.removeSuggestedReview();
                 }
                 break;
+            case REQUEST_CODE_PLAY_ROOM:
+                viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
+                break;
         }
     }
 
@@ -1041,7 +1046,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     private void getStickyContent(){
         boolean isShowSticky = remoteConfig.getBoolean(StickyLoginConstant.REMOTE_CONFIG_FOR_HOME, true);
-        if(isShowSticky) viewModel.getStickyContent();
+        if(isShowSticky && !userSession.isLoggedIn()) viewModel.getStickyContent();
     }
 
     private void hideLoading() {
@@ -1276,6 +1281,16 @@ public class HomeFragment extends BaseDaggerFragment implements
             intent.putExtra(EXTRA_URL, url);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void getTabBusinessWidget(int position) {
+        viewModel.getBusinessUnitTabData(position);
+    }
+
+    @Override
+    public void getBusinessUnit(int tabId, int position) {
+        viewModel.getBusinessUnitData(tabId, position);
     }
 
     public void openWebViewURL(String url) {
@@ -1618,6 +1633,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void sendEETracking(@NotNull HashMap<String, Object> data) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(data);
+    }
+
+    @Override
     public void putEEToIris(@NotNull HashMap<String, Object> data) {
         if (irisAnalytics!=null) {
             irisAnalytics.saveEvent(data);
@@ -1734,7 +1754,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),
                 Pair.create(root.findViewById(R.id.exo_content_frame), getString(R.string.home_transition_video))
         );
-        startActivity(intent, options.toBundle());
+        startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM, options.toBundle());
     }
 
     private boolean needToPerformanceMonitoring() {
