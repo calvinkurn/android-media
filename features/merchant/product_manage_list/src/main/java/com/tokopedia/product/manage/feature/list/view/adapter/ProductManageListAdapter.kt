@@ -30,6 +30,15 @@ class ProductManageListAdapter(
         }
     }
 
+    fun deleteProduct(productId: String) {
+        data.forEachIndexed { index, it ->
+            if (it.id.equals(productId, ignoreCase = true)) {
+                notifyItemRemoved(index)
+                return
+            }
+        }
+    }
+
     fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
         data.forEachIndexed { index, product ->
             if (product.id.equals(productId, ignoreCase = true)) {

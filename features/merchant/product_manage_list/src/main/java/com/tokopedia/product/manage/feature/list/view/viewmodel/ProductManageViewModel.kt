@@ -15,6 +15,9 @@ import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResponse
+import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
+import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
@@ -40,6 +43,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 
@@ -54,6 +58,7 @@ class ProductManageViewModel(
     private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
     private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
     private val editStockUseCase: EditStockUseCase,
+    private val deleteProductUseCase: DeleteProductUseCase,
     private val ioDispatcher: CoroutineDispatcher,
     mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
@@ -66,7 +71,7 @@ class ProductManageViewModel(
         get() = _shopInfoResult
     val updateProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
         get() = _updateProductResult
-    val deleteProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
+    val deleteProductResult : LiveData<Result<DeleteProductResult>>
         get() = _deleteProductResult
     val editPriceResult : LiveData<Result<EditPriceResult>>
         get() = _editPriceResult
@@ -85,7 +90,7 @@ class ProductManageViewModel(
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
     private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    private val _deleteProductResult = MutableLiveData<Result<DeleteProductResult>>()
     private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
     private val _editStockResult = MutableLiveData<Result<EditStockResult>>()
     private val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
@@ -168,9 +173,9 @@ class ProductManageViewModel(
                 override fun onNext(data: ProductUpdateV3Response) {
                     hideProgressDialog()
                     if (data.productUpdateV3Data.isSuccess) {
-                        _editPriceResult.value = Success(EditPriceResult(productName, productId, price))
+                        _editPriceResult.postValue(Success(EditPriceResult(productName, productId, price)))
                     } else {
-                        _editPriceResult.value = Fail(EditPriceResult(productName, productId, price, NetworkErrorException()))
+                        _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
                     }
                 }
 
@@ -179,22 +184,24 @@ class ProductManageViewModel(
                 }
 
                 override fun onError(e: Throwable) {
-                    _editPriceResult.value = Fail(EditPriceResult(productName, productId, price, NetworkErrorException()))
+                    _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
                 }
             })
     }
 
     fun editStock(productId: String, stock: Int, productName: String) {
+        showProgressDialog()
         editStockUseCase.params = EditStockUseCase.createRequestParams(userSessionInterface.shopId, productId, stock)
-        launchCatchError(block = {
+        launchCatchError(block =  {
             val result = editStockUseCase.executeOnBackground()
-            if(result.productUpdateV3Data.isSuccess) {
-                _editStockResult.value = Success(EditStockResult(productName, productId, stock))
+            hideProgressDialog()
+            if (result.productUpdateV3Data.isSuccess) {
+                _editStockResult.postValue(Success(EditStockResult(productName, productId, stock)))
             } else {
-                _editPriceResult.value = Fail(EditStockResult(productName, productId, stock, NetworkErrorException()))
+                _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, NetworkErrorException())))
             }
         }) {
-            Fail(it)
+            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, NetworkErrorException())))
         }
     }
 
@@ -259,27 +266,20 @@ class ProductManageViewModel(
             })
     }
 
-    fun deleteSingleProduct(productIds: String) {
+    fun deleteSingleProduct(productName: String, productId: String) {
         showProgressDialog()
-
-        val singleDeleteParam = singleDeleteProductMapper(productIds)
-        val requestParams = BulkUpdateProductUseCase.createRequestParams(singleDeleteParam)
-
-        bulkUpdateProductUseCase.execute(requestParams,
-            object : Subscriber<ProductUpdateV3SuccessFailedResponse>() {
-                override fun onNext(listResponse: ProductUpdateV3SuccessFailedResponse) {
-                    hideProgressDialog()
-                    _deleteProductResult.value = Success(listResponse)
-                }
-
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable) {
-                    _deleteProductResult.value = Fail(e)
-                }
-
-            })
+        deleteProductUseCase.params = DeleteProductUseCase.createParams(userSessionInterface.shopId, productId)
+        launchCatchError( block = {
+            val result = deleteProductUseCase.executeOnBackground()
+            hideProgressDialog()
+            if(result.productMenuResponse.isSuccess) {
+                _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
+            } else {
+                _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
+            }
+        }) {
+            _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
+        }
     }
 
     fun setFeaturedProduct(productId: String, status: Int) {
@@ -331,17 +331,6 @@ class ProductManageViewModel(
         }
         return confirmationProductDataList
 
-    }
-
-    /**
-     * Map for delete single product, from option menu product
-     */
-    private fun singleDeleteProductMapper(productId: String): List<ProductUpdateV3Param> {
-        val param = ProductUpdateV3Param()
-        param.productId = productId
-        param.shop.shopId = userSessionInterface.shopId
-        param.productStatus = "DELETED"
-        return arrayListOf(param)
     }
 
     /**

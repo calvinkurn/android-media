@@ -10,6 +10,7 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
+import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
@@ -60,7 +61,8 @@ class ProductManageListModule {
         getProductListUseCase: GQLGetProductListUseCase,
         bulkUpdateProductUseCase: BulkUpdateProductUseCase,
         editFeaturedProductUseCase: EditFeaturedProductUseCase,
-        editStockUseCase: EditStockUseCase
+        editStockUseCase: EditStockUseCase,
+        deleteProductUseCase: DeleteProductUseCase
     ): ProductManageViewModel {
         return ProductManageViewModel(
             editPriceUseCase,
@@ -73,6 +75,7 @@ class ProductManageListModule {
             bulkUpdateProductUseCase,
             editFeaturedProductUseCase,
             editStockUseCase,
+            deleteProductUseCase,
             Dispatchers.IO,
             Dispatchers.Main
         )
@@ -154,6 +157,11 @@ class ProductManageListModule {
     @Provides
     fun provideEditStockUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
             EditStockUseCase(multiRequestGraphqlUseCase)
+
+    @ProductManageListScope
+    @Provides
+    fun provideDeleteProductkUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
+            DeleteProductUseCase(multiRequestGraphqlUseCase)
 
     @ProductManageListScope
     @Provides

@@ -163,5 +163,10 @@
     <string name="product_manage_delete_product_description">Penghapusan produk tidak dapat dibatalkan.</string>
     <string name="product_manage_delete_product_delete_button">Ya, Hapus</string>
     <string name="product_manage_delete_product_cancel_button">Batalkan</string>
+    <string name="product_manage_delete_product_success">\"%1$s\" berhasil dihapus</string>
+    <string name="product_manage_delete_product_fail">Produk gagal dihapus.\nSilakan coba lagi, ya!</string>
+
+    <string name="product_manage_snack_bar_retry">Coba lagi</string>
+    <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
 
 </resources>

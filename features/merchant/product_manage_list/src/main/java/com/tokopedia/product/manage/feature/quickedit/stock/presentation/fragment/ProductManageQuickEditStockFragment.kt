@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.DialogFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
@@ -61,9 +62,19 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
             quick_edit_stock_quantity_editor.maxValue = MAXIMUM_STOCK
         }
         quick_edit_stock_quantity_editor.setOnFocusChangeListener { v, hasFocus ->
-            hideError()
+            if (hasFocus) {
+                hideError()
+                activity.let {
+                    KeyboardHandler.showSoftKeyboard(it)
+                }
+            } else {
+                activity.let {
+                    KeyboardHandler.hideSoftKeyboard(it)
+                }
+            }
         }
         quick_edit_stock_save_button.setOnClickListener {
+            stock = quick_edit_stock_quantity_editor.getValue()
             when {
                 isStockTooHigh() -> showErrorStockTooHigh()
                 isStockTooLow() -> showErrorStockTooLow()
@@ -77,6 +88,7 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
                 product?.copy(status = ProductStatus.INACTIVE)
             }
         }
+        quick_edit_stock_quantity_editor.requestFocus()
     }
 
     private fun isStockTooLow(): Boolean {
@@ -94,14 +106,12 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
     }
 
     private fun showErrorStockTooLow() {
-        quick_edit_stock_error_message.text = context?.let {
-            it.resources.getString(R.string.product_manage_quick_edit_stock_min_stock_error)}
+        quick_edit_stock_error_message.text = context?.let { it.resources.getString(R.string.product_manage_quick_edit_stock_min_stock_error)}
         quick_edit_stock_error_message.visibility = View.VISIBLE
     }
 
     private fun showErrorStockTooHigh() {
-        quick_edit_stock_error_message.text = context?.let {
-            it.resources.getString(R.string.product_manage_quick_edit_stock_max_stock_error)}
+        quick_edit_stock_error_message.text = context?.let { it.resources.getString(R.string.product_manage_quick_edit_stock_max_stock_error)}
         quick_edit_stock_error_message.visibility = View.VISIBLE
     }
 
@@ -111,7 +121,6 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify() {
 
     private fun onSuccessSetStock() {
         editStockSuccess = true
-        stock = quick_edit_stock_quantity_editor.getValue()
         super.dismiss()
     }
 
