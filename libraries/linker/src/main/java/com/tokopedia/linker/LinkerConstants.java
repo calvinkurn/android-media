@@ -90,4 +90,11 @@ public interface LinkerConstants {
     String JOURNEY_ID = "journey_id";
     String INVOICE_ID = "invoice_id";
 
+    String BRANCH_UTM_SOURCE = "~channel";
+    String BRANCH_UTM_MEDIUM = "~feature";
+    String BRANCH_CAMPAIGN = "~campaign";
+
+    String UTM_SOURCE = "utm_source";
+    String UTM_MEDIUM = "utm_medium";
+    String UTM_CAMPAIGN = "utm_campaign";
 }

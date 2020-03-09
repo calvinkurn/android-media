@@ -241,11 +241,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val taskStackBuilder = TaskStackBuilder.create(it)
             val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
             taskStackBuilder.addNextIntent(homeIntent)
-            val intent = when(abTestVariant) {
-                ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.REGISTER)
-                else -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            }
+            val intent = RouteManager.getIntent(it, ApplinkConst.REGISTER)
             taskStackBuilder.addNextIntent(intent)
             taskStackBuilder.startActivities()
         }
