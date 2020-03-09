@@ -366,7 +366,9 @@ dependencies {
 
     implementation(rootProject.ext.analyticsDependencies.moengage) 
 
+    implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
+    
     implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
