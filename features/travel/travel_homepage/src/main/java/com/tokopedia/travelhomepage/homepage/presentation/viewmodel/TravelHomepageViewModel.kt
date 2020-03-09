@@ -43,9 +43,9 @@ class TravelHomepageViewModel @Inject constructor(
             if (layoutResult is Success) {
                 travelItemList.value = layoutResult.data
                 isAllError.value = false
-            } else isAllError.value = true
+            } else checkIfAllError()
         }) {
-            isAllError.value = true
+            checkIfAllError()
         }
     }
 
@@ -90,19 +90,4 @@ class TravelHomepageViewModel @Inject constructor(
             isAllError.value = !isSuccess
         }
     }
-
-    data class ParamData(
-            @SerializedName("product")
-            @Expose
-            val product: String = "SUBHOMEPAGE",
-
-            @SerializedName("countryID")
-            @Expose
-            val countryID: String = "ID",
-
-            @SerializedName("platform")
-            @Expose
-            val platform: String = "SUBHOMEPAGE"
-    )
-
 }
