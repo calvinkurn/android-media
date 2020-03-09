@@ -309,6 +309,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     viewModel.getProductList(userSession.shopId,
                             bottomSheet.selectedFilterOptions?.filterOptions,
                             bottomSheet.selectedFilterOptions?.sortOption, true)
+
+                    viewModel.getFeaturedProductCount(userSession.shopId,
+                            bottomSheet.selectedFilterOptions?.sortOption)
                 }
             }
         }
@@ -397,6 +400,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         val sortOption = selectedFilter?.sortOption
 
         viewModel.getProductList(userSession.shopId, filterOptions, sortOption, isRefresh)
+        viewModel.getFeaturedProductCount(userSession.shopId, sortOption)
     }
 
     private fun createFilterOptions(page: Int, keyword: String?): MutableList<FilterOption> {
@@ -736,8 +740,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             is Delete -> clickDeleteProductMenu(productId, menuTitle)
             is SetTopAds -> onPromoTopAdsClicked(product)
             is SetCashBack -> onSetCashbackClicked(product)
-            is SetFeaturedProduct -> { onSetFeaturedProductClicked(product, ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)}
-            is RemoveFeaturedProduct -> { onSetFeaturedProductClicked(product, ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)}
+            is SetFeaturedProduct -> onSetFeaturedProductClicked(product)
+            is RemoveFeaturedProduct -> onRemoveFeaturedProductClicked(product)
         }
 
         manageProductBottomSheet?.dismiss()
@@ -784,45 +788,46 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun onSetFeaturedProductClicked(productManageViewModel: ProductViewModel, setFeaturedType: Int) {
+    private fun onSetFeaturedProductClicked(productManageViewModel: ProductViewModel) {
         context?.let { context ->
             var dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
             if(viewModel.isPowerMerchant() || isOfficialStore) {
-                if(productListFeaturedOnlySize == 5 && !productManageViewModel.isFeatured) {
-                    dialog = showDialogFeaturedProduct(
-                            dialog,
-                            ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
-                            getString(R.string.product_featured_max_dialog_title),
-                            getString(R.string.product_featured_max_dialog_desc),
-                            getString(R.string.product_featured_max_dialog_primary_cta),
-                            getString(R.string.product_featured_max_dialog_secondary_cta)
-                    )
-                    dialog.setPrimaryCTAClickListener { dialog.dismiss() }
-                    dialog.setSecondaryCTAClickListener {
-                        dialog.dismiss()
-                        RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_FEATURED_PRODUCT)
+                productManageViewModel.isFeatured?.let {
+                    if(productListFeaturedOnlySize == 5 && !it) {
+                        dialog = showDialogFeaturedProduct(
+                                dialog,
+                                ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
+                                getString(R.string.product_featured_max_dialog_title),
+                                getString(R.string.product_featured_max_dialog_desc),
+                                getString(R.string.product_featured_max_dialog_primary_cta),
+                                getString(R.string.product_featured_max_dialog_secondary_cta)
+                        )
+                        dialog.setPrimaryCTAClickListener { dialog.dismiss() }
+                        dialog.setSecondaryCTAClickListener {
+                            dialog.dismiss()
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_FEATURED_PRODUCT)
+                        }
+                        dialog.show()
                     }
-                }
-                else if(!productManageViewModel.isFeatured) {
-                    dialog = showDialogFeaturedProduct(
-                            dialog,
-                            ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
-                            getString(R.string.product_featured_add_dialog_title),
-                            getString(R.string.product_featured_add_dialog_desc),
-                            getString(R.string.product_featured_add_dialog_primary_cta),
-                            getString(R.string.product_featured_add_dialog_secondary_cta)
-                    )
-                    dialog.setPrimaryCTAClickListener {
-                        productListFeaturedOnlySize += 1
-                        showLoadingProgress()
-                        setFeaturedProduct(productManageViewModel.id, setFeaturedType)
-                        dialog.dismiss()
+                    else {
+                        dialog = showDialogFeaturedProduct(
+                                dialog,
+                                ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
+                                getString(R.string.product_featured_add_dialog_title),
+                                getString(R.string.product_featured_add_dialog_desc),
+                                getString(R.string.product_featured_add_dialog_primary_cta),
+                                getString(R.string.product_featured_add_dialog_secondary_cta)
+                        )
+                        dialog.setPrimaryCTAClickListener {
+                            productListFeaturedOnlySize += 1
+                            showLoadingProgress()
+                            setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
+                            dialog.dismiss()
+                        }
+                        dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+                        dialog.show()
                     }
-                    dialog.setSecondaryCTAClickListener { dialog.dismiss() }
-                } else {
-                    productListFeaturedOnlySize -= 1
-                    showLoadingProgress()
-                    setFeaturedProduct(productManageViewModel.id, setFeaturedType)
+                    manageProductBottomSheet?.show(productManageViewModel)
                 }
             } else {
                 dialog = showDialogFeaturedProduct(
@@ -838,8 +843,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                 }
                 dialog.setSecondaryCTAClickListener { dialog.dismiss() }
+                dialog.show()
             }
         }
+    }
+
+    private fun onRemoveFeaturedProductClicked(productManageViewModel: ProductViewModel) {
+        productListFeaturedOnlySize -= 1
+        showLoadingProgress()
+        setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
     }
 
     private fun onSetStockReminderClicked(productManageViewModel: ProductViewModel) {
@@ -1125,7 +1137,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         dialog.setDescription(desc)
         dialog.setPrimaryCTAText(primaryCta)
         dialog.setSecondaryCTAText(secondaryCta)
-        dialog.show()
         return dialog
     }
 
@@ -1200,8 +1211,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun observeProductListFeatured() {
         observe(viewModel.productListFeaturedOnlyResult) {
             when (it) {
-                is Success -> productListFeaturedOnlySize = it.data.size
-                is Fail -> loadEmptyList()
+                is Success -> productListFeaturedOnlySize = it.data
             }
         }
     }

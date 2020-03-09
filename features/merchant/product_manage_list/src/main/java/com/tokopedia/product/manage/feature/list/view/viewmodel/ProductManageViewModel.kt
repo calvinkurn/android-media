@@ -59,7 +59,7 @@ class ProductManageViewModel(
         get() = _viewState
     val productListResult : LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
-    val productListFeaturedOnlyResult : LiveData<Result<List<ProductViewModel>>>
+    val productListFeaturedOnlyResult : LiveData<Result<Int>>
         get() = _productListFeaturedOnlyResult
     val shopInfoResult : LiveData<Result<ShopInfoResult>>
         get() = _shopInfoResult
@@ -80,7 +80,7 @@ class ProductManageViewModel(
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
-    private val _productListFeaturedOnlyResult = MutableLiveData<Result<List<ProductViewModel>>>()
+    private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
     private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
     private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
@@ -145,19 +145,25 @@ class ProductManageViewModel(
                 productListResponse?.data
             }
 
+            refreshList(isRefresh)
+            showProductList(productList)
+        }, onError = {
+            _productListResult.value = Fail(it)
+        })
+    }
+
+    fun getFeaturedProductCount(shopId: String, sortOption: SortOption? = null) {
+        launchCatchError(block = {
             val productListFeaturedOnly = withContext(ioDispatcher) {
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), sortOption)
                 val getProductList = getProductListUseCase.execute(requestParams)
-                val productListResponse = getProductList.productList
-                productListResponse?.data
+                val productListSize = getProductList.productList?.data?.size
+                productListSize
             }
 
-            refreshList(isRefresh)
-            showProductList(productList)
-            showProductListFeaturedOnly(productListFeaturedOnly)
+            productListFeaturedOnly?.let { showProductListFeaturedOnly(it) }
         }, onError = {
-            _productListResult.postValue(Fail(it))
-            _productListFeaturedOnlyResult.postValue(Fail(it))
+            _productListFeaturedOnlyResult.value = Fail(it)
         })
     }
 
@@ -379,9 +385,8 @@ class ProductManageViewModel(
         _productListResult.value = Success(productList)
     }
 
-    private fun showProductListFeaturedOnly(products: List<Product>?){
-        val productListFeaturedOnly = mapToViewModels(products)
-        _productListFeaturedOnlyResult.value = Success(productListFeaturedOnly)
+    private fun showProductListFeaturedOnly(productsSize: Int){
+        _productListFeaturedOnlyResult.value = Success(productsSize)
     }
 
     private fun refreshList(isRefresh: Boolean) {
