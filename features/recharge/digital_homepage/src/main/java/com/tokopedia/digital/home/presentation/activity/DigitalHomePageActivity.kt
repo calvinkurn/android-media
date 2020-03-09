@@ -65,7 +65,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     /* This Method is use to handle intent from Action
    */
     private fun Intent.handleIntent() {
-        handleTracking() 
+        handleTracking()
         when (action) {
             Intent.ACTION_VIEW -> handleDeepLink(data)
             SearchIntents.ACTION_SEARCH -> {
@@ -78,7 +78,7 @@ class DigitalHomePageActivity : BaseSimpleActivity(), HasComponent<DigitalHomePa
     /* This Method is use to tracking action click when user click open app in action
     */
     private fun handleTracking(){
-        val trackingClick = intent.getStringExtra(RECHARGE_HOME_PAGE_EXTRA)
+        val trackingClick = intent.getBooleanExtra(RECHARGE_HOME_PAGE_EXTRA, false)
         if (trackingClick!=null) {
             Timber.d("P2#ACTION_SLICE_CLICK_RECHARGE#DigitalHomepage")
         }
