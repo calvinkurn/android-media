@@ -177,8 +177,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final String EXTRA_MESSAGE = "EXTRA_MESSAGE";
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     private static final String DEFAULT_UTM_SOURCE = "home_notif";
-    private static final String KEY_JANKY_FRAME_INIT = "janky_frames_init_home";
-    private static final String KEY_JANKY_FRAME_SCROLL = "janky_frames_scroll_home";
+    private static final String PERFORMANCE_PAGE_NAME_HOME = "home";
     @NonNull
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
@@ -282,6 +281,19 @@ public class HomeFragment extends BaseDaggerFragment implements
         setGeolocationPermission();
         needToShowGeolocationComponent();
         getStickyContent();
+        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().startInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopHomeInitPerformanceMonitoring();
+    }
+
+    private void stopHomeInitPerformanceMonitoring() {
+        if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) {
+            jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().stopInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        }
     }
 
     @Override
@@ -365,15 +377,14 @@ public class HomeFragment extends BaseDaggerFragment implements
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     evaluateFloatingTextButtonOnStateChanged();
                     evaluateInheritScrollForHomeRecommendation();
-                    stopHomeScrollingJankyFrameCount();
                 } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                    startHomeScrollingJankyFrameCount();
+                    stopHomeInitPerformanceMonitoring();
                 }
             }
         });
         jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().recordRecyclerViewScrollPerformance(
                 homeRecyclerView,
-                "home", "");
+                PERFORMANCE_PAGE_NAME_HOME, "");
     }
 
     private void setupStatusBar() {
@@ -1291,6 +1302,9 @@ public class HomeFragment extends BaseDaggerFragment implements
         if (getUserVisibleHint()) {
             viewModel.hitBannerImpression(bannerSlidesModel);
         }
+        if (bannerSlidesModel.getPosition() > 1) {
+            stopHomeInitPerformanceMonitoring();
+        }
     }
 
     @Override
@@ -1823,13 +1837,6 @@ public class HomeFragment extends BaseDaggerFragment implements
             }
             index++;
         }
-    }
-
-    private void startHomeScrollingJankyFrameCount() {
-
-    }
-
-    private void stopHomeScrollingJankyFrameCount() {
     }
 
     @Override

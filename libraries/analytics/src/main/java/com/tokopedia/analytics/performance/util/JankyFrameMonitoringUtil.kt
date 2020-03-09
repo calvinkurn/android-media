@@ -4,6 +4,7 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.os.Build
 import android.os.Handler
+import android.util.Log
 import android.view.FrameMetrics
 import android.view.Window
 import androidx.recyclerview.widget.RecyclerView
@@ -18,7 +19,7 @@ import java.lang.StringBuilder
 class JankyFrameMonitoringUtil {
 
     private var activity: Activity? = null
-    private lateinit var performanceMonitoring: PerformanceMonitoring
+    private var performanceMonitoring: PerformanceMonitoring? = null
     private var isPerformanceMonitoringActive: Boolean = false
 
     private var onFrameMetricAvailableListener: Window.OnFrameMetricsAvailableListener? = null
@@ -30,6 +31,9 @@ class JankyFrameMonitoringUtil {
     private val PERF_JANKY_FRAMES_TAG = "janky_frames_%s_%s"
     private val PERF_JANKY_FRAMES_SUB_PAGE_TAG = "janky_frames_%s_%s_%s"
 
+    private val initPerformanceMonitoring = mutableMapOf<String, PerformanceMonitoring>()
+    private val initPerformanceDatas = mutableMapOf<String, PerformanceData>()
+
     fun init(activity: Activity) {
         this.activity = activity
         startFrameMetrics()
@@ -38,7 +42,7 @@ class JankyFrameMonitoringUtil {
     fun recordRecyclerViewScrollPerformance(recyclerView: RecyclerView,
                                             pageName: String,
                                             subPageName: String = "") {
-        var tag = if (subPageName.isNotEmpty()) String.format(PERF_JANKY_FRAMES_TAG, TYPE_SCROLL, pageName)
+        var tag = if (subPageName.isEmpty()) String.format(PERF_JANKY_FRAMES_TAG, TYPE_SCROLL, pageName)
         else String.format(PERF_JANKY_FRAMES_SUB_PAGE_TAG, TYPE_SCROLL, pageName, subPageName)
 
         val performanceMonitoring = PerformanceMonitoring()
@@ -50,13 +54,18 @@ class JankyFrameMonitoringUtil {
         var startJankyFramesCount = 0
         var endJankyFramesCount = 0
 
+        var isScrolling = false
+
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 when(newState) {
                     SCROLL_STATE_DRAGGING -> {
-                        startAllFramesCount = mainPerformanceData.allFrames
-                        startJankyFramesCount = mainPerformanceData.jankyFrames
+                        if (!isScrolling) {
+                            startAllFramesCount = mainPerformanceData.allFrames
+                            startJankyFramesCount = mainPerformanceData.jankyFrames
+                        }
+                        isScrolling = true
                     }
                     SCROLL_STATE_IDLE -> {
                         endAllFramesCount = mainPerformanceData.allFrames
@@ -74,10 +83,52 @@ class JankyFrameMonitoringUtil {
                         performanceMonitoring.putMetric(performanceData.jankyFramesPercentageTag, performanceData.jankyFramePercentage.toLong())
 
                         performanceMonitoring.stopTrace()
+
+                        startAllFramesCount = mainPerformanceData.allFrames
+                        startJankyFramesCount = mainPerformanceData.jankyFrames
                     }
                 }
             }
         })
+    }
+
+    fun startInitPerformanceMonitoring(pageName: String) {
+        val tag = String.format(PERF_JANKY_FRAMES_TAG, TYPE_INIT, pageName)
+        val performanceData = PerformanceData(
+                mainPerformanceData.allFrames, mainPerformanceData.jankyFrames
+        )
+        val performanceMonitoring = PerformanceMonitoring()
+        performanceMonitoring.startTrace(tag)
+
+        initPerformanceDatas.put(tag, performanceData)
+        initPerformanceMonitoring.put(tag, performanceMonitoring)
+    }
+
+    fun stopInitPerformanceMonitoring(pageName: String) {
+        val tag = String.format(PERF_JANKY_FRAMES_TAG, TYPE_INIT, pageName)
+
+        val initPerformanceData = initPerformanceDatas[tag]
+        initPerformanceData?.let {
+            val endAllFramesCount = mainPerformanceData.allFrames
+            val endJankyFramesCount = mainPerformanceData.jankyFrames
+
+            val allFramesInSession = endAllFramesCount - it.allFrames
+            val allJankyFramesInSession = endJankyFramesCount - it.jankyFrames
+            val performanceData = PerformanceData(
+                    allFrames = allFramesInSession,
+                    jankyFrames = allJankyFramesInSession
+            )
+            val performanceMonitoring = initPerformanceMonitoring[tag]
+            performanceMonitoring?.let {
+                it.putMetric(performanceData.allFramesTag, performanceData.allFrames.toLong())
+                it.putMetric(performanceData.jankyFramesTag, performanceData.jankyFrames.toLong())
+                it.putMetric(performanceData.jankyFramesPercentageTag, performanceData.jankyFramePercentage.toLong())
+
+                it.stopTrace()
+                initPerformanceMonitoring.remove(tag)
+                initPerformanceDatas.remove(tag)
+            }
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.N)
@@ -109,7 +160,7 @@ class JankyFrameMonitoringUtil {
             }
             onFrameMetricAvailableListener = null
         }
-        performanceMonitoring.stopTrace()
+        performanceMonitoring?.stopTrace()
     }
 
 }
