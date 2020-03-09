@@ -8,23 +8,52 @@ import com.tokopedia.onboarding.domain.usecase.DynamicOnbaordingUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 class DynamicOnbaordingViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher,
         private val dynamicOnbaordingUseCase: DynamicOnbaordingUseCase
-): BaseViewModel(dispatcher) {
+) : BaseViewModel(dispatcher) {
 
     private val _dynamicOnbaordingData = MutableLiveData<Result<DynamicOnboardingDataModel>>()
     val dynamicOnbaordingData: LiveData<Result<DynamicOnboardingDataModel>>
         get() = _dynamicOnbaordingData
 
     fun getData() {
+        var isFinished = false
         dynamicOnbaordingUseCase.getData({
-            _dynamicOnbaordingData.postValue(Success(it))
+            if (!isFinished) {
+                isFinished = true
+                _dynamicOnbaordingData.postValue(Success(it))
+            }
         }, {
-            _dynamicOnbaordingData.postValue(Fail(it))
+            if (!isFinished) {
+                isFinished = true
+                _dynamicOnbaordingData.postValue(Fail(it))
+            }
         })
+
+        startTimer(TIMEOUT) {
+            if (!isFinished) {
+                isFinished = true
+                _dynamicOnbaordingData.postValue(Fail(Throwable("Job was canceled")))
+                dynamicOnbaordingUseCase.cancelJobs()
+            }
+        }
+    }
+
+    private fun startTimer(delayMillis: Long = 0, action: () -> Unit) = GlobalScope.launch {
+        delay(delayMillis)
+        action()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        dynamicOnbaordingUseCase.cancelJobs()
+    }
+
+    companion object {
+        const val TIMEOUT = 1000L
     }
 }
