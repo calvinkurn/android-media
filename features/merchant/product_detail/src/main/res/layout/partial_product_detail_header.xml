@@ -206,8 +206,8 @@
             android:background="@drawable/bg_rounded_right_red"
             android:paddingRight="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_8"
-            android:paddingStart="@dimen/dp_18"
-            android:paddingLeft="@dimen/dp_18"
+            android:paddingStart="@dimen/dp_16"
+            android:paddingLeft="@dimen/dp_16"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -225,7 +225,6 @@
                 android:singleLine="true"
                 android:text="@string/label_flash_sale"
                 android:textColor="@color/white"
-                app:drawableLeftCompat="@drawable/ic_flash_sale"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
