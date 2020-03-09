@@ -26,10 +26,10 @@ class SellerHomeActivityViewModel @Inject constructor(
 ) : CustomBaseViewModel(dispatcher) {
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
-    private val _shopInfo = MutableLiveData<Result<ShopInfoUiModel>>()
-
     val notifications: LiveData<Result<NotificationUiModel>>
         get() = _notifications
+
+    private val _shopInfo = MutableLiveData<Result<ShopInfoUiModel>>()
     val shopInfo: LiveData<Result<ShopInfoUiModel>>
         get() = _shopInfo
 
@@ -39,6 +39,6 @@ class SellerHomeActivityViewModel @Inject constructor(
 
     fun getShopInfo() = executeCall(_shopInfo) {
         getSopInfoUseCase.params = GetShopInfoUseCase.getRequestParam(userSession.userId)
-        return@executeCall getSopInfoUseCase.executeOnBackground()
+        getSopInfoUseCase.executeOnBackground()
     }
 }

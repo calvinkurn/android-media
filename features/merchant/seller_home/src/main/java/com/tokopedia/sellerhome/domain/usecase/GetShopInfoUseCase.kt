@@ -3,6 +3,7 @@ package com.tokopedia.sellerhome.domain.usecase
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
 import com.tokopedia.sellerhome.domain.model.GetShopInfoResponse
 import com.tokopedia.sellerhome.view.model.ShopInfoUiModel
@@ -36,7 +37,7 @@ class GetShopInfoUseCase(
 
         fun getRequestParam(userId: String): RequestParams {
             return RequestParams.create().apply {
-                putString(USER_ID, userId)
+                putInt(USER_ID, userId.toIntOrZero())
             }
         }
 

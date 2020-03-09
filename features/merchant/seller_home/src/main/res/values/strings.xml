@@ -17,8 +17,12 @@
     <string name="sah_sale">Penjualan</string>
     <string name="sah_others">Lainnya</string>
 
+    <string name="sah_product_list">Daftar Produk</string>
+
     <!--toolbar menu-->
     <string name="sah_notification">Notifikasi</string>
+    <string name="sah_add_product">Tambah Produk</string>
+    <string name="sah_chat_settings">Pengaturan Chat</string>
 
     <string name="sah_ticker_warning">#ecdb77</string>
 </resources>

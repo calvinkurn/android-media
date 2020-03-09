@@ -10,6 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
 import com.tokopedia.sellerhome.common.FragmentType
@@ -33,18 +35,6 @@ class ContainerFragment : Fragment() {
         }
     }
 
-    private val sellerHomeRouter: SellerHomeRouter? by lazy {
-        val applicationContext = activity?.applicationContext
-        return@lazy if (applicationContext is SellerHomeRouter)
-            applicationContext
-        else
-            null
-    }
-    private val homeFragment by lazy { SellerHomeFragment.newInstance() }
-    private var somListFragment: Fragment? = null
-    private var currentFragment: Fragment? = null
-    private val fragmentManger: FragmentManager by lazy { childFragmentManager }
-
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -55,7 +45,29 @@ class ContainerFragment : Fragment() {
             null
     }
 
+    private val sellerHomeRouter: SellerHomeRouter? by lazy {
+        val applicationContext = activity?.applicationContext
+        return@lazy if (applicationContext is SellerHomeRouter)
+            applicationContext
+        else
+            null
+    }
+    private val homeFragment by lazy { SellerHomeFragment.newInstance() }
+    private val productManageFragment: Fragment? by lazy {
+        sellerHomeRouter?.getProductManageFragment()
+    }
+    private var chatFragment: Fragment = ChatFragmentTemp()
+    private var somListFragment: Fragment? = null
+
+    private var currentFragment: Fragment? = null
+    private val fragmentManger: FragmentManager by lazy { childFragmentManager }
+
+    @FragmentType
+    private var currentFragmentType: Int = 0
+    private var homeFragmentTitle = ""
     private var hasAttachHomeFragment = false
+    private var hasAttachProductManagerFragment = false
+    private var hasAttachChatFragment = false
     private var hasAttachSomFragment = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,54 +85,73 @@ class ContainerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        homeFragmentTitle = context?.getString(R.string.sah_home).orEmpty()
+
         setupView()
-        observeCurrentSelectedMenu()
-        observeToolbarTitle()
+        observeCurrentSelectedPage()
         setupDefaultPage()
     }
 
     private fun setupView() = view?.run {
-        sahToolbar.setOnNotificationClickListener {
-            sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.CHAT))
-        }
+
     }
 
     private fun setupDefaultPage() {
         currentFragment = homeFragment
-        sharedViewModel?.setToolbarTitle(context?.getString(R.string.sah_home).orEmpty())
         sharedViewModel?.setCurrentSelectedPage(PageFragment(FragmentType.HOME))
     }
 
-    private fun observeCurrentSelectedMenu() {
+    private fun observeCurrentSelectedPage() {
         sharedViewModel?.currentSelectedPage?.observe(this, Observer { page ->
+            currentFragmentType = page.type
             when (page.type) {
-                FragmentType.HOME -> {
-                    if (!hasAttachHomeFragment) {
-                        addFragment(homeFragment)
-                        hasAttachHomeFragment = true
-                    }
-                    showFragment(homeFragment, getString(R.string.sah_home))
-                }
-                FragmentType.PRODUCT -> {
-                    if (!hasAttachHomeFragment) {
-                        addFragment(homeFragment)
-                        hasAttachHomeFragment = true
-                    }
-                    showFragment(homeFragment, getString(R.string.sah_product))
-                }
-                FragmentType.CHAT -> {
-                    if (!hasAttachHomeFragment) {
-                        addFragment(homeFragment)
-                        hasAttachHomeFragment = true
-                    }
-                    showFragment(homeFragment, getString(R.string.sah_chat))
-                }
-                FragmentType.ORDER -> showSomPageFragment(page)
+                FragmentType.HOME -> setupSellerHomeFragment()
+                FragmentType.PRODUCT -> setupProductManagerFragment()
+                FragmentType.CHAT -> setupChatFragment()
+                FragmentType.ORDER -> setupSomListFragment(page)
             }
         })
     }
 
-    private fun showSomPageFragment(page: PageFragment) {
+    private fun setupSellerHomeFragment() {
+        if (!hasAttachHomeFragment) {
+            addFragment(homeFragment)
+            hasAttachHomeFragment = true
+        }
+        showFragment(homeFragment, homeFragmentTitle)
+
+        view?.sahToolbar?.showNotificationActionMenu {
+            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.SELLER_INFO)
+        }
+    }
+
+    private fun setupProductManagerFragment() {
+        productManageFragment?.let { fragment ->
+            if (!hasAttachProductManagerFragment) {
+                addFragment(fragment)
+                hasAttachProductManagerFragment = true
+            }
+            showFragment(fragment, getString(R.string.sah_product_list))
+        }
+
+        view?.sahToolbar?.showAddProductActionMenu {
+            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM)
+        }
+    }
+
+    private fun setupChatFragment() {
+        if (!hasAttachChatFragment) {
+            addFragment(chatFragment)
+            hasAttachChatFragment = true
+        }
+        showFragment(chatFragment, getString(R.string.sah_chat))
+
+        view?.sahToolbar?.showChatSettingsActionMenu {
+            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CHAT_SETTING_TEMPLATE)
+        }
+    }
+
+    private fun setupSomListFragment(page: PageFragment) {
         if (null == somListFragment || (page.tabPage.isNotBlank() && SomTabConst.STATUS_ALL_ORDER != page.tabPage)) {
             somListFragment = sellerHomeRouter?.getSomListFragment(page.tabPage)
             hasAttachSomFragment = false
@@ -133,13 +164,8 @@ class ContainerFragment : Fragment() {
             }
             showFragment(it, getString(R.string.sah_sale))
         }
-    }
 
-    fun showChatNotificationBadge(chat: NotificationChatUiModel) {
-        if (chat.unreads > 0)
-            view?.sahToolbar?.showBadge()
-        else
-            view?.sahToolbar?.removeBadge()
+        view?.sahToolbar?.hideAllActionMenu()
     }
 
     private fun <T : Fragment> addFragment(fragment: T) {
@@ -160,9 +186,16 @@ class ContainerFragment : Fragment() {
         view?.sahToolbar?.title = title
     }
 
-    private fun observeToolbarTitle() {
-        sharedViewModel?.toolbarTitle?.observe(viewLifecycleOwner, Observer {
-            view?.sahToolbar?.title = it
-        })
+    fun showChatNotificationBadge(chat: NotificationChatUiModel) {
+        if (chat.unreads > 0)
+            view?.sahToolbar?.showBadge()
+        else
+            view?.sahToolbar?.removeBadge()
+    }
+
+    fun showShopName(shopName: String) {
+        homeFragmentTitle = if (shopName.isBlank()) homeFragmentTitle else shopName
+        if (currentFragmentType == FragmentType.HOME)
+            view?.sahToolbar?.title = homeFragmentTitle
     }
 }

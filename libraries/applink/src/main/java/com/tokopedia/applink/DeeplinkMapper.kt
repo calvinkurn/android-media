@@ -101,6 +101,7 @@ object DeeplinkMapper {
                     deeplink.startsWith(ApplinkConst.SELLER_ORDER_DETAIL, true) -> getRegisteredNavigationOrder(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_NEW_ORDER, true) -> getRegisteredNavigationFromSellerapp(deeplink)
                     deeplink.startsWith(ApplinkConst.SELLER_SHIPMENT, true) -> getRegisteredNavigationFromSellerapp(deeplink)
+                    deeplink.startsWith(ApplinkConst.TOP_CHAT, true) -> getRegisteredNavigationFromSellerapp(deeplink)
                     else -> {
                         if (specialNavigationMapper(deeplink, ApplinkConst.HOST_CATEGORY_P)) {
                             getRegisteredCategoryNavigation(getSegments(deeplink), deeplink)
@@ -251,6 +252,7 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromSellerapp(deeplink: String): String {
         val trimDeeplink = trimDeeplink(deeplink)
         return when (trimDeeplink) {
+            ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
             ApplinkConst.ADD_CREDIT_CARD -> ApplinkConstInternalPayment.PAYMENT_ADD_CREDIT_CARD
@@ -259,6 +261,7 @@ object DeeplinkMapper {
             ApplinkConst.PRODUCT_MANAGE -> ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST
             ApplinkConst.SELLER_NEW_ORDER -> DeepLinkMapperSellerHome.getSomNewOrderDeepLink()
             ApplinkConst.SELLER_SHIPMENT -> DeepLinkMapperSellerHome.getSomReadyToShipDeepLink()
+            ApplinkConst.TOP_CHAT -> DeepLinkMapperSellerHome.getTopChatDeepLink()
             else -> ""
         }
     }
