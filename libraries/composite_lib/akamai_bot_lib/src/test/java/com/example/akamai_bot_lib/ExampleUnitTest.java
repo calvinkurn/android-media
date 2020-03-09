@@ -32,7 +32,18 @@ public class ExampleUnitTest {
 
     @Test
     public void staticTest(){
-        Pattern p = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()" );
+//        Pattern p = Pattern.compile("(?<=mutation )(\\w*)(?=\\s*\\()" );
+//        String input = "mutation   login_email   \n\n($grant_type: String!, $username: String!, $password: String!, $supported:String!)";
+//        input = input.replaceAll("\n", "");
+//        input =  input.replaceAll("\\s+"," ");
+////        System.out.println(input);
+//
+//        Matcher m = p.matcher(input);
+//        while (m.find()) {
+//            System.out.println(m.group(0));
+//        }
+
+        Pattern p = Pattern.compile("\\{.*?([a-zA-Z_][a-zA-Z0-9_]\\+)(?=\\().*}");
         String input = "mutation   login_email   \n\n($grant_type: String!, $username: String!, $password: String!, $supported:String!)";
         input = input.replaceAll("\n", "");
         input =  input.replaceAll("\\s+"," ");

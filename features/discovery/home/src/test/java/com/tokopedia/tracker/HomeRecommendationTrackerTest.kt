@@ -1,12 +1,12 @@
 package com.tokopedia.tracker
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.analytics.v2.HomeRecommendationTracking
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 import com.tokopedia.home.rules.InstantTaskExecutorRuleSpek
 import io.mockk.every
 import io.mockk.mockk
-import junit.framework.Assert.assertEquals
+import org.junit.Assert.assertEquals
 import org.spekframework.spek2.Spek
 import org.spekframework.spek2.style.gherkin.Feature
 
@@ -132,7 +132,7 @@ class HomeFeedTrackerTest : Spek({
                  every { testTracker.getTracker() } returns DataLayer.mapOf(
                          "event", "productView",
                          "eventCategory", "homepage",
-                         "eventAction", "product recommendation impression - non login - top ads",
+                         "eventAction", "product recommendation impression - non login - topads",
                          "eventLabel", "for you",
                          "ecommerce", DataLayer.mapOf(
                          "currencyCode","IDR",
@@ -347,13 +347,9 @@ class HomeFeedTrackerTest : Spek({
     }
 })
 
-fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
+private fun areEqualKeyValues(first: Map<String, Any>, second: Map<String,Any>): Boolean{
     first.forEach{
         if(it.value != second[it.key]) return false
     }
     return true
-}
-
-interface TestTracker{
-    fun getTracker(): Map<String, Any>
 }

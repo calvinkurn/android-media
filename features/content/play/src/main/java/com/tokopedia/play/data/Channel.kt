@@ -70,6 +70,9 @@ data class Channel(
         @SerializedName("pinned_message")
         val pinnedMessage: PinnedMessage = PinnedMessage(),
 
+        @SerializedName("product_tagging")
+        val productTagging: ProductTagging = ProductTagging(), // TODO("please make sure with backend")
+
         @SerializedName("quick_reply")
         val quickReply: List<String> = emptyList(),
 

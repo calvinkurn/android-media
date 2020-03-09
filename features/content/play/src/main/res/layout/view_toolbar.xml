@@ -29,7 +29,46 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/iv_back"
             app:srcCompat="@drawable/ic_play_more_white"
+            android:visibility="invisible"
             />
+
+        <RelativeLayout
+            android:id="@+id/rl_cart"
+            android:layout_width="@dimen/layout_lvl3"
+            android:layout_height="@dimen/layout_lvl3"
+            android:layout_marginEnd="@dimen/play_cart_margin"
+            android:layout_marginRight="@dimen/play_cart_margin"
+            app:layout_constraintBottom_toBottomOf="@id/iv_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/iv_back"
+            android:visibility="invisible">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/layout_lvl3"
+                android:layout_height="@dimen/layout_lvl3"
+                app:srcCompat="@drawable/ic_cart_grayscale_20"
+                android:tint="@color/white"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                />
+
+            <TextView
+                android:id="@+id/tv_badge_cart"
+                android:layout_width="@dimen/play_cart_badge_size"
+                android:layout_height="@dimen/play_cart_badge_size"
+                android:background="@drawable/shape_play_cart_dots"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:gravity="center"
+                android:textSize="@dimen/fontSize_lvl10"
+                android:textStyle="bold"
+                android:textColor="@color/Neutral_N0"
+                android:visibility="invisible"
+                tools:text="99"/>
+
+        </RelativeLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cl_partner"
@@ -89,7 +128,7 @@
                 android:id="@+id/group_followable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="v_separator, tv_follow"
+                app:constraint_referenced_ids="v_separator,tv_follow"
                 tools:visibility="gone"
                 />
 

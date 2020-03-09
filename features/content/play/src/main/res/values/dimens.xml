@@ -23,6 +23,9 @@
     <dimen name="play_voucher_sheet_title_margin">20dp</dimen>
     <dimen name="play_voucher_divider_width">18dp</dimen>
 
+    <dimen name="play_cart_badge_size">12dp</dimen>
+    <dimen name="play_cart_margin">2dp</dimen>
+
     <dimen name="play_product_action_container_shadow_height">1dp</dimen>
     <dimen name="play_product_action_container_shadow_height_minus">-1dp</dimen>
 </resources>

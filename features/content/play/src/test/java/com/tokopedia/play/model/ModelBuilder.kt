@@ -147,5 +147,5 @@ class ModelBuilder {
             contentType: Int = 2,
             likeType: Int = 1
     ) = ChannelInfoUiModel(id, title, description, channelType, partnerId, partnerType,
-            moderatorName, contentId, contentType, likeType)
+            moderatorName, contentId, contentType, likeType, isShowCart = true)
 }
