@@ -179,7 +179,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                 }
                 SellerHomeState.DrawerPosition.SELLER_TOP_ADS -> {
                     eventDrawerClick(EventLabel.TOPADS)
-                    RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+                    RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
                 }
                 SellerHomeState.DrawerPosition.SELLER_FLASH_SALE -> {
                     RouteManager.route(context, ApplinkConst.SellerApp.FLASHSALE_MANAGEMENT)
