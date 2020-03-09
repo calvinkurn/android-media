@@ -120,7 +120,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         setupToolbar(view)
         button_apply_promo.setOnClickListener {
             setButtonLoading(button_apply_promo, true)
-            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
+            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
         }
         button_apply_no_promo.setOnClickListener {
             setButtonLoading(button_apply_no_promo, true)
@@ -517,7 +517,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickApplyManualInputPromo(promoCode: String) {
         activity?.let {
             viewModel.updatePromoInputState(promoCode)
-            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo), promoCode)
+            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), promoCode)
         }
     }
 

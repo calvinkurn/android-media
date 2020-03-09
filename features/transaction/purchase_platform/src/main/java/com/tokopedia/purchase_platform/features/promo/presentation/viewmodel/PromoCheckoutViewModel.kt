@@ -12,11 +12,14 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.Params
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.RequestParamsValidateUse
 import com.tokopedia.purchase_platform.features.promo.data.response.ClearPromoResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
+import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.ValidateUseResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
@@ -93,7 +96,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             // Get response
             val response = withContext(Dispatchers.IO) {
-//                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
+                //                Gson().fromJson(MOCK_RESPONSE, CouponListRecommendationResponse::class.java)
                 val request = GraphqlRequest(mutation, CouponListRecommendationResponse::class.java, promo)
                 graphqlRepository.getReseponse(listOf(request))
                         .getSuccessData<CouponListRecommendationResponse>()
@@ -177,7 +180,23 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private suspend fun doApplyPromo(mutation: String, promoCode: String) {
         launchCatchError(block = {
-            throw MessageErrorException("Gagal apply promo for the moment")
+            // Set param
+            val params = Params()
+            val promo = HashMap<String, Any>()
+            promo["params"] = params
+
+            // Get response
+            val response = withContext(Dispatchers.IO) {
+                val request = GraphqlRequest(mutation, ValidateUseResponse::class.java, promo)
+                graphqlRepository.getReseponse(listOf(request))
+                        .getSuccessData<ValidateUseResponse>()
+            }
+
+            if (response.validateUsePromoRevamp.status == "OK") {
+
+            } else {
+                throw MessageErrorException(response.validateUsePromoRevamp.message.joinToString(". "))
+            }
         }) {
             if (promoCode.isNotBlank()) {
                 // Notify promo input to stop loading

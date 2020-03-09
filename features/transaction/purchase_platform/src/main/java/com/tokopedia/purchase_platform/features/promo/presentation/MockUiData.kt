@@ -345,7 +345,7 @@ val MOCK_RESPONSE = """
             "sub_title": "Kamu bisa gabungkan promo biar makin hemat!",
             "icon_url": "",
             "is_enabled": true,
-            "is_collapsed": false,
+            "is_collapsed": true,
             "tags": [],
             "coupons": [],
             "sub_sections": [
@@ -493,7 +493,7 @@ val MOCK_RESPONSE = """
             "sub_title": "kuponnya ga bisa dipake ya",
             "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
             "is_enabled": false,
-            "is_collapsed": true,
+            "is_collapsed": false,
             "tags": [],
             "coupons": [],
             "sub_sections": [
@@ -502,7 +502,7 @@ val MOCK_RESPONSE = """
                 "sub_title": "Not avalibale",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": false,
-                "is_collapsed": true,
+                "is_collapsed": false,
                 "tags": [],
                 "coupons": [
                   {
@@ -533,7 +533,7 @@ val MOCK_RESPONSE = """
                   "sub_title": "Not avalibale",
                   "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                   "is_enabled": false,
-                  "is_collapsed": true,
+                  "is_collapsed": false,
                   "tags": [],
                   "coupons": [
                     {

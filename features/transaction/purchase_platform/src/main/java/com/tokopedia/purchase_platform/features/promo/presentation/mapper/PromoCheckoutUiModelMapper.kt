@@ -69,7 +69,11 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                 },
                 uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                     isEnabled = couponSectionItem.isEnabled
-                    isExpanded = !couponSectionItem.isCollapsed
+                    if (couponSectionItem.isEnabled) {
+                        isExpanded = !couponSectionItem.isCollapsed
+                    } else {
+                        isExpanded = false
+                    }
                 }
         )
     }
