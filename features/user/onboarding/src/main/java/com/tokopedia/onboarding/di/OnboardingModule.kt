@@ -2,6 +2,7 @@ package com.tokopedia.onboarding.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -10,6 +11,8 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 
 /**
  * Created by Ade Fulki on 2020-02-09.
@@ -35,4 +38,12 @@ class OnboardingModule {
     @OnboardingScope
     @Provides
     fun provideOnboardingAnalytics(): OnboardingAnalytics = OnboardingAnalytics()
+
+    @OnboardingScope
+    @Provides
+    fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
+
+    @OnboardingScope
+    @Provides
+    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 }
