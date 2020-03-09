@@ -855,7 +855,7 @@ class UmrahTrackingAnalytics {
 
     fun umrahTravelListImpression(travelAgent: TravelAgent, position:Int){
         val map = mutableMapOf<String, Any?>()
-        map[TrackAppUtils.EVENT] = ""
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_PROMO_VIEW
         map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_TRAVEL_LIST_UMROH
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_IMPRESSION_TRAVEL_LIST
         map[TrackAppUtils.EVENT_LABEL] = ""
@@ -869,7 +869,7 @@ class UmrahTrackingAnalytics {
 
     fun umrahTravelListClick(travelAgent: TravelAgent, position:Int){
         val map = mutableMapOf<String, Any?>()
-        map[TrackAppUtils.EVENT] = ""
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_PROMO_CLICK
         map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_TRAVEL_LIST_UMROH
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_TRAVEL_LIST
         map[TrackAppUtils.EVENT_LABEL] = ""
