@@ -82,9 +82,14 @@ class ChatListActivity : BaseTabActivity()
         useLightNotificationBar()
         setupViewModel()
         initTabLayout()
-        setObserver()
         initData()
         initOnBoarding()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        setObserver()
+        webSocketViewModel.onStart()
     }
 
     private fun initInjector() {
@@ -437,11 +442,30 @@ class ChatListActivity : BaseTabActivity()
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        stopLiveDataObserver()
+        clearLiveDataValue()
+        webSocketViewModel.onStop()
+    }
+
+    private fun stopLiveDataObserver() {
+        webSocketViewModel.itemChat.removeObservers(this)
+        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+    }
+
+    private fun clearLiveDataValue() {
+        webSocketViewModel.clearItemChatValue()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        webSocketViewModel.itemChat.removeObservers(this)
+        stopLiveDataObserver()
+        flushAllViewModel()
+    }
+
+    private fun flushAllViewModel() {
         webSocketViewModel.flush()
-        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
         chatNotifCounterViewModel.flush()
     }
 
