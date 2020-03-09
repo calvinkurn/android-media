@@ -40,7 +40,7 @@
                 android:layout_height="match_parent"
                 android:text="Aktif"
                 android:gravity="center_vertical"
-                android:textColor="@color/setting_shop_status_green"
+                android:textColor="@color/setting_green"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toEndOf="@id/powerMerchantText"/>

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
@@ -15,6 +16,8 @@ import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleMenuUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import kotlinx.android.synthetic.main.fragment_menu_setting.*
+import kotlinx.android.synthetic.main.setting_logout.view.*
+import kotlinx.android.synthetic.main.setting_tc.view.*
 
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>() {
 
@@ -78,6 +81,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 IndentedSettingTitleUiModel(LOKASI_DAN_PENGIRIMAN),
                 MenuItemUiModel(TAMBAH_DAN_LOKASI_TOKO),
                 MenuItemUiModel(ATUR_LAYANAN_PENGIRIMAN),
+                DividerUiModel(DividerType.THIN_INDENTED),
                 IndentedSettingTitleUiModel(FITUR_EKSKLUSIF),
                 MenuItemUiModel(TAMBAH_DAN_LOKASI_TOKO),
                 MenuItemUiModel(ATUR_LAYANAN_PENGIRIMAN),
@@ -90,10 +94,28 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 SettingTitleMenuUiModel(PENGATURAN_APLIKASI, R.drawable.ic_app_setting),
                 MenuItemUiModel(CHAT_DAN_NOTIFIKASI),
                 MenuItemUiModel(BAGIKAN_APLIKASI),
-                MenuItemUiModel(REVIEW_APLIKASI)
+                MenuItemUiModel(REVIEW_APLIKASI),
+                DividerUiModel(DividerType.THIN_INDENTED)
         )
         adapter.data.addAll(settingList)
         adapter.notifyDataSetChanged()
         renderList(settingList)
+
+        logoutLayout.run {
+            appVersionText.text = getString(R.string.setting_application_version, GlobalConfig.VERSION_NAME)
+            setOnClickListener {
+                //Goto logout
+            }
+        }
+
+        tcLayout.run {
+            settingTC.setOnClickListener {
+
+            }
+            settingPrivacy.setOnClickListener {
+
+            }
+        }
+
     }
 }

@@ -25,7 +25,7 @@ class OtherMenuViewHolder(private val itemView: View,
     companion object {
         private val SHIMMER_STATUS_LAYOUT = R.layout.setting_shop_status_shimmer
         private val GREEN_TIP = R.drawable.setting_pm_green_tip
-        private val GREEN_TEXT_COLOR = R.color.setting_shop_status_green
+        private val GREEN_TEXT_COLOR = R.color.setting_green
         private val GREY_TIP = R.drawable.setting_pm_grey_tip
         private val GREY_TEXT_COLOR = R.color.setting_grey_text
         private val RED_TEXT_COLOR = R.color.setting_red_text
