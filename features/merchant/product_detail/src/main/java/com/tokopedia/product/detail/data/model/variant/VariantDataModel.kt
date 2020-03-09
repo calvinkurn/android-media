@@ -2,8 +2,8 @@ package com.tokopedia.product.detail.data.model.variant
 
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
-import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactory
+import com.tokopedia.variant_common.model.VariantCategory
 
 /**
  * Created by Yehezkiel on 2020-02-26
@@ -22,22 +22,4 @@ data class VariantDataModel(
     override fun name(): String = name
 
     override val impressHolder = ImpressHolder()
-}
-
-data class VariantCategory(
-        var name: String = "",
-        var identifier: String = "",
-        var variantGuideline: String = "",
-        var hasCustomImage: Boolean = false,
-        var selectedValue: String = "",
-        var isLeaf: Boolean = false,
-        var variantOptions: MutableList<VariantOptionWithAttribute> = arrayListOf()
-) {
-    fun getSelectedOption(): VariantOptionWithAttribute? {
-        return variantOptions.find { it.currentState == ProductDetailConstant.STATE_SELECTED }
-    }
-
-    fun getPositionSelectedOption(): Int {
-        return variantOptions.indexOf(getSelectedOption())
-    }
 }

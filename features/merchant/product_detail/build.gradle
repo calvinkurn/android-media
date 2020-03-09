@@ -81,6 +81,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.videoplayer)
     implementation project(rootProject.ext.features.tkpdtransactioncommon)
     implementation project(rootProject.ext.features.chatcommon)
+    implementation project(rootProject.ext.features.variantCommon)
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

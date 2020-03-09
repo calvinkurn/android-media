@@ -79,7 +79,6 @@ import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
 import com.tokopedia.product.detail.common.data.model.product.TopAdsGetProductManage
 import com.tokopedia.product.detail.common.data.model.product.Video
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
@@ -91,7 +90,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataMode
 import com.tokopedia.product.detail.data.model.description.DescriptionData
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.model.spesification.Specification
-import com.tokopedia.product.detail.data.model.variant.VariantOptionWithAttribute
 import com.tokopedia.product.detail.data.util.*
 import com.tokopedia.product.detail.di.DaggerProductDetailComponent
 import com.tokopedia.product.detail.estimasiongkir.view.activity.RatesEstimationDetailActivity
@@ -101,7 +99,6 @@ import com.tokopedia.product.detail.view.adapter.dynamicadapter.DynamicProductDe
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.fragment.partialview.PartialButtonActionView
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
-import com.tokopedia.product.detail.view.listener.ProductVariantListener
 import com.tokopedia.product.detail.view.util.DynamicProductDetailHashMap
 import com.tokopedia.product.detail.view.util.ErrorHelper
 import com.tokopedia.product.detail.view.util.ProductDetailErrorHandler
@@ -138,6 +135,11 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.variant_common.model.ProductVariantCommon
+import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
+import com.tokopedia.variant_common.model.VariantOptionWithAttribute
+import com.tokopedia.variant_common.util.VariantCommonMapper
+import com.tokopedia.variant_common.view.ProductVariantListener
 import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
@@ -487,7 +489,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             pdpHashMapUtil?.snapShotMap?.apply {
                                 shouldReinitVideoPicture = true
                                 selectedWarehouse?.let {
-                                    //                                    viewModel.selectedMultiOrigin = it.warehouseInfo
+                                    viewModel.selectedMultiOrigin = viewModel.multiOrigin[dynamicP1Copy.basic.productID]
+                                            ?: VariantMultiOriginWarehouse()
                                 }
                             }
                             updateProductId()
@@ -1392,11 +1395,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val updatedNearestWarehouse = pdpHashMapUtil?.snapShotMap?.getNearestWarehouse()?.nearestWarehouseStockWording
 
         return if (updatedNearestWarehouse.isNullOrBlank()) {
-            if (VariantMapper.selectedOptionId.size != viewModel.variantData?.variant?.size) {
+            if (VariantCommonMapper.selectedOptionId.size != viewModel.variantData?.variant?.size) {
                 ""
             } else {
                 viewModel.variantData?.children?.find {
-                    it.optionIds == VariantMapper.selectedOptionId
+                    it.optionIds == VariantCommonMapper.selectedOptionId
                 }?.stock?.stockWording ?: ""
             }
         } else {
@@ -1413,7 +1416,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             it.value == 0
         } ?: false
 
-        val variantData = VariantMapper.processVariant(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, variantOptions.level, isPartialySelected)
+        val variantData = VariantCommonMapper.processVariant(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, variantOptions.level, isPartialySelected)
         pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
 
         if (isPartialySelected) {
@@ -1424,8 +1427,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel)
             }
         } else {
-            val selectedChild = VariantMapper.selectedProductData(viewModel.variantData
-                    ?: ProductVariant())
+            val selectedChild = VariantCommonMapper.selectedProductData(viewModel.variantData
+                    ?: ProductVariantCommon())
             val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
             if (selectedChild?.hasPicture == true &&
                     updatedDynamicProductInfo?.data?.media?.firstOrNull()?.uRLOriginal != pdpHashMapUtil?.snapShotMap?.media?.firstOrNull()?.urlOriginal) pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
@@ -1441,14 +1444,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
+    private fun onSuccessGetProductVariantInfo(data: ProductVariantCommon?) {
         if (data == null || !data.hasChildren) {
             dynamicAdapter.clearElement(pdpHashMapUtil?.productNewVariantDataModel)
             return
         }
 
-        pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantMapper.mapVariantIdentifierToHashMap(data)
-        val variantData = VariantMapper.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
+        pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
+        val variantData = VariantCommonMapper.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
         pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
 
     }
@@ -1871,7 +1874,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, it.parentProductId)
                     putExtra(ApplinkConst.Transaction.EXTRA_NOTES, userInputNotes)
                     putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, userInputQuantity)
-//                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, userInputVariant)
+                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, it.basic.productID)
                     putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
                     putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution)
                     putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)

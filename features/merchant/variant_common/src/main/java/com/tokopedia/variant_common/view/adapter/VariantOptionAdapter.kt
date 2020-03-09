@@ -7,6 +7,8 @@ import com.tokopedia.variant_common.model.VariantCategory
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.holder.BaseVariantViewHolder
+import com.tokopedia.variant_common.view.holder.VariantChipViewHolder
+import com.tokopedia.variant_common.view.holder.VariantColorViewHolder
 import com.tokopedia.variant_common.view.holder.VariantImageViewHolder
 
 /**
@@ -29,23 +31,22 @@ class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseVariantViewHolder<VariantOptionWithAttribute> {
         when (viewType) {
             TYPE_CHIP -> {
-//                val view = LayoutInflater.from(parent.context)
-//                        .inflate(VariantChipViewHolder.LAYOUT, parent, false)
-//                return VariantChipViewHolder(view, listener)
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(VariantChipViewHolder.LAYOUT, parent, false)
+                return VariantChipViewHolder(view, listener)
             }
             TYPE_COLOR -> {
-//                val view = LayoutInflater.from(parent.context)
-//                        .inflate(VariantColorViewHolder.LAYOUT, parent, false)
-//                return VariantColorViewHolder(view, listener)
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(VariantColorViewHolder.LAYOUT, parent, false)
+                return VariantColorViewHolder(view, listener)
             }
             TYPE_IMAGE -> {
-
+                val view = LayoutInflater.from(parent.context)
+                        .inflate(VariantImageViewHolder.LAYOUT, parent, false)
+                return VariantImageViewHolder(view, listener)
             }
             else -> throw IllegalArgumentException("Invalid view type")
         }
-        val view = LayoutInflater.from(parent.context)
-                .inflate(VariantImageViewHolder.LAYOUT, parent, false)
-        return VariantImageViewHolder(view, listener)
     }
 
     override fun getItemCount(): Int = variantCategory.variantOptions.size

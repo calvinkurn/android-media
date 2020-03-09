@@ -19,8 +19,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
-import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
@@ -49,6 +47,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.variant_common.model.ProductVariantCommon
+import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
+import com.tokopedia.variant_common.use_case.GetNearestWarehouseUseCase
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -125,14 +126,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     var imageHeight: Int = 0
 
-    var multiOrigin: Map<String, MultiOriginWarehouse> = mapOf()
-    var selectedMultiOrigin: MultiOriginWarehouse = MultiOriginWarehouse()
+    var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
+    var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
     var installmentData: FinancingDataResponse? = null
     var tradeInParams: TradeInParams = TradeInParams()
-    var enableCaching:Boolean = true
-    var variantData: ProductVariant? = null
+    var enableCaching: Boolean = true
+    var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
 
     private var submitTicketSubscription: Subscription? = null
@@ -297,7 +298,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 })
 
                 selectedMultiOrigin = multiOrigin[getDynamicProductInfoP1?.basic?.productID
-                        ?: ""] ?: MultiOriginWarehouse()
+                        ?: ""] ?: VariantMultiOriginWarehouse()
 
             } catch (e: Throwable) {
             }
@@ -570,7 +571,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         return getProductVariant()?.mapSelectedProductVariants(userInputVariant)
     }
 
-    private fun getProductVariant(): ProductVariant? {
+    private fun getProductVariant(): ProductVariantCommon? {
         return p2General.value?.variantResp
     }
 

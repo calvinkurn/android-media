@@ -4,8 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
-import com.tokopedia.product.detail.view.adapter.variant.VariantContainerAdapter
-import com.tokopedia.product.detail.view.listener.ProductVariantListener
+import com.tokopedia.variant_common.view.ProductVariantListener
+import com.tokopedia.variant_common.view.adapter.VariantContainerAdapter
 import kotlinx.android.synthetic.main.item_product_variant_view_holder.view.*
 
 /**
