@@ -26,6 +26,7 @@ import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.Lifecycle
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -47,6 +48,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.gm.common.constant.IMG_URL_POWER_MERCHANT_IDLE_POPUP
 import com.tokopedia.gm.common.constant.IMG_URL_REGULAR_MERCHANT_POPUP
 import com.tokopedia.gm.common.constant.URL_POWER_MERCHANT_SCORE_TIPS
@@ -60,6 +62,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
+import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
@@ -152,9 +155,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var shopDomain: String = ""
     private var goldMerchant: Boolean = false
     private var isOfficialStore: Boolean = false
+    private var productListFeaturedOnlySize: Int = 0
+    private var dialogFeaturedProduct: DialogUnify? = null
     private var manageProductBottomSheet: ManageProductBottomSheet? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
-
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
 
@@ -195,6 +199,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         observeShopInfo()
         observeUpdateProduct()
         observeDeleteProduct()
+        observeProductListFeaturedOnly()
         observeProductList()
 
         observeEditPrice()
@@ -205,8 +210,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         observeSetFeaturedProduct()
         observeViewState()
 
+        getProductListFeaturedOnlySize()
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
+        context?.let { dialogFeaturedProduct = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION) }
     }
 
     private fun setupSearchBar() {
@@ -395,6 +402,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         viewModel.getProductList(userSession.shopId, filterOptions, sortOption, isRefresh)
     }
 
+    private fun getProductListFeaturedOnlySize() {
+        viewModel.getFeaturedProductCount(userSession.shopId)
+    }
+
     private fun createFilterOptions(page: Int, keyword: String?): MutableList<FilterOption> {
         val selectedFilter = filterProductBottomSheet?.selectedFilterOptions
         val filterOptions = selectedFilter?.filterOptions.orEmpty()
@@ -506,6 +517,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         view?.let {
             val actionLabel = getString(com.tokopedia.design.R.string.close)
             Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL, actionLabel)
+        }
+    }
+
+    private fun showMessageToastWithoutAction(message: String) {
+        view?.let {
+            Toaster.make(it, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         }
     }
 
@@ -669,9 +686,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             successMessage = getString(R.string.product_manage_success_add_featured_product)
             isFeaturedProduct = true
         }
-       productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
-        hideLoadingProgress()
-        showMessageToast(successMessage)
+        productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
+        showMessageToastWithoutAction(successMessage)
     }
 
     private fun onFailedChangeFeaturedProduct(e: Throwable) {
@@ -727,12 +743,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             is Delete -> clickDeleteProductMenu(productId, menuTitle)
             is SetTopAds -> onPromoTopAdsClicked(product)
             is SetCashBack -> onSetCashbackClicked(product)
-            is SetFeaturedProduct -> {
-                //handle SetFeaturedProduct here
-            }
-            is RemoveFeaturedProduct -> {
-                //handle RemoveFeaturedProduct here
-            }
+            is SetFeaturedProduct -> onSetFeaturedProductClicked(product)
+            is RemoveFeaturedProduct -> onRemoveFeaturedProductClicked(product)
         }
 
         manageProductBottomSheet?.dismiss()
@@ -779,8 +791,65 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun onSetFeaturedProductClicked(productManageViewModel: ProductViewModel, setFeaturedType: Int) {
-        viewModel.setFeaturedProduct(productManageViewModel.id, setFeaturedType)
+    private fun onSetFeaturedProductClicked(productManageViewModel: ProductViewModel) {
+        context?.let { context ->
+            if(viewModel.isPowerMerchant() || isOfficialStore) {
+                productManageViewModel.isFeatured?.let {
+                    if(productListFeaturedOnlySize == 5 && !it) {
+                        setDialogFeaturedProduct(
+                                ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
+                                getString(R.string.product_featured_max_dialog_title),
+                                getString(R.string.product_featured_max_dialog_desc),
+                                getString(R.string.product_featured_max_dialog_primary_cta),
+                                getString(R.string.product_featured_max_dialog_secondary_cta)
+                        )
+                        dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                        dialogFeaturedProduct?.setSecondaryCTAClickListener {
+                            dialogFeaturedProduct?.dismiss()
+                            RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_FEATURED_PRODUCT)
+                        }
+                        dialogFeaturedProduct?.show()
+                    }
+                    else {
+                        setDialogFeaturedProduct(
+                                ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
+                                getString(R.string.product_featured_add_dialog_title),
+                                getString(R.string.product_featured_add_dialog_desc),
+                                getString(R.string.product_featured_add_dialog_primary_cta),
+                                getString(R.string.product_featured_add_dialog_secondary_cta)
+                        )
+                        dialogFeaturedProduct?.setPrimaryCTAClickListener {
+                            productListFeaturedOnlySize += 1
+                            showLoadingProgress()
+                            setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
+                            dialogFeaturedProduct?.dismiss()
+                        }
+                        dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                        dialogFeaturedProduct?.show()
+                    }
+                }
+            } else {
+                    setDialogFeaturedProduct(
+                        ProductManageUrl.ILLUSTRATION_SPECIAL_FEATURED_PRODUCT_DOMAIN,
+                        getString(R.string.product_featured_special_dialog_title),
+                        getString(R.string.product_featured_special_dialog_desc),
+                        getString(R.string.product_featured_special_dialog_primary_cta),
+                        getString(R.string.product_featured_special_dialog_secondary_cta)
+                )
+                dialogFeaturedProduct?.setPrimaryCTAClickListener {
+                    dialogFeaturedProduct?.dismiss()
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                }
+                dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                dialogFeaturedProduct?.show()
+            }
+        }
+    }
+
+    private fun onRemoveFeaturedProductClicked(productManageViewModel: ProductViewModel) {
+        productListFeaturedOnlySize -= 1
+        showLoadingProgress()
+        setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
     }
 
     private fun onSetStockReminderClicked(productManageViewModel: ProductViewModel) {
@@ -924,6 +993,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         startActivity(intent)
     }
 
+    private fun setFeaturedProduct(id: String, type: Int) {
+        viewModel.setFeaturedProduct(id, type)
+    }
+
     private fun showDialogActionDeleteProduct(onClickListener: DialogInterface.OnClickListener, onCancelListener: DialogInterface.OnClickListener) {
         activity?.let {
             val alertDialog = AlertDialog.Builder(it)
@@ -985,7 +1058,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             activity?.unregisterReceiver(addProductReceiver)
         }
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -1056,12 +1128,24 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         viewModel.getGoldMerchantStatus()
     }
 
+    private fun setDialogFeaturedProduct(imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String) {
+        dialogFeaturedProduct?.setImageUrl(imageUrl)
+        dialogFeaturedProduct?.setTitle(title)
+        dialogFeaturedProduct?.setDescription(desc)
+        dialogFeaturedProduct?.setPrimaryCTAText(primaryCta)
+        dialogFeaturedProduct?.setSecondaryCTAText(secondaryCta)
+    }
+
     // region observers
     private fun observeSetFeaturedProduct() {
+        hideLoadingProgress()
         observe(viewModel.setFeaturedProductResult) {
-            when (it) {
-                is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
-                is Fail -> onFailedChangeFeaturedProduct(it.throwable)
+            if(viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                when (it) {
+                    is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
+                    is Fail -> onFailedChangeFeaturedProduct(it.throwable)
+                }
+                hideLoadingProgress()
             }
         }
     }
@@ -1116,6 +1200,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     showTabFilters()
                 }
                 is Fail -> loadEmptyList()
+            }
+        }
+    }
+
+    private fun observeProductListFeaturedOnly() {
+        observe(viewModel.productListFeaturedOnlyResult) {
+            when (it) {
+                is Success -> productListFeaturedOnlySize = it.data
             }
         }
     }

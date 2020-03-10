@@ -22,7 +22,7 @@ class ProductManageListAdapter(
     fun updateFeaturedProduct(productId: String, isFeaturedProduct: Boolean) {
         data.forEachIndexed { index, product ->
             if (product.id.equals(productId, ignoreCase = true)) {
-                product.copy(isFeatured = isFeaturedProduct)
+                data[index] = product.copy(isFeatured = isFeaturedProduct)
                 notifyItemChanged(index)
                 return
             }

@@ -59,6 +59,8 @@ class ProductManageViewModel(
         get() = _viewState
     val productListResult : LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
+    val productListFeaturedOnlyResult : LiveData<Result<Int>>
+        get() = _productListFeaturedOnlyResult
     val shopInfoResult : LiveData<Result<ShopInfoResult>>
         get() = _shopInfoResult
     val updateProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
@@ -78,6 +80,7 @@ class ProductManageViewModel(
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
+    private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
     private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
     private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
@@ -146,6 +149,21 @@ class ProductManageViewModel(
             showProductList(productList)
         }, onError = {
             _productListResult.value = Fail(it)
+        })
+    }
+
+    fun getFeaturedProductCount(shopId: String) {
+        launchCatchError(block = {
+            val productListFeaturedOnly = withContext(ioDispatcher) {
+                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), null)
+                val getProductList = getProductListUseCase.execute(requestParams)
+                val productListSize = getProductList.productList?.data?.size
+                productListSize
+            }
+
+            productListFeaturedOnly?.let { setProductListFeaturedOnly(it) }
+        }, onError = {
+            _productListFeaturedOnlyResult.value = Fail(it)
         })
     }
 
@@ -263,7 +281,6 @@ class ProductManageViewModel(
     }
 
     fun setFeaturedProduct(productId: String, status: Int) {
-        showProgressDialog()
         val requestParams = EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status)
 
         editFeaturedProductUseCase.execute(requestParams,
@@ -366,6 +383,10 @@ class ProductManageViewModel(
     private fun showProductList(products: List<Product>?) {
         val productList = mapToViewModels(products)
         _productListResult.value = Success(productList)
+    }
+
+    private fun setProductListFeaturedOnly(productsSize: Int){
+        _productListFeaturedOnlyResult.value = Success(productsSize)
     }
 
     private fun refreshList(isRefresh: Boolean) {
