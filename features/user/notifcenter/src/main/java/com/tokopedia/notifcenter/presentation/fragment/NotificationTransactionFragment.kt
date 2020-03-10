@@ -32,6 +32,7 @@ import com.tokopedia.notifcenter.data.model.NotificationViewData
 import com.tokopedia.notifcenter.data.state.EmptySource
 import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
 import com.tokopedia.notifcenter.di.DaggerNotificationTransactionComponent
+import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 import com.tokopedia.notifcenter.presentation.adapter.NotificationTransactionAdapter
@@ -306,10 +307,13 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
     }
 
     override fun initInjector() {
-        DaggerNotificationTransactionComponent.builder()
-                .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
+        context?.let {
+            DaggerNotificationTransactionComponent.builder()
+                    .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+                    .commonModule(CommonModule(it))
+                    .build()
+                    .inject(this)
+        }
     }
 
     private fun trackScrollListToBottom() {
