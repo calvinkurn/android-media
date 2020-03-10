@@ -19,12 +19,17 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.ProductSheetView
+import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
+import com.tokopedia.variant_common.model.VariantOptionWithAttribute
+import com.tokopedia.variant_common.util.VariantCommonMapper
+import com.tokopedia.variant_common.view.ProductVariantListener
 
 /**
  * Created by jegul on 05/03/20
@@ -52,6 +57,21 @@ class VariantSheetView(
 
     private val imageRadius = view.resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
+
+    private val productVariantListener: ProductVariantListener = object: ProductVariantListener {
+        override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
+            // mapping ulang
+        }
+
+        override fun onVariantGuideLineClicked(url: String) {
+            // startActivity(ImagePreviewActivity.getCallingIntent(it, arrayListOf(url)))
+        }
+
+        override fun getStockWording(): String {
+            return "Stok tinggal segini, segimana?hmm"
+        }
+    }
+    private val variantAdapter: VariantAdapter = VariantAdapter(productVariantListener)
 
     init {
         view.findViewById<ImageView>(R.id.iv_close)
@@ -120,6 +140,14 @@ class VariantSheetView(
         btnAction.setOnClickListener {
             if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.product.id)
             else listener.onAddToCartClicked(this, model.product.id)
+        }
+    }
+
+    internal fun setDynamicVariant(productDetailVariant: ProductDetailVariantCommonResponse) {
+        rvVariantList.adapter = variantAdapter
+        VariantCommonMapper.processVariant(productDetailVariant.data)?.let {
+            variantAdapter.setItems(it)
+            variantAdapter.notifyDataSetChanged()
         }
     }
 

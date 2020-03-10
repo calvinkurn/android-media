@@ -5,11 +5,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.variant_common.R
 import com.tokopedia.variant_common.model.VariantCategory
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.adapter.VariantOptionAdapter
-import kotlinx.android.synthetic.main.item_variant_container_view_holder.view.*
 
 
 /**
@@ -17,40 +17,46 @@ import kotlinx.android.synthetic.main.item_variant_container_view_holder.view.*
  */
 class VariantContainerViewHolder(val view: View, val listener: ProductVariantListener) : RecyclerView.ViewHolder(view) {
 
+    private var variantCategoryName = view.findViewById<Typography>(R.id.txtVariantCategoryName)
+    private var variantSelectedOption = view.findViewById<Typography>(R.id.txtVariantSelectedOption)
+    private var variantStockWording = view.findViewById<Typography>(R.id.txtVariantStockWording)
+    private var variantGuideline = view.findViewById<Typography>(R.id.txtVariantGuideline)
+    private var rvChildVariant = view.findViewById<RecyclerView>(R.id.rv_variant)
+
     private var variantOptionAdapter: VariantOptionAdapter? = null
 
     fun bind(data: VariantCategory) = with(view) {
         variantOptionAdapter = VariantOptionAdapter(listener)
         if (data.getPositionSelectedOption() > 4) {
-            rv_variant.layoutManager?.scrollToPosition(data.getPositionSelectedOption())
+            rvChildVariant.layoutManager?.scrollToPosition(data.getPositionSelectedOption())
         }
-        rv_variant.adapter = variantOptionAdapter
+        rvChildVariant.adapter = variantOptionAdapter
 
-        txtVariantCategoryName.text = context.getString(R.string.variant_option_builder_1, data.name)
+        variantCategoryName.text = context.getString(R.string.variant_option_builder_1, data.name)
 
         if (data.getSelectedOption() == null) {
-            txtVariantSelectedOption.text = context.getString(R.string.variant_option_builder_2, data.variantOptions.size)
+            variantSelectedOption.text = context.getString(R.string.variant_option_builder_2, data.variantOptions.size)
         } else {
-            txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
+            variantSelectedOption.text = data.getSelectedOption()?.variantName
         }
 
         if (data.isLeaf && listener.getStockWording() != "") {
-            txtVariantStockWording.show()
-            txtVariantStockWording.text = MethodChecker.fromHtml(listener.getStockWording())
+            variantStockWording.show()
+            variantStockWording.text = MethodChecker.fromHtml(listener.getStockWording())
         } else {
-            txtVariantStockWording.hide()
+            variantStockWording.hide()
         }
 
         if (data.variantGuideline.isNotEmpty()) {
-            txtVariantGuideline.show()
-            txtVariantGuideline.setOnClickListener {
+            variantGuideline.show()
+            variantGuideline.setOnClickListener {
                 listener.onVariantGuideLineClicked(data.variantGuideline)
             }
         } else {
-            txtVariantGuideline.hide()
+            variantGuideline.hide()
         }
 
-        rv_variant.itemAnimator = null
+        rvChildVariant.itemAnimator = null
         variantOptionAdapter?.setData(data)
     }
 }

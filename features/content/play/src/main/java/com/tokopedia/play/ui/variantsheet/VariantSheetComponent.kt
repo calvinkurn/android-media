@@ -33,6 +33,7 @@ class VariantSheetComponent(
                             ScreenStateEvent.Init -> uiView.setStateHidden()
                             is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet]?.let(::handleShowHideVariantSheet) }
                             is ScreenStateEvent.SetVariantSheet -> uiView.setVariantSheet(it.variantSheetModel)
+                            is ScreenStateEvent.SetDynamicVariant -> uiView.setDynamicVariant(it.productDetailVariant)
                         }
                     }
         }

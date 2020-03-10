@@ -6,6 +6,7 @@ import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.*
+import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
 
 /**
  * Created by jegul on 02/12/19
@@ -27,6 +28,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
     data class SetProductSheet(val productSheetModel: ProductSheetUiModel) : ScreenStateEvent()
     data class SetVariantSheet(val variantSheetModel: VariantSheetUiModel) : ScreenStateEvent()
+    data class SetDynamicVariant(val productDetailVariant: ProductDetailVariantCommonResponse) : ScreenStateEvent()
     /**
      * Chat
      */

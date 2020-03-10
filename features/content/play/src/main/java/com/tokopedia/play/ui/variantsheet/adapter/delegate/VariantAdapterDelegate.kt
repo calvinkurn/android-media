@@ -14,7 +14,7 @@ import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
  */
 class VariantAdapterDelegate(
         listener: ProductVariantListener
-) : TypedAdapterDelegate<VariantCategory, VariantCategory, VariantContainerViewHolder>(R.layout.item_play_product_line), ProductVariantListener by listener {
+) : TypedAdapterDelegate<VariantCategory, VariantCategory, VariantContainerViewHolder>(R.layout.item_variant_container_view_holder), ProductVariantListener by listener {
 
     override fun onBindViewHolder(item: VariantCategory, holder: VariantContainerViewHolder) {
         holder.bind(item)

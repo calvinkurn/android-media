@@ -134,6 +134,16 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                         )
             }
         })
+
+        playVariantViewModel.observableProductVariant.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.SetDynamicVariant(it)
+                        )
+            }
+        })
     }
 
     private fun observeBottomInsetsState() {
@@ -214,6 +224,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun openVariantSheet(product: ProductLineUiModel, action: ProductAction) {
         playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
+        playVariantViewModel.getProductVariant(product.id)
     }
 
     private fun closeVariantSheet() {
