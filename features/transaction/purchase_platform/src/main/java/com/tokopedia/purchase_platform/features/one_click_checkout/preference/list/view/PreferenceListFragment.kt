@@ -90,6 +90,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
                     main_content.visible()
                     val profiles = it.data.profiles ?: ArrayList()
                     adapter.submitList(profiles)
+                    adapter.notifyDataSetChanged()
                     if (profiles.isEmpty()) {
                         group_empty_state.visible()
                         rv_preference_list.gone()

@@ -1,5 +1,5 @@
 query get_preference_list {
-    get_all_profiles_occ(dummy: 1){
+    get_all_profiles_occ{
             error_message
             status
             data{
