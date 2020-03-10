@@ -33,6 +33,13 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 dialogConfirmation()
             }
         })
+
+        list_bank_btn.setOnClickListener {
+            activity?.let {
+                val bottomSheetBankList = CCBankListBottomSheet()
+                bottomSheetBankList.show(it.supportFragmentManager, "Bank list")
+            }
+        }
     }
 
     private fun dialogConfirmation() {

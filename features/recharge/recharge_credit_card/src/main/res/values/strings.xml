@@ -5,4 +5,5 @@
     <string name="cc_desc_dialog">Sebelum lanjut, pastikan nomor kartu kreditmu sudah benar.</string>
     <string name="cc_cta_btn_primary">Lanjut</string>
     <string name="cc_cta_btn_secondary">Kembali</string>
+    <string name="cc_desc_bank_list">Kamu bisa bayar kartu kredit dari bank-bank yang terdaftar di bawah. Cukup masukkan nomor kartu kreditmu dan bank akan terpilih otomatis.</string>
 </resources>

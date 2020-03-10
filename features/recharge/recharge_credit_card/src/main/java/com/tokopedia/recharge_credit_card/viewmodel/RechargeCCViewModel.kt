@@ -11,6 +11,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankList
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBankListReponse
+import com.tokopedia.recharge_credit_card.datamodel.RechargeCCSignatureReponse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -21,11 +22,13 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
 
     val rechargeCCBankList = MutableLiveData<RechargeCCBankList>()
     val errorCCBankList = MutableLiveData<String>()
+    val signature = MutableLiveData<String>()
+    val errorSignature = MutableLiveData<String>()
 
-    fun getListBank(rawQuery: String, userId: String) {
+    fun getListBank(rawQuery: String, categoryId: Int) {
         launchCatchError(block = {
             val mapParam = mutableMapOf<String, Any>()
-            mapParam[USER_ID] = userId
+            mapParam[CATEGORY_ID] = categoryId
 
             val data = withContext(dispatcher) {
                 val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCBankListReponse::class.java, mapParam)
@@ -45,7 +48,27 @@ class RechargeCCViewModel @Inject constructor(private val graphqlRepository: Gra
         }
     }
 
+    fun getSignatureCreditCard(rawQuery: String, categoryId: Int) {
+        launchCatchError(block = {
+            val mapParam = mutableMapOf<String, Any>()
+            mapParam[CATEGORY_ID] = categoryId
+
+            val data = withContext(dispatcher) {
+                val graphqlRequest = GraphqlRequest(rawQuery, RechargeCCSignatureReponse::class.java, mapParam)
+                graphqlRepository.getReseponse(listOf(graphqlRequest))
+            }.getSuccessData<RechargeCCSignatureReponse>()
+
+            if (data.rechargeSignature.messageError.isNotEmpty()) {
+                signature.postValue(data.rechargeSignature.signature)
+            } else {
+                errorSignature.postValue(data.rechargeSignature.messageError)
+            }
+        }) {
+            errorSignature.postValue(it.message)
+        }
+    }
+
     companion object {
-        const val USER_ID = "user_id"
+        const val CATEGORY_ID = "categoryId"
     }
 }

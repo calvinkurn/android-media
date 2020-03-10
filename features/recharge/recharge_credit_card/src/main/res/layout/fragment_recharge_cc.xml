@@ -21,4 +21,13 @@
 
     </androidx.cardview.widget.CardView>
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/list_bank_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/input_number_area"
+        android:text="List Bank"/>
+
 </RelativeLayout>
