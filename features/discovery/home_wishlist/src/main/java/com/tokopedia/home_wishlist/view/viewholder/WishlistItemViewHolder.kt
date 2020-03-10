@@ -27,6 +27,8 @@ class WishlistItemViewHolder(
             setProductModel(
                     ProductCardModel(
                             productName = element.productItem.name,
+                            discountPercentage = if (element.productItem.discountPercentage > 0) "${element.productItem.discountPercentage}%" else "",
+                            slashedPrice = element.productItem.slashPrice,
                             formattedPrice = element.productItem.price,
                             productImageUrl = element.productItem.imageUrl,
                             shopLocation = element.productItem.shop.location,
