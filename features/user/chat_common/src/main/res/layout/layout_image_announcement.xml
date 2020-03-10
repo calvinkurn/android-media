@@ -36,9 +36,12 @@
             tools:visibility="visible" />
 
         <Button
+            android:id="@+id/btn_check"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/bg_chatcommon_announcment_btn"
+            android:clickable="true"
+            android:focusable="true"
             android:text="@string/title_chatcommon_check"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
