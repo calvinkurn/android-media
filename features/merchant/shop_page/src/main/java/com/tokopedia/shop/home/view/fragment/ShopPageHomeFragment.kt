@@ -17,11 +17,13 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
-import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
-import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -31,7 +33,6 @@ import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
-import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnViewHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
@@ -43,6 +44,7 @@ import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import javax.inject.Inject
 
 class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
@@ -162,6 +164,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onErrorGetShopHomeLayoutData(throwable: Throwable) {
+        if(throwable is MessageErrorException){
+            globalError_shopPage.setType(GlobalError.SERVER_ERROR)
+        } else{
+            globalError_shopPage.setType(GlobalError.NO_CONNECTION)
+        }
+
+        scrollView_globalError_shopPage.visible()
+        globalError_shopPage.visible()
+        recycler_view.hide()
+
+        globalError_shopPage.setOnClickListener {
+            loadInitialData()
+        }
     }
 
     private fun onSuccessGetProductListData(hasNextPage: Boolean, productList: List<ShopHomeProductViewModel>) {
@@ -173,7 +188,10 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
+        recycler_view.visible()
         shopHomeAdapter.hideLoading()
+        scrollView_globalError_shopPage.hide()
+        globalError_shopPage.hide()
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
     }
 
