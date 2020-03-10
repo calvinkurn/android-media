@@ -372,10 +372,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             notificationManagerCompat.notify(777,notifReview);
                 });
 
-        toggleApplinkNotif.setChecked(ApplinkLogger.getInstance().isNotificationEnabled());
-        toggleApplinkNotif.setOnCheckedChangeListener((compoundButton, state) -> ApplinkLogger.getInstance().enableNotification(state));
+        toggleApplinkNotif.setChecked(ApplinkLogger.getInstance(this).isNotificationEnabled());
+        toggleApplinkNotif.setOnCheckedChangeListener((compoundButton, state) -> ApplinkLogger.getInstance(this).enableNotification(state));
 
-        vGoToApplinkDebugger.setOnClickListener(v -> ApplinkLogger.getInstance().openActivity());
+        vGoToApplinkDebugger.setOnClickListener(v -> ApplinkLogger.getInstance(this).openActivity());
 
         toggleFpmNotif.setChecked(FpmLogger.getInstance().isNotificationEnabled());
         toggleFpmNotif.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableNotification(state));

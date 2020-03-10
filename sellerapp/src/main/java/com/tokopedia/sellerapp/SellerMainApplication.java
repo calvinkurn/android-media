@@ -24,7 +24,6 @@ import com.tokopedia.cacheapi.util.CacheApiLoggingUtils;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
-import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.core.analytics.container.AppsflyerAnalytics;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
@@ -133,7 +132,6 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
             e.printStackTrace();
         }
         FpmLogger.init(this);
-        ApplinkLogger.init(this);
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
 

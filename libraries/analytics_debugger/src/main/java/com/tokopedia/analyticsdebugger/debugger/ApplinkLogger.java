@@ -32,12 +32,15 @@ public class ApplinkLogger implements ApplinkLoggerInterface {
         this.cache = new LocalCacheHandler(context, APPLINK_DEBUGGER);
     }
 
-    public static void init(Context context) {
-        if(GlobalConfig.isAllowDebuggingTools()) {
-            instance = new ApplinkLogger(context);
-        } else {
-            instance = emptyInstance();
+    public static ApplinkLoggerInterface getInstance(Context context) {
+        if (instance == null) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                instance = new ApplinkLogger(context);
+            } else {
+                instance = emptyInstance();
+            }
         }
+        return instance;
     }
 
     public static ApplinkLoggerInterface getInstance() {
