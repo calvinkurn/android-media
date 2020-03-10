@@ -11,6 +11,7 @@ import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData;
 import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel;
 import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel;
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerActivity;
+import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerActivity;
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity;
 
 /**
@@ -61,7 +62,7 @@ class NotificationHelper {
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent intent = FpmDebuggerActivity.newInstance(context);
+        Intent intent = ApplinkDebuggerActivity.newInstance(context);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.BigTextStyle inboxStyle = new NotificationCompat.BigTextStyle().bigText(data.getData());
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ANDROID_GENERAL_CHANNEL")
