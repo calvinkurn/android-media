@@ -51,8 +51,6 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -311,12 +309,18 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observeApplyPromoResult() {
         viewModel.applyPromoResponse.observe(this, Observer {
             setButtonLoading(button_apply_promo, false)
-            when (it) {
-                is Success -> {
-
+            when {
+                it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART -> {
+                    activity?.setResult(Activity.RESULT_OK)
+                    activity?.finish()
                 }
-                is Fail -> {
-
+                it.state == ApplyPromoResponseAction.ACTION_RELOAD_PROMO -> {
+                    reloadData()
+                }
+                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
+                    it.exception?.let {
+                        showToastMessage(it)
+                    }
                 }
             }
         })
@@ -325,12 +329,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observeClearPromoResult() {
         viewModel.clearPromoResponse.observe(this, Observer {
             setButtonLoading(button_apply_no_promo, false)
-            when (it) {
-                is Success -> {
-                    activity?.finish()
-                }
-                is Fail -> {
-                    showToastMessage(it.throwable)
+            when {
+                it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> activity?.finish()
+                it.state == ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
+                    showToastMessage(it)
                 }
             }
         })
@@ -399,6 +401,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun reloadData() {
+        adapter.clearAllElements()
         layout_main_container.show()
         loadData(0)
     }
@@ -471,7 +474,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     fun showToastMessage(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        showToastMessage(errorMessage)
+        if (errorMessage.isNotBlank()) {
+            showToastMessage(errorMessage)
+        } else {
+            showToastMessage("Terjadi kesalahan. Ulangi beberapa saat lagi")
+        }
     }
 
     private fun showSavePromoDialog() {
@@ -482,8 +489,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setPrimaryCTAText("Simpan Promo Baru")
                 setSecondaryCTAText("Keluar Halaman")
                 setPrimaryCTAClickListener {
-                    // Todo : Hit validate use
-                    dismiss()
+                    viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
                 }
                 setSecondaryCTAClickListener {
                     dismiss()

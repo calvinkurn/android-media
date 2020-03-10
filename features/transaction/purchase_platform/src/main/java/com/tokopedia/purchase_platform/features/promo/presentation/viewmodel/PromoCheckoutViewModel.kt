@@ -13,7 +13,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.Params
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.RequestParamsValidateUse
 import com.tokopedia.purchase_platform.features.promo.data.response.ClearPromoResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_COUPON_LIST_EMPTY
@@ -23,9 +22,6 @@ import com.tokopedia.purchase_platform.features.promo.data.response.validate_use
 import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -75,13 +71,13 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         get() = _tmpListUiModel
 
     // Live data to store clear promo result
-    private val _clearPromoResponse = MutableLiveData<Result<ClearPromoResponse>>()
-    val clearPromoResponse: LiveData<Result<ClearPromoResponse>>
+    private val _clearPromoResponse = MutableLiveData<ClearPromoResponseAction>()
+    val clearPromoResponse: LiveData<ClearPromoResponseAction>
         get() = _clearPromoResponse
 
     // Live data to store apply promo result
-    private val _applyPromoResponse = MutableLiveData<Result<Any>>()
-    val applyPromoResponse: LiveData<Result<Any>>
+    private val _applyPromoResponse = MutableLiveData<ApplyPromoResponseAction>()
+    val applyPromoResponse: LiveData<ApplyPromoResponseAction>
         get() = _applyPromoResponse
 
     fun loadData(mutation: String, promoRequest: PromoRequest) {
@@ -180,6 +176,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private suspend fun doApplyPromo(mutation: String, promoCode: String) {
         launchCatchError(block = {
+            // Initialize response action state
+            if (applyPromoResponse.value == null) {
+                _applyPromoResponse.value = ApplyPromoResponseAction()
+            }
+
             // Set param
             val params = Params()
             val promo = HashMap<String, Any>()
@@ -193,22 +194,82 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             if (response.validateUsePromoRevamp.status == "OK") {
+                // Response is OK, then need to check whether it's apply promo manual or apply checked promo items
+                val responseValidatePromo = response.validateUsePromoRevamp.promo
+                if (responseValidatePromo.clashingInfoDetail.isClashedPromos) {
+                    // Promo is clashing. Need to reload promo page
+                    applyPromoResponse.value?.let {
+                        it.state = ApplyPromoResponseAction.ACTION_RELOAD_PROMO
+                        _applyPromoResponse.value = it
+                    }
+                } else {
+                    if (promoCode.isNotBlank()) {
+                        // Goes here if user apply promo by input manual
+                        if (responseValidatePromo.success && responseValidatePromo.message.state == "green") {
+                            // Success apply promo input.
+                            // Set loading state to false
+                            promoInputUiModel.value?.let {
+                                it.uiState.isLoading = false
+                                it.uiState.isError = false
+                                _tmpUiModel.value = Update(it)
+                            }
 
+                            // Then need to reload promo page
+                            applyPromoResponse.value?.let {
+                                it.state = ApplyPromoResponseAction.ACTION_RELOAD_PROMO
+                                _applyPromoResponse.value = it
+                            }
+                        } else {
+                            // Failed apply promo input. Then need to show error state on promo input field
+                            throw MessageErrorException(responseValidatePromo.message.text)
+                        }
+                    } else {
+                        // Goes here if user apply promo from checked promo item
+                        if (responseValidatePromo.voucherOrders.isNotEmpty()) {
+                            // Check all promo merchant is success
+                            var successCount = 0
+                            responseValidatePromo.voucherOrders.forEach { voucherOrder ->
+                                if (voucherOrder.success) {
+                                    successCount++
+                                } else {
+                                    // If one of promo merchant is error, then show error message
+                                    throw MessageErrorException(voucherOrder.message.text)
+                                }
+                            }
+                            if (successCount == responseValidatePromo.voucherOrders.size) {
+                                // If all promo merchant are success, then navigate to cart
+                                applyPromoResponse.value?.let {
+                                    it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
+                                    _applyPromoResponse.value = it
+                                }
+                            }
+                        } else {
+                            // Voucher orders is empty but the response is OK
+                            // This section is added as fallback mechanism
+                            throw MessageErrorException()
+                        }
+                    }
+                }
             } else {
+                // Response is not OK, need to show error message
                 throw MessageErrorException(response.validateUsePromoRevamp.message.joinToString(". "))
             }
-        }) {
+        }) { throwable ->
             if (promoCode.isNotBlank()) {
                 // Notify promo input to stop loading
-                promoInputUiModel.value?.let { uiModel ->
-                    uiModel.uiState.isLoading = false
-                    uiModel.uiState.isError = true
-                    uiModel.uiData.exception = it
-                    _tmpUiModel.value = Update(uiModel)
+                promoInputUiModel.value?.let {
+                    it.uiState.isLoading = false
+                    it.uiState.isError = true
+                    it.uiData.exception = throwable
+                    _tmpUiModel.value = Update(it)
                 }
             } else {
                 // Notify fragment apply promo to stop loading
-                _applyPromoResponse.value = Fail(it)
+                applyPromoResponse.value?.let {
+                    it.state = ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR
+                    it.exception = throwable
+                    _applyPromoResponse.value = it
+                }
             }
         }
     }
@@ -219,6 +280,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private suspend fun doClearPromo(mutation: String) {
         launchCatchError(block = {
+            // Initialize response action state
+            if (clearPromoResponse.value == null) {
+                _clearPromoResponse.value = ClearPromoResponseAction()
+            }
+
             // Set param
             val promoCodes = ArrayList<String>()
             var tmpMutation = mutation
@@ -244,12 +310,19 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             if (response.successData.success) {
-                _clearPromoResponse.value = Success(response)
+                clearPromoResponse.value?.let {
+                    it.state = ClearPromoResponseAction.ACTION_STATE_SUCCESS
+                    _clearPromoResponse.value = it
+                }
             } else {
-                _clearPromoResponse.value = Fail(RuntimeException())
+                throw MessageErrorException()
             }
-        }) {
-            _clearPromoResponse.value = Fail(it)
+        }) { throwable ->
+            clearPromoResponse.value?.let {
+                it.state = ClearPromoResponseAction.ACTION_STATE_ERROR
+                it.exception = throwable
+                _clearPromoResponse.value = it
+            }
         }
     }
 
