@@ -55,8 +55,8 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         }
     }
 
-    override fun onClassClicked(classModel: FlightClassViewModel?) {
-        val intent = FlightClassesActivity.getCallingIntent(requireContext(), classModel?.id ?: -1)
+    override fun onClassClicked(flightClassId: Int) {
+        val intent = FlightClassesActivity.getCallingIntent(requireContext(), flightClassId)
         startActivityForResult(intent, REQUEST_CODE_SELECT_CLASSES)
     }
 
