@@ -1481,7 +1481,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             shopId = shopId,
                             uniqueId = cartString,
                             product_details = listProductDetail,
-                            codes = listPromoCodes,
+                            codes = ArrayList(listPromoCodes),
                             isChecked = isCheckedItem)
                     listOrder.add(order)
                 }

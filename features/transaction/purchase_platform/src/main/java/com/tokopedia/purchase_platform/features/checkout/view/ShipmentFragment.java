@@ -3164,7 +3164,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         PromoRequest promoRequest = new PromoRequest();
         promoRequest.setState(CheckoutConstant.CHECKOUT);
-        promoRequest.setCodes(promoCheckoutData.getCodes());
+        promoRequest.setCodes(new ArrayList<>(promoCheckoutData.getCodes()));
         //TODO: intent to coupon list page with promoRequest
     }
 

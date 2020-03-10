@@ -34,7 +34,7 @@ data class CouponListRecommendationRequest(
 
 data class PromoRequest(
         @SerializedName("codes")
-        var codes: List<String> = emptyList(),
+        var codes: ArrayList<String> = ArrayList(),
         @SerializedName("skip_apply")
         var skipApply: Int = 1,
         @SerializedName("is_suggested")
@@ -46,11 +46,12 @@ data class PromoRequest(
         @SerializedName("orders")
         var orders: List<Order> = emptyList()
 ) : Parcelable {
+
     constructor(parcel: Parcel) : this(
-            parcel.createStringArrayList() ?: emptyList(),
+            parcel.createStringArrayList() ?: ArrayList(),
             parcel.readInt(),
             parcel.readInt(),
-            parcel.readString() ?: "default",
+            parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.createTypedArrayList(Order) ?: emptyList()) {
     }
@@ -77,7 +78,6 @@ data class PromoRequest(
             return arrayOfNulls(size)
         }
     }
-
 }
 
 data class Order(
@@ -88,7 +88,7 @@ data class Order(
         @SerializedName("product_details")
         var product_details: List<ProductDetail> = emptyList(),
         @SerializedName("codes")
-        var codes: List<String> = emptyList(),
+        var codes: ArrayList<String> = ArrayList(),
         @SerializedName("is_checked")
         var isChecked: Boolean = false
 ) : Parcelable {
@@ -96,7 +96,7 @@ data class Order(
             parcel.readLong(),
             parcel.readString() ?: "",
             parcel.createTypedArrayList(ProductDetail) ?: emptyList(),
-            parcel.createStringArrayList() ?: emptyList(),
+            parcel.createStringArrayList() ?: ArrayList(),
             parcel.readByte() != 0.toByte()) {
     }
 

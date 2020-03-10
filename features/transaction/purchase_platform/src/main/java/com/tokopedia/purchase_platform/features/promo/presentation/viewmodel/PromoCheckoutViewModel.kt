@@ -80,13 +80,32 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     val applyPromoResponse: LiveData<ApplyPromoResponseAction>
         get() = _applyPromoResponse
 
-    fun loadData(mutation: String, promoRequest: PromoRequest) {
-        launch { getCouponRecommendation(mutation, promoRequest) }
+    fun loadData(mutation: String, promoRequest: PromoRequest, promoCode: String) {
+        launch { getCouponRecommendation(mutation, promoRequest, promoCode) }
     }
 
-    private suspend fun getCouponRecommendation(mutation: String, promoRequest: PromoRequest) {
+    private suspend fun getCouponRecommendation(mutation: String, promoRequest: PromoRequest, promoCode: String) {
         launchCatchError(block = {
             // Set param
+            if (promoCode.isNotBlank() && !promoRequest.codes.contains(promoCode)) {
+                promoRequest.codes.add(promoCode)
+            }
+
+            promoRequest.orders.forEach { order ->
+                order.codes.clear()
+                promoListUiModel.value?.forEach {
+                    if (it is PromoListItemUiModel && it.uiState.isSelected && it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
+                        order.codes.add(it.uiData.promoCode)
+                    } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                        it.uiData.tmpPromoItemList.forEach {
+                            if (it.uiState.isSelected && it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
+                                order.codes.add(it.uiData.promoCode)
+                            }
+                        }
+                    }
+                }
+            }
+
             val promo = HashMap<String, Any>()
             promo["params"] = CouponListRecommendationRequest(promoRequest = promoRequest)
 
@@ -99,6 +118,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             if (response.couponListRecommendation.status == "OK") {
+                // Todo : Check if apply promo manual input success. Waiting
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
                     initFragmentUiModel(false)
                     initPromoRecommendation(response)
