@@ -109,7 +109,7 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     }
 
     public void setShopName(String shopName) {
-        setString(LOGIN_SESSION, SHOP_ID, shopName);
+        setString(LOGIN_SESSION, SHOP_NAME, shopName);
     }
 
     @Override
