@@ -7,7 +7,7 @@ import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -50,7 +50,7 @@ class OverlayVideoComponentTest {
     fun `test on VOD is playing`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Playing
+                state = PlayVideoState.Playing
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
@@ -63,7 +63,7 @@ class OverlayVideoComponentTest {
     fun `test on VOD has ended`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Ended
+                state = PlayVideoState.Ended
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
@@ -76,7 +76,7 @@ class OverlayVideoComponentTest {
     fun `test on Live is playing`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Playing
+                state = PlayVideoState.Playing
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
@@ -89,7 +89,7 @@ class OverlayVideoComponentTest {
     fun `test on Live has ended`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Ended
+                state = PlayVideoState.Ended
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
