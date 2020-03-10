@@ -2,6 +2,8 @@ package com.tokopedia.play.ui.pinned
 
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.ui.pinned.interaction.PinnedInteractionEvent
@@ -68,6 +70,11 @@ open class PinnedComponent(
         launch {
             bus.emit(PinnedInteractionEvent::class.java, PinnedInteractionEvent.PinnedProductClicked)
         }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy() {
+        uiView.onDestroy()
     }
 
     private fun setPinned(pinnedUiModel: PinnedUiModel) {

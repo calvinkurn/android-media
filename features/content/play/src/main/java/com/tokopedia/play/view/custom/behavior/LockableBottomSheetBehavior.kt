@@ -15,6 +15,8 @@ class LockableBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
 
     private var mLocked = false
 
+    private val lockedStates = intArrayOf(STATE_EXPANDED, STATE_HALF_EXPANDED, STATE_DRAGGING, STATE_COLLAPSED, STATE_SETTLING, STATE_HIDDEN)
+
     constructor()
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
@@ -24,7 +26,7 @@ class LockableBottomSheetBehavior<V : View> : BottomSheetBehavior<V> {
             }
 
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                mLocked = newState == STATE_EXPANDED
+                mLocked = newState in lockedStates
             }
         })
     }

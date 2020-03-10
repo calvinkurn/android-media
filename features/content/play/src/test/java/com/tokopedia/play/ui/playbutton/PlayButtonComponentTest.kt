@@ -7,7 +7,7 @@ import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -50,7 +50,7 @@ class PlayButtonComponentTest {
     fun `test when VOD is playing`() = runBlockingTest(testDispatcher) {
         val mockVideoProperty = VideoPropertyUiModel(
                 type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Playing
+                state = PlayVideoState.Playing
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
@@ -62,7 +62,7 @@ class PlayButtonComponentTest {
     fun `test when VOD is pause`() = runBlockingTest(testDispatcher) {
         val mockVideoProperty = VideoPropertyUiModel(
                 type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Pause
+                state = PlayVideoState.Pause
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
@@ -74,7 +74,7 @@ class PlayButtonComponentTest {
     fun `test when Live is playing`() = runBlockingTest(testDispatcher) {
         val mockVideoProperty = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Playing
+                state = PlayVideoState.Playing
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
@@ -86,7 +86,7 @@ class PlayButtonComponentTest {
     fun `test when Live is pause`() = runBlockingTest(testDispatcher) {
         val mockVideoProperty = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Pause
+                state = PlayVideoState.Pause
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
@@ -98,7 +98,7 @@ class PlayButtonComponentTest {
     fun `test when VOD is ended`() = runBlockingTest(testDispatcher) {
         val mockVideoProperty = VideoPropertyUiModel(
                 type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Ended
+                state = PlayVideoState.Ended
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))
@@ -110,7 +110,7 @@ class PlayButtonComponentTest {
     fun `test when Live is ended`() = runBlockingTest(testDispatcher) {
         val mockVideoProperty = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Ended
+                state = PlayVideoState.Ended
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProperty))

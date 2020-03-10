@@ -11,7 +11,7 @@ import com.tokopedia.play.view.type.PlayRoomEvent
 import com.tokopedia.play.view.uimodel.PartnerInfoUiModel
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
 import com.tokopedia.play.view.uimodel.VideoStreamUiModel
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -54,7 +54,7 @@ class ToolbarComponentTest {
     fun `test when video property changed`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Buffering
+                state = PlayVideoState.Buffering
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))

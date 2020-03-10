@@ -19,8 +19,8 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
-import com.tokopedia.play_common.player.TokopediaPlayManager
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -32,7 +32,7 @@ import javax.inject.Inject
  * Created by jegul on 29/11/19
  */
 class PlayViewModel @Inject constructor(
-        private val playManager: TokopediaPlayManager,
+        private val playVideoManager: PlayVideoManager,
         private val getChannelInfoUseCase: GetChannelInfoUseCase,
         private val getPartnerInfoUseCase: GetPartnerInfoUseCase,
         private val getTotalLikeUseCase: GetTotalLikeUseCase,
@@ -45,7 +45,7 @@ class PlayViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     val observableVOD: LiveData<out ExoPlayer>
-        get() = playManager.getObservableVideoPlayer()
+        get() = playVideoManager.getObservableVideoPlayer()
     val observableGetChannelInfo: LiveData<Result<ChannelInfoUiModel>>
         get() = _observableGetChannelInfo
     val observableSocketInfo: LiveData<PlaySocketInfo>
@@ -134,9 +134,9 @@ class PlayViewModel @Inject constructor(
     private val stateHandler: LiveData<Unit> = MediatorLiveData<Unit>().apply {
         addSource(observableVideoStream) {
             _observableVideoProperty.value = VideoPropertyUiModel(it.channelType, _observableVideoProperty.value?.state
-                    ?: TokopediaPlayVideoState.NotConfigured)
+                    ?: PlayVideoState.NotConfigured)
         }
-        addSource(playManager.getObservablePlayVideoState()) {
+        addSource(playVideoManager.getObservablePlayVideoState()) {
             _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type ?: PlayChannelType.Unknown, it)
         }
         addSource(observablePartnerInfo) {
@@ -299,13 +299,16 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
+    fun hideAllInsets() {
+        _observableBottomInsetsState.value = getDefaultBottomInsetsMapState()
+    }
+
     private fun getLatestBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
-        val currentValue = _observableBottomInsetsState.value ?: return mapOf(
-                BottomInsetsType.Keyboard to BottomInsetsState.Hidden(false),
-                BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
-                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
-        )
-        currentValue.values.forEach { it.isPreviousStateSame = true }
+        val currentValue = _observableBottomInsetsState.value ?: return getDefaultBottomInsetsMapState()
+        currentValue.values.forEach {
+            it.isPreviousStateSame = true
+            if (it is BottomInsetsState.Shown) it.deepLevel += 1
+        }
 
         return currentValue
     }
@@ -315,36 +318,32 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
             BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
     )
-
-    fun hideAllInsets() {
-        _observableBottomInsetsState.value = getDefaultBottomInsetsMapState()
-    }
     //end region
 
     // video player region
+    fun startCurrentVideo() {
+        playVideoManager.resumeCurrentVideo()
+    }
+
+    fun getDurationCurrentVideo(): Long {
+        return playVideoManager.getDurationVideo()
+    }
+
     private fun initiateVideo(channel: Channel) {
         startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
-        playManager.setRepeatMode(false)
+        playVideoManager.setRepeatMode(false)
     }
 
     private fun startVideoWithUrlString(urlString: String, isLive: Boolean) {
-        playManager.safePlayVideoWithUriString(urlString, isLive)
+        playVideoManager.safePlayVideoWithUriString(urlString, isLive)
     }
 
     private fun playVideoStream(channel: Channel) {
         if (channel.isActive) initiateVideo(channel)
     }
 
-    fun startCurrentVideo() {
-        playManager.resumeCurrentVideo()
-    }
-
-    fun getDurationCurrentVideo(): Long {
-        return playManager.getDurationVideo()
-    }
-
     private fun stopPlayer() {
-        playManager.stopPlayer()
+        playVideoManager.stopPlayer()
     }
     // end region
 
@@ -418,6 +417,20 @@ class PlayViewModel @Inject constructor(
                     finalTotalLike.toAmountString(amountStringStepArray, separator = ".")
             )
         }
+    }
+
+    fun onBackPressed(): Boolean {
+        val shownBottomSheets = observableBottomInsetsState.value
+                ?.filter { it.value.isShown }
+                ?.mapValues { it.value as BottomInsetsState.Shown }
+                .orEmpty()
+        val entry = shownBottomSheets.minBy { it.value.deepLevel }
+        when (entry?.key) {
+            BottomInsetsType.Keyboard -> onKeyboardHidden()
+            BottomInsetsType.ProductSheet -> onHideProductSheet()
+            BottomInsetsType.VariantSheet -> onHideVariantSheet()
+        }
+        return shownBottomSheets.isNotEmpty()
     }
 
     private suspend fun getTotalLikes(contentId: Int, contentType: Int, likeType: Int) {

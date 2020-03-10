@@ -25,7 +25,6 @@ import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse

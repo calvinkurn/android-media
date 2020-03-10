@@ -7,7 +7,7 @@ import com.tokopedia.play.helper.TestCoroutineDispatchersProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.VideoPropertyUiModel
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import io.mockk.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.test.*
@@ -43,7 +43,7 @@ class VideoLoadingComponentTest {
     fun `test when VOD is buffering`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Buffering
+                state = PlayVideoState.Buffering
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
@@ -55,7 +55,7 @@ class VideoLoadingComponentTest {
     fun `test when Live is buffering`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Buffering
+                state = PlayVideoState.Buffering
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
@@ -67,7 +67,7 @@ class VideoLoadingComponentTest {
     fun `test when VOD is playing`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.VOD,
-                state = TokopediaPlayVideoState.Playing
+                state = PlayVideoState.Playing
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))
@@ -79,7 +79,7 @@ class VideoLoadingComponentTest {
     fun `test when Live is playing`() = runBlockingTest(testDispatcher) {
         val mockVideoProp = VideoPropertyUiModel(
                 type = PlayChannelType.Live,
-                state = TokopediaPlayVideoState.Playing
+                state = PlayVideoState.Playing
         )
 
         EventBusFactory.get(owner).emit(ScreenStateEvent::class.java, ScreenStateEvent.VideoPropertyChanged(mockVideoProp))

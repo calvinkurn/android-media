@@ -38,6 +38,4 @@ class ProductItemViewHolder(view: View,
             }
         }
     }
-
-    val productCard: ProductCardViewSmallGrid by lazy { view.findViewById<ProductCardViewSmallGrid>(R.id.banner_item) }
 }

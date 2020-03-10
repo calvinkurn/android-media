@@ -8,8 +8,8 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.home.beranda.presentation.view.customview.TokopediaPlayView
 import com.tokopedia.home.util.DimensionUtils
-import com.tokopedia.play_common.player.TokopediaPlayManager
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.player.PlayVideoManager
+import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.util.PlayConnectionMonitor
 import com.tokopedia.play_common.util.PlayConnectionState
 import kotlinx.coroutines.*
@@ -39,7 +39,7 @@ class HomePlayWidgetHelper(
     private var playConnectionMonitor = PlayConnectionMonitor(context)
 
     private val playManager
-        get() = TokopediaPlayManager.getInstance(context)
+        get() = PlayVideoManager.getInstance(context)
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -50,14 +50,14 @@ class HomePlayWidgetHelper(
         }
     }
 
-    private val playerStateObserver = object : Observer<TokopediaPlayVideoState>{
-        override fun onChanged(state: TokopediaPlayVideoState) {
+    private val playerStateObserver = object : Observer<PlayVideoState>{
+        override fun onChanged(state: PlayVideoState) {
             when(state){
-                is TokopediaPlayVideoState.NoMedia -> mExoPlayerListener?.onPlayerIdle()
-                is TokopediaPlayVideoState.Error -> mExoPlayerListener?.onPlayerError(state.error.message)
-                is TokopediaPlayVideoState.Pause -> mExoPlayerListener?.onPlayerPaused()
-                is TokopediaPlayVideoState.Buffering -> mExoPlayerListener?.onPlayerBuffering()
-                is TokopediaPlayVideoState.Playing -> mExoPlayerListener?.onPlayerPlaying()
+                is PlayVideoState.NoMedia -> mExoPlayerListener?.onPlayerIdle()
+                is PlayVideoState.Error -> mExoPlayerListener?.onPlayerError(state.error.message)
+                is PlayVideoState.Pause -> mExoPlayerListener?.onPlayerPaused()
+                is PlayVideoState.Buffering -> mExoPlayerListener?.onPlayerBuffering()
+                is PlayVideoState.Playing -> mExoPlayerListener?.onPlayerPlaying()
             }
         }
     }
@@ -151,7 +151,7 @@ class HomePlayWidgetHelper(
         }
     }
 
-    override fun isPlayerPlaying() = TokopediaPlayManager.getInstance(context).isVideoPlaying()
+    override fun isPlayerPlaying() = PlayVideoManager.getInstance(context).isVideoPlaying()
 
     override fun onViewAttach() {
         preparePlayer()
