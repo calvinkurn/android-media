@@ -5,6 +5,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.constant.CartConstant.STATE_RED
 import com.tokopedia.purchase_platform.common.data.model.response.Messages
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack
@@ -16,6 +17,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.CartPromoData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.ErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.LastApplyPromo
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.LastApplyPromoData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr
@@ -532,12 +534,28 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 errorDetailMsg = lastApplyPromo.lastApplyPromoData.additionalInfo.errorDetail.message,
                 emptyCartInfoImgUrl = lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.imageUrl,
                 emptyCartInfoMsg = lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.message,
-                emptyCartInfoDetail = lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.detail)
+                emptyCartInfoDetail = lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.detail,
+                listRedPromos = mapCreateListRedPromos(lastApplyPromo.lastApplyPromoData))
     }
 
     private fun mapPromoCheckoutErrorDefault(errorDefault: ErrorDefault): PromoCheckoutErrorDefault {
         return PromoCheckoutErrorDefault(
                 title = errorDefault.title,
                 desc = errorDefault.desc)
+    }
+
+    private fun mapCreateListRedPromos(lastApplyPromoData: LastApplyPromoData): List<String>  {
+        val listRedPromos = arrayListOf<String>()
+        if (lastApplyPromoData.message.state == STATE_RED) {
+            lastApplyPromoData.codes.forEach {
+                listRedPromos.add(it)
+            }
+        }
+        lastApplyPromoData.listVoucherOrders.forEach {
+            if (it.message.state == STATE_RED) {
+                listRedPromos.add(it.code)
+            }
+        }
+        return listRedPromos
     }
 }

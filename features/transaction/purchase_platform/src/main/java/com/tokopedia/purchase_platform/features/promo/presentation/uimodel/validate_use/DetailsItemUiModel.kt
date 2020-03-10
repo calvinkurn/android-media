@@ -4,22 +4,22 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class DetailsItemUiModel(
-	var amount: Int? = -1,
-	var sectionName: String? = "",
-	var description: String? = "",
-	var type: String? = "",
-	var amountStr: String? = "",
-	var points: Int? = -1,
-	var pointsStr: String? = ""
+	var amount: Int = -1,
+	var sectionName: String = "",
+	var description: String = "",
+	var type: String = "",
+	var amountStr: String = "",
+	var points: Int = -1,
+	var pointsStr: String = ""
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
-			parcel.readValue(Int::class.java.classLoader) as? Int,
-			parcel.readString(),
-			parcel.readString(),
-			parcel.readString(),
-			parcel.readString(),
-			parcel.readValue(Int::class.java.classLoader) as? Int,
-			parcel.readString())
+			parcel.readValue(Int::class.java.classLoader) as Int,
+			parcel.readString() ?: "",
+			parcel.readString() ?: "",
+			parcel.readString() ?: "",
+			parcel.readString() ?: "",
+			parcel.readValue(Int::class.java.classLoader) as Int,
+			parcel.readString() ?: "")
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeValue(amount)

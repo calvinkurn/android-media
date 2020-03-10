@@ -7,6 +7,7 @@ import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PotentialGainedPointsData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
@@ -46,6 +47,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private DisabledFeaturesDetailData disabledFeaturesDetailData;
     private LastApplyData lastApplyData;
     private PotentialGainedPointsData potentialGainedPointsData;
+    private PromoCheckoutErrorDefault promoCheckoutErrorDefault;
 
     public boolean isHasError() {
         return hasError;
@@ -257,6 +259,14 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.potentialGainedPointsData = potentialGainedPointsData;
     }
 
+    public PromoCheckoutErrorDefault getPromoCheckoutErrorDefault() {
+        return promoCheckoutErrorDefault;
+    }
+
+    public void setPromoCheckoutErrorDefault(PromoCheckoutErrorDefault promoCheckoutErrorDefault) {
+        this.promoCheckoutErrorDefault = promoCheckoutErrorDefault;
+    }
+
     public CartShipmentAddressFormData() {
     }
 
@@ -285,6 +295,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         disabledFeaturesDetailData = in.readParcelable(DisabledFeaturesDetailData.class.getClassLoader());
         lastApplyData = in.readParcelable(LastApplyData.class.getClassLoader());
         potentialGainedPointsData = in.readParcelable(PotentialGainedPointsData.class.getClassLoader());
+        promoCheckoutErrorDefault = in.readParcelable(PromoCheckoutErrorDefault.class.getClassLoader());
     }
 
     @Override
@@ -313,6 +324,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         dest.writeParcelable(disabledFeaturesDetailData, flags);
         dest.writeParcelable(lastApplyData, flags);
         dest.writeParcelable(potentialGainedPointsData, flags);
+        dest.writeParcelable(promoCheckoutErrorDefault, flags);
     }
 
     @Override

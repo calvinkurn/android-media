@@ -111,6 +111,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldTieri
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 import com.tokopedia.usecase.RequestParams;
@@ -1075,9 +1076,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void doValidateuseLogisticPromo(int cartPosition, String cartString, com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest promoRequest) {
+    public void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest);
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)
@@ -1105,8 +1106,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                                     if (validateUsePromoRevampUiModel.getStatus() != null) {
                                         if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
-                                            //TODO : gimana klo clash?
-                                            //else :
                                             getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel());
                                         } else {
                                             if (validateUsePromoRevampUiModel.getMessage() != null && validateUsePromoRevampUiModel.getMessage().size() > 0) {

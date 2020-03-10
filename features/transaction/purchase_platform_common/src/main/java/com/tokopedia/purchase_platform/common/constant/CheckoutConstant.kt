@@ -16,6 +16,8 @@ class CheckoutConstant {
         const val EXTRA_SELECTED_ADDRESS_DATA = "EXTRA_SELECTED_ADDRESS_DATA"
         const val EXTRA_TYPE_REQUEST = "EXTRA_TYPE_REQUEST"
         const val EXTRA_IS_ONE_CLICK_SHIPMENT = "EXTRA_IS_ONE_CLICK_SHIPMENT"
+        const val STATE_RED = "red"
+        const val TYPE_CASHBACK = "cashback"
     }
 
 }

@@ -4,7 +4,7 @@ import javax.annotation.Generated
 import com.google.gson.annotations.SerializedName
 
 @Generated("com.robohorse.robopojogenerator")
-data class PromoRequest(
+data class ValidateUsePromoRequest(
 
         @field:SerializedName("codes")
         var codes: List<String?> = listOf(),
