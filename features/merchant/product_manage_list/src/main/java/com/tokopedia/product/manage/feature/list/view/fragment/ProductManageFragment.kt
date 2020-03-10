@@ -72,7 +72,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
-import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult

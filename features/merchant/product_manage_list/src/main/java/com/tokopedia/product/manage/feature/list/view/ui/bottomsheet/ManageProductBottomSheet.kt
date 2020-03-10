@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.list.view.ui
+package com.tokopedia.product.manage.feature.list.view.ui.bottomsheet
 
 import android.view.LayoutInflater
 import android.view.View
