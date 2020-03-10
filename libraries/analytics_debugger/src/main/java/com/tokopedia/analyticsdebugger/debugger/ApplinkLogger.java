@@ -52,7 +52,7 @@ public class ApplinkLogger implements ApplinkLoggerInterface {
 
     @Override
     public void appendTrace(String trace) {
-        traces += trace + "\n";
+        traces += trace + "\n\n";
     }
 
     @Override

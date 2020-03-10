@@ -40,7 +40,7 @@ public class RouteManager {
         intent.setPackage(context.getPackageName());
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.addCategory(Intent.CATEGORY_BROWSABLE);
-        ApplinkLogger.getInstance().appendTrace("Implicit intent result: " + intent.toString());
+        ApplinkLogger.getInstance().appendTrace("Implicit intent result:\n" + intent.toString());
         return intent;
     }
 
@@ -71,7 +71,7 @@ public class RouteManager {
         if (resolveInfos == null || resolveInfos.size() == 0) {
             // intent cannot be viewed in app
             ApplinkLogger.getInstance().appendTrace("Intent cannot be viewed in app");
-            ApplinkLogger.getInstance().appendTrace("Explicit intent result: " + null);
+            ApplinkLogger.getInstance().appendTrace("Explicit intent result:\nnull");
             return null;
         } else {
             // remove deeplinkHandler and deeplinkActivity because it include all http:// and tokopedia://
@@ -96,11 +96,11 @@ public class RouteManager {
                 for (String queryParameterName : queryParameterNames) {
                     activityIntent.putExtra(queryParameterName, uri.getQueryParameter(queryParameterName));
                 }
-                ApplinkLogger.getInstance().appendTrace("Explicit intent result: " + intent.toString());
+                ApplinkLogger.getInstance().appendTrace("Explicit intent result:\n" + intent.toString());
                 return activityIntent;
             } else {
                 ApplinkLogger.getInstance().appendTrace("No ResolveInfo Found");
-                ApplinkLogger.getInstance().appendTrace("Explicit intent result: " + null);
+                ApplinkLogger.getInstance().appendTrace("Explicit intent result:\nnull");
                 return null;
             }
 
@@ -134,11 +134,11 @@ public class RouteManager {
         if (TextUtils.isEmpty(mappedDeeplink)) {
             mappedDeeplink = uriString;
         }
-        ApplinkLogger.getInstance().appendTrace("Mapped Deeplink: " + mappedDeeplink);
+        ApplinkLogger.getInstance().appendTrace("Mapped Deeplink:\n" + mappedDeeplink);
 
         Intent intent;
         String dynamicFeatureDeeplink = DeeplinkDFMapper.getDFDeeplinkIfNotInstalled(context, mappedDeeplink);
-        ApplinkLogger.getInstance().appendTrace("DF Deeplink: " + dynamicFeatureDeeplink);
+        ApplinkLogger.getInstance().appendTrace("DF Deeplink:\n" + dynamicFeatureDeeplink);
 
         if (dynamicFeatureDeeplink != null) {
             ApplinkLogger.getInstance().appendTrace("Building DF intent");
@@ -167,7 +167,7 @@ public class RouteManager {
 
             ComponentName destActivity = intent.resolveActivity(context.getPackageManager());
             if (destActivity != null) {
-                ApplinkLogger.getInstance().appendTrace("Starting activity " + destActivity.getClassName());
+                ApplinkLogger.getInstance().appendTrace("Starting activity:\n" + destActivity.getClassName());
             } else {
                 ApplinkLogger.getInstance().appendTrace("Starting activity");
             }
@@ -182,7 +182,7 @@ public class RouteManager {
             if (queryParamBundle != null) {
                 intent.putExtras(queryParamBundle);
             }
-            ApplinkLogger.getInstance().appendTrace("Starting activity "
+            ApplinkLogger.getInstance().appendTrace("Starting activity:\n"
                     + intent.resolveActivity(context.getPackageManager()).getClassName());
             ApplinkLogger.getInstance().save();
             context.startActivity(intent);
@@ -281,33 +281,33 @@ public class RouteManager {
         if (TextUtils.isEmpty(mappedDeeplink)) {
             mappedDeeplink = deeplink;
         }
-        ApplinkLogger.getInstance().appendTrace("Mapped Deeplink: " + mappedDeeplink);
+        ApplinkLogger.getInstance().appendTrace("Mapped Deeplink:\n" + mappedDeeplink);
 
         String dynamicFeatureDeeplink = DeeplinkDFMapper.getDFDeeplinkIfNotInstalled(context, mappedDeeplink);
-        ApplinkLogger.getInstance().appendTrace("DF Deeplink: " + dynamicFeatureDeeplink);
+        ApplinkLogger.getInstance().appendTrace("DF Deeplink:\n" + dynamicFeatureDeeplink);
 
         if (dynamicFeatureDeeplink != null) {
             Intent dfIntent = buildInternalExplicitIntent(context, dynamicFeatureDeeplink);
-            ApplinkLogger.getInstance().appendTrace("Returning DF intent " + (dfIntent != null ? dfIntent.toString() : ""));
+            ApplinkLogger.getInstance().appendTrace("Returning DF intent:\n" + (dfIntent != null ? dfIntent.toString() : ""));
             ApplinkLogger.getInstance().save();
             return dfIntent;
         }
         if (((ApplinkRouter) context.getApplicationContext()).isSupportApplink(mappedDeeplink)) {
             ApplinkLogger.getInstance().appendTrace("AirBnB deeplink supported, redirect to AirBnB deeplink handler");
             Intent intent = ((ApplinkRouter) context.getApplicationContext()).getApplinkIntent(context, mappedDeeplink);
-            ApplinkLogger.getInstance().appendTrace("Returning AirBnB intent " + (intent != null ? intent.toString() : ""));
+            ApplinkLogger.getInstance().appendTrace("Returning AirBnB intent:\n" + (intent != null ? intent.toString() : ""));
             ApplinkLogger.getInstance().save();
             return intent;
         }
         if (URLUtil.isNetworkUrl(mappedDeeplink)) {
             ApplinkLogger.getInstance().appendTrace("Network url detected");
             Intent intent = buildInternalImplicitIntent(context, mappedDeeplink);
-            ApplinkLogger.getInstance().appendTrace("Returning network intent " + (intent != null ? intent.toString() : ""));
+            ApplinkLogger.getInstance().appendTrace("Returning network intent:\n" + (intent != null ? intent.toString() : ""));
             ApplinkLogger.getInstance().save();
             return intent;
         }
         Intent intent = buildInternalExplicitIntent(context, mappedDeeplink);
-        ApplinkLogger.getInstance().appendTrace("Returning intent " + (intent != null ? intent.toString() : ""));
+        ApplinkLogger.getInstance().appendTrace("Returning intent:\n" + (intent != null ? intent.toString() : ""));
         ApplinkLogger.getInstance().save();
         return intent;
     }
