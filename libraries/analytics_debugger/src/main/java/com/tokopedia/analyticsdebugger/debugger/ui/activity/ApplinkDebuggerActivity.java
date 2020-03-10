@@ -7,7 +7,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.tokopedia.analytics.debugger.ui.fragment.FpmDebuggerFragment;
+import com.tokopedia.analytics.debugger.ui.fragment.ApplinkDebuggerFragment;
 import com.tokopedia.analyticsdebugger.R;
 
 public class ApplinkDebuggerActivity extends AppCompatActivity {
@@ -25,7 +25,7 @@ public class ApplinkDebuggerActivity extends AppCompatActivity {
         toolbar.setSubtitle("Tokopedia");
         if(savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, FpmDebuggerFragment.newInstance(), FpmDebuggerFragment.getTAG())
+                    .add(R.id.container, ApplinkDebuggerFragment.newInstance(), ApplinkDebuggerFragment.getTAG())
                     .commit();
         }
     }
