@@ -15,7 +15,7 @@ import com.tokopedia.analyticsdebugger.debugger.data.source.IrisLogSendDao;
 /**
  * @author okasurya on 5/14/18.
  */
-@Database(entities = {GtmLogDB.class, FpmLogDB.class, IrisSaveLogDB.class, IrisSendLogDB.class, GtmErrorLogDB.class}, version = 2)
+@Database(entities = {GtmLogDB.class, FpmLogDB.class, ApplinkLogDB.class, IrisSaveLogDB.class, IrisSendLogDB.class, GtmErrorLogDB.class}, version = 2)
 public abstract class TkpdAnalyticsDatabase extends RoomDatabase {
 
     public abstract GtmLogDao gtmLogDao();
