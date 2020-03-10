@@ -19,7 +19,7 @@ class TravelHomepageMapper {
         return when (layoutData.widgetType) {
             ConstantWidgetType.DUAL_PRODUCT_CARD, ConstantWidgetType.QUAD_PRODUCT_CARD -> mapToProductCardModel(layoutData, unifiedModel)
             ConstantWidgetType.DYNAMIC_ICON -> mapToCategoryListModel(unifiedModel)
-            ConstantWidgetType.SLIDER_BANNER -> mapToBannerModel(unifiedModel)
+            ConstantWidgetType.SLIDER_BANNER -> mapToBannerModel(layoutData, unifiedModel)
             ConstantWidgetType.SLIDER_PRODUCT_CARD -> mapToHomepageSectionModel(layoutData, unifiedModel)
             ConstantWidgetType.DUAL_BANNER -> mapToDestinationModel(layoutData, unifiedModel, 2)
             ConstantWidgetType.SINGLE_BANNER -> mapToDestinationModel(layoutData, unifiedModel, 1)
@@ -77,7 +77,7 @@ class TravelHomepageMapper {
                 list = sectionItems)
     }
 
-    private fun mapToBannerModel(unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageBannerModel {
+    private fun mapToBannerModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageBannerModel {
         val banners = mutableListOf<TravelCollectiveBannerModel.Banner>()
         for (item in unifiedModel) {
             var banner = TravelCollectiveBannerModel.Banner()
@@ -92,7 +92,8 @@ class TravelHomepageMapper {
 
             banners.add(banner)
         }
-        return TravelHomepageBannerModel(TravelCollectiveBannerModel(banners = banners))
+        return TravelHomepageBannerModel(TravelCollectiveBannerModel(banners = banners,
+                meta = TravelCollectiveBannerModel.MetaModel(appUrl = layoutData.appUrl, webUrl = layoutData.webUrl)))
     }
 
     private fun mapToProductCardModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageProductCardModel {
