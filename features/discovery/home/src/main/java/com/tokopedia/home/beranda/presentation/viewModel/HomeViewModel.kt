@@ -542,17 +542,19 @@ open class HomeViewModel @Inject constructor(
 
     private fun evaluatePopularKeywordComponent(homeDataModel: HomeDataModel?): HomeDataModel? {
         homeDataModel?.let { homeViewModel ->
-
-            val list = homeViewModel.list.toMutableList()
-            // find the old data from current list
-            _homeLiveData.value?.list?.forEachIndexed{pos, data ->
-                run {
-                    if (data is PopularKeywordListViewModel) {
-                        list[pos] = data
+            val popularWidget = _homeLiveData.value?.list?.find { visitable -> visitable is PopularKeywordListViewModel}
+            if(popularWidget != null) {
+                val list = homeViewModel.list.toMutableList()
+                // find the old data from current list
+                list.forEachIndexed { pos, data ->
+                    run {
+                        if (data is PopularKeywordListViewModel) {
+                            list[pos] = data
+                        }
                     }
                 }
+                homeViewModel.copy(list = list)
             }
-            homeViewModel.copy(list = list)
         }
         return homeDataModel
     }
