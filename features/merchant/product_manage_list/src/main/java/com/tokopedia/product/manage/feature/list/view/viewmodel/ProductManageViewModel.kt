@@ -158,7 +158,7 @@ class ProductManageViewModel @Inject constructor(
                 productListResponse?.data
             }
 
-            refreshList(isRefresh)
+            if(isRefresh) refreshList()
             showProductList(productList)
         }, onError = {
             _productListResult.value = Fail(it)
@@ -381,8 +381,8 @@ class ProductManageViewModel @Inject constructor(
         _productListFeaturedOnlyResult.value = Success(productsSize)
     }
 
-    private fun refreshList(isRefresh: Boolean) {
-        if (isRefresh) _viewState.value = RefreshList
+    private fun refreshList() {
+        _viewState.value = RefreshList
     }
 
     private fun showProgressDialog() {
