@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.ValidateUseResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.ValidateUsePromoCheckoutMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
@@ -30,7 +30,7 @@ class ValidateUsePromoRevampUseCase @Inject constructor (@ApplicationContext pri
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<ValidateUsePromoRevampUiModel> {
-        val paramValidateUse = requestParams?.getObject(PARAM_VALIDATE_USE) as PromoRequest
+        val paramValidateUse = requestParams?.getObject(PARAM_VALIDATE_USE) as ValidateUsePromoRequest
 
         val variables = mapOf(
                 PARAM_PROMO to paramValidateUse
