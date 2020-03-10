@@ -734,6 +734,11 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 data?.let {
                     selectedEtalaseId = it.getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID)
                     selectedEtalaseName = it.getStringExtra(ShopParamConstant.EXTRA_ETALASE_NAME)
+                    shopPageTracking?.clickMoreMenuChip(
+                            isMyShop,
+                            selectedEtalaseName,
+                            customDimensionShopPage
+                    )
                     val useAce = it.getBooleanExtra(ShopParamConstant.EXTRA_USE_ACE, true)
                     val etalaseBadge = it.getStringExtra(ShopParamConstant.EXTRA_ETALASE_BADGE)
 

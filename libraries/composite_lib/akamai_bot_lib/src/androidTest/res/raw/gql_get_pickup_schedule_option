@@ -1,0 +1,12 @@
+{
+    getPickupScheduleOption {
+        ScheduleDate {
+           DateFmt
+           ScheduleTime {
+               TimeFmt
+               MinTimeUnix
+               MaxTimeUnix
+           }
+        }
+    }
+}

@@ -1228,7 +1228,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         }
         checkoutAnalyticsCourierSelection.sendEnhancedECommerceCheckout(
-                stringObjectMap, transactionId, sessionId, isTradeIn(), eventAction, eventLabel
+                stringObjectMap, sessionId, transactionId, isTradeIn(), eventAction, eventLabel
         );
         checkoutAnalyticsCourierSelection.flushEnhancedECommerceCheckout();
     }
