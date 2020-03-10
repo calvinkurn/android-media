@@ -141,7 +141,7 @@ open class HomeViewModel @Inject constructor(
     private var getPopularKeywordJob: Job? = null
     private var buWidgetJob: Job? = null
     private var jobChannel: Job? = null
-    private val channel = Channel<UpdateLiveDataModel>()
+    private var channel : Channel<UpdateLiveDataModel>? = null
 
 // ============================================================================================
 // ================================== Local variable ==========================================
@@ -210,7 +210,7 @@ open class HomeViewModel @Inject constructor(
         if (!compositeSubscription.isUnsubscribed) {
             compositeSubscription.unsubscribe()
         }
-        channel.close()
+        channel?.close()
         jobChannel?.cancelChildren()
         super.onCleared()
     }
@@ -272,7 +272,9 @@ open class HomeViewModel @Inject constructor(
                 headerViewModel.isTokoPointDataError = it
             }
             headerViewModel.isUserLogin = userSession.isLoggedIn
-            launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
+            if(channel?.isClosedForSend == false){
+                launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
+            }
         }
 
     }
@@ -352,7 +354,7 @@ open class HomeViewModel @Inject constructor(
         newList.addAll(_homeLiveData.value?.list ?: listOf())
         val playIndex = newList.indexOfFirst { visitable -> visitable is PlayCardViewModel }
         if(playIndex != -1 && newList[playIndex] is PlayCardViewModel){
-            launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, playCardViewModel, playIndex)) }
+            launch { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, playCardViewModel, playIndex)) }
         }
     }
 
@@ -361,7 +363,7 @@ open class HomeViewModel @Inject constructor(
     fun clearPlayBanner(){
         val playIndex = _homeLiveData.value?.list.copy().indexOfFirst { visitable -> visitable is PlayCardViewModel }
         if(playIndex != -1) {
-            launch { channel.send(UpdateLiveDataModel(ACTION_DELETE, null, playIndex )) }
+            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, null, playIndex )) }
         }
     }
 
@@ -392,7 +394,7 @@ open class HomeViewModel @Inject constructor(
             val newFindReviewViewModel = findReviewViewModel.copy(
                 suggestedProductReview = suggestedProductReview
             )
-            launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, newFindReviewViewModel, indexOfReviewViewModel)) }
+            launch { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindReviewViewModel, indexOfReviewViewModel)) }
         }
     }
 
@@ -418,7 +420,7 @@ open class HomeViewModel @Inject constructor(
                 _homeLiveData.value?.list?.find { visitable -> visitable is ReviewViewModel }
                         ?: return
         if (findReviewViewModel is ReviewViewModel) {
-            launch { channel.send(UpdateLiveDataModel(ACTION_DELETE, findReviewViewModel)) }
+            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, findReviewViewModel)) }
         }
     }
 
@@ -426,7 +428,7 @@ open class HomeViewModel @Inject constructor(
         val homeViewModel = _homeLiveData.value
         val detectGeolocation = homeViewModel?.list?.find { visitable -> visitable is GeolocationPromptViewModel }
         (detectGeolocation as? GeolocationPromptViewModel)?.let {
-            launch { channel.send(UpdateLiveDataModel(ACTION_DELETE, it)) }
+            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
     }
 
@@ -434,7 +436,7 @@ open class HomeViewModel @Inject constructor(
         val homeViewModel = _homeLiveData.value
         val detectTicker = homeViewModel?.list?.find { visitable -> visitable is TickerViewModel }
         (detectTicker as? TickerViewModel)?.let {
-            launch { channel.send(UpdateLiveDataModel(ACTION_DELETE, it)) }
+            launch { updateWidget(UpdateLiveDataModel(ACTION_DELETE, it)) }
         }
     }
 
@@ -569,14 +571,14 @@ open class HomeViewModel @Inject constructor(
         launchCatchError(coroutineContext, block = {
             homeFlowData.collect { homeDataModel ->
                 if (homeDataModel?.isCache == false) {
-                    channel.send(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
+                    updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     getHeaderData()
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
-                    channel.send(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
+                    updateWidget(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
                     refreshHomeData()
                 }
             }
@@ -586,8 +588,12 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun initChannel(){
-        jobChannel = launch{
-            updateChannel(channel)
+        channel = Channel()
+        if(channel != null) {
+            jobChannel?.cancelChildren()
+            jobChannel = launch {
+                updateChannel(channel!!)
+            }
         }
     }
 
@@ -716,11 +722,11 @@ open class HomeViewModel @Inject constructor(
                         tabList = data.tabBusinessList,
                         backColor = data.widgetHeader.backColor,
                         contentsList = data.tabBusinessList.withIndex().map { BusinessUnitDataModel(tabName = it.value.name, tabPosition = it.index) })
-                channel.send(UpdateLiveDataModel(ACTION_UPDATE, buWidgetData, position))
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, buWidgetData, position))
             }
         }){
             (_homeLiveData.value?.list?.getOrNull(position) as? NewBusinessUnitWidgetDataModel)?.let{ buWidget ->
-                channel.send(UpdateLiveDataModel(ACTION_UPDATE, buWidget.copy(tabList = listOf()), position))
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, buWidget.copy(tabList = listOf()), position))
             }
         }
     }
@@ -734,7 +740,7 @@ open class HomeViewModel @Inject constructor(
                 val oldBuData = buModel.value as NewBusinessUnitWidgetDataModel
                 val newBuList = oldBuData.contentsList.copy().toMutableList()
                 newBuList[position] = newBuList[position].copy(list = data)
-                channel.send(UpdateLiveDataModel(ACTION_UPDATE, oldBuData.copy(contentsList = newBuList), buModel.index))
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, oldBuData.copy(contentsList = newBuList), buModel.index))
             }
         }){
             // show error
@@ -744,7 +750,7 @@ open class HomeViewModel @Inject constructor(
                 newBuList[position] = newBuList[position].copy(list = listOf())
                 val newList = _homeLiveData.value?.list.copy().toMutableList()
                 newList[buModel.index] = oldBuData.copy(contentsList = newBuList)
-                channel.send(UpdateLiveDataModel(ACTION_UPDATE, oldBuData.copy(contentsList = newBuList),buModel.index))
+                updateWidget(UpdateLiveDataModel(ACTION_UPDATE, oldBuData.copy(contentsList = newBuList),buModel.index))
             }
         }
     }
@@ -766,7 +772,7 @@ open class HomeViewModel @Inject constructor(
                 _homeLiveData.value?.list?.withIndex()?.find { it.value is PopularKeywordListViewModel }?.let { indexedData ->
                     val oldData = indexedData.value
                     if (oldData is PopularKeywordListViewModel) {
-                        channel.send(UpdateLiveDataModel(ACTION_UPDATE, oldData.copy(popularKeywordList = resultList), indexedData.index))
+                        updateWidget(UpdateLiveDataModel(ACTION_UPDATE, oldData.copy(popularKeywordList = resultList), indexedData.index))
                     }
                 }
             }
@@ -793,9 +799,9 @@ open class HomeViewModel @Inject constructor(
             val homeRecommendationFeedViewModel = HomeRecommendationFeedViewModel()
             homeRecommendationFeedViewModel.feedTabModel = homeRecommendationTabs
             homeRecommendationFeedViewModel.isNewData = true
-            channel.send(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
-            channel.send(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
-            channel.send(UpdateLiveDataModel(ACTION_ADD, homeRecommendationFeedViewModel))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
+            updateWidget(UpdateLiveDataModel(ACTION_ADD, homeRecommendationFeedViewModel))
 
         }){
             val visitableMutableList: MutableList<Visitable<*>> = mutableListOf()
@@ -808,9 +814,9 @@ open class HomeViewModel @Inject constructor(
             }
             visitableMutableList.add(HomeRetryModel())
 
-            channel.send(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
-            channel.send(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
-            channel.send(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findLoadingModel as HomeVisitable?))
+            updateWidget(UpdateLiveDataModel(ACTION_DELETE, findRetryModel as HomeVisitable?))
+            updateWidget(UpdateLiveDataModel(ACTION_ADD, HomeRetryModel()))
         }
     }
 
@@ -852,6 +858,13 @@ open class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private suspend fun updateWidget(updateWidget: UpdateLiveDataModel){
+        if(channel?.isClosedForSend == true){
+            initChannel()
+        }
+        channel?.send(updateWidget)
     }
 
 // ============================================================================================
