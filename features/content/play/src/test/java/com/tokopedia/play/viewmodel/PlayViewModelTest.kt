@@ -20,7 +20,7 @@ import com.tokopedia.play.view.uimodel.ChannelInfoUiModel
 import com.tokopedia.play.view.uimodel.TotalLikeUiModel
 import com.tokopedia.play.view.uimodel.VideoStreamUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.player.TokopediaPlayManager
+import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -40,7 +40,7 @@ class PlayViewModelTest {
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val mockPlayManager: TokopediaPlayManager = mockk(relaxed = true)
+    private val mockPlayVideoManager: PlayVideoManager = mockk(relaxed = true)
     private val mockGetChannelInfoUseCase: GetChannelInfoUseCase = mockk(relaxed = true)
     private val mockGetPartnerInfoUseCase: GetPartnerInfoUseCase = mockk(relaxed = true)
     private val mockGetTotalLikeUseCase: GetTotalLikeUseCase = mockk(relaxed = true)
@@ -66,7 +66,7 @@ class PlayViewModelTest {
     @Before
     fun setUp() {
         playViewModel = PlayViewModel(
-                mockPlayManager,
+                mockPlayVideoManager,
                 mockGetChannelInfoUseCase,
                 mockGetPartnerInfoUseCase,
                 mockGetTotalLikeUseCase,
@@ -94,7 +94,7 @@ class PlayViewModelTest {
             value = mockExoPlayer
         }
 
-        every { mockPlayManager.getObservableVideoPlayer() } returns mockObservableVideoPlayer
+        every { mockPlayVideoManager.getObservableVideoPlayer() } returns mockObservableVideoPlayer
 
         Assertions
                 .assertThat(playViewModel.observableVOD.getOrAwaitValue())

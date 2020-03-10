@@ -30,7 +30,7 @@ import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usecase.coroutines.Success
@@ -235,7 +235,7 @@ class PlayFragment : BaseDaggerFragment() {
     private fun observeVideoProperty() {
         playViewModel.observableVideoProperty.observe(viewLifecycleOwner, Observer {
             setWindowSoftInputMode(it.type.isLive)
-            if (it.state is TokopediaPlayVideoState.Error) {
+            if (it.state is PlayVideoState.Error) {
                 PlayAnalytics.errorState(channelId,
                         it.state.error.message?:getString(R.string.play_common_video_error_message),
                         playViewModel.isLive)

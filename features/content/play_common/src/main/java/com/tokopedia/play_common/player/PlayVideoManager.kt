@@ -17,9 +17,9 @@ import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
 import com.tokopedia.play_common.state.PlayVideoPrepareState
-import com.tokopedia.play_common.state.TokopediaPlayVideoState
+import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
-import com.tokopedia.play_common.types.TokopediaPlayVideoType
+import com.tokopedia.play_common.types.PlayVideoType
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -28,7 +28,7 @@ import kotlin.properties.Delegates
 /**
  * Created by jegul on 03/12/19
  */
-class TokopediaPlayManager private constructor(private val applicationContext: Context) {
+class PlayVideoManager private constructor(private val applicationContext: Context) {
 
     companion object {
         private const val MAX_BUFFER_MS = 30000
@@ -41,12 +41,12 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         private const val VIDEO_MIN_SOUND = 0f
 
         @Volatile
-        private var INSTANCE: TokopediaPlayManager? = null
+        private var INSTANCE: PlayVideoManager? = null
 
         @JvmStatic
-        fun getInstance(context: Context): TokopediaPlayManager {
+        fun getInstance(context: Context): PlayVideoManager {
             return INSTANCE ?: synchronized(this) {
-                TokopediaPlayManager(context.applicationContext).also {
+                PlayVideoManager(context.applicationContext).also {
                     INSTANCE = it
                 }
             }
@@ -62,8 +62,8 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     }
 
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
-    private var currentPrepareState: PlayVideoPrepareState = PlayVideoPrepareState.Unprepared(null, TokopediaPlayVideoType.Unknown, null, true)
-    private val _observablePlayVideoState = MutableLiveData<TokopediaPlayVideoState>()
+    private var currentPrepareState: PlayVideoPrepareState = PlayVideoPrepareState.Unprepared(null, PlayVideoType.Unknown, null, true)
+    private val _observablePlayVideoState = MutableLiveData<PlayVideoState>()
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
     private val customLoadControl: LoadControl = DefaultLoadControl.Builder()
@@ -77,12 +77,12 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
     private val playerEventListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            if (!playWhenReady) _observablePlayVideoState.value = TokopediaPlayVideoState.Pause
+            if (!playWhenReady) _observablePlayVideoState.value = PlayVideoState.Pause
             else when (playbackState) {
-                Player.STATE_IDLE -> _observablePlayVideoState.value = TokopediaPlayVideoState.NoMedia
-                Player.STATE_BUFFERING -> _observablePlayVideoState.value = TokopediaPlayVideoState.Buffering
-                Player.STATE_READY -> _observablePlayVideoState.value = TokopediaPlayVideoState.Playing
-                Player.STATE_ENDED -> _observablePlayVideoState.value = TokopediaPlayVideoState.Ended
+                Player.STATE_IDLE -> _observablePlayVideoState.value = PlayVideoState.NoMedia
+                Player.STATE_BUFFERING -> _observablePlayVideoState.value = PlayVideoState.Buffering
+                Player.STATE_READY -> _observablePlayVideoState.value = PlayVideoState.Playing
+                Player.STATE_ENDED -> _observablePlayVideoState.value = PlayVideoState.Ended
             }
         }
 
@@ -116,7 +116,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                     safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
             }
-            _observablePlayVideoState.value = TokopediaPlayVideoState.Error(PlayVideoErrorException(error.cause))
+            _observablePlayVideoState.value = PlayVideoState.Error(PlayVideoErrorException(error.cause))
         }
 
         override fun onTimelineChanged(timeline: Timeline, manifest: Any?, reason: Int) {
@@ -192,7 +192,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     }
 
     fun releasePlayer() {
-        currentPrepareState = PlayVideoPrepareState.Unprepared(null, TokopediaPlayVideoType.Unknown, null, true)
+        currentPrepareState = PlayVideoPrepareState.Unprepared(null, PlayVideoType.Unknown, null, true)
         videoPlayer.release()
     }
 
@@ -201,7 +201,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
         if (prepareState is PlayVideoPrepareState.Prepared)
             currentPrepareState = PlayVideoPrepareState.Unprepared(
                     prepareState.uri,
-                    if (isVideoLive()) TokopediaPlayVideoType.Live else TokopediaPlayVideoType.VOD,
+                    if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
                     when (prepareState.positionHandle){
                         VideoPositionHandle.Handled -> getCurrentPosition()
                         is VideoPositionHandle.NotHandled -> prepareState.positionHandle.lastPosition
@@ -214,7 +214,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     //endregion
 
     //region video state
-    fun getObservablePlayVideoState(): LiveData<TokopediaPlayVideoState> = _observablePlayVideoState
+    fun getObservablePlayVideoState(): LiveData<PlayVideoState> = _observablePlayVideoState
     fun getObservableVideoPlayer(): LiveData<out ExoPlayer> = _observableVideoPlayer
 
     fun isVideoPlaying(): Boolean = videoPlayer.isPlaying
