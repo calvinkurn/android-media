@@ -11,11 +11,10 @@ import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepage
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ALL_DEALS
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ALL_ORDER_LIST
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
-import kotlinx.android.synthetic.main.travel_homepage_travel_destination_list.view.*
+import kotlinx.android.synthetic.main.travel_homepage_travel_section_list.view.*
 
 /**
  * @author by furqan on 06/08/2019
