@@ -13,9 +13,6 @@ import kotlinx.android.synthetic.main.fragment_detail_product_page.view.*
 class AddressListItemAdapter(var listener: onSelectedListener) : RecyclerView.Adapter<AddressListItemAdapter.AddressListViewHolder>() {
 
     var addressList = mutableListOf<RecipientAddressModel>()
-    var lastCheckedPosition = -1
-//    private val listAddressList = listOf(Preference(), Preference(), Preference(), Preference(), Preference())
-    var addresspositionId = -1
 
     interface onSelectedListener{
         fun onSelect(addressId: String)

@@ -81,6 +81,13 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     private fun initViewModel() {
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            if (parent.addressId > 0) {
+                viewModel.selectedId = parent.addressId.toString()
+            }
+        }
+
         viewModel.addressList.observe(this, Observer {
             when (it) {
                 is OccState.Success -> {
