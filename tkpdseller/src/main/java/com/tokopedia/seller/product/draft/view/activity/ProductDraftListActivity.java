@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -13,7 +14,6 @@ import com.tkpd.library.utils.CommonUtils;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.core.base.di.component.HasComponent;
 import com.tokopedia.core.base.presentation.BaseTemporaryDrawerActivity;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.myproduct.utils.ImageDownloadHelper;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.network.retrofit.response.ErrorHandler;
@@ -29,6 +29,7 @@ import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView
 import com.tokopedia.seller.product.draft.view.model.InstagramMediaModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
+import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,7 +127,7 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
 
     @Override
     protected void startDrawerGetNotificationServiceOnResume() {
-        DrawerGetNotificationService.startService(this,true,true);
+        SellerDrawerGetNotificationService.startService(this,true,true);
     }
 
     public void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {
