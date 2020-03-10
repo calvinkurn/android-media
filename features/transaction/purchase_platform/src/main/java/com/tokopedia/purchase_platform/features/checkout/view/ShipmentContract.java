@@ -44,6 +44,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDo
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,6 +98,8 @@ public interface ShipmentContract {
         void renderSubmitHelpTicketSuccess(SubmitTicketResult submitTicketResult);
 
         void renderCheckPromoStackCodeFromCourierSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, int itemPosition, boolean noToast);
+
+        void renderPromoCheckoutFromCourierSuccess(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel, int itemPosition, boolean noToast);
 
         void renderCheckPromoStackLogisticSuccess(ResponseGetPromoStackUiModel responseGetPromoStackUiModel, String promoCode);
 
@@ -154,6 +157,8 @@ public interface ShipmentContract {
         void resetCourier(int position);
 
         Promo generateCheckPromoFirstStepParam();
+
+        ValidateUsePromoRequest generateValidateUsePromoRequest();
 
         void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
 
@@ -283,11 +288,15 @@ public interface ShipmentContract {
 
         void checkPromoFinalStackShipment(Promo promo);
 
+        void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest);
+
         void processCheckPromoStackingLogisticPromo(int cartPosition, String cartString, String code);
 
         void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest);
 
         void processCheckPromoStackingCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
+
+        void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast);
 
         void processSaveShipmentState(ShipmentCartItemModel shipmentCartItemModel);
 

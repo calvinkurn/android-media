@@ -628,7 +628,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setShipmentDonationModel(null);
         }
 
-        getView().setPromoStackingData(cartShipmentAddressFormData);
+        // getView().setPromoStackingData(cartShipmentAddressFormData);
 
         getView().setLastApplyData(cartShipmentAddressFormData.getLastApplyData());
 
@@ -941,6 +941,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 });
     }
 
+    @Override
+    public void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest) {
+
+    }
+
     @NonNull
     private Subscriber<CheckoutData> getSubscriberCheckoutCart(CheckoutRequest checkoutRequest,
                                                                boolean isOneClickShipment,
@@ -1198,6 +1203,52 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             })
             );
         }
+    }
+
+    @Override
+    public void processCheckPromoCheckoutCodeFromSelectedCourier(String promoCode, int itemPosition, boolean noToast) {
+        RequestParams requestParams = RequestParams.create();
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, getView().generateValidateUsePromoRequest());
+
+        compositeSubscription.add(
+                validateUsePromoRevampUseCase.createObservable(requestParams)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                e.printStackTrace();
+                                if (getView() != null) {
+                                    if (e instanceof CheckPromoCodeException) {
+                                        getView().showToastError(e.getMessage());
+                                    } else {
+                                        getView().showToastError(ErrorHandler.getErrorMessage(getView().getActivityContext(), e));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+                                setCouponStateChanged(true);
+                                if (getView() != null) {
+
+                                        if (validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK)) {
+                                            getView().renderPromoCheckoutFromCourierSuccess(validateUsePromoRevampUiModel, itemPosition, noToast);
+                                        } else {
+                                            if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
+                                                String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
+                                                getView().renderErrorCheckPromoShipmentData(errMessage);
+                                            }
+                                        }
+                                }
+                            }
+                        }));
+
     }
 
     @Override

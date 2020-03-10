@@ -18,6 +18,8 @@ class CheckoutConstant {
         const val EXTRA_IS_ONE_CLICK_SHIPMENT = "EXTRA_IS_ONE_CLICK_SHIPMENT"
         const val STATE_RED = "red"
         const val TYPE_CASHBACK = "cashback"
+        const val PARAM_DEFAULT = "default"
+        const val PARAM_CHECKOUT = "checkout"
     }
 
 }

@@ -17,7 +17,10 @@ data class LastApplyData (
     var emptyCartInfoDetail: String = "",
     var listRedPromos: List<String> = listOf(),
     var finalBenefitText: String = "",
-    var finalBenefitAmount: String = "") : Parcelable {
+    var finalBenefitAmount: String = "",
+    var globalPromoCode: String = "",
+    var globalPromoSuccess: Boolean = false
+    ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
@@ -29,7 +32,9 @@ data class LastApplyData (
             parcel.readString() ?: "",
             parcel.createStringArrayList() ?: listOf(),
             parcel.readString() ?: "",
-            parcel.readString() ?: "")
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(code)
@@ -43,6 +48,8 @@ data class LastApplyData (
         parcel.writeStringList(listRedPromos)
         parcel.writeString(finalBenefitText)
         parcel.writeString(finalBenefitAmount)
+        parcel.writeString(globalPromoCode)
+        parcel.writeByte(if (globalPromoSuccess) 1 else 0)
     }
 
     override fun describeContents(): Int {

@@ -1425,7 +1425,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         val listOrder = ArrayList<OrdersItem>()
         cartListData?.shopGroupAvailableDataList?.forEach { shop ->
-            val order = shop.shopId?.toLong()?.let { shopId ->
+            shop.shopId?.toLong()?.let { shopId ->
                 shop.cartString?.let { cartString ->
                     val order = OrdersItem(
                             shopId = shopId.toInt(),
@@ -1475,7 +1475,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         val listOrder = ArrayList<Order>()
         cartListData?.shopGroupAvailableDataList?.forEach { shop ->
-            val order = shop.shopId?.toLong()?.let { shopId ->
+            shop.shopId?.toLong()?.let { shopId ->
                 shop.cartString?.let { cartString ->
                     val order = Order(
                             shopId = shopId,
@@ -2677,19 +2677,19 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun updatePromoCheckoutStickyButton(additionalInfoUiModel: AdditionalInfoUiModel) {
-        var errorDetailMsg = ""
-        var additionalInfoMsg = ""
-        var additionalInfoDesc = ""
+        var errorDetailMsg: String
+        var additionalInfoMsg: String
+        var additionalInfoDesc: String
 
-        additionalInfoUiModel.errorDetailUiModel?.message?.let {
+        additionalInfoUiModel.errorDetailUiModel.message.let {
             errorDetailMsg = it
         }
 
-        additionalInfoUiModel.messageInfoUiModel?.message?.let {
+        additionalInfoUiModel.messageInfoUiModel.message.let {
             additionalInfoMsg = it
         }
 
-        additionalInfoUiModel.messageInfoUiModel?.detail?.let {
+        additionalInfoUiModel.messageInfoUiModel.detail.let {
             additionalInfoDesc = it
         }
 
