@@ -147,6 +147,21 @@
     <string name="product_stock_reminder_button">Simpan</string>
     <string name="product_manage_search_hint">Cari produk atau SKU</string>
 
+    <string name="product_featured_add_dialog_title">Tambah Product Unggulan</string>
+    <string name="product_featured_add_dialog_desc">Produk Unggulan tampil di posisi teratas tokomu untuk lebih menarik perhatian pembeli.</string>
+    <string name="product_featured_add_dialog_primary_cta">Simpan</string>
+    <string name="product_featured_add_dialog_secondary_cta">Batalkan</string>
+
+    <string name="product_featured_special_dialog_title">Produk Unggulan khusus Power Merchant</string>
+    <string name="product_featured_special_dialog_desc">Produk Unggulan akan ditampilkan di posisi teratas etalase tokomu.</string>
+    <string name="product_featured_special_dialog_primary_cta">Pelajari Selengkapnya</string>
+    <string name="product_featured_special_dialog_secondary_cta">Batalkan</string>
+
+    <string name="product_featured_max_dialog_title">Maksimum Produk Unggulan Aktif (5/5)</string>
+    <string name="product_featured_max_dialog_desc">Hapus salah satu Produk Unggulan sebelum menambahkan produk yang ingin ditampilkan di tokomu.</string>
+    <string name="product_featured_max_dialog_primary_cta">Mengerti</string>
+    <string name="product_featured_max_dialog_secondary_cta">Lihat Produk Unggulan</string>
+
     <string name="product_manage_quick_edit_currency">Rp</string>
     <string name="product_manage_quick_edit_min_price_error">Min. Rp 100</string>
     <string name="product_manage_quick_edit_max_price_error">Maks. Rp100.000.000</string>

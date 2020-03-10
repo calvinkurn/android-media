@@ -29,7 +29,7 @@ object ProductMapper {
                 status = it.status,
                 stock = it.stock,
                 isVariant = it.isVariant,
-                isFeatured = it.featured == 1,
+                isFeatured = it.featured > 0,
                 url = it.url,
                 cashBack = 0 // waiting confirmation from backend team, new query doesn't return cashback response
             )

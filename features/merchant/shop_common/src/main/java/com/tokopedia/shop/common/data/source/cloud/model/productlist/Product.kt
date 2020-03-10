@@ -14,7 +14,7 @@ data class Product(
     @SerializedName("status")
     val status: ProductStatus?,
     @SerializedName("featured")
-    val featured: Int?,
+    val featured: Int = 0,
     @SerializedName("isVariant")
     val isVariant: Boolean?,
     @SerializedName("url")

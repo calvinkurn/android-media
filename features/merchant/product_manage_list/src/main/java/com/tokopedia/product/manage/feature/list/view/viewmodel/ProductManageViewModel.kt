@@ -61,6 +61,8 @@ class ProductManageViewModel(
         get() = _viewState
     val productListResult : LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
+    val productListFeaturedOnlyResult : LiveData<Result<Int>>
+        get() = _productListFeaturedOnlyResult
     val shopInfoResult : LiveData<Result<ShopInfoResult>>
         get() = _shopInfoResult
     val updateProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
@@ -82,6 +84,7 @@ class ProductManageViewModel(
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
+    private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
     private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
     private val _deleteProductResult = MutableLiveData<Result<DeleteProductResult>>()
@@ -154,6 +157,21 @@ class ProductManageViewModel(
         })
     }
 
+    fun getFeaturedProductCount(shopId: String) {
+        launchCatchError(block = {
+            val productListFeaturedOnly = withContext(ioDispatcher) {
+                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), null)
+                val getProductList = getProductListUseCase.execute(requestParams)
+                val productListSize = getProductList.productList?.data?.size
+                productListSize
+            }
+
+            productListFeaturedOnly?.let { setProductListFeaturedOnly(it) }
+        }, onError = {
+            _productListFeaturedOnlyResult.value = Fail(it)
+        })
+    }
+
     fun editPrice(productId: String, price: String, productName: String) {
         showProgressDialog()
         editPriceUseCase.params = EditPriceUseCase.createRequestParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
@@ -169,6 +187,7 @@ class ProductManageViewModel(
         }) {
             _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
         }
+        hideProgressDialog()
     }
 
     fun editStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
@@ -186,6 +205,7 @@ class ProductManageViewModel(
         }) {
             _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
         }
+        hideProgressDialog()
     }
 
     fun setCashback(productId: String, cashback: Int) {
@@ -264,10 +284,10 @@ class ProductManageViewModel(
         }) {
             _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
         }
+        hideProgressDialog()
     }
 
     fun setFeaturedProduct(productId: String, status: Int) {
-        showProgressDialog()
         val requestParams = EditFeaturedProductUseCase.createRequestParams(productId.toInt(), status)
 
         editFeaturedProductUseCase.execute(requestParams,
@@ -360,6 +380,10 @@ class ProductManageViewModel(
         _productListResult.value = Success(productList)
     }
 
+    private fun setProductListFeaturedOnly(productsSize: Int){
+        _productListFeaturedOnlyResult.value = Success(productsSize)
+    }
+
     private fun refreshList(isRefresh: Boolean) {
         if (isRefresh) _viewState.value = RefreshList
     }
@@ -368,7 +392,7 @@ class ProductManageViewModel(
         _viewState.value = ShowProgressDialog
     }
 
-    fun hideProgressDialog() {
+    private fun hideProgressDialog() {
         _viewState.value = HideProgressDialog
     }
 }
