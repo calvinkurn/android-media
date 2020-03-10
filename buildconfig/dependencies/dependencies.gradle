@@ -45,7 +45,7 @@ ext {
     playCoreVersion = '1.6.3'
     playServiceGms = '16.0.0'
     playServiceBase = '16.1.0'
-    playServiceAppIndexing = '18.0.0'
+    playServiceAppIndexing = '17.1.0'
     playServiceAnalytics = '16.0.6'
     playServiceFirebaseMessaging = '17.3.4'
     playServiceLocation = '16.0.0'
@@ -62,7 +62,6 @@ ext {
     playServiceSafetyNet = '16.0.0'
     playServiceMeasurementBase = '16.0.5'
     playServiceMeasurementApi = '16.0.4'
-    playServiceFirestore = '19.0.0'
 
     JunitVersion = '4.12'
     JunitJupiterVersion = '5.1.1'
@@ -156,7 +155,7 @@ ext {
             messaging   : "com.google.firebase:firebase-messaging:${playServiceFirebaseMessaging}",
             config      : "com.google.firebase:firebase-config:${playServiceFirebaseRemoteConfig}",
             performance : "com.google.firebase:firebase-perf:${playServiceFirebasePerfMon}",
-            fireStore   : "com.google.firebase:firebase-firestore:${playServiceFirestore}"
+            fireStore   : "com.google.firebase:firebase-firestore:17.1.2"
     ]
 
     viewDependencies = [

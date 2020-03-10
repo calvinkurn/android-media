@@ -3,7 +3,6 @@ package com.tokopedia.recharge_slice.ui.provider
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import androidx.core.content.ContextCompat
@@ -19,7 +18,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.recharge_slice.R
 import com.tokopedia.recharge_slice.data.Data
 import com.tokopedia.recharge_slice.data.Recommendation
-import com.tokopedia.recharge_slice.ui.activity.MainActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
