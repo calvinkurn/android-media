@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.atc_common.AtcConstant
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.CommonNetwork
 import com.tokopedia.network.NetworkRouter
@@ -86,8 +86,8 @@ class PlayModule(val mContext: Context) {
 
     @PlayScope
     @Provides
-    fun provideMultiRequestGraphqlUseCase(): MultiRequestGraphqlUseCase {
-        return GraphqlInteractor.getInstance().multiRequestGraphqlUseCase
+    fun provideGraphqlRepositoryCase(): GraphqlRepository {
+        return GraphqlInteractor.getInstance().graphqlRepository
     }
 
     @PlayScope

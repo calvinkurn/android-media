@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.item_variant_container_view_holder.view.*
 class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerView.Adapter<VariantContainerAdapter.VariantContainerViewHolder>() {
 
     private var variantContainerData: List<VariantCategory> = listOf()
-    private var variantOptionAdapter: VariantOptionAdapter? = null
 
     fun setData(data: List<VariantCategory>) {
         variantContainerData = data
@@ -28,7 +27,7 @@ class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerVi
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariantContainerViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_variant_container_view_holder, parent, false)
-        return VariantContainerViewHolder(view)
+        return VariantContainerViewHolder(view, listener)
     }
 
     override fun onBindViewHolder(holder: VariantContainerViewHolder, position: Int) {
@@ -37,7 +36,10 @@ class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerVi
 
     override fun getItemCount(): Int = variantContainerData.size
 
-    inner class VariantContainerViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    class VariantContainerViewHolder(val view: View, val listener: ProductVariantListener) : RecyclerView.ViewHolder(view) {
+
+        private var variantOptionAdapter: VariantOptionAdapter? = null
+
         fun bind(data: VariantCategory) = with(view) {
             variantOptionAdapter = VariantOptionAdapter(listener)
             if (data.getPositionSelectedOption() > 4) {
@@ -49,8 +51,10 @@ class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerVi
 
             if (data.getSelectedOption() == null) {
                 txtVariantSelectedOption.text = context.getString(R.string.variant_option_builder_2, data.variantOptions.size)
+                txtVariantSelectedOption.setTextColor(MethodChecker.getColor(view.context, R.color.Neutral_N700_44))
             } else {
                 txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
+                txtVariantSelectedOption.setTextColor(MethodChecker.getColor(view.context, R.color.Neutral_N700_96))
             }
 
             if (data.isLeaf && listener.getStockWording() != "") {

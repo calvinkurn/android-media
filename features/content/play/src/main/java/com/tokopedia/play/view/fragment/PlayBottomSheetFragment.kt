@@ -26,6 +26,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ProductLineUiModel
 import com.tokopedia.play.view.viewmodel.PlayVariantViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -133,6 +134,16 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                         )
             }
         })
+
+        playVariantViewModel.observableProductVariant.observe(viewLifecycleOwner, Observer {
+            launch {
+                EventBusFactory.get(viewLifecycleOwner)
+                        .emit(
+                                ScreenStateEvent::class.java,
+                                ScreenStateEvent.SetDynamicVariant(it)
+                        )
+            }
+        })
     }
 
     private fun observeBottomInsetsState() {
@@ -181,8 +192,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                     .collect {
                         when (it) {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
-                            is ProductSheetInteractionEvent.OnBuyProduct -> openVariantSheet(it.productId, ProductAction.Buy)
-                            is ProductSheetInteractionEvent.OnAtcProduct -> openVariantSheet(it.productId, ProductAction.AddToCart)
+                            is ProductSheetInteractionEvent.OnBuyProduct -> openVariantSheet(it.product, ProductAction.Buy)
+                            is ProductSheetInteractionEvent.OnAtcProduct -> openVariantSheet(it.product, ProductAction.AddToCart)
                         }
                     }
         }
@@ -211,8 +222,9 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         playViewModel.onHideProductSheet()
     }
 
-    private fun openVariantSheet(productId: String, action: ProductAction) {
-        playViewModel.onShowVariantSheet(variantSheetMaxHeight, productId, action)
+    private fun openVariantSheet(product: ProductLineUiModel, action: ProductAction) {
+        playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
+        playVariantViewModel.getProductVariant(product.id)
     }
 
     private fun closeVariantSheet() {

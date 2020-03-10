@@ -270,7 +270,7 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
-    fun onShowVariantSheet(estimatedProductSheetHeight: Int, productId: String, action: ProductAction) {
+    fun onShowVariantSheet(estimatedProductSheetHeight: Int, product: ProductLineUiModel, action: ProductAction) {
         val insetsMap = getLatestBottomInsetsMapState().toMutableMap()
 
         insetsMap[BottomInsetsType.VariantSheet] =
@@ -280,8 +280,12 @@ class PlayViewModel @Inject constructor(
                 )
 
         _observableBottomInsetsState.value = insetsMap
-
-        setMockVariantSheetContent(action)
+        _observableVariantSheetContent.value = VariantSheetUiModel(
+                title = "Detail Produk",
+                product = product,
+                action = action
+        )
+//        setMockVariantSheetContent(action)
     }
 
     fun onHideVariantSheet() {
@@ -631,7 +635,16 @@ class PlayViewModel @Inject constructor(
     private fun setMockVariantSheetContent(action: ProductAction) {
         _observableVariantSheetContent.value = VariantSheetUiModel(
                 title = "Detail Produk",
-                productId = "123",
+                product = ProductLineUiModel(
+                        id = "123",
+                        imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
+                        title = "Product Value",
+                        price = DiscountedPrice(
+                                originalPrice = "Rp20.000",
+                                discountPercent = 10,
+                                discountedPrice = "Rp20.000"
+                        )
+                ),
                 action = action
         )
     }

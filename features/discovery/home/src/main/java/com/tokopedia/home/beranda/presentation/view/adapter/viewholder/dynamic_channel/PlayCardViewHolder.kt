@@ -17,9 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.helper.ExoPlayerListener
 import com.tokopedia.home.beranda.presentation.view.helper.HomePlayWidgetHelper
 import com.tokopedia.home.beranda.presentation.view.helper.setSafeOnClickListener
 import com.tokopedia.home.beranda.presentation.view.helper.setValue
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
@@ -97,7 +95,14 @@ class PlayCardViewHolder(
             handlingTracker(model)
             title.setValue(model.channel.name)
 
-            seeAll.visibility = if (model.channel.name.isNotEmpty()) View.VISIBLE else View.GONE
+            if (model.channel.header.applink.isNotEmpty()) {
+                seeAll.visible()
+                seeAll.setOnClickListener {
+                    goToChannelList(model.channel.header.applink)
+                }
+            } else {
+                seeAll.gone()
+            }
 
             thumbnailView.show()
             thumbnailView.loadImageNoRounded(playChannel.coverUrl)
@@ -119,10 +124,6 @@ class PlayCardViewHolder(
 
             container.setSafeOnClickListener {
                 goToPlayChannel(model)
-            }
-
-            seeAll.setSafeOnClickListener {
-                goToChannelList()
             }
 
             itemView.setSafeOnClickListener {
@@ -153,8 +154,8 @@ class PlayCardViewHolder(
         }
     }
 
-    private fun goToChannelList() {
-        listener.onOpenPlayChannelList()
+    private fun goToChannelList(appLink: String) {
+        listener.onOpenPlayChannelList(appLink)
     }
 
     fun resume(){

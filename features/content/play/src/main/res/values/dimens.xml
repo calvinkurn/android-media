@@ -26,6 +26,8 @@
     <dimen name="play_cart_badge_size">12dp</dimen>
     <dimen name="play_cart_margin">2dp</dimen>
 
+    <dimen name="play_product_variant_image_size">88dp</dimen>
+
     <dimen name="play_product_action_container_shadow_height">1dp</dimen>
     <dimen name="play_product_action_container_shadow_height_minus">-1dp</dimen>
 </resources>

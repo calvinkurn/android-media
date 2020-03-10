@@ -54,16 +54,16 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Ba
         }
 
         btnProductBuy.setOnClickListener {
-            listener.onBuyProduct(item.id)
+            listener.onBuyProduct(item)
         }
 
         ivProductAtc.setOnClickListener {
-            listener.onAtcProduct(item.id)
+            listener.onAtcProduct(item)
         }
     }
 
     interface Listener {
-        fun onBuyProduct(productId: String)
-        fun onAtcProduct(productId: String)
+        fun onBuyProduct(product: ProductLineUiModel)
+        fun onAtcProduct(product: ProductLineUiModel)
     }
 }

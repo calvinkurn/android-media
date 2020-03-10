@@ -1,6 +1,7 @@
 package com.tokopedia.play.ui.productsheet.interaction
 
 import com.tokopedia.play.component.ComponentEvent
+import com.tokopedia.play.view.type.ProductLineUiModel
 
 /**
  * Created by jegul on 03/03/20
@@ -8,6 +9,6 @@ import com.tokopedia.play.component.ComponentEvent
 sealed class ProductSheetInteractionEvent : ComponentEvent {
 
     object OnCloseProductSheet : ProductSheetInteractionEvent()
-    data class OnBuyProduct(val productId: String) : ProductSheetInteractionEvent()
-    data class OnAtcProduct(val productId: String) : ProductSheetInteractionEvent()
+    data class OnBuyProduct(val product: ProductLineUiModel) : ProductSheetInteractionEvent()
+    data class OnAtcProduct(val product: ProductLineUiModel) : ProductSheetInteractionEvent()
 }

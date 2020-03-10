@@ -47,7 +47,7 @@ class VariantCircleColorView @JvmOverloads constructor(
                 isAntiAlias = true
                 style = Paint.Style.FILL
                 strokeWidth = 5f
-                color = MethodChecker.getColor(context, R.color.dark_N700_68)
+                color = MethodChecker.getColor(context, R.color.light_N700_68)
             }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -130,7 +130,13 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     fun setInnerColor(hex: String) {
-        innerCirclePaint.color = Color.parseColor(hex)
+        // Sometimes backend will give us empty hex
+        try {
+            innerCirclePaint.color = Color.parseColor(hex)
+        } catch (t: Throwable) {
+            innerCirclePaint.color = Color.WHITE
+        }
+
         invalidate()
     }
 
@@ -152,11 +158,11 @@ class VariantCircleColorView @JvmOverloads constructor(
         invalidate()
     }
 
-    private fun setSelected(){
+    private fun setSelected() {
         outerBorderPaint.color = MethodChecker.getColor(context, R.color.green_400)
     }
 
-    private fun setUnselected(){
+    private fun setUnselected() {
         outerBorderPaint.color = MethodChecker.getColor(context, R.color.unify_N75)
     }
 
@@ -165,7 +171,7 @@ class VariantCircleColorView @JvmOverloads constructor(
     }
 
     private fun addOverlay() {
-        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.dark_N700_68)
+        outerOverlayPaint.color = MethodChecker.getColor(context, R.color.light_N700_68)
     }
 
     interface CircleDrawInterface {

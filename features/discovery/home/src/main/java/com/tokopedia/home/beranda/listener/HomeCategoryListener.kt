@@ -40,7 +40,7 @@ interface HomeCategoryListener {
 
     fun openShop()
 
-    fun onOpenPlayChannelList()
+    fun onOpenPlayChannelList(appLink: String)
 
     fun onOpenPlayActivity(root: android.view.View, channelId: String?)
 

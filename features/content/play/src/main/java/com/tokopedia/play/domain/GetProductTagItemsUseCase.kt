@@ -1,6 +1,6 @@
 package com.tokopedia.play.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.data.ProductTaggingItems
 import com.tokopedia.play.data.Voucher
@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-03-06.
  */
-class GetProductTagItemsUseCase @Inject constructor(val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) :
+class GetProductTagItemsUseCase @Inject constructor(val graphqlRepository: GraphqlRepository) :
         UseCase<ProductTaggingItems>() {
 
     var channelId: String = ""
@@ -24,8 +24,8 @@ class GetProductTagItemsUseCase @Inject constructor(val multiRequestGraphqlUseCa
         return ProductTaggingItems(
                 title = "Jangan Sampai Kehabisan Barang & Promo Pilihan",
                 listOfProducts = listOf(
-                        Product(id = 14265830,
-                                appLink = "tokopedia://product/14265830",
+                        Product(id = 728073530,
+                                appLink = "tokopedia://product/728073530",
                                 discount = 50,
                                 image = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg",
                                 isAvailable = true,
@@ -40,8 +40,8 @@ class GetProductTagItemsUseCase @Inject constructor(val multiRequestGraphqlUseCa
                                 quantity = 0,
                                 shopId = "479057",
                                 webLink = "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"),
-                        Product(id = 14265830,
-                                appLink = "tokopedia://product/14265830",
+                        Product(id = 728073530,
+                                appLink = "tokopedia://product/728073530",
                                 discount = 0,
                                 image = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg",
                                 isAvailable = true,
@@ -56,8 +56,8 @@ class GetProductTagItemsUseCase @Inject constructor(val multiRequestGraphqlUseCa
                                 quantity = 0,
                                 shopId = "479057",
                                 webLink = "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"),
-                        Product(id = 14265830,
-                                appLink = "tokopedia://product/14265830",
+                        Product(id = 728073530,
+                                appLink = "tokopedia://product/728073530",
                                 discount = 50,
                                 image = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg",
                                 isAvailable = true,
@@ -72,8 +72,8 @@ class GetProductTagItemsUseCase @Inject constructor(val multiRequestGraphqlUseCa
                                 quantity = 0,
                                 shopId = "479057",
                                 webLink = "https://staging.tokopedia.com/ramayana-qc/ramayana-kemeja-pria-blue-camouflage-raf-07901447"),
-                        Product(id = 14265830,
-                                appLink = "tokopedia://product/14265830",
+                        Product(id = 728073530,
+                                appLink = "tokopedia://product/728073530",
                                 discount = 0,
                                 image = "https://ecs7.tokopedia.net/img/cache/700/product-1/2016/11/14/5480226/5480226_7d5d6943-c478-4eb6-b2ca-6ba739c9f524_600_600.jpg",
                                 isAvailable = true,

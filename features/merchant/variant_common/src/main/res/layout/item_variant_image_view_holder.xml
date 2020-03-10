@@ -24,7 +24,6 @@
             android:layout_height="@dimen/dp_60"
             app:borderRadius="@dimen/dp_6"
             tools:src="@tools:sample/avatars" />
-
     </FrameLayout>
 
     <FrameLayout

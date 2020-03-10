@@ -1,6 +1,6 @@
 package com.tokopedia.variant_common.use_case
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -20,19 +20,15 @@ import javax.inject.Named
 class GetProductVariantUseCase @Inject constructor(
         @Named(VariantConstant.QUERY_VARIANT) val rawQuery: String,
         private val userSessionInterface: UserSessionInterface,
-        private val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase):
+        private val graphqlRepository: GraphqlRepository):
         UseCase<ProductDetailVariantCommonResponse>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): ProductDetailVariantCommonResponse {
         val gqlRequest = GraphqlRequest(rawQuery, ProductDetailVariantCommonResponse::class.java, params.parameters)
-        multiRequestGraphqlUseCase.clearRequest()
-        multiRequestGraphqlUseCase.addRequest(gqlRequest)
-        multiRequestGraphqlUseCase.setCacheStrategy(GraphqlCacheStrategy
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-
-        val gqlResponse = multiRequestGraphqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(ProductDetailVariantCommonResponse::class.java)
         if (error == null || error.isEmpty()) {
             return (gqlResponse.getData(ProductDetailVariantCommonResponse::class.java) as ProductDetailVariantCommonResponse)
