@@ -301,8 +301,6 @@ public interface ApplinkConst {
     String SALAM_UMRAH_CHECKOUT = "tokopedia://s/umroh/checkout";
     String SALAM_UMRAH_SHOP = "tokopedia://shop/7298319";
 
-    String CENTRALIZED_PROMO = "tokopedia://centralizedpromo";
-
     interface Discovery {
         String CATEGORY = "tokopedia://category";
     }

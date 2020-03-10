@@ -5,16 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.centralized_promo.view.fragment.CentralizedPromoFragment
 import com.tokopedia.sellerhome.R
 
 class CentralizedPromoActivity : BaseSimpleActivity() {
 
     companion object {
-        @DeepLink(ApplinkConst.CENTRALIZED_PROMO)
         @JvmStatic
         fun createIntent(context: Context) = Intent(context, CentralizedPromoActivity::class.java)
     }
