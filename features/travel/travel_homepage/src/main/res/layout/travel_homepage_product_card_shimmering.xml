@@ -24,7 +24,7 @@
         app:corners="@integer/travel_subhomepage_shimmering_corner"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shimmeringTv"
+        app:layout_constraintTop_toBottomOf="@+id/shimmeringTv"
         android:layout_marginTop="@dimen/dp_12"
         app:width_weight="0.8" />
 
@@ -80,7 +80,7 @@
         app:layout_constraintLeft_toRightOf="@+id/guideline"
         app:layout_constraintRight_toRightOf="@+id/guideline"
         app:layout_constraintStart_toEndOf="@+id/guideline"
-        app:layout_constraintTop_toTopOf="@id/image_shimmering_2"
+        app:layout_constraintTop_toTopOf="@+id/image_shimmering_2"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:orientation="vertical">
@@ -219,7 +219,7 @@
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_40"
-        app:layout_constraintTop_toBottomOf="@id/image_shimmering_5"/>
+        app:layout_constraintTop_toBottomOf="@+id/image_shimmering_5"/>
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="match_parent"
