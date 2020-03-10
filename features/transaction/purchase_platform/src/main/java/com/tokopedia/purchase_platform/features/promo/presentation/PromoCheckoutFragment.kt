@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.promo.presentation.fragment
+package com.tokopedia.purchase_platform.features.promo.presentation
 
 import android.app.Activity
 import android.content.Intent
@@ -41,14 +41,12 @@ import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTn
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
-import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapterTypeFactory
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckout
 import com.tokopedia.purchase_platform.features.promo.presentation.compoundview.ToolbarPromoCheckoutListener
-import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
-import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
+import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.*
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
@@ -62,7 +60,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var itemDecorator: PromoDecoration
+    lateinit var itemDecorator: PromoCheckoutDecoration
 
     // Use single recycler view to prevent NPE cuased by nested recyclerview
     private lateinit var recyclerView: RecyclerView
@@ -144,6 +142,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
         observeEmptyStateUiModel()
+        observeGetCouponRecommendation()
         observeApplyPromoResult()
         observeClearPromoResult()
     }
@@ -307,6 +306,16 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         })
     }
 
+    private fun observeGetCouponRecommendation() {
+        viewModel.getCouponRecommendationResponse.observe(this, Observer {
+            when {
+                it.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA -> {
+                    clearAllData()
+                }
+            }
+        })
+    }
+
     private fun observeApplyPromoResult() {
         viewModel.applyPromoResponse.observe(this, Observer {
             setButtonLoading(button_apply_promo, false)
@@ -459,7 +468,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             showLoading()
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
-            viewModel.loadData(mutation, promoRequest)
+            viewModel.loadData(mutation, promoRequest, "")
         }
     }
 
@@ -527,7 +536,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickApplyManualInputPromo(promoCode: String) {
         activity?.let {
             viewModel.updatePromoInputState(promoCode)
-            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), promoCode)
+            val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
+            val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
+            viewModel.loadData(mutation, promoRequest, promoCode)
         }
     }
 

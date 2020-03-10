@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.promo.presentation.listener
+package com.tokopedia.purchase_platform.features.promo.presentation
 
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 

@@ -109,6 +109,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
     fun mapPromoListItemUiModel(couponItem: Coupon, headerIdentifierId: Int, parentEnabled: Boolean, selectedPromo: List<String>): PromoListItemUiModel {
         return PromoListItemUiModel(
                 uiData = PromoListItemUiModel.UiData().apply {
+                    uniqueId = couponItem.uniqueId
                     title = couponItem.title
                     subTitle = couponItem.expiryInfo
                     benefitAmount = couponItem.benefitAmount

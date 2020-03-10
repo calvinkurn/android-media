@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.promo.presentation
+package com.tokopedia.purchase_platform.features.promo.presentation.viewmodel
 
 data class ClearPromoResponseAction(
         var state: Int = 0,
@@ -18,5 +18,13 @@ data class ApplyPromoResponseAction(
         val ACTION_NAVIGATE_TO_CART = 1
         val ACTION_SHOW_TOAST_ERROR = 2
         val ACTION_RELOAD_PROMO = 3
+    }
+}
+
+data class GetCouponRecommendationAction(
+        var state: Int = 0
+) {
+    companion object {
+        val ACTION_CLEAR_DATA = 1
     }
 }

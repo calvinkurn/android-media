@@ -364,6 +364,17 @@ public interface ConstantTransactionAnalytics {
         String FIN_INSURANCE_CLICK_BUY = "ins - click buy";
         String FIN_INSURANCE_CHECKOUT = "ins - click pilih pembayaran";
         String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
+
+        // Promo checkout revamp
+        String VIEW_AVAILABLE_PROMO_LIST = "view available promo list";
+        String CLICK_PILIH_PROMO_RECOMMENDATION = "click pilih promo recommendation";
+        String SELECT_KUPON = "select kupon";
+        String DESELECT_KUPON = "deselect kupon";
+        String CLICK_LIHAT_DETAIL_KUPON = "click lihat detail kupon";
+        String CLICK_EXPAND_PROMO_LIST = "click expand promo list";
+        String CLICK_REMOVE_PROMO_CODE = "click remove promo code";
+        String CLICK_TERAPKAN_PROMO = "click terapkan promo";
+        String SELECT_PROMO = "select promo";
     }
 
     interface EventLabel {
@@ -410,6 +421,11 @@ public interface ConstantTransactionAnalytics {
         String COD = "cod";
 
         String SOURCE_CART = "source: cart";
+
+        // Promo checkout revamp
+        String INELIGIBLE_PRODUCT = "ineligible product";
+        String NO_PROMO = "no promo";
+        String INELIGIBLE_PROMO_LIST = "ineligible promo list";
     }
 
     interface ScreenName {

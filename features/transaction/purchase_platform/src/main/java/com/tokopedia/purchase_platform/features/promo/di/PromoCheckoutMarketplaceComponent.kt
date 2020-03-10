@@ -1,7 +1,7 @@
 package com.tokopedia.purchase_platform.features.promo.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.purchase_platform.features.promo.presentation.fragment.PromoCheckoutFragment
+import com.tokopedia.purchase_platform.features.promo.presentation.PromoCheckoutFragment
 import com.tokopedia.sellerorder.common.di.PromoCheckoutModule
 import dagger.Component
 

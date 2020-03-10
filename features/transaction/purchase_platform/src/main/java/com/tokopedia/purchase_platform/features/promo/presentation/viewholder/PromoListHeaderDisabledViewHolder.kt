@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterGrayScale
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListHeaderUiModel
 import kotlinx.android.synthetic.main.item_promo_list_header_disabled.view.*

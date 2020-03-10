@@ -174,6 +174,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private ShipmentButtonPaymentModel shipmentButtonPaymentModel;
     private CodModel codData;
     private Token token;
+    private ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel;
 
     private List<DataCheckoutRequest> dataCheckoutRequestList;
     private List<DataChangeAddressRequest> changeAddressRequestList;
@@ -1107,6 +1108,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
                             @Override
                             public void onNext(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel) {
+                                ShipmentPresenter.this.validateUsePromoRevampUiModel = validateUsePromoRevampUiModel;
                                 if (getView() != null) {
 
                                     if (validateUsePromoRevampUiModel.getStatus() != null) {
@@ -2076,6 +2078,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public LastApplyData getLastApplyData() {
         return lastApplyData;
+    }
+
+    @Override
+    public ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel() {
+        return validateUsePromoRevampUiModel;
     }
 
     @Override

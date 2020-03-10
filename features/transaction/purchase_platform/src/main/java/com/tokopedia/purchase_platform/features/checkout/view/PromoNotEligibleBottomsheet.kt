@@ -34,10 +34,6 @@ class PromoNotEligibleBottomsheet : BottomSheets() {
         }
     }
 
-    fun setListener(actionListener: PromoNotEligibleActionListener) {
-        this.actionListener = actionListener
-    }
-
     override fun getLayoutResourceId(): Int {
         return R.layout.dialog_promo_not_eligible
     }

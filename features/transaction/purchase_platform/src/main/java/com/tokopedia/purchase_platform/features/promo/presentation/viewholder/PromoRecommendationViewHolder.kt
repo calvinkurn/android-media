@@ -7,7 +7,7 @@ import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoRecommendationUiModel
 import kotlinx.android.synthetic.main.item_promo_recommendation.view.*
 

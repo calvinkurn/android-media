@@ -10,7 +10,7 @@ import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.Pr
 import com.tokopedia.purchase_platform.features.promo.presentation.viewholder.PromoRecommendationViewHolder
 import javax.inject.Inject
 
-class PromoDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
+class PromoCheckoutDecoration @Inject constructor() : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
         when (parent.getChildViewHolder(view)) {

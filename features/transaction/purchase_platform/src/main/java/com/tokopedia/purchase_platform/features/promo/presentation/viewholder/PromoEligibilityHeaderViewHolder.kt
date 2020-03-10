@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoEligibilityHeaderUiModel
 import kotlinx.android.synthetic.main.item_promo_eligibility_header.view.*
 

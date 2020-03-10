@@ -403,6 +403,8 @@ public interface ShipmentContract {
         void setLastApplyData(LastApplyData lastApplyData);
 
         LastApplyData getLastApplyData();
+
+        ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel();
     }
 
 }

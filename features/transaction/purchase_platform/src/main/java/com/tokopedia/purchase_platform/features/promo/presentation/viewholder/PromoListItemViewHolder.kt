@@ -16,7 +16,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterGrayScale
 import com.tokopedia.purchase_platform.features.promo.presentation.setImageFilterNormal
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoListItemUiModel
