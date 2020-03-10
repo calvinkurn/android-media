@@ -15,7 +15,7 @@ object ProductMapper {
         BANNED
     )
 
-    fun mapToViewModels(productList: List<Product>?): List<ProductViewModel> {
+    fun mapToViewModels(productList: List<Product>?, multiSelectActive: Boolean): List<ProductViewModel> {
         return productList?.map {
             val price = it.price?.min
             val picture = it.pictures?.firstOrNull()
@@ -31,7 +31,8 @@ object ProductMapper {
                 isVariant = it.isVariant,
                 isFeatured = it.featured > 0,
                 url = it.url,
-                cashBack = 0 // waiting confirmation from backend team, new query doesn't return cashback response
+                cashBack = 0 /*waiting confirmation from backend team, new query doesn't return cashback response*/,
+                multiSelectActive = multiSelectActive
             )
         } ?: emptyList()
     }

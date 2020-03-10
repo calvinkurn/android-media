@@ -91,6 +91,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _getPopUpResult
     val setFeaturedProductResult: LiveData<Result<SetFeaturedProductResult>>
         get() = _setFeaturedProductResult
+    val toggleMultiSelect: LiveData<Boolean>
+        get() = _toggleMultiSelect
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -104,6 +106,7 @@ class ProductManageViewModel @Inject constructor(
     private val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
     private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
     private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
+    private val _toggleMultiSelect = MutableLiveData<Boolean>()
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
@@ -350,6 +353,11 @@ class ProductManageViewModel @Inject constructor(
         }.toMutableList()
     }
 
+    fun toggleMultiSelect() {
+        val multiSelectEnabled = _toggleMultiSelect.value == true
+        _toggleMultiSelect.value = !multiSelectEnabled
+    }
+
     fun detachView() {
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetShopDepositGraphQLUseCase.unsubscribe()
@@ -375,7 +383,8 @@ class ProductManageViewModel @Inject constructor(
     }
 
     private fun showProductList(products: List<Product>?) {
-        val productList = mapToViewModels(products)
+        val isMultiSelectActive = _toggleMultiSelect.value == true
+        val productList = mapToViewModels(products, isMultiSelectActive)
         _productListResult.value = Success(productList)
     }
 

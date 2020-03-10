@@ -46,6 +46,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RES
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
@@ -68,7 +69,9 @@ import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Defa
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
@@ -125,6 +128,7 @@ import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
+import kotlin.collections.HashSet
 
 open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, ProductManageAdapterFactory>(),
     BaseListCheckableAdapter.OnCheckableAdapterListener<ProductViewModel>,
@@ -149,6 +153,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
+    private val checkedPositionList: HashSet<Int> = hashSetOf()
 
     private var productList: MutableList<ProductViewModel> = mutableListOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
@@ -182,6 +187,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         setupProductList()
         setupTabFilters()
         setupBottomSheet()
+        setupMultiSelect()
         renderCheckedView()
 
         observeShopInfo()
@@ -189,6 +195,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         observeDeleteProduct()
         observeProductListFeaturedOnly()
         observeProductList()
+        observeMultiSelect()
 
         observeEditPrice()
         observeEditStock()
@@ -203,19 +210,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
         context?.let { dialogFeaturedProduct = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION) }
-    }
-
-    private fun setupSearchBar() {
-        searchInputView.clearFocus()
-        searchInputView.closeImageButton.setOnClickListener {
-            searchInputView.searchText = ""
-            loadInitialData()
-        }
-        searchInputView.setSearchHint(getString(R.string.product_manage_search_hint))
-    }
-
-    private fun setupBottomSheet() {
-        manageProductBottomSheet = ManageProductBottomSheet(view, this, fragmentManager)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -272,6 +266,25 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
+    private fun setupSearchBar() {
+        searchInputView.clearFocus()
+        searchInputView.closeImageButton.setOnClickListener {
+            searchInputView.searchText = ""
+            loadInitialData()
+        }
+        searchInputView.setSearchHint(getString(R.string.product_manage_search_hint))
+    }
+
+    private fun setupBottomSheet() {
+        manageProductBottomSheet = ManageProductBottomSheet(view, this, fragmentManager)
+    }
+
+    private fun setupMultiSelect() {
+        textMultipleSelect.setOnClickListener {
+            viewModel.toggleMultiSelect()
+        }
+    }
+
     private fun showFilterBottomSheet() {
         val savedInstanceManager = this.context?.let { SaveInstanceCacheManager(it, true) }
         savedInstanceManager?.let { cacheManager ->
@@ -310,7 +323,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         val productList = productList.filter {
             it.status == status
         }
-        renderList(productList)
+        val hasNextPage = productList.isNotEmpty()
+
+        renderList(emptyList())
+        renderList(productList, hasNextPage)
     }
 
     private fun clearEtalaseAndStockData() {
@@ -665,16 +681,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
 
         productManageListAdapter.resetCheckedItemSet()
-        itemsChecked.clear()
+        clearSelectedProduct()
         renderCheckedView()
         loadInitialData()
     }
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
+        clearSelectedProduct()
         searchInputView.searchTextView.text.clear()
         productManageListAdapter.resetCheckedItemSet()
-        itemsChecked.clear()
         productList.clear()
         renderCheckedView()
     }
@@ -740,9 +756,23 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    override fun isChecked(position: Int): Boolean =productManageListAdapter.isChecked(position)
+    override fun isChecked(position: Int): Boolean {
+        val selectedItem = adapter.data[position]
+        return itemsChecked.contains(selectedItem)
+    }
 
-    override fun updateListByCheck(isChecked: Boolean, position: Int) =productManageListAdapter.updateListByCheck(isChecked, position)
+    override fun updateListByCheck(isChecked: Boolean, position: Int) {
+        if (isChecked) {
+            checkedPositionList.add(position)
+        } else {
+            checkedPositionList.remove(position)
+        }
+
+        val selectedItem = adapter.data[position]
+        onItemChecked(selectedItem, isChecked)
+
+        productManageListAdapter.setCheckedPositionList(checkedPositionList)
+    }
 
     override fun onClickStockInformation() {
     }
@@ -1057,6 +1087,21 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 it.unregisterReceiver(addProductReceiver)
             }
         }
+        removeObservers()
+    }
+
+    private fun removeObservers() {
+        removeObservers(viewModel.viewState)
+        removeObservers(viewModel.productListResult)
+        removeObservers(viewModel.shopInfoResult)
+        removeObservers(viewModel.updateProductResult)
+        removeObservers(viewModel.deleteProductResult)
+        removeObservers(viewModel.editPriceResult)
+        removeObservers(viewModel.setCashBackResult)
+        removeObservers(viewModel.getFreeClaimResult)
+        removeObservers(viewModel.getPopUpResult)
+        removeObservers(viewModel.setFeaturedProductResult)
+        removeObservers(viewModel.toggleMultiSelect)
     }
 
     override fun callInitialLoadAutomatically(): Boolean = false
@@ -1215,6 +1260,27 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
+    private fun observeMultiSelect() {
+        val multiSelectText = getString(R.string.product_manage_multiple_select)
+        val cancelMultiSelectText = getString(R.string.product_manage_cancel_multiple_select)
+
+        observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
+            val productList = productList.map {
+                it.copy(multiSelectActive = multiSelectEnabled)
+            }
+
+            textMultipleSelect.text = if(multiSelectEnabled) {
+                cancelMultiSelectText
+            } else {
+                multiSelectText
+            }
+
+            clearProductList()
+            addProductList(productList)
+            showProductList(productList)
+        }
+    }
+
     private fun observeUpdateProduct() {
         observe(viewModel.updateProductResult) {
             when (it) {
@@ -1253,6 +1319,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
     // endregion
+
+    private fun clearSelectedProduct() {
+        itemsChecked.clear()
+        checkedPositionList.clear()
+    }
 
     private fun clearProductList() {
         renderList(emptyList())
