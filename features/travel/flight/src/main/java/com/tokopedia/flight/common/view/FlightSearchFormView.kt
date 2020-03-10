@@ -1,8 +1,15 @@
 package com.tokopedia.flight.common.view
 
 import android.content.Context
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
+import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
@@ -25,6 +32,12 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     private var flightDashboardCache: FlightDashboardCache = FlightDashboardCache(context)
 
     private var isOneWay: Boolean = true
+    private var departureAirportId: String = ""
+    private var departureAirportCityCode: String = ""
+    private var departureAirportCityName: String = ""
+    private var arrivalAirportId: String = ""
+    private var arrivalAirportCityCode: String = ""
+    private var arrivalAirportCityName: String = ""
     private var departureDate: Date? = null
     private var departureDateString: String = ""
     private var returnDate: Date? = null
@@ -58,7 +71,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             setReturnDate(FlightDateUtil.stringToDate(
                     FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate))
         } else {
-            setReturnDate(generateDefaultReturnDate())
+            setReturnDate(generateDefaultReturnDate(departureDate
+                    ?: generateDefaultDepartureDate()))
         }
 
         setPassengerView(flightDashboardCache.passengerAdult, flightDashboardCache.passengerChild, flightDashboardCache.passengerInfant)
@@ -72,6 +86,26 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     fun isOneWay(): Boolean = isOneWay
+
+    fun setOriginAirport(departureAirportId: String,
+                            departureAirportCityCode: String,
+                            departureAirportCityName: String) {
+        this.departureAirportId = departureAirportId
+        this.departureAirportCityCode = departureAirportCityCode
+        this.departureAirportCityName = departureAirportCityName
+
+        tvFlightOriginAirport.text = buildAirportTextFormatted(true)
+    }
+
+    fun setDestinationAirport(
+            arrivalAirportId: String,
+            arrivalAirportCityCode: String,
+            arrivalAirportCityName: String) {
+        this.arrivalAirportId = arrivalAirportId
+        this.arrivalAirportCityCode = arrivalAirportCityCode
+        this.arrivalAirportCityName = arrivalAirportCityName
+        tvFlightDestinationAirport.text = buildAirportTextFormatted(false)
+    }
 
     fun setDepartureDate(departureDate: Date) {
         this.departureDate = departureDate
@@ -87,17 +121,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     fun setPassengerView(passengerModel: FlightPassengerViewModel) {
         this.passengerModel = passengerModel
-        var passengerFmt = ""
-        if (passengerModel.adult > 0) {
-            passengerFmt = passengerModel.adult.toString() + " " + context.getString(R.string.flight_dashboard_adult_passenger)
-            if (passengerModel.children > 0) {
-                passengerFmt += ", " + passengerModel.children + " " + context.getString(R.string.flight_dashboard_adult_children)
-            }
-            if (passengerModel.infant > 0) {
-                passengerFmt += ", " + passengerModel.infant + " " + context.getString(R.string.flight_dashboard_adult_infant)
-            }
-        }
-        passengerString = passengerFmt
+        this.passengerString = buildPassengerTextFormatted(
+                passengerModel.adult,
+                passengerModel.children,
+                passengerModel.infant)
         tvFlightPassenger.text = passengerString
     }
 
@@ -141,7 +168,55 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun setPassengerView(adult: Int = 1, children: Int = 0, infant: Int = 0) {
         this.passengerModel = FlightPassengerViewModel(adult, children, infant)
+        this.passengerString = buildPassengerTextFormatted(adult, children, infant)
+        tvFlightPassenger.text = passengerString
+    }
 
+    private fun buildAirportTextFormatted(isOrigin: Boolean): CharSequence {
+        val text = SpannableStringBuilder()
+
+        if (isOrigin) {
+            if (departureAirportId.isEmpty()) {
+                if (departureAirportCityCode.isEmpty()) {
+                    text.append(departureAirportCityName)
+                    return makeBold(text)
+                } else {
+                    text.append(departureAirportCityCode)
+                }
+            } else {
+                text.append(departureAirportId)
+            }
+            makeBold(text)
+            if (departureAirportCityName.isNotEmpty()) {
+                val cityNameText = SpannableStringBuilder(departureAirportCityName)
+                makeSmall(cityNameText)
+                text.append("\n")
+                text.append(cityNameText)
+            }
+            return text
+        } else {
+            if (arrivalAirportId.isEmpty()) {
+                if (arrivalAirportCityCode.isEmpty()) {
+                    text.append(arrivalAirportCityName)
+                    return makeBold(text)
+                } else {
+                    text.append(arrivalAirportCityCode)
+                }
+            } else {
+                text.append(arrivalAirportId)
+            }
+            makeBold(text)
+            if (arrivalAirportCityName.isNotEmpty()) {
+                val cityNameText = SpannableStringBuilder(arrivalAirportCityName)
+                makeSmall(cityNameText)
+                text.append("\n")
+                text.append(cityNameText)
+            }
+            return text
+        }
+    }
+
+    private fun buildPassengerTextFormatted(adult: Int, children: Int, infant: Int): String {
         var passengerFmt = ""
         if (adult > 0) {
             passengerFmt = adult.toString() + " " + context.getString(R.string.flight_dashboard_adult_passenger)
@@ -153,8 +228,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             }
         }
 
-        passengerString = passengerFmt
-        tvFlightPassenger.text = passengerString
+        return passengerFmt
     }
 
     private fun getClassById(classId: Int): FlightClassViewModel {
@@ -207,8 +281,29 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     private fun generateDefaultDepartureDate(): Date =
             FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 1)
 
-    private fun generateDefaultReturnDate(): Date =
-            FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 2)
+    private fun generateDefaultReturnDate(departureDate: Date): Date =
+            FlightDateUtil.addDate(departureDate, 1)
+
+    private fun makeBold(text: SpannableStringBuilder): SpannableStringBuilder {
+        if (text.isEmpty()) return text
+
+        text.setSpan(StyleSpan(Typeface.BOLD),
+                0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        text.setSpan(RelativeSizeSpan(1.25f),
+                0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        text.setSpan(
+                ForegroundColorSpan(ContextCompat.getColor(context, android.R.color.black)),
+                0, text.length,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return text
+    }
+
+    private fun makeSmall(text: SpannableStringBuilder): SpannableStringBuilder {
+        if (text.isEmpty()) return text
+        text.setSpan(RelativeSizeSpan(0.75f),
+                0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return text
+    }
 
     interface FlightSearchFormListener {
         fun onDepartureAirportClicked()
