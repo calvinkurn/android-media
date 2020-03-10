@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
-import android.content.res.Resources
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
