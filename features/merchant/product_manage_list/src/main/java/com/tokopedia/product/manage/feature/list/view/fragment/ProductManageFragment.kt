@@ -185,7 +185,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         productManageFilterModel.reset()
 
         initView()
-        loadInitialData()
     }
 
     private fun initView() {
@@ -198,8 +197,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         observeShopInfo()
         observeUpdateProduct()
         observeDeleteProduct()
+        observeProductListFeaturedOnly()
         observeProductList()
-        observeProductListFeatured()
 
         observeEditPrice()
         observeGetFreeClaim()
@@ -209,9 +208,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         observeSetFeaturedProduct()
         observeViewState()
 
+        getProductListFeaturedOnlySize()
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
-        getProductListFeaturedOnlySize()
     }
 
     private fun setupSearchBar() {
@@ -797,7 +796,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             if(viewModel.isPowerMerchant() || isOfficialStore) {
                 productManageViewModel.isFeatured?.let {
                     if(productListFeaturedOnlySize == 5 && !it) {
-                        dialog = showDialogFeaturedProduct(
+                        dialog = setDialogFeaturedProduct(
                                 dialog,
                                 ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
                                 getString(R.string.product_featured_max_dialog_title),
@@ -813,7 +812,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                         dialog.show()
                     }
                     else {
-                        dialog = showDialogFeaturedProduct(
+                        dialog = setDialogFeaturedProduct(
                                 dialog,
                                 ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
                                 getString(R.string.product_featured_add_dialog_title),
@@ -830,10 +829,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                         dialog.setSecondaryCTAClickListener { dialog.dismiss() }
                         dialog.show()
                     }
-                    manageProductBottomSheet?.show(productManageViewModel)
                 }
             } else {
-                dialog = showDialogFeaturedProduct(
+                dialog = setDialogFeaturedProduct(
                         dialog,
                         ProductManageUrl.ILLUSTRATION_SPECIAL_FEATURED_PRODUCT_DOMAIN,
                         getString(R.string.product_featured_special_dialog_title),
@@ -1067,6 +1065,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onResume() {
         super.onResume()
         productList.clear()
+        loadInitialData()
         activity?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
@@ -1134,7 +1133,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         viewModel.getGoldMerchantStatus()
     }
 
-    private fun showDialogFeaturedProduct(dialog: DialogUnify, imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String): DialogUnify {
+    private fun setDialogFeaturedProduct(dialog: DialogUnify, imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String): DialogUnify {
         dialog.setImageUrl(imageUrl)
         dialog.setTitle(title)
         dialog.setDescription(desc)
@@ -1211,7 +1210,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun observeProductListFeatured() {
+    private fun observeProductListFeaturedOnly() {
         observe(viewModel.productListFeaturedOnlyResult) {
             when (it) {
                 is Success -> productListFeaturedOnlySize = it.data
