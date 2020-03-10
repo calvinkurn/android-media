@@ -1,32 +1,26 @@
 package com.tokopedia.onboarding.view.widget
 
 import android.content.Context
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.onboarding.R
-import kotlinx.coroutines.*
-import kotlin.coroutines.CoroutineContext
 
-class DotIndicatorView: LinearLayout, CoroutineScope {
+class DotIndicatorView : LinearLayout {
 
     private var dots: MutableList<ImageView> = mutableListOf()
 
     private lateinit var viewDot: LinearLayout
     private lateinit var viewPager: ViewPager2
 
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main
-
-    constructor(context: Context): super(context) {
+    constructor(context: Context) : super(context) {
         dots.clear()
         inflateLayout()
     }
 
-    constructor(context: Context, attributeSet: AttributeSet): super(context, attributeSet) {
+    constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet) {
         dots.clear()
         inflateLayout()
     }
