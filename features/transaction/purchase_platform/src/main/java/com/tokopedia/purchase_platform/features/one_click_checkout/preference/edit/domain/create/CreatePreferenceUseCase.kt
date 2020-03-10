@@ -35,7 +35,7 @@ class CreatePreferenceUseCase @Inject constructor(val graphqlUseCase: GraphqlUse
         const val PARAM_KEY = "profile"
         val QUERY = """
         mutation insert_profile_occ(${"$"}profile: InsertProfileOCCParams){
-          insert_profile_occ(profiles: ${"$"}profile, dummy: 1){
+          insert_profile_occ(profiles: ${"$"}profile){
                 error_message,
                 status,
                 data {

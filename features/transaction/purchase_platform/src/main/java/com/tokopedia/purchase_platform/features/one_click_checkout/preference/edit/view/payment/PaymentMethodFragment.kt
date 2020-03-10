@@ -3,17 +3,17 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
+import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
+import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebResourceResponse
-import android.webkit.WebSettings
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
@@ -82,16 +82,24 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         webSettings.builtInZoomControls = false
         webSettings.displayZoomControls = true
         web_view.webViewClient = PaymentMethodWebViewClient()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            webSettings.mediaPlaybackRequiresUserGesture = false
-        }
-
-//        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-//            WebView.setWebContentsDebuggingEnabled(true)
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//            webSettings.mediaPlaybackRequiresUserGesture = false
 //        }
+
+        if (GlobalConfig.isAllowDebuggingTools() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true)
+        }
 //        web_view.loadUrl("tokopedia://dummy/payment/listing?callback_url=http%3A%2F%2Flocalhost%3A8080%2Fdummy%2Fpayment%2Flisting&customer_email=davin.kurniawan%40tokopedia.com&customer_msisdn=&customer_name=Davin+Kurniawan&description=Manual+Transfer+%28qweqewqe+-+123123123%29&express_checkout_param=%7B%22account_name%22%3A%22qweqewqe%22%2C%22account_number%22%3A%22123123123%22%2C%22bank_id%22%3A%221%22%7D&express_checkout_url=http%3A%2F%2Flocalhost%3A8080%2Fv2%2Fapi%2Fpayment%2FMANUALTRANSFER&gateway_code=MANUALTRANSFER&image=https%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Ficon-bca.png&merchant_code=tokopediatest&message=Success&profile_code=EXPRESS_SAVE&signature=610d56a2c6d12cc17250145b05aeb445b6c806df&success=true&user_id=34437")
-        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${UserSession(context).userId}&customer_name=${UserSession(context).name}&customer_email=${UserSession(context).email}&callback_url=https%3A%2F%2Fpay.tokopedia.com%2Fv2%2Fpayment%2Fregister%2Flisting"
+        val userSession = UserSession(context)
+        var addressId = ""
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            addressId = parent.addressId.toString()
+        }
+        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${userSession.userId}&customer_name=${userSession.name}&customer_email=${userSession.email}&customer_msisdn=&address_id=${addressId}&callback_url=https%3A%2F%2Fpay-staging.tokopedia.com%2Fdummy%2Fpayment%2Flisting"
+//        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=5511791&customer_name=Davin+Kurniawan&customer_email=davin.kurniawan%40tokopedia.com&customer_msisdn=&address_id=4653430&callback_url=https%3A%2F%2Fpay-staging.tokopedia.com%2Fdummy%2Fpayment%2Flisting"
         web_view.postUrl("https://pay-staging.tokopedia.com/v2/payment/register/listing", data.toByteArray())
+//        web_view.loadUrl("https://pay-staging.tokopedia.com/dummy/payment/listing")
     }
 
     override fun getScreenName(): String {
@@ -121,6 +129,19 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             progress_bar?.gone()
         }
 
+        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+            val uri = Uri.parse(url)
+            val isSuccess = uri.getQueryParameter("success")
+            if (isSuccess != null && isSuccess.equals("true", true)) {
+                val gatewayCode = uri.getQueryParameter("gateway_code")
+                if (gatewayCode != null) {
+                    goToNextStep(gatewayCode, generateMetadata(uri))
+                    return false
+                }
+            }
+            return super.shouldOverrideUrlLoading(view, url)
+        }
+
         override fun shouldInterceptRequest(view: WebView?, url: String?): WebResourceResponse? {
             val uri = Uri.parse(url)
             val isSuccess = uri.getQueryParameter("success")
@@ -131,6 +152,22 @@ class PaymentMethodFragment : BaseDaggerFragment() {
                 }
             }
             return super.shouldInterceptRequest(view, url)
+        }
+
+        override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+            super.onReceivedError(view, request, error)
+        }
+
+        override fun onReceivedHttpAuthRequest(view: WebView?, handler: HttpAuthHandler?, host: String?, realm: String?) {
+            super.onReceivedHttpAuthRequest(view, handler, host, realm)
+        }
+
+        override fun onReceivedHttpError(view: WebView?, request: WebResourceRequest?, errorResponse: WebResourceResponse?) {
+            super.onReceivedHttpError(view, request, errorResponse)
+        }
+
+        override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
+            super.onReceivedSslError(view, handler, error)
         }
 
         private fun generateMetadata(uri: Uri): String {

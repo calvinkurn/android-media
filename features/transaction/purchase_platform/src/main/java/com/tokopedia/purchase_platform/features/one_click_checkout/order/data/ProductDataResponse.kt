@@ -167,5 +167,5 @@ data class ProductDataResponse(
         val bookingStock: Int = 0,
         @SerializedName("product_variant")
         @Expose
-        val productVariant: ProductVariant = ProductVariant()
+        val productVariant: ProductVariantResponse = ProductVariantResponse()
         )

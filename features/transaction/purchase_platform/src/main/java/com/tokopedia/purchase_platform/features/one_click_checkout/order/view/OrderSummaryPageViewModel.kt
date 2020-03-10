@@ -7,25 +7,45 @@ import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.GetOccCartUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderTotal
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderData
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderShop
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationViewModel
 import kotlinx.coroutines.*
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
-class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatcher, private val ratesUseCase: GetRatesUseCase, private val ratesResponseStateConverter: RatesResponseStateConverter) : BaseViewModel(dispatcher) {
+class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatcher,
+                                                    private val getOccCartUseCase: GetOccCartUseCase,
+                                                    private val ratesUseCase: GetRatesUseCase,
+                                                    val getPreferenceListUseCase: GetPreferenceListUseCase,
+                                                    private val ratesResponseStateConverter: RatesResponseStateConverter) : BaseViewModel(dispatcher) {
 
-    private var orderProduct: OrderProduct = OrderProduct()
+    var orderProduct: OrderProduct = OrderProduct()
+    var orderShop: OrderShop = OrderShop()
 
-    private var orderPreference: MutableLiveData<OrderPreference> = MutableLiveData()
+    var orderPreference: MutableLiveData<OrderPreference> = MutableLiveData()
 
-    private var orderTotal: MutableLiveData<OrderTotal> = MutableLiveData()
+    var orderTotal: MutableLiveData<OrderTotal> = MutableLiveData()
 
     private var compositeSubscription = CompositeSubscription()
 
     private var debounceJob: Job? = null
+
+    fun getOccCart() {
+        getOccCartUseCase.execute({ orderData: OrderData ->
+            val o = orderData
+            orderProduct = orderData.cart.product
+            orderShop = orderData.cart.shop
+            orderPreference.value = OrderPreference(orderData.preference)
+        }, { throwable: Throwable ->
+            throwable.printStackTrace()
+        })
+    }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
         orderProduct = product
@@ -36,7 +56,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     fun updatePreference(preference: Preference) {
-        this.orderPreference.value = orderPreference.value?.copy(preference = preference)
+//        this.orderPreference.value = orderPreference.value?.copy(preference = preference)
         debounceJob?.cancel()
         getRates()
     }
@@ -52,7 +72,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun loadOrder() {
         // get order
         orderProduct = OrderProduct()
-        orderPreference.value = OrderPreference(preference = Preference())
+//        orderPreference.value = OrderPreference(preference = Preference())
         orderTotal.value = OrderTotal(btnState = 1)
     }
 
@@ -124,6 +144,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.ut = ""
         shippingParam.insurance = 1
         shippingParam.categoryIds = ""
+        shippingParam.uniqueId = ""
 
         shippingParam.weightInKilograms = 1 * 0 / 1000.0
         shippingParam.productInsurance = 0

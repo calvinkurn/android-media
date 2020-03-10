@@ -50,6 +50,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -138,6 +139,7 @@ import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import com.tokopedia.common_tradein.utils.TradeInUtils
+import com.tokopedia.unifycomponents.Toaster
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -1814,23 +1816,42 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             try {
                 val productInfo = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
                 val warehouseId: Int = viewModel.multiOrigin.id.toIntOrZero()
-                val atcRequestParam = AtcRequestParam()
-                atcRequestParam.setShopId(productInfo.basic.getShopId())
-                atcRequestParam.setProductId(productInfo.basic.getProductId())
-                atcRequestParam.setNotes(userInputNotes)
                 val qty = if (userInputQuantity == 0) productInfo.basic.minOrder else userInputQuantity
-                atcRequestParam.setQuantity(qty)
-                atcRequestParam.setWarehouseId(warehouseId)
+                val atcRequestParam = AddToCartOccRequestParams(productInfo.basic.getProductId(), productInfo.basic.getShopId(), qty)
+                atcRequestParam.warehouseId = warehouseId
+                atcRequestParam.attribution = trackerAttribution ?: ""
+                atcRequestParam.listTracker = trackerListName ?: ""
 
-                val expressCheckoutUriString = ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
-                val intent = RouteManager.getIntent(it, expressCheckoutUriString)
-                intent?.run {
-                    putExtra(Constant.EXTRA_ATC_REQUEST, atcRequestParam)
-                    putExtra(Constant.TRACKER_ATTRIBUTION, trackerAttribution)
-                    putExtra(Constant.TRACKER_LIST_NAME, trackerListName)
-                    startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS)
-                    it.overridePendingTransition(R.anim.pull_up, 0)
-                }
+                viewModel.atcOcc(atcRequestParam, { throwable: Throwable ->
+
+                }, { addToCartDataModel: AddToCartDataModel ->
+                    if (addToCartDataModel.status.equals("OK", true)) {
+                        if (addToCartDataModel.data.success == 1) {
+                            val expressCheckoutUriString = ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
+                            val intent = RouteManager.getIntent(it, expressCheckoutUriString)
+                            intent?.run {
+                                //                    putExtra(Constant.EXTRA_ATC_REQUEST, atcRequestParam)
+//                    putExtra(Constant.TRACKER_ATTRIBUTION, trackerAttribution)
+//                    putExtra(Constant.TRACKER_LIST_NAME, trackerListName)
+                                startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS)
+                                it.overridePendingTransition(R.anim.pull_up, 0)
+                            }
+                        } else {
+                            if (addToCartDataModel.data.message.isNotEmpty()) {
+                                view?.let {
+                                    Toaster.make(it, addToCartDataModel.data.message[0], type = Toaster.TYPE_ERROR)
+                                }
+                            }
+                        }
+                    } else {
+                        if (addToCartDataModel.errorMessage.isNotEmpty()) {
+                            view?.let {
+                                Toaster.make(it, addToCartDataModel.errorMessage[0], type = Toaster.TYPE_ERROR)
+                            }
+                        }
+                    }
+                })
+
             } catch (e: Exception) {
 
             }

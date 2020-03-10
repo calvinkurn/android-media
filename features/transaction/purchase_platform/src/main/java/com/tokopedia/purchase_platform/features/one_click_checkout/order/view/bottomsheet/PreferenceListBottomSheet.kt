@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.PreferenceListResponseModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.view.PreferenceListAdapter
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_preference_list.view.*
 import kotlinx.coroutines.*
 import kotlin.coroutines.CoroutineContext
 
-class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main.immediate, private val listener: PreferenceListBottomSheetListener) : CoroutineScope {
+class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main.immediate, private val useCase: GetPreferenceListUseCase, private val listener: PreferenceListBottomSheetListener) : CoroutineScope {
     // need get all preference list usecase, update selected preference usecase
 
     private var bottomSheet: BottomSheetUnify? = null
@@ -30,10 +31,23 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
 
     init {
         //get all preference
-        launch {
-            delay(3000)
-            updateList(listOf(Preference(), Preference(), Preference(), Preference(), Preference()))
-        }
+//        launch {
+//            delay(3000)
+//            updateList(listOf(Preference(), Preference(), Preference(), Preference(), Preference()))
+//        }
+//        useCase.execute({ preferenceListResponseModel: PreferenceListResponseModel ->
+//            updateList(preferenceListResponseModel.profiles ?: ArrayList())
+//        }, { throwable: Throwable ->
+//
+//        })
+    }
+
+    fun getPreferenceList() {
+        useCase.execute({ preferenceListResponseModel: PreferenceListResponseModel ->
+            updateList(preferenceListResponseModel.profiles ?: ArrayList())
+        }, { throwable: Throwable ->
+
+        })
     }
 
     fun show(fragment: OrderSummaryPageFragment) {
@@ -50,6 +64,7 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
                 }
                 setChild(child)
                 show(it, null)
+                getPreferenceList()
                 setOnDismissListener {
                     onCleared()
                 }
@@ -95,8 +110,8 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
         btnAddPreference?.gone()
     }
 
-    private fun updateList(preferences: List<Preference>) {
-//        adapter?.submitList(preferences)
+    private fun updateList(preferences: ArrayList<ProfilesItemModel>) {
+        adapter?.submitList(preferences)
         progressBar?.gone()
         rvPreferenceList?.visible()
         btnAddPreference?.visible()

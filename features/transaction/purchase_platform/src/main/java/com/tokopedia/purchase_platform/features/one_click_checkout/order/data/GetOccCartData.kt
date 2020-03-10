@@ -6,5 +6,7 @@ data class GetOccCartData(
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("cart_list")
-        val cartList: List<CartDataResponse> = emptyList()
+        val cartList: List<CartDataResponse> = emptyList(),
+        @SerializedName("profile")
+        val profileResponse: ProfileResponse = ProfileResponse()
 )

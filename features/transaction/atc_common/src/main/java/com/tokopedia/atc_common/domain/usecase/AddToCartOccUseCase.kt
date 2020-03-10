@@ -1,5 +1,6 @@
 package com.tokopedia.atc_common.domain.usecase
 
+import com.tokopedia.atc_common.AtcConstant.MUTATION_ATC_OCC
 import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.response.AddToCartOccGqlResponse
 import com.tokopedia.atc_common.domain.mapper.AddToCartDataMapper
@@ -12,7 +13,7 @@ import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
 
-class AddToCartOccUseCase @Inject constructor(@Named("atcOccMutation") private val queryString: String,
+class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private val queryString: String,
                                               private val graphqlUseCase: GraphqlUseCase,
                                               private val addToCartDataMapper: AddToCartDataMapper) : UseCase<AddToCartDataModel>() {
 

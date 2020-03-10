@@ -3,6 +3,13 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.m
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderPreference
+
+data class OrderData(
+        var cart: OrderCart = OrderCart(),
+        var preference: ProfileResponse = ProfileResponse()
+)
 
 data class OrderPreferenceTemp(
         val id: Int = 0,

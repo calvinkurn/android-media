@@ -36,7 +36,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     fun initView() {
         if (::product.isInitialized) {
-            view.tv_shop.text = "WOW QREN SKLI 2"
+            view.tv_product_name.text = product.productName
             view.et_note.filters = arrayOf(InputFilter.LengthFilter(100))
             etQty.setText("${product.quantity!!.orderQuantity}")
             view.btn_qty_plus.setOnClickListener {
@@ -290,6 +290,11 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 view.tv_error_form_validation.visibility = View.GONE
             }
         }
+    }
+
+    fun setShop(orderShop: OrderShop) {
+        view.tv_shop_name.text = orderShop.shopName
+        view.tv_shop_location.text = orderShop.cityName
     }
 
     interface OrderProductCardListener {

@@ -1,24 +1,33 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.SpannableStringBuilder
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.PreferenceListBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -62,6 +71,42 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         super.onViewCreated(view, savedInstanceState)
 
         initViews(view)
+        initViewModel()
+    }
+
+    private fun initViewModel() {
+        viewModel.orderPreference.observe(this, Observer {
+            view?.let {
+                Toaster.make(it, "success")
+            }
+            orderProductCard.setProduct(viewModel.orderProduct)
+            orderProductCard.setShop(viewModel.orderShop)
+            orderProductCard.initView()
+            showMessage(it.preference)
+            orderPreferenceCard.setPreference(it)
+        })
+        viewModel.orderTotal.observe(this, Observer {
+
+        })
+        if (viewModel.orderProduct.parentId == 0) {
+            viewModel.getOccCart()
+        }
+    }
+
+    private fun showMessage(preference: ProfileResponse) {
+        tv_header.text = "Barang yang dibeli"
+        if (preference.hasPreference) {
+            tv_header_2.text = "Pengiriman dan Pembayaran"
+            tv_subheader.gone()
+        } else {
+            tv_header_2.text = "Hai!"
+            val spannableString = SpannableString(preference.onboardingHeaderMessage + " Info")
+            spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#03AC0E")), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+            tv_subheader.text = spannableString
+            tv_subheader.setOnClickListener {
+                //show bottomsheet
+            }
+        }
     }
 
     private fun initViews(view: View) {
@@ -70,87 +115,87 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         orderProductCard = OrderProductCard(view, this)
-        val product = OrderProduct()
-        product.apply {
-            quantity = QuantityUiModel("", 100, 1, 1, "", "", "", "", "", "", "", false, 100, "")
-
-            selectedVariantOptionsIdMap = linkedMapOf(
-                    9798944 to 41522204,
-                    9798945 to 29773874
-            )
-
-            productChildrenList = arrayListOf(
-                    OrderProductChild(632090913, "", 398000, "", true, true, "", 100, 1, 52, arrayListOf(41522203, 29773874)),
-                    OrderProductChild(632090914, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773875)),
-                    OrderProductChild(632090915, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773876)),
-                    OrderProductChild(632090916, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773877)),
-                    OrderProductChild(632090917, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773878)),
-                    OrderProductChild(632090918, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773879)),
-                    OrderProductChild(632090919, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773874)),
-                    OrderProductChild(632090920, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773875)),
-                    OrderProductChild(632090921, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773876)),
-                    OrderProductChild(632090922, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773877)),
-                    OrderProductChild(632090923, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773878)),
-                    OrderProductChild(632090924, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773879))
-            )
-
-            typeVariantList = arrayListOf(
-                    TypeVariantUiModel(
-                            9798944, "warna", "Hitam merah", "", "", arrayListOf(
-                            OptionVariantUiModel(
-                                    9798944, 41522204, OptionVariantUiModel.STATE_SELECTED, "#ffffff", "Hitam merah", true
-                            ), OptionVariantUiModel(
-                            9798944, 41522203, OptionVariantUiModel.STATE_NOT_SELECTED, "#ffffff", "Hitam polos", true
-                    )
-                    )
-                    ), TypeVariantUiModel(
-                    9798945, "ukuran", "39", "", "", arrayListOf(
-                    OptionVariantUiModel(
-                            9798945, 29773874, OptionVariantUiModel.STATE_SELECTED, "", "39", true
-                    ), OptionVariantUiModel(
-                    9798945, 29773875, OptionVariantUiModel.STATE_NOT_SELECTED, "", "40", true
-            ), OptionVariantUiModel(
-                    9798945, 29773876, OptionVariantUiModel.STATE_NOT_SELECTED, "", "41", true
-            ), OptionVariantUiModel(
-                    9798945, 29773877, OptionVariantUiModel.STATE_NOT_SELECTED, "", "42", true
-            ), OptionVariantUiModel(
-                    9798945, 29773878, OptionVariantUiModel.STATE_NOT_SELECTED, "", "43", true
-            ), OptionVariantUiModel(
-                    9798945, 29773879, OptionVariantUiModel.STATE_NOT_SELECTED, "", "44", true
-            )
-            )
-            ),
-                    SelectedTypeVariantUiModel(
-                            arrayListOf(TypeVariantUiModel(
-                                    9798944, "warna", "Hitam merah", "", "", arrayListOf(
-                                    OptionVariantUiModel(
-                                            9798944, 41522204, OptionVariantUiModel.STATE_SELECTED, "#ffffff", "Hitam merah", true
-                                    ), OptionVariantUiModel(
-                                    9798944, 41522203, OptionVariantUiModel.STATE_NOT_SELECTED, "#ffffff", "Hitam polos", true
-                            )
-                            )
-                            ), TypeVariantUiModel(
-                                    9798945, "ukuran", "39", "", "", arrayListOf(
-                                    OptionVariantUiModel(
-                                            9798945, 29773874, OptionVariantUiModel.STATE_SELECTED, "", "39", true
-                                    ), OptionVariantUiModel(
-                                    9798945, 29773875, OptionVariantUiModel.STATE_NOT_SELECTED, "", "40", true
-                            ), OptionVariantUiModel(
-                                    9798945, 29773876, OptionVariantUiModel.STATE_NOT_SELECTED, "", "41", true
-                            ), OptionVariantUiModel(
-                                    9798945, 29773877, OptionVariantUiModel.STATE_NOT_SELECTED, "", "42", true
-                            ), OptionVariantUiModel(
-                                    9798945, 29773878, OptionVariantUiModel.STATE_NOT_SELECTED, "", "43", true
-                            ), OptionVariantUiModel(
-                                    9798945, 29773879, OptionVariantUiModel.STATE_NOT_SELECTED, "", "44", true
-                            )
-                            )
-                            ))
-                    )
-            )
-        }
-        orderProductCard.setProduct(product)
-        orderProductCard.initView()
+//        val product = OrderProduct()
+//        product.apply {
+//            quantity = QuantityUiModel("", 100, 1, 1, "", "", "", "", "", "", "", false, 100, "")
+//
+//            selectedVariantOptionsIdMap = linkedMapOf(
+//                    9798944 to 41522204,
+//                    9798945 to 29773874
+//            )
+//
+//            productChildrenList = arrayListOf(
+//                    OrderProductChild(632090913, "", 398000, "", true, true, "", 100, 1, 52, arrayListOf(41522203, 29773874)),
+//                    OrderProductChild(632090914, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773875)),
+//                    OrderProductChild(632090915, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773876)),
+//                    OrderProductChild(632090916, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773877)),
+//                    OrderProductChild(632090917, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773878)),
+//                    OrderProductChild(632090918, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522203, 29773879)),
+//                    OrderProductChild(632090919, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773874)),
+//                    OrderProductChild(632090920, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773875)),
+//                    OrderProductChild(632090921, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773876)),
+//                    OrderProductChild(632090922, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773877)),
+//                    OrderProductChild(632090923, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773878)),
+//                    OrderProductChild(632090924, "", 398000, "", true, false, "", 100, 1, 52, arrayListOf(41522204, 29773879))
+//            )
+//
+//            typeVariantList = arrayListOf(
+//                    TypeVariantUiModel(
+//                            9798944, "warna", "Hitam merah", "", "", arrayListOf(
+//                            OptionVariantUiModel(
+//                                    9798944, 41522204, OptionVariantUiModel.STATE_SELECTED, "#ffffff", "Hitam merah", true
+//                            ), OptionVariantUiModel(
+//                            9798944, 41522203, OptionVariantUiModel.STATE_NOT_SELECTED, "#ffffff", "Hitam polos", true
+//                    )
+//                    )
+//                    ), TypeVariantUiModel(
+//                    9798945, "ukuran", "39", "", "", arrayListOf(
+//                    OptionVariantUiModel(
+//                            9798945, 29773874, OptionVariantUiModel.STATE_SELECTED, "", "39", true
+//                    ), OptionVariantUiModel(
+//                    9798945, 29773875, OptionVariantUiModel.STATE_NOT_SELECTED, "", "40", true
+//            ), OptionVariantUiModel(
+//                    9798945, 29773876, OptionVariantUiModel.STATE_NOT_SELECTED, "", "41", true
+//            ), OptionVariantUiModel(
+//                    9798945, 29773877, OptionVariantUiModel.STATE_NOT_SELECTED, "", "42", true
+//            ), OptionVariantUiModel(
+//                    9798945, 29773878, OptionVariantUiModel.STATE_NOT_SELECTED, "", "43", true
+//            ), OptionVariantUiModel(
+//                    9798945, 29773879, OptionVariantUiModel.STATE_NOT_SELECTED, "", "44", true
+//            )
+//            )
+//            ),
+//                    SelectedTypeVariantUiModel(
+//                            arrayListOf(TypeVariantUiModel(
+//                                    9798944, "warna", "Hitam merah", "", "", arrayListOf(
+//                                    OptionVariantUiModel(
+//                                            9798944, 41522204, OptionVariantUiModel.STATE_SELECTED, "#ffffff", "Hitam merah", true
+//                                    ), OptionVariantUiModel(
+//                                    9798944, 41522203, OptionVariantUiModel.STATE_NOT_SELECTED, "#ffffff", "Hitam polos", true
+//                            )
+//                            )
+//                            ), TypeVariantUiModel(
+//                                    9798945, "ukuran", "39", "", "", arrayListOf(
+//                                    OptionVariantUiModel(
+//                                            9798945, 29773874, OptionVariantUiModel.STATE_SELECTED, "", "39", true
+//                                    ), OptionVariantUiModel(
+//                                    9798945, 29773875, OptionVariantUiModel.STATE_NOT_SELECTED, "", "40", true
+//                            ), OptionVariantUiModel(
+//                                    9798945, 29773876, OptionVariantUiModel.STATE_NOT_SELECTED, "", "41", true
+//                            ), OptionVariantUiModel(
+//                                    9798945, 29773877, OptionVariantUiModel.STATE_NOT_SELECTED, "", "42", true
+//                            ), OptionVariantUiModel(
+//                                    9798945, 29773878, OptionVariantUiModel.STATE_NOT_SELECTED, "", "43", true
+//                            ), OptionVariantUiModel(
+//                                    9798945, 29773879, OptionVariantUiModel.STATE_NOT_SELECTED, "", "44", true
+//                            )
+//                            )
+//                            ))
+//                    )
+//            )
+//        }
+//        orderProductCard.setProduct(product)
+//        orderProductCard.initView()
 
         orderPreferenceCard = OrderPreferenceCard(view, this, getOrderPreferenceCardListener())
         orderPreferenceCard.initView()
@@ -197,7 +242,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     fun showPreferenceListBottomSheet() {
-        PreferenceListBottomSheet(listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
+        PreferenceListBottomSheet(useCase = viewModel.getPreferenceListUseCase, listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
             override fun onChangePreference(preference: ProfilesItemModel) {
 //                viewModel.updatePreference(preference)
             }

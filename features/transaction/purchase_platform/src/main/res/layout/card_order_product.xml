@@ -18,7 +18,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_header"
         app:typographyType="body_3"
         app:typographyWeight="reguler"
-        tools:text="Toko: " />
+        android:text="Toko: " />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_shop_name"

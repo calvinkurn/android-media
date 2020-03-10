@@ -46,7 +46,7 @@ class GetPreferenceByIdUseCase @Inject constructor(val graphqlUseCase: GraphqlUs
         const val PARAM_METADATA = "metadata"
         val QUERY = """
         query get_profile_by_id_occ(${"$"}profileId: Int, ${"$"}addressId: Int, ${"$"}serviceId: Int, ${"$"}gatewayCode: String, ${"$"}metadata: String) {
-          get_profile_by_id_occ(profile_id: ${"$"}profileId, address_id: ${"$"}addressId, service_id: ${"$"}serviceId, gateway_code: ${"$"}gatewayCode, metadata: ${"$"}metadata, dummy: 1){
+          get_profile_by_id_occ(profile_id: ${"$"}profileId, address_id: ${"$"}addressId, service_id: ${"$"}serviceId, gateway_code: ${"$"}gatewayCode, metadata: ${"$"}metadata){
                 error_message
                 status
                 data {
