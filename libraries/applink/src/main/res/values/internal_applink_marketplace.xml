@@ -79,6 +79,7 @@
     <string name="path_etalase_dynamic_picker">/etalase-dynamic-picker</string>
     <string name="path_category_dynamic_picker">/category-dynamic-picker</string>
     <string name="path_sellerhome" translatable="false">/sellerhome</string>
+    <string name="path_centralized_promo" translatable="false">/centralized-promo</string>
 
     <string name="path_sellerhome_product" translatable="false">/sellerhome-product</string>
     <string name="path_sellerhome_chat" translatable="false">/sellerhome-chat</string>
