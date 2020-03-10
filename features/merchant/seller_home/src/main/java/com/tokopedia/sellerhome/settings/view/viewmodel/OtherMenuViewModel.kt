@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.settings.domain.mapToGeneralShopInfo
 import com.tokopedia.sellerhome.settings.domain.usecase.GetSettingShopInfoUseCase
 import com.tokopedia.sellerhome.settings.domain.usecase.GetShopBadgeUseCase
@@ -41,15 +42,16 @@ class OtherMenuViewModel @Inject constructor(
 
     fun getAllSettingShopInfo() {
         userSession.run {
-            getSettingShopInfo(userId)
-            getShopTotalFollowers(shopId.toInt())
-            getShopBadge(shopId.toInt())
+            getSettingShopInfo()
+            getShopTotalFollowers()
+            getShopBadge()
         }
     }
 
-    private fun getSettingShopInfo(userId: String) {
+    private fun getSettingShopInfo() {
+        val userId = userSession.userId.toIntOrZero()
         launchCatchError(block = {
-            getSettingShopInfoUseCase.params = GetSettingShopInfoUseCase.createRequestParams(userId.toInt())
+            getSettingShopInfoUseCase.params = GetSettingShopInfoUseCase.createRequestParams(userId)
             val shopInfo = getSettingShopInfoUseCase.executeOnBackground()
             val generalShopInfoUiModel = shopInfo.mapToGeneralShopInfo()
             _generalShopInfoLiveData.value = Success(generalShopInfoUiModel)
@@ -58,7 +60,8 @@ class OtherMenuViewModel @Inject constructor(
         })
     }
 
-    private fun getShopTotalFollowers(shopId: Int) {
+    private fun getShopTotalFollowers() {
+        val shopId = userSession.shopId.toIntOrZero()
         launchCatchError(block = {
             getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
             val totalFollowers = getShopTotalFollowersUseCase.executeOnBackground()
@@ -68,7 +71,8 @@ class OtherMenuViewModel @Inject constructor(
         })
     }
 
-    private fun getShopBadge(shopId: Int) {
+    private fun getShopBadge() {
+        val shopId = userSession.shopId.toIntOrZero()
         launchCatchError(block = {
             getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
             val shopBadgeUrl = getShopBadgeUseCase.executeOnBackground()

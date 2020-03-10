@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -27,9 +28,11 @@ import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
+import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingErrorType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -65,7 +68,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
 
-    private val otherSettingViewModel by lazy {
+    private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
     }
 
@@ -106,23 +109,23 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeLiveData() {
-        with(otherSettingViewModel) {
+        with(otherMenuViewModel) {
             generalShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
                     is Success -> showGeneralShopInfoSuccess(result.data)
-                    is Fail -> showGeneralShopInfoError()
+                    is Fail -> showError(result.throwable, SettingErrorType.GENERAL_INFO_ERROR)
                 }
             })
             shopBadgeLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
                     is Success -> showShopBadgeSuccess(result.data)
-                    is Fail -> showShopBadgeError()
+                    is Fail -> showError(result.throwable, SettingErrorType.BADGES_ERROR)
                 }
             })
             totalFollowersLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
                     is Success -> showTotalFollowingSuccess(result.data)
-                    is Fail -> showTotalFollowingError()
+                    is Fail -> showError(result.throwable, SettingErrorType.FOLLOWERS_ERROR)
                 }
             })
         }
@@ -163,7 +166,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun getAllShopInfoData() {
         showAllLoadingShimmering()
-        otherSettingViewModel.getAllSettingShopInfo()
+        otherMenuViewModel.getAllSettingShopInfo()
     }
 
     private fun showAllLoadingShimmering() {
@@ -198,16 +201,28 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewHolder?.onLoadingGetTotalFollowing()
     }
 
-    private fun showGeneralShopInfoError() {
-
+    private fun showError(throwable: Throwable, errorType: SettingErrorType) {
+        throwable.message?.let { view?.showToasterError(it, errorType) }
+        when(errorType) {
+            is SettingErrorType.GENERAL_INFO_ERROR -> otherMenuViewHolder?.onErrorGetShopGeneralInfoData()
+            is SettingErrorType.BADGES_ERROR -> otherMenuViewHolder?.onErrorGetShopBadge()
+            is SettingErrorType.FOLLOWERS_ERROR -> otherMenuViewHolder?.onErrorGetTotalFollowing()
+        }
     }
 
-    private fun showShopBadgeError() {
-
+    private fun retryFetchAfterError() {
+        otherMenuViewModel.getAllSettingShopInfo()
     }
 
-    private fun showTotalFollowingError() {
-
+    private fun View.showToasterError(errorMessage: String, errorType: SettingErrorType) {
+        Toaster.make(this,
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                resources.getString(R.string.setting_error_retry),
+                View.OnClickListener {
+                    retryFetchAfterError()
+                })
     }
 
     private fun setupView(view: View) {

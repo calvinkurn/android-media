@@ -83,13 +83,29 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun onLoadingGetShopBadge() {
-//        itemView.shopInfoLayout.shopBadges.urlSrc = ""
         itemView.shopInfoLayout.shopBadges.visibility = View.GONE
     }
 
     fun onLoadingGetTotalFollowing() {
         itemView.shopInfoLayout.shopFollowers.text = ""
         itemView.shimmerFollowers.visibility = View.VISIBLE
+    }
+
+    fun onErrorGetShopGeneralInfoData() {
+        itemView.run {
+            shopInfoLayout.shopName.text = null
+            shopInfoLayout.shopImage.urlSrc = ""
+            saldoBalance.balanceValue.text = null
+            topAdsBalance.balanceValue.text = null
+        }
+    }
+
+    fun onErrorGetShopBadge() {
+        itemView.shopInfoLayout.shopBadges.visibility = View.GONE
+    }
+
+    fun onErrorGetTotalFollowing() {
+        itemView.shopInfoLayout.shopFollowers.text = ""
     }
 
     private fun setShopName(shopName: String) {
