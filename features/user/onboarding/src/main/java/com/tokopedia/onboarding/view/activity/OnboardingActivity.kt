@@ -16,13 +16,16 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.common.IOnBackPressed
+import com.tokopedia.onboarding.data.OnboardingConstant
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
-import com.tokopedia.onboarding.di.DynamicOnbaordingQueryModule
+import com.tokopedia.onboarding.di.DynamicOnboardingQueryModule
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.domain.model.DynamicOnboardingDataModel
 import com.tokopedia.onboarding.view.fragment.DynamicOnboardingFragment
 import com.tokopedia.onboarding.view.fragment.OnboardingFragment
-import com.tokopedia.onboarding.view.viewmodel.DynamicOnbaordingViewModel
+import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
@@ -37,7 +40,9 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(DynamicOnbaordingViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(DynamicOnboardingViewModel::class.java) }
+
+    private lateinit var remoteConfig: RemoteConfig
 
     override fun getNewFragment(): Fragment? {
         return null
@@ -70,8 +75,21 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
 
     override fun getComponent(): OnboardingComponent = DaggerOnboardingComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .dynamicOnbaordingQueryModule(DynamicOnbaordingQueryModule(this))
+            .dynamicOnbaordingQueryModule(DynamicOnboardingQueryModule(this))
             .build()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        component.inject(this)
+
+        remoteConfig = FirebaseRemoteConfigImpl(this)
+        if (remoteConfig.getBoolean(OnboardingConstant.RemoteConfig.DYNAMIC_ONBOARDING)) {
+            initObserver()
+            viewModel.getData()
+        } else {
+            showStaticOnboarding()
+        }
+    }
 
     override fun onBackPressed() {
         val fragment = this.supportFragmentManager.findFragmentById(R.id.parent_view)
@@ -91,24 +109,16 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         window.attributes = winParams
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        component.inject(this)
-        initObserver()
-
-        viewModel.getData()
-    }
-
     private fun initObserver() {
-        viewModel.dynamicOnbaordingData.observe(this, Observer {
+        viewModel.dynamicOnboardingData.observe(this, Observer {
             when(it) {
-                is Success -> { onGetDynamicOnbaordingSuccess(it.data) }
-                is Fail -> { onGetDynamicOnbaordingFailed(it.throwable) }
+                is Success -> { onGetDynamicOnboardingSuccess(it.data) }
+                is Fail -> { onGetDynamicOnboardingFailed(it.throwable) }
             }
         })
     }
 
-    private fun onGetDynamicOnbaordingSuccess(data: DynamicOnboardingDataModel) {
+    private fun onGetDynamicOnboardingSuccess(data: DynamicOnboardingDataModel) {
         val bundle = Bundle()
         intent.extras?.let { bundle.putAll(it) }
         bundle.putParcelable(DynamicOnboardingFragment.ARG_DYNAMIC_ONBAORDING_DATA, data)
@@ -117,7 +127,11 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         directPageTo(dynamicOnboardingFragment)
     }
 
-    private fun onGetDynamicOnbaordingFailed(throwable: Throwable) {
+    private fun onGetDynamicOnboardingFailed(throwable: Throwable) {
+        showStaticOnboarding()
+    }
+
+    private fun showStaticOnboarding() {
         val bundle = Bundle()
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
