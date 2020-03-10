@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/layout_lvl1"
+    app:cardUseCompatPadding="true"
+    app:contentPaddingBottom="@dimen/layout_lvl1"
+    app:contentPaddingRight="@dimen/layout_lvl1"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/tvOnGoingPromoTitle">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/tvOnGoingPromoTitleShimmer"
+            android:layout_width="100dp"
+            android:layout_height="@dimen/sah_dimen_18dp"
+            android:layout_margin="@dimen/layout_lvl1"
+            app:corners="10"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/headerDivider"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/sah_dimen_1dp"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:background="@color/Neutral_N75"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvOnGoingPromoTitleShimmer" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/tvOnGoingPromoStatusShimmer"
+            android:layout_width="60dp"
+            android:layout_height="@dimen/sah_dimen_18dp"
+            android:layout_marginStart="@dimen/layout_lvl1"
+            android:layout_marginLeft="@dimen/layout_lvl1"
+            android:layout_marginTop="4dp"
+            app:corners="10"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/headerDivider" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:id="@+id/tvOnGoingPromoCountShimmer"
+            android:layout_width="20dp"
+            android:layout_height="28dp"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            app:corners="10"
+            app:layout_constraintLeft_toLeftOf="@id/tvOnGoingPromoStatusShimmer"
+            app:layout_constraintStart_toStartOf="@id/tvOnGoingPromoStatusShimmer"
+            app:layout_constraintTop_toBottomOf="@id/tvOnGoingPromoStatusShimmer" />
+
+        <View
+            android:id="@+id/footerDivider"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/sah_dimen_1dp"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:background="@color/Neutral_N75"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvOnGoingPromoCountShimmer" />
+
+        <com.elyeproj.loaderviewlibrary.LoaderTextView
+            android:layout_width="120dp"
+            android:layout_height="18dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginBottom="@dimen/layout_lvl1"
+            app:corners="10"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/footerDivider" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
