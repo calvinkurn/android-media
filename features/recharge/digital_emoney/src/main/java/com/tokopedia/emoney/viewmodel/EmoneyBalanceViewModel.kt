@@ -30,8 +30,8 @@ class EmoneyBalanceViewModel @Inject constructor(private val graphqlRepository: 
 
     fun processEmoneyTagIntent(isoDep: IsoDep, balanceRawQuery: String, idCard: Int) {
         //do something with tagFromIntent
-        this.isoDep = isoDep
         try {
+            this.isoDep = isoDep
             isoDep.close()
             isoDep.connect()
             isoDep.timeout = TRANSCEIVE_TIMEOUT_IN_SEC // 5 sec time out

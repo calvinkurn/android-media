@@ -361,6 +361,7 @@ dependencies {
     implementation project(rootProject.ext.features.productCard)
     implementation project(rootProject.ext.features.broadcastMessageCommon)
     implementation project(rootProject.ext.features.digitalBrowse)
+    implementation project(rootProject.ext.features.digitalEmoney)
     implementation project(rootProject.ext.features.commonTravel)
     implementation project(rootProject.ext.features.searchbar)
     implementation project(rootProject.ext.features.navigation)
