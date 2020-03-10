@@ -9,10 +9,12 @@ import android.os.Parcelable
 @SuppressLint("ParcelCreator")
 @Parcelize
 data class PageDataModel(
-        @SerializedName("components")
+    @SerializedName("totalComponents")
+    var totalComponents: Int = 0,
+    @SerializedName("components")
     var componentsDataModel: ComponentsDataModel = ComponentsDataModel(),
-        @SerializedName("pageName")
+    @SerializedName("pageName")
     var pageName: String = "",
-        @SerializedName("pageNumber")
+    @SerializedName("pageNumber")
     var pageNumber: Int = 0
 ) : Parcelable

@@ -9,9 +9,9 @@ import android.os.Parcelable
 @SuppressLint("ParcelCreator")
 @Parcelize
 data class IndicatorsDataModel(
-    @SerializedName("DefaultColor")
+    @SerializedName("defaultColor")
     var defaultColor: String = "",
-    @SerializedName("SelectedColor")
+    @SerializedName("selectedColor")
     var selectedColor: String = "",
     @SerializedName("visibility")
     var visibility: Boolean = false

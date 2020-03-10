@@ -14,7 +14,5 @@ data class ComponentsDataModel(
     @SerializedName("image")
     var imageDataModel: ImageDataModel = ImageDataModel(),
     @SerializedName("text")
-    var textDataModel: TextDataModel = TextDataModel(),
-    @SerializedName("totalComponents")
-    var totalComponents: Int = 0
+    var textDataModel: TextDataModel = TextDataModel()
 ) : Parcelable
