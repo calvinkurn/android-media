@@ -186,7 +186,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     //Listener function
     private lateinit var initToolBarMethod: () -> Unit
-    private var cacheFragmentManager: FragmentManager? = null
     //Data
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
     private var topAdsGetProductManage: TopAdsGetProductManage = TopAdsGetProductManage()
@@ -298,7 +297,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             remoteConfig = FirebaseRemoteConfigImpl(this)
         }
         context?.let {
-            cacheFragmentManager = childFragmentManager
             pdpHashMapUtil = DynamicProductDetailHashMap(it, mapOf(ProductDetailConstant.PRODUCT_SNAPSHOT to ProductSnapshotDataModel()))
         }
         setHasOptionsMenu(true)
@@ -920,7 +918,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun getProductFragmentManager(): FragmentManager {
-        return cacheFragmentManager!!
+        return childFragmentManager
     }
 
     override fun showAlertCampaignEnded() {
