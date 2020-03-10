@@ -17,7 +17,7 @@ import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.settings.view.OtherSettingFragment
+import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
@@ -42,7 +42,7 @@ class SellerHomeActivity : BaseActivity() {
     private val homeViewModel by lazy { viewModelProvider.get(SellerHomeActivityViewModel::class.java) }
     private val sharedViewModel by lazy { viewModelProvider.get(SharedViewModel::class.java) }
     private val containerFragment by lazy { ContainerFragment.newInstance() }
-    private val otherSettingsFragment by lazy { OtherSettingFragment.createInstance() }
+    private val otherSettingsFragment by lazy { OtherMenuFragment.createInstance() }
     private val fragmentManger: FragmentManager by lazy { supportFragmentManager }
 
     private var currentFragment: Fragment? = null

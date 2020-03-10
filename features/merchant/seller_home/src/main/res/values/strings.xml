@@ -40,4 +40,10 @@
     <string name="setting_privacy_terms">Kebijakan Privasi</string>
     <string name="msg_share_apps">Sudah punya aplikasi Tokopedia belum? cek disini </string>
     <string name="title_share">Bagikan</string>
+
+    <string name="seller_home_logout_title">Keluar dari Tokopedia</string>
+    <string name="seller_home_logout_confirm">Apakah Anda ingin keluar?</string>
+    <string name="seller_home_logout_button">Keluar</string>
+    <string name="seller_home_cancel">Batal</string>
+    <string name="seller_home_loading">Loading...</string>
 </resources>

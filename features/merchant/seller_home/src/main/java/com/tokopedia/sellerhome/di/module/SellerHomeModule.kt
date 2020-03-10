@@ -40,6 +40,12 @@ class SellerHomeModule {
 
     @SellerHomeScope
     @Provides
+    fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
+        return MultiRequestGraphqlUseCase(graphqlRepository)
+    }
+
+    @SellerHomeScope
+    @Provides
     @Named("Main")
     fun provideMainDispatcher(): CoroutineDispatcher = Dispatchers.Main
 
