@@ -185,6 +185,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         productManageFilterModel.reset()
 
         initView()
+        loadInitialData()
     }
 
     private fun initView() {
@@ -796,7 +797,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             if(viewModel.isPowerMerchant() || isOfficialStore) {
                 productManageViewModel.isFeatured?.let {
                     if(productListFeaturedOnlySize == 5 && !it) {
-                        dialog = setDialogFeaturedProduct(
+                        dialog = getDialogFeaturedProduct(
                                 dialog,
                                 ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
                                 getString(R.string.product_featured_max_dialog_title),
@@ -812,7 +813,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                         dialog.show()
                     }
                     else {
-                        dialog = setDialogFeaturedProduct(
+                        dialog = getDialogFeaturedProduct(
                                 dialog,
                                 ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
                                 getString(R.string.product_featured_add_dialog_title),
@@ -831,7 +832,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     }
                 }
             } else {
-                dialog = setDialogFeaturedProduct(
+                dialog = getDialogFeaturedProduct(
                         dialog,
                         ProductManageUrl.ILLUSTRATION_SPECIAL_FEATURED_PRODUCT_DOMAIN,
                         getString(R.string.product_featured_special_dialog_title),
@@ -1065,7 +1066,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onResume() {
         super.onResume()
         productList.clear()
-        loadInitialData()
         activity?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
@@ -1133,7 +1133,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         viewModel.getGoldMerchantStatus()
     }
 
-    private fun setDialogFeaturedProduct(dialog: DialogUnify, imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String): DialogUnify {
+    private fun getDialogFeaturedProduct(dialog: DialogUnify, imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String): DialogUnify {
         dialog.setImageUrl(imageUrl)
         dialog.setTitle(title)
         dialog.setDescription(desc)
