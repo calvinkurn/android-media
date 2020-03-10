@@ -6,12 +6,19 @@ import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.text.currency.CurrencyFormatHelper
+import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
+import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.android.synthetic.main.fragment_quick_edit_price.*
+import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
 import java.text.NumberFormat
 import java.util.*
 
@@ -54,27 +61,23 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
             quick_edit_price.prependText(it.resources.getString(R.string.product_manage_quick_edit_currency))
         }
         quick_edit_price.apply {
-            textFieldInput.setText(formatText(currentPrice))
+            textFieldInput.setText(CurrencyFormatHelper.removeCurrencyPrefix(CurrencyFormatHelper.ConvertToRupiah(currentPrice)))
             setFirstIcon(com.tokopedia.unifyicon.R.drawable.ic_system_action_close_normal_24)
             setInputType(InputType.TYPE_CLASS_NUMBER)
             getFirstIcon().setOnClickListener {
                 quick_edit_price.textFieldInput.text.clear()
                 hideError()
             }
-            textFieldInput.addTextChangedListener( object: TextWatcher {
-                override fun afterTextChanged(s: Editable?) {
-
+            textFieldInput.setOnEditorActionListener { _, actionId, _ ->
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    price = textFieldInput.text.toString()
+                    val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(textFieldInput.windowToken, 0)
                 }
-
-                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                    //No op
-                }
-
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    price = s.toString()
-                    hideError()
-                }
-            })
+                true
+            }
+            val idrTextWatcher = CurrencyIdrTextWatcher(this.textFieldInput)
+            textFieldInput.addTextChangedListener(idrTextWatcher)
             setOnFocusChangeListener { v, hasFocus ->
                 if (hasFocus) {
                     activity.let {
@@ -89,6 +92,7 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
         }
         quick_edit_price.requestFocus()
         quick_edit_save_button.setOnClickListener {
+            price = CurrencyFormatHelper.convertRupiahToInt(quick_edit_price.textFieldInput.text.toString()).toString()
             when {
                 isPriceTooLow() -> showErrorPriceTooLow()
                 isPriceTooHigh() -> showErrorPriceTooHigh()
@@ -98,10 +102,6 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
                 }
             }
         }
-    }
-
-    private fun formatText(textToFormat: String): String {
-        return NumberFormat.getNumberInstance(Locale.US).format(textToFormat.toIntOrZero()).toString().replace(",",".")
     }
 
     private fun isPriceTooLow(): Boolean {

@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.feature.quickedit.stock.di.DaggerProductMana
 import com.tokopedia.product.manage.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
 import javax.inject.Inject
 
@@ -94,6 +95,8 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
             setValueChangedListener { newValue, _, _ ->
                 viewModel.updateStock(newValue)
             }
+            val idrTextWatcher = CurrencyIdrTextWatcher(quick_edit_stock_quantity_editor.editText as EditText)
+            editText.addTextChangedListener(idrTextWatcher)
         }
 
         quick_edit_stock_save_button.setOnClickListener {
