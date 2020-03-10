@@ -278,26 +278,28 @@ public class ShipmentMapper implements IShipmentMapper {
             dataResult.setCod(cod);
         }
 
-        if (shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData().getAdditionalInfo() != null) {
+        if (shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply().getData() != null) {
             LastApply lastApply = shipmentAddressFormDataResponse.getPromoSAFResponse().getLastApply();
-            AdditionalInfo responseAdditionalInfo = lastApply.getData().getAdditionalInfo();
-            LastApplyData lastApplyData = new LastApplyData();
-            lastApplyData.setAdditionalInfoMsg(responseAdditionalInfo.getMessageInfo().getMessage());
-            lastApplyData.setAdditionalInfoDetailMsg(responseAdditionalInfo.getMessageInfo().getDetail());
-            lastApplyData.setErrorDetailMsg(responseAdditionalInfo.getErrorDetail().getMessage());
+            if (lastApply.getData() != null) {
+                AdditionalInfo responseAdditionalInfo = lastApply.getData().getAdditionalInfo();
+                LastApplyData lastApplyData = new LastApplyData();
+                lastApplyData.setAdditionalInfoMsg(responseAdditionalInfo.getMessageInfo().getMessage());
+                lastApplyData.setAdditionalInfoDetailMsg(responseAdditionalInfo.getMessageInfo().getDetail());
+                lastApplyData.setErrorDetailMsg(responseAdditionalInfo.getErrorDetail().getMessage());
 
-            if  (lastApply.getData().getBenefitSummaryInfo().getSummaries().size() > 0) {
-                for (int i=0; i<lastApply.getData().getBenefitSummaryInfo().getSummaries().size(); i++) {
-                    SummariesItem summariesItem = lastApply.getData().getBenefitSummaryInfo().getSummaries().get(i);
-                    if (summariesItem.getType().equalsIgnoreCase(TYPE_CASHBACK)) {
-                        lastApplyData.setFinalBenefitText(summariesItem.getDescription());
-                        lastApplyData.setFinalBenefitAmount(summariesItem.getAmountStr());
-                        break;
+                if (lastApply.getData().getBenefitSummaryInfo().getSummaries().size() > 0) {
+                    for (int i=0; i<lastApply.getData().getBenefitSummaryInfo().getSummaries().size(); i++) {
+                        SummariesItem summariesItem = lastApply.getData().getBenefitSummaryInfo().getSummaries().get(i);
+                        if (summariesItem.getType().equalsIgnoreCase(TYPE_CASHBACK)) {
+                            lastApplyData.setFinalBenefitText(summariesItem.getDescription());
+                            lastApplyData.setFinalBenefitAmount(summariesItem.getAmountStr());
+                            break;
+                        }
                     }
                 }
+                lastApplyData.setListRedPromos(mapCreateListRedPromosCheckout(lastApply.getData()));
+                dataResult.setLastApplyData(lastApplyData);
             }
-            lastApplyData.setListRedPromos(mapCreateListRedPromosCheckout(lastApply.getData()));
-            dataResult.setLastApplyData(lastApplyData);
         }
 
         if (shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault() != null) {
@@ -367,6 +369,10 @@ public class ShipmentMapper implements IShipmentMapper {
                         if (groupShop.getVehicleLeasing() != null) {
                             groupShopResult.setIsLeasingProduct(groupShop.getVehicleLeasing().isLeasingProduct());
                             groupShopResult.setBookingFee(groupShop.getVehicleLeasing().getBookingFee());
+                        }
+
+                        if (groupShop.getListPromoCodes() != null && groupShop.getListPromoCodes().size() > 0) {
+                            groupShopResult.setListPromoCodes(groupShop.getListPromoCodes());
                         }
 
                         groupShopResult.setFulfillment(groupShop.isFulfillment());

@@ -10,17 +10,17 @@ data class ValidateUsePromoRequest(
         var codes: List<String?> = listOf(),
 
         @field:SerializedName("is_suggested")
-        var isSuggested: Int = -1,
+        var isSuggested: Int = 1,
 
         @field:SerializedName("orders")
         var orders: List<OrdersItem?> = listOf(),
 
         @field:SerializedName("skip_apply")
-        var skipApply: Int = -1,
+        var skipApply: Int = 1,
 
         @field:SerializedName("cart_type")
-        var cartType: String = "",
+        var cartType: String = "", // ocs & default
 
         @field:SerializedName("state")
-        var state: String = ""
+        var state: String = "" // cart & checkout & occ
 )

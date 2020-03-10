@@ -13,7 +13,7 @@ data class OrdersItem(
 	var shopId: Int = -1,
 
 		@field:SerializedName("codes")
-	var codes: List<Any?> = listOf(),
+	var codes: List<String> = listOf(),
 
 		@field:SerializedName("unique_id")
 	var uniqueId: String = "",

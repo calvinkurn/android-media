@@ -4,6 +4,8 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
+
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -18,6 +20,10 @@ import android.widget.LinearLayout;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.utils.CheckboxWatcher;
+import com.tokopedia.purchase_platform.common.utils.NoteTextWatcher;
+import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher;
+import com.tokopedia.purchase_platform.common.utils.QuantityWrapper;
 import com.tokopedia.purchase_platform.features.cart.view.ActionListener;
 import com.tokopedia.purchase_platform.features.cart.view.adapter.CartItemAdapter;
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData;
@@ -26,9 +32,19 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.unifycomponents.ticker.Ticker;
 import com.tokopedia.unifyprinciples.Typography;
 
+import java.util.concurrent.TimeUnit;
+
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.GlobalScope;
+import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.tokopedia.purchase_platform.common.utils.CheckboxWatcher.CHECKBOX_WATCHER_DEBOUNCE_TIME;
+import static com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher.TEXTWATCHER_QUANTITY_DEBOUNCE_TIME;
 
 /**
  * Created by Irfan Khoirul on 21/08/18.
@@ -58,6 +74,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     private CartItemAdapter cartItemAdapter;
     private CompositeSubscription compositeSubscription;
     private TickerPromoStackingCheckoutView tickerPromoStackingCheckoutView;
+    private CheckboxWatcher.CheckboxWatcherListener checkboxWatcherListener = null;
 
     public CartShopViewHolder(View itemView, ActionListener actionListener,
                               CartItemAdapter.ActionListener cartItemAdapterListener,
@@ -83,16 +100,54 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         imgFulfillment = itemView.findViewById(R.id.img_shop_fulfill);
         tvFulfillDistrict = itemView.findViewById(R.id.tv_fulfill_district);
         tickerPromoStackingCheckoutView = itemView.findViewById(R.id.voucher_merchant_holder_view);
+
+        initCheckboxWatcherDebouncer(compositeSubscription);
+    }
+
+    private void initCheckboxWatcherDebouncer(CompositeSubscription compositeSubscription) {
+        compositeSubscription.add(Observable.create(new Observable.OnSubscribe<Boolean>() {
+            @Override
+            public void call(final Subscriber<? super Boolean> subscriber) {
+                checkboxWatcherListener = new CheckboxWatcher.CheckboxWatcherListener() {
+                    @Override
+                    public void onCheckboxChanged(Boolean isChecked) {
+                        subscriber.onNext(isChecked);
+                    }
+                };
+            }
+        }).debounce(CHECKBOX_WATCHER_DEBOUNCE_TIME, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(Boolean isChecked) {
+                        itemCheckboxWatcherAction(isChecked);
+                    }
+                }));
+    }
+
+    private void itemCheckboxWatcherAction(Boolean isChecked) {
+        System.out.println("++ YEAY HIT!!");
+        actionListener.onCartShopNameChecked(isChecked);
     }
 
     public void bindData(CartShopHolderData cartShopHolderData, final int position) {
-        cbSelectShop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*cbSelectShop.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                System.out.println("++ onchange nih");
-                CartShopViewHolder.this.renderPromoMerchant(cartShopHolderData, checked);
+                // CartShopViewHolder.this.renderPromoMerchant(cartShopHolderData, checked);
             }
-        });
+        });*/
 
         if (cartShopHolderData.getShopGroupAvailableData().isError() || cartShopHolderData.getShopGroupAvailableData().isWarning()) {
             llWarningAndError.setVisibility(View.VISIBLE);
@@ -133,7 +188,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         cbSelectShop.setEnabled(!cartShopHolderData.getShopGroupAvailableData().isError());
         cbSelectShop.setChecked(cartShopHolderData.isAllSelected());
         cbSelectShop.setOnClickListener(cbSelectShopClickListener(cartShopHolderData));
-
+        cbSelectShop.setOnCheckedChangeListener(new CheckboxWatcher(checkboxWatcherListener));
         imgFulfillment.setVisibility(cartShopHolderData.getShopGroupAvailableData().isFulfillment() ?
                 View.VISIBLE : View.GONE);
         if (!TextUtils.isEmpty(cartShopHolderData.getShopGroupAvailableData().getFulfillmentName())) {
@@ -316,6 +371,7 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (!cartShopHolderData.getShopGroupAvailableData().isError()) {
                     boolean isChecked;
                     if (cartShopHolderData.isPartialSelected()) {

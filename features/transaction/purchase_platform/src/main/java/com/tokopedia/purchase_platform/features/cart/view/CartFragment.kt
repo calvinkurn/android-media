@@ -1181,7 +1181,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onCartItemCheckChanged(position: Int, parentPosition: Int, checked: Boolean): Boolean {
         dPresenter.setHasPerformChecklistChange(true)
         dPresenter.reCalculateSubTotal(cartAdapter.allShopGroupDataList, cartAdapter.insuranceCartShops)
-        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp())
+        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(checked, position, false))
         cartAdapter.checkForShipmentForm()
         return cartAdapter.setItemSelected(position, parentPosition, checked)
     }
@@ -1346,7 +1346,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 promoCheckoutBtn.desc = errorDefault.desc
                 promoCheckoutBtn.setOnClickListener {
                     renderPromoCheckoutLoading()
-                    dPresenter.doValidateUse(generateParamValidateUsePromoRevamp())
+                    dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
                 }
             } else {
                 renderPromoCheckoutSuccess(cartListData)
@@ -1390,33 +1390,70 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun generateValidateUseParams(): ValidateUsePromoRequest {
-        return generateParamValidateUsePromoRevamp()
-    }
+    /*override fun generateValidateUseParams(): ValidateUsePromoRequest {
+        // return generateParamValidateUsePromoRevamp()
+    }*/
 
-    private fun generateParamValidateUsePromoRevamp(): ValidateUsePromoRequest {
+    // NOTES:
+    // if position = -1, then isChecked for all
+    // if ignoreIsChecked = true, then no position nor isChecked is gained
+    private fun generateParamValidateUsePromoRevamp(isChecked: Boolean, position: Int, ignoreIsChecked: Boolean): ValidateUsePromoRequest {
+        println("++ isChecked = $isChecked, position = $position")
         val globalPromo = arrayListOf<String>()
         cartListData?.lastApplyData?.code?.let { globalPromo.add(it) }
 
         val listProductDetail = arrayListOf<ProductDetailsItem>()
-        var isCheckedItem: Boolean = false
         var listPromoCodes = listOf<String>()
+        var isCheckedItem = false
         cartListData?.shopGroupAvailableDataList?.forEach { shopGroupAvailableData ->
-            shopGroupAvailableData.cartItemDataList?.forEach { cartItemHolderData ->
-                cartItemHolderData.cartItemData?.originData?.productId?.let { productId ->
-                    cartItemHolderData.cartItemData?.updatedData?.quantity?.let { qty ->
-                        val productDetail = ProductDetailsItem(
-                                productId = productId.toInt(),
-                                quantity = qty
-                        )
-                        listProductDetail.add(productDetail)
-
-                        cartItemHolderData.cartItemData?.originData?.isCheckboxState?.let { isChecked ->
+            if (position != -1) {
+                shopGroupAvailableData.cartItemDataList?.let { cartItemlist ->
+                    for (i in 0 until cartItemlist.size) {
+                        val cartItemHolderData = cartItemlist[i]
+                        if (i == position) {
                             isCheckedItem = isChecked
+                        } else {
+                            cartItemHolderData.cartItemData?.originData?.let {
+                                isCheckedItem = it.isCheckboxState
+                            }
                         }
+
+                        val productDetail = cartItemHolderData.cartItemData?.originData?.productId?.toInt()?.let {
+                            cartItemHolderData.cartItemData?.updatedData?.quantity?.let { it1 ->
+                                ProductDetailsItem(
+                                        productId = it,
+                                        quantity = it1
+                                )
+                            }
+                        }
+                        productDetail?.let { listProductDetail.add(it) }
 
                         cartItemHolderData.cartItemData?.originData?.listPromoCheckout?.let {
                             listPromoCodes = it
+                        }
+                    }
+                }
+            } else {
+                shopGroupAvailableData.cartItemDataList?.forEach { cartItemHolderData ->
+                    cartItemHolderData.cartItemData?.originData?.productId?.let { productId ->
+                        cartItemHolderData.cartItemData?.updatedData?.quantity?.let { qty ->
+                            val productDetail = ProductDetailsItem(
+                                    productId = productId.toInt(),
+                                    quantity = qty
+                            )
+                            listProductDetail.add(productDetail)
+
+                            if (ignoreIsChecked) {
+                                cartItemHolderData.cartItemData?.originData?.isCheckboxState?.let { isCheckedData ->
+                                    isCheckedItem = isCheckedData
+                                }
+                            } else {
+                                isCheckedItem = isChecked
+                            }
+
+                            cartItemHolderData.cartItemData?.originData?.listPromoCheckout?.let {
+                                listPromoCodes = it
+                            }
                         }
                     }
                 }
@@ -1425,7 +1462,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         val listOrder = ArrayList<OrdersItem>()
         cartListData?.shopGroupAvailableDataList?.forEach { shop ->
-            val order = shop.shopId?.toLong()?.let { shopId ->
+            shop.shopId?.toLong()?.let { shopId ->
                 shop.cartString?.let { cartString ->
                     val order = OrdersItem(
                             shopId = shopId.toInt(),
@@ -1475,7 +1512,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
         val listOrder = ArrayList<Order>()
         cartListData?.shopGroupAvailableDataList?.forEach { shop ->
-            val order = shop.shopId?.toLong()?.let { shopId ->
+            shop.shopId?.toLong()?.let { shopId ->
                 shop.cartString?.let { cartString ->
                     val order = Order(
                             shopId = shopId,
@@ -2672,24 +2709,24 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.desc = getString(R.string.promo_checkout_inactive_desc)
         promoCheckoutBtn.setOnClickListener {
             renderPromoCheckoutLoading()
-            dPresenter.doValidateUse(generateParamValidateUsePromoRevamp())
+            dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
         }
     }
 
     override fun updatePromoCheckoutStickyButton(additionalInfoUiModel: AdditionalInfoUiModel) {
-        var errorDetailMsg = ""
-        var additionalInfoMsg = ""
-        var additionalInfoDesc = ""
+        var errorDetailMsg: String
+        var additionalInfoMsg: String
+        var additionalInfoDesc: String
 
-        additionalInfoUiModel.errorDetailUiModel?.message?.let {
+        additionalInfoUiModel.errorDetailUiModel.message.let {
             errorDetailMsg = it
         }
 
-        additionalInfoUiModel.messageInfoUiModel?.message?.let {
+        additionalInfoUiModel.messageInfoUiModel.message.let {
             additionalInfoMsg = it
         }
 
-        additionalInfoUiModel.messageInfoUiModel?.detail?.let {
+        additionalInfoUiModel.messageInfoUiModel.detail.let {
             additionalInfoDesc = it
         }
 
@@ -2737,6 +2774,10 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onCartItemQuantityChangedThenHitUpdateCartAndValidateUse() {
-        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp())
+        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
+    }
+
+    override fun onCartShopNameChecked(isCheckedAll: Boolean) {
+        dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(isCheckedAll, -1, false))
     }
 }

@@ -716,6 +716,10 @@ class CartItemViewHolder constructor(itemView: View,
         }
     }
 
+    private fun shopCheckboxWatcherAction(isChecked: Boolean) {
+        println("++ isChecked  = $isChecked")
+    }
+
     private fun itemQuantityTextWatcherAction(quantity: QuantityWrapper) {
         if (adapterPosition != RecyclerView.NO_POSITION && cartItemHolderData != null) {
             var needToUpdateView = quantity.qtyBefore.toString() != quantity.editable.toString()
