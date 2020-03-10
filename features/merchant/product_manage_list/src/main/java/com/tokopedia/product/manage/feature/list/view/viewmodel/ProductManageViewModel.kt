@@ -8,7 +8,12 @@ import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
-import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
+import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
+import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
+import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
+import com.tokopedia.product.manage.feature.list.view.model.ViewState
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
@@ -38,23 +43,24 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rx.Subscriber
+import javax.inject.Inject
 
-class ProductManageViewModel(
-        private val editPriceUseCase: EditPriceUseCase,
-        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-        private val userSessionInterface: UserSessionInterface,
-        private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-        private val setCashbackUseCase: SetCashbackUseCase,
-        private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-        private val getProductListUseCase: GQLGetProductListUseCase,
-        private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
-        private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
-        private val editStockUseCase: EditStockUseCase,
-        private val deleteProductUseCase: DeleteProductUseCase,
-        private val ioDispatcher: CoroutineDispatcher,
-        mainDispatcher: CoroutineDispatcher
+class ProductManageViewModel @Inject constructor(
+    private val editPriceUseCase: EditPriceUseCase,
+    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+    private val userSessionInterface: UserSessionInterface,
+    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+    private val setCashbackUseCase: SetCashbackUseCase,
+    private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
+    private val getProductListUseCase: GQLGetProductListUseCase,
+    private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
+    private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
+    private val editStockUseCase: EditStockUseCase,
+    private val deleteProductUseCase: DeleteProductUseCase,
+    mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
 
     val viewState : LiveData<ViewState>
@@ -100,7 +106,7 @@ class ProductManageViewModel(
 
     fun getGoldMerchantStatus() {
         launchCatchError(block = {
-            val status = withContext(ioDispatcher) {
+            val status = withContext(Dispatchers.IO) {
                 val shopId: List<Int> = listOf(userSessionInterface.shopId.toInt())
                 gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(shopId)
 
@@ -143,7 +149,7 @@ class ProductManageViewModel(
         isRefresh: Boolean = false
     ) {
         launchCatchError(block = {
-            val productList = withContext(ioDispatcher) {
+            val productList = withContext(Dispatchers.IO) {
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, filterOptions, sortOption)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListResponse = getProductList.productList
@@ -159,7 +165,7 @@ class ProductManageViewModel(
 
     fun getFeaturedProductCount(shopId: String) {
         launchCatchError(block = {
-            val productListFeaturedOnly = withContext(ioDispatcher) {
+            val productListFeaturedOnly = withContext(Dispatchers.IO) {
                 val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), null)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListSize = getProductList.productList?.data?.size
@@ -176,7 +182,7 @@ class ProductManageViewModel(
         showProgressDialog()
         editPriceUseCase.params = EditPriceUseCase.createRequestParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
         launchCatchError(block = {
-            val result = withContext(ioDispatcher) {
+            val result = withContext(Dispatchers.IO) {
                 editPriceUseCase.executeOnBackground()
             }
             if (result.productUpdateV3Data.isSuccess) {
@@ -194,7 +200,7 @@ class ProductManageViewModel(
         showProgressDialog()
         editStockUseCase.params = EditStockUseCase.createRequestParams(userSessionInterface.shopId, productId, stock, status)
         launchCatchError(block =  {
-            val result = withContext(ioDispatcher) {
+            val result = withContext(Dispatchers.IO) {
                 editStockUseCase.executeOnBackground()
             }
             if (result.productUpdateV3Data.isSuccess) {
@@ -273,7 +279,7 @@ class ProductManageViewModel(
         showProgressDialog()
         deleteProductUseCase.params = DeleteProductUseCase.createParams(userSessionInterface.shopId, productId)
         launchCatchError( block = {
-            val result = withContext(ioDispatcher) {
+            val result = withContext(Dispatchers.IO) {
                 deleteProductUseCase.executeOnBackground()
             }
             if(result.productUpdateV3Data.isSuccess) {
