@@ -238,4 +238,8 @@ object ApplinkConstInternalMarketplace {
     @JvmField
     val SELLER_HOME = "$INTERNAL_MARKETPLACE/sellerhome"
 
+
+    //CentralizedPromoActivity
+    @JvmField
+    val CENTRALIZED_PROMO = "$INTERNAL_MARKETPLACE/centralized-promo"
 }
