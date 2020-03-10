@@ -146,9 +146,7 @@ object ProductDetailConstant {
     const val SAVED_QUANTITY = "saved_quantity"
     const val SAVED_VARIANT = "saved_variant"
 
-    //Variant State
-    const val STATE_UNSELECTED = 0
-    const val STATE_SELECTED = 1
-    const val STATE_EMPTY = -1
-
+    //Button Action
+    const val BUY_BUTTON = 1
+    const val ATC_BUTTON = 2
 }

@@ -7,7 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
@@ -82,6 +86,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
                                                              private val getNearestWarehouseUseCase: GetNearestWarehouseUseCase,
+                                                             private val addToCartUseCase: AddToCartUseCase,
+                                                             private val addToCartOcsUseCase: AddToCartOcsUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -124,6 +130,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val updatedImageVariant: LiveData<MutableList<Media>>
         get() = _updatedImageVariant
 
+    private val _addToCartDataModel = MutableLiveData<Result<AddToCartDataModel>>()
+    val addToCartDataModel: LiveData<Result<AddToCartDataModel>>
+        get() = _addToCartDataModel
+
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
@@ -133,7 +143,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var enableCaching: Boolean = true
     var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
-
+    var buttonAction: Int = 0
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
 
@@ -162,6 +172,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         removeWishlistUseCase.unsubscribe()
         submitTicketSubscription?.unsubscribe()
         updateCartCounterSubscription?.unsubscribe()
+        addToCartUseCase.unsubscribe()
+        addToCartOcsUseCase.unsubscribe()
     }
 
     fun addPartialImage(imageUrl: String) {
@@ -213,6 +225,28 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
         }) {
             _productLayout.value = Fail(it)
+        }
+    }
+
+    fun addToCart(atcParams: Any) {
+        launchCatchError(block = {
+            val requestParams = RequestParams.create()
+            requestParams.putObject(AddToCartUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, atcParams)
+
+            when (atcParams) {
+                is AddToCartRequestParams -> {
+                    withContext(dispatcher.io()) {
+                        _addToCartDataModel.postValue(Success(addToCartUseCase.createObservable(requestParams).toBlocking().single()))
+                    }
+                }
+                is AddToCartOcsRequestParams -> {
+                    withContext(dispatcher.io()) {
+                        _addToCartDataModel.postValue(Success(addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()))
+                    }
+                }
+            }
+        }) {
+            _addToCartDataModel.value = Fail(it)
         }
     }
 

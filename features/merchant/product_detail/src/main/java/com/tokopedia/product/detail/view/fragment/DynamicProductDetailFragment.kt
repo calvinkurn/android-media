@@ -18,7 +18,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -49,6 +49,8 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
@@ -112,6 +114,7 @@ import com.tokopedia.purchase_platform.common.constant.*
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.sharedata.RESULT_CODE_ERROR_TICKET
 import com.tokopedia.purchase_platform.common.sharedata.RESULT_TICKET_DATA
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheetsActionListenerWithRetry
@@ -131,6 +134,7 @@ import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -1062,6 +1066,45 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeMoveToEtalase()
         observeRecommendationProduct()
         observeImageVariantPartialyChanged()
+        observeAddToCart()
+    }
+
+    private fun observeAddToCart() {
+        viewModel.addToCartDataModel.observe(viewLifecycleOwner, Observer {
+            hideProgressDialog()
+            when (it) {
+                is Success -> {
+                    when (viewModel.buttonAction) {
+                        ProductDetailConstant.BUY_BUTTON -> {
+                            val isOcsCheckoutType = (viewModel.p2Login.value)?.isOcsCheckoutType
+                                    ?: false
+
+                            if (isOcsCheckoutType) {
+                                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+                                intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
+                                intent.putExtras(ShipmentFormRequest.BundleBuilder().build().bundle)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(intent)
+                            } else {
+                                val cartUriString = ApplinkConst.CART
+                                val intent = RouteManager.getIntent(context, cartUriString)
+                                intent?.run {
+                                    putExtra(ApplinkConst.Transaction.EXTRA_CART_ID, it.data.data.cartId)
+                                    startActivity(intent)
+                                }
+                            }
+
+                        }
+                        ProductDetailConstant.ATC_BUTTON -> {
+                            showAddToCartDoneBottomSheet("")
+                        }
+                    }
+                }
+                is Fail -> {
+                    showToasterError(it.throwable.message ?: "")
+                }
+            }
+        })
     }
 
     private fun observeImageVariantPartialyChanged() {
@@ -1415,7 +1458,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
         val variantData = VariantCommonMapper.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
         pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
-
     }
 
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
@@ -1949,8 +1991,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun showToasterError(message: String) {
-        context?.let {
-            Toast.makeText(it, message, Toast.LENGTH_LONG).show()
+        view?.let {
+            Toaster.make(it, message, Toaster.toasterLength, Toaster.TYPE_ERROR)
         }
     }
 
@@ -2084,7 +2126,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     DynamicProductDetailTracking.Click.eventAddToCartBeforeLogin(viewModel.getDynamicProductInfoP1)
                 }
 
-                goToNormalCheckout(ATC_ONLY)
+//                goToNormalCheckout(ATC_ONLY)
+                doAtc(ProductDetailConstant.ATC_BUTTON)
             }
         }
         actionButtonView.buyNowClick = {
@@ -2095,7 +2138,58 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 } else {
                     DynamicProductDetailTracking.Click.eventClickBuyBeforeLogin(viewModel.getDynamicProductInfoP1)
                 }
-                doBuy()
+                doAtc(ProductDetailConstant.BUY_BUTTON)
+            }
+        }
+    }
+
+    private fun doAtc(buttonAction: Int) {
+        viewModel.buttonAction = buttonAction
+        context?.let {
+            val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
+            val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
+                    ?: false
+            val isOcs = (viewModel.p2Login.value)?.isOcsCheckoutType
+                    ?: false
+            val selectedWarehouseId = viewModel.selectedMultiOrigin.warehouseInfo.id.toIntOrZero()
+
+            if (!viewModel.isUserSessionActive) {
+                startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN),
+                        ProductDetailConstant.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS)
+                return@let
+            }
+
+            if (isVariant && isPartialySelected) {
+                showToasterError("Pilih Dulu Gans")
+                return@let
+            }
+
+            viewModel.getDynamicProductInfoP1?.let { data ->
+                showProgressDialog()
+                if (isOcs) {
+                    val addToCartOcsRequestParams = AddToCartOcsRequestParams()
+                    addToCartOcsRequestParams.productId = data.basic.productID.toLongOrNull() ?: 0
+                    addToCartOcsRequestParams.shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                    addToCartOcsRequestParams.quantity = 1
+                    addToCartOcsRequestParams.notes = ""
+                    addToCartOcsRequestParams.warehouseId = selectedWarehouseId
+                    addToCartOcsRequestParams.trackerAttribution = trackerAttribution ?: ""
+                    addToCartOcsRequestParams.trackerListName = trackerListName ?: ""
+                    addToCartOcsRequestParams.isTradeIn = data.data.isTradeIn
+
+                    viewModel.addToCart(addToCartOcsRequestParams)
+                } else {
+                    val addToCartRequestParams = AddToCartRequestParams()
+                    addToCartRequestParams.productId = data.basic.productID.toLongOrNull() ?: 0
+                    addToCartRequestParams.shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                    addToCartRequestParams.quantity = 1
+                    addToCartRequestParams.notes = ""
+                    addToCartRequestParams.attribution = trackerAttribution ?: ""
+                    addToCartRequestParams.listTracker = trackerListName ?: ""
+                    addToCartRequestParams.warehouseId = selectedWarehouseId
+
+                    viewModel.addToCart(addToCartRequestParams)
+                }
             }
         }
     }
@@ -2320,10 +2414,11 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun showToastError(throwable: Throwable) {
         activity?.run {
-            ToasterError.make(findViewById(android.R.id.content),
+            Toaster.make(findViewById(android.R.id.content),
                     ProductDetailErrorHandler.getErrorMessage(this, throwable),
-                    ToasterError.LENGTH_LONG)
-                    .show()
+                    Toaster.toasterLength,
+                    Toaster.TYPE_ERROR
+            )
         }
     }
 
