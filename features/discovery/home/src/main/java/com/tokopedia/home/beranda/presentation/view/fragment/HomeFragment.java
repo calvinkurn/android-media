@@ -84,6 +84,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeR
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.BannerOrganicViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.PopularKeywordViewHolder;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.RechargeRecommendationViewHolder;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder;
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils;
 import com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView;
@@ -158,7 +159,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
         HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener,
-        HomeReviewListener, PopularKeywordViewHolder.PopularKeywordListener {
+        HomeReviewListener, PopularKeywordViewHolder.PopularKeywordListener, RechargeRecommendationViewHolder.RechargeRecommendationListener {
 
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
     private static final int SCROLL_STATE_DRAG = 0;
@@ -784,6 +785,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 this,
                 this,
                 homeRecyclerView.getRecycledViewPool(),
+                this,
                 this
         );
         AsyncDifferConfig<HomeVisitable> asyncDifferConfig =
@@ -1852,4 +1854,18 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
     }
 
+    @Override
+    public void onContentClickListener(@NotNull String applink) {
+        RouteManager.route(getContext(), applink);
+    }
+
+    @Override
+    public void onDeclineClickListener(@NotNull Map<String, String> requestParams) {
+        viewModel.declineRechargeRecommendationItem(requestParams);
+    }
+
+    @Override
+    public void removeRechargeRecommendation() {
+        viewModel.removeRechargeRecommendation();
+    }
 }

@@ -16,6 +16,7 @@ import com.tokopedia.home.beranda.data.usecase.HomeUseCase
 import com.tokopedia.home.beranda.domain.interactor.*
 import com.tokopedia.home.beranda.domain.model.SearchPlaceholder
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
+import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
 import com.tokopedia.home.beranda.helper.Event
 import com.tokopedia.home.beranda.helper.RateLimiter
@@ -68,6 +69,8 @@ open class HomeViewModel @Inject constructor(
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
         private val popularKeywordUseCase: GetPopularKeywordUseCase,
+        private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
+        private val declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase,
         private val getBusinessWidgetTab: GetBusinessWidgetTab,
         private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
         private val homeDispatcher: HomeDispatcherProvider
@@ -139,6 +142,8 @@ open class HomeViewModel @Inject constructor(
     private var getPendingCashBalanceJob: Job? = null
     private var dismissReviewJob: Job? = null
     private var getPopularKeywordJob: Job? = null
+    private var getRechargeRecommendationJob: Job? = null
+    private var declineRechargeRecommendationJob: Job? = null
     private var buWidgetJob: Job? = null
     private var jobChannel: Job? = null
     private val channel = Channel<UpdateLiveDataModel>()
@@ -445,6 +450,28 @@ open class HomeViewModel @Inject constructor(
         getTokocashBalance()
     }
 
+    private fun insertRechargeRecommendation(recommendations: RechargeRecommendation) {
+        _homeLiveData.value?.list?.run {
+            val findRechargeRecommendationViewModel = find { visitable -> visitable is RechargeRecommendationViewModel }
+            val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
+            if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
+                val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
+                        rechargeRecommendation = recommendations
+                )
+                launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
+            }
+        }
+    }
+
+    fun removeRechargeRecommendation() {
+        val findRechargeRecommendationViewModel =
+                _homeLiveData.value?.list?.find { visitable -> visitable is RechargeRecommendationViewModel }
+                        ?: return
+        if (findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
+            launch { channel.send(UpdateLiveDataModel(ACTION_DELETE, findRechargeRecommendationViewModel)) }
+        }
+    }
+
 // =================================================================================
 // ============================== Evaluate Controller ==============================
 // =================================================================================
@@ -561,6 +588,7 @@ open class HomeViewModel @Inject constructor(
                     getReviewData()
                     getPlayBanner()
                     getPopularKeyword()
+                    getRechargeRecommendation()
                     _trackingLiveData.postValue(Event(_homeLiveData.value?.list?.filterIsInstance<HomeVisitable>() ?: listOf()))
                 } else {
                     channel.send(UpdateLiveDataModel(action = ACTION_UPDATE_HOME_DATA, homeData = homeDataModel))
@@ -760,6 +788,25 @@ open class HomeViewModel @Inject constructor(
         }){
             it.printStackTrace()
         }
+    }
+
+    private fun getRechargeRecommendation() {
+        if(getRechargeRecommendationJob?.isActive == true) return
+        getRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
+            getRechargeRecommendationUseCase.setParams()
+            val data = getRechargeRecommendationUseCase.executeOnBackground()
+            insertRechargeRecommendation(data)
+        }) {
+            removeRechargeRecommendation()
+        }
+    }
+
+    fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
+        if(declineRechargeRecommendationJob?.isActive == true) return
+        declineRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
+            declineRechargeRecommendationUseCase.setParams(requestParams)
+            declineRechargeRecommendationUseCase.executeOnBackground()
+        }){}
     }
 
     fun getFeedTabData() {

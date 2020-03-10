@@ -53,4 +53,6 @@ interface HomeTypeFactory {
     fun type(homeRetryModel: HomeRetryModel): Int
 
     fun type(popularKeywordListViewModel: PopularKeywordListViewModel): Int
+
+    fun type(rechargeRecommendationViewModel: RechargeRecommendationViewModel): Int
 }

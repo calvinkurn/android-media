@@ -3,7 +3,7 @@ package com.tokopedia.home.beranda.domain.interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeDeclineAboveTheFoldRecommendation
+import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -13,14 +13,15 @@ import javax.inject.Inject
  */
 
 class GetRechargeRecommendationUseCase @Inject constructor(
-        private val graphqlUseCase: GraphqlUseCase<RechargeDeclineAboveTheFoldRecommendation.Response>)
-    : UseCase<RechargeDeclineAboveTheFoldRecommendation>() {
+        private val graphqlUseCase: GraphqlUseCase<RechargeRecommendation.Response>)
+    : UseCase<RechargeRecommendation>() {
     init {
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        graphqlUseCase.setTypeClass(RechargeDeclineAboveTheFoldRecommendation.Response::class.java)
+        graphqlUseCase.setTypeClass(RechargeRecommendation.Response::class.java)
     }
     companion object {
         const val PARAM_TYPE = "type"
+        const val DEFAULT_TYPE = 1
     }
 
     private var params: RequestParams = RequestParams.create()
@@ -48,14 +49,14 @@ class GetRechargeRecommendationUseCase @Inject constructor(
     }
     //endregion
 
-    override suspend fun executeOnBackground(): RechargeDeclineAboveTheFoldRecommendation {
+    override suspend fun executeOnBackground(): RechargeRecommendation {
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params.parameters)
         return graphqlUseCase.executeOnBackground().response
     }
 
-    fun setParams(type: Int) {
+    fun setParams(type: Int = DEFAULT_TYPE) {
         params.parameters.clear()
         params.putInt(PARAM_TYPE, type)
     }

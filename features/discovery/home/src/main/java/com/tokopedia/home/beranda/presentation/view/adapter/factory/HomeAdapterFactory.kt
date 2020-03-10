@@ -38,7 +38,8 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
-                         private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
+                         private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener,
+                         private val rechargeRecommendationListener: RechargeRecommendationViewHolder.RechargeRecommendationListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val productLayout = HashSet(
             listOf(
@@ -137,6 +138,10 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
         return PopularKeywordViewHolder.LAYOUT
     }
 
+    override fun type(rechargeRecommendationViewModel: RechargeRecommendationViewModel): Int {
+        return RechargeRecommendationViewHolder.LAYOUT
+    }
+
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
         /**
          * Layout registered as sprint sale viewholder
@@ -229,6 +234,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener, countDownListener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, countDownListener, parentRecycledViewPool)
+            RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

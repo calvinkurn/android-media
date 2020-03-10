@@ -4,7 +4,7 @@ package com.tokopedia.home.beranda.domain.model.recharge_recommendation
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-data class RechargeDeclineAboveTheFoldRecommendation(
+data class DeclineRechargeRecommendation(
         @Expose
         @SerializedName("isError")
         val isError: Boolean = false,
@@ -15,6 +15,6 @@ data class RechargeDeclineAboveTheFoldRecommendation(
 ) {
     data class Response(
             @SerializedName("rechargeDeclineAboveTheFoldRecommendation")
-            val response: RechargeDeclineAboveTheFoldRecommendation = RechargeDeclineAboveTheFoldRecommendation()
+            val response: DeclineRechargeRecommendation = DeclineRechargeRecommendation()
     )
 }

@@ -219,6 +219,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
+                DynamicHomeChannel.Channels.LAYOUT_RECHARGE_RECOMMENDATION -> { createRechargeRecommendationWidget() }
             }
         }
 
@@ -393,6 +394,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
 
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         visitableList.add(PopularKeywordListViewModel(popularKeywordList = mutableListOf(), channel = channel))
+    }
+
+    private fun createRechargeRecommendationWidget() {
+        if (!isCache) visitableList.add(RechargeRecommendationViewModel())
     }
 
     override fun build(): List<Visitable<*>> = visitableList
