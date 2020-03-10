@@ -114,7 +114,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
 
     private fun initInjector() {
         if (!::flightSearchUniversalComponent.isInitialized) {
-            flightSearchUniversalComponent = DaggerFlightSearchUniversaalComponent.builder()
+            flightSearchUniversalComponent = DaggerFlightSearchUniversalComponent.builder()
                     .flightComponent(FlightComponentInstance.getFlightComponent(requireActivity().application))
                     .build()
         }
