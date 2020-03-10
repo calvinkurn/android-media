@@ -147,6 +147,8 @@
     <string name="product_stock_reminder_button">Simpan</string>
     <string name="product_manage_search_hint">Cari produk atau SKU</string>
     <string name="product_manage_cancel_multiple_select">Batalkan</string>
+    <string name="product_manage_edit_etalase">Pindah Etalase</string>
+    <string name="product_manage_edit_product_non_active">Nonaktifkan Produk</string>
 
     <string name="product_featured_add_dialog_title">Tambah Product Unggulan</string>
     <string name="product_featured_add_dialog_desc">Produk Unggulan tampil di posisi teratas tokomu untuk lebih menarik perhatian pembeli.</string>
