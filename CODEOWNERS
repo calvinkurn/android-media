@@ -188,6 +188,7 @@
 /libraries/logger/										@tokopedia/core-team
 /libraries/oms/											@tokopedia/core-team
 /libraries/permissionchecker/							@tokopedia/core-team
+/libraries/product_photo_adapter/                       @tokopedia/minion-stuart
 /libraries/promotions_target/							@tokopedia/core-team
 /libraries/push_notification/							@tokopedia/core-team
 /libraries/react_native/								@tokopedia/core-team
