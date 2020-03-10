@@ -44,6 +44,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
+    implementation "com.tokopedia.graphql:beta.notif:test-0.0.1"
 
     //room
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
