@@ -310,8 +310,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     viewModel.getProductList(userSession.shopId,
                             bottomSheet.selectedFilterOptions?.filterOptions,
                             bottomSheet.selectedFilterOptions?.sortOption, true)
-
-                    viewModel.getFeaturedProductCount(userSession.shopId)
                 }
             }
         }
@@ -1065,7 +1063,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     override fun onResume() {
         super.onResume()
-        productList.clear()
         activity?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)
