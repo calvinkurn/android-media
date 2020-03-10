@@ -185,7 +185,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         val text = SpannableStringBuilder()
 
         if (isOrigin) {
-            if (departureAirportId.isEmpty()) {
+            if (departureAirportId.isEmpty() || departureAirportId.contains(",")) {
                 if (departureCityCode.isEmpty()) {
                     text.append(departureCityName)
                     return makeBold(text)
@@ -204,7 +204,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             }
             return text
         } else {
-            if (arrivalAirportId.isEmpty()) {
+            if (arrivalAirportId.isEmpty() || arrivalAirportId.contains(",")) {
                 if (arrivalCityCode.isEmpty()) {
                     text.append(arrivalCityName)
                     return makeBold(text)
