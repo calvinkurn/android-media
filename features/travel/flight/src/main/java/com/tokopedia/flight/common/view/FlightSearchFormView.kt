@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.flight.R
+import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.fragment.cache.FlightDashboardCache
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
@@ -40,22 +41,32 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun renderFromCache() {
-        isOneWay = !flightDashboardCache.isRoundTrip
+        setTrip(!flightDashboardCache.isRoundTrip)
 
+        setDepartureDate(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate))
+        setReturnDate(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate))
         setPassengerView(flightDashboardCache.passengerAdult, flightDashboardCache.passengerChild, flightDashboardCache.passengerInfant)
-        tvFlightClass.text = getClassTitleById(flightDashboardCache.classCache)
+        setClassView(getClassById(flightDashboardCache.classCache))
 
         renderTripView()
+    }
+
+    fun setTrip(isOneWay: Boolean) {
+        this.isOneWay = isOneWay
     }
 
     fun isOneWay(): Boolean = isOneWay
 
     fun setDepartureDate(departureDate: Date) {
-
+        this.departureDate = departureDate
+        this.departureDateString = FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+        tvFlightDepartureDate.text = departureDateString
     }
 
     fun setReturnDate(returnDate: Date) {
-
+        this.returnDate = returnDate
+        this.returnDateString = FlightDateUtil.dateToString(returnDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+        tvFlightReturnDate.text = returnDateString
     }
 
     fun setPassengerView(passengerModel: FlightPassengerViewModel) {
@@ -71,13 +82,11 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             }
         }
         passengerString = passengerFmt
-        flightDashboardCache.putPassengerCount(passengerModel.adult, passengerModel.children, passengerModel.infant)
         tvFlightPassenger.text = passengerString
     }
 
     fun setClassView(classModel: FlightClassViewModel) {
         this.classModel = classModel
-        flightDashboardCache.putClassCache(classModel.id)
         tvFlightClass.text = classModel.title
     }
 
@@ -129,16 +138,24 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         }
 
         passengerString = passengerFmt
-        flightDashboardCache.putPassengerCount(adult, children, infant)
         tvFlightPassenger.text = passengerString
     }
 
-    private fun getClassTitleById(classId: Int): String {
+    private fun getClassById(classId: Int): FlightClassViewModel {
         return when (classId) {
-            1 -> "Ekonomi"
-            2 -> "Bisnis"
-            3 -> "Utama"
-            else -> ""
+            1 -> FlightClassViewModel().apply {
+                id = 1
+                title = "Ekonomi"
+            }
+            2 -> FlightClassViewModel().apply {
+                id = 2
+                title = "Bisnis"
+            }
+            3 -> FlightClassViewModel().apply {
+                id = 3
+                title = "Utama"
+            }
+            else -> FlightClassViewModel()
         }
     }
 
