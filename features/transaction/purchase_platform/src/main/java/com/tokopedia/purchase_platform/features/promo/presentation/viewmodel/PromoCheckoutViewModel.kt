@@ -19,7 +19,6 @@ import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_USER_BLACKLISTED
 import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.ValidateUseResponse
-import com.tokopedia.purchase_platform.features.promo.presentation.*
 import com.tokopedia.purchase_platform.features.promo.presentation.mapper.PromoCheckoutUiModelMapper
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import kotlinx.coroutines.CoroutineDispatcher

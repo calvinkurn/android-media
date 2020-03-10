@@ -6,7 +6,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.promo.presentation.listener.PromoCheckoutActionListener
+import com.tokopedia.purchase_platform.features.promo.presentation.PromoCheckoutActionListener
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.PromoInputUiModel
 import kotlinx.android.synthetic.main.item_promo_input.view.*
 

@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.promo.presentation
+package com.tokopedia.purchase_platform.features.promo.presentation.viewmodel
 
 data class ClearPromoResponseAction(
         var state: Int = 0,

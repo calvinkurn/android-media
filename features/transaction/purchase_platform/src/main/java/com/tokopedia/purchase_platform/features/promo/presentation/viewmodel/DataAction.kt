@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.promo.presentation
+package com.tokopedia.purchase_platform.features.promo.presentation.viewmodel
 
 sealed class Action<out T: Any>
 data class Insert<out T: Any>(val data: T): Action<T>()
