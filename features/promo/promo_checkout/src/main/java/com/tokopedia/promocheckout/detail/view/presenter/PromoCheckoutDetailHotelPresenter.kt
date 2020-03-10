@@ -3,8 +3,10 @@ package com.tokopedia.promocheckout.detail.view.presenter
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.promocheckout.common.domain.flight.FlightCancelVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.hotel.HotelCheckVoucherUseCase
 import com.tokopedia.promocheckout.common.domain.mapper.HotelCheckVoucherMapper
+import com.tokopedia.promocheckout.common.domain.model.FlightCancelVoucher
 import com.tokopedia.promocheckout.common.domain.model.HotelCheckVoucher
 import com.tokopedia.promocheckout.detail.domain.GetDetailCouponMarketplaceUseCase
 import com.tokopedia.promocheckout.detail.model.DataPromoCheckoutDetail
@@ -12,7 +14,8 @@ import rx.Subscriber
 
 class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUseCase: GetDetailCouponMarketplaceUseCase,
                                         private val checkVoucherUseCase: HotelCheckVoucherUseCase,
-                                        val checkVoucherMapper: HotelCheckVoucherMapper) :
+                                        val checkVoucherMapper: HotelCheckVoucherMapper,
+                                        private val cancelVoucherUseCase: FlightCancelVoucherUseCase) :
         BaseDaggerPresenter<PromoCheckoutDetailContract.View>(), PromoCheckoutDetailHotelContract.Presenter {
 
     override fun checkVoucher(promoCode: String, cartID: String) {
@@ -28,7 +31,7 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
                 }
             }
 
-            override fun onCompleted() { }
+            override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
                 if (isViewAttached) {
@@ -63,6 +66,33 @@ class PromoCheckoutDetailHotelPresenter(private val getDetailCouponMarketplaceUs
                         view.onSuccessGetDetailPromo(dataDetailCheckoutPromo?.promoCheckoutDetailModel)
                     }
                 })
+    }
+
+    override fun cancelPromo() {
+        view.showLoading()
+        cancelVoucherUseCase.execute(object : Subscriber<GraphqlResponse>() {
+
+            override fun onNext(response: GraphqlResponse) {
+                view.hideLoading()
+                val cancelPromoResponse = response.getData<FlightCancelVoucher.Response>(FlightCancelVoucher.Response::class.java).response
+                if (cancelPromoResponse.attributes.success) {
+                    view.onSuccessCancelPromo()
+                } else {
+                    view.onErrorCancelPromo(Throwable("Promo tidak berhasil dilepas"))
+                }
+            }
+
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable) {
+                if (isViewAttached) {
+                    view.hideLoading()
+                    view.onErrorCancelPromo(e)
+                }
+            }
+        })
     }
 
     override fun detachView() {

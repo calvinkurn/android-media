@@ -80,7 +80,7 @@ dependencies {
     implementation 'org.assertj:assertj-core:3.8.0'
 
     implementation "androidx.multidex:multidex:2.0.0"
-    implementation "com.google.android.play:core:1.6.3"
+    implementation project(rootProject.ext.libraries.playCore)
     implementation "com.google.firebase:firebase-core:16.0.6"
     implementation 'androidx.test:rules:1.1.0'
 

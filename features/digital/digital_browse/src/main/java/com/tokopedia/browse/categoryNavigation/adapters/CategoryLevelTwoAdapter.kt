@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
@@ -31,7 +34,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>,
 
     private var expanded_item_pos = -1
 
-    private var childList: MutableList<ChildItem>? = ArrayList<ChildItem>()
+    private var childList: MutableList<ChildItem>? = ArrayList()
 
     val viewMap1 = HashMap<Int, Boolean>()
     val viewMap2 = HashMap<Int, Boolean>()
@@ -85,16 +88,16 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>,
             }
         })
 
-        ImageHandler.loadImage(holder.itemView.context, holder.item_image, item.iconImageUrl, R.drawable.loading_page)
-        holder.item_name.text = item.name
+        ImageHandler.loadImage(holder.itemView.context, holder.itemImage, item.iconImageUrl, R.drawable.loading_page)
+        holder.itemName.text = item.name
 
-        if (holder.item_child_recycler.adapter == null) {
+        if (holder.itemChildRecycler.adapter == null) {
             val gridLayoutManager = GridLayoutManager(holder.itemView.context, 3, LinearLayoutManager.VERTICAL, false)
 
-            holder.item_child_recycler.show()
-            holder.item_child_recycler_divider.show()
+            holder.itemChildRecycler.show()
+            holder.itemChildRecyclerDivider.show()
 
-            holder.item_child_recycler.apply {
+            holder.itemChildRecycler.apply {
                 layoutManager = gridLayoutManager
                 adapter = LevelTwoChildAdapter(childList, trackingQueue)
             }
@@ -102,28 +105,28 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>,
 
         if (item.child == null && !(item.child!!.size > 0)) {
             holder.carrot.hide()
-            holder.item_child_recycler.hide()
-            holder.item_child_recycler_divider.hide()
+            holder.itemChildRecycler.hide()
+            holder.itemChildRecyclerDivider.hide()
 
         } else if (item.isExpanded) {
             childList?.clear()
             childList?.addAll(item.child)
-            holder.item_child_recycler.show()
-            holder.item_child_recycler_divider.show()
+            holder.itemChildRecycler.show()
+            holder.itemChildRecyclerDivider.show()
 
             holder.carrot.setImageResource(R.drawable.carrot_up)
-            holder.item_child_recycler.adapter?.notifyDataSetChanged()
+            holder.itemChildRecycler.adapter?.notifyDataSetChanged()
 
         } else {
             holder.carrot.setImageResource(R.drawable.carrot_down)
-            holder.item_child_recycler.hide()
-            holder.item_child_recycler_divider.hide()
+            holder.itemChildRecycler.hide()
+            holder.itemChildRecyclerDivider.hide()
 
         }
 
 
 
-        holder.parent_layout.setOnClickListener {
+        holder.parentLayout.setOnClickListener {
 
             CategoryAnalytics.createInstance().eventDropDownPromoClick(list[position], position)
 
@@ -162,20 +165,20 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>,
             }
         })
 
-        ImageHandler.loadImage(holder.itemView.context, holder.item_image_v1, item.iconImageUrl, R.drawable.loading_page)
-        holder.item_name_v1.text = item.name
+        ImageHandler.loadImage(holder.itemView.context, holder.itemImageV1, item.iconImageUrl, R.drawable.loading_page)
+        holder.itemNameV1.text = item.name
 
-        holder.item_image_v1.setOnClickListener {
-            fireApplink(holder.item_image_v1.context, list[position].applinks)
+        holder.itemImageV1.setOnClickListener {
+            fireApplink(holder.itemImageV1.context, list[position].applinks)
             CategoryAnalytics.createInstance().eventPromoClick(list[position], position)
         }
 
-        holder.item_name_v1.setOnClickListener {
-            fireApplink(holder.item_name_v1.context, list[position].applinks)
+        holder.itemNameV1.setOnClickListener {
+            fireApplink(holder.itemNameV1.context, list[position].applinks)
             CategoryAnalytics.createInstance().eventPromoClick(list[position], position)
         }
 
-        holder.product_parent_name.text = item.parentName
+        holder.productParentName.text = item.parentName
 
     }
 
@@ -184,19 +187,19 @@ class CategoryLevelTwoAdapter(private val list: MutableList<ChildItem>,
     }
 
     class DefaultViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val item_image = view.item_icon
-        val item_name = view.item_name
-        val item_child_recycler = view.child_recycler
-        val item_child_recycler_divider = view.child_divider
-        val parent_layout = view.parent_layout
-        val carrot = view.carrot
+        val itemImage: ImageView = view.item_icon
+        val itemName: TextView = view.item_name
+        val itemChildRecycler: RecyclerView = view.child_recycler
+        val itemChildRecyclerDivider: View = view.child_divider
+        val parentLayout: ConstraintLayout = view.parent_layout
+        val carrot: ImageView = view.carrot
 
     }
 
     class ExclusiveViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val item_image_v1 = view.product_image
-        val item_name_v1 = view.product_name
-        val product_parent_name = view.product_parent_name
+        val itemImageV1: ImageView = view.product_image
+        val itemNameV1: TextView = view.product_name
+        val productParentName: TextView = view.product_parent_name
 
     }
 

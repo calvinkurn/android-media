@@ -14,6 +14,9 @@ import com.tokopedia.seller.purchase.detail.model.detail.response.OrderDetailRes
 import com.tokopedia.transaction.common.data.order.OrderDetailData;
 import com.tokopedia.seller.purchase.detail.model.rejectorder.EmptyVarianProductEditable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +42,8 @@ public class OrderDetailRepository implements IOrderDetailRepository {
     private MyShopOrderActService shopService;
 
     private ProductChangeService productActService;
+
+    private final String KEY_MESSAGE_ERROR = "message_error";
 
     public OrderDetailRepository(OrderDetailMapper mapper,
                                  OrderDetailService service,
@@ -201,8 +206,36 @@ public class OrderDetailRepository implements IOrderDetailRepository {
             return tkpdResponseResponse.body().getStatusMessageJoined();
         else
             throw new ResponseRuntimeException(
-                    tkpdResponseResponse.body().getErrorMessageJoined()
+                    getErrorMessage(tkpdResponseResponse)
             );
+    }
+
+    private String getErrorMessage(Response response){
+        try {
+            JSONObject  jsonObject = new JSONObject(response.errorBody().string());
+            return getErrorMessageJoined(jsonObject.getJSONArray(KEY_MESSAGE_ERROR));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private String getErrorMessageJoined(JSONArray errorMessages) {
+        try {
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = 0, statusMessagesSize = errorMessages.length(); i < statusMessagesSize; i++) {
+                stringBuilder.append(errorMessages.getString(i));
+                if (i != errorMessages.length() - 1
+                        && !errorMessages.get(i).equals("")
+                        && !errorMessages.get(i + 1).equals("")) {
+                    stringBuilder.append("\n");
+                }
+            }
+            return stringBuilder.toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     private void validateData(TkpdResponse response) {

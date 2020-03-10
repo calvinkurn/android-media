@@ -5,16 +5,16 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
+import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBannerEntity
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageCategoryEntity
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageCategoryFeaturedEntity
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageMyUmrahEntity
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageCategoryFeaturedAdapter
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageChoosePacketAdapter
 import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepageMyUmrahAdapter
-import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageCategoryFeaturedViewHolder
-import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageCategoryViewHolder
-import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageMyUmrahViewHolder
-import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.UmrahHomepageSpinnerLikeViewHolder
+import com.tokopedia.salam.umrah.homepage.presentation.adapter.UmrahHomepagePartnerTravelAdapter
+import com.tokopedia.salam.umrah.homepage.presentation.adapter.viewholder.*
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -41,11 +41,18 @@ class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener, v
         return UmrahHomepageMyUmrahViewHolder.LAYOUT
     }
 
+    override fun type(dataModel: UmrahHomepageBannerEntity): Int{
+        return UmrahHomepageBannerViewHolder.LAYOUT
+    }
+
+    override fun type(dataModel: UmrahTravelAgentsEntity): Int {
+        return UmrahHomepagePartnerTravelsViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-
-
         return when(type){
             UmrahHomepageSpinnerLikeViewHolder.LAYOUT -> UmrahHomepageSpinnerLikeViewHolder(view, onBindListener)
+            UmrahHomepageBannerViewHolder.LAYOUT-> UmrahHomepageBannerViewHolder(view, onBindListener)
             UmrahHomepageMyUmrahViewHolder.LAYOUT -> {
                 val adapterMyUmrah = UmrahHomepageMyUmrahAdapter(onBindListener)
                 UmrahHomepageMyUmrahViewHolder(view, onBindListener, adapterMyUmrah, userSession)
@@ -59,6 +66,10 @@ class UmrahHomepageFactoryImpl(private val onBindListener: onItemBindListener, v
                     it.setHasStableIds(true)
                 }
                 UmrahHomepageCategoryFeaturedViewHolder(view, onBindListener, adapterFeaturedCategory)
+            }
+            UmrahHomepagePartnerTravelsViewHolder.LAYOUT ->{
+                val adapter = UmrahHomepagePartnerTravelAdapter(onBindListener)
+                UmrahHomepagePartnerTravelsViewHolder(view,onBindListener, adapter)
             }
             else -> super.createViewHolder(view, type)
         }

@@ -22,7 +22,7 @@ class EmptyStateMarketPlaceFilterViewHolder(itemView: View?, val filterListener:
     private val subText = itemView?.findViewById<TextView>(R.id.empty_state_marketplace_sub_text)
 
     override fun bind(element: EmptyStateMarketPlaceFilterViewModel?) {
-        heading?.text = getString(R.string.tkpdtransaction_90_days_found_nothing)
+        heading?.text = getString(R.string.tkpdtransaction_lets_hunt_fav_stuff)
         subText?.text = getString(R.string.tkpdtransaction_buy_dream_items)
 
         tryAgain?.setOnClickListener {

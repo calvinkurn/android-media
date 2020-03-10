@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
-import com.tokopedia.purchase_platform.features.checkout.view.viewmodel.EgoldAttributeModel;
+import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 

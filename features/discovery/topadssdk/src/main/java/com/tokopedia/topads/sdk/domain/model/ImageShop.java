@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
+import com.tokopedia.kotlin.model.ImpressHolder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +12,7 @@ import org.json.JSONObject;
 /**
  * Created by errysuprayogi on 3/27/17.
  */
-public class ImageShop implements Parcelable {
+public class ImageShop extends ImpressHolder implements Parcelable {
 
     private static final String KEY_COVER = "cover";
     private static final String KEY_S_URL = "s_url";

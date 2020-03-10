@@ -20,7 +20,7 @@
     <string name="money_in_alert_payment_canceled_or_failed">Pembayaran tidak berhasil atau dibatalkan</string>
     <string name="money_in_alert_payment_canceled">Pembayaran dibatalkan</string>
     <string name="money_in_alert_payment_successful">Pembayaran Berhasil</string>
-    <string name="header_section_price">Kisaran harga jual HP Anda</string>
+    <string name="header_section_price">Anda dapat menjual HP Anda hingga harga</string>
     <string name="not_elligible_price_high">Mohon maaf, harga device Anda lebih tinggi dari device Anda pilih. Baca Selengkapnya</string>
     <string name="money_in_need_permission">Untuk dapat melanjutkan proses Langsung Laku,
         kami membutuhkan ijin ada untuk mengakses beberapa fungsi di telepon anda</string>
@@ -113,4 +113,20 @@
     <string name="moneyin_text_not_upto_15min">Kurang dari 15 menit!
 \nCek fungsi plus kondisi fisik</string>
     <string name="tradein_requires_permission_for_diagnostic">Perkenankan izin yang hilang untuk memulai memeriksa fungsi</string>
+    <string name="trade_in_event_label_phone_type_min_price_max_price">phone type : %1$s - min price : %2$s - max price : %3$s</string>
+    <string name="no_imei">No. IMEI</string>
+    <string name="enter_the_imei_number_text">Masukan nomor IMEI sebelum mulai cek fungsi dan fisik HP lalu foto KTP kamu.</string>
+    <string name="how_to_check_imei">Cara cek IMEI?</string>
+    <string name="wrong_imei_string">Nomor IMEI yang kamu masukan salah.</string>
+    <string name="tradein_you_can_find_imei">Kamu bisa menemukan nomor IMEI di berbagai tempat, termasuk di Pengaturan, perangkat fisik, iTunes, dan kemasan asli.</string>
+    <string name="tradein_find_imei_settings">Menemukan nomor IMEI di pengaturan</string>
+    <string name="tradein_imei_label_1">1.</string>
+    <string name="tradein_imei_txt_1"><![CDATA[Buka <b>Pengaturan</b> pada HP kamu lalu klik <b>About Phone</b> atau <b>Tentang Ponsel</b>]]></string>
+    <string name="tradein_imei_label_2">2.</string>
+    <string name="tradein_imei_txt_2"><![CDATA[Pilih <b>Status</b> untuk cek IMEI HP kamu.]]></string>
+    <string name="tradein_imei_label_3">3.</string>
+    <string name="tradein_imei_txt_3"><![CDATA[Tekan dan tahan pada <b>IMEI (slot 1)</b> untuk salin]]></string>
+    <string name="tradein_imei_label_4">4.</string>
+    <string name="tradein_imei_txt_4"><![CDATA[Tempel ke halaman Cek IMEI. Lalu klik <b>Cek Fungsi IMEI</b>]]></string>
+    <string name="tradein_terms_and_conditions">Syarat dan Ketentuan</string>
 </resources>

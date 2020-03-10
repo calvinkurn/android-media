@@ -2,12 +2,14 @@ package com.tokopedia.tokopoints.view.util
 
 import android.view.View
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 private val LIST_TAG_START = "<li>"
 private val LIST_TAG_END = "</li>"
 private val MAX_POINTS_TO_SHOW = 4
+const val DEFAULT_TIME_STRING = "00 : 00 : 00"
 
-public fun getLessDisplayData(data: String, seeMore: Typography): String {
+fun getLessDisplayData(data: String, seeMore: Typography): String {
     val totalString = data.split(LIST_TAG_START.toRegex()).dropLastWhile({ it.isEmpty() }).toTypedArray()
     var displayString = totalString[0] + LIST_TAG_START
     if (totalString.size > MAX_POINTS_TO_SHOW + 1) {
@@ -24,4 +26,11 @@ public fun getLessDisplayData(data: String, seeMore: Typography): String {
         seeMore.visibility = View.GONE
     }
     return displayString
+}
+
+fun convertLongToHourMinuteSec(l : Long) : String {
+    val seconds = (l / 1000).toInt() % 60
+    val minutes = (l / (1000 * 60) % 60).toInt()
+    val hours = (l / (1000 * 60 * 60) % 24).toInt()
+    return String.format(Locale.ENGLISH, "%02d : %02d : %02d", hours, minutes, seconds)
 }

@@ -45,6 +45,12 @@ class GetWalletBalanceViewModel : ViewModel() {
                         if (errList.isNotEmpty()) {
                             walletLiveData.value = WalletError(errList[0].message)
                         }
+                        else{
+                            var cashBal = walletObj.cashBalance
+                            cashBal = Constants.Prefixes.SALDO + cashBal
+                            var sndrAmt = walletObj.rawCashBalance.toLong()
+                            walletLiveData.value = WalletData(cashBal, sndrAmt)
+                        }
                     } ?: run {
                         var cashBal = walletObj.cashBalance
                         cashBal = Constants.Prefixes.SALDO + cashBal

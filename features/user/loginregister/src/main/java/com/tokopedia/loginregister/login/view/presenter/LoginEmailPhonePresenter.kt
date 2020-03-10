@@ -6,9 +6,14 @@ import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
+import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
+import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.domain.RegisterCheckUseCase
+import com.tokopedia.loginregister.login.domain.StatusFingerprint
+import com.tokopedia.loginregister.login.domain.StatusFingerprintUseCase
 import com.tokopedia.loginregister.login.domain.StatusPinUseCase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.StatusPinData
@@ -19,7 +24,6 @@ import com.tokopedia.loginregister.loginthirdparty.facebook.GetFacebookCredentia
 import com.tokopedia.loginregister.registerinitial.domain.usecase.RegisterValidationUseCase
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
 import com.tokopedia.loginregister.ticker.subscriber.TickerInfoLoginSubscriber
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.di.SessionModule.SESSION_MODULE
 import com.tokopedia.sessioncommon.domain.subscriber.GetProfileSubscriber
 import com.tokopedia.sessioncommon.domain.subscriber.LoginTokenFacebookSubscriber
@@ -46,6 +50,10 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val getProfileUseCase: GetProfileUseCase,
                                                    private val tickerInfoUseCase: TickerInfoUseCase,
                                                    private val statusPinUseCase: StatusPinUseCase,
+                                                   private val dynamicBannerUseCase: DynamicBannerUseCase,
+                                                   private val statusFingerprintUseCase: StatusFingerprintUseCase,
+                                                   private val cryptographyUtils: Cryptography,
+                                                   private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
@@ -58,6 +66,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         this.viewEmailPhone = viewEmailPhone
     }
 
+    fun isLastUserRegistered(): Boolean = fingerprintPreferenceHelper.isFingerprintRegistered()
+
     override fun discoverLogin(context: Context) {
         view?.let { view ->
             discoverUseCase.execute(RequestParams.EMPTY, object : Subscriber<DiscoverViewModel>() {
@@ -68,27 +78,13 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 override fun onError(e: Throwable) {
                     view.stopTrace()
                     view.dismissLoadingDiscover()
-                    ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
-                        override fun onForbidden() {
-                            view.onGoToForbiddenPage()
-                        }
-
-                        override fun onError(errorMessage: String) {
-                            view.onErrorDiscoverLogin(errorMessage)
-                        }
-                    }, e, context)
+                    view.onErrorDiscoverLogin(e)
                 }
 
                 override fun onNext(discoverViewModel: DiscoverViewModel) {
                     view.stopTrace()
                     view.dismissLoadingDiscover()
-                    if (!discoverViewModel.providers.isEmpty()) {
-                        view.onSuccessDiscoverLogin(discoverViewModel.providers)
-                    } else {
-                        view.onErrorDiscoverLogin(ErrorHandlerSession.getDefaultErrorCodeMessage(
-                                ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
-                                context))
-                    }
+                    view.onSuccessDiscoverLogin(discoverViewModel.providers)
                 }
             })
         }
@@ -128,7 +124,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         }
     }
 
-    override fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String){
+    override fun loginFacebookPhone(context: Context, accessToken: AccessToken, phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_FACEBOOK
         view.showLoadingLogin()
         loginTokenUseCase.executeLoginSocialMedia(LoginTokenUseCase.generateParamSocialMedia(
@@ -187,10 +183,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                 view.showLoadingLogin()
                 loginTokenUseCase.executeLoginEmailWithPassword(LoginTokenUseCase.generateParamLoginEmail(
                         email, password), LoginTokenSubscriber(userSession,
-                        {
-                            view.setSmartLock()
-                            getUserInfo()
-                        },
+                        { view.onSuccessLoginEmail() },
                         view.onErrorLoginEmail(email),
                         view.onGoToActivationPage(email),
                         view.onGoToSecurityQuestion(email)))
@@ -248,7 +241,17 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         view?.let { view ->
             getProfileUseCase.execute(GetProfileSubscriber(userSession,
                     view.onSuccessGetUserInfoAddPin(),
-                    view.onErrorGetUserInfo()))
+                    view.onErrorGetUserInfo())
+            )
+        }
+    }
+
+    override fun getUserInfoFingerprint() {
+        view?.let { view ->
+            getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                    { checkStatusFingerprint() },
+                    view.onErrorGetUserInfo())
+            )
         }
     }
 
@@ -261,13 +264,55 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         statusPinUseCase.executeCoroutines(onSuccess, onError)
     }
 
+    override fun checkStatusFingerprint() {
+        val signature = cryptographyUtils.generateFingerprintSignature(userId = userSession.userId, deviceId = userSession.deviceId)
+        statusFingerprintUseCase.executeCoroutines({
+            onCheckStatusFingerprintSuccess(it)
+        }, {
+            view.onSuccessLogin()
+        }, signature)
+    }
+
+    private fun saveFingerprintStatus(data: StatusFingerprint){
+        if(data.isValid) {
+            fingerprintPreferenceHelper.saveUserId(userSession.userId)
+            fingerprintPreferenceHelper.registerFingerprint()
+        }else {
+            removeFingerprintData()
+        }
+    }
+
+    override fun removeFingerprintData(){
+        fingerprintPreferenceHelper.removeUserId()
+        fingerprintPreferenceHelper.unregisterFingerprint()
+    }
+
+    private fun onCheckStatusFingerprintSuccess(data: StatusFingerprint){
+        saveFingerprintStatus(data)
+        view.onSuccessCheckStatusFingerprint(data)
+    }
+
     override fun registerCheck(id: String, onSuccess: (RegisterCheckData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit) {
         registerCheckUseCase.apply {
             setRequestParams(this.getRequestParams(id))
             execute({
-                onSuccess(it.data)
+                if (it.data.errors.isEmpty())
+                    onSuccess(it.data)
+                else if (it.data.errors.isNotEmpty() && it.data.errors[0].isNotEmpty())
+                    onError(com.tokopedia.network.exception.MessageErrorException(it.data.errors[0]))
+                else onError(RuntimeException())
             }, onError)
         }
+    }
+
+    override fun getDynamicBanner(page: String) {
+        val params = DynamicBannerUseCase.createRequestParams(page)
+        dynamicBannerUseCase.createParams(params)
+        dynamicBannerUseCase.execute(onSuccess = {
+            view.onGetDynamicBannerSuccess(it)
+        }, onError = {
+            view.onGetDynamicBannerError(it)
+        })
     }
 
     override fun detachView() {

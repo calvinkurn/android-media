@@ -17,7 +17,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.Menus
@@ -126,9 +126,9 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
         super.onViewCreated(view, savedInstanceState)
 
         savedInstanceState?.run {
-            shopId = savedInstanceState.getString(ShopTalkActivity.EXTRA_SHOP_ID, "")
+            shopId = savedInstanceState.getString(ApplinkConstInternalGlobal.PARAM_SHOP_ID, "")
         } ?: arguments?.run {
-            shopId = getString(ShopTalkActivity.EXTRA_SHOP_ID, "")
+            shopId = getString(ApplinkConstInternalGlobal.PARAM_SHOP_ID, "")
         } ?: activity?.run {
             finish()
         }
@@ -232,19 +232,24 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     private fun goToLogin() {
-        context?.applicationContext?.run {
-            val intent = (this as TalkRouter).getLoginIntent(this)
-            this@ShopTalkFragment.startActivity(intent)
+        activity?.run {
+            RouteManager.route(context, ApplinkConst.LOGIN)
         }
     }
 
     private fun goToDetailTalk(talkId: String, shopId: String, allowReply: Boolean) {
         if (allowReply) {
             context?.run {
+                val intent = RouteManager.getIntent(
+                        context,
+                        ApplinkConstInternalGlobal.DETAIL_TALK,
+                        talkId,
+                        shopId,
+                        "",
+                        TalkDetailsActivity.SOURCE_SHOP
+                )
                 this@ShopTalkFragment.startActivityForResult(
-                        TalkDetailsActivity.getCallingIntent(talkId, shopId, this,
-                                TalkDetailsActivity.SOURCE_SHOP)
-                        , REQUEST_GO_TO_DETAIL)
+                        intent, REQUEST_GO_TO_DETAIL)
             }
         } else {
             showErrorReplyTalk()
@@ -271,7 +276,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, productId)
@@ -392,7 +397,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     private fun onGoToPdp(productId: String) {
-        activity?.applicationContext?.run {
+        activity?.run {
             analytics.trackClickProduct()
             val intent: Intent? = getProductIntent(productId)
             this@ShopTalkFragment.startActivity(intent)
@@ -409,9 +414,8 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onGoToUserProfile(userId: String) {
         analytics.trackClickUserProfileFromShop()
-        activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getTopProfileIntent(this, userId)
-            this@ShopTalkFragment.startActivity(intent)
+        activity?.run {
+            RouteManager.route(this, ApplinkConst.PROFILE.replace(ApplinkConst.Profile.PARAM_USER_ID, userId))
         }
     }
 
@@ -430,7 +434,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
                 if (!::bottomMenu.isInitialized) bottomMenu = Menus(this)
                 bottomMenu.itemMenuList = listMenu
-                bottomMenu.setActionText(getString(R.string.button_cancel))
+                bottomMenu.setActionText(getString(com.tokopedia.design.R.string.button_cancel))
                 bottomMenu.setOnActionClickListener { bottomMenu.dismiss() }
                 bottomMenu.setOnItemMenuClickListener { itemMenus, _ ->
                     onCommentMenuItemClicked(itemMenus, bottomMenu, shopId, talkId, commentId, productId)
@@ -465,9 +469,8 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
     }
 
     override fun onGoToShopPage(shopId: String) {
-        activity?.applicationContext?.run {
-            val intent: Intent = (this as TalkRouter).getShopPageIntent(this, shopId)
-            this@ShopTalkFragment.startActivity(intent)
+        activity?.run {
+            RouteManager.route(this, ApplinkConst.SHOP, shopId)
         }
     }
 
@@ -530,7 +533,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putString(ShopTalkActivity.EXTRA_SHOP_ID, shopId)
+        outState.putString(ApplinkConstInternalGlobal.PARAM_SHOP_ID, shopId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -629,8 +632,7 @@ class ShopTalkFragment : BaseDaggerFragment(), ShopTalkContract.View,
 
     override fun handleBranchIOLinkClick(url: String) {
         activity?.run {
-            val talkRouter = this.applicationContext as TalkRouter
-            val intent = talkRouter.getSplashScreenIntent(this)
+            val intent = RouteManager.getIntent(this, ApplinkConst.CONSUMER_SPLASH_SCREEN)
             intent.putExtra("branch", url)
             intent.putExtra("branch_force_new_session", true)
             startActivity(intent)

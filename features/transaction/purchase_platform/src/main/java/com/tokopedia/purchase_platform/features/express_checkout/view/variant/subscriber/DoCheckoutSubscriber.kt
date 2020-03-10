@@ -1,11 +1,11 @@
 package com.tokopedia.purchase_platform.features.express_checkout.view.variant.subscriber
 
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.common.payment.model.PaymentPassData
+import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
 import com.tokopedia.purchase_platform.common.view.error_bottomsheet.ErrorBottomsheets.Companion.RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.CheckoutVariantContract
-import com.tokopedia.purchase_platform.common.domain.model.CheckoutData
 import rx.Subscriber
+import timber.log.Timber
 
 /**
  * Created by Irfan Khoirul on 29/01/19.
@@ -21,7 +21,7 @@ class DoCheckoutSubscriber(val view: CheckoutVariantContract.View?, val presente
     override fun onError(e: Throwable) {
         view?.hideLoadingDialog()
         view?.showErrorAPI(RETRY_ACTION_RELOAD_CHECKOUT_FOR_PAYMENT)
-        CommonUtils.dumper(e.stackTrace)
+        Timber.d(e)
     }
 
     override fun onNext(checkoutData: CheckoutData) {

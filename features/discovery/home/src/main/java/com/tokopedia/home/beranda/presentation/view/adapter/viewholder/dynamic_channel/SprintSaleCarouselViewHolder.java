@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.crashlytics.android.Crashlytics;
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.design.component.TextViewCompat;
 import com.tokopedia.design.countdown.CountDownView;

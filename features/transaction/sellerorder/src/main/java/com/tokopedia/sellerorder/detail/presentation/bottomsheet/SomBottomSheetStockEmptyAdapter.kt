@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.bottomsheet_empty_product_item.view.*
 /**
  * Created by fwidjaja on 2019-11-05.
  */
-class SomBottomSheetStockEmptyAdapter(): RecyclerView.Adapter<SomBottomSheetStockEmptyAdapter.ViewHolder>() {
+class SomBottomSheetStockEmptyAdapter: RecyclerView.Adapter<SomBottomSheetStockEmptyAdapter.ViewHolder>() {
     var listProduct = mutableListOf<SomDetailOrder.Data.GetSomDetail.Products>()
     var listToBeEmptied = ArrayList<SomDetailOrder.Data.GetSomDetail.Products>()
 

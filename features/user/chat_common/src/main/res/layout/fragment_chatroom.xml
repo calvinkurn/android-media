@@ -233,6 +233,7 @@
         android:layout_above="@+id/footer"
         android:layout_below="@id/header"
         android:layout_gravity="center"
+        android:descendantFocusability="beforeDescendants"
         android:scrollbars="vertical" />
 
     <TextView

@@ -1,6 +1,6 @@
 package com.tokopedia.opportunity.data.source.api;
 
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.opportunity.domain.entity.OpportunityDetail;
 import com.tokopedia.core.network.retrofit.response.TkpdResponse;
 import com.tokopedia.opportunity.data.constant.OpportunityConstant;

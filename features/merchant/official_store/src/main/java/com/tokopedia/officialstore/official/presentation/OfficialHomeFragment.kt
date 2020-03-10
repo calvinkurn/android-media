@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.official.presentation
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -20,6 +22,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
 import com.tokopedia.officialstore.OfficialStoreInstance
@@ -66,10 +69,13 @@ class OfficialHomeFragment :
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
+        private const val PERFORMANCE_OS_PAGE_NAME = "OS"
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
+    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -135,7 +141,13 @@ class OfficialHomeFragment :
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
+        recyclerView?.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_OS_PAGE_NAME) }
         return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -153,6 +165,12 @@ class OfficialHomeFragment :
     override fun onPause() {
         super.onPause()
         tracking?.sendAll()
+    }
+
+    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
+        return if (context is JankyFramesMonitoringListener) {
+            context
+        } else null
     }
 
     private fun resetData() {
@@ -180,6 +198,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreBannersResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    removeLoading()
                     swipeRefreshLayout?.isRefreshing = false
                     OfficialHomeMapper.mappingBanners(it.data, adapter, category?.title)
                     setLoadMoreListener()
@@ -356,7 +375,7 @@ class OfficialHomeFragment :
         viewModel.officialStoreFeaturedShopResult.removeObservers(this)
         viewModel.officialStoreDynamicChannelResult.removeObservers(this)
         viewModel.officialStoreProductRecommendationResult.removeObservers(this)
-        viewModel.clear()
+        viewModel.flush()
         super.onDestroy()
     }
 
@@ -466,7 +485,8 @@ class OfficialHomeFragment :
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
                         (position + 1).toString(10),
-                        it
+                        it,
+                        channelData
                 )
             }
 
@@ -481,9 +501,9 @@ class OfficialHomeFragment :
         }
     }
 
-    override fun onClickFlashSaleActionText(applink: String): View.OnClickListener {
+    override fun onClickFlashSaleActionText(applink: String, headerId: Long): View.OnClickListener {
         return View.OnClickListener {
-            tracking?.flashSaleActionTextClick(viewModel.currentSlug)
+            tracking?.flashSaleActionTextClick(viewModel.currentSlug, headerId)
             RouteManager.route(context, applink)
         }
     }
@@ -549,7 +569,8 @@ class OfficialHomeFragment :
                 tracking?.dynamicChannelMixBannerClick(
                         viewModel.currentSlug,
                         channelData.header?.name ?: "",
-                        it
+                        it,
+                        channelData
                 )
             }
 
@@ -572,6 +593,15 @@ class OfficialHomeFragment :
         if (!sentDynamicChannelTrackers.contains(channelData.id + impressionTag)) {
             tracking?.dynamicChannelMixBannerImpression(viewModel.currentSlug, channelData)
             sentDynamicChannelTrackers.add(channelData.id + impressionTag)
+        }
+    }
+
+    private fun removeLoading() {
+        recyclerView?.post {
+            adapter?.getVisitables()?.removeAll {
+                it is LoadingModel
+            }
+            adapter?.notifyDataSetChanged()
         }
     }
 
@@ -601,7 +631,6 @@ class OfficialHomeFragment :
         )
         RouteManager.route(context, shopData.url)
     }
-
 
     private fun initFirebasePerformanceMonitoring() {
         val CATEGORY_CONST: String = category?.slug.orEmpty()

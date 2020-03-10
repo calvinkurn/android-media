@@ -14,20 +14,16 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.common.travel.data.entity.TravelContactListModel
-import com.tokopedia.common.travel.data.entity.TravelUpsertContactModel
-import com.tokopedia.common.travel.widget.TravelContactArrayAdapter
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.checkout.data.ContactUser
 import com.tokopedia.salam.umrah.checkout.di.UmrahCheckoutComponent
-import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity
 import com.tokopedia.salam.umrah.checkout.presentation.activity.UmrahCheckoutContactDataActivity.Companion.EXTRA_INITIAL_CONTACT_DATA
 import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutPilgrimsViewModel
-import com.tokopedia.salam.umrah.checkout.presentation.viewmodel.UmrahCheckoutViewModel
-import com.tokopedia.salam.umrah.common.util.UmrahPhoneTransform
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
+import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
+import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import kotlinx.android.synthetic.main.fragment_umrah_checkout_contact_data.*
 import javax.inject.Inject
 
@@ -62,7 +58,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
         initView()
 
-        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.common.travel.R.raw.query_get_travel_contact_list))
+        umrahCheckoutPilgrimsViewModel.getContactList(GraphqlHelper.loadRawString(resources, com.tokopedia.travel.passenger.R.raw.query_get_travel_contact_list))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -92,7 +88,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
                 if (resultCode == Activity.RESULT_OK) {
                     val countryPhoneCode = data?.getParcelableExtra(PhoneCodePickerFragment.EXTRA_SELECTED_PHONE_CODE)
                             ?: TravelCountryPhoneCode()
-                    contactData.phoneCode = countryPhoneCode.countryPhoneCode.toInt()
+                    contactData.phoneCode = countryPhoneCode.countryPhoneCode
 
                     spinnerData.clear()
                     spinnerData += getString(com.tokopedia.common.travel.R.string.phone_code_format, contactData.phoneCode)
@@ -104,13 +100,13 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
 
 
     fun initView() {
-        til_umrah_checkout_contact_name.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_name_title))
+        til_umrah_checkout_contact_name.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_name_title))
 
         context?.let {
-            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.common.travel.R.layout.layout_travel_autocompletetv, arrayListOf(), this)
+            travelContactArrayAdapter = TravelContactArrayAdapter(it, com.tokopedia.travel.passenger.R.layout.layout_travel_passenger_autocompletetv, arrayListOf(), this)
             (til_umrah_checkout_contact_name.editText as AutoCompleteTextView).setAdapter(travelContactArrayAdapter)
 
-            (til_umrah_checkout_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { parent, view, position, id ->
+            (til_umrah_checkout_contact_name.editText as AutoCompleteTextView).setOnItemClickListener { _, _, position, _ ->
                 autofillView(travelContactArrayAdapter.getItem(position))
             }
 
@@ -138,7 +134,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         til_umrah_checkout_contact_name.setErrorTextAppearance(com.tokopedia.common.travel.R.style.ErrorTextAppearance)
 
 
-        til_umrah_checkout_contact_email.setLabel(getString(com.tokopedia.common.travel.R.string.travel_contact_data_email_title))
+        til_umrah_checkout_contact_email.setLabel(getString(com.tokopedia.travel.passenger.R.string.travel_contact_data_email_title))
         til_umrah_checkout_contact_email.editText.apply {
             setText(contactData.email)
             addTextChangedListener(object : TextWatcher {
@@ -275,7 +271,7 @@ class UmrahCheckoutContactDataFragment : BaseDaggerFragment(), TravelContactArra
         fun getInstance(contactData: ContactUser): UmrahCheckoutContactDataFragment =
                 UmrahCheckoutContactDataFragment().also {
                     it.arguments = Bundle().apply {
-                        putParcelable(UmrahCheckoutContactDataActivity.EXTRA_INITIAL_CONTACT_DATA, contactData)
+                        putParcelable(EXTRA_INITIAL_CONTACT_DATA, contactData)
                     }
                 }
     }

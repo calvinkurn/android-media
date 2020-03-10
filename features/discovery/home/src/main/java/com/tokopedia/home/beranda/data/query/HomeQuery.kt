@@ -20,6 +20,10 @@ object HomeQuery{
             meta { total_data }
             slides {
               id
+              galaxy_attribution
+              persona
+              brand_id
+              category_persona
               title
               image_url
               redirect_url
@@ -44,15 +48,24 @@ object HomeQuery{
             }
             dynamicIcon {
               id
+              galaxy_attribution
+              persona
+              brand_id
+              category_persona
               name
               url
               imageUrl
               applinks
+              bu_identifier
             }
           }
           dynamicHomeChannel {
             channels {
               id
+              galaxy_attribution
+              persona
+              brand_id
+              category_persona
               name
               layout
               type
@@ -100,6 +113,7 @@ object HomeQuery{
                 title
                 description
                 url
+                back_color
                 cta {
                   type
                   mode
@@ -117,6 +131,10 @@ object HomeQuery{
           spotlight {
             spotlights {
               id
+              galaxy_attribution
+              persona
+              brand_id
+              category_persona
               title
               description
               background_image_url

@@ -124,36 +124,6 @@ public abstract class BaseAppNotificationReceiverUIBackground {
         return promotionsNotification;
     }
 
-    protected void executeNotification(Bundle data, Class<?> clazz) {
-        Constructor<?> ctor = null;
-        CommonUtils.dumper("executeNotification");
-        try {
-            ctor = clazz.asSubclass(clazz).getConstructor(Context.class);
-        } catch (NoSuchMethodException e) {
-            CommonUtils.dumper(clazz.toString());
-            e.printStackTrace();
-            return;
-        }
-        Object object = null;
-        try {
-            object = ctor.newInstance(mContext);
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-            return;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-            return;
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-            return;
-        }
-
-        if (object != null && object instanceof Visitable) {
-            CommonUtils.dumper("object instanceof Visitable");
-            ((Visitable) object).proccessReceivedNotification(data);
-        }
-    }
-
     protected void saveApplinkPushNotification(String category,
                                                String response,
                                                String customIndex,

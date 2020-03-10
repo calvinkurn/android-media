@@ -238,7 +238,7 @@ class UmrahCustomTicketView : View {
 
         initElements()
 
-        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        setLayerType(LAYER_TYPE_SOFTWARE, null)
     }
 
     private fun initElements() {

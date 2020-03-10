@@ -97,10 +97,10 @@ public class ProductVariantDashboardNewViewHolder extends BaseViewHolder<Product
 
             if (productVariantCombinationViewModel.getStock() == 0) {
                 if (productVariantCombinationViewModel.isActive()) {
-                    lvStock.setContent(context.getString(R.string.product_variant_stock_always_available));
+                    lvStock.setContent(String.valueOf(productVariantCombinationViewModel.getStock()));
                     variantImageView.setStockEmpty(false);
                 } else {
-                    lvStock.setContent(context.getString(R.string.product_variant_stock_empty));
+                    lvStock.setContent(String.valueOf(productVariantCombinationViewModel.getStock()));
                     variantImageView.setStockEmpty(true);
                 }
             } else {

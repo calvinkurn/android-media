@@ -32,6 +32,7 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -217,7 +218,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         chatbot_view_help_rate.btn_inactive_5.setOnClickListener(this@ChatbotFragment)
 
         super.onViewCreated(view, savedInstanceState)
-        super.viewState = ChatbotViewStateImpl(
+        viewState.initView()
+        loadInitialData()
+        showTicker()
+
+        if (savedInstanceState != null)
+            this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
+
+    }
+
+    override fun onCreateViewState(view: View): BaseChatViewState {
+        return ChatbotViewStateImpl(
                 view,
                 session,
                 this,
@@ -226,13 +237,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 (activity as BaseChatToolbarActivity).getToolbar(),
                 adapter
         )
-        viewState.initView()
-        loadInitialData()
-        showTicker()
-
-        if (savedInstanceState != null)
-            this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
-
     }
 
     private fun showTicker() {
@@ -351,6 +355,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onReceiveMessageEvent(visitable: Visitable<*>) {
         mapMessageToList(visitable)
+        getViewState().hideEmptyMessage(visitable)
         getViewState().onCheckToHideQuickReply(visitable)
     }
 
@@ -361,6 +366,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun mapMessageToList(visitable: Visitable<*>) {
         when (visitable) {
             is QuickReplyListViewModel -> getViewState().onReceiveQuickReplyEvent(visitable)
+            is ChatActionSelectionBubbleViewModel -> getViewState().onReceiveQuickReplyEventWithActionButton(visitable)
+            is ChatRatingViewModel -> getViewState().onReceiveQuickReplyEventWithChatRating(visitable)
             else -> super.onReceiveMessageEvent(visitable)
         }
     }
@@ -388,11 +395,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
     }
 
-    override fun onQuickReplyClicked(quickReplyListViewModel: QuickReplyListViewModel,
-                                     model: QuickReplyViewModel) {
-
+    override fun onQuickReplyClicked(model: QuickReplyViewModel) {
         presenter.sendQuickReply(messageId, model, SendableViewModel.generateStartTime(), opponentId)
-
     }
 
     override fun onImageUploadClicked(imageUrl: String, replyTime: String) {
@@ -460,6 +464,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             view?.let {
                 Toaster.showNormalWithAction(it, str, Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { })
             }
+            list_quick_reply.show()
         }
     }
 
@@ -653,8 +658,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         view?.let { mView -> Toaster.showErrorWithAction(mView, it.message.toString(), Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { }) }
     }
 
-    override fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel) {
+    override fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel, quickReplyList: List<QuickReplyViewModel>) {
         getViewState().showDividerViewOnConnection(connectionDividerViewModel)
+        getViewState().showLiveChatQuickReply(quickReplyList)
     }
 
     override fun isBackAllowed(isBackAllowed: Boolean) {

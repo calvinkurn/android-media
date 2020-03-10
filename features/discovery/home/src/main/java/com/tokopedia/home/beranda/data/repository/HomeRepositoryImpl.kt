@@ -1,52 +1,51 @@
 package com.tokopedia.home.beranda.data.repository
 
-import android.os.SystemClock
 import android.text.TextUtils
-import androidx.lifecycle.LiveData
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
-import com.tokopedia.home.beranda.data.datasource.local.dao.HomeDao
-import com.tokopedia.home.beranda.data.datasource.remote.HomeRemoteDataSource
-import com.tokopedia.home.beranda.data.source.HomeDataSource
+import com.tokopedia.home.beranda.data.datasource.default_data_source.HomeDefaultDataSource
+import com.tokopedia.home.beranda.data.datasource.local.HomeCachedDataSource
+import com.tokopedia.home.beranda.data.datasource.remote.*
+import com.tokopedia.home.beranda.data.model.KeywordSearchData
+import com.tokopedia.home.beranda.data.model.PlayLiveDynamicChannelEntity
+import com.tokopedia.home.beranda.data.model.TokopointsDrawerHomeData
+import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
 import com.tokopedia.home.beranda.domain.model.HomeData
-import com.tokopedia.home.beranda.domain.model.HomeRoomData
-import com.tokopedia.home.beranda.helper.Resource
-import com.tokopedia.home.beranda.helper.map
+import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
+import com.tokopedia.home.beranda.helper.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import retrofit2.Response
 import rx.Observable
-import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class HomeRepositoryImpl @Inject constructor(
-        private val homeDataSource: HomeDataSource,
-        private val homeDao: HomeDao,
-        private val homeRemoteDataSource: HomeRemoteDataSource
+        private val homeCachedDataSource: HomeCachedDataSource,
+        private val homeRemoteDataSource: HomeRemoteDataSource,
+        private val homeDefaultDataSource: HomeDefaultDataSource,
+        private val geolocationRemoteDataSource: GeolocationRemoteDataSource
 ): HomeRepository {
 
-    private val timeout = TimeUnit.DAYS.toMillis(30)
-    override fun getHomeData(): LiveData<HomeData?> {
-        return homeDao.getHomeData().map {
-            if(Date().time - (it?.modificationDate?.time ?: Date().time) > timeout){
-                null
-            } else {
-                it?.homeData
-            }
+    override fun getHomeData(): Flow<HomeData?> {
+        return homeCachedDataSource.getCachedHomeData().map {
+            it ?: homeDefaultDataSource.getDefaultHomeData()
         }
     }
 
-    override suspend fun updateHomeData(): Resource<Any> {
+    override fun updateHomeData(): Flow<Result<Any>> = flow{
         val response = homeRemoteDataSource.getHomeData()
         response.getError(HomeData::class.java)?.let {
             if (it.isNotEmpty()) {
                 if (!TextUtils.isEmpty(it[0].message)){
-                    return Resource.error(Throwable(it[0].message))
+                    emit(Result.error(Throwable(it[0].message)))
                 }
             }
         }
         val homeData = response.getSuccessData<HomeData>()
-        homeDao.save(HomeRoomData(homeData = homeData))
-        return Resource.success(homeData)
+        homeCachedDataSource.saveToDatabase(homeData)
+        emit(Result.success(null))
     }
 
-    override fun sendGeolocationInfo(): Observable<Response<String>> = homeDataSource.sendGeolocationInfo()
+    override fun sendGeolocationInfo(): Observable<Response<String>> = geolocationRemoteDataSource.sendGeolocationInfo()
+
 }

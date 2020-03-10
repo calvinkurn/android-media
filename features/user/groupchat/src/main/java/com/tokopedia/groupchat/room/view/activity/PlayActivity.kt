@@ -68,21 +68,25 @@ open class PlayActivity : BaseSimpleActivity() {
     }
 
     override fun getScreenName(): String {
-        return if (intent != null && intent.extras != null) {
-            val roomName = intent.extras!!.getString(EXTRA_CHANNEL_UUID, "")
+        return if (getRoomChannelId() != null) {
+            val roomName = getRoomChannelId()?: ""
             GroupChatAnalytics.SCREEN_CHAT_ROOM + roomName
         } else {
             GroupChatAnalytics.SCREEN_CHAT_ROOM
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        channelId = when {
+    fun getRoomChannelId(): String? {
+        return when {
             intent.data != null -> Uri.parse(intent?.data?.toString()).lastPathSegment
             intent.extras != null -> intent?.extras?.getString(EXTRA_CHANNEL_UUID)
             else -> intent?.extras?.getString(ApplinkConstant.PARAM_CHANNEL_ID)
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        channelId = getRoomChannelId()?: ""
         initInjector()
         initView()
     }
@@ -117,9 +121,11 @@ open class PlayActivity : BaseSimpleActivity() {
 
         val playFragment = PlayFragment.createInstance(bundle)
 
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.replace(R.id.fragment_container, playFragment)
-        transaction.commit()
+        if (supportFragmentManager.findFragmentByTag(FRAGMENT_TAG) == null) {
+            val transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.fragment_container, playFragment, FRAGMENT_TAG)
+            transaction.commit()
+        }
     }
 
     override fun onBackPressed() {
@@ -224,6 +230,8 @@ open class PlayActivity : BaseSimpleActivity() {
         val EXTRA_SHOW_BOTTOM_DIALOG = "SHOW_BOTTOM"
         const val EXTRA_USE_GCP = "use_gcp"
         val EXTRA_POSITION = "position"
+
+        private const val FRAGMENT_TAG = "PLAY_FRAGMENT"
 
         @JvmStatic
         fun getCallingIntent(context: Context, channelViewModel: ChannelViewModel, position: Int): Intent {

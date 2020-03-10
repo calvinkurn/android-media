@@ -3,6 +3,7 @@ package com.tokopedia.salam.umrah.pdp.presentation.fragment
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -100,6 +101,41 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         setupTotalPassenger()
         setupPurchaseSummary()
         setupNextButton()
+        setupFAB()
+    }
+
+    private fun setupFAB(){
+        fab_umrah_pdp_detail_message.bringToFront()
+        fab_umrah_pdp_detail_message.setOnClickListener {
+            checkChatSession()
+        }
+    }
+
+    private fun checkChatSession(){
+        if (userSessionInterface.isLoggedIn) {
+            context?.let {
+                startChatUmroh(it)
+            }
+        } else {
+            goToLoginPage(REQUEST_CODE_LOGIN_FAB)
+        }
+    }
+
+    private fun startChatUmroh(context: Context){
+        val intent = RouteManager.getIntent(context,
+                ApplinkConst.TOPCHAT_ASKSELLER,
+                resources.getString(R.string.umrah_shop_id), resources.getString(R.string.umrah_shop_link, paramPurchase.slugName),
+                resources.getString(R.string.umrah_shop_source), resources.getString(R.string.umrah_shop_name), "")
+        startActivity(intent)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                REQUEST_CODE_LOGIN_FAB -> context?.let{checkChatSession()}
+            }
+        }
     }
 
     private fun setupNextButton() {
@@ -132,7 +168,7 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
                         ))
             }
         } else {
-            goToLoginPage()
+            goToLoginPage(REQUEST_CODE_LOGIN)
         }
     }
     private fun getParamPurchase() {
@@ -235,6 +271,8 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         private var instance: UmrahPdpDetailFragment = UmrahPdpDetailFragment()
         var paramPurchase = ParamPurchase()
         private var maxPassenger = 0
+        const val REQUEST_CODE_LOGIN_FAB = 400
+        const val REQUEST_CODE_LOGIN = 401
     }
 
     fun getInstance(slugName: String, totalAvailability: Int): UmrahPdpDetailFragment {
@@ -247,10 +285,11 @@ class UmrahPdpDetailFragment : BaseDaggerFragment() {
         return instance
     }
 
-    private fun goToLoginPage() {
+    private fun goToLoginPage(requestCode: Int) {
         if (activity != null) {
             progressDialog.dismiss()
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                    requestCode)
         }
     }
 }

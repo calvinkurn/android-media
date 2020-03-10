@@ -11,11 +11,12 @@ import android.text.Html
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextUtils
+import android.util.DisplayMetrics
 import android.util.Log
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
 import com.tokopedia.notifications.model.BaseNotificationModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import java.net.MalformedURLException
 import java.net.UnknownHostException
 import java.util.*
@@ -96,7 +97,7 @@ object CMNotificationUtils {
     fun mapTokenWithAppVersionRequired(context: Context, appVersionName: String): Boolean {
         val cacheHandler = CMNotificationCacheHandler(context)
         val oldAppVersionName = cacheHandler.getStringValue(CMConstant.APP_VERSION_CACHE_KEY)
-        CommonUtils.dumper("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
+        Timber.d("CMUser-APP_VERSION$oldAppVersionName#new-$appVersionName")
         return if (TextUtils.isEmpty(oldAppVersionName))
             true
         else if (oldAppVersionName.equals(appVersionName, ignoreCase = true)) {
@@ -200,6 +201,9 @@ object CMNotificationUtils {
         }
 
     }
+
+    fun getPXtoDP(context: Context, dip: Float) = dip * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+
 
     fun getApplicationName(context: Context?): String {
         var appName = ""

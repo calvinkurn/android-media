@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.widget.*
+import androidx.annotation.DrawableRes
 import androidx.annotation.NonNull
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -111,7 +112,7 @@ open class BaseChatViewStateImpl(
 
     override fun updateHeader(chatroomViewModel: ChatroomViewModel, onToolbarClicked: () -> Unit) {
         val title = toolbar.findViewById<TextView>(R.id.title)
-        title.text = chatroomViewModel.headerModel.name
+        title.text = getInterlocutorName(chatroomViewModel.getHeaderName())
 
         setLabel(chatroomViewModel.headerModel.label)
 
@@ -123,15 +124,21 @@ open class BaseChatViewStateImpl(
         val onlineStatus = toolbar.findViewById<ImageView>(R.id.online_status)
 
         if (chatroomViewModel.headerModel.isOnline) {
-            onlineStatus.setImageResource(R.drawable.status_indicator_online)
+            onlineStatus.setImageResource(getOnlineIndicatorResource())
             onlineDesc.text = view.context.getString(R.string.online)
         } else
-            onlineStatus.setImageResource(R.drawable.status_indicator_offline)
+            onlineStatus.setImageResource(getOfflineIndicatorResource())
 
         title.setOnClickListener { onToolbarClicked() }
         avatar.setOnClickListener { onToolbarClicked() }
 
     }
+
+    @DrawableRes
+    open fun getOfflineIndicatorResource() = R.drawable.status_indicator_offline
+
+    @DrawableRes
+    open fun getOnlineIndicatorResource() = R.drawable.status_indicator_online
 
     override fun onShowStartTyping() {
         getAdapter().showTyping()
@@ -302,6 +309,7 @@ open class BaseChatViewStateImpl(
         return attachmentMenu.hideMenu()
     }
 
+    open fun getInterlocutorName(headerName: CharSequence): CharSequence = ""
     open fun getRecyclerViewId() = R.id.recycler_view
     open fun getProgressId() = R.id.progress
     open fun getNewCommentId() = R.id.new_comment

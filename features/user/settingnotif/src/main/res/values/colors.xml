@@ -3,4 +3,5 @@
     <color name="charcoal_grey_96">#f531353b</color>
     <color name="bg_big_divider">#f3f4f5</color>
     <color name="shadow">#B0000000</color>
+    <color name="grey_400">#bdbdbd</color>
 </resources>

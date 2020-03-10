@@ -1,6 +1,8 @@
 package com.tokopedia.abstraction;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.view.MotionEvent;
 
 import com.tokopedia.abstraction.common.data.model.storage.CacheManager;
@@ -27,12 +29,6 @@ public interface AbstractionRouter {
 
     void refreshToken() throws IOException;
 
-    void init();
-
-    void registerShake(String screenName,Activity activity);
-
-    void unregisterShake();
-
     /**
      * Use PersistentCacheManager library
      * @return
@@ -44,5 +40,5 @@ public interface AbstractionRouter {
 
     boolean isAllowLogOnChuckInterceptorNotification();
 
-    void onActivityDestroyed(String screenName, Activity baseActivity);
+    void onNewIntent(Context context, Intent intent);
 }

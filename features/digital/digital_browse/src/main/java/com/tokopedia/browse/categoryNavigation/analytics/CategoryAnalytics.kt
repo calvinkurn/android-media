@@ -1,6 +1,6 @@
 package com.tokopedia.browse.categoryNavigation.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
 import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
@@ -9,13 +9,12 @@ import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.HashMap
 
+private const val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
+
 class CategoryAnalytics {
 
-    val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
-    val LAUNCH_PAGE_HOME = "belanja/home"
-
-    val pageName = "/kategori-belanja"
-    val nameWithPageName = "$pageName - %s"
+    private val pageName = "/kategori-belanja"
+    private val nameWithPageName = "$pageName - %s"
 
     companion object {
         fun createInstance(): CategoryAnalytics {

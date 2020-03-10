@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.data.UmrahSearchParameterEntity
+import com.tokopedia.salam.umrah.common.util.UmrahWidthSetting
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBottomSheetData
 import com.tokopedia.salam.umrah.homepage.data.UmrahHomepageBottomSheetMapper
 import com.tokopedia.salam.umrah.homepage.data.UmrohHomepageBottomSheetwithType
@@ -19,14 +20,11 @@ import com.tokopedia.salam.umrah.homepage.presentation.fragment.UmrahHomepageFra
 import com.tokopedia.salam.umrah.homepage.presentation.listener.onItemBindListener
 import com.tokopedia.salam.umrah.search.data.UmrahSearchProductDataParam
 import com.tokopedia.salam.umrah.search.presentation.activity.UmrahSearchActivity
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_home_page.*
 import kotlinx.android.synthetic.main.bottom_sheets_umrah_home_page.view.*
 import kotlinx.android.synthetic.main.partial_umrah_home_page_main.view.*
 import kotlinx.android.synthetic.main.partial_umrah_home_page_search_spinner.view.*
-import com.tokopedia.unifyprinciples.Typography
-import kotlinx.android.synthetic.main.partial_umrah_home_page_main.view.section_layout
-import kotlinx.android.synthetic.main.partial_umrah_home_page_main.view.shimmering
-import javax.inject.Inject
 
 /**
  * @author by firman on 23/10/19
@@ -58,6 +56,10 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
                 with(itemView) {
                     shimmering.hide()
                     section_layout.show()
+
+                    if(UmrahWidthSetting.tabSize(context)){
+                        iv_umrah_bg_kabbah.adjustViewBounds = false
+                    }
 
                     defaultIndexCities = element.umrahSearchParameter.depatureCities.defaultOption
                     defaultIndexPeriods = element.umrahSearchParameter.departurePeriods.defaultOption
@@ -167,7 +169,7 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
 
     private fun inflatingView(context: Context, id: Int, listBottomSheet: UmrahHomepageBottomSheetData,
                               title: String, adapter: UmrahHomepageBottomSheetAdapter): View? {
-        val view = LayoutInflater.from(context).inflate(id, null).apply {
+        return LayoutInflater.from(context).inflate(id, null).apply {
             tv_umrah_home_page_bottom_sheet_title.text = title
             adapter.setList(listBottomSheet)
             rv_umrah_home_page_bottom_sheet.adapter = adapter
@@ -176,7 +178,6 @@ class UmrahHomepageSpinnerLikeViewHolder(view: View, private val onBindListener:
                     RecyclerView.VERTICAL, false
             )
         }
-        return view
     }
 
 

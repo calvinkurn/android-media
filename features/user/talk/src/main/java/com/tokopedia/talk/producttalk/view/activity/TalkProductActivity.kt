@@ -1,79 +1,33 @@
 package com.tokopedia.talk.producttalk.view.activity
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.talk.R
-import com.tokopedia.talk.common.TalkRouter
 import com.tokopedia.talk.common.di.DaggerTalkComponent
 import com.tokopedia.talk.common.di.TalkComponent
 import com.tokopedia.talk.producttalk.view.fragment.ProductTalkFragment
 
 class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        addExtrasIfFromAppLink()
+        super.onCreate(savedInstanceState)
+    }
+
     override fun getComponent(): TalkComponent {
         return DaggerTalkComponent.builder().baseAppComponent(
                 (application as BaseMainApplication).baseAppComponent).build()
     }
 
-
-    companion object {
-
-        val PRODUCT_ID = "product_id"
-        val SHOP_ID = "shop_id"
-        val PRODUCT_PRICE = "product_price"
-        val PRODUCT_NAME = "prod_name"
-        val PRODUCT_IMAGE = "product_image"
-        val PRODUCT_URL = "product_url"
-        val SHOP_NAME = "shop_name"
-        val SHOP_AVATAR = "shop_avatar"
-
-        @JvmStatic
-        fun createIntent(context: Context, productId: String): Intent {
-            val intent = Intent(context,
-                    TalkProductActivity::class.java)
+    private fun addExtrasIfFromAppLink() {
+        val uri = intent.data ?: return
+        val productId = uri.lastPathSegment ?: return
+        if (productId.isNotEmpty()) {
             intent.putExtra(PRODUCT_ID, productId)
-            return intent
         }
-
-        fun createIntent(context: Context, productId: String,
-                         shopId: String,
-                         productPrice: String,
-                         productName: String,
-                         productImage: String,
-                         productUrl: String,
-                         shopName: String,
-                         shopAvatar: String): Intent {
-            val intent = Intent(context, TalkProductActivity::class.java)
-            intent.putExtra(PRODUCT_ID, productId)
-            intent.putExtra(SHOP_ID, shopId)
-            intent.putExtra(PRODUCT_PRICE, productPrice)
-            intent.putExtra(PRODUCT_NAME, productName)
-            intent.putExtra(PRODUCT_IMAGE, productImage)
-            intent.putExtra(PRODUCT_URL, productUrl)
-            intent.putExtra(SHOP_NAME, shopName)
-            intent.putExtra(SHOP_AVATAR, shopAvatar)
-            return intent
-        }
-    }
-
-    object DeepLinkIntents {
-        @JvmStatic
-        @DeepLink(ApplinkConst.PRODUCT_TALK)
-        fun getCallingIntent(context: Context, extras: Bundle): Intent {
-            val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
-            val productId = extras.getString(PRODUCT_ID, "")
-            return (context.applicationContext as TalkRouter).getProductTalk(context, productId)
-                    .setData(uri.build())
-                    .putExtras(extras)
-        }
-
     }
 
     override fun getNewFragment(): Fragment {
@@ -87,7 +41,21 @@ class TalkProductActivity : BaseSimpleActivity(), HasComponent<TalkComponent> {
         return ProductTalkFragment.newInstance(intent.extras)
     }
 
+    override fun getToolbarResourceID(): Int = R.id.activity_talk_product_toolbar
+    override fun getParentViewResourceID() = R.id.talk_parent_view
+
     override fun getLayoutRes(): Int {
         return R.layout.activity_talk_product
+    }
+
+    companion object {
+        val PRODUCT_ID = "product_id"
+        val SHOP_ID = "shop_id"
+        val PRODUCT_PRICE = "product_price"
+        val PRODUCT_NAME = "prod_name"
+        val PRODUCT_IMAGE = "product_image"
+        val PRODUCT_URL = "product_url"
+        val SHOP_NAME = "shop_name"
+        val SHOP_AVATAR = "shop_avatar"
     }
 }

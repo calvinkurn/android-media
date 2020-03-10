@@ -9,9 +9,11 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
-import com.tkpd.library.utils.legacy.CommonUtils;
 import com.tokopedia.core.deprecated.LocalCacheHandler;
+import com.tokopedia.core.deprecated.SessionHandler;
 import com.tokopedia.core.gcm.data.entity.NotificationEntity;
+import com.tokopedia.core.gcm.model.FCMTokenUpdate;
+import com.tokopedia.core.gcm.utils.RouterUtils;
 import com.tokopedia.core.var.TkpdCache;
 import com.tokopedia.core.var.TkpdState;
 
@@ -22,6 +24,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
+import timber.log.Timber;
+
 /**
  * @author by Herdi_WORK on 13.12.16.
  */
@@ -29,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 public class FCMCacheManager {
     public static final String GCM_ID = "gcm_id";
     public static final String GCM_ID_TIMESTAMP = "gcm_id_timestamp";
+    public static final long GCM_ID_EXPIRED_TIME = TimeUnit.DAYS.toMillis(3);
     private String NOTIFICATION_CODE = "tkp_code";
     private static final String GCM_STORAGE = "GCM_STORAGE";
     private static final String NOTIFICATION_STORAGE = "NOTIFICATION_STORAGE";
@@ -85,8 +91,8 @@ public class FCMCacheManager {
     public Boolean isAllowBell() {
         long prevTime = cache.getLong(TkpdCache.Key.PREV_TIME);
         long currTIme = System.currentTimeMillis();
-        CommonUtils.dumper("prev time: " + prevTime);
-        CommonUtils.dumper("curr time: " + currTIme);
+        Timber.d("prev time: " + prevTime);
+        Timber.d("curr time: " + currTIme);
         if (currTIme - prevTime > 15000) {
             cache.putLong(TkpdCache.Key.PREV_TIME, currTIme);
             cache.applyEditor();
@@ -165,6 +171,39 @@ public class FCMCacheManager {
         LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
         cache.putLong(GCM_ID_TIMESTAMP, System.currentTimeMillis());
         cache.applyEditor();
+    }
+
+    public static boolean isFcmExpired(Context context) {
+        LocalCacheHandler cache = new LocalCacheHandler(context, GCM_STORAGE);
+        long lastFCMUpdate = cache.getLong(GCM_ID_TIMESTAMP, 0);
+        if (lastFCMUpdate <= 0) {
+            FCMCacheManager.storeFcmTimestamp(context);
+            return false;
+        }
+
+        return (System.currentTimeMillis() - lastFCMUpdate) >= GCM_ID_EXPIRED_TIME;
+    }
+
+    public static void checkAndSyncFcmId(final Context context) {
+        if (FCMCacheManager.isFcmExpired(context)) {
+            updateGcmId(context);
+        }
+    }
+
+    /**
+     * Only call this method when you need to update GCM Id.
+     * Do not change this method**/
+    public static void updateGcmId(Context context) {
+        SessionHandler sessionHandler = RouterUtils.getRouterFromContext(context).legacySessionHandler();
+        if (sessionHandler.isV4Login()) {
+            IFCMTokenReceiver fcmRefreshTokenReceiver = new FCMTokenReceiver(context);
+            FCMTokenUpdate tokenUpdate = new FCMTokenUpdate();
+            tokenUpdate.setNewToken(FCMCacheManager.getRegistrationId(context));
+            tokenUpdate.setOsType(String.valueOf(1));
+            tokenUpdate.setAccessToken(sessionHandler.getAccessToken());
+            tokenUpdate.setUserId(sessionHandler.getLoginID());
+            fcmRefreshTokenReceiver.onTokenReceive(Observable.just(tokenUpdate));
+        }
     }
 
     public static String getRegistrationId(Context context) {

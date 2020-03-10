@@ -20,18 +20,19 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.analytics.performance.PerformanceMonitoring
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
@@ -92,13 +93,14 @@ import com.tokopedia.feedplus.view.di.DaggerFeedPlusComponent
 import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
+import com.tokopedia.feedcomponent.util.util.copy
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.feedplus.view.viewmodel.RetryModel
 import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
 import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
 import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.graphql.data.GraphqlClient
-import com.tokopedia.interest_pick_common.view.adapter.OnboardingAdapter
+import com.tokopedia.interest_pick_common.view.adapter.InterestPickAdapter
 import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
@@ -112,6 +114,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.hideLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.showLoadingTransparent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -126,6 +129,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.vote.domain.model.VoteStatisticDomainModel
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
+import timber.log.Timber
 import java.lang.RuntimeException
 import java.util.*
 import javax.inject.Inject
@@ -150,11 +154,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
         HighlightAdapter.HighlightListener,
-        OnboardingAdapter.InterestPickItemListener,
+        InterestPickAdapter.InterestPickItemListener,
         EmptyFeedBeforeLoginViewHolder.EmptyFeedBeforeLoginListener,
         RetryViewHolder.RetryViewHolderListener,
-        EmptyFeedViewHolder.EmptyFeedListener{
+        EmptyFeedViewHolder.EmptyFeedListener,
+        FeedPlusAdapter.OnLoadListener{
 
+    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
+    private val PERFORMANCE_FEED_PAGE_NAME = "feed"
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
     private lateinit var mainContent: View
@@ -240,6 +247,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
         //endregion
 
+        //Monitoring Performance Static
+        private const val KEY_JANKY_FRAME_SCROLL = "janky_frames_scroll_feed"
+
         fun newInstance(bundle: Bundle?): FeedPlusFragment {
             val fragment = FeedPlusFragment()
             fragment.arguments = bundle
@@ -279,6 +289,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
         initVar()
         retainInstance = true
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
+    }
+
+    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
+        return if (context is JankyFramesMonitoringListener) {
+            context
+        } else null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -438,9 +459,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         }
                     }
                     is Fail -> {
-                        val message = it.throwable.localizedMessage
+                        Timber.e(it.throwable)
                         view?.let {
-                            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
+                            Toaster.make(it, getString(R.string.default_request_error_unknown), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR)
                         }
                     }
                 }
@@ -481,13 +502,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun initVar() {
         val typeFactory = FeedPlusTypeFactoryImpl(this, userSession, this)
-        adapter = FeedPlusAdapter(typeFactory)
-        adapter.setOnLoadListener { totalCount ->
-            val size = adapter.getlist().size
-            val lastIndex = size - 1
-            if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
-                feedViewModel.getFeedNextPage()
-        }
+        adapter = FeedPlusAdapter(typeFactory, this)
 
         val loginIdString = userSession.userId
         loginIdInt = if (TextUtils.isEmpty(loginIdString)) 0 else Integer.valueOf(loginIdString)
@@ -519,6 +534,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isLoadedOnce = false
     }
 
+    override fun onLoad(totalCount: Int) {
+        val size = adapter.getlist().size
+        val lastIndex = size - 1
+        if (adapter.getlist()[0] !is EmptyModel && adapter.getlist()[lastIndex] !is RetryModel)
+            feedViewModel.getFeedNextPage()
+    }
+
     override fun onCreateView(inflater: LayoutInflater,
                               container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -528,6 +550,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         swipeToRefresh = parentView.findViewById(R.id.swipe_refresh_layout)
         mainContent = parentView.findViewById(R.id.main)
         newFeed = parentView.findViewById(R.id.layout_new_feed)
+
+        recyclerView.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_FEED_PAGE_NAME) }
 
         prepareView()
         return parentView
@@ -546,6 +570,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         infoBottomSheet = TopAdsInfoBottomSheet.newInstance(activity)
         newFeed.setOnClickListener { v ->
             scrollToTop()
+            sendNewFeedClickEvent()
             showRefresh()
             onRefresh()
         }
@@ -553,33 +578,43 @@ class FeedPlusFragment : BaseDaggerFragment(),
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 try {
-                    if (hasFeed()
-                            && newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        var position = 0
-                        val item: Visitable<*>
-                        if (itemIsFullScreen()) {
-                            position = layoutManager?.findLastVisibleItemPosition() ?: 0
-                        } else if (layoutManager?.findFirstCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
-                        } else if (layoutManager?.findLastCompletelyVisibleItemPosition() != -1) {
-                            position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
-                        }
+                    if (hasFeed()) {
+                        when (newState) {
+                            RecyclerView.SCROLL_STATE_IDLE -> {
+                                var position = 0
+                                val item: Visitable<*>
+                                if (itemIsFullScreen()) {
+                                    position = layoutManager?.findLastVisibleItemPosition() ?: 0
+                                } else if (layoutManager?.findFirstCompletelyVisibleItemPosition() != -1) {
+                                    position = layoutManager?.findFirstCompletelyVisibleItemPosition() ?: 0
+                                } else if (layoutManager?.findLastCompletelyVisibleItemPosition() != -1) {
+                                    position = layoutManager?.findLastCompletelyVisibleItemPosition() ?: 0
+                                }
 
-                        item = adapter.getlist()[position]
+                                item = adapter.getlist()[position]
 
-                        if (item is DynamicPostViewModel) {
-                            if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
-                                adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+                                if (item is DynamicPostViewModel) {
+                                    if (!TextUtils.isEmpty(item.footer.buttonCta.appLink)) {
+                                        adapter.notifyItemChanged(position, DynamicPostViewHolder.PAYLOAD_ANIMATE_FOOTER)
+                                    }
+                                }
+                                FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
                             }
                         }
-                        FeedScrollListener.onFeedScrolled(recyclerView, adapter.getlist())
                     }
                 } catch (e: IndexOutOfBoundsException) {
                 }
 
             }
 
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+            }
         })
+    }
+
+    private fun sendNewFeedClickEvent() {
+        analytics.eventNewPostClick()
     }
 
     private fun itemIsFullScreen(): Boolean {
@@ -652,7 +687,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     }
                 }
                 adapter.notifyItemChanged(0, OnboardingViewHolder.PAYLOAD_UPDATE_ADAPTER)
-
             }
             else -> {
             }
@@ -817,6 +851,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onFollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
             feedViewModel.doFollowKol(id, rowNumber)
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.FOLLOW)
         } else {
             onGoToLogin()
         }
@@ -825,6 +860,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
         if (userSession.isLoggedIn) {
             feedViewModel.doUnfollowKol(id, rowNumber)
+            trackCardPostElementClick(rowNumber, FeedAnalytics.Element.UNFOLLOW)
         } else {
             onGoToLogin()
         }
@@ -892,10 +928,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessAddDeleteKolComment(rowNumber: Int, totalNewComment: Int) {
+        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
         if (rowNumber != DEFAULT_VALUE
-                && adapter.getlist().size > rowNumber
-                && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+                && newList.size > rowNumber) {
+            val (_, _, _, _, footer) = newList[rowNumber]
             val comment = footer.comment
             try {
                 val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
@@ -904,7 +940,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
 
             comment.value = comment.value + totalNewComment
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_COMMENT)
+            adapter.updateList(newList)
         }
     }
 
@@ -1128,16 +1164,18 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onShareClick(positionInFeed: Int, id: Int, title: String,
                               description: String, url: String,
                               imageUrl: String) {
-        if (activity != null) {
-            ShareBottomSheets().show(activity!!.supportFragmentManager,
-                    ShareBottomSheets.constructShareData("", imageUrl, url, description, title),
-                    object : ShareBottomSheets.OnShareItemClickListener {
-                        override fun onShareItemClicked(packageName: String) {
+        activity?.let {
 
-                        }
-                    })
+            ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
+                override fun onShareItemClicked(packageName: String) {
+
+                }
+            },"", imageUrl, url, description, title)
+        }.also {
+            fragmentManager?.run {
+                it?.show(this)
+            }
         }
-
         trackCardPostElementClick(positionInFeed, FeedAnalytics.Element.SHARE)
     }
 
@@ -1209,17 +1247,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onPostTagItemBuyClicked(positionInFeed: Int, postTagItem: PostTagItem, authorType: String) {
-        val shop = postTagItem.shop.firstOrNull()
-        feedAnalytics.eventFeedAddToCart(
-                postTagItem.id,
-                postTagItem.text,
-                postTagItem.price,
-                1,
-                shop?.shopId?.toIntOrZero() ?: -1,
-                "",
-                authorType
-        )
-        feedViewModel.doAtc(postTagItem)
+        if (userSession.isLoggedIn) {
+            val shop = postTagItem.shop.firstOrNull()
+            feedAnalytics.eventFeedAddToCart(
+                    postTagItem.id,
+                    postTagItem.text,
+                    postTagItem.price,
+                    1,
+                    shop?.shopId?.toIntOrZero() ?: -1,
+                    "",
+                    authorType
+            )
+            feedViewModel.doAtc(postTagItem)
+        } else {
+            onGoToLogin()
+        }
     }
 
     override fun onYoutubeThumbnailClick(positionInFeed: Int, contentPosition: Int,
@@ -1288,7 +1330,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
             val (_, _, _, _, _, _, contentList, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
             if (redirectLink.contains(FEED_DETAIL)) {
-                analytics.eventGoToFeedDetail(trackingPostModel.postId)
+                analytics.eventGoToFeedDetail(trackingPostModel.postId, trackingPostModel.recomId)
             } else if (contentList[contentPosition] is GridPostViewModel) {
                 val (itemList) = contentList[contentPosition] as GridPostViewModel
                 val (id, text, price) = itemList[productPosition]
@@ -1299,7 +1341,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                 productPosition),
                         trackingPostModel.activityName,
                         trackingPostModel.postId,
-                        userIdInt
+                        userIdInt,
+                        trackingPostModel.recomId
                 )
             }
         }
@@ -1409,8 +1452,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
             swipe_refresh_layout.isEnabled = true
             trackFeedImpression(model.postList)
-            adapter.setList(model.postList)
-            adapter.notifyDataSetChanged()
+            adapter.clearData()
+            adapter.updateList(model.postList)
             triggerClearNewFeedNotification()
             if (model.hasNext) {
                 setEndlessScroll()
@@ -1456,7 +1499,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             adapter.removeEmpty()
             val posStart = adapter.itemCount
             adapter.addList(model.postList)
-            adapter.notifyItemRangeInserted(posStart, model.postList.size)
         }
     }
 
@@ -1482,11 +1524,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessFollowUnfollowKol(rowNumber: Int) {
-        if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            header.followCta.isFollow = !header.followCta.isFollow
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
-        }
+        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
+        val (_, _, header) = newList[rowNumber]
+        header.followCta.isFollow = !header.followCta.isFollow
+        adapter.updateList(newList)
     }
 
     private fun onErrorFollowUnfollowKol(data: FollowKolViewModel) {
@@ -1501,8 +1542,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessLikeDislikeKolPost(rowNumber: Int) {
-        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, footer) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
+        if (newList.size > rowNumber) {
+            val (_, _, _, _, footer) = newList[rowNumber]
             val like = footer.like
             like.isChecked = !like.isChecked
             if (like.isChecked) {
@@ -1522,7 +1564,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
                 like.value = like.value - 1
             }
-            adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_LIKE)
+
+            adapter.updateList(newList)
         }
     }
 
@@ -1541,8 +1584,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessDeletePost(rowNumber: Int) {
-        adapter.getlist().removeAt(rowNumber)
-        adapter.notifyItemRemoved(rowNumber)
+        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
+        newList.removeAt(rowNumber)
+        adapter.updateList(newList)
         val snackbar = ToasterNormal.make(view,
                 getString(R.string.feed_post_deleted),
                 BaseToaster.LENGTH_LONG
@@ -1564,35 +1608,30 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun onSuccessSendVote(rowNumber: Int, optionId: String,
                                    voteStatisticDomainModel: VoteStatisticDomainModel) {
-        if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, contentList) = adapter.getlist()[rowNumber] as DynamicPostViewModel
-            for (basePostViewModel in contentList) {
-                if (basePostViewModel is PollContentViewModel) {
-                    basePostViewModel.voted = true
+        val newList: MutableList<DynamicPostViewModel> = adapter.getlist().copy()
+        val (_, _, _, _, _, _, contentList) = newList[rowNumber] as DynamicPostViewModel
+        for (basePostViewModel in contentList) {
+            if (basePostViewModel is PollContentViewModel) {
+                basePostViewModel.voted = true
+                var totalVoter: Int
+                try {
+                    totalVoter = Integer.valueOf(voteStatisticDomainModel.totalParticipants)
+                } catch (ignored: NumberFormatException) {
+                    totalVoter = 0
+                }
+                basePostViewModel.totalVoterNumber = totalVoter
+                for (i in 0 until basePostViewModel.optionList.size) {
+                    val optionViewModel = basePostViewModel.optionList[i]
 
-                    var totalVoter: Int
-                    try {
-                        totalVoter = Integer.valueOf(voteStatisticDomainModel.totalParticipants)
-                    } catch (ignored: NumberFormatException) {
-                        totalVoter = 0
-                    }
-
-                    basePostViewModel.totalVoterNumber = totalVoter
-
-                    for (i in 0 until basePostViewModel.optionList.size) {
-                        val optionViewModel = basePostViewModel.optionList[i]
-
-                        optionViewModel.selected = if (optionId == optionViewModel.optionId)
-                            PollContentOptionViewModel.SELECTED
-                        else
-                            PollContentOptionViewModel.UNSELECTED
-                        optionViewModel.percentage = voteStatisticDomainModel.listOptions[i].percentage.toIntOrZero()
-                    }
+                    optionViewModel.selected = if (optionId == optionViewModel.optionId)
+                        PollContentOptionViewModel.SELECTED
+                    else
+                        PollContentOptionViewModel.UNSELECTED
+                    optionViewModel.percentage = voteStatisticDomainModel.listOptions[i].percentage.toIntOrZero()
                 }
             }
-
-            adapter.notifyItemChanged(rowNumber)
         }
+        adapter.updateList(newList)
     }
 
     private fun onErrorSendVote(message: String) {
@@ -1630,6 +1669,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
+        adapter.notifyItemChanged(data.rowNumber, data.adapterPosition)
         ToasterError.make(view, data.errorMessage, BaseToaster.LENGTH_LONG)
                 .setAction(R.string.title_try_again
                 ) { v -> feedViewModel.doToggleFavoriteShop(data.rowNumber, data.adapterPosition, data.shopId) }
@@ -1744,7 +1784,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private fun onShowEmpty() {
         adapter.unsetEndlessScrollListener()
         adapter.showEmpty()
-        adapter.notifyDataSetChanged()
     }
 
     private fun clearData() {
@@ -1884,7 +1923,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     productList,
                     trackingPostModel.activityName,
                     trackingPostModel.postId,
-                    userIdInt
+                    userIdInt,
+                    trackingPostModel.recomId
             )
         } else if (postViewModel.contentList[0] is PollContentViewModel) {
             val (pollId) = postViewModel.contentList[0] as PollContentViewModel
@@ -1906,7 +1946,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     trackingPostModel.totalContent,
                     trackingPostModel.postId,
                     userId,
-                    feedPosition
+                    feedPosition,
+                    trackingPostModel.recomId
             )
         }
     }
@@ -1922,7 +1963,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 trackingPostModel.totalContent,
                 trackingPostModel.postId,
                 userIdInt,
-                positionInFeed
+                positionInFeed,
+                trackingPostModel.recomId
         )
     }
 
@@ -1951,14 +1993,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun trackCardPostElementClick(positionInFeed: Int, element: String) {
-        if (adapter.getlist().size > positionInFeed && adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
+        if (adapter.getlist().size > positionInFeed && positionInFeed >= 0 && adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
             val trackingPostModel = (adapter.getlist()[positionInFeed] as DynamicPostViewModel).trackingPostModel
 
             analytics.eventCardPostElementClick(
                     element,
                     trackingPostModel.activityName,
                     trackingPostModel.mediaType,
-                    trackingPostModel.postId.toString()
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.recomId
             )
         }
     }

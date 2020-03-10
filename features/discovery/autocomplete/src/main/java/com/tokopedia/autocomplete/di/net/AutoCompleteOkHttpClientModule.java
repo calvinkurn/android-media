@@ -1,14 +1,14 @@
 package com.tokopedia.autocomplete.di.net;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
-import com.tokopedia.abstraction.common.network.OkHttpRetryPolicy;
-import com.tokopedia.abstraction.common.network.interceptor.DebugInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.TkpdAuthInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.autocomplete.di.AutoCompleteScope;
 import com.tokopedia.autocomplete.di.qualifier.NoAuth;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.cacheapi.util.CacheApiResponseValidator;
+import com.tokopedia.network.interceptor.DebugInterceptor;
+import com.tokopedia.network.utils.OkHttpRetryPolicy;
 
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +23,7 @@ public class AutoCompleteOkHttpClientModule {
     @NoAuth
     @Provides
     public OkHttpClient provideOkHttpClientNoAuth(OkHttpRetryPolicy okHttpRetryPolicy,
-                                                  ChuckInterceptor chuckInterceptor,
+                                                  ChuckerInterceptor chuckInterceptor,
                                                   DebugInterceptor debugInterceptor,
                                                   CacheApiInterceptor cacheApiInterceptor,
                                                   TkpdAuthInterceptor tkpdAuthInterceptor) {

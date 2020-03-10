@@ -20,6 +20,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
 import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
@@ -31,7 +32,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolder
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -53,6 +54,10 @@ import com.tokopedia.gm.common.widget.MerchantCommonBottomSheet
 import com.tokopedia.graphql.data.GraphqlClient
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RESULT_PATHS
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
+import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.permissionchecker.PermissionCheckerHelper
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_READ_EXTERNAL_STORAGE
+import com.tokopedia.permissionchecker.PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE
 import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
@@ -105,7 +110,9 @@ import com.tokopedia.topads.freeclaim.view.widget.TopAdsWidgetFreeClaim
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceOption
 import com.tokopedia.topads.sourcetagging.constant.TopAdsSourceTaggingConstant
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.UnknownHostException
 import java.util.*
+import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 
 open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel, ProductManageFragmentFactoryImpl>(),
@@ -151,7 +158,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
     private var itemsChecked: MutableList<ProductManageViewModel> = mutableListOf()
 
-
+    lateinit var permissionCheckerHelper: PermissionCheckerHelper
     lateinit var prefs: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -166,11 +173,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         context?.let {
             prefs = it.getSharedPreferences(prefKey, Context.MODE_PRIVATE)
         }
+        permissionCheckerHelper = PermissionCheckerHelper()
         setHasOptionsMenu(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             inflater.inflate(R.menu.menu_product_manage_dark, menu)
         } else {
             inflater.inflate(R.menu.menu_product_manage, menu)
@@ -372,10 +380,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderList(list, hasNextPage)
     }
 
-    override fun onSuccessGetShopInfo(goldMerchant: Boolean, officialStore: Boolean, shopDomain: String?) {
+    override fun onSuccessGetShopInfo(goldMerchant: Boolean, officialStore: Boolean, shopDomain: String) {
         this.goldMerchant = goldMerchant
         isOfficialStore = officialStore
-        this.shopDomain = shopDomain ?: ""
+        this.shopDomain = shopDomain
     }
 
     override fun onSwipeRefresh() {
@@ -622,6 +630,37 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         renderCheckedView()
     }
 
+    override fun onSuccessChangeFeaturedProduct(productId: String, status: Int) {
+        //Default feature product action is to remove the product from featured products.
+        //The value will change depends on the status code. 0 is remove, 1 is add
+        var successMessage: String = getString(R.string.product_manage_success_remove_featured_product)
+        var isFeaturedProduct = false
+        //If the action is to add featured product, invert the attributes value also
+        if (status == ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS) {
+            successMessage = getString(R.string.product_manage_success_add_featured_product)
+            isFeaturedProduct = true
+        }
+        productManageListAdapter.updateFeaturedProduct(productId, isFeaturedProduct)
+        hideLoadingProgress()
+        showToasterNormal(successMessage)
+    }
+
+    override fun onFailedChangeFeaturedProduct(throwable: Throwable) {
+        val toasterError = ""
+        hideLoadingProgress()
+        showToasterError(getChangeFeaturedErrorMessage(throwable), toasterError) {}
+    }
+
+    private fun getChangeFeaturedErrorMessage(throwable: Throwable): String =
+        when(throwable) {
+            is UnknownHostException -> getString(R.string.product_manage_failed_no_internet)
+            is TimeoutException -> getString(R.string.product_manage_failed_set_featured_product)
+            is com.tokopedia.network.exception.MessageErrorException ->
+                throwable.message?: getString(R.string.product_manage_failed_set_featured_product)
+            else -> ErrorHandler.getErrorMessage(context, throwable)
+        }
+
+
     private fun updateBulkLayout() {
         val containerFlags = containerChechBoxBulk.layoutParams as AppBarLayout.LayoutParams
         when {
@@ -677,7 +716,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         if (productManagePresenter.isIdlePowerMerchant()) {
             RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, URL_POWER_MERCHANT_SCORE_TIPS)
         } else if (!productManagePresenter.isPowerMerchant()) {
-            RouteManager.route(getContext(), ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE);
+            RouteManager.route(context, ApplinkConst.SellerApp.POWER_MERCHANT_SUBSCRIBE)
         }
     }
 
@@ -698,15 +737,44 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
         val bottomSheetBuilder = BottomSheetBuilder(activity)
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .addTitleItem(productManageViewModel.productName)
-        if (productManageViewModel.productStatus == StatusProductOption.EMPTY) {
-            bottomSheetBuilder.setMenu(com.tokopedia.product.manage.list.R.menu.menu_product_manage_action_item_no_topads)
-        } else {
-            bottomSheetBuilder.setMenu(com.tokopedia.product.manage.list.R.menu.menu_product_manage_action_item)
-        }
+
+        populateBottomSheetMenu(bottomSheetBuilder, productManageViewModel)
+
         val bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
                 .setItemClickListener(onOptionBottomSheetClicked(productManageViewModel))
                 .createDialog()
         bottomSheetDialog.show()
+    }
+
+    /**
+     * Populate bottom sheet menu items according to shop states
+     */
+    private fun populateBottomSheetMenu(bottomSheetBuilder: BottomSheetBuilder, productManageViewModel: ProductManageViewModel) {
+        val context: Context = this.context ?: return
+
+        bottomSheetBuilder.addItem(R.id.edit_product_menu, com.tokopedia.product.manage.list.R.string.product_manage_title_edit, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_edit)
+        bottomSheetBuilder.addItem(R.id.duplicat_product_menu, R.string.product_manage_title_duplicate_product_menu, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_duplicate)
+        bottomSheetBuilder.addItem(R.id.delete_product_menu, R.string.product_manage_menu_delete_product, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_delete, ContextCompat.getColor(context, R.color.product_manage_menu_delete_color))
+
+        //Commented this code as quick fix in response to backend gql still hasn't been pushed to production env.
+        //Activate it later after the backend gql as soon after backend gql prod is up running.
+
+//        //If shop is power merchant or official store, shop owner can add or remove featured product
+//        if (productManagePresenter.isPowerMerchant() || isOfficialStore) {
+//            //If the product is a featured product, show remove option. Show add option when the product is not.
+//            if (productManageViewModel.isFeatureProduct)
+//                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_remove_featured_product, R.drawable.ic_manage_featured_product)
+//            else
+//                bottomSheetBuilder.addItem(R.id.set_featured_product, R.string.product_manage_menu_add_featured_product, R.drawable.ic_manage_featured_product)
+//        }
+
+        bottomSheetBuilder.addItem(R.id.set_cashback_product_menu, R.string.product_manage_menu_set_cashback, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_set_cashback)
+        if (productManageViewModel.productStatus != StatusProductOption.EMPTY) {
+            bottomSheetBuilder.addItem(R.id.set_promo_ads_product_menu, R.string.product_manage_menu_set_promo_ads, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_topads)
+        }
+        bottomSheetBuilder.addItem(R.id.change_price_product_menu, R.string.product_manage_menu_set_price, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_set_price)
+        bottomSheetBuilder.addItem(R.id.share_product_menu, com.tokopedia.product.manage.list.R.string.product_manage_title_share, com.tokopedia.product.manage.list.R.drawable.ic_manage_product_share)
+
     }
 
     private fun onOptionBottomSheetClicked(productManageViewModel: ProductManageViewModel): BottomSheetItemClickListener {
@@ -744,13 +812,54 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                     showDialogChangeProductPrice(productManageViewModel.productId, productManageViewModel.productPricePlain, productManageViewModel.productCurrencyId)
                 }
             } else if (itemId == com.tokopedia.product.manage.list.R.id.share_product_menu) {
-                downloadBitmap(productManageViewModel)
+                onShareProductClicked(productManageViewModel)
             } else if (itemId == com.tokopedia.product.manage.list.R.id.set_cashback_product_menu) {
                 onSetCashbackClicked(productManageViewModel)
             } else if (itemId == com.tokopedia.product.manage.list.R.id.set_promo_ads_product_menu) {
                 onPromoTopAdsClicked(productManageViewModel)
             }
+
+            //Commented this code as quick fix in response to backend gql still hasn't been pushed to production env.
+            //Activate it later after the backend gql as soon after backend gql prod is up running.
+//            else if (itemId == R.id.set_featured_product) {
+//                if (productManageViewModel.isFeatureProduct)
+//                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_REMOVE_STATUS)
+//                else
+//                    onSetFeaturedProductClicked(productManageViewModel,ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
+//            }
         }
+    }
+
+    private fun getPermissions(): Array<String> {
+        return arrayOf(PERMISSION_READ_EXTERNAL_STORAGE, PERMISSION_WRITE_EXTERNAL_STORAGE)
+    }
+
+    private fun onShareProductClicked(productManageViewModel: ProductManageViewModel) {
+        permissionCheckerHelper.checkPermissions(
+                this,
+                getPermissions(),
+                object : PermissionCheckerHelper.PermissionCheckListener {
+                    override fun onPermissionDenied(permissionText: String) {
+                        context?.let {
+                            permissionCheckerHelper.onPermissionDenied(it, permissionText)
+                        }
+                    }
+
+                    override fun onNeverAskAgain(permissionText: String) {
+                        context?.let {
+                            permissionCheckerHelper.onNeverAskAgain(it, permissionText)
+                        }
+                    }
+
+                    override fun onPermissionGranted() {
+                        downloadBitmap(productManageViewModel)
+                    }
+                })
+    }
+
+    private fun onSetFeaturedProductClicked(productManageViewModel: ProductManageViewModel, setFeaturedType: Int) {
+        productManagePresenter.setFeaturedProduct(productManageViewModel.productId, setFeaturedType)
+
     }
 
     private fun onPromoTopAdsClicked(productManageViewModel: ProductManageViewModel) {
@@ -832,10 +941,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
     fun downloadBitmap(productManageViewModel: ProductManageViewModel) {
         activity?.let {
             val productShare = ProductShare(it, ProductShare.MODE_IMAGE)
-
-            val price = if (productManageViewModel.productCurrencyId == CurrencyTypeDef.TYPE_USD) productManageViewModel.productPricePlain else productManageViewModel.productPrice
             val data = ProductData()
-            data.priceText = productManageViewModel.productCurrencySymbol + " " + price
+            data.priceText = productManageViewModel.productPrice
             data.cashbacktext = if (productManageViewModel.productCashback > 0) getString(com.tokopedia.product.manage.list.R.string.pml_sticker_cashback, productManageViewModel.productCashback) else ""
             data.currencySymbol = productManageViewModel.productCurrencySymbol
             data.productId = productManageViewModel.productId
@@ -1012,6 +1119,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductManageViewModel
                 }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        context?.let {
+            permissionCheckerHelper.onRequestPermissionsResult(it, requestCode, permissions, grantResults)
         }
     }
 

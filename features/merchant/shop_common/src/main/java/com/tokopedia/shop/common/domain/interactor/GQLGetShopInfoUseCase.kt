@@ -37,16 +37,40 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         private const val PARAM_SHOP_IDS = "shopIds"
         private const val PARAM_SHOP_FIELDS = "fields"
         private const val PARAM_SHOP_DOMAIN = "shopDomain"
+        private const val PARAM_SOURCE = "source"
+        const val SHOP_PAGE_SOURCE = "gql-shoppage"
+        const val MERCHANT_VOUCHER_SOURCE = "gql-mv"
+        const val PRODUCT_ADD_SOURCE = "gql-product-add"
+        const val PRODUCT_EDIT_SOURCE = "gql-product-edit"
+        const val PRODUCT_MANAGE_SOURCE = "gql-product-manage"
+        const val FAVORITE_LIST_SOURCE = "gql-fav-list"
+        const val SHOP_INFO_SOURCE = "gql-shopinfo-widget"
+        const val SHOP_PRODUCT_LIST_RESULT_SOURCE = "gql-productlist-shoppage"
+        const val TOP_ADS_SOURCE = "gql-topads"
+
+
+
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",
                 "is_owner", "other-goldos", "status", "is_open", "closed_info", "create_info")
 
         @JvmStatic
-        fun createParams(shopIds: List<Int>, shopDomain: String? = null, fields: List<String> = DEFAULT_SHOP_FIELDS): RequestParams = RequestParams.create().apply {
+        fun createParams(
+                shopIds: List<Int>,
+                shopDomain: String? = null,
+                fields: List<String> = DEFAULT_SHOP_FIELDS,
+                source: String =  ""
+        ): RequestParams = RequestParams.create().apply {
             putObject(PARAM_SHOP_IDS, shopIds)
             putObject(PARAM_SHOP_FIELDS, fields)
             putString(PARAM_SHOP_DOMAIN, shopDomain)
+            putString(PARAM_SOURCE, source)
+        }
+
+        @JvmStatic
+        fun getDefaultShopFields(): List<String> {
+            return DEFAULT_SHOP_FIELDS
         }
     }
 }

@@ -23,7 +23,7 @@ class HomeBannerFeedViewHolder(itemView: View, private val homeFeedview: HomeFee
     override fun bind(element: BannerFeedViewModel) {
         bannerImageView.setOnClickListener {
             HomePageTracking.eventClickOnBannerFeed(
-                    context, element, homeFeedview.getTabName()
+                    element, homeFeedview.getTabName()
             )
             RouteManager.route(context, element.applink)
         }

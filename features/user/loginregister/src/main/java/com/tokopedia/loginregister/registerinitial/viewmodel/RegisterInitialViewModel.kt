@@ -5,10 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.fragment.app.Fragment
 import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToFacebookCredentialListener
 import com.tokopedia.loginregister.common.data.ResponseConverter.resultUsecaseCoroutineToSubscriber
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
+import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
 import com.tokopedia.loginregister.login.view.model.DiscoverViewModel
@@ -19,6 +20,8 @@ import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConsta
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
 import com.tokopedia.loginregister.ticker.domain.pojo.TickerInfoPojo
 import com.tokopedia.loginregister.ticker.domain.usecase.TickerInfoUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -53,6 +56,7 @@ class RegisterInitialViewModel @Inject constructor(
         private val loginTokenUseCase: LoginTokenUseCase,
         private val getProfileUseCase: GetProfileUseCase,
         private val tickerInfoUseCase: TickerInfoUseCase,
+        private val dynamicBannerUseCase: DynamicBannerUseCase,
         @Named(SessionModule.SESSION_MODULE)
         private val userSession: UserSessionInterface,
         private val rawQueries: Map<String, String>,
@@ -121,6 +125,10 @@ class RegisterInitialViewModel @Inject constructor(
     private val mutableActivateUserResponse = MutableLiveData<Result<ActivateUserPojo>>()
     val activateUserResponse: LiveData<Result<ActivateUserPojo>>
         get() = mutableActivateUserResponse
+
+    private val _dynamicBannerResponse = MutableLiveData<Result<DynamicBannerDataModel>>()
+    val dynamicBannerResponse: LiveData<Result<DynamicBannerDataModel>>
+        get() = _dynamicBannerResponse
 
     fun getProvider() {
         discoverUseCase.execute(
@@ -279,6 +287,18 @@ class RegisterInitialViewModel @Inject constructor(
                 onFailedLoginTokenAfterSQ(validateToken),
                 onGoToActivationPageAfterRelogin(validateToken),
                 onGoToSecurityQuestionAfterRelogin("")))
+    }
+
+    fun getDynamicBannerData(page: String) {
+        launchCatchError(block = {
+            val params = DynamicBannerUseCase.createRequestParams(page)
+            dynamicBannerUseCase.createParams(params)
+            dynamicBannerUseCase.executeOnBackground().run {
+                _dynamicBannerResponse.postValue(Success(this))
+            }
+        }, onError = {
+            _dynamicBannerResponse.postValue(Fail(it))
+        })
     }
 
     private fun onSuccessGetProvider(): (DiscoverViewModel) -> Unit {
@@ -481,6 +501,7 @@ class RegisterInitialViewModel @Inject constructor(
         discoverUseCase.unsubscribe()
         loginTokenUseCase.unsubscribe()
         getProfileUseCase.unsubscribe()
+        dynamicBannerUseCase.cancelJobs()
     }
 
     companion object {

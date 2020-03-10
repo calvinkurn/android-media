@@ -4,8 +4,8 @@ import android.app.Activity
 import android.view.View
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.common.data.model.product.Rating
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import kotlinx.android.synthetic.main.partial_product_rating_talk_courier.view.*
 
 class PartialProductStatisticView private constructor(private val view: View) {
@@ -13,15 +13,23 @@ class PartialProductStatisticView private constructor(private val view: View) {
         fun build(_view: View) = PartialProductStatisticView(_view)
     }
 
-    fun renderData(data: ProductInfo, onReviewClicked: (() -> Unit)? = null,
-                   onDiscussionClicked: (() -> Unit)? = null) {
+    fun renderData(countReview: Int, countTalk: Int, onReviewClicked: (() -> Unit)? = null,
+                   onDiscussionClicked: ((ComponentTrackDataModel?) -> Unit)? = null,
+                   componentTrackDataModel: ComponentTrackDataModel? = null) {
         with(view) {
-            txt_review.text = context.getString(R.string.template_review, data.stats.countReview)
+            txt_review.text = context.getString(R.string.template_review, countReview)
             base_layout_rating.setOnClickListener { onReviewClicked?.invoke() }
             txt_review.setOnClickListener { onReviewClicked?.invoke() }
-            txt_discussion.text = context.getString(R.string.template_talk, data.stats.countTalk)
-            txt_discussion.setOnClickListener { onDiscussionClicked?.invoke() }
-            icon_discussion.setOnClickListener { onDiscussionClicked?.invoke() }
+            txt_discussion.text = context.getString(R.string.template_talk, countTalk)
+            txt_discussion.setOnClickListener { onDiscussionClicked?.invoke(componentTrackDataModel) }
+            icon_discussion.setOnClickListener { onDiscussionClicked?.invoke(componentTrackDataModel) }
+            visible()
+        }
+    }
+
+    fun renderRatingNew(rating: String) {
+        with(view) {
+            tv_rating.text = rating
             visible()
         }
     }
@@ -33,15 +41,15 @@ class PartialProductStatisticView private constructor(private val view: View) {
         }
     }
 
-    fun renderClickShipping(activity: Activity, onShipmentClicked: (() -> Unit)? = null){
-        with(view){
+    fun renderClickShipping(activity: Activity? = null, onShipmentClicked: (() -> Unit)? = null) {
+        with(view) {
             icon_courier.setOnClickListener {
                 onShipmentClicked?.invoke()
-                activity.overridePendingTransition(0, 0)
+                activity?.overridePendingTransition(0, 0)
             }
             txt_courier.setOnClickListener {
                 onShipmentClicked?.invoke()
-                activity.overridePendingTransition(0, 0)
+                activity?.overridePendingTransition(0, 0)
             }
         }
     }

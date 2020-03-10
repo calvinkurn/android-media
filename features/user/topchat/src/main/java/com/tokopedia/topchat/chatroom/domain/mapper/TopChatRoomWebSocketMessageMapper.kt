@@ -3,13 +3,15 @@ package com.tokopedia.chatbot.domain.mapper
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUOTATION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_VOUCHER
 import com.tokopedia.chat_common.domain.mapper.WebsocketMessageMapper
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.merchantvoucher.common.gql.data.*
+import com.tokopedia.topchat.chatroom.domain.pojo.QuotationAttributes
 import com.tokopedia.topchat.chatroom.domain.pojo.TopChatVoucherPojo
-import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherViewModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel
+import com.tokopedia.topchat.chatroom.view.viewmodel.TopChatVoucherUiModel
 import javax.inject.Inject
 
 /**
@@ -17,16 +19,15 @@ import javax.inject.Inject
  */
 class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessageMapper() {
 
-
     override fun mapAttachmentMessage(pojo: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
         return when (pojo.attachment!!.type) {
             TYPE_VOUCHER -> convertToVoucher(pojo, jsonAttributes)
+            TYPE_QUOTATION -> convertToQuotation(pojo, jsonAttributes)
             else -> super.mapAttachmentMessage(pojo, jsonAttributes)
         }
     }
 
     private fun convertToVoucher(item: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
-
         val pojo = GsonBuilder().create().fromJson<TopChatVoucherPojo>(jsonAttributes,
                 TopChatVoucherPojo::class.java)
         val voucher = pojo.voucher
@@ -47,7 +48,7 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 merchantVoucherStatus = MerchantVoucherStatus()
         )
 
-        return TopChatVoucherViewModel(
+        return TopChatVoucherUiModel(
                 item.msgId.toString(),
                 item.fromUid,
                 item.from,
@@ -62,6 +63,25 @@ class TopChatRoomWebSocketMessageMapper @Inject constructor() : WebsocketMessage
                 voucherModel,
                 "",
                 item.blastId.toString()
+        )
+    }
+
+    private fun convertToQuotation(payload: ChatSocketPojo, jsonAttributes: JsonObject): Visitable<*> {
+        val quotationAttributes = GsonBuilder()
+                .create()
+                .fromJson<QuotationAttributes>(jsonAttributes, QuotationAttributes::class.java)
+        return QuotationUiModel(
+                quotationPojo = quotationAttributes.quotation,
+                messageId = payload.msgId.toString(),
+                fromUid = payload.fromUid,
+                from = payload.from,
+                fromRole = payload.fromRole,
+                attachmentId = payload.attachment?.id ?: "",
+                attachmentType = payload.attachment?.type.toString(),
+                replyTime = payload.message.timeStampUnixNano,
+                isSender = !payload.isOpposite,
+                message = payload.message.censoredReply,
+                startTime = payload.startTime
         )
     }
 }

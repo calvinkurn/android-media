@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.profile.view.fragment.ProfileEmptyFragment
 import com.tokopedia.profile.view.fragment.ProfileFragment
@@ -44,7 +44,7 @@ class ProfileActivity : BaseSimpleActivity() {
         intent.extras.let {
             bundle.putAll(it)
         }
-        return if (GlobalConfig.isCustomerApp()) {
+        return if (!GlobalConfig.isSellerApp()) {
             hideToolbar()
             ProfileFragment.createInstance(bundle)
         } else {
@@ -58,7 +58,7 @@ class ProfileActivity : BaseSimpleActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (GlobalConfig.isCustomerApp()) {
+        if (!GlobalConfig.isSellerApp()) {
             hideToolbar()
         }
     }

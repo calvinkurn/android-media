@@ -27,12 +27,11 @@ public class ShipmentDetailData implements Parcelable {
     private boolean dropshipperPhoneValid;
     private boolean courierPromoApplied;
     private String shopId;
-    private List<ShippingCourierViewModel> shippingCourierViewModels;
+    private List<ShippingCourierUiModel> shippingCourierUiModels;
     private boolean isBlackbox;
     private int addressId;
     private boolean preorder;
     private boolean isTradein;
-    private boolean isTradeInDropOff;
     private Boolean isOrderPriority;
 
     public ShipmentDetailData() {
@@ -57,14 +56,13 @@ public class ShipmentDetailData implements Parcelable {
         dropshipperPhoneValid = in.readByte() != 0;
         courierPromoApplied = in.readByte() != 0;
         shopId = in.readString();
-        shippingCourierViewModels = in.createTypedArrayList(ShippingCourierViewModel.CREATOR);
+        shippingCourierUiModels = in.createTypedArrayList(ShippingCourierUiModel.CREATOR);
         isBlackbox = in.readByte() != 0;
         addressId = in.readInt();
         preorder = in.readByte() != 0;
         isTradein = in.readByte() != 0;
-        isTradeInDropOff = in.readByte() != 0;
         byte tmpIsOrderPriority = in.readByte();
-        isOrderPriority = tmpIsOrderPriority ==0 ? null : tmpIsOrderPriority ==1;
+        isOrderPriority = tmpIsOrderPriority == 0 ? null : tmpIsOrderPriority == 1;
     }
 
     public static final Creator<ShipmentDetailData> CREATOR = new Creator<ShipmentDetailData>() {
@@ -191,12 +189,12 @@ public class ShipmentDetailData implements Parcelable {
         this.shopId = shopId;
     }
 
-    public List<ShippingCourierViewModel> getShippingCourierViewModels() {
-        return shippingCourierViewModels;
+    public List<ShippingCourierUiModel> getShippingCourierViewModels() {
+        return shippingCourierUiModels;
     }
 
-    public void setShippingCourierViewModels(List<ShippingCourierViewModel> shippingCourierViewModels) {
-        this.shippingCourierViewModels = shippingCourierViewModels;
+    public void setShippingCourierViewModels(List<ShippingCourierUiModel> shippingCourierUiModels) {
+        this.shippingCourierUiModels = shippingCourierUiModels;
     }
 
     public boolean isCourierPromoApplied() {
@@ -237,14 +235,6 @@ public class ShipmentDetailData implements Parcelable {
 
     public void setTradein(boolean tradein) {
         isTradein = tradein;
-    }
-
-    public boolean isTradeInDropOff() {
-        return isTradeInDropOff;
-    }
-
-    public void setTradeInDropOff(boolean tradeInDropOff) {
-        isTradeInDropOff = tradeInDropOff;
     }
 
     public Boolean isOrderPriority() {
@@ -289,9 +279,8 @@ public class ShipmentDetailData implements Parcelable {
         dest.writeByte((byte) (isBlackbox ? 1 : 0));
         dest.writeInt(addressId);
         dest.writeByte((byte) (preorder ? 1 : 0));
-        dest.writeTypedList(shippingCourierViewModels);
+        dest.writeTypedList(shippingCourierUiModels);
         dest.writeByte((byte) (isTradein ? 1 : 0));
-        dest.writeByte((byte) (isTradeInDropOff ? 1 : 0));
         dest.writeByte((byte) (isOrderPriority == null ? 0 : isOrderPriority ? 1 : 2));
     }
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.topads.group.data.apiservice;
 
-import com.tokopedia.abstraction.common.data.model.request.DataRequest;
-import com.tokopedia.abstraction.common.data.model.response.DataResponse;
+import com.tokopedia.topads.common.model.request.DataRequest;
+import com.tokopedia.network.data.model.response.DataResponse;
 import com.tokopedia.topads.dashboard.constant.TopAdsNetworkConstant;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAd;
 import com.tokopedia.topads.dashboard.data.model.data.GroupAdBulkAction;

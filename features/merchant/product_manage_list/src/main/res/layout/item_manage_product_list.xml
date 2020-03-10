@@ -43,8 +43,8 @@
             android:background="@color/colorStockEmpty"
             android:gravity="center"
             android:padding="@dimen/dp_5"
-            android:text="@string/product_manage_stock_empty"
-            android:visibility="gone" />
+            android:text="@string/product_manage_stock_nonactive"
+            android:visibility="visible" />
 
         <FrameLayout
             android:id="@+id/view_product_on_supervision"

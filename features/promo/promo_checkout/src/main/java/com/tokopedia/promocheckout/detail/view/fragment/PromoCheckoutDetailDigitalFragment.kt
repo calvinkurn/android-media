@@ -5,11 +5,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.tokopedia.abstraction.common.utils.view.CommonUtils
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.promocheckout.R
-import com.tokopedia.promocheckout.common.analytics.FROM_CART
-import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
 import com.tokopedia.promocheckout.common.util.mapToStatePromoCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -19,6 +15,7 @@ import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.detail.di.PromoCheckoutDetailComponent
 import com.tokopedia.promocheckout.detail.view.activity.PromoCheckoutDetailDigitalActivity
 import com.tokopedia.promocheckout.detail.view.presenter.PromoCheckoutDetailDigitalPresenter
+import timber.log.Timber
 import javax.inject.Inject
 
 class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
@@ -84,7 +81,7 @@ class PromoCheckoutDetailDigitalFragment : BasePromoCheckoutDetailFragment() {
         try {
             progressDialog?.show()
         } catch (exception: UnsupportedOperationException) {
-            CommonUtils.dumper(exception)
+            Timber.d(exception)
         }
     }
 

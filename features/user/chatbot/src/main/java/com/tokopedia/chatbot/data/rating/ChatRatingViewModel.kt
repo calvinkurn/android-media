@@ -2,22 +2,24 @@ package com.tokopedia.chatbot.data.rating
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatViewModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
 
 /**
  * @author by yfsx on 14/05/18.
  */
 
-class ChatRatingViewModel(msgId: String,
-                          fromUid: String,
-                          from: String,
-                          fromRole: String,
-                          message: String,
-                          attachmentId: String,
-                          attachmentType: String,
-                          replyTime: String,
-                          var ratingStatus: Int,
-                          val replyTimeNano: Long) : BaseChatViewModel(msgId, fromUid, from,
+class ChatRatingViewModel(msgId: String = "",
+                          fromUid: String = "",
+                          from: String = "",
+                          fromRole: String = "",
+                          message: String = "",
+                          attachmentId: String = "",
+                          attachmentType: String = "",
+                          replyTime: String = "",
+                          var ratingStatus: Int = 0,
+                          val replyTimeNano: Long = 0,
+                          var quickReplies: List<QuickReplyViewModel> = ArrayList()) : BaseChatViewModel(msgId, fromUid, from,
         fromRole, attachmentId, attachmentType, replyTime, message)
         , Visitable<ChatbotTypeFactory> {
 
