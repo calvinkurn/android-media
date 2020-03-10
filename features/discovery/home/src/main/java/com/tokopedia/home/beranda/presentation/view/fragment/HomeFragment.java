@@ -1742,8 +1742,8 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onOpenPlayChannelList() {
-        RouteManager.route(getActivity(), BerandaUrl.PLAY_CHANNEL_LIST);
+    public void onOpenPlayChannelList(String appLink) {
+        openApplink(appLink);
     }
 
     @Override
