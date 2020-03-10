@@ -96,7 +96,7 @@ public class RouteManager {
                 for (String queryParameterName : queryParameterNames) {
                     activityIntent.putExtra(queryParameterName, uri.getQueryParameter(queryParameterName));
                 }
-                ApplinkLogger.getInstance().appendTrace("Explicit intent result:\n" + intent.toString());
+                ApplinkLogger.getInstance().appendTrace("Explicit intent result:\n" + activityIntent.toString());
                 return activityIntent;
             } else {
                 ApplinkLogger.getInstance().appendTrace("No ResolveInfo Found");
