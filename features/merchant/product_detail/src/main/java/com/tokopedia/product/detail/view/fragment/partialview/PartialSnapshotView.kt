@@ -10,6 +10,7 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -114,6 +115,7 @@ class PartialSnapshotView(private val view: View,
                         nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
                 sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
             } else {
+                if (nearestWarehouseData.nearestWarehouseStockWording.isBlank()) text_stock_available.hide()
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
                 text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
@@ -162,7 +164,6 @@ class PartialSnapshotView(private val view: View,
             view.layout_guarantee.gone()
             view.label_official_store.gone()
         }
-
     }
 
     private fun renderTxtIcon(labelIc: String, colorIc: Int, imageIc: ImageSpan) {
@@ -181,7 +182,6 @@ class PartialSnapshotView(private val view: View,
             setText(spanText, android.widget.TextView.BufferType.SPANNABLE)
         }
         view.label_official_store.visible()
-
     }
 
     private fun showCountDownTimer(campaign: CampaignModular) {
@@ -203,5 +203,4 @@ class PartialSnapshotView(private val view: View,
             view.discount_timer_holder.visibility = View.GONE
         }
     }
-
 }

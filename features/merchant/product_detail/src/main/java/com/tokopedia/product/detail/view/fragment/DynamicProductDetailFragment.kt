@@ -18,7 +18,6 @@ import android.view.animation.Animation
 import android.view.animation.AnimationSet
 import android.view.animation.ScaleAnimation
 import android.widget.ImageView
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -74,6 +73,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -621,7 +621,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 DynamicProductDetailTracking.Click.eventButtonChatClicked(viewModel.getDynamicProductInfoP1)
                 onShopChatClicked()
             }
-            R.id.btn_apply_leasing -> onApplyLeasingClicked()
+            R.id.btn_apply_leasing -> doAtc(ProductDetailConstant.LEASING_BUTTON)
             else -> {
             }
         }
@@ -2160,7 +2160,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
 
             if (isVariant && isPartialySelected) {
-                showToasterError("Pilih Dulu Gans")
+                showToasterError(getString(R.string.add_to_cart_error_variant))
+                return@let
+            }
+
+            if (viewModel.buttonAction == ProductDetailConstant.LEASING_BUTTON) {
+                goToLeasing()
                 return@let
             }
 
@@ -2194,13 +2199,34 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         }
     }
 
-    private fun onApplyLeasingClicked() {
+    private fun goToLeasing() {
         viewModel.getDynamicProductInfoP1?.run {
+            val selectedProductId = basic.productID
+
+            if (!viewModel.isUserSessionActive) {
+                startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN),
+                        ProductDetailConstant.REQUEST_CODE_LOGIN_THEN_BUY_EXPRESS)
+                return@run
+            }
+
             DynamicProductDetailTracking.Click.eventClickApplyLeasing(
                     viewModel.getDynamicProductInfoP1,
                     viewModel.generateVariantString()
             )
-            goToNormalCheckout(APPLY_CREDIT)
+
+            val urlApplyLeasingWithProductId = String.format(
+                    ProductDetailCommonConstant.URL_APPLY_LEASING,
+                    selectedProductId
+            )
+
+            val webViewUrl = String.format(
+                    "%s?url=%s",
+                    ApplinkConst.WEBVIEW,
+                    urlApplyLeasingWithProductId
+            )
+            RouteManager.route(context, webViewUrl)
+
+//            goToNormalCheckout(APPLY_CREDIT)
         }
     }
 
@@ -2283,7 +2309,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
         }
     }
-
 
     private fun initToolbarLight() {
         activity?.run {
@@ -2463,5 +2488,4 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun hasTopAds() =
             topAdsGetProductManage.data.adId.isNotEmpty() && !topAdsGetProductManage.data.adId.equals("0")
-
 }

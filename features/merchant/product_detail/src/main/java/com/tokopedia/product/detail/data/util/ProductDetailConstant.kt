@@ -149,4 +149,5 @@ object ProductDetailConstant {
     //Button Action
     const val BUY_BUTTON = 1
     const val ATC_BUTTON = 2
+    const val LEASING_BUTTON = 3
 }
