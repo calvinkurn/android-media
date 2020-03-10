@@ -51,8 +51,6 @@ import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.*
 import com.tokopedia.purchase_platform.features.promo.presentation.viewmodel.PromoCheckoutViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_promo_checkout_marketplace.*
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -66,6 +64,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     @Inject
     lateinit var itemDecorator: PromoDecoration
 
+    // Use single recycler view to prevent NPE cuased by nested recyclerview
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
 
@@ -172,7 +171,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             val lastData = adapter.data[topItemPosition]
 
-            var isShow = false
+            val isShow: Boolean
             if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isExpanded) {
                 tmpLastHeaderUiModel = lastData
                 isShow = true
@@ -196,8 +195,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 isShow = false
             }
 
+            // View logic here should be same as view logic on #PromoListHeaderEnabledViewHolder
             if (tmpLastHeaderUiModel != null) {
-
                 if (tmpLastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
                     ImageHandler.loadImageRounded2(context, section_image_promo_list_header, tmpLastHeaderUiModel?.uiData?.iconUrl)
                     section_image_promo_list_header.show()
@@ -311,12 +310,18 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observeApplyPromoResult() {
         viewModel.applyPromoResponse.observe(this, Observer {
             setButtonLoading(button_apply_promo, false)
-            when (it) {
-                is Success -> {
-
+            when {
+                it.state == ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART -> {
+                    activity?.setResult(Activity.RESULT_OK)
+                    activity?.finish()
                 }
-                is Fail -> {
-
+                it.state == ApplyPromoResponseAction.ACTION_RELOAD_PROMO -> {
+                    reloadData()
+                }
+                it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
+                    it.exception?.let {
+                        showToastMessage(it)
+                    }
                 }
             }
         })
@@ -325,12 +330,10 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     private fun observeClearPromoResult() {
         viewModel.clearPromoResponse.observe(this, Observer {
             setButtonLoading(button_apply_no_promo, false)
-            when (it) {
-                is Success -> {
-                    activity?.finish()
-                }
-                is Fail -> {
-                    showToastMessage(it.throwable)
+            when {
+                it.state == ClearPromoResponseAction.ACTION_STATE_SUCCESS -> activity?.finish()
+                it.state == ClearPromoResponseAction.ACTION_STATE_ERROR -> it.exception?.let {
+                    showToastMessage(it)
                 }
             }
         })
@@ -370,7 +373,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
             } else {
                 toolbar?.disableResetButton()
-                if (fragmentUiModel.uiState.hasPreselectedPromo) {
+                if (fragmentUiModel.uiState.hasPreAppliedPromo) {
                     label_total_promo_info.gone()
                     label_total_promo_amount.gone()
                     button_apply_promo.gone()
@@ -399,6 +402,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun reloadData() {
+        adapter.clearAllElements()
         layout_main_container.show()
         loadData(0)
     }
@@ -471,7 +475,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     fun showToastMessage(throwable: Throwable) {
         val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        showToastMessage(errorMessage)
+        if (errorMessage.isNotBlank()) {
+            showToastMessage(errorMessage)
+        } else {
+            showToastMessage("Terjadi kesalahan. Ulangi beberapa saat lagi")
+        }
     }
 
     private fun showSavePromoDialog() {
@@ -482,8 +490,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setPrimaryCTAText("Simpan Promo Baru")
                 setSecondaryCTAText("Keluar Halaman")
                 setPrimaryCTAClickListener {
-                    // Todo : Hit validate use
-                    dismiss()
+                    if (viewModel.isHasAnySelectedPromoItem()) {
+                        viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
+                    } else {
+                        viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
+                    }
                 }
                 setSecondaryCTAClickListener {
                     dismiss()
@@ -494,9 +505,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onBackPressed() {
-        // Todo : validate if has any changes but have not hit validate use
         if (viewModel.fragmentUiModel.value != null) {
-            if (viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false) {
+            if (viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false && viewModel.hasDifferentPreAppliedState()) {
                 showSavePromoDialog()
             } else {
                 activity?.finish()

@@ -13,11 +13,12 @@ data class FragmentUiModel(
             var exception: Throwable? = null,
             var tokopointsTncLabel: String = "",
             var tokopointsTncTitle: String = "",
-            var tokopointsTncDetails: ArrayList<TokoPointsTncUiModel> = ArrayList()
+            var tokopointsTncDetails: ArrayList<TokoPointsTncUiModel> = ArrayList(),
+            var preAppliedPromoCode: List<String> = emptyList()
     )
 
     data class UiState(
-            var hasPreselectedPromo: Boolean = false,
+            var hasPreAppliedPromo: Boolean = false,
             var hasAnyPromoSelected: Boolean = false,
             var hasFailedToLoad: Boolean = false
     )
