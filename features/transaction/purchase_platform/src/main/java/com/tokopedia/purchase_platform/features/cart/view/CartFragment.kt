@@ -112,6 +112,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
+import kotlinx.coroutines.*
 import rx.subscriptions.CompositeSubscription
 import java.util.*
 import javax.inject.Inject
@@ -191,6 +192,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var isToolbarWithBackButton = true
     private var noAvailableItems = false
     private var listRedPromos: List<String> = emptyList()
+    private var prevCbSelectAllIsSelected: Boolean = false
+    private var cbChangeJob: Job? = null
 
     companion object {
 
@@ -442,6 +445,28 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         btnRemove.setOnClickListener {
             if (btnRemove.isVisible) {
                 onToolbarRemoveAllCart()
+            }
+        }
+        setCbSelectAllOnCheckedChangeListener()
+    }
+
+    private fun setCbSelectAllOnCheckedChangeListener() {
+        var prevIsChecked = cartListData?.isAllSelected
+        cbSelectAll.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked != prevIsChecked)  {
+                prevIsChecked = isChecked
+
+                cbChangeJob?.cancel()
+                cbChangeJob = GlobalScope.launch(Dispatchers.Main) {
+                    delay(500L)
+                    if (isChecked == prevIsChecked) {
+                        if (isChecked != cartListData?.isAllSelected) {
+                            //TODO : hit update cart & validate use
+                            println("++ YEY HIT!!")
+                            onSelectAllClicked()
+                        }
+                    }
+                }
             }
         }
     }
