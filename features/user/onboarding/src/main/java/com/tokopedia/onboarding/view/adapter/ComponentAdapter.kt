@@ -17,6 +17,5 @@ class ComponentAdapter : BaseAdapter<OnboardingUiModel>() {
 
     fun addComponent(uiModels: List<OnboardingUiModel>) {
         addItems(uiModels)
-        notifyDataSetChanged()
     }
 }

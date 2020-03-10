@@ -14,9 +14,9 @@ import dagger.Component
 @OnboardingScope
 @Component(modules = [
     OnboardingModule::class,
-    DynamicOnbaordingUseCaseModule::class,
+    DynamicOnboardingUseCaseModule::class,
     DynamicOnboardingViewModelModule::class,
-    DynamicOnbaordingQueryModule::class
+    DynamicOnboardingQueryModule::class
 ], dependencies = [BaseAppComponent::class])
 interface OnboardingComponent {
     fun inject(activity: OnboardingActivity)

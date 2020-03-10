@@ -7,7 +7,7 @@ import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.domain.model.PageDataModel
 import com.tokopedia.onboarding.view.component.viewholder.PageViewHolder
 
-class PageAdapterDelegate : TypedAdapterDelegate<PageDataModel, PageDataModel, PageViewHolder>(R.layout.layout_dynamic_onbaording_page) {
+class PageAdapterDelegate : TypedAdapterDelegate<PageDataModel, PageDataModel, PageViewHolder>(R.layout.layout_dynamic_onboarding_page) {
 
     override fun onBindViewHolder(item: PageDataModel, holder: PageViewHolder) {
         holder.bind(item)
