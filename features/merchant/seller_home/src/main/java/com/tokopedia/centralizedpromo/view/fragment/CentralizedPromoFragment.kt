@@ -6,6 +6,7 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -180,6 +181,12 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
                         getString(R.string.sh_coachmark_title_promo_recommendation),
                         getString(R.string.sh_coachmark_desc_promo_recommendation)))
             }
+
+            context?.let {
+                layoutCentralizedPromoOnGoingPromoSuccess.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
+                layoutCentralizedPromoRecommendation.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
+            }
+
             coachMark.show(activity, TAG_COACH_MARK, coachMarkItem)
         }
     }
