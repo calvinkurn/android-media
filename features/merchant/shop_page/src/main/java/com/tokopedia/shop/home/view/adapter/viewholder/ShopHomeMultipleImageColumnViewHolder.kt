@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import kotlinx.android.synthetic.main.widget_shop_home_multiple_image_column.view.*
 
@@ -16,7 +17,7 @@ import kotlinx.android.synthetic.main.widget_shop_home_multiple_image_column.vie
 
 class ShopHomeMultipleImageColumnViewHolder(
         itemView: View,
-        shopHomeMultipleImageColumnListener: ShopHomeMultipleImageColumnListener
+        listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -28,22 +29,8 @@ class ShopHomeMultipleImageColumnViewHolder(
         private const val SPAN_SIZE_TRIPLE = 2
     }
 
-    interface ShopHomeMultipleImageColumnListener{
-        fun onMultipleImageColumnItemImpression(
-                displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
-                displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
-                parentPosition: Int,
-                adapterPosition: Int
-        )
-
-        fun onMultipleImageColumnItemClicked(
-                displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
-                displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem
-        )
-    }
-
     private val shopHomeMultipleImageColumnAdapter by lazy { ShopHomeMultipleImageColumnAdapter(
-            shopHomeMultipleImageColumnListener
+            listener
     ) }
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {

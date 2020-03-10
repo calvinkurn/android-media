@@ -129,6 +129,7 @@ public class ShopPageTrackingConstant {
     public static final String SELECTED_ETALASE_CHIP = "etalase chip %1s";
     public static final String ETALASE_SECTION = "etalase %1s";
     public static final String WISHLIST = "wishlist";
+    public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
 
 
 
@@ -196,6 +197,10 @@ public class ShopPageTrackingConstant {
     public static final String SRP_SHOPNAME = "srp-%s";
 
     public static final String VERTICAL_POSITION = "p%1d";
+    public static final String HOME_TAB = "home";
+    public static final String PROMO_SLOT_NAME = "promo slot name";
+    public static final String HOME_FEATURED_PRODUCT = "featured product";
+    public static final String ALL_PRODUCT = "all product";
 
 
 }

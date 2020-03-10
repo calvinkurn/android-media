@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.common.utils.network.TextApiUtils
 import com.tokopedia.gm.common.data.source.cloud.model.GMFeaturedProduct
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapterTypeFactory
 import com.tokopedia.shop.newproduct.view.adapter.ShopProductAdapterTypeFactory
@@ -15,7 +16,7 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProductLabel
  * Created by nathan on 2/6/18.
  */
 
-class ShopHomeProductViewModel : Visitable<BaseAdapterTypeFactory> {
+class ShopHomeProductViewModel : Visitable<BaseAdapterTypeFactory>, ImpressHolder {
 
     var id: String? = null
     var name: String? = null

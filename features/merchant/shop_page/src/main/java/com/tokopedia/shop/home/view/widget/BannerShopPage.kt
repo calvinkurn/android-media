@@ -3,6 +3,7 @@ package com.tokopedia.shop.home.view.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import com.tokopedia.banner.BannerView
@@ -25,6 +26,7 @@ class BannerShopPage(@NonNull context: Context, @Nullable attrs: AttributeSet) :
         this.indicatorItems = ArrayList()
         this.impressionStatusList = ArrayList()
         this.promoImageUrls = ArrayList()
+        this.bannerSeeAll = view.findViewById(R.id.promo_link_shop_home) as TextView
     }
 
     override fun getIndicatorFocus(): Int {

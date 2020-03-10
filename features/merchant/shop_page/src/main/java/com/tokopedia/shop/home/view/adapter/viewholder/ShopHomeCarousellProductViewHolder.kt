@@ -14,20 +14,24 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapter
 import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapterTypeFactory
+import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 
 /**
  * Created by normansyahputa on 2/22/18.
  */
 
-class ShopHomeCarousellProductViewHolder(itemView: View) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
+class ShopHomeCarousellProductViewHolder(
+        itemView: View,
+        shopPageHomeProductClickListener: ShopPageHomeProductClickListener
+) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
     private var textViewTitle: TextView? = null
     private var textViewCta: TextView? = null
     private var ivBadge: ImageView? = null
     private var etalaseHeaderContainer: View? = null
     private var recyclerView: RecyclerView? = null
     private val adapterTypeFactory: ShopPageHomeCarousellAdapterTypeFactory by lazy {
-        ShopPageHomeCarousellAdapterTypeFactory()
+        ShopPageHomeCarousellAdapterTypeFactory(shopPageHomeProductClickListener)
     }
     private val adapterCarousell: ShopPageHomeCarousellAdapter by lazy {
         ShopPageHomeCarousellAdapter(adapterTypeFactory).apply {
@@ -60,9 +64,9 @@ class ShopHomeCarousellProductViewHolder(itemView: View) : AbstractViewHolder<Sh
         }
     }
 
-    override fun bind(uiModel: ShopHomeCarousellProductUiModel) {
-        val title = uiModel.header.title
-        val ctaText = uiModel.header.ctaText
+    override fun bind(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
+        val title = shopHomeCarousellProductUiModel.header.title
+        val ctaText = shopHomeCarousellProductUiModel.header.ctaText
         if(title.isEmpty() && ctaText.isEmpty()){
             etalaseHeaderContainer?.hide()
         }
@@ -71,11 +75,12 @@ class ShopHomeCarousellProductViewHolder(itemView: View) : AbstractViewHolder<Sh
         if(ctaText.isNotEmpty()){
             textViewCta?.apply {
                 visibility = View.VISIBLE
-                text = MethodChecker.fromHtml(uiModel.header.ctaText)
+                text = MethodChecker.fromHtml(shopHomeCarousellProductUiModel.header.ctaText)
             }
         }
-        adapterCarousell.uiModel = uiModel
+        adapterCarousell.shopHomeCarousellProductUiModel = shopHomeCarousellProductUiModel
+        adapterCarousell.parentIndex = adapterPosition
         adapterCarousell.clearAllElements()
-        adapterCarousell.setProductListData(uiModel.productList)
+        adapterCarousell.setProductListData(shopHomeCarousellProductUiModel.productList)
     }
 }

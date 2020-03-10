@@ -479,4 +479,13 @@ public class ShopPageTracking {
                 customDimensionShopPage
         );
     }
+
+    protected String formatPrice(String displayedPrice) {
+        if (!TextUtils.isEmpty(displayedPrice)) {
+            displayedPrice = displayedPrice.replaceAll("[^\\d]", "");
+            return displayedPrice;
+        } else {
+            return "";
+        }
+    }
 }
