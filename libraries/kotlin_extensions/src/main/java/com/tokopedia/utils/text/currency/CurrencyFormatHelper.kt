@@ -3,9 +3,9 @@ package com.tokopedia.utils.text.currency
 import android.widget.EditText
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-
+import java.lang.Integer.parseInt
 import java.text.NumberFormat
-import java.util.Locale
+import java.util.*
 
 /**
  * use [CurrencyFormatUtil] for flexibility of currency (can use other than IDR, USD, etc)
@@ -13,7 +13,7 @@ import java.util.Locale
  * changed "," to "." for rupiah
  */
 object CurrencyFormatHelper {
-    private val RupiahFormat = NumberFormat.getCurrencyInstance(Locale.US)
+    private val RupiahFormat = NumberFormat.getIntegerInstance(Locale.US)
     private val DollarFormat = NumberFormat.getCurrencyInstance(Locale("en", "US"))
     // this flag intend to block textwatcher to be called recursively
     private var LockTextWatcher = false
@@ -22,9 +22,9 @@ object CurrencyFormatHelper {
     val OTHER = -1
 
 
-    fun ConvertToRupiah(string: String): String {
+    fun convertToRupiah(string: String): String {
         return try {
-            val inrupiah: String = RupiahFormat.format(java.lang.Long.parseLong(string.replace("Rp", ""))).replace("$", "").replace("Rp", "").replace(".00", "")
+            val inrupiah: String = RupiahFormat.format(java.lang.Long.parseLong(string.replace("Rp", ""))).replace("$", "").replace("Rp", "").replace(".00", "").replace(",", ".")
             inrupiah
         } catch (e: NumberFormatException) {
             e.printStackTrace()
@@ -33,7 +33,7 @@ object CurrencyFormatHelper {
 
     }
 
-    fun ConvertToDollar(string: String): String {
+    fun convertToDollar(string: String): String {
         return try {
             val indollar: String = DollarFormat.format(java.lang.Double.parseDouble(string)).replace("$", "")
             indollar
@@ -44,7 +44,7 @@ object CurrencyFormatHelper {
 
     }
 
-    fun SetToRupiah(et: EditText) {
+    fun setToRupiah(et: EditText) {
         try {
             if (et.length() > 0 && !LockTextWatcher) {
                 LockTextWatcher = true
@@ -92,39 +92,31 @@ object CurrencyFormatHelper {
                 LockTextWatcher = true
                 var tempCursorPos = et.selectionStart
                 val tempLength = et.length()
-                et.setText(RupiahFormat.format(java.lang.Long.parseLong(
-                        et.text.toString()
+                val textToFormat = et.text.toString()
+                val formattedText = RupiahFormat.format(parseInt(
+                        textToFormat
                                 .substring(noFirstCharToIgnore)
                                 .replace("$", "")
-                                .replace(".00", "")
-                                .replace(".0", "")
                                 .replace(",", "")
                                 .replace(".", "")))
                         .replace("$", "")
-                        .replace(".00", "")
-                        .replace(".0", ""))
-                // Handler untuk tanda koma
-                if (et.length() - tempLength == 1)
-                // Untuk majuin cursor ketika nambah koma
-                {
+                        .replace(",",".")
+                et.setText(formattedText)
+                if (et.length() - tempLength == 1) {
                     if (et.length() < 4 + noFirstCharToIgnore) {
                         tempCursorPos += 1
-                    } else if (et.text[tempCursorPos] != '.') { // Untuk mundur ketika mencoba menghapus koma
+                    } else if (et.text[tempCursorPos] != '.') {
                         tempCursorPos += 1
                     }
-                } else if (et.length() - tempLength == -1)
-                // Mundurin cursor ketika hapus koma
-                {
+                } else if (et.length() - tempLength == -1) {
                     tempCursorPos -= 1
                 } else if (et.length() > 3 + noFirstCharToIgnore
                         && tempCursorPos < et.length()
                         && tempCursorPos > noFirstCharToIgnore) {
-                    if (et.text[tempCursorPos - 1] == '.') { // Mundurin cursor ketika menambah digit dibelakang koma
+                    if (et.text[tempCursorPos - 1] == '.') {
                         tempCursorPos -= 1
                     }
                 }
-
-                // Set posisi cursor
                 if (tempCursorPos < et.length() && tempCursorPos > -1 + noFirstCharToIgnore)
                     et.setSelection(tempCursorPos)
                 else if (tempCursorPos < noFirstCharToIgnore)
@@ -184,17 +176,18 @@ object CurrencyFormatHelper {
     }
 
     fun convertRupiahToInt(rupiah: String): Int {
-        val result = rupiah.replace("Rp", "")
-                .replace(".", "")
-                .replace(",", "")
-                .replace(" ", "")
+        var result = rupiah.replace("Rp", "")
+        result = result.replace(",", "")
+        result = result.replace(".", "")
+        result = result.replace(" ", "")
         return result.toIntOrZero()
     }
 
     fun convertRupiahToLong(rupiah: String): Long {
-        val result = rupiah.replace("Rp", "")
-                .replace(".", "")
-                .replace(" ", "")
+        var result = rupiah.replace("Rp", "")
+        result = result.replace(",", "")
+        result = result.replace(".", "")
+        result = result.replace(" ", "")
         return result.toLongOrZero()
     }
 }

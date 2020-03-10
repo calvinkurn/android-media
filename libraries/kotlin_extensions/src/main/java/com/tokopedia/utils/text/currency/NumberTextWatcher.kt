@@ -31,7 +31,7 @@ open class NumberTextWatcher : AfterTextWatcher {
     override fun afterTextChanged(s: Editable) {
         applyFormatter()
         var valueString = CurrencyFormatHelper.removeCurrencyPrefix(s.toString())
-        valueString = valueString?.let { StringUtils.removeComma(it) }
+        valueString = valueString?.let { StringUtils.removePeriod(it) }
         if (TextUtils.isEmpty(valueString)) {
             editText.setText(defaultValue)
             editText.setSelection(editText.text.length)

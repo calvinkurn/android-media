@@ -3,6 +3,7 @@ package com.tokopedia.product.manage.feature.quickedit.price.presentation.fragme
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
 import android.text.TextWatcher
 import android.view.View
@@ -28,6 +29,7 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
         private const val PRODUCT_PRICE = "price"
         private const val MAX_PRICE = 100000000
         private const val MIN_PRICE = 100
+        private const val MAXIMUM_STRING_LENGTH = 11
         fun createInstance(context: Context, price: String) : ProductManageQuickEditPriceFragment {
             return ProductManageQuickEditPriceFragment().apply{
                 val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
@@ -61,7 +63,8 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
             quick_edit_price.prependText(it.resources.getString(R.string.product_manage_quick_edit_currency))
         }
         quick_edit_price.apply {
-            textFieldInput.setText(CurrencyFormatHelper.removeCurrencyPrefix(CurrencyFormatHelper.ConvertToRupiah(currentPrice)))
+            textFieldInput.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_STRING_LENGTH))
+            textFieldInput.setText(CurrencyFormatHelper.removeCurrencyPrefix(CurrencyFormatHelper.convertToRupiah(currentPrice)))
             setFirstIcon(com.tokopedia.unifyicon.R.drawable.ic_system_action_close_normal_24)
             setInputType(InputType.TYPE_CLASS_NUMBER)
             getFirstIcon().setOnClickListener {
@@ -92,15 +95,7 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
         }
         quick_edit_price.requestFocus()
         quick_edit_save_button.setOnClickListener {
-            price = CurrencyFormatHelper.convertRupiahToInt(quick_edit_price.textFieldInput.text.toString()).toString()
-            when {
-                isPriceTooLow() -> showErrorPriceTooLow()
-                isPriceTooHigh() -> showErrorPriceTooHigh()
-                else -> {
-                    editPriceSuccess = true
-                    super.dismiss()
-                }
-            }
+            isPriceValid()
         }
     }
 
@@ -127,6 +122,24 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
     private fun hideError() {
         quick_edit_price.setError(false)
         quick_edit_price.setMessage("")
+    }
+
+    private fun isPriceValid() {
+        price = CurrencyFormatHelper.convertRupiahToInt(quick_edit_price.textFieldInput.text.toString()).toString()
+        when {
+            isPriceTooLow() -> {
+                showErrorPriceTooLow()
+                return
+            }
+            isPriceTooHigh() -> {
+                showErrorPriceTooHigh()
+                return
+            }
+            else -> {
+                editPriceSuccess = true
+                super.dismiss()
+            }
+        }
     }
 
 }

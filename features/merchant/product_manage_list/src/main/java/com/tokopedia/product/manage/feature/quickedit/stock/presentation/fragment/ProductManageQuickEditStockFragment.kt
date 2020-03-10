@@ -95,8 +95,6 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
             setValueChangedListener { newValue, _, _ ->
                 viewModel.updateStock(newValue)
             }
-            val idrTextWatcher = CurrencyIdrTextWatcher(quick_edit_stock_quantity_editor.editText as EditText)
-            editText.addTextChangedListener(idrTextWatcher)
         }
 
         quick_edit_stock_save_button.setOnClickListener {

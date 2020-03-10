@@ -100,6 +100,10 @@ object StringUtils {
         return numericString.replace(",", "")
     }
 
+    fun removePeriod(numericString: String): String {
+        return numericString.replace(".", "")
+    }
+
     fun isValidEmail(contactEmail: String): Boolean {
         return Patterns.EMAIL_ADDRESS.matcher(contactEmail).matches() &&
                 !contactEmail.contains(".@") && !contactEmail.contains("@.")
