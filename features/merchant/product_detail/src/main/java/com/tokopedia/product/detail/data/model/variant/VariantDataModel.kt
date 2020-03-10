@@ -15,6 +15,11 @@ data class VariantDataModel(
         var listOfVariantCategory: List<VariantCategory>? = null,
         var mapOfSelectedVariant: MutableMap<String, Int> = mutableMapOf()
 ) : DynamicPdpDataModel {
+
+    fun isPartialySelected(): Boolean = mapOfSelectedVariant.any {
+        it.value == 0
+    }
+
     override fun type(): String = type
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)

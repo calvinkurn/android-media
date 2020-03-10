@@ -70,7 +70,12 @@ class GetProductInfoP2GeneralUseCase @Inject constructor(private val rawQueries:
         val forceRefresh = requestParams.getBoolean(ProductDetailCommonConstant.FORCE_REFRESH, false)
         val minOrder = requestParams.getInt(ProductDetailCommonConstant.PARAM_MIN_ORDER, 0)
 
-        val paramsVariant = mapOf(ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString())
+        val paramsVariant = mapOf(
+                ProductDetailCommonConstant.PARAM_PRODUCT_ID to productId.toString(),
+                ProductDetailConstant.PARAM_OPTION to mapOf(ProductDetailConstant.KEY_USER_ID to userId.toString(),
+                        ProductDetailConstant.PARAM_INCLUDE_CAMPAIGN to true)
+        )
+
         val variantRequest = GraphqlRequest(rawQueries[RawQueryKeyConstant.QUERY_VARIANT],
                 ProductDetailVariantCommonResponse::class.java, paramsVariant)
 

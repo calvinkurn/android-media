@@ -1,6 +1,6 @@
-query getProductVariant($productID:String!){
+query getProductVariant($productID:String!,$option:pdpGetProductVariantReqOption){
     status
-    getProductVariant(productID: $productID){
+    getProductVariant(productID: $productID, option:$option){
     parentID
     defaultChild
     sizeChart

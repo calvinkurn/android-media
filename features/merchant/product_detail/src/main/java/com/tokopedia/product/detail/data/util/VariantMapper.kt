@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
+import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.pdplayout.BasicInfo
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
@@ -18,6 +19,11 @@ object VariantMapper {
                 productID = newData?.productId.toString(),
                 sku = newData?.sku ?: "",
                 minOrder = newData?.stock?.minimumOrder ?: 0,
+                status = if (newData?.isBuyable == true) {
+                    ProductStatusTypeDef.ACTIVE
+                } else {
+                    ProductStatusTypeDef.WAREHOUSE
+                },
                 url = newData?.url ?: "")
 
         val newCampaign = oldData.data.campaign.copy(
@@ -31,7 +37,8 @@ object VariantMapper {
                 endDate = newData?.campaign?.endDate ?: "",
                 stock = newData?.campaign?.stock ?: 0,
                 isAppsOnly = newData?.campaign?.isAppsOnly ?: false,
-                appLinks = newData?.campaign?.applinks ?: ""
+                appLinks = newData?.campaign?.applinks ?: "",
+                percentageAmount = newData?.campaign?.discountedPercentage?.toInt() ?: 0
         )
 
         val newMedia = if (newData?.hasPicture == true) {

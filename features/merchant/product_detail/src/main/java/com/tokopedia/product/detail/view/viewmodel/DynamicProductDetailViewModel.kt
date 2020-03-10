@@ -168,13 +168,11 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     fun addPartialImage(imageUrl: String) {
         listOfParentMedia?.let {
-            if (imageUrl.isEmpty()) {
-                _updatedImageVariant.value = listOfParentMedia
-            } else {
-                val listOfUpdateImage = it.toMutableList()
-                listOfUpdateImage.add(0, Media(type = "image", uRL300 = imageUrl, uRLOriginal = imageUrl, uRLThumbnail = imageUrl))
-                _updatedImageVariant.value = listOfUpdateImage
-            }
+            if (imageUrl.isEmpty() && imageUrl == it.firstOrNull()?.uRLOriginal) return@let
+
+            val listOfUpdateImage = it.toMutableList()
+            listOfUpdateImage.add(0, Media(type = "image", uRL300 = imageUrl, uRLOriginal = imageUrl, uRLThumbnail = imageUrl))
+            _updatedImageVariant.value = listOfUpdateImage
         }
     }
 

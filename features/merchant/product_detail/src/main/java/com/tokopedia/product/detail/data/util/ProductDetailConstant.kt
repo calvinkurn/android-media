@@ -26,6 +26,9 @@ object ProductDetailConstant {
     const val PARAM_PRODUCT_ETALASE_ID = "product_etalase_id"
     const val PARAM_PRODUCT_ETALASE_NAME = "product_etalase_name"
 
+    const val PARAM_OPTION = "option"
+    const val PARAM_INCLUDE_CAMPAIGN = "includeCampaign"
+
     const val VALUE_NEW_ETALASE = "new"
 
     //waarehouse product

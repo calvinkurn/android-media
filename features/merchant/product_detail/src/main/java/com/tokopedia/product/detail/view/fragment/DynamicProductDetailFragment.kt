@@ -1096,12 +1096,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeImageVariantPartialyChanged() {
         viewModel.updatedImageVariant.observe(viewLifecycleOwner, Observer {
-            if (viewModel.getDynamicProductInfoP1?.data?.media?.firstOrNull()?.uRLOriginal != it.firstOrNull()?.uRLOriginal) {
-                pdpHashMapUtil?.snapShotMap?.media = DynamicProductDetailMapper.convertMediaToDataModel(it)
-                viewModel.getDynamicProductInfoP1 = VariantMapper.updateMediaToCurrentP1Data(viewModel.getDynamicProductInfoP1, it)
-                pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
-                adapter.notifyDataSetChanged()
-            }
+            pdpHashMapUtil?.updateImageAfterClickVariant(it)
+            viewModel.getDynamicProductInfoP1 = VariantMapper.updateMediaToCurrentP1Data(viewModel.getDynamicProductInfoP1, it)
+            adapter.notifyDataSetChanged()
         })
     }
 
@@ -1393,17 +1390,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun getStockWording(): String {
         val updatedNearestWarehouse = pdpHashMapUtil?.snapShotMap?.getNearestWarehouse()?.nearestWarehouseStockWording
+        val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
+                ?: false
 
-        return if (updatedNearestWarehouse.isNullOrBlank()) {
-            if (VariantCommonMapper.selectedOptionId.size != viewModel.variantData?.variant?.size) {
-                ""
-            } else {
-                viewModel.variantData?.children?.find {
-                    it.optionIds == VariantCommonMapper.selectedOptionId
-                }?.stock?.stockWording ?: ""
-            }
+        return if (isPartialySelected) {
+            ""
         } else {
-            updatedNearestWarehouse
+            updatedNearestWarehouse ?: ""
         }
     }
 
@@ -1412,16 +1405,15 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             it.mapOfSelectedVariant[variantOptions.variantOptionIdentifier] = variantOptions.variantId
         }
 
-        val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant?.any {
-            it.value == 0
-        } ?: false
+        val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
+                ?: false
 
         val variantData = VariantCommonMapper.processVariant(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, variantOptions.level, isPartialySelected)
         pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
 
         if (isPartialySelected) {
             //If user select partialy and its colour type, only update image in snapshot
-            if (variantOptions.variantOptionIdentifier == "colour" && variantOptions.hasCustomImages) {
+            if (variantOptions.variantOptionIdentifier == "colour" && variantOptions.image.isNotBlank()) {
                 viewModel.addPartialImage(variantOptions.image)
             } else {
                 dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel)

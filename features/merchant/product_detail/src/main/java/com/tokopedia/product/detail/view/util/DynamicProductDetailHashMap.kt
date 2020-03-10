@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.joinToStringWithLast
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
+import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
@@ -265,6 +266,13 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                     }
                 }
             }
+        }
+    }
+
+    fun updateImageAfterClickVariant(it: MutableList<Media>) {
+        snapShotMap?.run {
+            media = DynamicProductDetailMapper.convertMediaToDataModel(it)
+            shouldReinitVideoPicture = true
         }
     }
 

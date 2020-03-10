@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -92,8 +91,6 @@ class PartialSnapshotView(private val view: View,
 
             if (product.data.variant.isVariant) {
                 text_stock_available.gone()
-            } else {
-                text_stock_available.show()
             }
         }
     }
