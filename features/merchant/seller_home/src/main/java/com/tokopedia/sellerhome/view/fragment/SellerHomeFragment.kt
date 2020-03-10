@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.crashlytics.android.Crashlytics
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -18,9 +19,11 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.sellerhome.BuildConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.ShopStatus
 import com.tokopedia.sellerhome.common.WidgetType
+import com.tokopedia.sellerhome.common.exception.SellerHomeException
 import com.tokopedia.sellerhome.common.utils.Utils
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.view.adapter.SellerHomeAdapterTypeFactory
@@ -30,12 +33,14 @@ import com.tokopedia.sellerhome.view.viewholder.*
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.ticker.*
+import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_sah.view.*
-import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -51,6 +56,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         fun newInstance() = SellerHomeFragment()
 
         private const val TAG_TOOLTIP = "seller_home_tooltip"
+        private const val ERROR_LAYOUT = "Error get layout data."
+        private const val ERROR_WIDGET = "Error get widget data."
+        private const val ERROR_TICKER = "Error get ticker data."
         private const val TOAST_DURATION = 5000L
     }
 
@@ -258,7 +266,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> setOnSuccessGetLayout(result.data)
-                is Fail -> setOnErrorGetLayout()
+                is Fail -> setOnErrorGetLayout(result.throwable)
             }
         })
 
@@ -313,7 +321,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                 }
     }
 
-    private fun setOnErrorGetLayout() = view?.run {
+    private fun setOnErrorGetLayout(throwable: Throwable) = view?.run {
         if (adapter.data.isEmpty()) {
             sahGlobalError.visible()
         } else {
@@ -322,6 +330,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         }
         view?.swipeRefreshLayout?.isRefreshing = false
         showGetWidgetProgress(false)
+
+        logToCrashlytics(throwable, ERROR_LAYOUT)
     }
 
     private fun showErrorToaster() = view?.run {
@@ -387,7 +397,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Success -> onSuccessGetTickers(it.data)
-                is Fail -> view?.relTicker?.gone()
+                is Fail -> {
+                    logToCrashlytics(it.throwable, ERROR_TICKER)
+                    view?.relTicker?.gone()
+                }
             }
         })
         sellerHomeViewModel.getTicker()
@@ -397,7 +410,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
         liveData.observe(viewLifecycleOwner, Observer { result ->
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
-                is Fail -> result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
+                is Fail -> {
+                    logToCrashlytics(result.throwable, "$ERROR_WIDGET $type")
+                    result.throwable.setOnErrorWidgetState<D, BaseWidgetUiModel<D>>(type)
+                }
             }
         })
     }
@@ -455,6 +471,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, SellerHomeAdap
                     }
                 }
             })
+        }
+    }
+
+    private fun logToCrashlytics(throwable: Throwable, message: String) {
+        if (!BuildConfig.DEBUG) {
+            val exceptionMessage = "$message - ${throwable.localizedMessage}"
+
+            Crashlytics.logException(SellerHomeException(
+                    message = exceptionMessage,
+                    cause = throwable
+            ))
+        } else {
+            throwable.printStackTrace()
         }
     }
 
