@@ -5,27 +5,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
+import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
-import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
-import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
-import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
-import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
-import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
-import com.tokopedia.product.manage.feature.list.view.model.ViewState
+import com.tokopedia.product.manage.feature.list.view.model.*
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
+import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
+import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
+import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
+import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
-import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductEditPriceParam
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3Param
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3Response
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditPriceUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
@@ -42,17 +42,19 @@ import kotlinx.coroutines.withContext
 import rx.Subscriber
 
 class ProductManageViewModel(
-    private val editPriceProductUseCase: EditPriceUseCase,
-    private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-    private val userSessionInterface: UserSessionInterface,
-    private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-    private val setCashbackUseCase: SetCashbackUseCase,
-    private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-    private val getProductListUseCase: GQLGetProductListUseCase,
-    private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
-    private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
-    private val ioDispatcher: CoroutineDispatcher,
-    mainDispatcher: CoroutineDispatcher
+        private val editPriceUseCase: EditPriceUseCase,
+        private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+        private val userSessionInterface: UserSessionInterface,
+        private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+        private val setCashbackUseCase: SetCashbackUseCase,
+        private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
+        private val getProductListUseCase: GQLGetProductListUseCase,
+        private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
+        private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
+        private val editStockUseCase: EditStockUseCase,
+        private val deleteProductUseCase: DeleteProductUseCase,
+        private val ioDispatcher: CoroutineDispatcher,
+        mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
 
     val viewState : LiveData<ViewState>
@@ -65,10 +67,12 @@ class ProductManageViewModel(
         get() = _shopInfoResult
     val updateProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
         get() = _updateProductResult
-    val deleteProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
+    val deleteProductResult : LiveData<Result<DeleteProductResult>>
         get() = _deleteProductResult
     val editPriceResult : LiveData<Result<EditPriceResult>>
         get() = _editPriceResult
+    val editStockResult : LiveData<Result<EditStockResult>>
+        get() = _editStockResult
     val setCashBackResult : LiveData<Result<SetCashBackResult>>
         get() = _setCashBackResult
     val getFreeClaimResult : LiveData<Result<DataDeposit>>
@@ -83,8 +87,9 @@ class ProductManageViewModel(
     private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
     private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
-    private val _deleteProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
+    private val _deleteProductResult = MutableLiveData<Result<DeleteProductResult>>()
     private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
+    private val _editStockResult = MutableLiveData<Result<EditStockResult>>()
     private val _setCashBackResult = MutableLiveData<Result<SetCashBackResult>>()
     private val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
     private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
@@ -167,33 +172,40 @@ class ProductManageViewModel(
         })
     }
 
-    fun editPrice(productId: String, price: String) {
+    fun editPrice(productId: String, price: String, productName: String) {
         showProgressDialog()
+        editPriceUseCase.params = EditPriceUseCase.createRequestParams(userSessionInterface.shopId, productId, price.toFloatOrZero())
+        launchCatchError(block = {
+            val result = withContext(ioDispatcher) {
+                editPriceUseCase.executeOnBackground()
+            }
+            if (result.productUpdateV3Data.isSuccess) {
+                _editPriceResult.postValue(Success(EditPriceResult(productName, productId, price)))
+            } else {
+                _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
+            }
+        }) {
+            _editPriceResult.postValue(Fail(EditPriceResult(productName, productId, price, NetworkErrorException())))
+        }
+        hideProgressDialog()
+    }
 
-        val param = ProductEditPriceParam()
-        param.price = price.toFloatOrNull() ?: 0F
-        param.productId = productId
-        param.shop.shopId = userSessionInterface.shopId
-
-        editPriceProductUseCase.execute(EditPriceUseCase.createRequestParams(param),
-            object : Subscriber<ProductUpdateV3Response>() {
-                override fun onNext(data: ProductUpdateV3Response) {
-                    hideProgressDialog()
-                    if (data.productUpdateV3Data.isSuccess) {
-                        _editPriceResult.value = Success(EditPriceResult(productId, price))
-                    } else {
-                        _editPriceResult.value = Fail(EditPriceResult(productId, price, NetworkErrorException()))
-                    }
-                }
-
-                override fun onCompleted() {
-
-                }
-
-                override fun onError(e: Throwable) {
-                    _editPriceResult.value = Fail(EditPriceResult(productId, price, NetworkErrorException()))
-                }
-            })
+    fun editStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
+        showProgressDialog()
+        editStockUseCase.params = EditStockUseCase.createRequestParams(userSessionInterface.shopId, productId, stock, status)
+        launchCatchError(block =  {
+            val result = withContext(ioDispatcher) {
+                editStockUseCase.executeOnBackground()
+            }
+            if (result.productUpdateV3Data.isSuccess) {
+                _editStockResult.postValue(Success(EditStockResult(productName, productId, stock, status)))
+            } else {
+                _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
+            }
+        }) {
+            _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
+        }
+        hideProgressDialog()
     }
 
     fun setCashback(productId: String, cashback: Int) {
@@ -257,27 +269,22 @@ class ProductManageViewModel(
             })
     }
 
-    fun deleteSingleProduct(productIds: String) {
+    fun deleteSingleProduct(productName: String, productId: String) {
         showProgressDialog()
-
-        val singleDeleteParam = singleDeleteProductMapper(productIds)
-        val requestParams = BulkUpdateProductUseCase.createRequestParams(singleDeleteParam)
-
-        bulkUpdateProductUseCase.execute(requestParams,
-            object : Subscriber<ProductUpdateV3SuccessFailedResponse>() {
-                override fun onNext(listResponse: ProductUpdateV3SuccessFailedResponse) {
-                    hideProgressDialog()
-                    _deleteProductResult.value = Success(listResponse)
-                }
-
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable) {
-                    _deleteProductResult.value = Fail(e)
-                }
-
-            })
+        deleteProductUseCase.params = DeleteProductUseCase.createParams(userSessionInterface.shopId, productId)
+        launchCatchError( block = {
+            val result = withContext(ioDispatcher) {
+                deleteProductUseCase.executeOnBackground()
+            }
+            if(result.productUpdateV3Data.isSuccess) {
+                _deleteProductResult.postValue(Success(DeleteProductResult(productName, productId)))
+            } else {
+                _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
+            }
+        }) {
+            _deleteProductResult.postValue(Fail(DeleteProductResult(productName, productId, NetworkErrorException())))
+        }
+        hideProgressDialog()
     }
 
     fun setFeaturedProduct(productId: String, status: Int) {
@@ -331,17 +338,6 @@ class ProductManageViewModel(
     }
 
     /**
-     * Map for delete single product, from option menu product
-     */
-    private fun singleDeleteProductMapper(productId: String): List<ProductUpdateV3Param> {
-        val param = ProductUpdateV3Param()
-        param.productId = productId
-        param.shop.shopId = userSessionInterface.shopId
-        param.productStatus = "DELETED"
-        return arrayListOf(param)
-    }
-
-    /**
      * Filter the data based on failed data
      * This use for retry update only the failed data
      */
@@ -355,7 +351,6 @@ class ProductManageViewModel(
     }
 
     fun detachView() {
-        editPriceProductUseCase.unsubscribe()
         gqlGetShopInfoUseCase.cancelJobs()
         topAdsGetShopDepositGraphQLUseCase.unsubscribe()
         setCashbackUseCase.unsubscribe()

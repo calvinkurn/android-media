@@ -1,8 +1,10 @@
 package com.tokopedia.product.manage.feature.list.view.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class ProductManageListAdapter(
     baseListAdapterTypeFactory: ProductManageAdapterFactory,
@@ -12,8 +14,28 @@ class ProductManageListAdapter(
     fun updatePrice(productId: String, price: String) {
         data.forEachIndexed { index, it ->
             if (it.id.equals(productId, ignoreCase = true)) {
-                it.copy(price = price)
+                data[index] = it.copy(price = price, priceFormatted = price.toInt().getCurrencyFormatted())
                 notifyItemChanged(index)
+                return
+            }
+        }
+    }
+
+    fun updateStock(productId: String, stock: Int, status: ProductStatus) {
+        data.forEachIndexed { index, it ->
+            if (it.id.equals(productId, ignoreCase = true)) {
+                data[index] = it.copy(stock = stock, status = status)
+                notifyItemChanged(index)
+                return
+            }
+        }
+    }
+
+    fun deleteProduct(productId: String) {
+        data.forEachIndexed { index, it ->
+            if (it.id.equals(productId, ignoreCase = true)) {
+                data.removeAt(index)
+                notifyItemRemoved(index)
                 return
             }
         }

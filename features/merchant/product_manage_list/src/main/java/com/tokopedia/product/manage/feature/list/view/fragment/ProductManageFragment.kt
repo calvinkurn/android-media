@@ -2,11 +2,7 @@ package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -71,7 +67,6 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.FilterV
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductMenuViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
-import com.tokopedia.product.manage.feature.list.view.model.EditPriceResult
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
@@ -88,6 +83,12 @@ import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
+import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
+import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
+import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
+import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
+import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
+import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment.Companion.EDIT_STOCK_PRODUCT
 import com.tokopedia.product.manage.item.common.util.ViewUtils
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
@@ -203,6 +204,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         observeProductList()
 
         observeEditPrice()
+        observeEditStock()
         observeGetFreeClaim()
         observeGetPopUpInfo()
 
@@ -443,16 +445,38 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         productList.addAll(products)
     }
 
-    private fun onErrorEditPrice(productId: String, price: String, t: Throwable?) {
-        context?.let {
-            showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
-                viewModel.editPrice(productId, price)
-            }
+    private fun onErrorEditPrice(editPriceResult: EditPriceResult) {
+        editPriceResult.let {result ->
+            Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                    View.OnClickListener {
+                        viewModel.editPrice(result.productId, result.price, result.productName)
+                    })
         }
     }
 
-    private fun onSuccessEditPrice(productId: String, price: String) {
-       productManageListAdapter.updatePrice(productId, price)
+    private fun onErrorEditStock(editStockResult: EditStockResult) {
+        editStockResult.let { result ->
+            Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                    View.OnClickListener {
+                        viewModel.editStock(result.productId, result.stock, result.productName, result.status)
+                    })
+        }
+    }
+
+    private fun onSuccessEditPrice(productId: String, price: String, productName: String) {
+        Toaster.make(coordinatorLayout, getString(
+                R.string.product_manage_quick_edit_price_success, productName),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        productManageListAdapter.updatePrice(productId, price)
+    }
+
+    private fun onSuccessEditStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
+        Toaster.make(coordinatorLayout, getString(
+                R.string.product_manage_quick_edit_stock_success, productName),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        productManageListAdapter.updateStock(productId, stock, status)
     }
 
     private fun onErrorSetCashback(t: Throwable?, productId: String?, cashback: Int) {
@@ -502,15 +526,19 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         bottomSheet.show(childFragmentManager, "merchant_warning_bottom_sheet")
     }
 
-    private fun onErrorMultipleDeleteProduct(e: Throwable?) {
-        activity?.let {
-            showErrorToast(ViewUtils.getErrorMessage(it, e), getString(com.tokopedia.design.R.string.close))
-        }
+    private fun onErrorDeleteProduct(deleteProductResult: DeleteProductResult) {
+        Toaster.make(coordinatorLayout, getString(R.string.product_manage_delete_product_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                View.OnClickListener {
+                    viewModel.deleteSingleProduct(deleteProductResult.productName, deleteProductResult.productId)
+                })
     }
 
-    private fun onSuccessMultipleDeleteProduct() {
-        showMessageToast(getString(R.string.product_manage_bulk_snackbar_sucess_delete))
-        loadInitialData()
+    private fun onSuccessDeleteProduct(productName: String, productId: String) {
+        Toaster.make(coordinatorLayout, getString(
+                R.string.product_manage_delete_product_success, productName),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        productManageListAdapter.deleteProduct(productId)
     }
 
     private fun showMessageToast(message: String) {
@@ -720,6 +748,28 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onClickStockInformation() {
     }
 
+    override fun onClickEditStockButton(product: ProductViewModel) {
+        val cacheManager = context?.let { SaveInstanceCacheManager(it,true) }
+        cacheManager?.put(EDIT_STOCK_PRODUCT, product)
+        val editStockBottomSheet = context?.let { cacheManager?.id?.let {
+            cacheId -> ProductManageQuickEditStockFragment.createInstance(it, cacheId) } }
+        editStockBottomSheet?.setOnDismissListener {
+            if(editStockBottomSheet.editStockSuccess) {
+                editStockBottomSheet.editStockSuccess = false
+                val editStockCacheManager = context?.let { SaveInstanceCacheManager(it, editStockBottomSheet.cacheManagerId) }
+                val modifiedProduct: ProductViewModel? = editStockCacheManager?.get(
+                        EDIT_STOCK_PRODUCT, ProductViewModel::class.java)
+                modifiedProduct?.let { product ->
+                    product.stock?.let { stock ->
+                        product.title?.let { title ->
+                            product.status?.let { status ->
+                                viewModel.editStock( product.id, stock, title, status) } } }
+                }
+            }
+        }
+        editStockBottomSheet?.show(childFragmentManager, "quick_edit_stock")
+    }
+
     override fun onClickMoreOptionsButton(product: ProductViewModel) {
         hideSoftKeyboard()
 
@@ -731,16 +781,28 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
+    override fun onClickEditPriceButton(product: ProductViewModel) {
+        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it, product.price ?: "") }
+        editPriceBottomSheet?.setOnDismissListener {
+            if(editPriceBottomSheet.editPriceSuccess) {
+                editPriceBottomSheet.editPriceSuccess = false
+                product.title?.let { viewModel.editPrice(product.id, editPriceBottomSheet.price, it) }
+            }
+        }
+        editPriceBottomSheet?.show(childFragmentManager, "quick_edit_price")
+    }
+
     override fun onClickOptionMenu(menu: ProductMenuViewModel) {
         val product = menu.product
         val productId = product.id
+        val productName = product.title ?: ""
         val menuTitle = getString(menu.title)
 
         when(menu) {
             is Preview -> goToPDP(productId)
             is Duplicate -> clickDuplicateProduct(productId, menuTitle)
             is StockReminder -> { onSetStockReminderClicked(product)}
-            is Delete -> clickDeleteProductMenu(productId, menuTitle)
+            is Delete -> clickDeleteProductMenu(productName, productId)
             is SetTopAds -> onPromoTopAdsClicked(product)
             is SetCashBack -> onSetCashbackClicked(product)
             is SetFeaturedProduct -> onSetFeaturedProductClicked(product)
@@ -755,39 +817,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         ProductManageTracking.eventProductManageOverflowMenu(menuTitle)
     }
 
-    private fun clickDeleteProductMenu(productId: String, menuTitle: String) {
-        showDialogActionDeleteProduct(DialogInterface.OnClickListener { _, _ ->
-            val label = menuTitle + " - " + getString(com.tokopedia.product.manage.item.R.string.label_delete)
-            ProductManageTracking.eventProductManageOverflowMenu(label)
-            viewModel.deleteSingleProduct(productId)
-        }, DialogInterface.OnClickListener { dialog, _ ->
-            val label = menuTitle + " - " + getString(com.tokopedia.product.manage.item.R.string.label_cancel)
-            ProductManageTracking.eventProductManageOverflowMenu(label)
-            dialog.dismiss()
-        })
+    private fun clickDeleteProductMenu(productName: String, productId: String) {
+        showDialogDeleteProduct(productName, productId)
     }
 
     private fun hideSoftKeyboard() {
         activity?.let {
             KeyboardHandler.hideSoftKeyboard(it)
-        }
-    }
-
-    private fun showDialogChangeProductPrice(productId: String, productPrice: String) {
-        if (!isAdded) {
-            return
-        }
-
-        val productManageEditPriceDialogFragment = ProductManageEditPriceDialogFragment.createInstance(productId, productPrice, 0, goldMerchant, isOfficialStore)
-        productManageEditPriceDialogFragment.setListenerDialogEditPrice(object : ProductManageEditPriceDialogFragment.ListenerDialogEditPrice {
-            override fun onSubmitEditPrice(productId: String, price: String, currencyId: String, currencyText: String) {
-                viewModel.editPrice(productId, price)
-            }
-        })
-        activity?.let {
-            fragmentManager?.let {
-                productManageEditPriceDialogFragment.show(it, "")
-            }
         }
     }
 
@@ -997,14 +1033,21 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         viewModel.setFeaturedProduct(id, type)
     }
 
-    private fun showDialogActionDeleteProduct(onClickListener: DialogInterface.OnClickListener, onCancelListener: DialogInterface.OnClickListener) {
-        activity?.let {
-            val alertDialog = AlertDialog.Builder(it)
-            alertDialog.setTitle(com.tokopedia.product.manage.item.R.string.label_delete)
-            alertDialog.setMessage(R.string.product_manage_dialog_delete_product)
-            alertDialog.setPositiveButton(com.tokopedia.product.manage.item.R.string.label_delete, onClickListener)
-            alertDialog.setNegativeButton(com.tokopedia.product.manage.item.R.string.label_cancel, onCancelListener)
-            alertDialog.show()
+    private fun showDialogDeleteProduct(productName: String, productId: String) {
+        context?.let {
+            val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            dialog.setTitle(it.resources.getString(R.string.product_manage_delete_product_title))
+            dialog.setDescription(it.resources.getString(R.string.product_manage_delete_product_description))
+            dialog.setPrimaryCTAText(it.resources.getString(R.string.product_manage_delete_product_delete_button))
+            dialog.setSecondaryCTAText(it.resources.getString(R.string.product_manage_delete_product_cancel_button))
+            dialog.setPrimaryCTAClickListener {
+                viewModel.deleteSingleProduct(productName, productId)
+                dialog.dismiss()
+            }
+            dialog.setSecondaryCTAClickListener {
+                dialog.dismiss()
+            }
+            dialog.show()
         }
     }
 
@@ -1182,10 +1225,20 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun observeEditPrice() {
         observe(viewModel.editPriceResult) {
             when (it) {
-                is Success -> onSuccessEditPrice(it.data.productId, it.data.price)
+                is Success -> onSuccessEditPrice(it.data.productId, it.data.price, it.data.productName)
                 is Fail -> {
-                    val result = it.throwable as EditPriceResult
-                    onErrorEditPrice(result.productId, result.price, result.error)
+                    onErrorEditPrice(it.throwable as EditPriceResult)
+                }
+            }
+        }
+    }
+
+    private fun observeEditStock() {
+        observe(viewModel.editStockResult) {
+            when (it) {
+                is Success -> onSuccessEditStock(it.data.productId, it.data.stock, it.data.productName, it.data.status)
+                is Fail -> {
+                    onErrorEditStock(it.throwable as EditStockResult)
                 }
             }
         }
@@ -1224,8 +1277,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun observeDeleteProduct() {
         observe(viewModel.deleteProductResult) {
             when (it) {
-                is Success -> onSuccessMultipleDeleteProduct()
-                is Fail -> onErrorMultipleDeleteProduct(it.throwable)
+                is Success ->  {
+                    it.data.let { result ->
+                        onSuccessDeleteProduct(result.productName, result.productId)
+                    }
+                }
+                is Fail -> {
+                    onErrorDeleteProduct(it.throwable as DeleteProductResult)
+                }
             }
         }
     }
