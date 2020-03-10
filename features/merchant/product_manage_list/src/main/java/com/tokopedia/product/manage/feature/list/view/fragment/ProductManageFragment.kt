@@ -467,12 +467,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         productManageListAdapter.updatePrice(productId, price)
     }
 
-    private fun onSuccessEditStock(productId: String, stock: Int, productName: String) {
+    private fun onSuccessEditStock(productId: String, stock: Int, productName: String, status: ProductStatus) {
         viewModel.hideProgressDialog()
         Toaster.make(coordinatorLayout, getString(
                 R.string.product_manage_quick_edit_stock_success, productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-        productManageListAdapter.updateStock(productId, stock)
+        productManageListAdapter.updateStock(productId, stock, status)
     }
 
     private fun onErrorSetCashback(t: Throwable?, productId: String?, cashback: Int) {
@@ -524,13 +524,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun onErrorDeleteProduct(deleteProductResult: DeleteProductResult) {
         viewModel.hideProgressDialog()
-        deleteProductResult.let {result ->
-            Toaster.make(coordinatorLayout, getString(R.string.product_manage_delete_product_fail),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                    View.OnClickListener {
-                        viewModel.deleteSingleProduct(result.productName, result.productId)
-                    })
-        }
+        Toaster.make(coordinatorLayout, getString(R.string.product_manage_delete_product_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                View.OnClickListener {
+                    viewModel.deleteSingleProduct(deleteProductResult.productName, deleteProductResult.productId)
+                })
     }
 
     private fun onSuccessDeleteProduct(productName: String, productId: String) {
@@ -1163,7 +1161,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun observeEditStock() {
         observe(viewModel.editStockResult) {
             when (it) {
-                is Success -> onSuccessEditStock(it.data.productId, it.data.stock, it.data.productName)
+                is Success -> onSuccessEditStock(it.data.productId, it.data.stock, it.data.productName, it.data.status)
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
                 }

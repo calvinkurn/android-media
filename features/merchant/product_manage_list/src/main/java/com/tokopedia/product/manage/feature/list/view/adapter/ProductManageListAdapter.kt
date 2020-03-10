@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdap
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 
 class ProductManageListAdapter(
     baseListAdapterTypeFactory: ProductManageAdapterFactory,
@@ -11,32 +12,26 @@ class ProductManageListAdapter(
 ) : BaseListCheckableAdapter<ProductViewModel, ProductManageAdapterFactory>(baseListAdapterTypeFactory, onCheckableAdapterListener) {
 
     fun updatePrice(productId: String, price: String) {
-        data.forEachIndexed { index, it ->
-            if (it.id.equals(productId, ignoreCase = true)) {
-                data[index] = it.copy(price = price, priceFormatted = price.toInt().getCurrencyFormatted())
-                notifyItemChanged(index)
-                return
-            }
+        data.filter{ it.id.equals(productId, ignoreCase = true) }.forEachIndexed { index, it ->
+            data[index] = it.copy(price = price, priceFormatted = price.toInt().getCurrencyFormatted())
+            notifyItemChanged(index)
+            return
         }
     }
 
-    fun updateStock(productId: String, stock: Int) {
-        data.forEachIndexed { index, it ->
-            if (it.id.equals(productId, ignoreCase = true)) {
-                data[index] = it.copy(stock = stock)
-                notifyItemChanged(index)
-                return
-            }
+    fun updateStock(productId: String, stock: Int, status: ProductStatus) {
+        data.filter{ it.id.equals(productId, ignoreCase = true) }.forEachIndexed { index, it ->
+            data[index] = it.copy(stock = stock, status = status)
+            notifyItemChanged(index)
+            return
         }
     }
 
     fun deleteProduct(productId: String) {
-        data.forEachIndexed { index, it ->
-            if (it.id.equals(productId, ignoreCase = true)) {
-                data.removeAt(index)
-                notifyItemRemoved(index)
-                return
-            }
+        data.filter{ it.id.equals(productId, ignoreCase = true) }.forEachIndexed { index, it ->
+            data.removeAt(index)
+            notifyItemRemoved(index)
+            return
         }
     }
 

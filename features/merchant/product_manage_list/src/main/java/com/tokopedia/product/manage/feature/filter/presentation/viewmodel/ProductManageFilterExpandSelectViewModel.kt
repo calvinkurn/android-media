@@ -22,6 +22,7 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
 
     fun updateSelectedItem(element: SelectViewModel): Boolean {
         val currentData = _selectData.value
+        var needSort = false
         if(selectedElement != null) {
             val selectIndex = currentData?.indexOf(selectedElement!!)
             val selected = selectIndex?.let { currentData[it] }
@@ -31,7 +32,7 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
             if(selected == element) {
                 selectedElement = null
                 _selectData.postValue(currentData)
-                return false
+                return needSort
             }
         }
         val index = currentData?.indexOf(element)
@@ -39,9 +40,9 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
             currentData[it].isSelected = !currentData[it].isSelected
             selectedElement = currentData[it]
             _selectData.postValue(currentData)
-            return it > (MAXIMUM_CHIPS - 1)
+            needSort = it > (MAXIMUM_CHIPS - 1)
         }
-        return false
+        return needSort
     }
 
     private fun findSelectedData(selectViewModels: List<SelectViewModel>): SelectViewModel? {
