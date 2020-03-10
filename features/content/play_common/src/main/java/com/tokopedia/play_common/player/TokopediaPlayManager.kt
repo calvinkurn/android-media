@@ -16,7 +16,7 @@ import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
-import com.tokopedia.play_common.state.TokopediaPlayPrepareState
+import com.tokopedia.play_common.state.PlayVideoPrepareState
 import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
 import com.tokopedia.play_common.types.TokopediaPlayVideoType
@@ -62,7 +62,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     }
 
     private val exoPlaybackExceptionParser = ExoPlaybackExceptionParser()
-    private var currentPrepareState: TokopediaPlayPrepareState = TokopediaPlayPrepareState.Unprepared(null, TokopediaPlayVideoType.Unknown, null, true)
+    private var currentPrepareState: PlayVideoPrepareState = PlayVideoPrepareState.Unprepared(null, TokopediaPlayVideoType.Unknown, null, true)
     private val _observablePlayVideoState = MutableLiveData<TokopediaPlayVideoState>()
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
 
@@ -94,7 +94,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
             ) {
 
                 val prepareState = currentPrepareState
-                if (prepareState is TokopediaPlayPrepareState.Prepared) {
+                if (prepareState is PlayVideoPrepareState.Prepared) {
                     stopPlayer()
                     safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
@@ -103,7 +103,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                     parsedException.isConnectException
             ) {
                 val prepareState = currentPrepareState
-                if (prepareState is TokopediaPlayPrepareState.Prepared) {
+                if (prepareState is PlayVideoPrepareState.Prepared) {
                     stopPlayer(resetState = false)
                     safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
@@ -111,7 +111,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
             else {
                 //For now it's the same as the defined exception above
                 val prepareState = currentPrepareState
-                if (prepareState is TokopediaPlayPrepareState.Prepared) {
+                if (prepareState is PlayVideoPrepareState.Prepared) {
                     stopPlayer()
                     safePlayVideoWithUri(prepareState.uri, videoPlayer.playWhenReady)
                 }
@@ -124,7 +124,7 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
                 if (!timeline.isEmpty) {
                     val currentWindow = timeline.getWindow(0, Timeline.Window())
                     val prepareState = currentPrepareState
-                    if (!currentWindow.isLive && !currentWindow.isDynamic && prepareState is TokopediaPlayPrepareState.Prepared && prepareState.positionHandle is VideoPositionHandle.NotHandled) {
+                    if (!currentWindow.isLive && !currentWindow.isDynamic && prepareState is PlayVideoPrepareState.Prepared && prepareState.positionHandle is VideoPositionHandle.NotHandled) {
                         currentPrepareState = prepareState.copy(positionHandle = VideoPositionHandle.Handled)
                         if (prepareState.positionHandle.lastPosition != null) videoPlayer.seekTo(prepareState.positionHandle.lastPosition)
                     }
@@ -146,15 +146,15 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
 
         val prepareState = currentPrepareState
         val currentUri: Uri? = when (prepareState) {
-            is TokopediaPlayPrepareState.Unprepared -> prepareState.previousUri
-            is TokopediaPlayPrepareState.Prepared -> prepareState.uri
+            is PlayVideoPrepareState.Unprepared -> prepareState.previousUri
+            is PlayVideoPrepareState.Prepared -> prepareState.uri
         }
         if (currentUri == null) videoPlayer = initVideoPlayer(videoPlayer)
-        if (prepareState is TokopediaPlayPrepareState.Unprepared || currentUri != uri) {
-            val lastPosition = if (prepareState is TokopediaPlayPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
-            val resetState = if (prepareState is TokopediaPlayPrepareState.Unprepared) prepareState.resetState else true
+        if (prepareState is PlayVideoPrepareState.Unprepared || currentUri != uri) {
+            val lastPosition = if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
+            val resetState = if (prepareState is PlayVideoPrepareState.Unprepared && currentUri == uri) prepareState.resetState else true
             playVideoWithUri(uri, autoPlay, lastPosition, resetState)
-            currentPrepareState = TokopediaPlayPrepareState.Prepared(uri, if (prepareState is TokopediaPlayPrepareState.Unprepared) VideoPositionHandle.NotHandled(lastPosition) else VideoPositionHandle.Handled)
+            currentPrepareState = PlayVideoPrepareState.Prepared(uri, if (prepareState is PlayVideoPrepareState.Unprepared) VideoPositionHandle.NotHandled(lastPosition) else VideoPositionHandle.Handled)
         }
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
@@ -192,14 +192,14 @@ class TokopediaPlayManager private constructor(private val applicationContext: C
     }
 
     fun releasePlayer() {
-        currentPrepareState = TokopediaPlayPrepareState.Unprepared(null, TokopediaPlayVideoType.Unknown, null, true)
+        currentPrepareState = PlayVideoPrepareState.Unprepared(null, TokopediaPlayVideoType.Unknown, null, true)
         videoPlayer.release()
     }
 
     fun stopPlayer(resetState: Boolean = true) {
         val prepareState = currentPrepareState
-        if (prepareState is TokopediaPlayPrepareState.Prepared)
-            currentPrepareState = TokopediaPlayPrepareState.Unprepared(
+        if (prepareState is PlayVideoPrepareState.Prepared)
+            currentPrepareState = PlayVideoPrepareState.Unprepared(
                     prepareState.uri,
                     if (isVideoLive()) TokopediaPlayVideoType.Live else TokopediaPlayVideoType.VOD,
                     when (prepareState.positionHandle){
