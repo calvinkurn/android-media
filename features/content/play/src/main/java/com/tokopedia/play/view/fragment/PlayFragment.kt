@@ -25,6 +25,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.data.websocket.PlaySocketInfo
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.keyboard.KeyboardWatcher
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
@@ -33,6 +34,7 @@ import com.tokopedia.play_common.state.TokopediaPlayVideoState
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.dpToPx
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_play.*
 import javax.inject.Inject
 
 /**
@@ -48,6 +50,7 @@ class PlayFragment : BaseDaggerFragment() {
 
         private const val VIDEO_FRAGMENT_TAG = "FRAGMENT_VIDEO"
         private const val INTERACTION_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
+        private const val BOTTOM_SHEET_FRAGMENT_TAG = "FRAGMENT_INTERACTION"
         private const val ERROR_FRAGMENT_TAG = "FRAGMENT_ERROR"
 
         private const val ANIMATION_DURATION = 300L
@@ -69,14 +72,14 @@ class PlayFragment : BaseDaggerFragment() {
 
     private val offset12 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_12) }
 
-    private val onKeyboardShownAnimator = AnimatorSet()
-    private val onKeyboardHiddenAnimator = AnimatorSet()
+    private val videoScaleAnimator = AnimatorSet()
 
     private lateinit var playViewModel: PlayViewModel
 
     private lateinit var ivClose: ImageView
     private lateinit var flVideo: FrameLayout
     private lateinit var flInteraction: FrameLayout
+    private lateinit var flBottomSheet: FrameLayout
     private lateinit var flGlobalError: FrameLayout
 
     private val keyboardWatcher = KeyboardWatcher()
@@ -89,6 +92,7 @@ class PlayFragment : BaseDaggerFragment() {
                 .baseAppComponent(
                         (requireContext().applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(requireContext()))
                 .build()
                 .inject(this)
     }
@@ -118,6 +122,12 @@ class PlayFragment : BaseDaggerFragment() {
         if (childFragmentManager.findFragmentByTag(INTERACTION_FRAGMENT_TAG) == null) {
             childFragmentManager.beginTransaction()
                     .replace(flInteraction.id, PlayInteractionFragment.newInstance(channelId), INTERACTION_FRAGMENT_TAG)
+                    .commit()
+        }
+
+        if (childFragmentManager.findFragmentByTag(BOTTOM_SHEET_FRAGMENT_TAG) == null) {
+            childFragmentManager.beginTransaction()
+                    .replace(fl_bottom_sheet.id, PlayBottomSheetFragment.newInstance(), BOTTOM_SHEET_FRAGMENT_TAG)
                     .commit()
         }
 
@@ -161,6 +171,7 @@ class PlayFragment : BaseDaggerFragment() {
             ivClose = findViewById(R.id.iv_close)
             flVideo = findViewById(R.id.fl_video)
             flInteraction = findViewById(R.id.fl_interaction)
+            flBottomSheet = findViewById(R.id.fl_bottom_sheet)
             flGlobalError = findViewById(R.id.fl_global_error)
         }
     }
@@ -170,7 +181,7 @@ class PlayFragment : BaseDaggerFragment() {
             hideKeyboard()
         }
         flVideo.setOnClickListener {
-            hideKeyboard()
+            hideAllInsets()
         }
     }
 
@@ -262,12 +273,11 @@ class PlayFragment : BaseDaggerFragment() {
         super.onDestroy()
         playViewModel.destroy()
 
-        onKeyboardShownAnimator.cancel()
-        onKeyboardHiddenAnimator.cancel()
+        videoScaleAnimator.cancel()
     }
 
-    fun onKeyboardShown(bottomMostBounds: Int) {
-        onKeyboardShownAnimator.cancel()
+    fun onBottomInsetsViewShown(bottomMostBounds: Int) {
+        videoScaleAnimator.cancel()
 
         val currentHeight = flVideo.height
         val destHeight = bottomMostBounds.toFloat() - (MARGIN_CHAT_VIDEO + offset12) //offset12 for the range between video and status bar
@@ -281,22 +291,26 @@ class PlayFragment : BaseDaggerFragment() {
         val marginTop = (ivClose.layoutParams as ViewGroup.MarginLayoutParams).topMargin
         val marginTopXt = marginTop * scaleFactor
         flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
-        onKeyboardShownAnimator.apply {
+        videoScaleAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
+
+        flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
-    fun onKeyboardHidden() {
-        onKeyboardHiddenAnimator.cancel()
+    fun onBottomInsetsViewHidden() {
+        videoScaleAnimator.cancel()
 
         val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
         val animatorX = ObjectAnimator.ofFloat(flVideo ,View.SCALE_X, flVideo.scaleX, FULL_SCALE_FACTOR)
         animatorY.duration = ANIMATION_DURATION
         animatorX.duration = ANIMATION_DURATION
 
-        onKeyboardHiddenAnimator.apply {
+        videoScaleAnimator.apply {
             playTogether(animatorX, animatorY)
         }.start()
+
+        flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
     }
 
     fun setResultBeforeFinish() {
@@ -304,6 +318,16 @@ class PlayFragment : BaseDaggerFragment() {
             val totalView = playViewModel.totalView
             if (!totalView.isNullOrEmpty()) putExtra(EXTRA_TOTAL_VIEW, totalView)
         })
+    }
+
+    /**
+     * @return true means the onBackPressed() has been handled by this fragment
+     */
+    fun onBackPressed(): Boolean {
+        return if (flVideo.scaleY != FULL_SCALE_FACTOR) {
+            hideAllInsets()
+            true
+        } else false
     }
 
     private fun hideKeyboard() {
@@ -326,19 +350,21 @@ class PlayFragment : BaseDaggerFragment() {
             override fun onKeyboardShown(estimatedKeyboardHeight: Int) {
                 playViewModel.onKeyboardShown(estimatedKeyboardHeight)
                 ivClose.visible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
 
             override fun onKeyboardHidden() {
                 playViewModel.onKeyboardHidden()
                 ivClose.invisible()
-                flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
-                this@PlayFragment.onKeyboardHidden()
             }
         })
     }
 
     private fun unregisterKeyboardListener(view: View) {
         keyboardWatcher.unlisten(view)
+    }
+
+    private fun hideAllInsets() {
+        hideKeyboard()
+        playViewModel.hideAllInsets()
     }
 }

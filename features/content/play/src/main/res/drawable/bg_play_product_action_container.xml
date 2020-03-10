@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:bottom="@dimen/play_product_action_container_shadow_height_minus"
+        android:right="@dimen/play_product_action_container_shadow_height_minus"
+        android:left="@dimen/play_product_action_container_shadow_height_minus">
+        <shape>
+            <stroke
+                android:width="@dimen/play_product_action_container_shadow_height"
+                android:color="@color/play_product_action_container_shadow" />
+        </shape>
+    </item>
+
+</layer-list>

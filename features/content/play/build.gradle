@@ -23,6 +23,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
 
     implementation project(rootProject.ext.features.playCommon)
+    implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.variantCommon)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

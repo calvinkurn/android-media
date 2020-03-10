@@ -17,8 +17,12 @@
         <item quantity="other">%s Likes</item>
     </plurals>
 
+    <string name="play_buy">Beli</string>
+    <string name="play_add_to_card">Tambah ke Keranjang</string>
+    <string name="play_discount_percent">%d%%</string>
+
     <!--mock-->
-    <string name="play_mock_view">50</string>
+    <string name="play_mock_view">2k</string>
     <string name="play_mock_like">0 Likes</string>
     <string name="play_mock_pinned_message">Yoenik Apparel Visit my collections here!</string>
     <string name="play_mock_stream_name">Review Australia Fabulous Shop Fashion Outlet</string>

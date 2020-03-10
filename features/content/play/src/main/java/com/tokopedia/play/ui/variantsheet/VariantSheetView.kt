@@ -1,0 +1,103 @@
+package com.tokopedia.play.ui.variantsheet
+
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.play.R
+import com.tokopedia.play.component.UIView
+import com.tokopedia.play.ui.productsheet.ProductSheetView
+import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.uimodel.ProductSheetUiModel
+import com.tokopedia.play.view.uimodel.VariantSheetUiModel
+import com.tokopedia.unifycomponents.UnifyButton
+
+/**
+ * Created by jegul on 05/03/20
+ */
+class VariantSheetView(
+        container: ViewGroup,
+        private val listener: Listener
+) : UIView(container) {
+
+    private val view: View = LayoutInflater.from(container.context).inflate(R.layout.view_variant_sheet, container, true)
+            .findViewById(R.id.cl_variant_sheet)
+
+    private val clVariantContent: ConstraintLayout = view.findViewById(R.id.cl_variant_content)
+    private val tvSheetTitle: TextView = view.findViewById(R.id.tv_sheet_title)
+    private val rvVariantList: RecyclerView = view.findViewById(R.id.rv_variant_list)
+    private val btnAction: UnifyButton = view.findViewById(R.id.btn_action)
+    private val btnContainer: FrameLayout = view.findViewById(R.id.btn_container)
+    private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
+
+    private val bottomSheetBehavior = BottomSheetBehavior.from(view)
+
+    init {
+        view.findViewById<ImageView>(R.id.iv_close)
+                .setOnClickListener {
+                    listener.onCloseButtonClicked(this)
+                }
+
+        ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
+
+            vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
+                height = insets.systemWindowInsetBottom
+            }
+            btnContainer.setPadding(btnContainer.paddingLeft, btnContainer.paddingTop, btnContainer.paddingRight, insets.systemWindowInsetBottom)
+
+            insets
+        }
+    }
+
+    override val containerId: Int = view.id
+
+    override fun show() {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+    }
+
+    override fun hide() {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    internal fun setStateHidden() {
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+    }
+
+    internal fun showWithHeight(height: Int) {
+        if (view.height != height) {
+            val layoutParams = view.layoutParams as CoordinatorLayout.LayoutParams
+            layoutParams.height = height
+            view.layoutParams = layoutParams
+        }
+
+        show()
+    }
+
+    internal fun setVariantSheet(model: VariantSheetUiModel) {
+        tvSheetTitle.text = model.title
+        btnAction.text = view.context.getString(
+                if (model.action == ProductAction.Buy) R.string.play_buy
+                else R.string.play_add_to_card
+        )
+
+        btnAction.setOnClickListener {
+            if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.productId)
+            else listener.onAddToCartClicked(this, model.productId)
+        }
+    }
+
+    interface Listener {
+        fun onCloseButtonClicked(view: VariantSheetView)
+        fun onAddToCartClicked(view: VariantSheetView, productId: String)
+        fun onBuyClicked(view: VariantSheetView, productId: String)
+    }
+}

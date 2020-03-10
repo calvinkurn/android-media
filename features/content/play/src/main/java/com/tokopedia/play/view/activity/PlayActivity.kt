@@ -10,6 +10,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.view.contract.PlayNewChannelInteractor
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play_common.util.PlayLifecycleObserver
@@ -48,8 +49,12 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     }
 
     override fun onNewChannel(channelId: String?) {
+        //TODO("Uncomment Development Code")
+//        supportFragmentManager.beginTransaction()
+//                .replace(R.id.fl_fragment, getFragment(channelId), PLAY_FRAGMENT_TAG)
+//                .commit()
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fl_fragment, getFragment(channelId), PLAY_FRAGMENT_TAG)
+                .replace(R.id.fl_fragment, getFragment("2183"), PLAY_FRAGMENT_TAG)
                 .commit()
     }
 
@@ -58,6 +63,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
                 .baseAppComponent(
                         (applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(this))
                 .build()
                 .inject(this)
     }
@@ -68,7 +74,6 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 
     private fun setupPage() {
         lifecycle.addObserver(playLifecycleObserver)
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun setupView(channelId: String?) {
@@ -78,16 +83,18 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
     }
 
     override fun onBackPressed() {
-        if (isTaskRoot) {
-            val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
-            startActivity(intent)
-            finish()
-        } else {
-            val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
-            if (fragment != null && fragment is PlayFragment) {
-                fragment.setResultBeforeFinish()
+        val fragment = supportFragmentManager.findFragmentByTag(PLAY_FRAGMENT_TAG)
+        if (fragment != null && fragment is PlayFragment) {
+            if (!fragment.onBackPressed()) {
+                if (isTaskRoot) {
+                    val intent = RouteManager.getIntent(this, ApplinkConst.HOME)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    fragment.setResultBeforeFinish()
+                    supportFinishAfterTransition()
+                }
             }
-            supportFinishAfterTransition()
-        }
+        } else super.onBackPressed()
     }
 }

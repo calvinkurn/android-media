@@ -1744,6 +1744,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
+    public void onOpenPlayChannelList() {
+        RouteManager.route(getActivity(), BerandaUrl.PLAY_CHANNEL_LIST);
+    }
+
+    @Override
     public void onOpenPlayActivity(@NotNull View root, String channelId) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalContent.PLAY_DETAIL, channelId);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(),

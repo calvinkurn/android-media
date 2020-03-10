@@ -19,6 +19,7 @@ import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.di.DaggerPlayComponent
+import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.GlobalErrorCodeWrapper
@@ -71,13 +72,14 @@ class PlayErrorFragment: BaseDaggerFragment(), CoroutineScope {
                 .baseAppComponent(
                         (requireContext().applicationContext as BaseMainApplication).baseAppComponent
                 )
+                .playModule(PlayModule(requireContext()))
                 .build()
                 .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        playViewModel = ViewModelProvider(parentFragment!!, viewModelFactory).get(PlayViewModel::class.java)
+        playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
