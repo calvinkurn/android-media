@@ -27,11 +27,12 @@ class FlashSaleViewHolder (view: View, private val listener: FlashSaleCardListen
                             productName = element.grid.name,
                             formattedPrice = element.grid.price,
                             productImageUrl = element.grid.imageUrl,
-                            discountPercentage = element.grid.discount
+                            discountPercentage = element.grid.discount,
+                            pdpViewCount = "",
+                            stockBarLabel = element.grid.label
                     )
             )
-
-
+            applyCarousel()
         }
     }
 

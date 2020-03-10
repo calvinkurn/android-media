@@ -40,10 +40,6 @@ class ProductCardFlashSaleView: BaseCustomView, IProductCardFlashSaleView {
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         renderProductCardFlashSaleContent(productCardModel)
-
-        imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
-
-        buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
     }
 
 

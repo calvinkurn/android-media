@@ -57,51 +57,6 @@
             app:layout_constraintEnd_toEndOf="@id/imageProduct"
             layout="@layout/product_card_flashsale_content_layout" />
 
-        <ImageView
-            android:id="@+id/imageThreeDots"
-            android:layout_width="@dimen/dp_32"
-            android:layout_height="@dimen/dp_16"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:visibility="gone"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_goneMarginBottom="@dimen/dp_0"
-            app:layout_constraintBottom_toTopOf="@id/buttonAddToCart"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/product_card_ic_three_dots"
-            tools:visibility="visible" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/buttonAddToCart"
-            android:layout_width="@dimen/dp_0"
-            android:layout_height="@dimen/product_card_button_add_to_cart_height"
-            android:layout_marginLeft="@dimen/dp_8"
-            android:layout_marginStart="@dimen/dp_8"
-            android:layout_marginTop="@dimen/product_card_button_add_to_cart_margin_top"
-            android:layout_marginEnd="@dimen/dp_8"
-            android:layout_marginRight="@dimen/dp_8"
-            android:background="@drawable/product_card_bg_button_atc"
-            android:foreground="?selectableItemBackground"
-            android:gravity="center"
-            android:padding="@dimen/dp_8"
-            android:text="@string/product_card_text_add_to_cart_grid"
-            android:textAllCaps="false"
-            android:textColor="@color/orange_red"
-            android:visibility="gone"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productCardContentLayout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintVertical_bias="1.0"
-            app:typographyType="heading_6"
-            tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

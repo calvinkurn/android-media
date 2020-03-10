@@ -533,7 +533,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_DEFAULT_ERROR: String = "default_error"
             const val LAYOUT_LIST_CAROUSEL: String = "list_carousel"
             const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"
-            const val LAYOUT_MIX_LEFT: String = "left_carousel"
+            const val LAYOUT_MIX_LEFT: String = "top_carousel"
             const val channelId: String = "channelId"
         }
     }
@@ -607,7 +607,10 @@ data class DynamicHomeChannel(
             val productClickUrl: String = "",
             @Expose
             @SerializedName("freeOngkir")
-            val freeOngkir: FreeOngkir = FreeOngkir()
+            val freeOngkir: FreeOngkir = FreeOngkir(),
+            @Expose
+            @SerializedName("productViewCountFormatted")
+            val productViewCountFormatted: String = ""
     )
 
     data class Header(

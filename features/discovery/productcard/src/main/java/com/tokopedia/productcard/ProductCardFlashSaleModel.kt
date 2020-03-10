@@ -30,10 +30,11 @@ data class ProductCardFlashSaleModel (
         val freeOngkir: FreeOngkir = FreeOngkir(),
         val isTopAds: Boolean = false,
         val ratingString: String = "",
-        val hasThreeDots: Boolean = false,
         val labelGroupList: List<LabelGroup> = listOf(),
         val hasAddToCartButton: Boolean = false,
-        val hasRemoveFromWishlistButton: Boolean = false
+        val hasRemoveFromWishlistButton: Boolean = false,
+        val pdpViewCount: String = "",
+        val stockBarLabel: String = ""
 ) {
     @Deprecated("replace with labelGroupList")
     var isProductSoldOut: Boolean = false

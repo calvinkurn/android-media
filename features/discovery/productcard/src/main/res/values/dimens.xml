@@ -57,4 +57,7 @@
     <dimen name="product_card_button_add_to_cart_margin_top">8dp</dimen>
     <dimen name="product_card_button_add_to_cart_height">32dp</dimen>
 
+
+    <dimen name="product_card_flashsale_width">132dp</dimen>
+
 </resources>
