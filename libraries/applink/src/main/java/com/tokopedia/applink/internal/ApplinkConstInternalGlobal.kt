@@ -388,4 +388,8 @@ object ApplinkConstInternalGlobal {
     //ManageGeneral Activity
     @JvmField
     val MANAGE_GENERAL = "$INTERNAL_GLOBAL/manage-general"
+
+    //ManageNotificationActivity
+    @JvmField
+    val MANAGE_NOTIFICATION = "$INTERNAL_GLOBAL/manage-notification"
 }

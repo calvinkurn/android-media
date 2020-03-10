@@ -2,13 +2,12 @@ package com.tokopedia.sellerhome.settings.view.typefactory
 
 import com.tokopedia.sellerhome.settings.view.uimodel.*
 
-interface OtherSettingTypeFactory {
+interface OtherMenuTypeFactory {
 
-    fun type(balanceUiModel: BalanceUiModel): Int
     fun type(dividerUiModel: DividerUiModel): Int
     fun type(settingTitleUiModel: SettingTitleUiModel): Int
+    fun type(indentedSettingTitleUiModel: IndentedSettingTitleUiModel): Int
     fun type(menuItemUiModel: MenuItemUiModel): Int
-    fun type(shopInfoUiModel: ShopInfoUiModel): Int
-    fun type(shopStatusUiModel: ShopStatusUiModel): Int
+    fun type(settingTitleMenuUiModel: SettingTitleMenuUiModel): Int
 
 }

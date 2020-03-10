@@ -30,7 +30,7 @@
                 android:text="@string/power_merchant"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"
-                app:typographyType="body_2"
+                app:typographyType="heading_5"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toStartOf="@id/middleGuideline"/>
 
@@ -40,7 +40,7 @@
                 android:layout_height="match_parent"
                 android:text="Aktif"
                 android:gravity="center_vertical"
-                android:textColor="@color/setting_shop_status_green"
+                android:textColor="@color/setting_green"
                 app:typographyType="body_2"
                 app:typographyWeight="bold"
                 app:layout_constraintStart_toEndOf="@id/powerMerchantText"/>
@@ -55,11 +55,12 @@
                 android:background="@drawable/setting_shop_pm_partial"/>
 
             <View
+                android:id="@+id/powerMerchantLeftStatus"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-                android:background="@drawable/setting_shop_pm_tip"/>
+                android:background="@drawable/setting_pm_green_tip"/>
 
             <View
                 android:id="@+id/badgeBorder"
@@ -74,6 +75,7 @@
                 android:background="@drawable/setting_image_circular"/>
 
             <ImageView
+                android:id="@+id/powerMerchantIcon"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_margin="@dimen/setting_shop_badge_border_pm_margin"
@@ -96,7 +98,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.085"/>
+                app:layout_constraintGuide_percent="0.1"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
