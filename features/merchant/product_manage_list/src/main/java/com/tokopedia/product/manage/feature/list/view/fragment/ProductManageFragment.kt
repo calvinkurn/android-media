@@ -211,6 +211,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
+        getProductListFeaturedOnlySize()
     }
 
     private fun setupSearchBar() {
@@ -310,8 +311,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                             bottomSheet.selectedFilterOptions?.filterOptions,
                             bottomSheet.selectedFilterOptions?.sortOption, true)
 
-                    viewModel.getFeaturedProductCount(userSession.shopId,
-                            bottomSheet.selectedFilterOptions?.sortOption)
+                    viewModel.getFeaturedProductCount(userSession.shopId)
                 }
             }
         }
@@ -400,7 +400,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         val sortOption = selectedFilter?.sortOption
 
         viewModel.getProductList(userSession.shopId, filterOptions, sortOption, isRefresh)
-        viewModel.getFeaturedProductCount(userSession.shopId, sortOption)
+    }
+
+    private fun getProductListFeaturedOnlySize() {
+        viewModel.getFeaturedProductCount(userSession.shopId)
     }
 
     private fun createFilterOptions(page: Int, keyword: String?): MutableList<FilterOption> {
@@ -1061,10 +1064,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-
     override fun onResume() {
         super.onResume()
-        clearProductList()
+        productList.clear()
         activity?.let {
             val intentFilter = IntentFilter()
             intentFilter.addAction(TkpdState.ProductService.BROADCAST_ADD_PRODUCT)

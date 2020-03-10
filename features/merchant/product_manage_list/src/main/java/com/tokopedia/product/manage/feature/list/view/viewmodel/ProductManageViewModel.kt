@@ -152,16 +152,16 @@ class ProductManageViewModel(
         })
     }
 
-    fun getFeaturedProductCount(shopId: String, sortOption: SortOption? = null) {
+    fun getFeaturedProductCount(shopId: String) {
         launchCatchError(block = {
             val productListFeaturedOnly = withContext(ioDispatcher) {
-                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), sortOption)
+                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, listOf(FilterOption.FilterByCondition.FeaturedOnly), null)
                 val getProductList = getProductListUseCase.execute(requestParams)
                 val productListSize = getProductList.productList?.data?.size
                 productListSize
             }
 
-            productListFeaturedOnly?.let { showProductListFeaturedOnly(it) }
+            productListFeaturedOnly?.let { setProductListFeaturedOnly(it) }
         }, onError = {
             _productListFeaturedOnlyResult.value = Fail(it)
         })
@@ -385,7 +385,7 @@ class ProductManageViewModel(
         _productListResult.value = Success(productList)
     }
 
-    private fun showProductListFeaturedOnly(productsSize: Int){
+    private fun setProductListFeaturedOnly(productsSize: Int){
         _productListFeaturedOnlyResult.value = Success(productsSize)
     }
 
