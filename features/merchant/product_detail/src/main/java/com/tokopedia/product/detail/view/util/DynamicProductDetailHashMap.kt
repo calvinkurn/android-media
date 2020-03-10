@@ -91,11 +91,10 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     val getShopInfo: ProductShopInfoDataModel
         get() = shopInfoMap ?: ProductShopInfoDataModel()
 
-    fun updateDataP1(dataP1: DynamicProductInfoP1?, imageHeight: Int) {
+    fun updateDataP1(dataP1: DynamicProductInfoP1?) {
         dataP1?.let {
             snapShotMap?.run {
                 dynamicProductInfoP1 = it
-                screenHeight = imageHeight
                 media = DynamicProductDetailMapper.convertMediaToDataModel(it.data.media.toMutableList())
             }
 

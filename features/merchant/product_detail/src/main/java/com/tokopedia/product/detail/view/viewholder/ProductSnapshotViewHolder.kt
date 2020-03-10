@@ -25,7 +25,8 @@ class ProductSnapshotViewHolder(private val view: View,
     }
 
     override fun bind(element: ProductSnapshotDataModel) {
-        view.view_picture_search_bar.layoutParams.height = element.screenHeight
+        val screenWidth = view.resources.displayMetrics.widthPixels
+        view.view_picture_search_bar.layoutParams.height = screenWidth
 
         if (!::header.isInitialized) {
             header = PartialSnapshotView(view, listener)
@@ -82,9 +83,7 @@ class ProductSnapshotViewHolder(private val view: View,
                 renderStockWording(element.getNearestWarehouse(), element.getCampaignModular())
                 renderCod(element.shouldShowCod)
             }
-
             ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
-            ProductDetailConstant.PAYLOAD_CONFIGURATION_CHANGED -> changeImageHeight(element.screenHeight)
         }
     }
 
@@ -97,12 +96,6 @@ class ProductSnapshotViewHolder(private val view: View,
     private fun renderCod(shouldShowCod: Boolean) {
         if (::header.isInitialized) {
             header.renderCod(shouldShowCod)
-        }
-    }
-
-    private fun changeImageHeight(imageHeight: Int) {
-        if (imageHeight != 0) {
-            view.view_picture_search_bar.layoutParams.height = imageHeight
         }
     }
 

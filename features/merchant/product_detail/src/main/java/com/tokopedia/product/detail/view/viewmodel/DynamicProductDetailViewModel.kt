@@ -124,8 +124,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val updatedImageVariant: LiveData<MutableList<Media>>
         get() = _updatedImageVariant
 
-    var imageHeight: Int = 0
-
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null

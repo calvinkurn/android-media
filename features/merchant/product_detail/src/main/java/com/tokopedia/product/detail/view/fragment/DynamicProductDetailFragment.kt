@@ -6,7 +6,6 @@ import android.app.Application
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
@@ -245,15 +244,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         return inflater.inflate(R.layout.dynamic_product_detail_fragment, container, false)
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        super.onConfigurationChanged(newConfig)
-        setupByConfiguration(newConfig)
-        pdpHashMapUtil?.snapShotMap?.run {
-            screenHeight = viewModel.imageHeight
-        }
-        updateSnapshotImageHeight()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (::remoteConfig.isInitialized) {
@@ -266,7 +256,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         initBtnAction()
         initToolbar()
         initStickyLogin(view)
-        setupByConfiguration(resources.configuration)
 
         if (isAffiliate) {
             actionButtonView.gone()
@@ -494,7 +483,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 }
                             }
                             updateProductId()
-                            pdpHashMapUtil?.updateDataP1(dynamicP1Copy, viewModel.imageHeight)
+                            pdpHashMapUtil?.updateDataP1(dynamicP1Copy)
                             dynamicAdapter.notifyDataSetChanged()
                         }
                     }
@@ -622,23 +611,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun getApplicationContext(): Application? {
         return activity?.application
-    }
-
-    private fun setupByConfiguration(configuration: Configuration?) {
-        //Save Image Height at ViewModel
-        configuration?.let {
-            val screenWidth = resources.displayMetrics.widthPixels
-            if (it.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                DynamicProductDetailTracking.eventProductLandScape(viewModel.getDynamicProductInfoP1)
-                viewModel.imageHeight = screenWidth / 3
-            } else if (it.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                viewModel.imageHeight = screenWidth
-            }
-        }
-    }
-
-    private fun updateSnapshotImageHeight() {
-        dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_CONFIGURATION_CHANGED)
     }
 
     private val onViewClickListener = View.OnClickListener {
@@ -1209,7 +1181,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             updateProductId()
             et_search.hint = String.format(getString(R.string.pdp_search_hint), productInfo.basic.category.name)
-            pdpHashMapUtil?.updateDataP1(productInfo, viewModel.imageHeight)
+            pdpHashMapUtil?.updateDataP1(productInfo)
             viewModel.listOfParentMedia = productInfo.data.media.toMutableList()
             shouldShowCodP1 = productInfo.data.isCOD
             actionButtonView.isLeasing = productInfo.basic.isLeasing
@@ -1424,7 +1396,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
             if (selectedChild?.hasPicture == true &&
                     updatedDynamicProductInfo?.data?.media?.firstOrNull()?.uRLOriginal != pdpHashMapUtil?.snapShotMap?.media?.firstOrNull()?.urlOriginal) pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
-            pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo, viewModel.imageHeight)
+            pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
 
             viewModel.multiOrigin[selectedChild?.productId ?: ""]?.let {
                 viewModel.selectedMultiOrigin = it

@@ -26,8 +26,7 @@ data class ProductSnapshotDataModel(
 
         var statusTitle: String = "",
         var statusMessage: String = "",
-        var shopStatus: Int = SHOP_STATUS_ACTIVE,
-        var screenHeight: Int = 0
+        var shopStatus: Int = SHOP_STATUS_ACTIVE
 ) : DynamicPdpDataModel {
 
     data class NearestWarehouseDataModel(

@@ -1,6 +1,7 @@
 package com.tokopedia.product.detail.data.util
 
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -14,8 +15,6 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
-import com.tokopedia.iris.util.IrisSession
-import com.tokopedia.iris.util.*
 
 
 object DynamicProductDetailTracking {
@@ -31,17 +30,6 @@ object DynamicProductDetailTracking {
 
         TrackApp.getInstance().gtm.sendScreenAuthenticated(ProductTrackingConstant.Tracking.PRODUCT_DETAIL_SCREEN_NAME, customDimension)
     }
-
-    fun eventProductLandScape(productInfo: DynamicProductInfoP1?) {
-        val mapEvent = TrackAppUtils.gtmData(
-                ProductTrackingConstant.PDP.EVENT_VIEW_PDP,
-                ProductTrackingConstant.Category.PDP,
-                ProductTrackingConstant.Action.LANDSCAPE_VIEW,
-                "")
-
-        TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.LANDSCAPE_VIEW)
-    }
-
 
     object Click {
 
@@ -74,7 +62,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Action.CLICK_TRADEIN,
                     "before diagnostic")
 
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.LANDSCAPE_VIEW)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_TRADEIN)
         }
 
         fun trackTradeinAfterDiagnotics(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
@@ -83,7 +71,7 @@ object DynamicProductDetailTracking {
                     ProductTrackingConstant.Category.PDP,
                     ProductTrackingConstant.Category.PDP,
                     "after diagnostic")
-            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.LANDSCAPE_VIEW)
+            TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Category.PDP)
         }
 
         fun eventClickSeeMoreRecomWidget(widgetName: String, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
