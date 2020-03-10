@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.suggestion
+package com.tokopedia.autocomplete.suggestion.singleline
 
 import android.text.Spannable
 import android.text.SpannableString
@@ -9,6 +9,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocomplete.R
+import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
 import kotlinx.android.synthetic.main.layout_autocomplete_single_line_item.view.*
 import java.util.*
 

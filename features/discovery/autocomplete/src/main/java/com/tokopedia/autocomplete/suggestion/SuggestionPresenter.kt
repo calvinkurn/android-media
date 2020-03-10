@@ -2,7 +2,9 @@ package com.tokopedia.autocomplete.suggestion
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
-import com.tokopedia.autocomplete.analytics.AutocompleteTracking
+import com.tokopedia.autocomplete.suggestion.doubleline.convertSuggestionItemToDoubleLineVisitableList
+import com.tokopedia.autocomplete.suggestion.singleline.convertSuggestionItemToSingleLineVisitableList
+import com.tokopedia.autocomplete.suggestion.title.convertToTitleHeader
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.user.session.UserSessionInterface
 import rx.Subscriber
@@ -13,7 +15,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     private var querySearch = ""
 
     @Inject
-    lateinit var suggestionUseCase: SuggestionUseCase
+    lateinit var getSuggestionUseCase: SuggestionUseCase
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -22,26 +24,35 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
 
     override fun search(searchParameter: SearchParameter) {
         this.querySearch = searchParameter.getSearchQuery()
-        suggestionUseCase.execute(
-                SuggestionUseCase.getParams(
-                        searchParameter.getSearchParameterMap(),
-                        userSession.deviceId,
-                        userSession.userId
-                ),
-                object : Subscriber<SuggestionData>() {
-                    override fun onNext(suggestionData: SuggestionData) {
-                        clearListVisitable()
-                        updateListVisitable(suggestionData)
-                        notifyView()
-                    }
 
-                    override fun onCompleted() {}
-
-                    override fun onError(e: Throwable) {
-                        e.printStackTrace()
-                    }
-                }
+        getSuggestionUseCase.execute(
+                createGetSuggestionParams(searchParameter),
+                createGetSuggestionSubscriber()
         )
+    }
+
+    private fun createGetSuggestionParams(searchParameter: SearchParameter) = SuggestionUseCase.getParams(
+        searchParameter.getSearchParameterMap(),
+        userSession.deviceId,
+        userSession.userId
+    )
+
+    private fun createGetSuggestionSubscriber(): Subscriber<SuggestionData> = object : Subscriber<SuggestionData>() {
+        override fun onNext(suggestionData: SuggestionData) {
+            onSuccessReceivedSuggestion(suggestionData)
+        }
+
+        override fun onCompleted() { }
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun onSuccessReceivedSuggestion(suggestionData: SuggestionData) {
+        clearListVisitable()
+        updateListVisitable(suggestionData)
+        notifyView()
     }
 
     private fun clearListVisitable() {
@@ -97,19 +108,26 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         }
     }
 
-    override fun onItemClicked(item: BaseSuggestionViewModel) {
-        when {
-            item.type.equals(TYPE_KEYWORD, ignoreCase = true) -> {
-                AutocompleteTracking.eventClickKeyword(getKeywordEventLabelForTracking(item))
+    override fun onSuggestionItemClicked(item: BaseSuggestionViewModel) {
+        trackEventItemClicked(item)
+        view?.dropKeyBoard()
+        view?.route(item.applink)
+        view?.finish()
+    }
+
+    private fun trackEventItemClicked(item: BaseSuggestionViewModel) {
+        when (item.type) {
+            TYPE_KEYWORD -> {
+                view?.trackEventClickKeyword(getKeywordEventLabelForTracking(item))
             }
-            item.type.equals(TYPE_CURATED, ignoreCase = true) -> {
-                AutocompleteTracking.eventClickCurated(getCuratedEventLabelForTracking(item))
+            TYPE_CURATED -> {
+                view?.trackEventClickCurated(getCuratedEventLabelForTracking(item))
             }
-            item.type.equals(TYPE_SHOP, ignoreCase = true) -> {
-                AutocompleteTracking.eventClickShop(getShopEventLabelForTracking(item))
+            TYPE_SHOP -> {
+                view?.trackEventClickShop(getShopEventLabelForTracking(item))
             }
-            item.type.equals(TYPE_PROFILE, ignoreCase = true) -> {
-                AutocompleteTracking.eventClickProfile(getProfileEventLabelForTracking(item))
+            TYPE_PROFILE -> {
+                view?.trackEventClickProfile(getProfileEventLabelForTracking(item))
             }
         }
     }
@@ -117,8 +135,8 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     private fun getKeywordEventLabelForTracking(item: BaseSuggestionViewModel): String {
         return String.format(
                 "keyword: %s - value: %s - po: %s - applink: %s",
-                item.title,
                 item.searchTerm,
+                item.title,
                 item.position,
                 item.applink
         )
@@ -134,6 +152,36 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
         )
     }
 
+    private fun getShopEventLabelForTracking(item: BaseSuggestionViewModel): String {
+        return String.format(
+                "%s - keyword: %s - shop: %s",
+                getShopIdFromApplink(item.applink),
+                item.searchTerm,
+                item.title
+        )
+    }
+
+    private fun getShopIdFromApplink(applink: String): String {
+        return applink.substringWithPrefixAndSuffix("tokopedia://shop/", "?")
+    }
+
+    private fun String.substringWithPrefixAndSuffix(prefix: String, suffix: String): String {
+        val suffixIndex = indexOf(suffix)
+
+        val startIndex = prefix.length
+        val endIndex = if (suffixIndex == -1) length else suffixIndex
+
+        return try {
+            if (startsWith(prefix)) {
+                substring(startIndex, endIndex)
+            } else {
+                ""
+            }
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
     private fun getProfileEventLabelForTracking(item: BaseSuggestionViewModel): String {
         return String.format(
                 "keyword: %s - profile: %s - profile id: %s - po: %s",
@@ -145,44 +193,11 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     }
 
     private fun getProfileIdFromApplink(applink: String): String {
-        val prefix = "tokopedia://people/"
-
-        return try {
-            if (applink.startsWith(prefix)) {
-                applink.substring(prefix.length)
-            } else {
-                ""
-            }
-        } catch (e: Exception) {
-            ""
-        }
-    }
-
-    private fun getShopEventLabelForTracking(item: BaseSuggestionViewModel): String {
-        return String.format(
-                "%s - keyword: %s - shop: %s",
-                getShopIdFromApplink(item.applink),
-                item.searchTerm,
-                item.title
-        )
-    }
-
-    private fun getShopIdFromApplink(applink: String): String {
-        val prefix = "tokopedia://shop/"
-
-        return try {
-            if (applink.startsWith(prefix)) {
-                applink.substring(prefix.length, applink.indexOf("?"))
-            } else {
-                ""
-            }
-        } catch (e: Exception) {
-            ""
-        }
+        return applink.substringWithPrefixAndSuffix("tokopedia://people/", "?")
     }
 
     override fun detachView() {
         super.detachView()
-        suggestionUseCase.unsubscribe()
+        getSuggestionUseCase.unsubscribe()
     }
 }

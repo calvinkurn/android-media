@@ -1,5 +1,6 @@
-package com.tokopedia.autocomplete.suggestion
+package com.tokopedia.autocomplete.suggestion.data
 
+import com.tokopedia.autocomplete.suggestion.SuggestionData
 import retrofit2.Response
 import rx.functions.Func1
 

@@ -11,10 +11,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.autocomplete.AutoCompleteActivity
 import com.tokopedia.autocomplete.OnScrollListenerAutocomplete
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.analytics.AppScreen
+import com.tokopedia.autocomplete.analytics.AutocompleteTracking
 import com.tokopedia.autocomplete.suggestion.di.DaggerSuggestionComponent
 import com.tokopedia.autocomplete.suggestion.di.SuggestionComponent
 import com.tokopedia.discovery.common.model.SearchParameter
@@ -125,26 +125,25 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
     }
 
     override fun onItemClicked(item: BaseSuggestionViewModel) {
-        presenter.onItemClicked(item)
-        dropKeyBoard()
-        startActivityFromAutoComplete(item.applink)
+        presenter.onSuggestionItemClicked(item)
     }
 
-    private fun dropKeyBoard() {
-        if (activity != null && activity is AutoCompleteActivity) {
-            (activity as AutoCompleteActivity).dropKeyboard()
+    override fun dropKeyBoard() {
+        suggestionViewUpdateListener?.dropKeyboard()
+    }
+
+    override fun route(applink: String) {
+        activity?.let {
+            RouteManager.route(it, applink)
         }
     }
 
-    private fun startActivityFromAutoComplete(applink: String) {
-        if (activity == null) return
-
-        RouteManager.route(activity, applink)
+    override fun finish() {
         activity?.finish()
     }
 
     override fun copyTextToSearchView(text: String) {
-        (activity as AutoCompleteActivity).setSearchQuery("$text ")
+        suggestionViewUpdateListener?.setSearchQuery("$text ")
     }
 
     fun setSearchParameter(searchParameter: SearchParameter) {
@@ -153,5 +152,21 @@ class SuggestionFragment : BaseDaggerFragment(), SuggestionContract.View, Sugges
 
     fun setSuggestionViewUpdateListener(suggestionViewUpdateListener: SuggestionViewUpdateListener) {
         this.suggestionViewUpdateListener = suggestionViewUpdateListener
+    }
+
+    override fun trackEventClickKeyword(eventLabel: String) {
+        AutocompleteTracking.eventClickKeyword(eventLabel)
+    }
+
+    override fun trackEventClickCurated(eventLabel: String) {
+        AutocompleteTracking.eventClickCurated(eventLabel)
+    }
+
+    override fun trackEventClickShop(eventLabel: String) {
+        AutocompleteTracking.eventClickShop(eventLabel)
+    }
+
+    override fun trackEventClickProfile(eventLabel: String) {
+        AutocompleteTracking.eventClickProfile(eventLabel)
     }
 }

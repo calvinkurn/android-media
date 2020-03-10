@@ -1,6 +1,7 @@
-package com.tokopedia.autocomplete.suggestion
+package com.tokopedia.autocomplete.suggestion.title
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.autocomplete.suggestion.SuggestionTypeFactory
 
 class SuggestionTitleViewModel(val title: String = "") : Visitable<SuggestionTypeFactory> {
 

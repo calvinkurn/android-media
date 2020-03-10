@@ -1,7 +1,6 @@
 package com.tokopedia.autocomplete.suggestion.data
 
 import com.tokopedia.autocomplete.network.AutocompleteBaseURL
-import com.tokopedia.autocomplete.suggestion.SuggestionResponse
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.QueryMap

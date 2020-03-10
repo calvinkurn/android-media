@@ -1,4 +1,4 @@
-package com.tokopedia.autocomplete.suggestion
+package com.tokopedia.autocomplete.suggestion.title
 
 import android.view.View
 import androidx.annotation.LayoutRes

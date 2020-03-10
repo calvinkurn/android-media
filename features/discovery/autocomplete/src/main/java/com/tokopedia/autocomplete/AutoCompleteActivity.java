@@ -137,6 +137,7 @@ public class AutoCompleteActivity extends BaseActivity
         return false;
     }
 
+    @Override
     public void dropKeyboard() {
         KeyboardHandler.DropKeyboard(this, searchBarView);
     }
@@ -234,7 +235,8 @@ public class AutoCompleteActivity extends BaseActivity
         }
     }
 
-    public void setSearchQuery(String keyword) {
+    @Override
+    public void setSearchQuery(@NotNull String keyword) {
         searchBarView.setQuery(keyword, false, true);
     }
 }
