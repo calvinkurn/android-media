@@ -69,10 +69,10 @@ open class HomeViewModel @Inject constructor(
         private val dismissHomeReviewUseCase: DismissHomeReviewUseCase,
         private val getPlayCardHomeUseCase: GetPlayLiveDynamicUseCase,
         private val popularKeywordUseCase: GetPopularKeywordUseCase,
-        private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
-        private val declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase,
         private val getBusinessWidgetTab: GetBusinessWidgetTab,
         private val getBusinessUnitDataUseCase: GetBusinessUnitDataUseCase,
+        private val getRechargeRecommendationUseCase: GetRechargeRecommendationUseCase,
+        private val declineRechargeRecommendationUseCase: DeclineRechargeRecommendationUseCase,
         private val homeDispatcher: HomeDispatcherProvider
 ) : BaseViewModel(homeDispatcher.io()){
 
@@ -142,9 +142,9 @@ open class HomeViewModel @Inject constructor(
     private var getPendingCashBalanceJob: Job? = null
     private var dismissReviewJob: Job? = null
     private var getPopularKeywordJob: Job? = null
+    private var buWidgetJob: Job? = null
     private var getRechargeRecommendationJob: Job? = null
     private var declineRechargeRecommendationJob: Job? = null
-    private var buWidgetJob: Job? = null
     private var jobChannel: Job? = null
     private val channel = Channel<UpdateLiveDataModel>()
 
