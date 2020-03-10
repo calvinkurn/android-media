@@ -186,6 +186,7 @@
 
     <string name="product_manage_snack_bar_retry">Coba lagi</string>
     <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="product_manage_multi_edit_button">Atur Sekaligus</string>
 
     <string name="product_manage_set_cashback">Cashback</string>
     <string name="product_manage_set_cashback_success">Pengaturan Cashback untuk \"%1$s\" berhasil.</string>
