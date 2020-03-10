@@ -31,11 +31,12 @@ object MixTopTracking : BaseTracking() {
             products
     )
 
-    fun getMixTopViewIris(products: List<Product>, headerName: String, positionOnWidgetHome: String) = getBasicProductView(
+    fun getMixTopViewIris(products: List<Product>, headerName: String, channelId: String, positionOnWidgetHome: String) = getBasicProductView(
             Event.PRODUCT_VIEW_IRIS,
             Category.HOMEPAGE,
             CustomAction.IMPRESSION_ON_CAROUSEL_PRODUCT,
             Label.NONE,
+            channelId,
             CustomActionField.LIST_CAROUSEL_PRODUCT.format(positionOnWidgetHome, headerName),
             products
     )

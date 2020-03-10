@@ -547,7 +547,7 @@ open class HomeViewModel @Inject constructor(
             // find the old data from current list
             _homeLiveData.value?.list?.forEachIndexed{pos, data ->
                 run {
-                    if (data is PopularKeywordListViewModel && pos != -1) {
+                    if (data is PopularKeywordListViewModel) {
                         list[pos] = data
                     }
                 }
