@@ -33,11 +33,11 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private var isOneWay: Boolean = true
     private var departureAirportId: String = ""
-    private var departureAirportCityCode: String = ""
-    private var departureAirportCityName: String = ""
+    private var departureCityCode: String = ""
+    private var departureCityName: String = ""
     private var arrivalAirportId: String = ""
-    private var arrivalAirportCityCode: String = ""
-    private var arrivalAirportCityName: String = ""
+    private var arrivalCityCode: String = ""
+    private var arrivalCityName: String = ""
     private var departureDate: Date? = null
     private var departureDateString: String = ""
     private var returnDate: Date? = null
@@ -55,6 +55,16 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun renderFromCache() {
         setTrip(!flightDashboardCache.isRoundTrip)
+        setOriginAirport(
+                flightDashboardCache.departureAirport,
+                flightDashboardCache.departureCityCode,
+                flightDashboardCache.departureCityName
+        )
+        setDestinationAirport(
+                flightDashboardCache.arrivalAirport,
+                flightDashboardCache.arrivalCityCode,
+                flightDashboardCache.arrivalCityName
+        )
 
         if (flightDashboardCache.departureDate.isNotEmpty() &&
                 FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate)
@@ -88,22 +98,21 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     fun isOneWay(): Boolean = isOneWay
 
     fun setOriginAirport(departureAirportId: String,
-                            departureAirportCityCode: String,
-                            departureAirportCityName: String) {
+                         departureCityCode: String,
+                         departureCityName: String) {
         this.departureAirportId = departureAirportId
-        this.departureAirportCityCode = departureAirportCityCode
-        this.departureAirportCityName = departureAirportCityName
-
+        this.departureCityCode = departureCityCode
+        this.departureCityName = departureCityName
         tvFlightOriginAirport.text = buildAirportTextFormatted(true)
     }
 
     fun setDestinationAirport(
             arrivalAirportId: String,
-            arrivalAirportCityCode: String,
-            arrivalAirportCityName: String) {
+            arrivalCityCode: String,
+            arrivalCityName: String) {
         this.arrivalAirportId = arrivalAirportId
-        this.arrivalAirportCityCode = arrivalAirportCityCode
-        this.arrivalAirportCityName = arrivalAirportCityName
+        this.arrivalCityCode = arrivalCityCode
+        this.arrivalCityName = arrivalCityName
         tvFlightDestinationAirport.text = buildAirportTextFormatted(false)
     }
 
@@ -177,18 +186,18 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
         if (isOrigin) {
             if (departureAirportId.isEmpty()) {
-                if (departureAirportCityCode.isEmpty()) {
-                    text.append(departureAirportCityName)
+                if (departureCityCode.isEmpty()) {
+                    text.append(departureCityName)
                     return makeBold(text)
                 } else {
-                    text.append(departureAirportCityCode)
+                    text.append(departureCityCode)
                 }
             } else {
                 text.append(departureAirportId)
             }
             makeBold(text)
-            if (departureAirportCityName.isNotEmpty()) {
-                val cityNameText = SpannableStringBuilder(departureAirportCityName)
+            if (departureCityName.isNotEmpty()) {
+                val cityNameText = SpannableStringBuilder(departureCityName)
                 makeSmall(cityNameText)
                 text.append("\n")
                 text.append(cityNameText)
@@ -196,18 +205,18 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             return text
         } else {
             if (arrivalAirportId.isEmpty()) {
-                if (arrivalAirportCityCode.isEmpty()) {
-                    text.append(arrivalAirportCityName)
+                if (arrivalCityCode.isEmpty()) {
+                    text.append(arrivalCityName)
                     return makeBold(text)
                 } else {
-                    text.append(arrivalAirportCityCode)
+                    text.append(arrivalCityCode)
                 }
             } else {
                 text.append(arrivalAirportId)
             }
             makeBold(text)
-            if (arrivalAirportCityName.isNotEmpty()) {
-                val cityNameText = SpannableStringBuilder(arrivalAirportCityName)
+            if (arrivalCityName.isNotEmpty()) {
+                val cityNameText = SpannableStringBuilder(arrivalCityName)
                 makeSmall(cityNameText)
                 text.append("\n")
                 text.append(cityNameText)
