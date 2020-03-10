@@ -1,6 +1,10 @@
 package com.tokopedia.chat_common.view.adapter.viewholder;
 
+import android.content.res.Resources;
+import android.graphics.Outline;
+import android.os.Build;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.ImageView;
 
 import androidx.annotation.LayoutRes;
@@ -33,6 +37,25 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
         super.bind(viewModel);
         ImageHandler.loadImageWithListener(attachment, viewModel.getImageUrl(), new DynamicSizeImageRequestListener());
         view.setOnClickListener(view -> listener.onImageAnnouncementClicked(viewModel));
+        bindCornerAttachment();
+    }
+
+    private void bindCornerAttachment() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            attachment.setOutlineProvider(new ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, Outline outline) {
+                    outline.setRoundRect(
+                            0,
+                            0,
+                            view.getWidth(),
+                            view.getHeight() + toDp(8),
+                            toDp(8)
+                    );
+                }
+            });
+            attachment.setClipToOutline(true);
+        }
     }
 
     @Override
@@ -46,5 +69,9 @@ public class ImageAnnouncementViewHolder extends BaseChatViewHolder<ImageAnnounc
     @Override
     protected int getDateId() {
         return R.id.tvDate;
+    }
+
+    private int toDp(int val) {
+        return (int) (val * Resources.getSystem().getDisplayMetrics().density);
     }
 }
