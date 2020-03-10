@@ -52,6 +52,7 @@
     <string name="hint_phone_setting_profile">Masukkan Nomor HP</string>
     <string name="message_email_setting_profile">Jaga akun kamu tetap aman dengan menambahkan email</string>
     <string name="message_phone_setting_profile">Jaga akun kamu tetap aman dengan menambahkan nomor HP</string>
+    <string name="label_cancel">Batal</string>
 
     <!-- CHANGE GENDER -->
     <string name="title_change_gender">Tambah Jenis Kelamin</string>
