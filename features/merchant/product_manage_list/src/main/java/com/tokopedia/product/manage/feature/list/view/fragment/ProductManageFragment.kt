@@ -73,6 +73,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgre
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductMultiEditBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
@@ -137,7 +138,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     ProductViewHolder.ProductViewHolderView,
     EditProductBottomSheet.EditProductInterface,
     FilterViewHolder.ProductFilterListener,
-    ProductMenuViewHolder.ProductMenuListener {
+    ProductMenuViewHolder.ProductMenuListener,
+    ProductMultiEditBottomSheet.MultiEditListener {
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
@@ -151,6 +153,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var dialogFeaturedProduct: DialogUnify? = null
     private var productManageBottomSheet: ProductManageBottomSheet? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
+    private var multiEditBottomSheet: ProductMultiEditBottomSheet? = null
+
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
     private val checkedPositionList: HashSet<Int> = hashSetOf()
@@ -266,6 +270,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
+    override fun editMultipleProductsEtalase() {
+    }
+
+    override fun deactivateMultipleProducts() {
+    }
+
+    override fun removeMultipleProducts() {
+    }
+
     private fun setupSearchBar() {
         searchInputView.clearFocus()
         searchInputView.closeImageButton.setOnClickListener {
@@ -277,11 +290,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun setupBottomSheet() {
         productManageBottomSheet = ProductManageBottomSheet(view, this, fragmentManager)
+        multiEditBottomSheet = ProductMultiEditBottomSheet(view, this, fragmentManager)
     }
 
     private fun setupMultiSelect() {
         textMultipleSelect.setOnClickListener {
             viewModel.toggleMultiSelect()
+        }
+
+        btnMultiEdit.setOnClickListener {
+            multiEditBottomSheet?.show()
         }
     }
 
@@ -336,9 +354,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun renderCheckedView() {
         if (itemsChecked.size > 0) {
-            textProductCount.visibility = View.VISIBLE
+            btnMultiEdit.show()
+            textProductCount.show()
             textProductCount.text = getString(R.string.product_manage_bulk_count, itemsChecked.size.toString())
         } else {
+            btnMultiEdit.hide()
             textProductCount.text = getString(R.string.product_manage_count_format, productList.count())
         }
     }
