@@ -144,6 +144,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         observeVisitableChangeUiModel()
         observeVisitableListChangeUiModel()
         observeEmptyStateUiModel()
+        observeGetCouponRecommendation()
         observeApplyPromoResult()
         observeClearPromoResult()
     }
@@ -302,6 +303,16 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     it.data.forEach {
                         adapter.addVisitableList((adapter.data.indexOf(it.key) + 1), it.value)
                     }
+                }
+            }
+        })
+    }
+
+    private fun observeGetCouponRecommendation() {
+        viewModel.getCouponRecommendationResponse.observe(this, Observer {
+            when {
+                it.state == GetCouponRecommendationAction.ACTION_CLEAR_DATA -> {
+                    clearAllData()
                 }
             }
         })
@@ -527,12 +538,9 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onClickApplyManualInputPromo(promoCode: String) {
         activity?.let {
             viewModel.updatePromoInputState(promoCode)
-
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
             viewModel.loadData(mutation, promoRequest, promoCode)
-
-//            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), promoCode)
         }
     }
 

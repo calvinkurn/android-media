@@ -70,15 +70,21 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     val tmpListUiModel: LiveData<Action<Map<Visitable<*>, List<Visitable<*>>>>>
         get() = _tmpListUiModel
 
-    // Live data to store clear promo result
+    // Live data to notify UI state after hit clear promo API
     private val _clearPromoResponse = MutableLiveData<ClearPromoResponseAction>()
     val clearPromoResponse: LiveData<ClearPromoResponseAction>
         get() = _clearPromoResponse
 
-    // Live data to store apply promo result
+    // Live data to notify UI state after hit apply promo / validate use API
     private val _applyPromoResponse = MutableLiveData<ApplyPromoResponseAction>()
     val applyPromoResponse: LiveData<ApplyPromoResponseAction>
         get() = _applyPromoResponse
+
+    // Live data to notify UI state after hit get coupon recommendation API
+    private val _getCouponRecommendationResponse = MutableLiveData<GetCouponRecommendationAction>()
+    val getCouponRecommendationResponse: LiveData<GetCouponRecommendationAction>
+        get() = _getCouponRecommendationResponse
+
 
     fun loadData(mutation: String, promoRequest: PromoRequest, promoCode: String) {
         launch { getCouponRecommendation(mutation, promoRequest, promoCode) }
@@ -118,8 +124,19 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             if (response.couponListRecommendation.status == "OK") {
-                // Todo : Check if apply promo manual input success. Waiting
+                // Todo : Check if apply promo manual input success. Waiting backend
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
+                    if (getCouponRecommendationResponse.value == null) {
+                        _getCouponRecommendationResponse.value = GetCouponRecommendationAction()
+                    }
+
+                    if (promoCode.isNotBlank()) {
+                        getCouponRecommendationResponse.value?.let {
+                            it.state = GetCouponRecommendationAction.ACTION_CLEAR_DATA
+                            _getCouponRecommendationResponse.value = it
+                        }
+                    }
+
                     initFragmentUiModel(false)
                     initPromoRecommendation(response)
                     initPromoInput()
@@ -200,15 +217,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun applyPromo(mutation: String, promoCode: String) {
-        launch { doApplyPromo(mutation, promoCode) }
-    }
-
     fun applyPromo(mutation: String) {
-        launch { doApplyPromo(mutation, "") }
+        launch { doApplyPromo(mutation) }
     }
 
-    private suspend fun doApplyPromo(mutation: String, promoCode: String) {
+    private suspend fun doApplyPromo(mutation: String) {
         launchCatchError(block = {
             // Initialize response action state
             if (applyPromoResponse.value == null) {
@@ -237,51 +250,29 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         _applyPromoResponse.value = it
                     }
                 } else {
-                    if (promoCode.isNotBlank()) {
-                        // Goes here if user apply promo by input manual
-                        if (responseValidatePromo.success && responseValidatePromo.message.state == "green") {
-                            // Success apply promo input.
-                            // Set loading state to false
-                            promoInputUiModel.value?.let {
-                                it.uiState.isLoading = false
-                                it.uiState.isError = false
-                                _tmpUiModel.value = Update(it)
+                    // Goes here if user apply promo from checked promo item
+                    if (responseValidatePromo.voucherOrders.isNotEmpty()) {
+                        // Check all promo merchant is success
+                        var successCount = 0
+                        responseValidatePromo.voucherOrders.forEach { voucherOrder ->
+                            if (voucherOrder.success) {
+                                successCount++
+                            } else {
+                                // If one of promo merchant is error, then show error message
+                                throw MessageErrorException(voucherOrder.message.text)
                             }
-
-                            // Then need to reload promo page
+                        }
+                        if (successCount == responseValidatePromo.voucherOrders.size) {
+                            // If all promo merchant are success, then navigate to cart
                             applyPromoResponse.value?.let {
-                                it.state = ApplyPromoResponseAction.ACTION_RELOAD_PROMO
+                                it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
                                 _applyPromoResponse.value = it
                             }
-                        } else {
-                            // Failed apply promo input. Then need to show error state on promo input field
-                            throw MessageErrorException(responseValidatePromo.message.text)
                         }
                     } else {
-                        // Goes here if user apply promo from checked promo item
-                        if (responseValidatePromo.voucherOrders.isNotEmpty()) {
-                            // Check all promo merchant is success
-                            var successCount = 0
-                            responseValidatePromo.voucherOrders.forEach { voucherOrder ->
-                                if (voucherOrder.success) {
-                                    successCount++
-                                } else {
-                                    // If one of promo merchant is error, then show error message
-                                    throw MessageErrorException(voucherOrder.message.text)
-                                }
-                            }
-                            if (successCount == responseValidatePromo.voucherOrders.size) {
-                                // If all promo merchant are success, then navigate to cart
-                                applyPromoResponse.value?.let {
-                                    it.state = ApplyPromoResponseAction.ACTION_NAVIGATE_TO_CART
-                                    _applyPromoResponse.value = it
-                                }
-                            }
-                        } else {
-                            // Voucher orders is empty but the response is OK
-                            // This section is added as fallback mechanism
-                            throw MessageErrorException()
-                        }
+                        // Voucher orders is empty but the response is OK
+                        // This section is added as fallback mechanism
+                        throw MessageErrorException()
                     }
                 }
             } else {
@@ -289,21 +280,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                 throw MessageErrorException(response.validateUsePromoRevamp.message.joinToString(". "))
             }
         }) { throwable ->
-            if (promoCode.isNotBlank()) {
-                // Notify promo input to stop loading
-                promoInputUiModel.value?.let {
-                    it.uiState.isLoading = false
-                    it.uiState.isError = true
-                    it.uiData.exception = throwable
-                    _tmpUiModel.value = Update(it)
-                }
-            } else {
-                // Notify fragment apply promo to stop loading
-                applyPromoResponse.value?.let {
-                    it.state = ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR
-                    it.exception = throwable
-                    _applyPromoResponse.value = it
-                }
+            // Notify fragment apply promo to stop loading
+            applyPromoResponse.value?.let {
+                it.state = ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR
+                it.exception = throwable
+                _applyPromoResponse.value = it
             }
         }
     }

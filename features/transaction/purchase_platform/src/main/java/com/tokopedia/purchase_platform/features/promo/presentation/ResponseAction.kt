@@ -20,3 +20,11 @@ data class ApplyPromoResponseAction(
         val ACTION_RELOAD_PROMO = 3
     }
 }
+
+data class GetCouponRecommendationAction(
+        var state: Int = 0
+) {
+    companion object {
+        val ACTION_CLEAR_DATA = 1
+    }
+}
