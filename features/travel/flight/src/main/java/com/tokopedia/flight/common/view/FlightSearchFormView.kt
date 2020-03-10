@@ -9,6 +9,7 @@ import android.text.style.RelativeSizeSpan
 import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.AnimationUtils
 import androidx.core.content.ContextCompat
 import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightDateUtil
@@ -328,6 +329,9 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
                 tempCityCode,
                 tempCityName
         )
+
+        val shake = AnimationUtils.loadAnimation(context, R.anim.flight_rotate)
+        imgFlightReverseAirport.startAnimation(shake)
     }
 
     interface FlightSearchFormListener {
