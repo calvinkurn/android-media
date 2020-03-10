@@ -18,54 +18,6 @@ import java.io.File
  */
 object DFInstallerLogUtil {
     private const val DFM_TAG = "DFM"
-    private var storageStatsManager: StorageStatsManager? = null
-
-    internal suspend fun getFreeSpaceBytes(context: Context): Long {
-        return when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                withContext(Dispatchers.IO) {
-                    val uuid = StorageManager.UUID_DEFAULT
-                    getStorageStatsManager(context)?.getFreeBytes(uuid) ?: 0
-                }
-            }
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 -> {
-                val statFs = StatFs(Environment.getDataDirectory().absolutePath)
-                statFs.availableBytes
-            }
-            else -> {
-                File(context.filesDir.absoluteFile.toString()).freeSpace
-            }
-        }
-    }
-
-    private suspend fun getTotalInternalSpaceBytes(context: Context): Long {
-        return when {
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O -> {
-                withContext(Dispatchers.IO) {
-                    val uuid = StorageManager.UUID_DEFAULT
-                    getStorageStatsManager(context)?.getTotalBytes(uuid) ?: 0
-                }
-            }
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 -> {
-                val statFs = StatFs(Environment.getDataDirectory().absolutePath)
-                statFs.totalBytes
-            }
-            else -> {
-                File(context.filesDir.absoluteFile.toString()).totalSpace
-            }
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getStorageStatsManager(context: Context): StorageStatsManager? {
-        if (storageStatsManager == null) {
-            storageStatsManager = ContextCompat.getSystemService(
-                context,
-                StorageStatsManager::class.java
-            )
-        }
-        return storageStatsManager
-    }
 
     internal fun logStatus(context: Context,
                            message: String = "",
@@ -97,7 +49,7 @@ object DFInstallerLogUtil {
             }
 
             messageBuilder.append(";phone_size=")
-            val phoneSize = getTotalInternalSpaceBytes(context)
+            val phoneSize = StorageUtils.getTotalInternalSpaceBytes(context)
             if (phoneSize > 0) {
                 messageBuilder.append(getSizeInMB(phoneSize))
             } else {
@@ -113,10 +65,11 @@ object DFInstallerLogUtil {
 
             messageBuilder.append(";free_aft=")
             try {
-                messageBuilder.append(getSizeInMB(getFreeSpaceBytes(context)))
+                messageBuilder.append(getSizeInMB(StorageUtils.getFreeSpaceBytes(context)))
             } catch (ignored: Exception) {
                 messageBuilder.append(-1)
             }
+            messageBuilder.append(";cache_size='${getSizeInMB(StorageUtils.getInternalCacheSize(context))}'")
 
             messageBuilder.append(";play_str='${Utils.getPlayStoreVersionName(context)}'")
             messageBuilder.append(";play_str_l=${Utils.getPlayStoreLongVersionCode(context)}")
