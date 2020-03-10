@@ -69,20 +69,43 @@
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:visibility="gone">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            tools:visibility="gone">
 
-        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-            android:id="@+id/recycler_view"
+            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnMultiEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:scrollbars="vertical" />
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+            android:text="Atur Sekaligus"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
+            android:focusable="true"
+            android:clickable="true"
+            android:background="?attr/selectableItemBackground"
+            android:visibility="gone"
+            app:layout_scrollFlags="scroll"
+            app:unifyButtonSize="large"
+            tools:visibility="visible" />
+    </LinearLayout>
 
     <ProgressBar
         android:id="@+id/progressBar"
