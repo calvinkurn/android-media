@@ -246,7 +246,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     //region private method
     private fun getMediaSourceBySource(context: Context, uri: Uri): MediaSource {
-        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "home"))
+        val mDataSourceFactory = DefaultDataSourceFactory(context, Util.getUserAgent(context, "Play"))
         val errorHandlingPolicy = getErrorHandlingPolicy()
         val mediaSource = when (val type = Util.inferContentType(uri)) {
             C.TYPE_SS -> SsMediaSource.Factory(mDataSourceFactory).setLoadErrorHandlingPolicy(errorHandlingPolicy)

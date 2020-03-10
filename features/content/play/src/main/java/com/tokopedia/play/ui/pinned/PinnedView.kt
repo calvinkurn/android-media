@@ -18,6 +18,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.view.uimodel.PinnedMessageUiModel
 import com.tokopedia.play.view.uimodel.PinnedProductUiModel
+import com.tokopedia.play_common.util.DebouncedOnClickListener
 
 /**
  * Created by jegul on 03/12/19
@@ -36,6 +37,9 @@ class PinnedView(
     private val tvPinnedProductMessage: TextView = view.findViewById(R.id.tv_pinned_product_message)
     private val animationProduct: LottieAnimationView = view.findViewById(R.id.animation_product)
     private val tvPinnedAction: TextView = view.findViewById(R.id.tv_pinned_action)
+
+    private var pinnedMessageDebouncedClick: DebouncedOnClickListener? = null
+    private var pinnedProductDebouncedClick: DebouncedOnClickListener? = null
 
     override val containerId: Int = view.id
 
@@ -68,18 +72,27 @@ class PinnedView(
 
         if (!pinnedMessage.applink.isNullOrEmpty()) {
             tvPinnedAction.visible()
-            tvPinnedAction.setOnClickListener {
-                listener.onPinnedMessageActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
+
+            if (pinnedMessageDebouncedClick == null) {
+                pinnedMessageDebouncedClick = DebouncedOnClickListener(1000L) {
+                    listener.onPinnedMessageActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
+                }
             }
+            tvPinnedAction.setOnClickListener(pinnedMessageDebouncedClick)
+
         } else tvPinnedAction.gone()
     }
     
     fun setPinnedProduct(pinnedProduct: PinnedProductUiModel) {
         llPinnedProduct.visible()
         tvPinnedAction.visible()
-        tvPinnedAction.setOnClickListener { 
-            listener.onPinnedProductActionClicked(this)
+
+        if (pinnedProductDebouncedClick == null) {
+            pinnedProductDebouncedClick = DebouncedOnClickListener(1000L) {
+                listener.onPinnedProductActionClicked(this)
+            }
         }
+        tvPinnedAction.setOnClickListener(pinnedProductDebouncedClick)
 
         tvPinnedMessage.text = spanPartnerName(pinnedProduct.partnerName, SpannableString(pinnedProduct.partnerName))
         tvPinnedProductMessage.text = pinnedProduct.title
@@ -88,6 +101,11 @@ class PinnedView(
                 if (pinnedProduct.isPromo) R.raw.anim_play_product_promo
                 else R.raw.anim_play_product
         )
+    }
+
+    fun onDestroy() {
+        pinnedMessageDebouncedClick = null
+        pinnedProductDebouncedClick = null
     }
 
     private fun spanPartnerName(partnerName: String, fullMessage: Spannable): Spannable {
