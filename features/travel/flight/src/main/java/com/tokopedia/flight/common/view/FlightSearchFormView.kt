@@ -43,8 +43,24 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     private fun renderFromCache() {
         setTrip(!flightDashboardCache.isRoundTrip)
 
-        setDepartureDate(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate))
-        setReturnDate(FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate))
+        if (flightDashboardCache.departureDate.isNotEmpty() &&
+                FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate)
+                        .after(FlightDateUtil.getCurrentDate())) {
+            setDepartureDate(FlightDateUtil.stringToDate(
+                    FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate))
+        } else {
+            setDepartureDate(generateDefaultDepartureDate())
+        }
+
+        if (flightDashboardCache.returnDate.isNotEmpty() &&
+                FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate)
+                        .after(FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 1))) {
+            setReturnDate(FlightDateUtil.stringToDate(
+                    FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate))
+        } else {
+            setReturnDate(generateDefaultReturnDate())
+        }
+
         setPassengerView(flightDashboardCache.passengerAdult, flightDashboardCache.passengerChild, flightDashboardCache.passengerInfant)
         setClassView(getClassById(flightDashboardCache.classCache))
 
@@ -187,6 +203,12 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         tvFlightReturnDate.hide()
         separatorReturnDate.hide()
     }
+
+    private fun generateDefaultDepartureDate(): Date =
+            FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 1)
+
+    private fun generateDefaultReturnDate(): Date =
+            FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 2)
 
     interface FlightSearchFormListener {
         fun onDepartureAirportClicked()
