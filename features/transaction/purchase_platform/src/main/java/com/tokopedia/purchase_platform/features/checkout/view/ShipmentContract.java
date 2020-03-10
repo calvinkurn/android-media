@@ -44,6 +44,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDo
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -394,6 +395,8 @@ public interface ShipmentContract {
         void setLastApplyData(LastApplyData lastApplyData);
 
         LastApplyData getLastApplyData();
+
+        ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel();
     }
 
 }
