@@ -9,17 +9,16 @@ import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ServicesItemModelNoPrice
 import kotlinx.android.synthetic.main.item_shipping_duration.view.*
 
-class ShippingDurationItemAdapter : RecyclerView.Adapter<ShippingDurationItemAdapter.ShippingDurationViewHolder>(){
+class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<ShippingDurationItemAdapter.ShippingDurationViewHolder>(){
 
     var shippingDurationList = mutableListOf<ServicesItemModelNoPrice>()
     var lastCheckedPosition = -1
 //    private var inflater: LayoutInflater = LayoutInflater.from(context)
 //    private val listShippingDuration = emptyList<Preference>()
     var shippingDurationPositionId = -1
-    private val listener: OnShippingMenuSelected? = null
 
     interface OnShippingMenuSelected {
-        fun onSelect(selection: Int?)
+        fun onSelect(selection: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShippingDurationViewHolder {
@@ -38,25 +37,18 @@ class ShippingDurationItemAdapter : RecyclerView.Adapter<ShippingDurationItemAda
     inner class ShippingDurationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(data: ServicesItemModelNoPrice) {
             with(itemView){
-
-                val currentPosition = adapterPosition
                 text_shipping_item.text = data.servicesDuration
                 item_shipping_price.visibility = View.GONE
                 item_shipping_desc.visibility = View.GONE
 
-                item_shipping_radio.isChecked = lastCheckedPosition == currentPosition
+                item_shipping_radio.isChecked = data.isSelected
 
                 item_shipping_list.setOnClickListener {
 
-                    val position = lastCheckedPosition
-                    lastCheckedPosition = currentPosition
-                    if(position > -1) notifyItemChanged(position)
-                    notifyItemChanged(lastCheckedPosition)
-
-//                    listener?.onSelect(data.serviceId)
-                    data.serviceId?.let {
+                    listener.onSelect(data.serviceId)
+                    /*data.serviceId?.let {
                         shippingDurationPositionId = it
-                    }
+                    }*/
                 }
 
 

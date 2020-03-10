@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.ShippingNoPriceResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceEditUseCase
@@ -10,31 +11,17 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.ShippingDurationModelMapper
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDurationUseCase, val mapper: ShippingDurationModelMapper): ViewModel(){
+class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDurationUseCase, val mapper: ShippingDurationModelMapper, dispatcher: CoroutineDispatcher): BaseViewModel(dispatcher){
 
-/*
-    private val _shippingDuration = MutableLiveData<ShippingListModel>()
-    val shippingDuration: LiveData<ShippingListModel>
-    get() = _shippingDuration
+    var selectedId = -1
+    private var shippingDurationModel: ShippingListModel? = null
 
-    fun getShippingDuration(){
-        useCase.
-                execute(onSuccess = {
-            _shippingDuration.value = mapTomodel(it)
-        }, onError = {
-
-        })
-
-    }
-
-    private fun mapTomodel(respones: ShippingNoPriceResponse): ShippingListModel{
-        return mapper.convertToDomainModel(respones)
-    }
-*/
-
-    private val _shippingDuration_ = MutableLiveData<ShippingListModel>()
     private val _shippingDuration = MutableLiveData<OccState<ShippingListModel>>()
     val shippingDuration: LiveData<OccState<ShippingListModel>>
         get() = _shippingDuration
@@ -42,11 +29,26 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
     fun getShippingDuration(){
         _shippingDuration.value = OccState.Loading
         useCase.execute(onSuccess = {
-            _shippingDuration.value = OccState.Success(mapTomodel(it))
+//            _shippingDuration.value = OccState.Success(mapTomodel(it))
+            logicSelection(mapTomodel(it))
         }, onError = {
             _shippingDuration.value = OccState.Fail(false, it, "")
         })
 
+    }
+
+    fun logicSelection(shippingDurationModel: ShippingListModel) {
+        launch {
+            withContext(Dispatchers.Default){
+                val shippingList = shippingDurationModel.services
+                for (item in shippingList){
+                    item.isSelected = item.serviceId == selectedId
+                }
+                shippingDurationModel.services = shippingList
+            }
+            this@ShippingDurationViewModel.shippingDurationModel = shippingDurationModel
+            _shippingDuration.value = OccState.Success(shippingDurationModel)
+        }
     }
 
     private fun mapTomodel(respones: ShippingNoPriceResponse): ShippingListModel{
@@ -57,6 +59,15 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
         val value = _shippingDuration.value
         if(value is OccState.Fail){
             _shippingDuration.value = value.copy(isConsumed = true)
+        }
+    }
+
+    fun setSelectedShipping(shippingId: Int){
+        val shippingModel = shippingDurationModel
+        if(shippingModel != null && _shippingDuration.value is OccState.Success) {
+            selectedId = shippingId
+            logicSelection(shippingModel)
+//            shippingModel?.let { logicSelection(it) }
         }
     }
 }

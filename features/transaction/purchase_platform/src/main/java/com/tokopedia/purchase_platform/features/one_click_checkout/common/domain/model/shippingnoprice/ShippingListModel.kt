@@ -1,5 +1,5 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice
 
 data class ShippingListModel(
-        var services : List<ServicesItemModelNoPrice> = listOf()
+        var services : List<ServicesItemModelNoPrice> = emptyList()
 )
