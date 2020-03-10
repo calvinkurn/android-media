@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
 import com.tokopedia.flight.airport.view.fragment.FlightAirportPickerFragment
@@ -12,20 +15,36 @@ import com.tokopedia.flight.dashboard.view.activity.FlightClassesActivity
 import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivity
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
+import com.tokopedia.flight.search_universal.di.DaggerFlightSearchUniversalComponent
+import com.tokopedia.flight.search_universal.di.FlightSearchUniversalComponent
+import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
 import com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_flight_search_form.view.*
 import java.util.*
+import javax.inject.Inject
 
 /**
  * @author by furqan on 09/03/2020
  */
 class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormView.FlightSearchFormListener {
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var flightSearchUniversalViewModel: FlightSearchUniversalViewModel
+    private lateinit var flightSearchUniversalComponent: FlightSearchUniversalComponent
+
     private lateinit var mChildView: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        initInjector()
+
+        activity?.run {
+            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            flightSearchUniversalViewModel = viewModelProvider.get(FlightSearchUniversalViewModel::class.java)
+        }
 
         initBottomSheet()
     }
@@ -91,6 +110,15 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
                 }
             }
         }
+    }
+
+    private fun initInjector() {
+        if (!::flightSearchUniversalComponent.isInitialized) {
+            flightSearchUniversalComponent = DaggerFlightSearchUniversaalComponent.builder()
+                    .flightComponent(FlightComponentInstance.getFlightComponent(requireActivity().application))
+                    .build()
+        }
+        flightSearchUniversalComponent.inject(this)
     }
 
     private fun initBottomSheet() {
