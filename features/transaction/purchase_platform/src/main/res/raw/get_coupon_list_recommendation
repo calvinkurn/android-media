@@ -1,5 +1,5 @@
 mutation coupon_list_recommendation($params: PromoStackRequest) {
-    coupon_list_recommendation(params: $params, dummy: 200) {
+    coupon_list_recommendation(params: $params) {
         message
         error_code
         status

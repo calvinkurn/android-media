@@ -7,32 +7,32 @@ import com.google.gson.annotations.SerializedName
 data class BenefitDetailsItem(
 
 	@field:SerializedName("code")
-	val code: String? = null,
+	val code: String = "",
 
 	@field:SerializedName("unique_id")
-	val uniqueId: String? = null,
+	val uniqueId: String = "",
 
 	@field:SerializedName("cashback_amount")
-	val cashbackAmount: Int? = null,
+	val cashbackAmount: Int = 0,
 
 	@field:SerializedName("promo_type")
-	val promoType: PromoType? = null,
+	val promoType: PromoType = PromoType(),
 
 	@field:SerializedName("discount_amount")
-	val discountAmount: Int? = null,
+	val discountAmount: Int = 0,
 
 	@field:SerializedName("cashback_details")
-	val cashbackDetails: List<CashbackDetailsItem?>? = null,
+	val cashbackDetails: List<CashbackDetailsItem> = emptyList(),
 
 	@field:SerializedName("discount_details")
-	val discountDetails: List<DiscountDetailsItem?>? = null,
+	val discountDetails: List<DiscountDetailsItem> = emptyList(),
 
 	@field:SerializedName("benefit_product_details")
-	val benefitProductDetails: List<BenefitProductDetailsItem?>? = null,
+	val benefitProductDetails: List<BenefitProductDetailsItem> = emptyList(),
 
 	@field:SerializedName("type")
-	val type: String? = null,
+	val type: String = "",
 
 	@field:SerializedName("order_id")
-	val orderId: Int? = null
+	val orderId: Int = 0
 )

@@ -70,7 +70,6 @@ import com.tokopedia.purchase_platform.common.data.model.request.helpticket.Subm
 import com.tokopedia.purchase_platform.common.data.model.response.cod.Data;
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartGqlResponse;
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
-import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
@@ -112,11 +111,9 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldTieri
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest;
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase;
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUseUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -1079,9 +1076,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void doValidateuseLogisticPromo(int cartPosition, String cartString, CouponListRequest couponListRequest) {
+    public void doValidateuseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest) {
         RequestParams requestParams = RequestParams.create();
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, couponListRequest);
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)

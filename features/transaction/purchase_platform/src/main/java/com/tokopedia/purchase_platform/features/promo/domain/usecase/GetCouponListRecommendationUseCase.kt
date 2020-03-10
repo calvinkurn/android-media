@@ -2,7 +2,7 @@ package com.tokopedia.purchase_platform.features.promo.domain.usecase
 
 import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.CouponListRecommendationResponse
 import com.tokopedia.purchase_platform.features.promo.presentation.MOCK_RESPONSE_PHONE_NOT_VERIF
 import com.tokopedia.usecase.coroutines.UseCase
@@ -105,17 +105,17 @@ class GetCouponListRecommendationUseCase @Inject constructor(private val gqlUseC
         }
         """.trimIndent()
 
-        lateinit var couponListRequest: CouponListRequest
+        lateinit var promoRequest: PromoRequest
 
         fun generateCouponListRequest() {
-            couponListRequest = CouponListRequest().apply {
+            promoRequest = PromoRequest().apply {
 
             }
         }
 
         fun getParam(): Map<String, Any> {
             val param = HashMap<String, Any>()
-            param["promo"] = couponListRequest
+            param["promo"] = promoRequest
 
             return param
         }

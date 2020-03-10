@@ -35,7 +35,7 @@ class PromoListHeaderEnabledViewHolder(private val view: View,
             itemView.label_promo_list_header_sub_title.text = element.uiData.subTitle
         }
 
-        if (!element.uiState.isCollapsed) {
+        if (!element.uiState.isExpanded) {
             itemView.image_chevron.rotation = 180f
         } else {
             itemView.image_chevron.rotation = 0f

@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
 data class Params(
 
 	@field:SerializedName("promo")
-	var promo: PromoRequest? = PromoRequest()
+	var promo: ValidateUsePromoRequest = ValidateUsePromoRequest()
 )

@@ -14,8 +14,7 @@ import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecentView
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartRecommendationItemHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartWishlistItemHolderData
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
-import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*
@@ -112,9 +111,9 @@ interface ICartListPresenter {
 
     fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo
 
-    fun doValidateUse(promoRequest: PromoRequest)
+    fun doValidateUse(promoRequest: ValidateUsePromoRequest)
 
-    fun doUpdateCartAndValidateUse(promoRequest: PromoRequest)
+    fun doUpdateCartAndValidateUse(promoRequest: ValidateUsePromoRequest)
 
     fun doClearRedPromosBeforeGoToCheckout(promoCodeList: ArrayList<String>)
 }

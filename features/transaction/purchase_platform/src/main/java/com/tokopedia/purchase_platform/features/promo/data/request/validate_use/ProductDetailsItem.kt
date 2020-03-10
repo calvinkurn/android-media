@@ -7,8 +7,8 @@ import com.google.gson.annotations.SerializedName
 data class ProductDetailsItem(
 
 	@field:SerializedName("quantity")
-	var quantity: Int? = -1,
+	var quantity: Int = -1,
 
 	@field:SerializedName("product_id")
-	var productId: Int? = -1
+	var productId: Int = -1
 )

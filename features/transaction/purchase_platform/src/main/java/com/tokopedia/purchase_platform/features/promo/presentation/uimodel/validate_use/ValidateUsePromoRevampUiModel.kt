@@ -4,6 +4,6 @@ data class ValidateUsePromoRevampUiModel(
         var promoUiModel: PromoUiModel = PromoUiModel(),
         var code: String = "",
         var errorCode: String = "",
-        var message: List<MessageUiModel> = listOf(),
+        var message: List<String> = listOf(),
         var status: String = ""
 )

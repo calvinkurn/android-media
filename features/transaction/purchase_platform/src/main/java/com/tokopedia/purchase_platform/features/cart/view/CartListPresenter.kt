@@ -17,7 +17,6 @@ import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
-import com.tokopedia.purchase_platform.common.data.model.request.checkout.PromoRequest
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.*
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
@@ -37,7 +36,7 @@ import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECom
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.purchase_platform.features.cart.view.subscriber.*
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -1284,9 +1283,9 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         )
     }
 
-    override fun doValidateUse(promoRequest: com.tokopedia.purchase_platform.features.promo.data.request.validate_use.PromoRequest) {
+    override fun doValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
         val requestParams = RequestParams.create()
-        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
+        requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequestValidateUse)
         validateUsePromoRevampUseCase.createObservable(requestParams)
                 .subscribeOn(schedulers.io)
                 .unsubscribeOn(schedulers.io)
@@ -1294,7 +1293,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 .subscribe(ValidateUseSubscriber(view))
     }
 
-    override fun doUpdateCartAndValidateUse(promoRequest: com.tokopedia.purchase_platform.features.promo.data.request.validate_use.PromoRequest) {
+    override fun doUpdateCartAndValidateUse(promoRequestValidateUse: ValidateUsePromoRequest) {
         view?.let { cartListView ->
             val cartItemDataList = ArrayList<CartItemData>()
             for (data in cartListView.getAllAvailableCartDataList()) {
@@ -1306,7 +1305,7 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
             val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
             val requestParams = RequestParams.create()
             requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
-            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequest)
+            requestParams.putObject(ValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, promoRequestValidateUse)
 
             compositeSubscription.add(
                     updateCartAndValidateUseUseCase.createObservable(requestParams)

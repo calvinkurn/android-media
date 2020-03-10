@@ -6,12 +6,12 @@ import com.google.gson.annotations.SerializedName
 @Generated("com.robohorse.robopojogenerator")
 data class AdditionalInfo(
 
-	@field:SerializedName("sp_ids")
-	val spIds: List<Int?>? = null,
+        @field:SerializedName("sp_ids")
+        val spIds: List<Int> = emptyList(),
 
-	@field:SerializedName("message_info")
-	val messageInfo: MessageInfo? = null,
+        @field:SerializedName("message_info")
+        val messageInfo: MessageInfo = MessageInfo(),
 
-	@field:SerializedName("error_detail")
-	val errorDetail: ErrorDetail? = null
+        @field:SerializedName("error_detail")
+        val errorDetail: ErrorDetail = ErrorDetail()
 )

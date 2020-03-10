@@ -35,7 +35,7 @@ fun mockEligibleHeader(): PromoEligibilityHeaderUiModel {
             },
             uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                 isEnabled = true
-                isCollapsed = false
+                isExpanded = false
             }
     )
 }
@@ -50,7 +50,7 @@ fun mockEligiblePromoGlobalSection(): List<Visitable<*>> {
                 identifierId = 1
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isCollapsed = false
+                isExpanded = false
                 isEnabled = true
             }
     )
@@ -119,7 +119,7 @@ fun mockEligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 tmpPromoItemList = arrayListOf(promoListItemUiModel3)
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isCollapsed = true
+                isExpanded = true
                 isEnabled = true
             }
     )
@@ -150,7 +150,7 @@ fun mockEligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 tmpPromoItemList = arrayListOf(promoListItemUiModel4)
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isCollapsed = true
+                isExpanded = true
                 isEnabled = true
             }
     )
@@ -166,7 +166,7 @@ fun mockIneligibleHeader(): PromoEligibilityHeaderUiModel {
             },
             uiState = PromoEligibilityHeaderUiModel.UiState().apply {
                 isEnabled = false
-                isCollapsed = false
+                isExpanded = false
             }
     )
 }
@@ -181,7 +181,7 @@ fun mockIneligiblePromoGlobalSection(): List<Visitable<*>> {
                 identifierId = 11
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isCollapsed = false
+                isExpanded = false
                 isEnabled = false
             }
     )
@@ -241,7 +241,7 @@ fun mockIneligiblePromoGoldMerchantSection(): List<Visitable<*>> {
                 tmpPromoItemList = emptyList()
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isCollapsed = false
+                isExpanded = false
                 isEnabled = false
             }
     )
@@ -274,7 +274,7 @@ fun mockIneligiblePromoOfficialStoreSection(): List<Visitable<*>> {
                 tmpPromoItemList = emptyList()
             },
             uiState = PromoListHeaderUiModel.UiState().apply {
-                isCollapsed = false
+                isExpanded = false
                 isEnabled = false
             }
     )
@@ -345,7 +345,7 @@ val MOCK_RESPONSE = """
             "sub_title": "Kamu bisa gabungkan promo biar makin hemat!",
             "icon_url": "",
             "is_enabled": true,
-            "is_collapsed": false,
+            "is_collapsed": true,
             "tags": [],
             "coupons": [],
             "sub_sections": [
@@ -493,7 +493,7 @@ val MOCK_RESPONSE = """
             "sub_title": "kuponnya ga bisa dipake ya",
             "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
             "is_enabled": false,
-            "is_collapsed": true,
+            "is_collapsed": false,
             "tags": [],
             "coupons": [],
             "sub_sections": [
@@ -502,7 +502,7 @@ val MOCK_RESPONSE = """
                 "sub_title": "Not avalibale",
                 "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                 "is_enabled": false,
-                "is_collapsed": true,
+                "is_collapsed": false,
                 "tags": [],
                 "coupons": [
                   {
@@ -533,7 +533,7 @@ val MOCK_RESPONSE = """
                   "sub_title": "Not avalibale",
                   "icon_url": "https://cdn2.tstatic.net/jatim/foto/bank/images/cara-isi-ulang-saldo-ovo.jpg",
                   "is_enabled": false,
-                  "is_collapsed": true,
+                  "is_collapsed": false,
                   "tags": [],
                   "coupons": [
                     {

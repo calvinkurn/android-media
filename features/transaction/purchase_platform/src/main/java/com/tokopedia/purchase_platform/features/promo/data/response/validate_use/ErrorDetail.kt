@@ -7,5 +7,5 @@ import com.google.gson.annotations.SerializedName
 data class ErrorDetail(
 
 	@field:SerializedName("message")
-	val message: String? = null
+	val message: String = ""
 )

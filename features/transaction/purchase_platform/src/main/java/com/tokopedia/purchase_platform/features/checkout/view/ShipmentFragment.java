@@ -138,8 +138,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligibl
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRequest;
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel;
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
@@ -3132,10 +3131,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             listOrder.add(order);
         }
 
-        CouponListRequest couponListRequest = new CouponListRequest();
-        couponListRequest.setState(CheckoutConstant.CHECKOUT);
-        couponListRequest.setCodes(promoCheckoutData.getCodes());
-        //TODO: intent to coupon list page with couponListRequest
+        PromoRequest promoRequest = new PromoRequest();
+        promoRequest.setState(CheckoutConstant.CHECKOUT);
+        promoRequest.setCodes(promoCheckoutData.getCodes());
+        //TODO: intent to coupon list page with promoRequest
     }
 
     @Override

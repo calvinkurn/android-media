@@ -14,9 +14,9 @@ class ValidateUsePromoCheckoutMapper {
             var status = ""
             validateUsePromoRevamp?.status?.let { status = it }
 
-            val listMessage = ArrayList<MessageUiModel>()
+            val listMessage = ArrayList<String>()
             validateUsePromoRevamp?.message?.forEach {
-                listMessage.add(mapMessageUiModel(it))
+                listMessage.add(it)
             }
 
             return ValidateUsePromoRevampUiModel(
