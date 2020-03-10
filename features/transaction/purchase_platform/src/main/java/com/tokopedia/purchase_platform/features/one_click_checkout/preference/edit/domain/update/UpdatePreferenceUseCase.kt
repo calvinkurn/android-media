@@ -35,7 +35,7 @@ class UpdatePreferenceUseCase @Inject constructor(private val graphqlUseCase: Gr
         const val PARAM_KEY = "profile"
         val QUERY = """
         mutation update_profile_occ(${"$"}profile: UpdateProfileOCCParams){
-          update_profile_occ(profiles: ${"$"}profile, dummy: 1){
+          update_profile_occ(profiles: ${"$"}profile){
                 error_message,
                 status,
                 data {
