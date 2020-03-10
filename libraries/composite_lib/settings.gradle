@@ -29,3 +29,4 @@ include ":user_session"
 include ":use_case"
 include ":network"
 include ":williamchart"
+include ':graphql_beta_notif'
