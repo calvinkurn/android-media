@@ -9,6 +9,7 @@ import com.tokopedia.hotel.roomlist.data.model.HotelRoomInfo
 import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
+import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
 import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
@@ -47,18 +48,17 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
             } else {
                 room_description_layout.visibility = View.GONE
                 room_full_layout.visibility = View.VISIBLE
-                if (roomListModel.images.isNotEmpty()) room_image_view_pager.setImages(listOf(roomListModel.images.first()))
-                room_image_view_pager.buildView()
+                if (roomListModel.images.isNotEmpty()) room_list_room_full_image_view.loadImage(roomListModel.images.first())
                 room_full_room_name_text_view.text = roomListModel.roomName
             }
         }
     }
 
-    fun initRoomFacility(breakfastIncluded: Boolean, refundable: Boolean, roomFacility: List<HotelRoomInfo.Facility>) {
+    private fun initRoomFacility(breakfastIncluded: Boolean, refundable: Boolean, roomFacility: List<HotelRoomInfo.Facility>) {
         with(itemView) {
             room_facility_recycler_view.removeAllViews()
 
-            var breakfastTextView = FacilityTextView(context)
+            val breakfastTextView = FacilityTextView(context)
 
             if (breakfastIncluded) {
                 breakfastTextView.setIconAndText(R.drawable.ic_hotel_free_breakfast, getString(R.string.hotel_room_list_free_breakfast))
@@ -68,7 +68,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
             room_facility_recycler_view.addView(breakfastTextView)
 
 
-            var refundableTextView = FacilityTextView(context)
+            val refundableTextView = FacilityTextView(context)
             if (refundable) {
                 refundableTextView.setIconAndText(R.drawable.ic_hotel_refundable, getString(R.string.hotel_room_list_refundable_with_condition))
             } else {
@@ -84,7 +84,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         }
     }
 
-    fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
+    private fun setImageViewPager(imageUrls: List<String>, room: HotelRoom) {
         with(itemView) {
             if (imageUrls.size >= 5) room_image_view_pager.setImages(imageUrls.subList(0, 5))
             else room_image_view_pager.setImages(imageUrls)
@@ -102,7 +102,7 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
         val LAYOUT = R.layout.item_hotel_room_list
     }
 
-    fun mapToRoomListModel(hotelRoom: HotelRoom): RoomListModel {
+    private fun mapToRoomListModel(hotelRoom: HotelRoom): RoomListModel {
         var roomListModel = RoomListModel()
         if (hotelRoom != null) {
             roomListModel.roomName = hotelRoom.roomInfo.name
