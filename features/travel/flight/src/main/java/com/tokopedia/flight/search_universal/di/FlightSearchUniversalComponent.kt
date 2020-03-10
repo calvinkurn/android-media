@@ -8,7 +8,7 @@ import dagger.Component
  * @author by furqan on 10/03/2020
  */
 @FlightSearchUniversalScope
-@Component(modules = [FlightSearchUniversalViewModelModule::class],
+@Component(modules = [FlightSearchUniversalModule::class, FlightSearchUniversalViewModelModule::class],
         dependencies = [FlightComponent::class])
 interface FlightSearchUniversalComponent {
     fun inject(flightSearchUniversalBottomSheet: FlightSearchUniversalBottomSheet)
