@@ -41,6 +41,7 @@ class GetPopularKeywordUseCase @Inject constructor(
                       keyword
                       mobile_url
                       product_count
+                      product_count_formatted
                     }
                 }
             }
