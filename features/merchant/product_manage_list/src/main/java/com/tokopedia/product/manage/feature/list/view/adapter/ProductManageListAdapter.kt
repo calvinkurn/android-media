@@ -12,26 +12,32 @@ class ProductManageListAdapter(
 ) : BaseListCheckableAdapter<ProductViewModel, ProductManageAdapterFactory>(baseListAdapterTypeFactory, onCheckableAdapterListener) {
 
     fun updatePrice(productId: String, price: String) {
-        data.filter{ it.id.equals(productId, ignoreCase = true) }.forEachIndexed { index, it ->
-            data[index] = it.copy(price = price, priceFormatted = price.toInt().getCurrencyFormatted())
-            notifyItemChanged(index)
-            return
+        data.forEachIndexed { index, it ->
+            if (it.id.equals(productId, ignoreCase = true)) {
+                data[index] = it.copy(price = price, priceFormatted = price.toInt().getCurrencyFormatted())
+                notifyItemChanged(index)
+                return
+            }
         }
     }
 
     fun updateStock(productId: String, stock: Int, status: ProductStatus) {
-        data.filter{ it.id.equals(productId, ignoreCase = true) }.forEachIndexed { index, it ->
-            data[index] = it.copy(stock = stock, status = status)
-            notifyItemChanged(index)
-            return
+        data.forEachIndexed { index, it ->
+            if (it.id.equals(productId, ignoreCase = true)) {
+                data[index] = it.copy(stock = stock, status = status)
+                notifyItemChanged(index)
+                return
+            }
         }
     }
 
     fun deleteProduct(productId: String) {
-        data.filter{ it.id.equals(productId, ignoreCase = true) }.forEachIndexed { index, it ->
-            data.removeAt(index)
-            notifyItemRemoved(index)
-            return
+        data.forEachIndexed { index, it ->
+            if (it.id.equals(productId, ignoreCase = true)) {
+                data.removeAt(index)
+                notifyItemRemoved(index)
+                return
+            }
         }
     }
 
