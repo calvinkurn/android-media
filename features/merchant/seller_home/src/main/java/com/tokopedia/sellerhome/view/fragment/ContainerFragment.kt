@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
@@ -18,7 +19,7 @@ import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
-import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
+import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SharedViewModel
 import kotlinx.android.synthetic.main.fragment_sah_container.view.*
 import javax.inject.Inject
@@ -121,7 +122,7 @@ class ContainerFragment : Fragment() {
         showFragment(homeFragment, homeFragmentTitle)
 
         view?.sahToolbar?.showNotificationActionMenu {
-            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.SELLER_INFO)
+            RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
         }
     }
 
@@ -186,8 +187,8 @@ class ContainerFragment : Fragment() {
         view?.sahToolbar?.title = title
     }
 
-    fun showChatNotificationBadge(chat: NotificationChatUiModel) {
-        if (chat.unreads > 0)
+    fun showNotifCenterBadge(chat: NotificationCenterUnreadUiModel) {
+        if (chat.notifUnreadInt > 0)
             view?.sahToolbar?.showBadge()
         else
             view?.sahToolbar?.removeBadge()

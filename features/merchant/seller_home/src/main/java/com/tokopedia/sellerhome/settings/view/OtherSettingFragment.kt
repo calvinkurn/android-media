@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,6 +14,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.common.StatusbarHelper
 import com.tokopedia.sellerhome.settings.di.DaggerOtherSettingComponent
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherSettingAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
@@ -20,7 +23,7 @@ import com.tokopedia.sellerhome.settings.view.viewmodel.OtherSettingViewModel
 import kotlinx.android.synthetic.main.fragment_other_setting.*
 import javax.inject.Inject
 
-class OtherSettingFragment: BaseListFragment<SettingUiModel, OtherSettingAdapterTypeFactory>() {
+class OtherSettingFragment : BaseListFragment<SettingUiModel, OtherSettingAdapterTypeFactory>() {
 
     companion object {
         @JvmStatic

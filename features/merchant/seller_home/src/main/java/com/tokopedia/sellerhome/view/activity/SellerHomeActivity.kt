@@ -19,6 +19,7 @@ import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.OtherSettingFragment
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
+import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
 import com.tokopedia.sellerhome.view.model.NotificationSellerOrderStatusUiModel
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeActivityViewModel
@@ -148,6 +149,7 @@ class SellerHomeActivity : BaseActivity() {
     private fun observeNotificationsLiveData() {
         homeViewModel.notifications.observe(this, Observer {
             if (it is Success) {
+                showNotificationBadge(it.data.notifCenterUnread)
                 showChatNotificationCounter(it.data.chat)
                 showOrderNotificationCounter(it.data.sellerOrderStatus)
             }
@@ -163,8 +165,11 @@ class SellerHomeActivity : BaseActivity() {
         homeViewModel.getShopInfo()
     }
 
+    private fun showNotificationBadge(notifCenter: NotificationCenterUnreadUiModel) {
+        containerFragment.showNotifCenterBadge(notifCenter)
+    }
+
     private fun showChatNotificationCounter(chat: NotificationChatUiModel) {
-        containerFragment.showChatNotificationBadge(chat)
         sahBottomNav.setNotification(chat.unreads, FragmentType.CHAT)
     }
 

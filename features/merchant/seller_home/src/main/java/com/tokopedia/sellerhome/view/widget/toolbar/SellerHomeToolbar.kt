@@ -23,7 +23,7 @@ class SellerHomeToolbar(context: Context?, attrs: AttributeSet?) : Toolbar(conte
         inflateMenu(R.menu.sah_menu_toolbar_notification)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            elevation = context?.dpToPx(8) ?: 12f
+            elevation = context?.dpToPx(4) ?: 12f
         }
     }
 

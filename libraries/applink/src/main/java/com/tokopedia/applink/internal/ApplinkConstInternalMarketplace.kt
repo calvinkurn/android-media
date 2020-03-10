@@ -237,11 +237,7 @@ object ApplinkConstInternalMarketplace {
 
     //SellerInfoActivity
     @JvmField
-    val SELLER_INFO_OLD = "$INTERNAL_MARKETPLACE/seller-info"
-
-    //NotificationSellerActivity
-    @JvmField
-    val SELLER_INFO = "$INTERNAL_MARKETPLACE/sellerinfo"
+    val SELLER_INFO = "$INTERNAL_MARKETPLACE/seller-info"
 
     //SellerHomeActivity
     @JvmField
