@@ -156,6 +156,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var goldMerchant: Boolean = false
     private var isOfficialStore: Boolean = false
     private var productListFeaturedOnlySize: Int = 0
+    private var dialogFeaturedProduct: DialogUnify? = null
     private var manageProductBottomSheet: ManageProductBottomSheet? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
@@ -212,6 +213,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         getProductListFeaturedOnlySize()
         getTopAdsFreeClaim()
         getGoldMerchantStatus()
+        context?.let { dialogFeaturedProduct = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION) }
     }
 
     private fun setupSearchBar() {
@@ -791,59 +793,55 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun onSetFeaturedProductClicked(productManageViewModel: ProductViewModel) {
         context?.let { context ->
-            var dialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
             if(viewModel.isPowerMerchant() || isOfficialStore) {
                 productManageViewModel.isFeatured?.let {
                     if(productListFeaturedOnlySize == 5 && !it) {
-                        dialog = getDialogFeaturedProduct(
-                                dialog,
+                        setDialogFeaturedProduct(
                                 ProductManageUrl.ILLUSTRATION_MAX_FEATURED_PRODUCT_DOMAIN,
                                 getString(R.string.product_featured_max_dialog_title),
                                 getString(R.string.product_featured_max_dialog_desc),
                                 getString(R.string.product_featured_max_dialog_primary_cta),
                                 getString(R.string.product_featured_max_dialog_secondary_cta)
                         )
-                        dialog.setPrimaryCTAClickListener { dialog.dismiss() }
-                        dialog.setSecondaryCTAClickListener {
-                            dialog.dismiss()
+                        dialogFeaturedProduct?.setPrimaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                        dialogFeaturedProduct?.setSecondaryCTAClickListener {
+                            dialogFeaturedProduct?.dismiss()
                             RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_FEATURED_PRODUCT)
                         }
-                        dialog.show()
+                        dialogFeaturedProduct?.show()
                     }
                     else {
-                        dialog = getDialogFeaturedProduct(
-                                dialog,
+                        setDialogFeaturedProduct(
                                 ProductManageUrl.ILLUSTRATION_ADD_FEATURED_PRODUCT_DOMAIN,
                                 getString(R.string.product_featured_add_dialog_title),
                                 getString(R.string.product_featured_add_dialog_desc),
                                 getString(R.string.product_featured_add_dialog_primary_cta),
                                 getString(R.string.product_featured_add_dialog_secondary_cta)
                         )
-                        dialog.setPrimaryCTAClickListener {
+                        dialogFeaturedProduct?.setPrimaryCTAClickListener {
                             productListFeaturedOnlySize += 1
                             showLoadingProgress()
                             setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
-                            dialog.dismiss()
+                            dialogFeaturedProduct?.dismiss()
                         }
-                        dialog.setSecondaryCTAClickListener { dialog.dismiss() }
-                        dialog.show()
+                        dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                        dialogFeaturedProduct?.show()
                     }
                 }
             } else {
-                dialog = getDialogFeaturedProduct(
-                        dialog,
+                    setDialogFeaturedProduct(
                         ProductManageUrl.ILLUSTRATION_SPECIAL_FEATURED_PRODUCT_DOMAIN,
                         getString(R.string.product_featured_special_dialog_title),
                         getString(R.string.product_featured_special_dialog_desc),
                         getString(R.string.product_featured_special_dialog_primary_cta),
                         getString(R.string.product_featured_special_dialog_secondary_cta)
                 )
-                dialog.setPrimaryCTAClickListener {
-                    dialog.dismiss()
+                dialogFeaturedProduct?.setPrimaryCTAClickListener {
+                    dialogFeaturedProduct?.dismiss()
                     RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                 }
-                dialog.setSecondaryCTAClickListener { dialog.dismiss() }
-                dialog.show()
+                dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
+                dialogFeaturedProduct?.show()
             }
         }
     }
@@ -1130,13 +1128,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         viewModel.getGoldMerchantStatus()
     }
 
-    private fun getDialogFeaturedProduct(dialog: DialogUnify, imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String): DialogUnify {
-        dialog.setImageUrl(imageUrl)
-        dialog.setTitle(title)
-        dialog.setDescription(desc)
-        dialog.setPrimaryCTAText(primaryCta)
-        dialog.setSecondaryCTAText(secondaryCta)
-        return dialog
+    private fun setDialogFeaturedProduct(imageUrl: String, title: String, desc: String, primaryCta: String, secondaryCta: String) {
+        dialogFeaturedProduct?.setImageUrl(imageUrl)
+        dialogFeaturedProduct?.setTitle(title)
+        dialogFeaturedProduct?.setDescription(desc)
+        dialogFeaturedProduct?.setPrimaryCTAText(primaryCta)
+        dialogFeaturedProduct?.setSecondaryCTAText(secondaryCta)
     }
 
     // region observers
