@@ -9,7 +9,8 @@ class ShopPageHomeCarousellAdapter(
         shopPageHomeCarousellAdapterTypeFactory: ShopPageHomeCarousellAdapterTypeFactory
 ) : BaseListAdapter<Visitable<*>, ShopPageHomeCarousellAdapterTypeFactory>(shopPageHomeCarousellAdapterTypeFactory) {
 
-    var uiModel: ShopHomeCarousellProductUiModel? = null
+    var shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel? = null
+    var parentIndex: Int = 0
 
     fun setProductListData(productList: List<ShopHomeProductViewModel>) {
         val lastIndex = lastIndex

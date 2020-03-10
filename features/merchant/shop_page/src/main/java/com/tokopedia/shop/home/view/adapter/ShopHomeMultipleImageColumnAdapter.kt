@@ -6,11 +6,12 @@ import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeItemImageColumnViewHolder
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnViewHolder
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 class ShopHomeMultipleImageColumnAdapter(
-        val listener: ShopHomeMultipleImageColumnViewHolder.ShopHomeMultipleImageColumnListener
-): ListAdapter<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, ShopHomeItemImageColumnViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
+        val listener: ShopHomeDisplayWidgetListener
+) : ListAdapter<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, ShopHomeItemImageColumnViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
 
     private var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
     private var parentPosition: Int = 0
@@ -24,8 +25,8 @@ class ShopHomeMultipleImageColumnAdapter(
 
     override fun onBindViewHolder(holder: ShopHomeItemImageColumnViewHolder, position: Int) {
         getItem(position)?.let {
-            holder.setShopHomeDisplayWidgetUiModelData(displayWidgetUiModel)
-            holder.setParentPosition(parentPosition)
+            holder.displayWidgetUiModel = displayWidgetUiModel
+            holder.parentPosition = parentPosition
             holder.bind(it)
         }
     }

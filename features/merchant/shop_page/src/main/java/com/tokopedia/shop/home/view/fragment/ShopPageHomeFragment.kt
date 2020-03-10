@@ -15,38 +15,58 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
+import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
+import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.util.Util
+import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
 import com.tokopedia.shop.home.di.module.ShopPageHomeModule
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapter
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeMultipleImageColumnViewHolder
-import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
+import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.shop.home.view.viewmodel.ShopHomeViewModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(), ShopHomeMultipleImageColumnViewHolder.ShopHomeMultipleImageColumnListener {
+class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
+        ShopHomeDisplayWidgetListener,
+        ShopHomeVoucherViewHolder.OnMerchantVoucherListWidgetListener,
+        ShopPageHomeProductClickListener {
 
     companion object {
         const val KEY_SHOP_ID = "SHOP_ID"
         const val KEY_IS_OFFICIAL_STORE = "IS_OFFICIAL_STORE"
         const val KEY_IS_GOLD_MERCHANT = "IS_GOLD_MERCHANT"
+        const val KEY_SHOP_NAME = "SHOP_NAME"
 
         const val SPAN_COUNT = 2
 
-        fun createInstance(shopId: String, isOfficialStore: Boolean, isGoldMerchant: Boolean): Fragment {
+        fun createInstance(
+                shopId: String,
+                isOfficialStore: Boolean,
+                isGoldMerchant: Boolean,
+                shopName: String
+        ): Fragment {
             val bundle = Bundle()
             bundle.putString(KEY_SHOP_ID, shopId)
             bundle.putBoolean(KEY_IS_OFFICIAL_STORE, isOfficialStore)
             bundle.putBoolean(KEY_IS_GOLD_MERCHANT, isGoldMerchant)
+            bundle.putString(KEY_SHOP_NAME, shopName)
             return ShopPageHomeFragment().apply {
                 arguments = bundle
             }
@@ -61,6 +81,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     private var shopId: String = ""
     private var isOfficialStore: Boolean = false
     private var isGoldMerchant: Boolean = false
+    private var shopName: String = ""
     private val shopPageHomeLayoutUiModel: ShopPageHomeLayoutUiModel?
         get() = (viewModel.shopHomeLayoutData.value as? Success)?.data
     private val customDimensionShopPage: CustomDimensionShopPage by lazy {
@@ -72,7 +93,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private val shopHomeAdapterTypeFactory by lazy {
-        ShopHomeAdapterTypeFactory(this)
+        ShopHomeAdapterTypeFactory(this, this, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -111,6 +132,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopId = it.getString(KEY_SHOP_ID, "")
             isOfficialStore = it.getBoolean(KEY_IS_OFFICIAL_STORE, false)
             isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
+            shopName = it.getString(KEY_SHOP_NAME, "")
         }
     }
 
@@ -120,6 +142,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             when (it) {
                 is Success -> {
                     onSuccessGetShopHomeLayoutData(it.data)
+                }
+                is Fail -> {
+                    onErrorGetShopHomeLayoutData(it.throwable)
                 }
             }
         })
@@ -134,9 +159,12 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         })
     }
 
+    private fun onErrorGetShopHomeLayoutData(throwable: Throwable) {
+    }
+
     private fun onSuccessGetProductListData(hasNextPage: Boolean, productList: List<ShopHomeProductViewModel>) {
         shopHomeAdapter.hideLoading()
-        if(shopHomeAdapter.endlessDataSize == 0) {
+        if (shopHomeAdapter.endlessDataSize == 0) {
             shopHomeAdapter.setEtalaseTitleData()
         }
         shopHomeAdapter.setProductListData(productList)
@@ -184,14 +212,15 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    fun loadNextData(page: Int){
-        if(shopId.isNotEmpty()) {
+    fun loadNextData(page: Int) {
+        if (shopId.isNotEmpty()) {
             viewModel.getNextProductList(shopId, page)
         }
     }
+
     override fun loadData(page: Int) {}
 
-    override fun onMultipleImageColumnItemImpression(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?, displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, parentPosition: Int, adapterPosition: Int) {
+    override fun onItemImpression(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?, displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, parentPosition: Int, adapterPosition: Int) {
         shopPageHomeTracking.impressionDisplayWidget(
                 false,
                 shopId,
@@ -207,7 +236,104 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onMultipleImageColumnItemClicked(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?, displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
-        Toast.makeText(context, "Multiple column image clicked", Toast.LENGTH_SHORT).show()
+    override fun onItemClicked(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?, displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, parentPosition: Int, adapterPosition: Int) {
+        val destinationLink: String
+        val creativeUrl: String
+        when (displayWidgetUiModel?.name ?: "") {
+            VIDEO -> {
+                destinationLink = displayWidgetItem.videoUrl
+                creativeUrl = displayWidgetItem.videoUrl
+            }
+            else -> {
+                destinationLink = displayWidgetItem.appLink
+                creativeUrl = displayWidgetItem.imageUrl
+            }
+        }
+        shopPageHomeTracking.clickDisplayWidget(
+                false,
+                shopId,
+                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                displayWidgetUiModel?.name ?: "",
+                displayWidgetUiModel?.widgetId ?: "",
+                parentPosition + 1,
+                displayWidgetUiModel?.header?.ratio ?: "",
+                destinationLink,
+                creativeUrl,
+                adapterPosition + 1,
+                customDimensionShopPage
+        )
+        context?.let {
+            RouteManager.route(it, displayWidgetItem.appLink)
+        }
+    }
+
+    override val isOwner: Boolean
+        get() = Util.isMyShop(shopId, viewModel.userSessionShopId)
+
+    override fun onMerchantUseVoucherClicked(merchantVoucherViewModel: MerchantVoucherViewModel, position: Int) {}
+
+    override fun onItemClicked(merchantVoucherViewModel: MerchantVoucherViewModel) {
+        shopPageHomeTracking.clickDetailMerchantVoucher(isOwner, customDimensionShopPage)
+        context?.let {
+            val intentMerchantVoucherDetail = MerchantVoucherDetailActivity.createIntent(
+                    it,
+                    merchantVoucherViewModel.voucherId,
+                    merchantVoucherViewModel, shopId
+            )
+            startActivity(intentMerchantVoucherDetail)
+        }
+    }
+
+    override fun onSeeAllClicked() {
+        shopPageHomeTracking.clickSeeAllMerchantVoucher(isOwner, customDimensionShopPage)
+        context?.let {
+            val intentMerchantVoucherList = MerchantVoucherListActivity.createIntent(
+                    it,
+                    shopId,
+                    shopName
+            )
+            startActivity(intentMerchantVoucherList)
+        }
+    }
+
+    override fun onVoucherListImpression(listVoucher: List<MerchantVoucherViewModel>) {
+        shopPageHomeTracking.onImpressionVoucherList(isOwner, listVoucher, customDimensionShopPage)
+    }
+
+    override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+//        shopPageHomeTracking.clickProduct(
+//
+//        )
+//        goToPDP(
+//                shopProductViewModel.id ?: "",
+//                attribution,
+//                shopPageTracking?.getListNameOfProduct(PRODUCT, shopProductAdapter.shopProductEtalaseListViewModel?.selectedEtalaseName)
+//                        ?: ""
+//        )
+    }
+
+    override fun onAllProductItemImpression(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    }
+
+    override fun onAllProductItemWishlist(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel) {
+    }
+
+    override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    }
+
+    override fun onCarouselProductItemImpression(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    }
+
+    override fun onCarouselProductItemWishlist(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    }
+
+    private fun goToPDP(productId: String, attribution: String?, listNameOfProduct: String) {
+        context?.let {
+            val bundle = Bundle()
+            bundle.putString("tracker_attribution", attribution)
+            bundle.putString("tracker_list_name", listNameOfProduct)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
+            startActivity(intent)
+        }
     }
 }

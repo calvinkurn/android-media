@@ -42,14 +42,19 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopHomeLayoutData
     private val _shopHomeLayoutData = MutableLiveData<Result<ShopPageHomeLayoutUiModel>>()
 
-    private val userSessionShopId = userSession.shopId ?: ""
+    val userSessionShopId = userSession.shopId ?: ""
 
     fun getShopPageHomeData(shopId: String) {
         launchCatchError(block = {
             val shopLayoutWidget = asyncCatchError(
                     dispatcherProvider.io(),
-                    block = { getShopPageHomeLayout(shopId) },
-                    onError = { null }
+                    block = {
+                        getShopPageHomeLayout(shopId)
+                    },
+                    onError = {
+                        _shopHomeLayoutData.postValue(Fail(it))
+                        null
+                    }
             )
             val productList = asyncCatchError(
                     dispatcherProvider.io(),
@@ -58,9 +63,9 @@ class ShopHomeViewModel @Inject constructor(
             )
             shopLayoutWidget.await()?.let {
                 _shopHomeLayoutData.postValue(Success(it))
-            }
-            productList.await()?.let {
-                _productListData.postValue(Success(it))
+                productList.await()?.let {
+                    _productListData.postValue(Success(it))
+                }
             }
         }) {
         }
