@@ -93,10 +93,11 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     override fun onSelectClick(element: SelectViewModel) {
-        productManageFilterExpandSelectViewModel.updateSelectedItem(element)
-        val dataToSave = productManageFilterExpandSelectViewModel.selectData.value?.toList() ?: listOf()
         val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
         val cacheManagerId = cacheManager?.id
+        val needSort = productManageFilterExpandSelectViewModel.updateSelectedItem(element)
+        val dataToSave = productManageFilterExpandSelectViewModel.selectData.value?.toMutableList() ?: mutableListOf()
+        if(needSort) dataToSave.sortByDescending { it.isSelected }
         if(flag == SORT_CACHE_MANAGER_KEY) {
             cacheManager?.put(SORT_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     SORT_CACHE_MANAGER_KEY,

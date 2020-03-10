@@ -162,4 +162,26 @@
     <string name="product_featured_max_dialog_primary_cta">Mengerti</string>
     <string name="product_featured_max_dialog_secondary_cta">Lihat Produk Unggulan</string>
 
+    <string name="product_manage_quick_edit_currency">Rp</string>
+    <string name="product_manage_quick_edit_min_price_error">Min. Rp 100</string>
+    <string name="product_manage_quick_edit_max_price_error">Maks. Rp100.000.000</string>
+    <string name="product_manage_quick_edit_price_success">Harga produk \"%1$s\" berhasil diubah.</string>
+
+    <string name="product_manage_quick_edit_stock_title">Atur Stok</string>
+    <string name="product_manage_quick_edit_stock_active_product">Produk Aktif</string>
+    <string name="product_manage_quick_edit_stock_total_stock">Jumlah Stok</string>
+    <string name="product_manage_quick_edit_stock_success">Jumlah stok \"%1$s\" berhasil diubah.</string>
+    <string name="product_manage_quick_edit_stock_min_stock_error">Min. 1</string>
+    <string name="product_manage_quick_edit_stock_max_stock_error">Maks. 999.999</string>
+
+    <string name="product_manage_delete_product_title">Hapus Produk?</string>
+    <string name="product_manage_delete_product_description">Penghapusan produk tidak dapat dibatalkan.</string>
+    <string name="product_manage_delete_product_delete_button">Ya, Hapus</string>
+    <string name="product_manage_delete_product_cancel_button">Batalkan</string>
+    <string name="product_manage_delete_product_success">\"%1$s\" berhasil dihapus</string>
+    <string name="product_manage_delete_product_fail">Produk gagal dihapus.\nSilakan coba lagi, ya!</string>
+
+    <string name="product_manage_snack_bar_retry">Coba lagi</string>
+    <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
+
 </resources>

@@ -10,6 +10,9 @@ import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
+import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
+import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
+import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDB
 import com.tokopedia.product.manage.item.main.draft.data.db.ProductDraftDao
 import com.tokopedia.product.manage.item.main.draft.data.repository.ProductDraftRepositoryImpl
@@ -22,7 +25,6 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditPriceUseCase
 import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
@@ -58,7 +60,9 @@ class ProductManageListModule {
         popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
         getProductListUseCase: GQLGetProductListUseCase,
         bulkUpdateProductUseCase: BulkUpdateProductUseCase,
-        editFeaturedProductUseCase: EditFeaturedProductUseCase
+        editFeaturedProductUseCase: EditFeaturedProductUseCase,
+        editStockUseCase: EditStockUseCase,
+        deleteProductUseCase: DeleteProductUseCase
     ): ProductManageViewModel {
         return ProductManageViewModel(
             editPriceUseCase,
@@ -70,6 +74,8 @@ class ProductManageListModule {
             getProductListUseCase,
             bulkUpdateProductUseCase,
             editFeaturedProductUseCase,
+            editStockUseCase,
+            deleteProductUseCase,
             Dispatchers.IO,
             Dispatchers.Main
         )
@@ -146,6 +152,21 @@ class ProductManageListModule {
     internal fun provideProductDraftDao(productDraftDB: ProductDraftDB): ProductDraftDao {
         return productDraftDB.getProductDraftDao()
     }
+
+    @ProductManageListScope
+    @Provides
+    fun provideEditStockUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
+            EditStockUseCase(multiRequestGraphqlUseCase)
+
+    @ProductManageListScope
+    @Provides
+    fun provideDeleteProductkUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
+            DeleteProductUseCase(multiRequestGraphqlUseCase)
+
+    @ProductManageListScope
+    @Provides
+    fun provideEditPriceUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
+            EditPriceUseCase(multiRequestGraphqlUseCase)
 
     @ProductManageListScope
     @Provides
