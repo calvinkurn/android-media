@@ -12,11 +12,13 @@ import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.C
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_SUCCESS_CODE
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
-import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
+import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState
-import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
@@ -65,29 +67,29 @@ class ProductManageViewModel @Inject constructor(
     mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
 
-    val viewState : LiveData<ViewState>
+    val viewState: LiveData<ViewState>
         get() = _viewState
-    val productListResult : LiveData<Result<List<ProductViewModel>>>
+    val productListResult: LiveData<Result<List<ProductViewModel>>>
         get() = _productListResult
-    val productListFeaturedOnlyResult : LiveData<Result<Int>>
+    val productListFeaturedOnlyResult: LiveData<Result<Int>>
         get() = _productListFeaturedOnlyResult
-    val shopInfoResult : LiveData<Result<ShopInfoResult>>
+    val shopInfoResult: LiveData<Result<ShopInfoResult>>
         get() = _shopInfoResult
-    val updateProductResult : LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
+    val updateProductResult: LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
         get() = _updateProductResult
-    val deleteProductResult : LiveData<Result<DeleteProductResult>>
+    val deleteProductResult: LiveData<Result<DeleteProductResult>>
         get() = _deleteProductResult
-    val editPriceResult : LiveData<Result<EditPriceResult>>
+    val editPriceResult: LiveData<Result<EditPriceResult>>
         get() = _editPriceResult
-    val editStockResult : LiveData<Result<EditStockResult>>
+    val editStockResult: LiveData<Result<EditStockResult>>
         get() = _editStockResult
     val setCashbackResult: LiveData<Result<SetCashbackResult>>
         get() = _setCashbackResult
-    val getFreeClaimResult : LiveData<Result<DataDeposit>>
+    val getFreeClaimResult: LiveData<Result<DataDeposit>>
         get() = _getFreeClaimResult
-    val getPopUpResult : LiveData<Result<GetPopUpResult>>
+    val getPopUpResult: LiveData<Result<GetPopUpResult>>
         get() = _getPopUpResult
-    val setFeaturedProductResult : LiveData<Result<SetFeaturedProductResult>>
+    val setFeaturedProductResult: LiveData<Result<SetFeaturedProductResult>>
         get() = _setFeaturedProductResult
 
     private val _viewState = MutableLiveData<ViewState>()
