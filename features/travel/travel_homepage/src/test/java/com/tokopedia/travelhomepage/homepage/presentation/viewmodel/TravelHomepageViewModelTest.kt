@@ -83,15 +83,19 @@ class TravelHomepageViewModelTest {
     @Test
     fun onGetTravelUnifiedData_AllSuccess_ItemModelShouldRepresentFailedToFetch() {
         // given
+        val list = mutableListOf<TravelHomepageItemModel>()
+        list.add(TravelHomepageProductCardModel())
+        list.add(TravelHomepageLegoBannerModel())
+        coEvery {
+            emptyUseCase.getTravelLayoutSubhomepage(any(), any())
+        } returns Success(list)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
                 mapOf(TravelUnifiedSubhomepageData.Response::class.java to TravelUnifiedSubhomepageData.Response()),
                 mapOf(), false)
-        val list = mutableListOf<TravelHomepageItemModel>()
-        list.add(TravelHomepageProductCardModel())
-        list.add(TravelHomepageBannerModel())
-        viewModel.travelItemList.value = list
 
         // when
+        viewModel.getListFromCloud("", true)
         viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
         viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
 
@@ -106,24 +110,62 @@ class TravelHomepageViewModelTest {
     @Test
     fun onGetTravelUnifiedData_FailedToFetchData_ItemModelShouldRepresentFailedToFetch() {
         // given
+        val list = mutableListOf<TravelHomepageItemModel>()
+        list.add(TravelHomepageProductCardModel())
+        list.add(TravelHomepageLegoBannerModel())
+        coEvery {
+            emptyUseCase.getTravelLayoutSubhomepage(any(), any())
+        } returns Success(list)
+
         coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
                 mapOf(),
                 mapOf(GraphqlError::class.java to listOf(GraphqlError())), false)
-        val list = mutableListOf<TravelHomepageItemModel>()
-        list.add(TravelHomepageProductCardModel())
-        viewModel.travelItemList.value = list
 
         // when
+        viewModel.getListFromCloud("", true)
         viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
 
         // then
         viewModel.travelItemList.value!!.forEach {
             it.isLoaded shouldBe true
-            it.isSuccess shouldBe true
+            it.isSuccess shouldBe false
         }
-        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[0].isLoaded shouldBe true
-        (viewModel.travelItemList.value as List<TravelHomepageItemModel>)[0].isSuccess shouldBe false
         viewModel.isAllError.value shouldBe true
+    }
+
+    @Test
+    fun onGetTravelUnifiedData_IfPartialSuccess_ItemModelShouldRepresentPartialSuccess() {
+        // given
+        val list = mutableListOf<TravelHomepageItemModel>()
+        list.add(TravelHomepageProductCardModel())
+        list.add(TravelHomepageLegoBannerModel())
+        coEvery {
+            emptyUseCase.getTravelLayoutSubhomepage(any(), any())
+        } returns Success(list)
+
+        // when
+        viewModel.getListFromCloud("", true)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
+                mapOf(TravelUnifiedSubhomepageData.Response::class.java to TravelUnifiedSubhomepageData.Response()),
+                mapOf(), false)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 0, true)
+
+        coEvery { graphqlRepository.getReseponse(any(), any()) } returns GraphqlResponse(
+                mapOf(),
+                mapOf(GraphqlError::class.java to listOf(GraphqlError())), false)
+        viewModel.getTravelUnifiedData("", TravelLayoutSubhomepage.Data(), 1, true)
+
+        // then
+        viewModel.travelItemList.value!!.let {
+            it[0].isLoaded shouldBe true
+            it[1].isLoaded shouldBe true
+
+            it[0].isSuccess shouldBe true
+            it[1].isSuccess shouldBe false
+        }
+        viewModel.isAllError.value shouldBe false
     }
 
     @Test
