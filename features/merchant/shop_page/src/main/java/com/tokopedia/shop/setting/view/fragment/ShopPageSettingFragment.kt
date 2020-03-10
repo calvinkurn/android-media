@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
+import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.network.ErrorHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
@@ -58,22 +59,22 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
         }
     }
 
-    var shopId: String? = null
-    var shopDomain: String? = null
-    var isShareFunctionReady = false
-
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var shopPageSettingViewModel: ShopPageSettingViewModel
-
-    lateinit var shopPageTracking: ShopPageTrackingBuyer
-    lateinit var remoteConfig: RemoteConfig
 
     private lateinit var errorView: View
     private lateinit var dashboardView: View
     private lateinit var shopPageSettingView: RecyclerView
     private lateinit var retryMessageView: TextView
     private lateinit var retryButton: Button
+
+    private var shopPageTracking: ShopPageTrackingBuyer? = null
+    private var remoteConfig: RemoteConfig? = null
+
+    private var shopId: String? = null
+    private var shopDomain: String? = null
+    private var isShareFunctionReady = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -179,7 +180,7 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
     private fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         setViewState(VIEW_CONTENT)
         with(shopInfo) {
-            shopPageTracking.sendScreenShopPage(activity,
+            shopPageTracking?.sendScreenShopPage(activity,
                     CustomDimensionShopPage.create(shopCore.shopID, goldOS.isOfficial == 1,
                             goldOS.isGold == 1))
         }
@@ -224,11 +225,11 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     private fun onShareShop() {
         (shopPageSettingViewModel.shopInfoResp.value as? Success)?.data?.let {
-            shopPageTracking.clickShareButton(shopPageSettingViewModel.isMyShop(it.shopCore.shopID),
+            shopPageTracking?.clickShareButton(shopPageSettingViewModel.isMyShop(it.shopCore.shopID),
                     CustomDimensionShopPage.create(it.shopCore.shopID,
                             it.goldOS.isOfficial == 1,
                             it.goldOS.isGold == 1))
-            var shopShareMsg: String = remoteConfig.getString(RemoteConfigKey.SHOP_SHARE_MSG)
+            var shopShareMsg: String = remoteConfig?.getString(RemoteConfigKey.SHOP_SHARE_MSG).orEmpty()
             shopShareMsg = if (!TextUtils.isEmpty(shopShareMsg)) {
                 FindAndReplaceHelper.findAndReplacePlaceHolders(shopShareMsg,
                         SHOP_NAME_PLACEHOLDER, MethodChecker.fromHtml(it.shopCore.name).toString(),
@@ -244,7 +245,11 @@ class ShopPageSettingFragment : BaseDaggerFragment(),
 
     // Dashboard Toko
     private fun onDashboardClick() {
-        RouteManager.route(activity, ApplinkConst.HOME_ACCOUNT_SELLER)
+        if (GlobalConfig.isCustomerApp()) {
+            RouteManager.route(activity, ApplinkConst.HOME_ACCOUNT_SELLER)
+        } else if (GlobalConfig.isSellerApp()) {
+            RouteManager.route(activity, ApplinkConst.SellerApp.SELLER_APP_HOME)
+        }
     }
 
     // Ubah profil toko
