@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@android:color/white">
 
-    <com.tokopedia.flight.common.view.FlightSearchFormView
+    <com.tokopedia.flight.search_universal.presentation.widget.FlightSearchFormView
         android:id="@+id/flightSearchFormView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
