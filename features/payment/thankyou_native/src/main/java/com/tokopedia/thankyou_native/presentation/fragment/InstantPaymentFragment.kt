@@ -7,9 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.ThanksPageData
+import kotlinx.android.synthetic.main.thank_fragment_instant_payment.*
 import javax.inject.Inject
 
 class InstantPaymentFragment : BaseDaggerFragment() {
@@ -27,7 +29,7 @@ class InstantPaymentFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        savedInstanceState?.let {
+        arguments?.let {
             if (it.containsKey(ARG_THANK_PAGE_DATA)) {
                 thanksPageData = it.getParcelable(ARG_THANK_PAGE_DATA)
             }
@@ -42,23 +44,18 @@ class InstantPaymentFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         if (!::thanksPageData.isInitialized)
             activity?.finish()
-        showPurchasedProductList()
-        loadRecommendations()
+        bindDataToUI()
         checkCreditCardRegisteredForRBA()
     }
 
+    private fun bindDataToUI() {
+        ImageLoader.LoadImage(iv_instant_payment, thanksPageData.gatewayImage)
+        tv_instant_payment_method_name.text = thanksPageData.gatewayName
+        tv_instant_payment_amount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
+    }
+
     private fun checkCreditCardRegisteredForRBA() {
-        TODO("API required from backend side")
-    }
 
-    private fun loadRecommendations() {
-
-    }
-
-    private fun showPurchasedProductList() {
-        if (thanksPageData.orderList.isNotEmpty()) {
-            TODO("ADD product item to bottom sheet of wishList")
-        }
     }
 
     companion object {

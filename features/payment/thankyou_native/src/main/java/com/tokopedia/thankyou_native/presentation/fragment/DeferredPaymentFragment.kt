@@ -1,33 +1,28 @@
 package com.tokopedia.thankyou_native.presentation.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
-import com.tokopedia.thankyou_native.domain.ThanksPageData
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.thank_fragment_loader.*
 import javax.inject.Inject
 
-class LoaderFragment : BaseDaggerFragment() {
+class DeferredPaymentFragment : BaseDaggerFragment() {
+/*
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
-    private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
+    lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
 
     var callback: ThankYouPageDataLoadCallback? = null
+*/
 
     override fun getScreenName(): String = ""
 
@@ -45,52 +40,29 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun initViewModels() {
-        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
-        thanksPageDataViewModel = viewModelProvider.get(ThanksPageDataViewModel::class.java)
+//        val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+      //  thanksPageDataViewModel = viewModelProvider.get(ThanksPageDataViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
-        thanksPageDataViewModel.getThanksPageData(715599, "tokopediatest")
+//        thanksPageDataViewModel.getThanksPageData(654186, "tokopediatest")
     }
 
     private fun observeViewModel() {
-        thanksPageDataViewModel.thanksPageDataResultLiveData.observe(this, Observer {
+        /*thanksPageDataViewModel.thanksPageDataResultLiveData.observe(this, Observer {
             when (it) {
                 is Success -> onThankYouPageDataLoaded(it.data)
                 is Fail -> onThankYouPageDataLoadingFail(it.throwable)
             }
-        })
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is ThankYouPageDataLoadCallback)
-            callback = context
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        callback = null
-    }
-
-    private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
-        loading_layout.visibility = View.GONE
-        globalError.visibility = View.VISIBLE
-        globalError.setType(GlobalError.MAINTENANCE)
-    }
-
-    private fun onThankYouPageDataLoaded(data: ThanksPageData) {
-        loading_layout.visibility = View.GONE
-        callback?.onThankYouPageDataLoaded(data)
+        })*/
     }
 
     companion object {
-        fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
+      /*  fun getLoaderFragmentInstance(bundle: Bundle): LoaderFragment = LoaderFragment().apply {
             arguments = bundle
-        }
+        }*/
     }
 
 }
-

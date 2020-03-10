@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
-import com.tokopedia.thankyou_native.presentation.viewModel.OrderDetailListMapperViewModel
+import com.tokopedia.thankyou_native.presentation.viewModel.PDPThankYouViewModel
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import dagger.Binds
 import dagger.Module
@@ -25,7 +25,8 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(OrderDetailListMapperViewModel::class)
-    internal abstract fun provideOrderListMapperViewModel(viewModel: OrderDetailListMapperViewModel): ViewModel
+    @ViewModelKey(PDPThankYouViewModel::class)
+    internal abstract fun providePDPThankYouViewModel(viewModel: PDPThankYouViewModel): ViewModel
+
 
 }

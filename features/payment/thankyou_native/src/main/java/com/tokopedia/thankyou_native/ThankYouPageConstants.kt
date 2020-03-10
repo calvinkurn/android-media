@@ -1,6 +1,9 @@
 package com.tokopedia.thankyou_native
 
 const val THANK_YOU_PAGE_DATA = "gql_thanks_page_data"
+const val RECOMMENDATION_DATA = "gql_recommendation_data"
+
+
 
 /*DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE).apply {
                             setTitle(getString(R.string.password))

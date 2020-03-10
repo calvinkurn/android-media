@@ -10,12 +10,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.thankyou_native.di.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.ThanksPageData
+import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.fragment.InstantPaymentFragment
 import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
 
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>, ThankYouPageDataLoadCallback {
-
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
@@ -27,17 +27,41 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
     override fun onThankYouPageDataLoaded(thanksPageData: ThanksPageData) {
         val fragment = getGetFragmentByPaymentMode(thanksPageData)
-        supportFragmentManager.beginTransaction()
-                .replace(parentViewResourceID, fragment, tagFragment)
-                .commit()
+        fragment?.let {
+            supportFragmentManager.beginTransaction()
+                    .replace(parentViewResourceID, fragment, tagFragment)
+                    .commit()
+        } ?: kotlin.run {
+            finish()
+        }
     }
 
     override fun getComponent(): ThankYouPageComponent = DaggerThankYouPageComponent.builder()
             .baseAppComponent((applicationContext as BaseMainApplication)
                     .baseAppComponent).build()
 
-    private fun getGetFragmentByPaymentMode(thanksPageData: ThanksPageData): Fragment {
-        return InstantPaymentFragment.getLoaderFragmentInstance(null, thanksPageData)
+    private fun getGetFragmentByPaymentMode(thanksPageData: ThanksPageData): Fragment? {
+        return when (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)) {
+            is PaymentVerified -> {
+                InstantPaymentFragment.getLoaderFragmentInstance(Bundle(), thanksPageData)
+            }
+            /*is PaymentExpired -> {
+            }
+            is PaymentActive -> {
+            }
+            is PaymentWaiting -> {
+            }*/
+            /*is PaymentCancelled -> {
+            }
+            is PaymentVoid -> {
+            }
+            is PaymentPreAuth -> {
+            }
+            is PaymentWaitingCOD -> {
+            }*/
+            else -> null
+        }
+
     }
 
     companion object {
@@ -46,11 +70,9 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         const val ARG_MERCHANT = "merchant"
         const val ARG_PLATFORM = "platform"
 
-        fun createIntent(context: Context, paymentID: String, merchant: String, platform: String) = Intent(context, ThankYouPageActivity::class.java).apply {
+        fun createIntent(context: Context, paymentID: String, merchant: String) = Intent(context, ThankYouPageActivity::class.java).apply {
             putExtra(ARG_MERCHANT, merchant)
             putExtra(ARG_PAYMENT_ID, paymentID)
-            putExtra(ARG_PLATFORM, platform)
-
         }
     }
 }

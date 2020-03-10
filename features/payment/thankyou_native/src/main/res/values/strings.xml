@@ -10,4 +10,10 @@
     <string name="thank_single_auth">Autentifikasi Tunggal</string>
     <string name="thank_dont_ask_again_single_auth">Jangan tampilkan lagi untuk transaksi berikutnya</string>
     <string name="thank_single_auth_cc_message">Aktifkan autentikasi tunggal untuk kemudahan transaksi kartu kredit berikutnya</string>
+    <string name="thankyou_rp">Rp %s</string>
+    <string name="thank_payment_deadline">Batas akhir pembayaran</string>
+    <string name="thank_copy">Salin</string>
+    <string name="thank_total_amount_label">Total Pembayaran</string>
+    <string name="thank_see_detail">Lihat Detail</string>
+    <string name="thank_see_payment_methods">Lihat Cara Pembayaran</string>
 </resources>
