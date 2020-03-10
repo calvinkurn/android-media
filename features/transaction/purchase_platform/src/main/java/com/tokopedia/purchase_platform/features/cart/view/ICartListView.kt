@@ -131,7 +131,7 @@ interface ICartListView : CustomerView {
 
     fun showPromoCheckoutStickyButtonInactive()
 
-    fun generateValidateUseParams(): ValidateUsePromoRequest
+    // fun generateValidateUseParams(): ValidateUsePromoRequest
 
     fun onSuccessClearRedPromosThenGoToCheckout()
 }

@@ -66,4 +66,6 @@ interface ActionListener {
     fun onTobaccoLiteUrlClicked(url: String)
 
     fun onShowTickerTobacco()
+
+    fun onCartShopNameChecked(isAllChecked: Boolean)
 }
