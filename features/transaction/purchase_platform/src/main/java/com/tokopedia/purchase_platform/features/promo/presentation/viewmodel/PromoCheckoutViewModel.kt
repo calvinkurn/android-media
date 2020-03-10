@@ -33,7 +33,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                                  val uiModelMapper: PromoCheckoutUiModelMapper)
     : BaseViewModel(dispatcher) {
 
-    // Fragment UI Model
+    // Fragment UI Model. Store UI model and state on fragment level
     private val _fragmentUiModel = MutableLiveData<FragmentUiModel>()
     val fragmentUiModel: LiveData<FragmentUiModel>
         get() = _fragmentUiModel
@@ -120,8 +120,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                         }
                     }
 
+                    val preAppliedPromoCodes = ArrayList<String>()
+                    promoListUiModel.value?.forEach {
+                        if (it is PromoListItemUiModel && it.uiState.isSelected) {
+                            preAppliedPromoCodes.add(it.uiData.promoCode)
+                        } else if (it is PromoListHeaderUiModel && it.uiState.isEnabled && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                            it.uiData.tmpPromoItemList.forEach {
+                                if (it.uiState.isSelected) {
+                                    preAppliedPromoCodes.add(it.uiData.promoCode)
+                                }
+                            }
+                        }
+                    }
+
                     fragmentUiModel.value?.let {
-                        it.uiState.hasPreselectedPromo = tmpHasPreSelectedPromo
+                        it.uiData.preAppliedPromoCode = preAppliedPromoCodes
+                        it.uiState.hasPreAppliedPromo = tmpHasPreSelectedPromo
                         it.uiState.hasAnyPromoSelected = tmpHasPreSelectedPromo
                         val rewardPointInfo = response.couponListRecommendation.data.rewardPointsInfo
                         if (rewardPointInfo.gainRewardPointsTnc.tncDetails.isNotEmpty()) {
@@ -451,35 +465,35 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    private fun setClashOnUnSelectionEvent(it: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
-        if (it.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
-            if (it.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
-                it.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
-                if (it.uiData.currentClashingPromo.isNotEmpty()) {
+    private fun setClashOnUnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
+        if (promoListItemUiModel.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
+            if (promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
+                promoListItemUiModel.uiData.currentClashingPromo.remove(selectedItem.uiData.promoCode)
+                if (promoListItemUiModel.uiData.currentClashingPromo.isNotEmpty()) {
                     val errorMessageBuilder = StringBuilder()
-                    it.uiData.currentClashingPromo.forEach { string ->
-                        if (it.uiData.clashingInfo.containsKey(string)) {
-                            errorMessageBuilder.append(it.uiData.clashingInfo[string])
+                    promoListItemUiModel.uiData.currentClashingPromo.forEach { string ->
+                        if (promoListItemUiModel.uiData.clashingInfo.containsKey(string)) {
+                            errorMessageBuilder.append(promoListItemUiModel.uiData.clashingInfo[string])
                         }
                     }
-                    it.uiData.errorMessage = errorMessageBuilder.toString()
+                    promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
                 } else {
-                    it.uiData.errorMessage = ""
+                    promoListItemUiModel.uiData.errorMessage = ""
                 }
             }
         }
     }
 
-    private fun setClashOnSelectionEvent(it: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
-        if (it.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
-            if (!it.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
-                it.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
-                val errorMessageBuilder = StringBuilder(it.uiData.errorMessage)
-                if (it.uiData.errorMessage.isNotBlank()) {
+    private fun setClashOnSelectionEvent(promoListItemUiModel: PromoListItemUiModel, selectedItem: PromoListItemUiModel) {
+        if (promoListItemUiModel.uiData.clashingInfo.containsKey(selectedItem.uiData.promoCode)) {
+            if (!promoListItemUiModel.uiData.currentClashingPromo.contains(selectedItem.uiData.promoCode)) {
+                promoListItemUiModel.uiData.currentClashingPromo.add(selectedItem.uiData.promoCode)
+                val errorMessageBuilder = StringBuilder(promoListItemUiModel.uiData.errorMessage)
+                if (promoListItemUiModel.uiData.errorMessage.isNotBlank()) {
                     errorMessageBuilder.append("\n")
                 }
-                errorMessageBuilder.append(it.uiData.clashingInfo[selectedItem.uiData.promoCode])
-                it.uiData.errorMessage = errorMessageBuilder.toString()
+                errorMessageBuilder.append(promoListItemUiModel.uiData.clashingInfo[selectedItem.uiData.promoCode])
+                promoListItemUiModel.uiData.errorMessage = errorMessageBuilder.toString()
             }
         }
     }
@@ -803,5 +817,41 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
             _tmpUiModel.value = Update(it)
         }
+    }
+
+    fun hasDifferentPreAppliedState(): Boolean {
+        // Check if :
+        // CASE 1 : has any promo item unchecked, but exist as pre applied promo item
+        // CASE 2 : has any promo item checked but have not been applied, or
+        val preAppliedPromoCodes = fragmentUiModel.value?.uiData?.preAppliedPromoCode ?: emptyList()
+        if (preAppliedPromoCodes.isEmpty()) {
+            return false
+        } else {
+            promoListUiModel.value?.forEach {
+                if (it is PromoListItemUiModel) {
+                    // CASE 1
+                    if (preAppliedPromoCodes.contains(it.uiData.promoCode) && !it.uiState.isSelected) {
+                        return true
+                    }
+                    // CASE 2
+                    if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
+                        return true
+                    }
+                } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
+                    it.uiData.tmpPromoItemList.forEach {
+                        // CASE 1
+                        if (preAppliedPromoCodes.contains(it.uiData.promoCode) && !it.uiState.isSelected) {
+                            return true
+                        }
+                        // CASE 2
+                        if (!preAppliedPromoCodes.contains(it.uiData.promoCode) && it.uiState.isSelected) {
+                            return true
+                        }
+                    }
+                }
+            }
+        }
+
+        return false
     }
 }

@@ -64,6 +64,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     @Inject
     lateinit var itemDecorator: PromoDecoration
 
+    // Use single recycler view to prevent NPE cuased by nested recyclerview
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: PromoCheckoutAdapter
 
@@ -170,7 +171,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
             val topItemPosition = (recyclerView.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
             val lastData = adapter.data[topItemPosition]
 
-            var isShow = false
+            val isShow: Boolean
             if (lastData is PromoListHeaderUiModel && lastData.uiState.isEnabled && !lastData.uiState.isExpanded) {
                 tmpLastHeaderUiModel = lastData
                 isShow = true
@@ -194,8 +195,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 isShow = false
             }
 
+            // View logic here should be same as view logic on #PromoListHeaderEnabledViewHolder
             if (tmpLastHeaderUiModel != null) {
-
                 if (tmpLastHeaderUiModel?.uiData?.iconUrl?.isNotBlank() == true) {
                     ImageHandler.loadImageRounded2(context, section_image_promo_list_header, tmpLastHeaderUiModel?.uiData?.iconUrl)
                     section_image_promo_list_header.show()
@@ -372,7 +373,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 }
             } else {
                 toolbar?.disableResetButton()
-                if (fragmentUiModel.uiState.hasPreselectedPromo) {
+                if (fragmentUiModel.uiState.hasPreAppliedPromo) {
                     label_total_promo_info.gone()
                     label_total_promo_amount.gone()
                     button_apply_promo.gone()
@@ -500,9 +501,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onBackPressed() {
-        // Todo : validate if has any changes but have not hit validate use
         if (viewModel.fragmentUiModel.value != null) {
-            if (viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false) {
+            if (viewModel.fragmentUiModel.value?.uiState?.hasFailedToLoad == false && viewModel.hasDifferentPreAppliedState()) {
                 showSavePromoDialog()
             } else {
                 activity?.finish()
