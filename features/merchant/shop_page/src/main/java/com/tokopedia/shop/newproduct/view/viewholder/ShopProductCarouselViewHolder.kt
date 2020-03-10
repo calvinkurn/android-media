@@ -69,7 +69,7 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
     private fun bindShopProductCarousel(shopProductViewModelList: List<ShopProductViewModel>) {
         recyclerView?.bindCarouselProductCardViewGrid(
                 productCardModelList = shopProductViewModelList.map {
-                    ShopPageProductListMapper.mapToProductCardModel(it, false)
+                    ShopPageProductListMapper.mapToProductCardModel(it)
                 },
                 carouselProductCardOnItemClickListener = object: CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
@@ -87,6 +87,13 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
 
                     override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
                         return shopProductViewModelList.getOrNull(carouselProductCardPosition)
+                    }
+                },
+                carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
+                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopProductViewModelList.getOrNull(carouselProductCardPosition) ?: return
+
+                        shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
                     }
                 }
         )

@@ -71,7 +71,7 @@ class ShopProductViewHolder(
 
     override fun bind(shopProductViewModel: ShopProductViewModel) {
         productCard.setProductModel(
-                ShopPageProductListMapper.mapToProductCardModel(shopProductViewModel, true)
+                ShopPageProductListMapper.mapToProductCardModel(shopProductViewModel)
         )
 
         productCard.setImageProductViewHintListener(shopProductViewModel, object : ViewHintListener {

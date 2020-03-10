@@ -134,7 +134,7 @@ object ShopPageProductListMapper {
         return merchantVoucherResponse.map { MerchantVoucherViewModel(it) }
     }
 
-    fun mapToProductCardModel(shopProductViewModel: ShopProductViewModel, hasThreeDots: Boolean): ProductCardModel {
+    fun mapToProductCardModel(shopProductViewModel: ShopProductViewModel): ProductCardModel {
         val totalReview = try {
             NumberFormat.getInstance().parse(shopProductViewModel.totalReview).toInt()
         } catch (ignored: ParseException) {
@@ -147,7 +147,7 @@ object ShopPageProductListMapper {
             "${shopProductViewModel.discountPercentage}%"
         }
 
-        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon!!)
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon ?: "")
 
         return ProductCardModel(
                 productImageUrl = shopProductViewModel.imageUrl ?: "",
@@ -161,7 +161,7 @@ object ShopPageProductListMapper {
                 labelGroupList = shopProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
                 },
-                hasThreeDots = hasThreeDots
+                hasThreeDots = true
         )
     }
 

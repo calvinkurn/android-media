@@ -76,6 +76,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
             carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
+            carouselProductCardOnItemThreeDotsClickListener: CarouselProductCardListener.OnItemThreeDotsClickListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             scrollToPosition: Int = 0
     ) {
@@ -85,6 +86,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
                 carouselProductCardOnItemClickListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemThreeDotsClickListener,
                 true
         )
 
@@ -102,11 +104,13 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener?,
             carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener?,
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener?,
+            carouselProductCardOnItemThreeDotsClickListener: CarouselProductCardListener.OnItemThreeDotsClickListener? = null,
             isGrid: Boolean
     ) {
         carouselProductCardListenerInfo.onItemClickListener = carouselProductCardOnItemClickListener
         carouselProductCardListenerInfo.onItemImpressedListener = carouselProductCardOnItemImpressedListener
         carouselProductCardListenerInfo.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+        carouselProductCardListenerInfo.onItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener
 
         initLayoutManager()
 
@@ -206,6 +210,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
             carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
             carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
             carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
+            carouselProductCardOnItemThreeDotsClickListener: CarouselProductCardListener.OnItemThreeDotsClickListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             scrollToPosition: Int = 0
     ) {
@@ -215,6 +220,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
                 carouselProductCardOnItemClickListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemThreeDotsClickListener,
                 false
         )
 

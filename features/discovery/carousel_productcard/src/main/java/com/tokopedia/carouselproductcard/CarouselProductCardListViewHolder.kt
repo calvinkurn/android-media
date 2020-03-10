@@ -20,6 +20,7 @@ internal class CarouselProductCardListViewHolder(
         val onItemClickListener = carouselProductCardModel.getOnItemClickListener()
         val onItemImpressedListener = carouselProductCardModel.getOnItemImpressedListener()
         val onItemAddToCartListener = carouselProductCardModel.getOnItemAddToCartListener()
+        val onItemThreeDotsClickListener = carouselProductCardModel.getOnItemThreeDotsClickListener()
 
         itemView.carouselProductCardItem?.applyCarousel()
 
@@ -39,6 +40,10 @@ internal class CarouselProductCardListViewHolder(
 
         itemView.carouselProductCardItem?.setAddToCartOnClickListener {
             onItemAddToCartListener?.onItemAddToCart(productCardModel, adapterPosition)
+        }
+
+        itemView.carouselProductCardItem?.setThreeDotsOnClickListener {
+            onItemThreeDotsClickListener?.onItemThreeDotsClick(productCardModel, adapterPosition)
         }
     }
 

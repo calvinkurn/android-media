@@ -11,4 +11,5 @@ internal data class CarouselProductCardModel(
     fun getOnItemClickListener() = carouselProductCardListenerInfo.onItemClickListener
     fun getOnItemAddToCartListener() = carouselProductCardListenerInfo.onItemAddToCartListener
     fun getOnItemImpressedListener() = carouselProductCardListenerInfo.onItemImpressedListener
+    fun getOnItemThreeDotsClickListener() = carouselProductCardListenerInfo.onItemThreeDotsClickListener
 }

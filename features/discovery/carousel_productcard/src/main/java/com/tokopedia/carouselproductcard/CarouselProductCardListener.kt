@@ -17,4 +17,8 @@ interface CarouselProductCardListener {
     interface OnItemAddToCartListener {
         fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
     }
+
+    interface OnItemThreeDotsClickListener {
+        fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int)
+    }
 }
