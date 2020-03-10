@@ -1,6 +1,6 @@
 package com.tokopedia.play.domain
 
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.data.Product
 import com.tokopedia.play.data.ProductTaggingItems
 import com.tokopedia.play.data.Voucher
@@ -12,7 +12,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-03-06.
  */
-class GetProductTagItemsUseCase @Inject constructor(val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) :
+class GetProductTagItemsUseCase @Inject constructor(val graphqlRepository: GraphqlRepository) :
         UseCase<ProductTaggingItems>() {
 
     var channelId: String = ""

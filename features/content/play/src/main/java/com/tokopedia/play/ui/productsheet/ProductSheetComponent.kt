@@ -8,6 +8,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.ProductLineUiModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -52,15 +53,15 @@ class ProductSheetComponent(
         }
     }
 
-    override fun onBuyButtonClicked(view: ProductSheetView, productId: String) {
+    override fun onBuyButtonClicked(view: ProductSheetView, product: ProductLineUiModel) {
         launch {
-            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnBuyProduct(productId))
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnBuyProduct(product))
         }
     }
 
-    override fun onAtcButtonClicked(view: ProductSheetView, productId: String) {
+    override fun onAtcButtonClicked(view: ProductSheetView, product: ProductLineUiModel) {
         launch {
-            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnAtcProduct(productId))
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnAtcProduct(product))
         }
     }
 

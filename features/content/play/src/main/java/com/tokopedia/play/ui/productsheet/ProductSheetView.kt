@@ -22,6 +22,7 @@ import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
+import com.tokopedia.play.view.type.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**
@@ -42,12 +43,12 @@ class ProductSheetView(
     private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
-        override fun onBuyProduct(productId: String) {
-            listener.onBuyButtonClicked(this@ProductSheetView, productId)
-        }
+        override fun onBuyProduct(product: ProductLineUiModel) {
+            listener.onBuyButtonClicked(this@ProductSheetView, product)
 
-        override fun onAtcProduct(productId: String) {
-            listener.onAtcButtonClicked(this@ProductSheetView, productId)
+        }
+        override fun onAtcProduct(product: ProductLineUiModel) {
+            listener.onAtcButtonClicked(this@ProductSheetView, product)
         }
     })
     private val voucherAdapter = MerchantVoucherAdapter()
@@ -115,7 +116,7 @@ class ProductSheetView(
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetView)
-        fun onBuyButtonClicked(view: ProductSheetView, productId: String)
-        fun onAtcButtonClicked(view: ProductSheetView, productId: String)
+        fun onBuyButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
+        fun onAtcButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
     }
 }
