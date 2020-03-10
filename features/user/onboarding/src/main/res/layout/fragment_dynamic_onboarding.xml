@@ -68,22 +68,16 @@
       app:typographyType="heading_3"
       app:typographyWeight="bold" />
     
-    <com.google.android.material.tabs.TabLayout
-      android:id="@+id/indicatorDynamicOnbaording"
-      android:layout_width="wrap_content"
-      android:layout_height="@dimen/dp_12"
-      android:layout_marginBottom="@dimen/dp_30"
-      android:padding="@dimen/dp_0"
-      android:clipToPadding="true"
-      app:tabMode="fixed"
-      app:barrierMargin="@dimen/dp_0"
-      app:tabPadding="@dimen/dp_0"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:tabBackground="@drawable/indicator_onboarding_selector"
-      app:tabIndicatorHeight="@dimen/dp_0"
-      app:tabRippleColor="@null"/>
+    <com.tokopedia.onboarding.view.widget.DotIndicatorView
+      android:id="@+id/pageDots"
+      android:layout_width="match_parent"
+      android:layout_height="@dimen/dp_0"
+      android:gravity="center"
+      android:orientation="horizontal"
+      app:layout_constraintLeft_toLeftOf="parent"
+      app:layout_constraintRight_toRightOf="parent"
+      app:layout_constraintTop_toTopOf="@id/navigationDynamicOnbaording"
+      app:layout_constraintBottom_toBottomOf="@+id/navigationDynamicOnbaording"/>
     
   </androidx.constraintlayout.widget.ConstraintLayout>
   

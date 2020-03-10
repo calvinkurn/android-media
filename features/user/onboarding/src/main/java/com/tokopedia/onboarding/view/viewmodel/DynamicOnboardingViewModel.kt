@@ -4,41 +4,41 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.onboarding.domain.model.DynamicOnboardingDataModel
-import com.tokopedia.onboarding.domain.usecase.DynamicOnbaordingUseCase
+import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-class DynamicOnbaordingViewModel @Inject constructor(
+class DynamicOnboardingViewModel @Inject constructor(
         dispatcher: CoroutineDispatcher,
-        private val dynamicOnbaordingUseCase: DynamicOnbaordingUseCase
+        private val dynamicOnboardingUseCase: DynamicOnboardingUseCase
 ) : BaseViewModel(dispatcher) {
 
-    private val _dynamicOnbaordingData = MutableLiveData<Result<DynamicOnboardingDataModel>>()
-    val dynamicOnbaordingData: LiveData<Result<DynamicOnboardingDataModel>>
-        get() = _dynamicOnbaordingData
+    private val _dynamicOnboardingData = MutableLiveData<Result<DynamicOnboardingDataModel>>()
+    val dynamicOnboardingData: LiveData<Result<DynamicOnboardingDataModel>>
+        get() = _dynamicOnboardingData
 
     fun getData() {
         var isFinished = false
-        dynamicOnbaordingUseCase.getData({
+        dynamicOnboardingUseCase.getData({
             if (!isFinished) {
                 isFinished = true
-                _dynamicOnbaordingData.postValue(Success(it))
+                _dynamicOnboardingData.postValue(Success(it))
             }
         }, {
             if (!isFinished) {
                 isFinished = true
-                _dynamicOnbaordingData.postValue(Fail(it))
+                _dynamicOnboardingData.postValue(Fail(it))
             }
         })
 
         startTimer(TIMEOUT) {
             if (!isFinished) {
                 isFinished = true
-                _dynamicOnbaordingData.postValue(Fail(Throwable("Job was canceled")))
-                dynamicOnbaordingUseCase.cancelJobs()
+                _dynamicOnboardingData.postValue(Fail(Throwable("Job was canceled")))
+                dynamicOnboardingUseCase.cancelJobs()
             }
         }
     }
@@ -50,7 +50,7 @@ class DynamicOnbaordingViewModel @Inject constructor(
 
     override fun onCleared() {
         super.onCleared()
-        dynamicOnbaordingUseCase.cancelJobs()
+        dynamicOnboardingUseCase.cancelJobs()
     }
 
     companion object {
