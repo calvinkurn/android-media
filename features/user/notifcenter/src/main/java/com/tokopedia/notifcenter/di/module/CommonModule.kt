@@ -38,12 +38,12 @@ import dagger.Provides
     fun provideTransactionAnalytics() = NotificationTransactionAnalytics()
 
     @Provides
-    fun provideUserSession(@NotificationContext context: Context): UserSessionInterface {
+    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
-    fun provideCacheManager(@NotificationContext context: Context): CacheManager {
+    fun provideCacheManager(@ApplicationContext context: Context): CacheManager {
         return CacheManager(context)
     }
 
