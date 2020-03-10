@@ -62,6 +62,8 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.mockitorCore
     implementation rootProject.ext.playServicesDependencies.base
     implementation rootProject.ext.playServicesDependencies.maps
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
 }
 
 project.ext {
@@ -72,4 +74,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
-//apply from: '../../../jacoco_task.gradle'
+apply from: '../../../jacoco_task.gradle'

@@ -12,13 +12,13 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.hotel.common.util.HotelDispatcherProvider
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
 import com.tokopedia.hotel.homepage.presentation.model.HotelRecentSearchModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,7 +31,7 @@ class HotelHomepageViewModel @Inject constructor(
         private val graphqlRepository: GraphqlRepository,
         private val bannerUseCase: GetTravelCollectiveBannerUseCase,
         private val travelRecentSearchUseCase: TravelRecentSearchUseCase,
-        dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
+        val dispatcher: HotelDispatcherProvider) : BaseViewModel(dispatcher.IO) {
 
     val promoData = MutableLiveData<Result<TravelCollectiveBannerModel>>()
 
@@ -52,23 +52,23 @@ class HotelHomepageViewModel @Inject constructor(
     fun getRecentSearch(rawQuery: String) {
         launchCatchError(block = {
             val data = travelRecentSearchUseCase.execute(rawQuery, true)
-            mutableRecentSearch.value = Success(HotelRecentSearchModel(title = data.travelMeta.title, items = data.items))
+            mutableRecentSearch.postValue(Success(HotelRecentSearchModel(title = data.travelMeta.title, items = data.items)))
         }) {
-            mutableRecentSearch.value = Fail(it)
+            mutableRecentSearch.postValue(Fail(it))
         }
     }
 
     fun deleteRecentSearch(rawQuery: String) {
         launchCatchError(block = {
-            val data = withContext(Dispatchers.Default) {
+            val data = withContext(dispatcher.IO) {
                 val graphqlRequest = GraphqlRequest(rawQuery, HotelDeleteRecentSearchEntity.Response::class.java)
                 var graphQlCacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
                 graphqlRepository.getReseponse(listOf(graphqlRequest), graphQlCacheStrategy)
             }.getSuccessData<HotelDeleteRecentSearchEntity.Response>()
 
-            mutableDeleteRecentSearch.value = Success(data.travelRecentSearchHotelDelete.result)
+            mutableDeleteRecentSearch.postValue(Success(data.travelRecentSearchHotelDelete.result))
         }) {
-            mutableDeleteRecentSearch.value = Fail(it)
+            mutableDeleteRecentSearch.postValue(Fail(it))
         }
     }
 }
