@@ -1,0 +1,19 @@
+query {
+    le_getfilter {
+      JumlahPinjamanMobile {
+        Step
+        Label
+        Value
+      }
+      PeriodePinjamanMobile {
+        Year {
+          Max
+          Min
+        }
+        Month {
+          Max
+          Min
+        }
+      }
+    }
+  }

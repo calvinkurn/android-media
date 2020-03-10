@@ -18,6 +18,8 @@ dependencies {
     implementation (rootProject.ext.analyticsDependencies.branch) {
         exclude module: 'answers-shim'
     }
+    implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.remoteConfig)
 }
 
 project.ext {

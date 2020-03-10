@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bugsnag.android.Bugsnag;
 import com.chuckerteam.chucker.api.Chucker;
 import com.chuckerteam.chucker.api.ChuckerCollector;
 import com.crashlytics.android.Crashlytics;
@@ -161,6 +162,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
         NFCSubscriber nfcSubscriber = new NFCSubscriber();
         registerActivityLifecycleCallbacks(nfcSubscriber);
+        Bugsnag.init(this);
     }
 
     private void createAndCallPreSeq(){
@@ -473,8 +475,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
                 if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
-                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
                     byte[] rawCertNative = bytesFromJNI();
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
                     return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 } else {
                     return false;
@@ -482,9 +488,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             } else {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
                 if (null != info && info.signatures.length > 0) {
-                    byte[] rawCertJava = info.signatures[0].toByteArray();
                     byte[] rawCertNative = bytesFromJNI();
-
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signatures[0].toByteArray();
                     return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 } else {
                     return false;

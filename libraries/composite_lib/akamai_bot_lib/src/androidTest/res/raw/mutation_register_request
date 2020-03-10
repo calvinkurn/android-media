@@ -1,0 +1,22 @@
+mutation register($regType: String!, $fullname: String, $email: String, $password: String, $osType: String, $validateToken: String) {
+    register(input: {
+        reg_type: $regType
+        fullname: $fullname
+        email: $email
+        password: $password
+        os_type: $osType
+        validate_token: $validateToken
+    }) {
+        user_id
+        sid
+        access_token
+        refresh_token
+        token_type
+        is_active
+        action
+        errors {
+            name
+            message
+        }
+    }
+}

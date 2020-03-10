@@ -250,6 +250,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (::remoteConfig.isInitialized) {
+            viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
+        }
         viewModel.deviceId = TradeInUtils.getDeviceId(context)
                 ?: viewModel.userSessionInterface.deviceId
         initPerformanceMonitoring()
@@ -949,8 +952,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 setDesc(getString(R.string.campaign_expired_descr))
                 setBtnOk(getString(R.string.exp_dialog_ok))
                 setBtnCancel(getString(R.string.close))
-                setOnCancelClickListener { loadProductData(true); dismiss() }
-                setOnOkClickListener { dismiss(); }
+                setOnCancelClickListener { 
+                    onSwipeRefresh();
+                    dismiss();
+                }
+                setOnOkClickListener { 
+                    dismiss();
+                }
             }.show()
         }
     }

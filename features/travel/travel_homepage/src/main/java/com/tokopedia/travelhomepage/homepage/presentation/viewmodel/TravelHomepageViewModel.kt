@@ -40,8 +40,8 @@ class TravelHomepageViewModel @Inject constructor(
     fun getIntialList(isLoadFromCloud: Boolean) {
         val list: List<TravelHomepageItemModel> = getEmptyModelsUseCase.requestEmptyViewModels(isLoadFromCloud)
 
-        travelItemList.value = list
-        isAllError.value = false
+        travelItemList.postValue(list)
+        isAllError.postValue(false)
     }
 
     fun getBanner(rawQuery: String, isFromCloud: Boolean) {
@@ -83,14 +83,14 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[CATEGORIES_ORDER] = data.response
                 updatedList[CATEGORIES_ORDER].isLoaded = true
                 updatedList[CATEGORIES_ORDER].isSuccess = true
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
         }) {
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
                 updatedList[CATEGORIES_ORDER].isLoaded = true
                 updatedList[CATEGORIES_ORDER].isSuccess = false
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
             checkIfAllError()
         }
@@ -111,14 +111,14 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[ORDER_LIST_ORDER] = mapper.mapToSectionViewModel(data.response)
                 updatedList[ORDER_LIST_ORDER].isLoaded = true
                 updatedList[ORDER_LIST_ORDER].isSuccess = true
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
         }) {
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
                 updatedList[ORDER_LIST_ORDER].isLoaded = true
                 updatedList[ORDER_LIST_ORDER].isSuccess = false
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
             checkIfAllError()
         }
@@ -133,14 +133,14 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[RECENT_SEARCHES_ORDER] = mapper.mapToSectionViewModel(data)
                 updatedList[RECENT_SEARCHES_ORDER].isLoaded = true
                 updatedList[RECENT_SEARCHES_ORDER].isSuccess = true
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
         }) {
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
                 updatedList[RECENT_SEARCHES_ORDER].isLoaded = true
                 updatedList[RECENT_SEARCHES_ORDER].isSuccess = false
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
             checkIfAllError()
         }
@@ -161,14 +161,14 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[RECOMMENDATION_ORDER] = mapper.mapToSectionViewModel(data.response)
                 updatedList[RECOMMENDATION_ORDER].isLoaded = true
                 updatedList[RECOMMENDATION_ORDER].isSuccess = true
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
         }) {
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
                 updatedList[RECOMMENDATION_ORDER].isLoaded = true
                 updatedList[RECOMMENDATION_ORDER].isSuccess = false
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
             checkIfAllError()
         }
@@ -188,14 +188,14 @@ class TravelHomepageViewModel @Inject constructor(
                 updatedList[DESTINATION_ORDER] = data.response
                 updatedList[DESTINATION_ORDER].isLoaded = true
                 updatedList[DESTINATION_ORDER].isSuccess = true
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
         }) {
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
                 updatedList[DESTINATION_ORDER].isLoaded = true
                 updatedList[DESTINATION_ORDER].isSuccess = false
-                travelItemList.value = updatedList
+                travelItemList.postValue(updatedList)
             }
             checkIfAllError()
         }
@@ -210,7 +210,7 @@ class TravelHomepageViewModel @Inject constructor(
                     break
                 }
             }
-            isAllError.value = !isSuccess
+            isAllError.postValue(!isSuccess)
         }
     }
 
