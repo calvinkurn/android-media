@@ -15,7 +15,7 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_product_manage.view.*
 
-class ManageProductBottomSheet(
+class ProductManageBottomSheet(
     container: View?,
     listener: ProductMenuListener,
     private val fm: FragmentManager?
@@ -24,7 +24,7 @@ class ManageProductBottomSheet(
     companion object {
         @LayoutRes
         private val LAYOUT = R.layout.bottom_sheet_product_manage
-        private val TAG: String = ManageProductBottomSheet::class.java.simpleName
+        private val TAG: String = ProductManageBottomSheet::class.java.simpleName
     }
 
     private var menuAdapter: ProductMenuAdapter? = null

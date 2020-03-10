@@ -72,7 +72,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
-import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ManageProductBottomSheet
+import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
@@ -149,7 +149,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var isOfficialStore: Boolean = false
     private var productListFeaturedOnlySize: Int = 0
     private var dialogFeaturedProduct: DialogUnify? = null
-    private var manageProductBottomSheet: ManageProductBottomSheet? = null
+    private var productManageBottomSheet: ProductManageBottomSheet? = null
     private var filterProductBottomSheet: ProductManageFilterFragment? = null
     private var productManageFilterModel: ProductManageFilterModel = ProductManageFilterModel()
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
@@ -276,7 +276,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun setupBottomSheet() {
-        manageProductBottomSheet = ManageProductBottomSheet(view, this, fragmentManager)
+        productManageBottomSheet = ProductManageBottomSheet(view, this, fragmentManager)
     }
 
     private fun setupMultiSelect() {
@@ -806,7 +806,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             val errorMessage = getString(R.string.product_manage_desc_product_on_supervision, product.title)
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         } else {
-            manageProductBottomSheet?.show(product)
+            productManageBottomSheet?.show(product)
         }
     }
 
@@ -838,7 +838,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             is RemoveFeaturedProduct -> onRemoveFeaturedProductClicked(product)
         }
 
-        manageProductBottomSheet?.dismiss()
+        productManageBottomSheet?.dismiss()
     }
 
     private fun clickDuplicateProduct(productId: String, menuTitle: String) {
