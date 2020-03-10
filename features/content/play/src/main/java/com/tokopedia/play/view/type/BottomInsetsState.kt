@@ -11,7 +11,7 @@ sealed class BottomInsetsState {
 
     abstract var isPreviousStateSame: Boolean
 
-    data class Shown(val estimatedInsetsHeight: Int, override var isPreviousStateSame: Boolean) : BottomInsetsState()
+    data class Shown(val estimatedInsetsHeight: Int, override var isPreviousStateSame: Boolean, var deepLevel: Int = 0) : BottomInsetsState()
     data class Hidden(override var isPreviousStateSame: Boolean) : BottomInsetsState()
 
     val isShown: Boolean

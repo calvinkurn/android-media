@@ -295,13 +295,16 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = insetsMap
     }
 
+    fun hideAllInsets() {
+        _observableBottomInsetsState.value = getDefaultBottomInsetsMapState()
+    }
+
     private fun getLatestBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
-        val currentValue = _observableBottomInsetsState.value ?: return mapOf(
-                BottomInsetsType.Keyboard to BottomInsetsState.Hidden(false),
-                BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
-                BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
-        )
-        currentValue.values.forEach { it.isPreviousStateSame = true }
+        val currentValue = _observableBottomInsetsState.value ?: return getDefaultBottomInsetsMapState()
+        currentValue.values.forEach {
+            it.isPreviousStateSame = true
+            if (it is BottomInsetsState.Shown) it.deepLevel += 1
+        }
 
         return currentValue
     }
@@ -311,13 +314,17 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
             BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
     )
-
-    fun hideAllInsets() {
-        _observableBottomInsetsState.value = getDefaultBottomInsetsMapState()
-    }
     //end region
 
     // video player region
+    fun startCurrentVideo() {
+        playVideoManager.resumeCurrentVideo()
+    }
+
+    fun getDurationCurrentVideo(): Long {
+        return playVideoManager.getDurationVideo()
+    }
+
     private fun initiateVideo(channel: Channel) {
         startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
         playVideoManager.setRepeatMode(false)
@@ -329,14 +336,6 @@ class PlayViewModel @Inject constructor(
 
     private fun playVideoStream(channel: Channel) {
         if (channel.isActive) initiateVideo(channel)
-    }
-
-    fun startCurrentVideo() {
-        playVideoManager.resumeCurrentVideo()
-    }
-
-    fun getDurationCurrentVideo(): Long {
-        return playVideoManager.getDurationVideo()
     }
 
     private fun stopPlayer() {
@@ -414,6 +413,20 @@ class PlayViewModel @Inject constructor(
                     finalTotalLike.toAmountString(amountStringStepArray, separator = ".")
             )
         }
+    }
+
+    fun onBackPressed(): Boolean {
+        val shownBottomSheets = observableBottomInsetsState.value
+                ?.filter { it.value.isShown }
+                ?.mapValues { it.value as BottomInsetsState.Shown }
+                .orEmpty()
+        val entry = shownBottomSheets.minBy { it.value.deepLevel }
+        when (entry?.key) {
+            BottomInsetsType.Keyboard -> onKeyboardHidden()
+            BottomInsetsType.ProductSheet -> onHideProductSheet()
+            BottomInsetsType.VariantSheet -> onHideVariantSheet()
+        }
+        return shownBottomSheets.isNotEmpty()
     }
 
     private suspend fun getTotalLikes(contentId: Int, contentType: Int, likeType: Int) {

@@ -471,6 +471,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun initPinnedComponent(container: ViewGroup): UIComponent<PinnedInteractionEvent> {
         val pinnedComponent = PinnedComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
+                .also(viewLifecycleOwner.lifecycle::addObserver)
 
         launch {
             pinnedComponent.getUserInteractionEvents()
