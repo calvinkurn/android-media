@@ -26,12 +26,12 @@ class OtherMenuViewModel @Inject constructor(
         private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
 ): BaseViewModel(dispatcher) {
 
-    companion object {
-    }
-
     private val _generalShopInfoLiveData = MutableLiveData<Result<GeneralShopInfoUiModel>>()
     private val _totalFollowersLiveData = MutableLiveData<Result<Int>>()
     private val _shopBadgeLiveData = MutableLiveData<Result<String>>()
+    private val _isGeneralShopInfoAlreadyLoadedLiveData = MutableLiveData<Boolean>().apply { value = false }
+    private val _isShopBadgeAlreadyLoadedLiveData = MutableLiveData<Boolean>().apply { value = false }
+    private val _isTotalFollowersAlreadyLoadedLiveData = MutableLiveData<Boolean>().apply { value = false }
 
     val generalShopInfoLiveData: LiveData<Result<GeneralShopInfoUiModel>>
         get() = _generalShopInfoLiveData
@@ -39,6 +39,12 @@ class OtherMenuViewModel @Inject constructor(
         get() = _totalFollowersLiveData
     val shopBadgeLiveData: LiveData<Result<String>>
         get() = _shopBadgeLiveData
+    val isGeneralShopInfoAlreadyLoaded: LiveData<Boolean>
+        get() = _isGeneralShopInfoAlreadyLoadedLiveData
+    val isShopBadgeAlreadyLoadedLiveData: LiveData<Boolean>
+        get() = _isShopBadgeAlreadyLoadedLiveData
+    val isTotalFollowersAlreadyLoadedLiveData: LiveData<Boolean>
+        get() = _isTotalFollowersAlreadyLoadedLiveData
 
     fun getAllSettingShopInfo() {
         userSession.run {
@@ -55,6 +61,7 @@ class OtherMenuViewModel @Inject constructor(
             val shopInfo = getSettingShopInfoUseCase.executeOnBackground()
             val generalShopInfoUiModel = shopInfo.mapToGeneralShopInfo()
             _generalShopInfoLiveData.value = Success(generalShopInfoUiModel)
+            _isGeneralShopInfoAlreadyLoadedLiveData.value = true
         }, onError = {
             _generalShopInfoLiveData.value = Fail(it)
         })
@@ -66,6 +73,7 @@ class OtherMenuViewModel @Inject constructor(
             getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
             val totalFollowers = getShopTotalFollowersUseCase.executeOnBackground()
             _totalFollowersLiveData.value = Success(totalFollowers)
+            _isTotalFollowersAlreadyLoadedLiveData.value = true
         }, onError = {
             _totalFollowersLiveData.value = Fail(it)
         })
@@ -77,6 +85,7 @@ class OtherMenuViewModel @Inject constructor(
             getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
             val shopBadgeUrl = getShopBadgeUseCase.executeOnBackground()
             _shopBadgeLiveData.value = Success(shopBadgeUrl)
+            _isShopBadgeAlreadyLoadedLiveData.value = true
         }, onError = {
             _shopBadgeLiveData.value = Fail(it)
         })

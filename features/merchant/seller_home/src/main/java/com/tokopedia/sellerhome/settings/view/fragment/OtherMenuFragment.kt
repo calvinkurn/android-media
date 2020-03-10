@@ -67,6 +67,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
+    private var generalShopInfoIsAlreadyLoaded = false
+    private var shopBadgeIsAlreadyLoaded = false
+    private var totalFollowersIsAlreadyLoaded = false
 
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
@@ -89,11 +92,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory()
 
-    override fun onItemClicked(settingUiModel: SettingUiModel) {
-        settingUiModel.onClickApplink?.let {
-            RouteManager.route(context, it)
-        }
-    }
+    override fun onItemClicked(settingUiModel: SettingUiModel) {}
 
     override fun getScreenName(): String = ""
 
@@ -128,6 +127,16 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                     is Fail -> showError(result.throwable, SettingErrorType.FOLLOWERS_ERROR)
                 }
             })
+            isGeneralShopInfoAlreadyLoaded.observe(viewLifecycleOwner, Observer {
+                generalShopInfoIsAlreadyLoaded = it
+            })
+            isShopBadgeAlreadyLoadedLiveData.observe(viewLifecycleOwner, Observer {
+                shopBadgeIsAlreadyLoaded = it
+            })
+            isTotalFollowersAlreadyLoadedLiveData.observe(viewLifecycleOwner, Observer {
+                totalFollowersIsAlreadyLoaded = it
+            })
+
         }
     }
 
@@ -170,9 +179,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun showAllLoadingShimmering() {
-        showGeneralShopInfoLoading()
-        showShopBadgeLoading()
-        showTotalFollowingLoading()
+        if (!generalShopInfoIsAlreadyLoaded)
+            showGeneralShopInfoLoading()
+        if (!shopBadgeIsAlreadyLoaded)
+            showShopBadgeLoading()
+        if (!totalFollowersIsAlreadyLoaded)
+            showTotalFollowingLoading()
     }
 
     private fun showGeneralShopInfoSuccess(generalShopInfoUiModel: GeneralShopInfoUiModel) {
@@ -204,9 +216,18 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private fun showError(throwable: Throwable, errorType: SettingErrorType) {
         throwable.message?.let { view?.showToasterError(it, errorType) }
         when(errorType) {
-            is SettingErrorType.GENERAL_INFO_ERROR -> otherMenuViewHolder?.onErrorGetShopGeneralInfoData()
-            is SettingErrorType.BADGES_ERROR -> otherMenuViewHolder?.onErrorGetShopBadge()
-            is SettingErrorType.FOLLOWERS_ERROR -> otherMenuViewHolder?.onErrorGetTotalFollowing()
+            is SettingErrorType.GENERAL_INFO_ERROR -> {
+                if (!generalShopInfoIsAlreadyLoaded)
+                    otherMenuViewHolder?.onErrorGetShopGeneralInfoData()
+            }
+            is SettingErrorType.BADGES_ERROR -> {
+                if (!shopBadgeIsAlreadyLoaded)
+                    otherMenuViewHolder?.onErrorGetShopBadge()
+            }
+            is SettingErrorType.FOLLOWERS_ERROR -> {
+                if (!totalFollowersIsAlreadyLoaded)
+                    otherMenuViewHolder?.onErrorGetTotalFollowing()
+            }
         }
     }
 

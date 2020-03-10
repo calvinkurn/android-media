@@ -62,14 +62,16 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun onSuccessGetShopBadge(shopBadgeUrl: String) {
         ImageHandler.LoadImage(itemView.shopInfoLayout.shopBadges, shopBadgeUrl)
+        itemView.shopInfoLayout.dot.visibility = View.VISIBLE
         itemView.shopInfoLayout.shopBadges.visibility = View.VISIBLE
+        itemView.shopInfoLayout.shimmerBadge.visibility = View.GONE
     }
 
     @SuppressLint("SetTextI18n")
     fun onSuccessGetTotalFollowing(totalFollowing: Int) {
         itemView.shopInfoLayout.shopFollowers.text = "$totalFollowing $FOLLOWERS"
         itemView.shopInfoLayout.shopBadges.visibility = View.VISIBLE
-        itemView.shimmerFollowers.visibility = View.GONE
+        itemView.shopInfoLayout.shimmerFollowers.visibility = View.GONE
     }
 
     fun onLoadingGetShopGeneralInfoData() {
@@ -83,7 +85,9 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun onLoadingGetShopBadge() {
+        itemView.shopInfoLayout.dot.visibility = View.GONE
         itemView.shopInfoLayout.shopBadges.visibility = View.GONE
+        itemView.shopInfoLayout.shimmerBadge.visibility = View.VISIBLE
     }
 
     fun onLoadingGetTotalFollowing() {
