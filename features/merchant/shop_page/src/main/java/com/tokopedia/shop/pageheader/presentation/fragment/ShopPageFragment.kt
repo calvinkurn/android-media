@@ -130,6 +130,7 @@ class ShopPageFragment :
     var isOfficialStore: Boolean = false
     var isGoldMerchant: Boolean = false
     var createPostUrl: String = ""
+    var shopName: String = ""
     private var tabPosition = 0
     lateinit var stickyLoginView: StickyLoginView
     private var tickerDetail: StickyLoginTickerPojo.TickerDetail? = null
@@ -517,6 +518,7 @@ class ShopPageFragment :
         with(shopInfo) {
             isOfficialStore = (goldOS.isOfficial == 1 && !TextUtils.isEmpty(shopInfo.topContent.topUrl))
             isGoldMerchant = (goldOS.isGoldBadge == 1)
+            shopName = shopInfo.shopCore.name
             customDimensionShopPage.updateCustomDimensionData(shopId, isOfficialStore, isGoldMerchant)
             shopPageFragmentHeaderViewHolder.bind(this, shopViewModel.isMyShop(shopCore.shopID), remoteConfig)
             setupTabs()
@@ -613,7 +615,8 @@ class ShopPageFragment :
                 ShopPageHomeFragment.createInstance(
                         shopId ?: "",
                         isOfficialStore,
-                        isGoldMerchant
+                        isGoldMerchant,
+                        shopName
                 )
             } else {
                 HomeProductFragment.createInstance().apply {
@@ -628,19 +631,13 @@ class ShopPageFragment :
     }
 
     private fun getListTitleIcon(): List<Int> {
-        return when {
-            isShowFeed and isOfficialStore -> {
-                listOf(iconTabHome, iconTabProduct, iconTabFeed, iconTabReview)
-            }
-            isShowFeed -> {
-                listOf(iconTabProduct, iconTabFeed, iconTabReview)
-            }
-            isOfficialStore -> {
-                listOf(iconTabHome, iconTabProduct, iconTabReview)
-            }
-            else -> {
-                listOf(iconTabProduct, iconTabReview)
-            }
+        return mutableListOf<Int>().apply {
+            if (isShowHomeTab())
+                add(iconTabHome)
+            add(iconTabProduct)
+            if (isShowFeed)
+                add(iconTabFeed)
+            add(iconTabReview)
         }
     }
 

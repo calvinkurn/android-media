@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.shop.R
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 /**
@@ -14,28 +15,20 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 class ShopHomeItemImageColumnViewHolder(
         itemView: View,
-        val listener: ShopHomeMultipleImageColumnViewHolder.ShopHomeMultipleImageColumnListener
-): RecyclerView.ViewHolder(itemView) {
+        val listener: ShopHomeDisplayWidgetListener
+) : RecyclerView.ViewHolder(itemView) {
 
     private val ivMultipleColumn: AppCompatImageView = itemView.findViewById(R.id.ivMultipleColumn)
-    private var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
-    private var parentPosition: Int = 0
+    var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
+    var parentPosition: Int = 0
 
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         ImageHandler.LoadImage(ivMultipleColumn, data.imageUrl)
         ivMultipleColumn.setOnClickListener {
-            listener.onMultipleImageColumnItemClicked(displayWidgetUiModel, data)
+            listener.onItemClicked(displayWidgetUiModel, data, parentPosition, adapterPosition)
         }
-        ivMultipleColumn.addOnImpressionListener(data){
-            listener.onMultipleImageColumnItemImpression(displayWidgetUiModel, data, parentPosition, adapterPosition)
+        ivMultipleColumn.addOnImpressionListener(data) {
+            listener.onItemImpression(displayWidgetUiModel, data, parentPosition, adapterPosition)
         }
-    }
-
-    fun setShopHomeDisplayWidgetUiModelData(displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?) {
-        this.displayWidgetUiModel =  displayWidgetUiModel
-    }
-
-    fun setParentPosition(parentPosition: Int) {
-        this.parentPosition = parentPosition
     }
 }

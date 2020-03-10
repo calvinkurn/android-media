@@ -5,6 +5,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.productcard.v2.ProductCardModel
@@ -26,6 +27,7 @@ open class ShopHomeProductViewHolder(
         private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener?
 ) : AbstractViewHolder<ShopHomeProductViewModel>(itemView) {
     lateinit var productCard: ProductCardViewSmallGrid
+    protected var shopHomeProductViewModel: ShopHomeProductViewModel? = null
 
     init {
         findViews(itemView)
@@ -41,6 +43,7 @@ open class ShopHomeProductViewHolder(
     }
 
     override fun bind(shopHomeProductViewModel: ShopHomeProductViewModel) {
+        this.shopHomeProductViewModel = shopHomeProductViewModel
         val totalReview = try {
             NumberFormat.getInstance().parse(shopHomeProductViewModel.totalReview).toInt()
         } catch (ignored: ParseException) {
@@ -80,18 +83,6 @@ open class ShopHomeProductViewHolder(
                 BlankSpaceConfig()
         )
 
-//        if (isFixWidth && deviceWidth > 0 && layoutType == ShopHomeProductViewHolder.LAYOUT) {
-//            itemView.layoutParams.width = (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN).toInt()
-//        }
-//
-//        productCard.setOnClickListener {
-//            shopProductClickedListener?.onProductClicked(shopHomeProductViewModel, shopTrackType, adapterPosition)
-//        }
-//        productCard.setButtonWishlistOnClickListener {
-//            if (!shopHomeProductViewModel.isSoldOut)
-//                shopProductClickedListener?.onWishListClicked(shopHomeProductViewModel, shopTrackType)
-//        }
-
         if (shopHomeProductViewModel.isCarousel) {
             if (shopHomeProductViewModel.rating <= 0 && totalReview <= 0) {
                 productCard.setImageRatingInvisible(true)
@@ -108,6 +99,33 @@ open class ShopHomeProductViewHolder(
                 productCard.setlabelDiscountInvisible(true)
                 productCard.setSlashedPriceInvisible(true)
             }
+        }
+        setListener()
+    }
+
+    protected open fun setListener() {
+        productCard.setOnClickListener {
+            shopPageHomeProductClickListener?.onAllProductItemClicked(
+                    adapterPosition,
+                    shopHomeProductViewModel
+            )
+        }
+        shopHomeProductViewModel?.let {
+            productCard.setImageProductViewHintListener(it, object : ViewHintListener {
+                override fun onViewHint() {
+                    shopPageHomeProductClickListener?.onAllProductItemImpression(
+                            adapterPosition,
+                            shopHomeProductViewModel
+                    )
+                }
+            })
+        }
+        productCard.setButtonWishlistOnClickListener {
+            shopHomeProductViewModel?.let {
+                //                if (!it.isSoldOut)
+//                    shopProductClickedListener?.onWishListClicked(shopHomeProductViewModel, shopTrackType)
+            }
+
         }
     }
 }

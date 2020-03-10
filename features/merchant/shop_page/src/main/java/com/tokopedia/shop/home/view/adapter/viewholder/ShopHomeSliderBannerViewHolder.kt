@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.banner.BannerView
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.widget.BannerShopPage
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
@@ -13,18 +14,23 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
  * Created by rizqiaryansa on 2020-02-25.
  */
 
-class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
+class ShopHomeSliderBannerViewHolder(
+        view: View?,
+        private val listener: ShopHomeDisplayWidgetListener
+) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
         BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
         BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
-        BannerView.OnPromoLoadedListener{
+        BannerView.OnPromoLoadedListener {
 
     private var banner: BannerShopPage? = null
+    private var bannerData: ShopHomeDisplayWidgetUiModel? = null
 
     init {
         banner = view?.findViewById(R.id.banner_shop_page)
     }
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
+        bannerData = element
         banner?.setPromoList(dataWidgetToString(element))
         banner?.onPromoAllClickListener = this
         banner?.onPromoScrolledListener = this
@@ -38,7 +44,12 @@ class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<ShopHomeDi
         this.banner?.bannerIndicator?.visible()
     }
 
-    override fun onPromoClick(p0: Int) {}
+    override fun onPromoClick(position: Int) {
+        bannerData?.data?.let {
+            val widgetItem = it[position]
+            listener.onItemClicked(bannerData, widgetItem, adapterPosition, position)
+        }
+    }
 
     override fun onPromoAllClick() {}
 
@@ -46,12 +57,20 @@ class ShopHomeSliderBannerViewHolder(view: View?): AbstractViewHolder<ShopHomeDi
 
     override fun onPromoDragStart() {}
 
-    override fun onPromoScrolled(p0: Int) {}
+    override fun onPromoScrolled(position: Int) {
+        bannerData?.data?.let {
+            val widgetItem = it[position]
+            if(!widgetItem.isInvoke){
+                listener.onItemImpression(bannerData, widgetItem, adapterPosition, position)
+                widgetItem.invoke()
+            }
+        }
+    }
 
     private fun dataWidgetToString(element: ShopHomeDisplayWidgetUiModel): List<String>? {
         val mutableString: MutableList<String>? = mutableListOf()
         element.data?.map {
-            it.imageUrl?.let { img ->
+            it.imageUrl.let { img ->
                 mutableString?.add(img)
             }
         }

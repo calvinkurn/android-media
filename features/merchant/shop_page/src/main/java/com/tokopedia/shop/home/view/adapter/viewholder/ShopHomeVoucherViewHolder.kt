@@ -5,6 +5,7 @@ import android.view.View
 
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 
@@ -20,8 +21,13 @@ import java.util.ArrayList
  */
 
 class ShopHomeVoucherViewHolder(
-        itemView: View
+        itemView: View,
+        private val onMerchantVoucherListWidgetListener: OnMerchantVoucherListWidgetListener
 ) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView) {
+
+    interface OnMerchantVoucherListWidgetListener : MerchantVoucherListWidget.OnMerchantVoucherListWidgetListener {
+        fun onVoucherListImpression(listVoucher: List<MerchantVoucherViewModel>)
+    }
 
     companion object {
         @LayoutRes
@@ -32,18 +38,23 @@ class ShopHomeVoucherViewHolder(
         findView(itemView)
     }
 
+    private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
+
     private fun findView(itemView: View) {
         merchantVoucherListWidget = itemView.findViewById(R.id.merchantVoucherListWidget)
     }
 
-    private var merchantVoucherListWidget: MerchantVoucherListWidget? = null
-
-
     override fun bind(model: ShopHomeVoucherUiModel) {
-        val recyclerViewState = merchantVoucherListWidget?.recyclerView!!.getLayoutManager()!!.onSaveInstanceState()
+        val recyclerViewState = merchantVoucherListWidget?.recyclerView?.layoutManager?.onSaveInstanceState()
+        itemView.addOnImpressionListener(model) {
+            model.data?.let {
+                onMerchantVoucherListWidgetListener.onVoucherListImpression(it)
+            }
+        }
         merchantVoucherListWidget?.setData(model.data as ArrayList<MerchantVoucherViewModel>?)
-        if (recyclerViewState != null) {
-            merchantVoucherListWidget?.recyclerView!!.getLayoutManager()!!.onRestoreInstanceState(recyclerViewState)
+        merchantVoucherListWidget?.setOnMerchantVoucherListWidgetListener(onMerchantVoucherListWidgetListener)
+        recyclerViewState?.let {
+            merchantVoucherListWidget?.recyclerView?.layoutManager?.onRestoreInstanceState(it)
         }
     }
 }

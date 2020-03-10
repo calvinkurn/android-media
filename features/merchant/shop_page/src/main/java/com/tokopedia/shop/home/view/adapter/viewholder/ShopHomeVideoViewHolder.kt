@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
@@ -27,7 +28,10 @@ import java.util.regex.Pattern
  * Created by rizqiaryansa on 2020-02-26.
  */
 
-class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
+class ShopHomeVideoViewHolder(
+        view: View,
+        private  val listener: ShopHomeDisplayWidgetListener
+) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
     YouTubeThumbnailView.OnInitializedListener, View.OnClickListener{
 
     companion object {
@@ -39,6 +43,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<ShopHomeDisplayWi
     private var youTubeThumbnailShopPage: YouTubeThumbnailView? = null
     private var loaderImageView: LoaderImageView? = null
     private var errorImageView: AppCompatImageView? = null
+    private var youtubVideoModel: ShopHomeDisplayWidgetUiModel? = null
 
     var btnYoutubePlayer: AppCompatImageView? = null
     var titleVideoYoutube: Typography? = null
@@ -54,6 +59,7 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<ShopHomeDisplayWi
     }
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
+        this.youtubVideoModel = element
         val regex = "v=([^\\s&#]*)"
         videoUrl = element.data?.first()?.videoUrl ?: ""
         val pattern = Pattern.compile(regex, Pattern.MULTILINE)
@@ -91,6 +97,9 @@ class ShopHomeVideoViewHolder(view: View) : AbstractViewHolder<ShopHomeDisplayWi
         when(view?.id) {
             R.id.btn_youtube_player -> {
                 view.context?.let {
+                    youtubVideoModel?.data?.let{ videoItemList ->
+                        listener.onItemClicked(youtubVideoModel, videoItemList.first(),adapterPosition, 0)
+                    }
                     if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                             == YouTubeInitializationResult.SUCCESS) {
                         it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, videoUrl))

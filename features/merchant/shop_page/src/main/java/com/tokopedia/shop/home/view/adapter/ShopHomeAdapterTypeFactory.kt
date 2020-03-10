@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.merchantvoucher.voucherList.widget.MerchantVoucherListWidget
 import com.tokopedia.shop.home.WidgetName.DISPLAY_DOUBLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_SINGLE_COLUMN
 import com.tokopedia.shop.home.WidgetName.DISPLAY_TRIPLE_COLUMN
@@ -13,12 +14,16 @@ import com.tokopedia.shop.home.WidgetName.SLIDER_SQUARE_BANNER
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.WidgetName.VOUCHER
 import com.tokopedia.shop.home.view.adapter.viewholder.*
+import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
+import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 
 class ShopHomeAdapterTypeFactory(
-        private val shopHomeMultipleImageColumnListener: ShopHomeMultipleImageColumnViewHolder.ShopHomeMultipleImageColumnListener
+        private val listener: ShopHomeDisplayWidgetListener,
+        private val onMerchantVoucherListWidgetListener: ShopHomeVoucherViewHolder.OnMerchantVoucherListWidgetListener,
+        private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
 ) : BaseAdapterTypeFactory(), TypeFactoryShopHome {
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
@@ -49,16 +54,19 @@ class ShopHomeAdapterTypeFactory(
         return when (type) {
             ShopHomeMultipleImageColumnViewHolder.LAYOUT_RES -> ShopHomeMultipleImageColumnViewHolder(
                     parent,
-                    shopHomeMultipleImageColumnListener
+                    listener
             )
             ShopHomeSliderSquareViewHolder.LAYOUT_RES -> ShopHomeSliderSquareViewHolder(
-                    parent
+                    parent,
+                    listener
             )
             ShopHomeSliderBannerViewHolder.LAYOUT_RES -> ShopHomeSliderBannerViewHolder(
-                    parent
+                    parent,
+                    listener
             )
             ShopHomeVideoViewHolder.LAYOUT_RES -> ShopHomeVideoViewHolder(
-                    parent
+                    parent,
+                    listener
             )
             ShopHomeProductViewHolder.LAYOUT -> {
                 ShopHomeProductViewHolder(parent, null)
@@ -67,10 +75,10 @@ class ShopHomeAdapterTypeFactory(
                 ShopHomeProductEtalaseTitleViewHolder(parent)
             }
             ShopHomeCarousellProductViewHolder.LAYOUT -> {
-                ShopHomeCarousellProductViewHolder(parent)
+                ShopHomeCarousellProductViewHolder(parent, shopPageHomeProductClickListener)
             }
             ShopHomeVoucherViewHolder.LAYOUT -> {
-                ShopHomeVoucherViewHolder(parent)
+                ShopHomeVoucherViewHolder(parent, onMerchantVoucherListWidgetListener)
             }
             ShopHomeLoadingShimmerViewHolder.LAYOUT -> {
                 ShopHomeLoadingShimmerViewHolder(parent)

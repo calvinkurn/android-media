@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.view.View
 
 import androidx.annotation.LayoutRes
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
 
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
@@ -17,7 +18,8 @@ import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 class ShopHomeProductItemCarouselViewHolder(
         itemView: View,
         private val shopPageHomeProductClickListener: ShopPageHomeProductClickListener?,
-        private val shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
+        private val shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+        private val parentIndex: Int
 ) : ShopHomeProductViewHolder(itemView, shopPageHomeProductClickListener) {
 
     companion object {
@@ -31,6 +33,38 @@ class ShopHomeProductItemCarouselViewHolder(
         val deviceWidth = Resources.getSystem().displayMetrics.widthPixels;
         if (deviceWidth > 0) {
             itemView.layoutParams.width = (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN).toInt()
+        }
+    }
+
+    override fun setListener(){
+        productCard.setOnClickListener {
+            shopPageHomeProductClickListener?.onCarouselProductItemClicked(
+                    parentIndex,
+                    adapterPosition,
+                    shopHomeCarousellProductUiModel,
+                    shopHomeProductViewModel
+            )
+        }
+
+        shopHomeProductViewModel?.let {
+            productCard.setImageProductViewHintListener(it, object : ViewHintListener {
+                override fun onViewHint() {
+                    shopPageHomeProductClickListener?.onCarouselProductItemImpression(
+                            parentIndex,
+                            adapterPosition,
+                            shopHomeCarousellProductUiModel,
+                            shopHomeProductViewModel
+                    )
+                }
+            })
+        }
+
+        productCard.setButtonWishlistOnClickListener {
+            shopHomeProductViewModel?.let {
+                //                if (!it.isSoldOut)
+//                    shopProductClickedListener?.onWishListClicked(shopHomeProductViewModel, shopTrackType)
+            }
+
         }
     }
 }
