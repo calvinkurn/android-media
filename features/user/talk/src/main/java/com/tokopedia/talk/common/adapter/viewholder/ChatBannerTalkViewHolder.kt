@@ -23,6 +23,7 @@ class ChatBannerTalkViewHolder(itemView: View?, private val listener: Listener) 
 
     interface Listener {
         fun onDismissChatTicker(position: Int)
+        fun trackOnClickChatBanner(element: ChatBannerUiModel)
     }
 
     private var tickerDescriptionView: TextView? = null
@@ -69,6 +70,7 @@ class ChatBannerTalkViewHolder(itemView: View?, private val listener: Listener) 
     private fun assignClickTextImplementation(spannable: SpannableString, element: ChatBannerUiModel) {
         val clickAction = object : ClickableSpan() {
             override fun onClick(widget: View) {
+                listener.trackOnClickChatBanner(element)
                 goToChatRoom(element)
             }
             override fun updateDrawState(ds: TextPaint) {
@@ -85,8 +87,7 @@ class ChatBannerTalkViewHolder(itemView: View?, private val listener: Listener) 
                         id = element.productId,
                         imageUrl = element.productImageUrl,
                         name = element.productName,
-                        price = element.productPrice,
-                        url = ""
+                        price = element.productPrice
                 )
         )
         val stringProductPreviews = CommonUtil.toJson(productPreviews)
