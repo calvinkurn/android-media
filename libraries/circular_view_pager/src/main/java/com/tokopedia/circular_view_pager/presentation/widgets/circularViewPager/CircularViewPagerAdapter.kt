@@ -22,6 +22,7 @@ abstract class CircularViewPagerAdapter(itemList: List<CircularModel>, isInfinit
 
     fun setItemList(newItemList: List<CircularModel>) {
         itemList = newItemList
+        if(itemList.size <= 1) canInfinite = false
         notifyDataSetChanged()
     }
 
