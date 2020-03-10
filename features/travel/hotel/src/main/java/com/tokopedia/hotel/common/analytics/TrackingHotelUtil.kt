@@ -491,10 +491,9 @@ class TrackingHotelUtil {
                 PROMOTIONS_LABEL, DataLayer.listOf(
                 DataLayer.mapOf(
                         ID_LABEL, position + 1,
-                        NAME_LABEL, lastSearchItems.title,
+                        NAME_LABEL, "$LAST_SEARCH_LABEL - ${lastSearchItems.title}",
                         CREATIVE_LABEL, lastSearchItems.appUrl,
-                        POSITION_LABEL, position + 1,
-                        CATEGORY_LABEL, HOTEL_CONTENT_LABEL
+                        POSITION_LABEL, position + 1
                 )))
     }
 

@@ -34,6 +34,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
@@ -76,6 +77,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     lateinit var viewModel: RechargeGeneralViewModel
     @Inject
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
     @Inject
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
     private var saveInstanceManager: SaveInstanceCacheManager? = null
@@ -130,10 +133,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             viewModel = viewModelProvider.get(RechargeGeneralViewModel::class.java)
             sharedViewModel = viewModelProvider.get(SharedRechargeGeneralViewModel::class.java)
 
-            // Setup viewmodel queries
-            viewModel.operatorClusterQuery = GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group)
-            viewModel.productListQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input)
-
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
             val savedEnquiryData: TopupBillsEnquiry? = saveInstanceManager!!.get(EXTRA_PARAM_ENQUIRY_DATA, TopupBillsEnquiry::class.java)
             if (savedEnquiryData != null) enquiryData = savedEnquiryData
@@ -157,7 +156,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             when(it) {
                 is Success -> {
                     loading_view.hide()
-                    renderInitialData(it.data)
+                    renderInitialData()
                 }
                 is Fail -> {
                     var throwable = it.throwable
@@ -200,7 +199,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 operatorId = it.operatorId
                 selectedProduct = RechargeGeneralProductSelectData(it.productId.toString(), it.title, it.description)
                 inputData[PARAM_CLIENT_NUMBER] = it.clientNumber
-                renderInitialData(operatorClusters.data)
+                renderInitialData()
                 // Enquire & navigate to checkout
                 enquire()
             }
@@ -279,18 +278,21 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
         }
     }
 
-    private fun renderInitialData(cluster: RechargeGeneralOperatorCluster) {
-        cluster.operatorGroups?.let { groups ->
-            if (operatorId == 0) operatorId = getFirstOperatorId(cluster)
-            if (operatorId > 0) {
-                operatorCluster = getClusterOfOperatorId(cluster, operatorId)?.name ?: ""
-                renderOperatorCluster(cluster)
+    private fun renderInitialData() {
+        if (viewModel.operatorCluster.value is Success) {
+            val operatorClusters = (viewModel.operatorCluster.value as Success).data
+            operatorClusters.operatorGroups?.let { groups ->
+                if (operatorId == 0) operatorId = getFirstOperatorId(operatorClusters)
+                if (operatorId > 0) {
+                    operatorCluster = getClusterOfOperatorId(operatorClusters, operatorId)?.name ?: ""
+                    renderOperatorCluster(operatorClusters)
 
-                val operatorGroup = groups.first { it.name == operatorCluster }
-                val isOperatorHidden = cluster.style == OPERATOR_TYPE_HIDDEN
-                renderOperatorList(operatorGroup, isOperatorHidden, cluster.text)
+                    val operatorGroup = groups.first { it.name == operatorCluster }
+                    val isOperatorHidden = operatorClusters.style == OPERATOR_TYPE_HIDDEN
+                    renderOperatorList(operatorGroup, isOperatorHidden, operatorClusters.text)
 
-                if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
+                    if (operatorGroup.operators.size > 1) getProductList(menuId, operatorId)
+                }
             }
         }
     }
@@ -553,8 +555,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                     inputData[PARAM_CLIENT_NUMBER] = clientNumber
                 }
             }
-
-            renderInitialData(operatorClusters.data)
+            renderInitialData()
         }
     }
 
@@ -663,6 +664,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
                 }
                 adapter.notifyItemChanged(adapter.data.indexOf(clientNumberInput))
             }
+            renderInitialData()
         }
     }
 
@@ -694,11 +696,17 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun getOperatorCluster(menuId: Int) {
-        viewModel.getOperatorCluster(viewModel.createParams(menuId))
+        viewModel.getOperatorCluster(
+                GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group),
+                viewModel.createOperatorClusterParams(menuId)
+        )
     }
 
     private fun getProductList(menuId: Int, operator: Int) {
-        viewModel.getProductList(viewModel.createParams(menuId, operator))
+        viewModel.getProductList(
+                GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                viewModel.createProductListParams(menuId, operator)
+        )
     }
 
     override fun onFinishInput(label: String, input: String, position: Int, isManual: Boolean) {
@@ -762,8 +770,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
-        categoryName = data.catalog.name.toLowerCase()
+        with (data.catalog) {
+            (activity as? BaseSimpleActivity)?.updateTitle(label)
+            categoryName = name.toLowerCase()
+            rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName, categoryId.toString())
+        }
         renderTickers(data.tickers)
         // Set recommendation data if available
         hasFavoriteNumbers = data.recommendations.isNotEmpty()

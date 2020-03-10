@@ -6,7 +6,10 @@
     "ovo_premier_verifikasi_sukses.png",
     "kesalahan_teknis.png",
     "ic_som_empty.png",
-    "ic_icon_redirect_seller_app.png"
+    "ic_icon_redirect_seller_app.png",
+    "sbank_no_bank_added.png",
+    "bg_gradient_profile_by_me.png",
+    "tokopedia_out_of_indonesia.png"
   ],
   "pendingDownload": [
     "drawer_header_bg.png"

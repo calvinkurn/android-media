@@ -1,0 +1,21 @@
+query categoryHotlist($categoryId: Int!){
+    categoryHotlist(categoryId: $categoryId){
+    list{
+      id
+      applink
+      alk
+      title
+      url
+      applink
+      price_start_from
+      img
+      img_large
+      img_square
+      img_square_large
+      img_share
+      img_promo
+      img_portrait
+      img_portrait_large
+    }
+  }
+}

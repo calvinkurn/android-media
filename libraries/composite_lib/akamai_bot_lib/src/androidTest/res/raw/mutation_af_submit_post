@@ -1,0 +1,20 @@
+mutation SubmitPost($input:ContentSubmitInput!) {
+  feed_content_submit(Input:$input){
+    success
+    redirectURI
+    error
+    meta {
+      followers
+      content {
+        activityID
+        title
+        description
+        url
+        instagram {
+          backgroundURL
+          profileURL
+        }
+      }
+    }
+  }
+}

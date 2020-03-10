@@ -64,12 +64,13 @@ object HomePageTrackingV2 : BaseTracking() {
     }
 
     object RecommendationList{
-        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "carousel product"
-        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on carousel product"
-        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on carousel product"
+        private const val RECOMMENDATION_LIST_CAROUSEL_PRODUCT = "dynamic channel list"
+        private const val RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION = "impression on dynamic channel list"
+        private const val RECOMMENDATION_LIST_CLICK_EVENT_ACTION = "click on dynamic channel list"
+        private const val RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION = "click view all on dynamic channel list"
 
         fun getRecommendationListImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
-                event = if(isToIris) Event.PROMO_VIEW_IRIS else Event.PRODUCT_VIEW,
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = RECOMMENDATION_LIST_IMPRESSION_EVENT_ACTION,
                 eventLabel = Label.NONE,
@@ -77,9 +78,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     Product(
                             name = grid.name,
                             id = grid.id,
-                            productPrice = convertRupiahToInt(
-                                    grid.price
-                            ).toString(),
+                            productPrice = convertRupiahToInt(grid.price).toString(),
                             brand = Value.NONE_OTHER,
                             category = Value.NONE_OTHER,
                             variant = Value.NONE_OTHER,
@@ -89,7 +88,7 @@ object HomePageTrackingV2 : BaseTracking() {
                     )
                 },
                 list = String.format(
-                        Value.LIST, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
                 )
         )
         private fun getRecommendationListClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
@@ -102,7 +101,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         Product(
                                 name = grid.name,
                                 id = grid.id,
-                                productPrice = grid.price,
+                                productPrice = convertRupiahToInt(grid.price).toString(),
                                 brand = Value.NONE_OTHER,
                                 category = Value.NONE_OTHER,
                                 variant = Value.NONE_OTHER,
@@ -112,7 +111,7 @@ object HomePageTrackingV2 : BaseTracking() {
                         )
                 ),
                 list = String.format(
-                        Value.LIST, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
+                        Value.LIST_WITH_HEADER, "1", RECOMMENDATION_LIST_CAROUSEL_PRODUCT, channel.header.name
                 )
         )
 
@@ -124,7 +123,7 @@ object HomePageTrackingV2 : BaseTracking() {
             return DataLayer.mapOf(
                     Event.KEY, Event.CLICK_HOMEPAGE,
                     Category.KEY, Category.HOMEPAGE,
-                    Action.KEY, "click view all on list carousel product",
+                    Action.KEY, RECOMMENDATION_LIST_SEE_ALL_EVENT_ACTION,
                     Label.KEY, channel.header.name
             ) as HashMap<String, Any>
         }
@@ -197,6 +196,79 @@ object HomePageTrackingV2 : BaseTracking() {
                     Label.KEY, channel.header.name,
                     Label.CHANNEL_LABEL, channel.header.name
             ) as HashMap<String, Any>
+        }
+    }
+
+    object SprintSale{
+        private const val EVENT_ACTION_SPRINT_SALE_IMPRESSION = "sprint sale impression"
+        private const val EVENT_ACTION_SPRINT_SALE_CLICK = "sprint sale click"
+        private const val EVENT_ACTION_SPRINT_SALE_CLICK_VIEW_ALL = "sprint sale click view all"
+        private const val LIST_VALUE_SPRINT_SALE = "sprint sale"
+
+        fun getSprintSaleImpression(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = EVENT_ACTION_SPRINT_SALE_IMPRESSION,
+                eventLabel = Label.NONE,
+                products = channel.grids.mapIndexed { index, grid ->
+                    Product(
+                            name = grid.name,
+                            id = grid.id,
+                            productPrice = convertRupiahToInt(
+                                    grid.price
+                            ).toString(),
+                            brand = Value.NONE_OTHER,
+                            category = Value.NONE_OTHER,
+                            variant = Value.NONE_OTHER,
+                            productPosition = (index + 1).toString(),
+                            channelId = channel.id,
+                            isFreeOngkir = grid.freeOngkir.isActive
+                    )
+                },
+                list = String.format(
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
+                )
+        )
+        private fun getSprintSaleClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) = getBasicProductChannelClick(
+                event = Event.PRODUCT_CLICK,
+                eventCategory = Category.HOMEPAGE,
+                eventAction = EVENT_ACTION_SPRINT_SALE_CLICK,
+                eventLabel = grid.attribution,
+                channelId = channel.id,
+                products = listOf(
+                        Product(
+                                name = grid.name,
+                                id = grid.id,
+                                productPrice = grid.price,
+                                brand = Value.NONE_OTHER,
+                                category = Value.NONE_OTHER,
+                                variant = Value.NONE_OTHER,
+                                productPosition = (position + 1).toString(),
+                                channelId = channel.id,
+                                isFreeOngkir = grid.freeOngkir.isActive
+                        )
+                ),
+                list = String.format(
+                        Value.LIST, "1", LIST_VALUE_SPRINT_SALE
+                )
+        )
+
+        fun sendSprintSaleClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getSprintSaleClick(channel, grid, position))
+        }
+
+        private fun getSprintSaleSeeAllClick(channel: DynamicHomeChannel.Channels): HashMap<String, Any>{
+            return DataLayer.mapOf(
+                    Event.KEY, Event.CLICK_HOMEPAGE,
+                    Category.KEY, Category.HOMEPAGE,
+                    Action.KEY, EVENT_ACTION_SPRINT_SALE_CLICK_VIEW_ALL,
+                    Label.KEY, Value.EMPTY,
+                    ChannelId.KEY, channel.id
+            ) as HashMap<String, Any>
+        }
+
+        fun sendSprintSaleSeeAllClick(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getSprintSaleSeeAllClick(channel))
         }
     }
 }

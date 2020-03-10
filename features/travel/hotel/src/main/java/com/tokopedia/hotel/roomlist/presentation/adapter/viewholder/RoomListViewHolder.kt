@@ -1,5 +1,6 @@
 package com.tokopedia.hotel.roomlist.presentation.adapter.viewholder
 
+import android.graphics.Paint
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.hotel.R
@@ -10,6 +11,8 @@ import com.tokopedia.hotel.roomlist.data.model.RoomListModel
 import com.tokopedia.hotel.roomlist.widget.ImageViewPager
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
 import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import kotlinx.android.synthetic.main.item_hotel_room_full.view.*
 import kotlinx.android.synthetic.main.item_hotel_room_list.view.*
 import kotlinx.android.synthetic.main.layout_hotel_image_slider.view.*
@@ -45,6 +48,18 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
 
                 choose_room_button.setOnClickListener { listener.onClickBookListener(hotelRoom) }
                 choose_room_button.text = getString(R.string.hotel_room_list_choose_room_button, "")
+
+                if (roomListModel.slashPrice.isNotEmpty()) {
+                    room_list_slash_price_tv.show()
+                    room_list_slash_price_tv.paintFlags = room_list_slash_price_tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    room_list_slash_price_tv.text = roomListModel.slashPrice
+                } else room_list_slash_price_tv.hide()
+
+                if (roomListModel.tagging.isNotEmpty()) {
+                    room_list_tagging_tv.show()
+                    room_list_tagging_tv.text = roomListModel.tagging
+                } else room_list_tagging_tv.hide()
+
             } else {
                 room_description_layout.visibility = View.GONE
                 room_full_layout.visibility = View.VISIBLE
@@ -104,29 +119,29 @@ class RoomListViewHolder(val view: View, val listener: OnClickBookListener) : Ab
 
     private fun mapToRoomListModel(hotelRoom: HotelRoom): RoomListModel {
         var roomListModel = RoomListModel()
-        if (hotelRoom != null) {
-            roomListModel.roomName = hotelRoom.roomInfo.name
-            roomListModel.roomSize = hotelRoom.roomInfo.size.toString()
-            roomListModel.maxOccupancy = hotelRoom.occupancyInfo.maxOccupancy
-            roomListModel.maxFreeChild = hotelRoom.occupancyInfo.maxFreeChild
-            roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
-            roomListModel.bedInfo = hotelRoom.bedInfo
-            roomListModel.roomFacility = hotelRoom.roomInfo.facility
-            roomListModel.payInHotel = !hotelRoom.additionalPropertyInfo.isDirectPayment
-            roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
-            roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
-            roomListModel.creditCardHeader = hotelRoom.creditCardInfo.header
-            roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
-            roomListModel.price = hotelRoom.roomPrice.roomPrice
-            roomListModel.roomLeft = hotelRoom.numberRoomLeft
-            roomListModel.available = hotelRoom.available
+        roomListModel.roomName = hotelRoom.roomInfo.name
+        roomListModel.roomSize = hotelRoom.roomInfo.size.toString()
+        roomListModel.maxOccupancy = hotelRoom.occupancyInfo.maxOccupancy
+        roomListModel.maxFreeChild = hotelRoom.occupancyInfo.maxFreeChild
+        roomListModel.occupancyText = hotelRoom.occupancyInfo.occupancyText
+        roomListModel.bedInfo = hotelRoom.bedInfo
+        roomListModel.roomFacility = hotelRoom.roomInfo.facility
+        roomListModel.payInHotel = !hotelRoom.additionalPropertyInfo.isDirectPayment
+        roomListModel.breakfastIncluded = hotelRoom.breakfastInfo.isBreakfastIncluded
+        roomListModel.isRefundable = hotelRoom.refundInfo.isRefundable
+        roomListModel.creditCardHeader = hotelRoom.creditCardInfo.header
+        roomListModel.creditCardInfo = hotelRoom.creditCardInfo.creditCardInfo
+        roomListModel.price = hotelRoom.roomPrice.roomPrice
+        roomListModel.roomLeft = hotelRoom.numberRoomLeft
+        roomListModel.available = hotelRoom.available
+        roomListModel.slashPrice = hotelRoom.roomPrice.deals.price
+        roomListModel.tagging = hotelRoom.roomPrice.deals.tagging
 
-            val images: MutableList<String> = arrayListOf()
-            for (item in hotelRoom.roomInfo.roomImages) {
-                images.add(item.urlOriginal)
-            }
-            roomListModel.images = images
+        val images: MutableList<String> = arrayListOf()
+        for (item in hotelRoom.roomInfo.roomImages) {
+            images.add(item.urlOriginal)
         }
+        roomListModel.images = images
         return roomListModel
     }
 
