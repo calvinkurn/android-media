@@ -158,9 +158,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun setViewClickListener() {
-        switchFlightRoundTrip.setOnClickListener {
-            toggleOneWay()
-        }
+        switchFlightRoundTrip.setOnClickListener { toggleOneWay() }
+        imgFlightReverseAirport.setOnClickListener { onReverseAirportClicked() }
         tvFlightOriginLabel.setOnClickListener { listener?.onDepartureAirportClicked() }
         tvFlightOriginAirport.setOnClickListener { listener?.onDepartureAirportClicked() }
         tvFlightDestinationLabel.setOnClickListener { listener?.onDestinationAirportClicked() }
@@ -312,6 +311,23 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         text.setSpan(RelativeSizeSpan(0.75f),
                 0, text.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return text
+    }
+
+    private fun onReverseAirportClicked() {
+        val tempAirportId = departureAirportId
+        val tempCityCode = departureCityCode
+        val tempCityName = departureCityName
+
+        setOriginAirport(
+                arrivalAirportId,
+                arrivalCityCode,
+                arrivalCityName
+        )
+        setDestinationAirport(
+                tempAirportId,
+                tempCityCode,
+                tempCityName
+        )
     }
 
     interface FlightSearchFormListener {
