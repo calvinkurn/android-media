@@ -80,6 +80,7 @@ public interface CMConstant {
         String IMG = "img";
         String VIBRATE = "vibrate";
         String UPDATE_NOTIFICATION = "update_notification";
+        String IS_TEST = "isTest";
         String GRID_DATA = "gridData";
         String SUB_TEXT = "subText";
 

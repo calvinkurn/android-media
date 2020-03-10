@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
+import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -219,6 +220,11 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }
                 DynamicHomeChannel.Channels.LAYOUT_PLAY_BANNER -> { createPlayWidget(channel) }
+                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> { createDynamicChannel(
+                        channel,
+                        trackingData = MixTopTracking.getMixTopView(MixTopTracking.mapChannelToProductTracker(channel), headerName = channel.header.name, positionOnWidgetHome = position.toString()),
+                        isCombined = false
+                ) }
             }
         }
 
@@ -226,6 +232,13 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
     }
 
     private fun createPlayWidget(channel: DynamicHomeChannel.Channels) {
+        if (!isCache) {
+            val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
+            if (!visitableList.contains(playBanner)) visitableList.add(playBanner)
+        }
+    }
+
+    private fun createMixTopWidget(channel: DynamicHomeChannel.Channels) {
         if (!isCache) {
             val playBanner = mappingPlayChannel(channel, HashMap(), isCache)
             if (!visitableList.contains(playBanner)) visitableList.add(playBanner)

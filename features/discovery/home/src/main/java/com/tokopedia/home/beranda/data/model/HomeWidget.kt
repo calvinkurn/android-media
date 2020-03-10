@@ -46,6 +46,9 @@ class HomeWidget(
             val keyword: String = "",
             @SerializedName("product_count")
             @Expose
+            val productCountInt: Int = 0,
+            @SerializedName("product_count_formatted")
+            @Expose
             val productCount: String = ""
     )
 
