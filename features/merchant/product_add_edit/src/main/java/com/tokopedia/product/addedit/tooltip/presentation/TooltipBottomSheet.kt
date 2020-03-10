@@ -10,23 +10,23 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
+import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
 import kotlin.math.roundToInt
 
-class TooltipBottomSheet <T, F : AdapterTypeFactory> (typeFactory: F) : BottomSheetUnify() {
+class TooltipBottomSheet: BottomSheetUnify() {
 
     private var contentView: View? = null
     private var isDividerVisible: Boolean = false
-    private var listAdapter: BaseListAdapter<T, F>? = null
+    private var listAdapter: BaseListAdapter<TooltipModel, TooltipTypeFactory>? = null
 
     init {
-        listAdapter = BaseListAdapter(typeFactory)
-        setFullPage(false)
+        listAdapter = BaseListAdapter(TooltipTypeFactory())
         setCloseClickListener {
             dismiss()
         }

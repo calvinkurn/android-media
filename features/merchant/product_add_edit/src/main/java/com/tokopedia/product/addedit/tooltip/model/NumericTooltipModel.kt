@@ -1,10 +1,14 @@
 package com.tokopedia.product.addedit.tooltip.model
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
 
-open class TooltipModel(open var id : Int = 0,
-                        open var title : String = "")
-    : Visitable<TooltipTypeFactory>{
+/**
+ * Created by faisalramd on 2020-03-09.
+ */
+
+data class NumericTooltipModel(
+        override var id: Int,
+        override var title: String,
+        var number : String = "") : TooltipModel(id, title) {
     override fun type(typeFactory: TooltipTypeFactory): Int = typeFactory.type(this)
 }

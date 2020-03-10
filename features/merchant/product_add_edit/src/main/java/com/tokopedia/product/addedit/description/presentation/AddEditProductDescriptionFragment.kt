@@ -6,17 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.description.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.model.VideoLinkModel
+import com.tokopedia.product.manage.item.common.util.CurrencyTypeDef
+import com.tokopedia.product.manage.item.stock.view.model.ProductStock
+import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
+import com.tokopedia.product.manage.item.variant.data.model.variantbycat.ProductVariantByCatModel
+import com.tokopedia.product.manage.item.variant.data.model.variantbyprd.ProductVariantViewModel
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.product.addedit.common.util.CurrencyTypeDef
-import com.tokopedia.product.addedit.common.util.ProductExtraConstant
-import com.tokopedia.product.addedit.stock.view.model.ProductStock
 
 class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
         VideoLinkTypeFactory.VideoLinkListener {
@@ -75,7 +78,7 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         }
 
         tvAddVariant.setOnClickListener {
-            showEditPriceWhenHasVariantDialog()
+            showVariantDialog()
         }
     }
 
@@ -88,20 +91,28 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
                 if (adapter.dataSize < MAX_VIDEOS) View.VISIBLE else View.GONE
     }
 
-    private fun showEditPriceWhenHasVariantDialog(){
+    private fun showVariantDialog(){
         activity?.let {
+            val productVariantByCatModelList: ArrayList<ProductVariantByCatModel> = ArrayList()
+            val cacheManager = SaveInstanceCacheManager(it, true).apply {
+                put(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST, productVariantByCatModelList)
+                put(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, ProductVariantViewModel())
+                put(ProductExtraConstant.EXTRA_CURRENCY_TYPE, selectedCurrencyType)
+                put(ProductExtraConstant.EXTRA_DEFAULT_PRICE, 0.0)
+                put(ProductExtraConstant.EXTRA_STOCK_TYPE, ProductStock())
+                put(ProductExtraConstant.EXTRA_IS_OFFICIAL_STORE, false)
+                put(ProductExtraConstant.EXTRA_DEFAULT_SKU, "")
+                put(ProductExtraConstant.EXTRA_NEED_RETAIN_IMAGE, false)
+                put(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, null)
+                put(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
+                put(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
+                put(ProductExtraConstant.EXTRA_HAS_WHOLESALE, false)
+                put(ProductExtraConstant.EXTRA_IS_ADD, false)
+            }
             val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_EDIT_VARIANT_DASHBOARD)
             intent?.run {
-                putExtra(ProductExtraConstant.EXTRA_CURRENCY_TYPE, selectedCurrencyType)
-                putExtra(ProductExtraConstant.EXTRA_DEFAULT_PRICE, 0.0)
-                putExtra(ProductExtraConstant.EXTRA_STOCK_TYPE, ProductStock())
-                putExtra(ProductExtraConstant.EXTRA_IS_OFFICIAL_STORE, false)
-                putExtra(ProductExtraConstant.EXTRA_DEFAULT_SKU, "")
-                putExtra(ProductExtraConstant.EXTRA_NEED_RETAIN_IMAGE, false)
-                putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV1, true)
-                putExtra(ProductExtraConstant.EXTRA_HAS_ORIGINAL_VARIANT_LV2, false)
-                putExtra(ProductExtraConstant.EXTRA_HAS_WHOLESALE, false)
-                putExtra(ProductExtraConstant.EXTRA_IS_ADD, false)
+                putExtra(ProductExtraConstant.EXTRA_VARIANT_CACHE_ID, cacheManager.id)
+                putExtra(ProductExtraConstant.EXTRA_IS_USING_CACHE_MANAGER, true)
                 startActivityForResult(this, REQUEST_CODE_VARIANT)
             }
         }
@@ -109,8 +120,7 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
 
     companion object {
         const val MAX_VIDEOS = 3
-
-        const val REQUEST_CODE_VARIANT = 9
+        const val REQUEST_CODE_VARIANT = 0
     }
 
 }
