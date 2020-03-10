@@ -7,10 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.chat_common.data.AttachInvoiceSentViewModel
-import com.tokopedia.chat_common.data.FallbackAttachmentViewModel
-import com.tokopedia.chat_common.data.ImageUploadViewModel
-import com.tokopedia.chat_common.data.MessageViewModel
+import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactoryImpl
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
@@ -36,7 +33,7 @@ open class TopChatTypeFactoryImpl(
         imageAnnouncementListener: ImageAnnouncementListener,
         private val chatLinkHandlerListener: ChatLinkHandlerListener,
         private val imageUploadListener: ImageUploadListener,
-        productAttachmentListener: ProductAttachmentListener,
+        private val productAttachmentListener: ProductAttachmentListener,
         private val imageDualAnnouncementListener: DualAnnouncementListener,
         private val voucherListener: TopChatVoucherListener,
         private val invoiceThumbnailListener: InvoiceThumbnailListener,
@@ -95,6 +92,15 @@ open class TopChatTypeFactoryImpl(
         return TopchatEmptyViewHolder.LAYOUT
     }
 
+    override fun type(productAttachmentViewModel: ProductAttachmentViewModel): Int {
+        val useNewCard = true
+        return if (useNewCard) {
+            TopchatProductAttachmentViewHolder.LAYOUT
+        } else {
+            super.type(productAttachmentViewModel)
+        }
+    }
+
     // Check if chat bubble first, if not return default ViewHolder
     override fun createViewHolder(parent: ViewGroup, type: Int): AbstractViewHolder<*> {
         val layoutRes = when (type) {
@@ -110,6 +116,7 @@ open class TopChatTypeFactoryImpl(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
+            TopchatProductAttachmentViewHolder.LAYOUT -> TopchatProductAttachmentViewHolder(parent, productAttachmentListener)
             TopchatEmptyViewHolder.LAYOUT -> TopchatEmptyViewHolder(parent)
             QuotationViewHolder.LAYOUT -> QuotationViewHolder(parent, chatLinkHandlerListener, quotationListener)
             RoomSettingBannerViewHolder.LAYOUT -> RoomSettingBannerViewHolder(parent)
