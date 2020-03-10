@@ -49,8 +49,10 @@ class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerVi
 
             if (data.getSelectedOption() == null) {
                 txtVariantSelectedOption.text = context.getString(R.string.variant_option_builder_2, data.variantOptions.size)
+                txtVariantSelectedOption.setTextColor(MethodChecker.getColor(view.context, R.color.Neutral_N700_44))
             } else {
                 txtVariantSelectedOption.text = data.getSelectedOption()?.variantName
+                txtVariantSelectedOption.setTextColor(MethodChecker.getColor(view.context, R.color.Neutral_N700_96))
             }
 
             if (data.isLeaf && listener.getStockWording() != "") {
