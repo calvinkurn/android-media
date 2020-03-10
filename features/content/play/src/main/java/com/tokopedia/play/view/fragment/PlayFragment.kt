@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.fragment
 
+import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
@@ -73,6 +74,36 @@ class PlayFragment : BaseDaggerFragment() {
     private val offset12 by lazy { resources.getDimensionPixelOffset(R.dimen.dp_12) }
 
     private val videoScaleAnimator = AnimatorSet()
+    private val onBottomInsetsShownAnimatorListener = object : Animator.AnimatorListener {
+        override fun onAnimationRepeat(animation: Animator?) {
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            flVideo.isClickable = true
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+        }
+
+        override fun onAnimationStart(animation: Animator?) {
+            flVideo.isClickable = false
+        }
+    }
+    private val onBottomInsetsHiddenAnimatorListener = object : Animator.AnimatorListener {
+        override fun onAnimationRepeat(animation: Animator?) {
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            flVideo.isClickable = false
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+        }
+
+        override fun onAnimationStart(animation: Animator?) {
+            flVideo.isClickable = false
+        }
+    }
 
     private lateinit var playViewModel: PlayViewModel
 
@@ -292,6 +323,8 @@ class PlayFragment : BaseDaggerFragment() {
         val marginTopXt = marginTop * scaleFactor
         flVideo.pivotY = ivClose.y + (ivClose.y * scaleFactor) + marginTopXt
         videoScaleAnimator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsShownAnimatorListener)
             playTogether(animatorX, animatorY)
         }.start()
 
@@ -307,6 +340,8 @@ class PlayFragment : BaseDaggerFragment() {
         animatorX.duration = ANIMATION_DURATION
 
         videoScaleAnimator.apply {
+            removeAllListeners()
+            addListener(onBottomInsetsHiddenAnimatorListener)
             playTogether(animatorX, animatorY)
         }.start()
 
