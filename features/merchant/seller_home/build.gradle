@@ -57,8 +57,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.baseList)
 
-    implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
-
     //internal arr libs
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.banner
