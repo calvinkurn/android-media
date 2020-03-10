@@ -490,7 +490,11 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setPrimaryCTAText("Simpan Promo Baru")
                 setSecondaryCTAText("Keluar Halaman")
                 setPrimaryCTAClickListener {
-                    viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
+                    if (viewModel.isHasAnySelectedPromoItem()) {
+                        viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
+                    } else {
+                        viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
+                    }
                 }
                 setSecondaryCTAClickListener {
                     dismiss()

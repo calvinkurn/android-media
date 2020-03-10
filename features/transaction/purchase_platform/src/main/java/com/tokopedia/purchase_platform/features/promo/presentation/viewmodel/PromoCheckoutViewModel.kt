@@ -498,10 +498,22 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun isPromoScopeHasAnySelectedItem(parentIdentifierId: Int): Boolean {
+    fun isPromoScopeHasAnySelectedPromoItem(parentIdentifierId: Int): Boolean {
         var hasAnyPromoSellected = false
         promoListUiModel.value?.forEach {
             if (it is PromoListItemUiModel && it.uiState.isSelected && it.uiData.parentIdentifierId == parentIdentifierId) {
+                hasAnyPromoSellected = true
+                return@forEach
+            }
+        }
+
+        return hasAnyPromoSellected
+    }
+
+    fun isHasAnySelectedPromoItem(): Boolean {
+        var hasAnyPromoSellected = false
+        promoListUiModel.value?.forEach {
+            if (it is PromoListItemUiModel && it.uiState.isSelected) {
                 hasAnyPromoSellected = true
                 return@forEach
             }
@@ -644,7 +656,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             header?.let {
-                val hasSelectPromo = isPromoScopeHasAnySelectedItem(it.uiData.identifierId)
+                val hasSelectPromo = isPromoScopeHasAnySelectedPromoItem(it.uiData.identifierId)
                 it.uiState.hasSelectedPromoItem = hasSelectPromo
 
                 val headerIndex = promoListUiModel.value?.indexOf(it) ?: 0
