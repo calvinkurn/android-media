@@ -31,11 +31,11 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_variant_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                android:layout_height="@dimen/layout_lvl0"
+                app:layout_constraintTop_toBottomOf="@id/cl_product_variant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cl_product_variant"
+                app:layout_constraintBottom_toBottomOf="parent"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
