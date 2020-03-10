@@ -3,4 +3,9 @@
     <style name="NavigationMenuItemTextAppearance">
         <item name="android:ellipsize">end</item>
     </style>
+
+    <style name="SellerHomeTheme" parent="Theme.AppCompat.Light">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>
