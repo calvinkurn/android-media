@@ -573,12 +573,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         order_list_rv.visibility = View.GONE
         empty_state_order_list.visibility = View.VISIBLE
         title_empty?.text = getString(R.string.empty_peluang_title)
-        desc_empty?.text = getString(R.string.empty_peluang_desc)
-        btn_cek_peluang?.visibility = View.VISIBLE
-        btn_cek_peluang?.setOnClickListener {
-            eventClickButtonPeluangInEmptyState(tabActive)
-            startActivity(RouteManager.getIntent(context, ApplinkConstInternalOrder.OPPORTUNITY))
-        }
+
+        // Peluang Feature has been removed, thus we set text to empty and button is gone
+        desc_empty?.text = ""
+        btn_cek_peluang?.visibility = View.GONE
     }
 
     override fun onSearchReset() {}
