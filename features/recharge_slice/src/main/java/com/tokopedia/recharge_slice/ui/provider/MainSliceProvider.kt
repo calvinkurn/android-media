@@ -81,7 +81,6 @@ class MainSliceProvider : SliceProvider() {
             if (recommendationModel == null) {
                     if(!alreadyGetData)
                     getData(sliceUri)
-
                     return list(contextNonNull, sliceUri, INFINITY) {
                         setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                         header {
@@ -154,6 +153,7 @@ class MainSliceProvider : SliceProvider() {
         val deviceId = 0
         val params = mapOf(RECHARGE_SLICE_DEVICE_ID to deviceId)
         val graphqlRequest = GraphqlRequest(gqlQuery, Data::class.java, params)
+        alreadyGetData = true
         GraphqlClient.init(contextNonNull)
         DaggerRechargeSliceComponent.builder().build().inject(this)
         GlobalScope.launch(Dispatchers.IO) {
