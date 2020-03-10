@@ -1,0 +1,26 @@
+{
+  tokopoints {
+    resultStatus {
+      code
+      message
+    }
+    ticker {
+      tickerList {
+        id
+        type
+        metadata {
+          text {
+            content
+          }
+          image {
+            url
+          }
+          link {
+            url
+            applink
+          }
+        }
+      }
+    }
+  }
+}

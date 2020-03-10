@@ -4,6 +4,7 @@ includeDynamicFeatureIfEnabled("customerapp")
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
+include "features:common:qr_scanner"
 include "features:common:common_tradein"
 
 include "features:communication:broadcast_message_common"
@@ -85,8 +86,9 @@ include "features:home:account-home"
 
 include "features:im:common_promo"
 include "features:im:referral"
+include "features:im:install_referral"
+
 include "features:kyc"
-include "features:scanner"
 
 include "features:logistic:logisticorder"
 include "features:logistic:logisticaddaddress"
@@ -112,6 +114,7 @@ include "features:merchant:shop_settings"
 include "features:merchant:shop_etalase_picker"
 //include "features:merchant:shop_etalase_picker_no_op"
 include "features:merchant:official_store"
+include "features:merchant:brandlist"
 include "features:merchant:atc_variant"
 
 include "features:operational:contact_us"
@@ -187,12 +190,14 @@ include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
+include "features:user:loginfingerprint"
 
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
 include "features:user:seamless_login"
+include "features:user:liveness"
 
 include 'features:fcm_common'
 include 'features:user:campaign_shake_landing'

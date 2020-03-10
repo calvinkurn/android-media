@@ -8,7 +8,7 @@
     <dimen name="margin_error_text">56dp</dimen>
     <dimen name="image_width_brand">88dp</dimen>
     <dimen name="image_width_18">18sp</dimen>
-    <dimen name="image_width_deals_details_header">240dp</dimen>
+    <dimen name="image_width_deals_details_header">200dp</dimen>
     <dimen name="bottom_view_height">80dp</dimen>
     <dimen name="font_deal_detail20">20sp</dimen>
     <dimen name="image_category_height">98dp</dimen>
@@ -33,5 +33,6 @@
     <dimen name="shimmer_title_width">123dp</dimen>
     <dimen name="dp_58">58dp</dimen>
     <dimen name="dp_66">66dp</dimen>
+    <dimen name="deals_dp_12">12dp</dimen>
 
 </resources>

@@ -21,7 +21,7 @@ data class AddBankRequest(
             }
         }
 
-        fun accountNumber(accountNo: String?) = apply {
+        fun setAccountNumber(accountNo: String?) = apply {
             accountNo?.let {
                 this.accountName = ""
                 this.accountNo = accountNo
@@ -31,14 +31,20 @@ data class AddBankRequest(
             }
         }
 
-        fun accountName(accountName: String, isManual: Boolean) = apply {
+        fun setAccountName(accountName: String, isManual: Boolean) = apply {
             this.accountName = accountName
             this.isManual = isManual
         }
 
-        fun isManual(isManual: Boolean){
+        fun isManual(isManual: Boolean) {
             this.isManual = isManual
         }
+
+        fun getAccountNumber(): String? = if (::accountNo.isInitialized) accountNo else null
+
+        fun getAccountName(): String? = if (::accountName.isInitialized) accountName else null
+
+        fun isManual(): Boolean = isManual
 
 
         fun build() = AddBankRequest(

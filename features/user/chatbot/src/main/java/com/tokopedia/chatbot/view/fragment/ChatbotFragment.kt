@@ -32,6 +32,7 @@ import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.ImageMenu
 import com.tokopedia.chat_common.domain.pojo.invoiceattachment.InvoiceLinkPojo
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
+import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -217,7 +218,17 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         chatbot_view_help_rate.btn_inactive_5.setOnClickListener(this@ChatbotFragment)
 
         super.onViewCreated(view, savedInstanceState)
-        super.viewState = ChatbotViewStateImpl(
+        viewState.initView()
+        loadInitialData()
+        showTicker()
+
+        if (savedInstanceState != null)
+            this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
+
+    }
+
+    override fun onCreateViewState(view: View): BaseChatViewState {
+        return ChatbotViewStateImpl(
                 view,
                 session,
                 this,
@@ -226,13 +237,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 (activity as BaseChatToolbarActivity).getToolbar(),
                 adapter
         )
-        viewState.initView()
-        loadInitialData()
-        showTicker()
-
-        if (savedInstanceState != null)
-            this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
-
     }
 
     private fun showTicker() {

@@ -14,44 +14,50 @@ import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SPOTLI
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.SUBSCRIPTION_ORDER
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase.Companion.TRUST_MARK_ORDER
 import com.tokopedia.digital.home.model.DigitalHomePageItemModel
+import com.tokopedia.digital.home.presentation.Util.DigitalHomePageDispatchersProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class DigitalHomePageViewModel @Inject constructor(
-        dispatcher: CoroutineDispatcher,
-        private val digitalHomePageUseCase: DigitalHomePageUseCase)
-    : BaseViewModel(dispatcher) {
+        private val digitalHomePageUseCase: DigitalHomePageUseCase,
+        private val dispatcher: DigitalHomePageDispatchersProvider)
+    : BaseViewModel(dispatcher.Main) {
 
-    private val _digitalHomePageList = MutableLiveData<List<DigitalHomePageItemModel>>()
+    private val mutableDigitalHomePageList = MutableLiveData<List<DigitalHomePageItemModel>>()
     val digitalHomePageList: LiveData<List<DigitalHomePageItemModel>>
-        get() = _digitalHomePageList
-    private val _isAllError = MutableLiveData<Boolean>()
+        get() = mutableDigitalHomePageList
+    private val mutableIsAllError = MutableLiveData<Boolean>()
     val isAllError: LiveData<Boolean>
-        get() = _isAllError
+        get() = mutableIsAllError
 
     fun initialize(queryList: Map<String, String>) {
         val list: List<DigitalHomePageItemModel> = digitalHomePageUseCase.getEmptyList()
         digitalHomePageUseCase.queryList = queryList
         digitalHomePageUseCase.sectionOrdering = SECTION_ORDERING
-        _digitalHomePageList.value = list
-        _isAllError.value = false
+        mutableDigitalHomePageList.value = list
+        mutableIsAllError.value = false
     }
 
     fun getData(isLoadFromCloud: Boolean) {
         digitalHomePageUseCase.isFromCloud = isLoadFromCloud
-        launch(Dispatchers.IO) {
+        launch(dispatcher.IO) {
             val data = digitalHomePageUseCase.executeOnBackground()
-            if (data.isNotEmpty()) {
-                _digitalHomePageList.postValue(data)
+            if (data.isEmpty() || checkError(data)) {
+                mutableIsAllError.postValue(true)
             } else {
-                _isAllError.value = true
+                mutableDigitalHomePageList.postValue(data)
             }
         }
     }
 
+    private fun checkError(data: List<DigitalHomePageItemModel>): Boolean {
+        return data.all { !it.isSuccess }
+    }
+
     companion object {
+        const val CATEGORY_SECTION_ORDER: Int = 7
         val SECTION_ORDERING = mapOf(
                 BANNER_ORDER to 0,
                 FAVORITES_ORDER to 1,
@@ -60,9 +66,8 @@ class DigitalHomePageViewModel @Inject constructor(
                 NEW_USER_ZONE_ORDER to 4,
                 SPOTLIGHT_ORDER to 5,
                 SUBSCRIPTION_ORDER to 6,
-                CATEGORY_ORDER to 7,
+                CATEGORY_ORDER to CATEGORY_SECTION_ORDER,
                 PROMO_ORDER to 8
         )
-        val CATEGORY_SECTION_ORDER: Int = SECTION_ORDERING[CATEGORY_ORDER] ?: 0
     }
 }

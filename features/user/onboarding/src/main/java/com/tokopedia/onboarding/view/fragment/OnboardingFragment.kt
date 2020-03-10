@@ -25,10 +25,15 @@ import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.view.adapter.OnboardingViewPagerAdapter
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.weaver.WeaveInterface
+import com.tokopedia.weaver.Weaver
+import com.tokopedia.weaver.WeaverFirebaseConditionCheck
+import org.jetbrains.annotations.NotNull
 import javax.inject.Inject
 
 
@@ -53,8 +58,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     lateinit var onboardingAnalytics: OnboardingAnalytics
     @Inject
     lateinit var remoteConfig: RemoteConfig
-    @Inject
-    lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
 
@@ -74,13 +77,24 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        trackPreinstall()
+        val executeViewCreatedWeave = object : WeaveInterface {
+            override fun execute(): Any {
+                return executeViewCreateFlow()
+            }
+        }
+        Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context)
+    }
+
+    @NotNull
+    private fun executeViewCreateFlow() : Boolean{
         initAbTesting()
+        trackPreinstall()
         initView()
+        return true
     }
 
     private fun getAbTestVariant(): String =
-            remoteConfigInstance.abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
 
     private fun setViewByAbTestVariant() {
         when (abTestVariant) {
@@ -109,10 +123,12 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val listItem = generateListAllButton()
 
             onboardingViewPagerAdapter = OnboardingViewPagerAdapter(it, listItem)
-            screenViewpager.adapter = onboardingViewPagerAdapter
+            if (::screenViewpager.isInitialized) {
+                screenViewpager.adapter = onboardingViewPagerAdapter
+                if(onboardingViewPagerAdapter.count > 1)
+                    screenViewpager.offscreenPageLimit = onboardingViewPagerAdapter.count - 1
+            }
             tabIndicator.setupWithViewPager(screenViewpager)
-
-            screenViewpager.offscreenPageLimit = 2
 
             skipAction.setOnClickListener(skipActionClickListener())
             nextAction.setOnClickListener(nextActionClickListener())
@@ -193,12 +209,16 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         return View.OnClickListener {
             context?.let {
                 onboardingAnalytics.eventOnboardingSkip(screenViewpager.currentItem)
-                finishOnBoarding()
-                if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
-                    RouteManager.route(it, ApplinkConst.HOME)
+                val intent = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
+                    when(abTestVariant) {
+                        ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.OFFICIAL_STORE)
+                        else -> RouteManager.getIntent(it, ApplinkConst.HOME)
+                    }
                 } else {
-                    RouteManager.route(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+                    RouteManager.getIntent(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
                 }
+                startActivity(intent)
+                finishOnBoarding()
             }
         }
     }
@@ -221,11 +241,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val taskStackBuilder = TaskStackBuilder.create(it)
             val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
             taskStackBuilder.addNextIntent(homeIntent)
-            val intent = when(abTestVariant) {
-                ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.REGISTER)
-                else -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            }
+            val intent = RouteManager.getIntent(it, ApplinkConst.REGISTER)
             taskStackBuilder.addNextIntent(intent)
             taskStackBuilder.startActivities()
         }
@@ -255,7 +271,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     private fun finishOnBoarding() {
         activity?.let {
             userSession.setFirstTimeUserOnboarding(false)
-            DFInstaller().uninstallOnBackground(it.application, listOf(DeeplinkDFMapper.DFM_ONBOARDING))
             it.finish()
         }
     }

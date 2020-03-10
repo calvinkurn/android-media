@@ -1,5 +1,8 @@
 package com.tokopedia.settingbank.banklist.v2.view.fragment
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -19,13 +22,13 @@ import com.tokopedia.settingbank.banklist.v2.domain.BankAccount
 import com.tokopedia.settingbank.banklist.v2.domain.KYCInfo
 import com.tokopedia.settingbank.banklist.v2.domain.SettingBankErrorHandler
 import com.tokopedia.settingbank.banklist.v2.domain.TemplateData
+import com.tokopedia.settingbank.banklist.v2.view.activity.SettingBankCallback
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankAccountClickListener
 import com.tokopedia.settingbank.banklist.v2.view.adapter.BankAccountListAdapter
 import com.tokopedia.settingbank.banklist.v2.view.viewModel.*
 import com.tokopedia.settingbank.banklist.v2.view.viewState.*
 import com.tokopedia.settingbank.banklist.v2.view.widgets.AccountConfirmationBottomSheet
 import com.tokopedia.settingbank.banklist.v2.view.widgets.BankTNCBottomSheet
-import com.tokopedia.settingbank.banklist.v2.view.widgets.CloseableBottomSheetFragment
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.fragment_setting_bank_new.*
 import javax.inject.Inject
@@ -40,6 +43,8 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     @Inject
     lateinit var bankSettingAnalytics: BankSettingAnalytics
 
+    private var settingBankCallback: SettingBankCallback? = null
+
     private lateinit var tNCViewModel: SettingBankTNCViewModel
     private lateinit var settingBankViewModel: SettingBankViewModel
     private lateinit var makeAccountPrimaryViewModel: MakeAccountPrimaryViewModel
@@ -48,7 +53,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private lateinit var tncBottomSheet: BankTNCBottomSheet
 
-    private lateinit var bottomSheets: CloseableBottomSheetFragment
     private lateinit var confirmAccountBottomSheet: AccountConfirmationBottomSheet
 
     @Inject
@@ -100,6 +104,18 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is SettingBankCallback) {
+            settingBankCallback = context
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        settingBankCallback = null
+    }
+
     private fun initBankAccountRecyclerView() {
         account_list_rv.layoutManager = LinearLayoutManager(activity)
         account_list_rv.addItemDecoration(DividerItemDecoration(activity))
@@ -108,12 +124,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     }
 
     private fun openAddBankAccountPage() {
-        bottomSheets = CloseableBottomSheetFragment.newInstance(SelectBankFragment(),
-                true,
-                getString(R.string.sbank_choose_a_bank),
-                null,
-                CloseableBottomSheetFragment.STATE_FULL)
-        bottomSheets.showNow(activity!!.supportFragmentManager, "")
+        settingBankCallback?.onAddBankAccountClick()
     }
 
     fun loadUserBankAccountList() {
@@ -214,6 +225,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
             is OnDeleteAccountRequestSuccess -> {
                 showToasterOnUI(state.message)
                 loadUserBankAccountList()
+                activity?.setResult(Activity.RESULT_OK, Intent())
             }
             is OnDeleteAccountRequestFailed -> {
                 showError(state.throwable) { deleteBankAccount() }
@@ -232,6 +244,7 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
             is OnMakePrimaryRequestSuccess -> {
                 showToasterOnUI(state.message)
                 loadUserBankAccountList()
+                activity?.setResult(Activity.RESULT_OK, Intent())
             }
             is OnMakePrimaryRequestError -> {
                 showError(state.throwable) { makeAccountPrimary() }
@@ -369,10 +382,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun getMenuRes(): Int = R.menu.menu_info_add_bank_account
 
-    fun closeBottomSheet() {
-        if (::bottomSheets.isInitialized)
-            bottomSheets.dismiss()
-    }
 
     override fun onMakeAccountPrimary(bankAccount: BankAccount) {
         bankSettingAnalytics.eventMakeAccountPrimaryClick()
