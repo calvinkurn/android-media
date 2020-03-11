@@ -281,10 +281,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     private fun renderTripView() {
         if (flightSearchData.isRoundTrip) {
             switchFlightRoundTrip.isSelected = true
-            hideReturnDateView()
+            showReturnDateView()
         } else {
             switchFlightRoundTrip.isSelected = false
-            showReturnDateView()
+            hideReturnDateView()
         }
     }
 
