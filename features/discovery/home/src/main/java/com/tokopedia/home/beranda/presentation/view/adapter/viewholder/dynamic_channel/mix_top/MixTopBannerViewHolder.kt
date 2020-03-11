@@ -229,7 +229,7 @@ class MixTopBannerViewHolder(
             MixTopProductDataModel(it, channel, blankSpaceConfig, adapterPosition.toString())
         }.toMutableList()
 
-        if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
+        if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_MIX_TOP) {
             visitables.add(MixTopSeeMoreDataModel(
                     channel
             ))
