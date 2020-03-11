@@ -1,7 +1,6 @@
 package com.tokopedia.loginregister.login.view.presenter
 
 import android.content.Context
-import android.os.Build
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
@@ -9,7 +8,6 @@ import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
-import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
@@ -55,6 +53,7 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
+                                                   private var cryptographyUtils: Cryptography?,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
     : BaseDaggerPresenter<LoginEmailPhoneContract.View>(),
@@ -62,13 +61,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
 
-    private var cryptographyUtils: Cryptography? = null
-
-    init {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            cryptographyUtils = CryptographyUtils()
-        }
-    }
 
     fun attachView(view: LoginEmailPhoneContract.View, viewEmailPhone: LoginEmailPhoneContract.View) {
         super.attachView(view)
