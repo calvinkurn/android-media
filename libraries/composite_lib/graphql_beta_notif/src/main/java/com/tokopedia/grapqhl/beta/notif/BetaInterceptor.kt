@@ -55,7 +55,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                 mNotificationManager.cancel(NOTIFICATION_ID)
             }
         }
+
+        return response
     }
-    return response
-}
 }
