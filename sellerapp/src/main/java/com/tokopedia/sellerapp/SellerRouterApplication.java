@@ -939,4 +939,9 @@ public abstract class SellerRouterApplication extends MainApplication
     public void showAppFeedbackRatingDialog(FragmentManager fragmentManager, Context context, BottomSheets.BottomSheetDismissListener listener) {
 
     }
+
+    @Override
+    public void onNewIntent(Context context, Intent intent) {
+
+    }
 }

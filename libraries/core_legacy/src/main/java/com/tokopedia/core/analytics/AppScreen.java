@@ -46,6 +46,7 @@ public final class AppScreen {
     public static final String SCREEN_TX_SHOP_SHIPPING_STATUS = "Shipping status";
     public static final String SCREEN_TX_SHOP_TRANSACTION_SELLING_LIST = "Transaction list - Selling";
     public static final String SCREEN_FINISH_TX = "Finish Transaction";
+    public static final String SCREEN_SHOP_DETAIL_STATS = "Shop Info Detail Statistic";
     public static final String SCREEN_CONTACT_US = "Contact us page";
     public static final String SCREEN_RESOLUTION_CENTER = "Resolution center page";
     public static final String SCREEN_RESOLUTION_CENTER_ADD = "Add resolution center page";
