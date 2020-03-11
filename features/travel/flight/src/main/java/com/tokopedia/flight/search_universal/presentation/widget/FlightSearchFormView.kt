@@ -79,8 +79,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             setReturnDate(FlightDateUtil.stringToDate(
                     FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate))
         } else {
-            setReturnDate(generateDefaultReturnDate(departureDate
-                    ?: generateDefaultDepartureDate()))
+            setReturnDate(generateDefaultReturnDate(departureDate))
         }
     }
 
@@ -316,10 +315,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private fun renderTripView() {
         if (flightSearchData.isRoundTrip) {
-            switchFlightRoundTrip.isSelected = true
+            switchFlightRoundTrip.isChecked = true
             showReturnDateView()
         } else {
-            switchFlightRoundTrip.isSelected = false
+            switchFlightRoundTrip.isChecked = false
             hideReturnDateView()
         }
     }
