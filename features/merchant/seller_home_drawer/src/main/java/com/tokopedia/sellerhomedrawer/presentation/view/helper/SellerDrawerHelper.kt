@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
@@ -92,7 +93,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
             when(drawerItem.id) {
                 SellerHomeState.DrawerPosition.INDEX_HOME -> {
                     eventDrawerClick(EventLabel.SELLER_HOME)
-                    moveActivityApplink(ApplinkConstInternalMarketplace.SELLER_HOME)
+                    moveActivityApplink(ApplinkConstInternalSellerapp.SELLER_HOME)
                 }
                 SellerHomeState.DrawerPosition.SELLER_GM_SUBSCRIBE_EXTEND -> {
                     if (context.application is AbstractionRouter)
