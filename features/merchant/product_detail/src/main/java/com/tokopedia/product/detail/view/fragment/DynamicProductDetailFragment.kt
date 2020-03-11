@@ -45,6 +45,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -52,12 +53,16 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.model.TradeInParams
 import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
+import com.tokopedia.design.dialog.AccessRequestDialogFragment
+import com.tokopedia.design.dialog.IAccessRequestListener
+import com.tokopedia.design.dialog.ProductAccessRequestDialogFragment
 import com.tokopedia.design.drawable.CountDrawable
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -149,7 +154,7 @@ import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener {
+class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, DynamicProductDetailAdapterFactoryImpl>(), DynamicProductDetailListener, ProductVariantListener, IAccessRequestListener {
 
     companion object {
         fun newInstance(productId: String? = null,
@@ -208,8 +213,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private var userInputNotes = ""
     private var userInputQuantity = 0
     private var delegateTradeInTracking = false
-    private var trackerAttribution: String? = ""
-    private var trackerListName: String? = ""
+    private var trackerAttributionPdp: String? = ""
+    private var trackerListNamePdp: String? = ""
     private var warehouseId: String? = null
     private var isTopdasLoaded: Boolean = false
     private var shouldRenderSticky = true
@@ -230,6 +235,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private val errorBottomsheets: ErrorBottomsheets by lazy {
         ErrorBottomsheets()
     }
+    private var tradeinDialog: ProductAccessRequestDialogFragment? = null
     private val recommendationCarouselPositionSavedState = SparseIntArray()
 
     private val irisSessionId by lazy {
@@ -252,8 +258,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (::remoteConfig.isInitialized) {
             viewModel.enableCaching = remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_CACHE_PDP, true)
         }
-        viewModel.deviceId = TradeInUtils.getDeviceId(context)
-                ?: viewModel.userSessionInterface.deviceId
+        initTradein()
         initPerformanceMonitoring()
         initRecyclerView(view)
         initBtnAction()
@@ -290,8 +295,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             warehouseId = it.getString(ProductDetailConstant.ARG_WAREHOUSE_ID)
             productKey = it.getString(ProductDetailConstant.ARG_PRODUCT_KEY)
             shopDomain = it.getString(ProductDetailConstant.ARG_SHOP_DOMAIN)
-            trackerAttribution = it.getString(ProductDetailConstant.ARG_TRACKER_ATTRIBUTION)
-            trackerListName = it.getString(ProductDetailConstant.ARG_TRACKER_LIST_NAME)
+            trackerAttributionPdp = it.getString(ProductDetailConstant.ARG_TRACKER_ATTRIBUTION)
+            trackerListNamePdp = it.getString(ProductDetailConstant.ARG_TRACKER_LIST_NAME)
             affiliateString = it.getString(ProductDetailConstant.ARG_AFFILIATE_STRING)
             isAffiliate = it.getBoolean(ProductDetailConstant.ARG_FROM_AFFILIATE, false)
             deeplinkUrl = it.getString(ProductDetailConstant.ARG_DEEPLINK_URL, "")
@@ -895,7 +900,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     /**
      * ProductSnapshotViewHolder
      */
-
     override fun onSwipePicture(swipeDirection: String, position: Int, componentTrackDataModel: ComponentTrackDataModel?) {
         DynamicProductDetailTracking.Click.eventProductImageOnSwipe(viewModel.getDynamicProductInfoP1, swipeDirection, position, componentTrackDataModel
                 ?: ComponentTrackDataModel())
@@ -919,6 +923,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     override fun txtTradeinClicked(componentTrackDataModel: ComponentTrackDataModel) {
         DynamicProductDetailTracking.Click.eventClickTradeInRibbon(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         scrollToPosition(dynamicAdapter.getTradeinPosition(pdpHashMapUtil?.productTradeinMap))
+    }
+
+    override fun clickAccept() {
+    }
+
+    override fun clickDeny() {
     }
 
     override fun getProductFragmentManager(): FragmentManager {
@@ -1067,6 +1077,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeRecommendationProduct()
         observeImageVariantPartialyChanged()
         observeAddToCart()
+        observeInitialVariantData()
+    }
+
+    private fun observeInitialVariantData() {
+        viewModel.initialVariantData.observe(viewLifecycleOwner, Observer {
+            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
+            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel)
+        })
     }
 
     private fun observeAddToCart() {
@@ -1093,7 +1111,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                     startActivity(intent)
                                 }
                             }
-
                         }
                         ProductDetailConstant.ATC_BUTTON -> {
                             showAddToCartDoneBottomSheet("")
@@ -1388,7 +1405,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun onTradeinClicked(componentTrackDataModel: ComponentTrackDataModel) {
-        goToNormalCheckout(TRADEIN_BUY)
+//        goToNormalCheckout(TRADEIN_BUY)
+        tradeinDialog?.show(childFragmentManager, "ACCESS REQUEST")
         if (viewModel.tradeInParams.usedPrice > 0)
             DynamicProductDetailTracking.Click.trackTradeinAfterDiagnotics(viewModel.getDynamicProductInfoP1, componentTrackDataModel)
         else
@@ -1454,10 +1472,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             dynamicAdapter.clearElement(pdpHashMapUtil?.productNewVariantDataModel)
             return
         }
-
         pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant = VariantCommonMapper.mapVariantIdentifierToHashMap(data)
-        val variantData = VariantCommonMapper.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
-        pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
+        viewModel.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
     }
 
     private fun showAddToCartDoneBottomSheet(successMessage: String) {
@@ -1822,7 +1838,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun trackProductView(isElligible: Boolean) {
         viewModel.getDynamicProductInfoP1?.let { productInfo ->
             viewModel.shopInfo?.let { shopInfo ->
-                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListName, productInfo, shopInfo, trackerAttribution,
+                DynamicProductDetailTracking.Impression.eventEnhanceEcommerceProductDetail(irisSessionId, trackerListNamePdp, productInfo, shopInfo, trackerAttributionPdp,
                         isElligible, viewModel.tradeInParams.usedPrice > 0, viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment, deeplinkUrl)
                 return
             }
@@ -1880,8 +1896,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, userInputQuantity)
                     putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, it.basic.productID)
                     putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
-                    putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttribution)
-                    putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)
+                    putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttributionPdp)
+                    putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListNamePdp)
                     putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopInfo?.goldOS?.shopTypeString)
                     putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopInfo?.shopCore?.name)
                     putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
@@ -1912,8 +1928,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 val intent = RouteManager.getIntent(it, expressCheckoutUriString)
                 intent?.run {
                     putExtra(Constant.EXTRA_ATC_REQUEST, atcRequestParam)
-                    putExtra(Constant.TRACKER_ATTRIBUTION, trackerAttribution)
-                    putExtra(Constant.TRACKER_LIST_NAME, trackerListName)
+                    putExtra(Constant.TRACKER_ATTRIBUTION, trackerAttributionPdp)
+                    putExtra(Constant.TRACKER_LIST_NAME, trackerListNamePdp)
                     startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS)
                     it.overridePendingTransition(R.anim.pull_up, 0)
                 }
@@ -2172,27 +2188,27 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             viewModel.getDynamicProductInfoP1?.let { data ->
                 showProgressDialog()
                 if (isOcs) {
-                    val addToCartOcsRequestParams = AddToCartOcsRequestParams()
-                    addToCartOcsRequestParams.productId = data.basic.productID.toLongOrNull() ?: 0
-                    addToCartOcsRequestParams.shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
-                    addToCartOcsRequestParams.quantity = 1
-                    addToCartOcsRequestParams.notes = ""
-                    addToCartOcsRequestParams.warehouseId = selectedWarehouseId
-                    addToCartOcsRequestParams.trackerAttribution = trackerAttribution ?: ""
-                    addToCartOcsRequestParams.trackerListName = trackerListName ?: ""
-                    addToCartOcsRequestParams.isTradeIn = data.data.isTradeIn
-
+                    val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
+                        productId = data.basic.productID.toLongOrNull() ?: 0
+                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        quantity = 1
+                        notes = ""
+                        warehouseId = selectedWarehouseId
+                        trackerAttribution = trackerAttributionPdp ?: ""
+                        trackerListName = trackerListNamePdp ?: ""
+                        isTradeIn = data.data.isTradeIn
+                    }
                     viewModel.addToCart(addToCartOcsRequestParams)
                 } else {
-                    val addToCartRequestParams = AddToCartRequestParams()
-                    addToCartRequestParams.productId = data.basic.productID.toLongOrNull() ?: 0
-                    addToCartRequestParams.shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
-                    addToCartRequestParams.quantity = 1
-                    addToCartRequestParams.notes = ""
-                    addToCartRequestParams.attribution = trackerAttribution ?: ""
-                    addToCartRequestParams.listTracker = trackerListName ?: ""
-                    addToCartRequestParams.warehouseId = selectedWarehouseId
-
+                    val addToCartRequestParams = AddToCartRequestParams().apply {
+                        productId = data.basic.productID.toLongOrNull() ?: 0
+                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        quantity = 1
+                        notes = ""
+                        attribution = trackerAttributionPdp ?: ""
+                        listTracker = trackerListNamePdp ?: ""
+                        warehouseId = selectedWarehouseId
+                    }
                     viewModel.addToCart(addToCartRequestParams)
                 }
             }
@@ -2220,7 +2236,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             )
 
             val webViewUrl = String.format(
-                    "%s?url=%s",
+                    "%s?titlebar=false&url=%s",
                     ApplinkConst.WEBVIEW,
                     urlApplyLeasingWithProductId
             )
@@ -2487,5 +2503,33 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     private fun hasTopAds() =
-            topAdsGetProductManage.data.adId.isNotEmpty() && !topAdsGetProductManage.data.adId.equals("0")
+            topAdsGetProductManage.data.adId.isNotEmpty() && topAdsGetProductManage.data.adId != "0"
+
+    private fun setupTradeinDialog(): ProductAccessRequestDialogFragment {
+        val accessDialog = ProductAccessRequestDialogFragment()
+        accessDialog.setBodyText(getString(com.tokopedia.common_tradein.R.string.tradein_text_permission_description))
+        accessDialog.setTitle(getString(com.tokopedia.common_tradein.R.string.tradein_text_request_access))
+        accessDialog.setNegativeButton("")
+        accessDialog.setListener(this)
+        return accessDialog
+    }
+
+    private fun initTradein() {
+        viewModel.deviceId = TradeInUtils.getDeviceId(context)
+                ?: viewModel.userSessionInterface.deviceId
+        tradeinDialog = setupTradeinDialog()
+    }
+
+    private fun goToHargaFinal() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE)
+        val tradeinParam = viewModel.tradeInParams
+        viewModel.getDynamicProductInfoP1?.let {
+            tradeinParam.setPrice(it.data.price.value.toInt())
+            tradeinParam.productId = it.basic.getProductId()
+            tradeinParam.productName = it.data.name
+        }
+
+        intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
+        startActivityForResult(intent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE)
+    }
 }

@@ -52,8 +52,10 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.model.ProductVariantCommon
+import com.tokopedia.variant_common.model.VariantCategory
 import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
 import com.tokopedia.variant_common.use_case.GetNearestWarehouseUseCase
+import com.tokopedia.variant_common.util.VariantCommonMapper
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -133,6 +135,10 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     private val _addToCartDataModel = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartDataModel: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartDataModel
+
+    private val _initialVariantData = MutableLiveData<MutableList<VariantCategory>?>()
+    val initialVariantData: LiveData<MutableList<VariantCategory>?>
+        get() = _initialVariantData
 
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
@@ -247,6 +253,14 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             }
         }) {
             _addToCartDataModel.value = Fail(it)
+        }
+    }
+
+    fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
+        launch {
+            withContext(dispatcher.io()) {
+                _initialVariantData.postValue(VariantCommonMapper.processVariant(data, mapOfSelectedVariant))
+            }
         }
     }
 

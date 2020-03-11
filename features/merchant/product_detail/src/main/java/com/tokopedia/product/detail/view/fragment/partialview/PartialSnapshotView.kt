@@ -90,7 +90,7 @@ class PartialSnapshotView(private val view: View,
             label_prescription.showWithCondition(basic.needPrescription)
             divider.visible()
 
-            if (product.data.variant.isVariant) {
+            if (product.data.variant.isVariant && campaign.activeAndHasId) {
                 text_stock_available.gone()
             }
         }
