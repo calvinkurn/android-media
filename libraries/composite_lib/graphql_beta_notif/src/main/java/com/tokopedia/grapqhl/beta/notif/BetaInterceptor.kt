@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.tokopedia.graphql.beta.notif.R
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -48,6 +49,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                             NotificationCompat.Builder(context, CHANNEL_ID)
                                     .setSmallIcon(R.drawable.beta_icon)
                                     .setCustomContentView(remoteView)
+                                    .setColor(ContextCompat.getColor(context, android.R.color.holo_red_dark))
 
                     mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
                 }

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:background="@android:color/holo_red_dark"
+    android:layout_height="match_parent"
     >
     <TextView
         android:layout_centerInParent="true"
@@ -10,7 +9,7 @@
         android:gravity="center"
         style="@style/TextAppearance.Compat.Notification"
         android:textSize="25dp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/holo_red_dark"
         android:textStyle="bold"
         android:textAlignment="center"
         android:id="@+id/mynotifyexpnd"
