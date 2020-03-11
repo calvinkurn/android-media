@@ -3,7 +3,9 @@ package com.tokopedia.exploreCategory
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.exploreCategory.model.ECDynamicHomeIconData.DynamicHomeIcon.CategoryGroup
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import java.util.*
+import kotlin.collections.ArrayList
 
 class ECAnalytics {
     companion object {
@@ -109,9 +111,8 @@ class ECAnalytics {
 
         //4
         @JvmStatic
-        fun trackEventImpressionIcon(categoryGroup: CategoryGroup?) {
+        fun trackEventImpressionIcon(categoryGroup: CategoryGroup?, trackingQueue: TrackingQueue?) {
             if (categoryGroup?.categoryRows?.isNullOrEmpty() == false) {
-                val tracker = TrackApp.getInstance().gtm
                 val list = ArrayList<Map<String, Any>>()
                 for (icon in categoryGroup.categoryRows) {
                     val map = HashMap<String, Any>()
@@ -139,7 +140,7 @@ class ECAnalytics {
                         KEY_EVENT_ACTION, "impression - ${categoryGroup.title?.toLowerCase(Locale.getDefault())}",
                         KEY_EVENT_LABEL, categoryGroup.id,
                         KEY_ECOMMERCE, ecommerce)
-                tracker.sendEnhanceEcommerceEvent(map)
+                trackingQueue?.putEETracking(map as HashMap<String, Any>)
             }
         }
 

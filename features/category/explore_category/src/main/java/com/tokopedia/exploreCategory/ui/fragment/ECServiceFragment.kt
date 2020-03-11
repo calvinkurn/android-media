@@ -23,6 +23,7 @@ import com.tokopedia.exploreCategory.model.ECDynamicHomeIconData
 import com.tokopedia.exploreCategory.ui.viewholder.ECAccordionViewHolder
 import com.tokopedia.exploreCategory.ui.viewholder.ECImageIconViewHolder
 import com.tokopedia.exploreCategory.viewmodel.ECServiceViewModel
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.ec_service_fragment_layout.*
 import java.util.*
@@ -41,6 +42,9 @@ class ECServiceFragment : BaseViewModelFragment<ECServiceViewModel>(), ECImageIc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        activity?.let {
+            ecServiceViewModel.trackingQueue = TrackingQueue(it)
+        }
         setObservers()
         handleBundle()
     }

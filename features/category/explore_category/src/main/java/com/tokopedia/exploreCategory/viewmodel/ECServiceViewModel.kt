@@ -7,11 +7,13 @@ import com.tokopedia.exploreCategory.model.ECDynamicHomeIconData.DynamicHomeIcon
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECAccordionVHViewModel
 import com.tokopedia.exploreCategory.usecase.ECDynamicHomeIconUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 class ECServiceViewModel @Inject constructor(private val useCase: ECDynamicHomeIconUseCase) : BaseECViewModel() {
 
+    var trackingQueue: TrackingQueue? = null
     var defaultCategory: Int = 0
     val categories = MutableLiveData<ArrayList<Visitable<*>>>()
     val notifyAdapter = MutableLiveData<Int>()
@@ -41,7 +43,7 @@ class ECServiceViewModel @Inject constructor(private val useCase: ECDynamicHomeI
             }
             categoryGroup[defaultCategory]?.let {
                 ECAnalytics.trackEventImpressionFeature(categoryGroup, it.title, it.id)
-                ECAnalytics.trackEventImpressionIcon(categoryGroup[defaultCategory])
+                ECAnalytics.trackEventImpressionIcon(it, trackingQueue)
             }
             for (item in categoryGroup) {
                 visitable.add(ECAccordionVHViewModel(item))
@@ -53,7 +55,7 @@ class ECServiceViewModel @Inject constructor(private val useCase: ECDynamicHomeI
     fun setNewOpenCategory(categoryIndex: Int) {
         val newCurrentCG = (visitable[categoryIndex] as ECAccordionVHViewModel).categoryGroup
         if (newCurrentCG?.isOpen == false)
-            ECAnalytics.trackEventImpressionIcon(newCurrentCG)
+            ECAnalytics.trackEventImpressionIcon(newCurrentCG, trackingQueue)
 
         notifyAdapter.value = currentOpenCategory
         if (categoryIndex != currentOpenCategory) {
@@ -74,6 +76,11 @@ class ECServiceViewModel @Inject constructor(private val useCase: ECDynamicHomeI
                 categoryId?.toString(),
                 categoryRow,
                 position)
+    }
+
+    override fun doOnPause() {
+        super.doOnPause()
+        trackingQueue?.sendAll()
     }
 
 }
