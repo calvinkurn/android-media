@@ -3,17 +3,14 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.net.Uri
-import android.net.http.SslError
 import android.os.Build
 import android.os.Bundle
-import android.os.Message
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
@@ -90,7 +87,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
 //            WebView.setWebContentsDebuggingEnabled(true)
 //        }
 //        web_view.loadUrl("tokopedia://dummy/payment/listing?callback_url=http%3A%2F%2Flocalhost%3A8080%2Fdummy%2Fpayment%2Flisting&customer_email=davin.kurniawan%40tokopedia.com&customer_msisdn=&customer_name=Davin+Kurniawan&description=Manual+Transfer+%28qweqewqe+-+123123123%29&express_checkout_param=%7B%22account_name%22%3A%22qweqewqe%22%2C%22account_number%22%3A%22123123123%22%2C%22bank_id%22%3A%221%22%7D&express_checkout_url=http%3A%2F%2Flocalhost%3A8080%2Fv2%2Fapi%2Fpayment%2FMANUALTRANSFER&gateway_code=MANUALTRANSFER&image=https%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Ficon-bca.png&merchant_code=tokopediatest&message=Success&profile_code=EXPRESS_SAVE&signature=610d56a2c6d12cc17250145b05aeb445b6c806df&success=true&user_id=34437")
-        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${UserSession(context).userId}&customer_name=${UserSession(context).name.trim()}&customer_email=${UserSession(context).email}&callback_url=https%3A%2F%2Fpay.tokopedia.com%2Fv2%2Fpayment%2Fregister%2Flisting"
+//        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${UserSession(context).userId}&customer_name=${UserSession(context).name.trim()}&customer_email=${UserSession(context).email}&callback_url=https%3A%2F%2Fpay.tokopedia.com%2Fv2%2Fpayment%2Fregister%2Flisting"
         val userSession = UserSession(context)
         var addressId = ""
         val parent = activity
