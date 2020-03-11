@@ -12,6 +12,12 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
 
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/header_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_1"
+        app:layout_constraintTop_toBottomOf="@id/filter_search_header"/>
+
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/filter_category_search"
         android:layout_width="match_parent"
@@ -26,7 +32,7 @@
         android:visibility="gone"
         app:siv_search_hint="@string/filter_search_bar"
         app:siv_search_icon="@drawable/ic_search_bar"
-        app:layout_constraintTop_toBottomOf="@id/filter_search_header"/>
+        app:layout_constraintTop_toBottomOf="@id/header_divider"/>
 
     <ImageView
         android:id="@+id/filter_search_error_img"
