@@ -85,6 +85,7 @@ class VariantSheetView(
         rvVariantList.apply {
             layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
             adapter = variantAdapter
+            itemAnimator = null
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
