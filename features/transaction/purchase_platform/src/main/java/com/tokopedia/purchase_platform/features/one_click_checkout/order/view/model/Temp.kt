@@ -29,7 +29,8 @@ data class Shipment(
         val shipperProductId: Int? = null,
         val logisticPromoTickerMessage: String? = null,
         val logisticPromoViewModel: LogisticPromoUiModel? = null, // BBO ?
-        val shippingRecommendationData: ShippingRecommendationData? = null
+        val shippingRecommendationData: ShippingRecommendationData? = null,
+        val insuranceData: InsuranceData? = null
 )
 
 data class Payment(

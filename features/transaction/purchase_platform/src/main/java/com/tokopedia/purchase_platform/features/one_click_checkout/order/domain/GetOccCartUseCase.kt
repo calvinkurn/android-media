@@ -5,9 +5,11 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipProd
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Shop
+import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShopShipment
 import com.tokopedia.purchase_platform.features.express_checkout.data.constant.MAX_QUANTITY
-import com.tokopedia.purchase_platform.features.express_checkout.data.entity.response.atc.Message
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.usecase.coroutines.UseCase
@@ -26,9 +28,42 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             val cart = response.response.data.cartList[0]
             val orderProduct = generateOrderProduct(cart.product)
             orderCart.product = orderProduct
-            orderCart.shop = generateOrderShop(cart.shop)
+            val orderShop = generateOrderShop(cart.shop)
+            generateShopShipment(orderShop, cart.shopShipments)
+            orderShop.cartResponse = cart
+            orderCart.shop = orderShop
         }
         return OrderData(orderCart, response.response.data.profileResponse)
+    }
+
+    private fun generateShopShipment(orderShop: OrderShop, shopShipments: List<ShopShipment>) {
+        if (shopShipments.isNotEmpty()) {
+            val shopShipmentListResult: MutableList<com.tokopedia.logisticcart.shipping.model.ShopShipment> = java.util.ArrayList()
+            for (shopShipment in shopShipments) {
+                val shopShipmentResult = com.tokopedia.logisticcart.shipping.model.ShopShipment()
+                shopShipmentResult.isDropshipEnabled = shopShipment.isDropshipEnabled == 1
+                shopShipmentResult.shipCode = shopShipment.shipCode
+                shopShipmentResult.shipId = shopShipment.shipId
+                shopShipmentResult.shipLogo = shopShipment.shipLogo
+                shopShipmentResult.shipName = shopShipment.shipName
+                if (!isNullOrEmpty<ShipProd>(shopShipment.shipProds)) {
+                    val shipProdListResult: MutableList<com.tokopedia.logisticcart.shipping.model.ShipProd> = java.util.ArrayList()
+                    for (shipProd in shopShipment.shipProds) {
+                        val shipProdResult = com.tokopedia.logisticcart.shipping.model.ShipProd()
+                        shipProdResult.additionalFee = shipProd.additionalFee
+                        shipProdResult.minimumWeight = shipProd.minimumWeight
+                        shipProdResult.shipGroupId = shipProd.shipGroupId
+                        shipProdResult.shipGroupName = shipProd.shipGroupName
+                        shipProdResult.shipProdId = shipProd.shipProdId
+                        shipProdResult.shipProdName = shipProd.shipProdName
+                        shipProdListResult.add(shipProdResult)
+                    }
+                    shopShipmentResult.shipProds = shipProdListResult
+                }
+                shopShipmentListResult.add(shopShipmentResult)
+            }
+            orderShop.shopShipment = shopShipmentListResult
+        }
     }
 
     private fun generateOrderShop(shop: Shop): OrderShop {
@@ -61,12 +96,16 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         val orderProduct = OrderProduct()
         orderProduct.apply {
             parentId = product.parentId
+            productId = product.productId
             productName = product.productName
             productPrice = product.productPrice
             productImageUrl = product.productImage.imageSrc
             maxOrderQuantity = product.productMaxOrder
             minOrderQuantity = product.productMinOrder
             originalPrice = product.productOriginalPrice
+            weight = product.productWeight
+            isFreeOngkir = product.freeShipping.eligible
+            freeOngkirImg = product.freeShipping.badgeUrl
         }
         mapVariant(orderProduct, product)
         mapQuantity(orderProduct, product)

@@ -1,5 +1,8 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model
 
+import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.CartDataResponse
+
 
 data class OrderCart(
         var product: OrderProduct = OrderProduct(),
@@ -27,11 +30,14 @@ data class OrderShop(
         var addressStreet: String = "",
         var provinceId: Int = 0,
         var cityId: Int = 0,
-        var cityName: String = ""
+        var cityName: String = "",
+        var shopShipment: List<ShopShipment> = emptyList(),
+        var cartResponse: CartDataResponse = CartDataResponse()
 )
 
 data class OrderProduct(
         var parentId: Int = 0,
+        var productId: Int = 0,
         var productName: String = "",
         var productPrice: Int = 0,
         var productImageUrl: String = "",
@@ -43,7 +49,9 @@ data class OrderProduct(
         var discountedPercentage: Float = 0f,
         var isFreeOngkir: Boolean = false,
         var freeOngkirImg: String = "",
+        var weight: Int = 0,
         var quantity: QuantityUiModel? = null,
+        var notes: String = "",
         var typeVariantList: ArrayList<VariantUiModel>? = null)
 
 data class OrderProductChild(

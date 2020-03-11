@@ -50,6 +50,9 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
         val shipmentModel = preference.preference.shipment
         view.tv_shipping_name.text = shipmentModel.serviceName
         view.tv_shipping_duration.text = shipmentModel.serviceDuration
+        view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+        view.ticker_shipping_promo.gone()
+        view.tv_shipping_price.gone()
 
         val paymentModel = preference.preference.payment
         ImageHandler.loadImageFitCenter(view.context, view.iv_payment, paymentModel.image)
