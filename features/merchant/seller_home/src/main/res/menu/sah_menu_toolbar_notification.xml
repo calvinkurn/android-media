@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_sah_notification"
+        android:icon="@drawable/ic_sah_notif_actionbar_group"
+        android:title="@string/sah_notification"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_sah_add_product"
+        android:icon="@drawable/ic_sah_plus"
+        android:title="@string/sah_add_product"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_sah_chat_settings"
+        android:icon="@drawable/ic_sah_settings"
+        android:title="@string/sah_chat_settings"
+        app:showAsAction="ifRoom" />
+</menu>

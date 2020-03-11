@@ -144,7 +144,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         val settingList = mutableListOf(
                 SettingTitleUiModel(TINGKATKAN_PENJUALAN),
                 MenuItemUiModel(STATISTIK_TOKO, R.drawable.ic_statistic_setting, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
-                MenuItemUiModel(IKLAN_DAN_PROMOSI_TOKO, R.drawable.ic_ads_promotion, null /* TODO("Masukkin applink lw di sini cup, ganti nullnya. Utk saat ini hanya support applink") */),
+                MenuItemUiModel(IKLAN_DAN_PROMOSI_TOKO, R.drawable.ic_ads_promotion, ApplinkConstInternalMarketplace.CENTRALIZED_PROMO),
                 SettingTitleUiModel(KABAR_PEMBELI),
                 MenuItemUiModel(ULASAN, R.drawable.ic_star_setting, ApplinkConst.REPUTATION),
                 MenuItemUiModel(DISKUSI, R.drawable.ic_setting_discussion, ApplinkConst.TALK),

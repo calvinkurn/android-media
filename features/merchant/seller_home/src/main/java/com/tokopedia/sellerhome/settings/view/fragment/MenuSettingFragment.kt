@@ -189,14 +189,14 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         context?.let { dialogBuilder = AlertDialog.Builder(it) }
         dialogBuilder?.apply {
             setIcon(logoutIconDrawable)
-            setTitle(context.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_logout_title))
-            setMessage(context.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_logout_confirm))
-            setPositiveButton(context.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_logout_button)) { dialogInterface, _ ->
+            setTitle(context.getString(R.string.seller_home_logout_title))
+            setMessage(context.getString(R.string.seller_home_logout_confirm))
+            setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
                 showProgressDialog()
                 dialogInterface.dismiss()
                 RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
             }
-            setNegativeButton(context.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_cancel)) {
+            setNegativeButton(context.getString(R.string.seller_home_cancel)) {
                 dialogInterface, _ -> dialogInterface.dismiss()
             }
             show()
@@ -206,7 +206,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun showProgressDialog() {
         val progressDialog = ProgressDialog(context)
         progressDialog.apply {
-            setMessage(resources.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_loading))
+            setMessage(resources.getString(R.string.seller_home_loading))
             setTitle("")
             setCancelable(false)
             show()
