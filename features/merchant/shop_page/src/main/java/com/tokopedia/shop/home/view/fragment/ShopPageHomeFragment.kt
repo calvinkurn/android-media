@@ -18,6 +18,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
@@ -40,6 +41,7 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.wishlist.common.listener.WishListActionListener
 import javax.inject.Inject
 
 class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeFactory>(),
@@ -137,7 +139,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             isOfficialStore = it.getBoolean(KEY_IS_OFFICIAL_STORE, false)
             isGoldMerchant = it.getBoolean(KEY_IS_GOLD_MERCHANT, false)
             shopName = it.getString(KEY_SHOP_NAME, "")
-            shopAttribution = it.getString(KEY_SHOP_ATTRIBUTION,  "")
+            shopAttribution = it.getString(KEY_SHOP_ATTRIBUTION, "")
         }
     }
 
@@ -162,35 +164,32 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             }
         })
-
-        viewModel.addToCartSubmitData.observe(this, Observer {
-            when (it) {
-                is Success -> {
-                    onSuccessAddToCart(it.data)
-                }
-            }
-        })
     }
 
-    private fun onSuccessAddToCart(data: ShopHomeAddToCartSuccessDataModel) {
+    private fun onSuccessAddToCart(
+            dataModelAtc: DataModel,
+            shopHomeProductViewModel: ShopHomeProductViewModel?,
+            parentPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
+    ) {
         view?.let { view ->
             Toaster.make(view, "Success", Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         }
         shopPageHomeTracking.addToCart(
-            isOwner,
-                data.dataModel.cartId.toString(),
+                isOwner,
+                dataModelAtc.cartId.toString(),
                 shopAttribution,
                 isLogin,
                 shopPageHomeLayoutUiModel?.layoutId ?: "",
-                data.shopHomeProductViewModel.name ?: "",
-                data.shopHomeProductViewModel.id ?: "",
-                data.shopHomeProductViewModel.displayedPrice ?: "",
-                data.dataModel.quantity,
+                shopHomeProductViewModel?.name ?: "",
+                shopHomeProductViewModel?.id ?: "",
+                shopHomeProductViewModel?.displayedPrice ?: "",
+                dataModelAtc.quantity,
                 shopName,
-                data.parentPosition + 1,
-                data.shopHomeCarousellProductUiModel.widgetId,
-                data.shopHomeCarousellProductUiModel.name,
-                data.shopHomeCarousellProductUiModel.header.isATC,
+                parentPosition + 1,
+                shopHomeCarousellProductUiModel?.widgetId ?: "",
+                shopHomeCarousellProductUiModel?.name ?: "",
+                shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
                 customDimensionShopPage
         )
     }
@@ -440,12 +439,45 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
-    override fun onCarouselProductItemWishlist(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+    override fun onCarouselProductItemWishlist(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductViewModel?
+    ) {
         if (isLogin) {
-
+            viewModel.clearGetShopProductUseCase()
+            if (shopHomeProductViewModel?.isWishList == true) {
+                viewModel.removeWishList(
+                        shopHomeProductViewModel.id ?: "",
+                        ::onSuccessRemoveWishList,
+                        ::onErrorRemoveWishList
+                )
+            } else {
+                viewModel.addWishList(
+                        shopHomeProductViewModel?.id ?: "",
+                        ::onSuccessAddWishlist,
+                        ::onErrorAddWishlist)
+            }
         } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            redirectToLoginPage()
         }
+    }
+
+    private fun onSuccessRemoveWishList() {
+
+    }
+
+    private fun onErrorRemoveWishList() {
+
+    }
+
+    private fun onSuccessAddWishlist() {
+
+    }
+
+    private fun onErrorAddWishlist() {
+
     }
 
     override fun onCarouselProductItemClickAddToCart(
@@ -455,14 +487,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
         if (isLogin) {
-            viewModel.addProductToCart(
-                    parentPosition,
-                    shopHomeCarousellProductUiModel ?: ShopHomeCarousellProductUiModel(),
-                    shopHomeProductViewModel ?: ShopHomeProductViewModel(),
-                    shopId
-            )
+            viewModel.addProductToCart(shopHomeProductViewModel?.id ?: "", shopId) {
+                onSuccessAddToCart(
+                        it,
+                        shopHomeProductViewModel,
+                        parentPosition,
+                        shopHomeCarousellProductUiModel
+                )
+            }
         } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
+            redirectToLoginPage()
         }
     }
 
@@ -471,5 +505,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_DETAIL, productId)
             startActivity(intent)
         }
+    }
+
+    private fun redirectToLoginPage() {
+        RouteManager.route(context, ApplinkConst.LOGIN)
     }
 }

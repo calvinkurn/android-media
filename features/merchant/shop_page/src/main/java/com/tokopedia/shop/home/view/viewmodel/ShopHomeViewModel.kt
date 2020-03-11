@@ -21,16 +21,20 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.Dispatchers
+import com.tokopedia.wishlist.common.listener.WishListActionListener
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ShopHomeViewModel @Inject constructor(
-        userSession: UserSessionInterface,
+        private val userSession: UserSessionInterface,
         private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase,
         private val getShopProductUseCase: GqlGetShopProductUseCase,
         private val dispatcherProvider: CoroutineDispatcherProvider,
-        private val addToCartUseCase: AddToCartUseCase
+        private val addToCartUseCase: AddToCartUseCase,
+        private val addWishListUseCase: AddWishListUseCase,
+        private val removeWishlistUseCase: RemoveWishListUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
@@ -45,12 +49,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopHomeLayoutData
     private val _shopHomeLayoutData = MutableLiveData<Result<ShopPageHomeLayoutUiModel>>()
 
-    val addToCartSubmitData: LiveData<Result<ShopHomeAddToCartSuccessDataModel>>
-        get() = _addToCartSubmitData
-    private val _addToCartSubmitData = MutableLiveData<Result<ShopHomeAddToCartSuccessDataModel>>()
-
     val userSessionShopId = userSession.shopId ?: ""
     val isLogin = userSession.isLoggedIn
+    val userId: String
+        get() = userSession.userId
 
     fun getShopPageHomeData(shopId: String) {
         launchCatchError(block = {
@@ -126,27 +128,59 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     fun addProductToCart(
-            parentPosition: Int,
-            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel,
-            shopHomeProductViewModel: ShopHomeProductViewModel,
-            shopId: String
+            productId: String,
+            shopId: String,
+            onSuccessAddToCart: (dataModelAtc: DataModel) -> Unit
     ) {
         launchCatchError(block = {
             val addToCartSubmitData = withContext(dispatcherProvider.io()) {
-                submitAddProductToCart(shopId, shopHomeProductViewModel.id ?: "")
+                submitAddProductToCart(shopId, productId)
             }
             if (addToCartSubmitData.status == STATUS_OK)
-                _addToCartSubmitData.postValue(Success(ShopHomeAddToCartSuccessDataModel(
-                        parentPosition,
-                        shopHomeCarousellProductUiModel,
-                        shopHomeProductViewModel,
-                        addToCartSubmitData.data
-                )))
+                onSuccessAddToCart(addToCartSubmitData.data)
         }) {}
     }
 
     private fun submitAddProductToCart(shopId: String, productId: String): AddToCartDataModel {
         val requestParams = AddToCartUseCase.getMinimumParams(productId, shopId)
         return addToCartUseCase.createObservable(requestParams).toBlocking().first()
+    }
+
+    fun clearGetShopProductUseCase() {
+        getShopProductUseCase.clearCache()
+    }
+
+    fun removeWishList(productId: String, onSuccessRemoveWishList: () -> Unit, onErrorRemoveWishList: () -> Unit) {
+        removeWishlistUseCase.createObservable(productId, userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {}
+
+            override fun onSuccessAddWishlist(productId: String?) {}
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
+                onErrorRemoveWishList.invoke()
+            }
+
+            override fun onSuccessRemoveWishlist(productId: String?) {
+                onSuccessRemoveWishList.invoke()
+            }
+
+        })
+    }
+
+    fun addWishList(productId: String, onSuccessAddWishList: () -> Unit, onErrorAddWishList: () -> Unit) {
+        addWishListUseCase.createObservable(productId, userId, object : WishListActionListener {
+            override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
+                onErrorAddWishList.invoke()
+            }
+
+            override fun onSuccessAddWishlist(productId: String?) {
+                onSuccessAddWishList.invoke()
+            }
+
+            override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
+
+            override fun onSuccessRemoveWishlist(productId: String?) {}
+
+        })
     }
 }
