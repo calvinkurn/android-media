@@ -99,6 +99,30 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
         )
     }
 
+    override fun bind(visitable: Visitable<*>, payloads: MutableList<Any>) {
+        if (payloads.getOrNull(0) !is Boolean) return
+
+        val shopProductViewModelList = getShopProductViewModelListFromVisitable(visitable)
+
+        recyclerView?.setCarouselProductCardListeners(
+                carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
+                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopProductViewModelList.getOrNull(carouselProductCardPosition) ?: return
+
+                        shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
+                    }
+                }
+        )
+    }
+
+    private fun getShopProductViewModelListFromVisitable(visitable: Visitable<*>): List<ShopProductViewModel> {
+        return when (visitable) {
+            is ShopProductFeaturedViewModel -> visitable.shopProductFeaturedViewModelList
+            is EtalaseHighlightCarouselViewModel -> visitable.shopProductViewModelList
+            else -> listOf()
+        }
+    }
+
     private fun findViews(view: View) {
         tvTitle = view.findViewById(R.id.tv_title)
         ivBadge = view.findViewById(R.id.image_view_etalase_badge)

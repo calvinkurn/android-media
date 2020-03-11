@@ -2,7 +2,7 @@ package com.tokopedia.carouselproductcard
 
 import androidx.recyclerview.widget.RecyclerView
 
-internal interface CarouselProductCardAdapterInterface {
+internal interface CarouselProductCardAdapter {
 
     fun asRecyclerViewAdapter(): RecyclerView.Adapter<*>
 

@@ -182,8 +182,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating1"
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/dp_11"
+            android:layout_height="@dimen/dp_11"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
@@ -191,8 +191,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating2"
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/dp_11"
+            android:layout_height="@dimen/dp_11"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
@@ -200,8 +200,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating3"
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/dp_11"
+            android:layout_height="@dimen/dp_11"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
@@ -209,8 +209,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating4"
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/dp_11"
+            android:layout_height="@dimen/dp_11"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"
@@ -218,8 +218,8 @@
 
         <ImageView
             android:id="@+id/imageViewRating5"
-            android:layout_width="@dimen/dp_12"
-            android:layout_height="@dimen/dp_12"
+            android:layout_width="@dimen/dp_11"
+            android:layout_height="@dimen/dp_11"
             android:adjustViewBounds="true"
             android:gravity="center"
             android:scaleType="centerCrop"

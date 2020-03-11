@@ -99,4 +99,12 @@ class ShopProductViewHolder(
             shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
         }
     }
+
+    override fun bind(shopProductViewModel: ShopProductViewModel, payloads: MutableList<Any>) {
+        if (payloads.getOrNull(0) !is Boolean) return
+
+        productCard.setThreeDotsOnClickListener {
+            shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
+        }
+    }
 }
