@@ -14,7 +14,6 @@ abstract class BasePartialView<T : BaseUiModel>(
 
     abstract fun bindSuccessData(data: T)
     abstract fun renderLoading()
-    abstract fun getSuccessView(): View?
 
     @CallSuper
     open fun renderError(cause: Throwable) {

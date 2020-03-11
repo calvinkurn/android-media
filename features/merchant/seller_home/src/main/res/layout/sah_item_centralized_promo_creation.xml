@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="@dimen/sah_dimen_150dp"
-        android:layout_marginTop="@dimen/layout_lvl3"
+        android:layout_marginTop="@dimen/layout_lvl2"
         app:cardCornerRadius="@dimen/layout_lvl1"
         app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/layout_lvl2"
@@ -91,6 +91,7 @@
         android:layout_height="48dp"
         app:cardCornerRadius="@dimen/layout_lvl2"
         app:cardElevation="@dimen/layout_lvl1"
+        android:layout_marginTop="@dimen/layout_lvl1"
         app:contentPadding="@dimen/layout_lvl1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

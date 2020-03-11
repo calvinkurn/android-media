@@ -9,7 +9,7 @@ import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapter
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.BaseUiListModel
 
-abstract class BasePartialListView<T : BaseUiListModel, F : BaseAdapterTypeFactory, V : Visitable<F>>(
+abstract class BasePartialListView<T : BaseUiListModel<V>, F : BaseAdapterTypeFactory, V : Visitable<F>>(
         view: View,
         typeFactory: F,
         coachMarkListener: CoachMarkListener,

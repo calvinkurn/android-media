@@ -18,7 +18,7 @@
 
             <include layout="@layout/sah_partial_centralized_promo_on_going_promo" />
 
-            <include layout="@layout/sah_partial_centralized_promo_recommendation" />
+            <include layout="@layout/sah_partial_centralized_promo_creation" />
 
             <include layout="@layout/sah_partial_centralized_promo_post" />
 

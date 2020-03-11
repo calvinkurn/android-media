@@ -6,18 +6,18 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.centralizedpromo.view.model.PostUiModel
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
-import com.tokopedia.centralizedpromo.view.model.RecommendedPromotionUiModel
+import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.centralizedpromo.view.viewholder.OnGoingPromoViewHolder
 import com.tokopedia.centralizedpromo.view.viewholder.PostViewHolder
-import com.tokopedia.centralizedpromo.view.viewholder.RecommendedPromotionViewHolder
+import com.tokopedia.centralizedpromo.view.viewholder.PromoCreationViewHolder
 
 class CentralizedPromoAdapterTypeFactory : BaseAdapterTypeFactory() {
     fun type(onGoingPromoUiModel: OnGoingPromoUiModel): Int {
         return OnGoingPromoViewHolder.RES_LAYOUT
     }
 
-    fun type(recommendedPromotionUiModel: RecommendedPromotionUiModel): Int {
-        return RecommendedPromotionViewHolder.RES_LAYOUT
+    fun type(promoCreationUiModel: PromoCreationUiModel): Int {
+        return PromoCreationViewHolder.RES_LAYOUT
     }
 
     fun type(postUiModel: PostUiModel): Int {
@@ -26,7 +26,7 @@ class CentralizedPromoAdapterTypeFactory : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
-            RecommendedPromotionViewHolder.RES_LAYOUT -> RecommendedPromotionViewHolder(parent)
+            PromoCreationViewHolder.RES_LAYOUT -> PromoCreationViewHolder(parent)
             PostViewHolder.RES_LAYOUT -> PostViewHolder(parent)
             OnGoingPromoViewHolder.RES_LAYOUT -> OnGoingPromoViewHolder(parent)
             else -> super.createViewHolder(parent, type)

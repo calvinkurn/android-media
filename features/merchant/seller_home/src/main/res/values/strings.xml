@@ -35,7 +35,7 @@
     <string name="sah_label_tips_and_trick"><![CDATA[Tips & Trik]]></string>
     <string name="sh_coachmark_title_on_going_promo">Promosi aktif dan sudah selesai</string>
     <string name="sh_coachmark_desc_on_going_promo">Kamu dapat memantau promosi aktif, dan promosi yang sudah selesai di sini</string>
-    <string name="sh_coachmark_title_promo_recommendation">Buat Promosi</string>
-    <string name="sh_coachmark_desc_promo_recommendation">Buat beragam promosi untuk meningkatkan performa toko</string>
+    <string name="sh_coachmark_title_promo_creation">Buat Promosi</string>
+    <string name="sh_coachmark_desc_promo_creation">Buat beragam promosi untuk meningkatkan performa toko</string>
     <string name="sh_centralized_promo_title">Promotion</string>
 </resources>

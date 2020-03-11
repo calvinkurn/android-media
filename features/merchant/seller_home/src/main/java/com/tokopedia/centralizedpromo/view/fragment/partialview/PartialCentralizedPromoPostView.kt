@@ -1,7 +1,6 @@
 package com.tokopedia.centralizedpromo.view.fragment.partialview
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
@@ -70,6 +69,4 @@ class PartialCentralizedPromoPostView(
     }
 
     override fun onRecyclerViewItemEmpty() = view.gone()
-
-    override fun getSuccessView(): ConstraintLayout? = view.layoutCentralizedPromoPostListSuccess
 }

@@ -6,7 +6,7 @@ import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.OnGoingPromoStaticData
-import com.tokopedia.centralizedpromo.view.RecommendedPromotionStaticData
+import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.common.utils.DateTimeUtil
@@ -83,7 +83,7 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private fun getRecommendedPromotion(): Result<BaseUiModel> {
         return try {
-            Success(RecommendedPromotionStaticData.provideStaticData())
+            Success(PromoCreationStaticData.provideStaticData())
         } catch (t: Throwable) {
             Fail(t)
         }

@@ -1,7 +1,6 @@
 package com.tokopedia.centralizedpromo.view.fragment.partialview
 
 import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
@@ -84,8 +83,6 @@ class PartialCentralizedPromoOnGoingPromoView(
         layoutCentralizedPromoOnGoingPromoError?.hide()
         localLoadOnGoingPromo?.progressState = false
     }
-
-    override fun getSuccessView(): ConstraintLayout? = view.layoutCentralizedPromoOnGoingPromoSuccess
 
     private fun setupOnGoingPromo() = with(view) {
         rvCentralizedPromoOnGoingPromo.apply {

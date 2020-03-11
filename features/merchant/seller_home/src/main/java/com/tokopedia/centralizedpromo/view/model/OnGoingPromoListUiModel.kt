@@ -5,15 +5,15 @@ import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFa
 
 data class OnGoingPromoListUiModel(
         val title: String,
-        override val items: List<Visitable<*>>,
+        override val items: List<OnGoingPromoUiModel>,
         override val errorMessage: String
-): BaseUiListModel
+) : BaseUiListModel<OnGoingPromoUiModel>
 
 data class OnGoingPromoUiModel(
         val title: String,
         val status: Status,
         val footer: Footer
-): Visitable<CentralizedPromoAdapterTypeFactory> {
+) : Visitable<CentralizedPromoAdapterTypeFactory> {
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

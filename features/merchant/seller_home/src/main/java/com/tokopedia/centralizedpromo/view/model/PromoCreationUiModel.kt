@@ -4,12 +4,12 @@ import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 
-data class RecommendedPromotionListUiModel(
-        override val items: List<Visitable<*>>,
+data class PromoCreationListUiModel(
+        override val items: List<PromoCreationUiModel>,
         override val errorMessage: String
-): BaseUiListModel
+): BaseUiListModel<PromoCreationUiModel>
 
-data class RecommendedPromotionUiModel(
+data class PromoCreationUiModel(
         @DrawableRes val imageDrawable: Int,
         val title: String,
         val description: String,

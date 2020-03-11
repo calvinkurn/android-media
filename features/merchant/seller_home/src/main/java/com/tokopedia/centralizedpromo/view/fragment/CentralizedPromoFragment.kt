@@ -26,9 +26,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_centralized_promo.*
+import kotlinx.android.synthetic.main.sah_partial_centralized_promo_creation.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_success.*
 import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_recommendation.*
 import java.util.*
 import javax.inject.Inject
 
@@ -110,8 +110,8 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             coachMarkListener = this,
             shouldWaitForCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION, true))
 
-    private fun createPromoRecommendationView() = PartialCentralizedPromoRecommendationView(
-            view = layoutCentralizedPromoRecommendation,
+    private fun createPromoRecommendationView() = PartialCentralizedPromoCreationView(
+            view = layoutCentralizedPromoCreation,
             adapterTypeFactory = adapterTypeFactory,
             coachMarkListener = this,
             shouldWaitForCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true))
@@ -176,15 +176,15 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
                         getString(R.string.sh_coachmark_title_on_going_promo),
                         getString(R.string.sh_coachmark_desc_on_going_promo)))
             }
-            if (layoutCentralizedPromoRecommendation.isShown && sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true)) {
-                coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoRecommendation,
-                        getString(R.string.sh_coachmark_title_promo_recommendation),
-                        getString(R.string.sh_coachmark_desc_promo_recommendation)))
+            if (layoutCentralizedPromoCreation.isShown && sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true)) {
+                coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoCreation,
+                        getString(R.string.sh_coachmark_title_promo_creation),
+                        getString(R.string.sh_coachmark_desc_promo_creation)))
             }
 
             context?.let {
                 layoutCentralizedPromoOnGoingPromoSuccess.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
-                layoutCentralizedPromoRecommendation.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
+                layoutCentralizedPromoCreation.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
             }
 
             coachMark.show(activity, TAG_COACH_MARK, coachMarkItem)
@@ -201,7 +201,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             override fun onShowCaseGoTo(previousStep: Int, nextStep: Int, coachMarkItem: CoachMarkItem): Boolean {
                 when (coachMarkItem.title) {
                     getString(R.string.sh_coachmark_title_on_going_promo) -> updateCoachMarkStatus(SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION)
-                    getString(R.string.sh_coachmark_title_promo_recommendation) -> updateCoachMarkStatus(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION)
+                    getString(R.string.sh_coachmark_title_promo_creation) -> updateCoachMarkStatus(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION)
                 }
                 return false
             }
