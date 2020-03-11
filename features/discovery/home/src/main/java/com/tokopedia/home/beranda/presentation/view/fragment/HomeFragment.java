@@ -62,6 +62,7 @@ import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.analytics.HomePageTrackingV2;
 import com.tokopedia.home.analytics.v2.MixTopTracking;
+import com.tokopedia.home.analytics.v2.ProductHighlightTracking;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
@@ -154,6 +155,7 @@ import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dy
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_MIX_LEFT;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_MIX_TOP;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_ORGANIC;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_PRODUCT_HIGHLIGHT;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_SALE;
@@ -1909,6 +1911,10 @@ public class HomeFragment extends BaseDaggerFragment implements
             case TYPE_MIX_LEFT:
                 putEEToIris((HashMap<String, Object>) HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductView(channel, true));
                 break;
+            case TYPE_PRODUCT_HIGHLIGHT:
+                putEEToIris((HashMap<String, Object>) ProductHighlightTracking.INSTANCE.getProductHighlightImpression(
+                        channel, true
+                ));
         }
     }
 

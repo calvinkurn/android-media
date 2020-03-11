@@ -6,6 +6,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.home.analytics.HomePageTracking
 import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.analytics.v2.MixTopTracking
+import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.*
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.*
@@ -220,7 +221,10 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                         channel = channel,
                         trackingData = HomePageTrackingV2.MixLeft.getMixLeftProductView(channel)
                 )}
-                DynamicHomeChannel.Channels.LAYOUT_LEGO_1_IMAGE -> { createDynamicChannel(channel = channel) }
+                DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
+                    createDynamicChannel(
+                            channel = channel,
+                            trackingData = ProductHighlightTracking.getProductHighlightImpression(channel)) }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }

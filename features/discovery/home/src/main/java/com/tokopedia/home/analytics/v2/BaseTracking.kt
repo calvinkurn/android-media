@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.interfaces.ContextAnalytics
 
 @SuppressLint("VisibleForTests")
 abstract class BaseTracking {
@@ -296,5 +298,17 @@ abstract class BaseTracking {
                 Label.CHANNEL_LABEL, channelId,
                 Ecommerce.KEY, Ecommerce.getEcommerceProductView(products, list)
         )
+    }
+
+    protected fun convertRupiahToInt(rupiah: String): Int {
+        var rupiah = rupiah
+        rupiah = rupiah.replace("Rp", "")
+        rupiah = rupiah.replace(".", "")
+        rupiah = rupiah.replace(" ", "")
+        return Integer.parseInt(rupiah)
+    }
+
+    protected fun getTracker(): ContextAnalytics {
+        return TrackApp.getInstance().gtm
     }
 }

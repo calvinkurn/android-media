@@ -7,6 +7,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.v2.ProductHighlightTracking
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.DateHelper
 import com.tokopedia.home.beranda.helper.glide.FPM_DEALS_WIDGET_PRODUCT_IMAGE
@@ -16,7 +17,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.kotlin.extensions.view.displayTextOrHide
 import kotlinx.android.synthetic.main.home_dc_deals.view.*
 
-class DealsViewHolder(
+class ProductHighlightViewHolder(
         val view: View,
         val listener: HomeCategoryListener,
         val countDownViewListener: CountDownView.CountDownListener
@@ -98,7 +99,7 @@ class DealsViewHolder(
         }
     }
 
-    private fun setDealsProductCard(grid: DynamicHomeChannel.Grid) {
+    private fun setDealsProductCard(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid) {
         itemView.deals_product_card.setOnClickListener {
             listener.onSectionItemClicked(grid.applink)
             ProductHighlightTracking.sendRecommendationListClick(channel, grid, adapterPosition)

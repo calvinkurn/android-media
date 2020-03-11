@@ -535,7 +535,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"
             const val LAYOUT_MIX_LEFT: String = "left_carousel"
             const val LAYOUT_MIX_TOP: String = "top_carousel"
-            const val LAYOUT_LEGO_1_IMAGE: String = "lego_1_image"
+            const val LAYOUT_PRODUCT_HIGHLIGHT: String = "product_highlight"
             const val channelId: String = "channelId"
         }
     }

@@ -174,7 +174,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
              * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_deals}
              * used by deals widget to show 1 product item
              */
-            DynamicHomeChannel.Channels.LAYOUT_LEGO_1_IMAGE -> DealsViewHolder.LAYOUT
+            DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> ProductHighlightViewHolder.LAYOUT
 
             /**
              * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
@@ -248,7 +248,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener, countDownListener, parentRecycledViewPool)
-            DealsViewHolder.LAYOUT -> viewHolder = DealsViewHolder(view, listener, countDownListener)
+            ProductHighlightViewHolder.LAYOUT -> viewHolder = ProductHighlightViewHolder(view, listener, countDownListener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

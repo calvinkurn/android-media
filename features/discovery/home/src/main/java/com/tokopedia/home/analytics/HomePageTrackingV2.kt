@@ -1,13 +1,8 @@
 package com.tokopedia.home.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.design.utils.CurrencyFormatHelper
 import com.tokopedia.home.analytics.v2.BaseTracking
-import com.tokopedia.home.analytics.v2.BaseTracking.Action.IMPRESSION_ON
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.track.TrackApp
-import com.tokopedia.track.interfaces.ContextAnalytics
-
 object HomePageTrackingV2 : BaseTracking() {
     private object CustomEvent{
         const val CLICK_HOMEPAGE = "clickHomepage"
@@ -131,18 +126,6 @@ object HomePageTrackingV2 : BaseTracking() {
         fun sendRecommendationListSeeAllClick(channel: DynamicHomeChannel.Channels) {
             getTracker().sendGeneralEvent(getRecommendationListSeeAllClick(channel))
         }
-    }
-
-    private fun getTracker(): ContextAnalytics {
-        return TrackApp.getInstance().gtm
-    }
-
-    private fun convertRupiahToInt(rupiah: String): Int {
-        var rupiah = rupiah
-        rupiah = rupiah.replace("Rp", "")
-        rupiah = rupiah.replace(".", "")
-        rupiah = rupiah.replace(" ", "")
-        return Integer.parseInt(rupiah)
     }
 
     object MixLeft {
