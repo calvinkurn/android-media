@@ -18,7 +18,7 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
     private val productCardView by lazy { itemView.findViewById<ProductCardGridView>(R.id.productCardView) }
 
     override fun bind(element: Recommendation) {
-        productCardView.run {
+        productCardView?.run {
             setProductModel(
                     ProductCardModel(
                             slashedPrice = element.recommendationItem.slashedPrice,
@@ -44,7 +44,8 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
                                         title = recommendationLabel.title,
                                         type = recommendationLabel.type
                                 )
-                            }
+                            },
+                            hasThreeDots = true
                     )
             )
             setImageProductViewHintListener(element.recommendationItem, object: ViewHintListener {
@@ -56,6 +57,18 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
             setOnClickListener {
                 recommendationListener.onProductClick(element.recommendationItem, null, adapterPosition)
             }
+
+            setThreeDotsOnClickListener {
+                recommendationListener.onThreeDotsClick(element.recommendationItem, adapterPosition)
+            }
+        }
+    }
+
+    override fun bind(element: Recommendation, payloads: MutableList<Any>) {
+        if (payloads.getOrNull(0) !is Boolean) return
+
+        productCardView?.setThreeDotsOnClickListener {
+            recommendationListener.onThreeDotsClick(element.recommendationItem, adapterPosition)
         }
     }
 
