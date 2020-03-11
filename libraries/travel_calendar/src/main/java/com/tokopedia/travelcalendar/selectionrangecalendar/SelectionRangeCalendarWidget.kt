@@ -135,13 +135,9 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
     }
 
     fun setLayoutMargin() {
-
-        val ll = view?.findViewById(R.id.bottom_sheet_wrapper) as View
-        ll.setPadding(0,0,0,0)
-
-        val header = view?.findViewById(R.id.bottom_sheet_header) as View
         var padding = resources.getDimension(R.dimen.layout_lvl2).toInt()
-        header.setPadding(padding, padding, padding, 0)
+        bottomSheetWrapper.setPadding(0, padding, 0, 0)
+        bottomSheetHeader.setPadding(padding, 0, padding, 0)
     }
 
 
@@ -163,11 +159,11 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
         minDate?.let { minDate ->
             maxDate?.let { maxDate ->
-                    calendar.init(yesterday.time, nextYear.time, legends)
-                            .inMode(CalendarPickerView.SelectionMode.RANGE)
-                            .maxRange(rangeDateSelected)
-                            .withSelectedDates(listOf(minDate, maxDate))
-                    date_in.requestFocus()
+                calendar.init(yesterday.time, nextYear.time, legends)
+                        .inMode(CalendarPickerView.SelectionMode.RANGE)
+                        .maxRange(rangeDateSelected)
+                        .withSelectedDates(listOf(minDate, maxDate))
+                date_in.requestFocus()
             }
         }
 
