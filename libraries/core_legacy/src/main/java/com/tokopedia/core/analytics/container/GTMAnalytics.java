@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.tagmanager.DataLayer;
-import com.google.android.gms.tagmanager.TagManager;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
@@ -785,9 +784,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
                     log(getContext(), eventName, it);
-                    if (!GlobalConfig.isSellerApp()) {
-                        getTagManager().getDataLayer().pushEvent(eventName, it);
-                    }
                     pushIris(eventName, it);
                     return true;
                 })
@@ -1028,9 +1024,6 @@ public class GTMAnalytics extends ContextAnalytics {
                 .unsubscribeOn(Schedulers.io())
                 .map(it -> {
                     logIrisAnalytics(values);
-                    if (!GlobalConfig.isSellerApp()) {
-                        TagManager.getInstance(getContext()).getDataLayer().push(it);
-                    }
                     pushIris("", it);
                     return true;
                 })
