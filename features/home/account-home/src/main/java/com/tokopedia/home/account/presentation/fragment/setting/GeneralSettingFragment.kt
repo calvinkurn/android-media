@@ -238,7 +238,11 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             }
             SettingConstant.SETTING_ABOUT_US -> {
                 accountAnalytics.eventClickSetting(ABOUT_US)
-                RouteManager.route(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK + SettingConstant.Url.BASE_MOBILE + SettingConstant.Url.PATH_ABOUT_US)
+                RouteManager.getIntent(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK
+                        + SettingConstant.Url.BASE_MOBILE
+                        + SettingConstant.Url.PATH_ABOUT_US).run {
+                    startActivity(this)
+                }
             }
             SettingConstant.SETTING_PRIVACY_ID -> {
                 accountAnalytics.eventClickSetting(PRIVACY_POLICY)
