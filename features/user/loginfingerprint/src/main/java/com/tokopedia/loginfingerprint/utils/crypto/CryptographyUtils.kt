@@ -6,7 +6,6 @@ import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyPermanentlyInvalidatedException
 import android.security.keystore.KeyProperties
 import android.util.Base64
-import androidx.annotation.RequiresApi
 import androidx.core.hardware.fingerprint.FingerprintManagerCompat
 import com.tokopedia.loginfingerprint.constant.BiometricConstant
 import com.tokopedia.loginfingerprint.data.model.FingerprintSignature
@@ -31,6 +30,9 @@ class CryptographyUtils: Cryptography {
 
     override fun getCryptoObject(): FingerprintManagerCompat.CryptoObject? = _cryptoObject
 
+    private val PUBLIC_KEY_PREFIX = "-----BEGIN PUBLIC KEY-----\n"
+    private val PUBLIC_KEY_SUFFIX = "\n-----END PUBLIC KEY-----"
+
     init {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             initKeyStore()
@@ -46,7 +48,6 @@ class CryptographyUtils: Cryptography {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     override fun generatePublicKey(): PublicKey? {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             var publicKey: PublicKey? = null
@@ -96,51 +97,45 @@ class CryptographyUtils: Cryptography {
     }
 
     private fun initKeyStore() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            try {
-                keyStore = KeyStore.getInstance(BiometricConstant.ANDROID_KEY_STORE)
-                keyStore?.load(null)
+        try {
+            keyStore = KeyStore.getInstance(BiometricConstant.ANDROID_KEY_STORE)
+            keyStore?.load(null)
 
-                generateKeyPair(keyStore)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            generateKeyPair(keyStore)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun initSignature(): Boolean {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            try {
-                keyStore?.load(null)
-                val key = keyStore?.getKey(BiometricConstant.FINGERPRINT, null) as PrivateKey
-                signature = Signature.getInstance(BiometricConstant.SHA_1_WITH_RSA)
-                signature?.initSign(key)
-                return true
-            } catch (e: KeyPermanentlyInvalidatedException) {
-                return false
-            } catch (e: KeyStoreException) {
-                throw RuntimeException("Failed to init Cipher", e)
-            } catch (e: UnrecoverableKeyException) {
-                throw RuntimeException("Failed to init Cipher", e)
-            } catch (e: NoSuchAlgorithmException) {
-                throw RuntimeException("Failed to init Cipher", e)
-            } catch (e: InvalidKeyException) {
-                throw RuntimeException("Failed to init Cipher", e)
-            } catch (e: IOException) {
-                throw RuntimeException("Failed to init Cipher", e)
-            } catch (e: CertificateException) {
-                throw RuntimeException("Failed to init Cipher", e)
-            }
+        try {
+            keyStore?.load(null)
+            val key = keyStore?.getKey(BiometricConstant.FINGERPRINT, null) as PrivateKey
+            signature = Signature.getInstance(BiometricConstant.SHA_1_WITH_RSA)
+            signature?.initSign(key)
+            return true
+        } catch (e: KeyPermanentlyInvalidatedException) {
+            return false
+        } catch (e: KeyStoreException) {
+            throw RuntimeException("Failed to init Cipher", e)
+        } catch (e: UnrecoverableKeyException) {
+            throw RuntimeException("Failed to init Cipher", e)
+        } catch (e: NoSuchAlgorithmException) {
+            throw RuntimeException("Failed to init Cipher", e)
+        } catch (e: InvalidKeyException) {
+            throw RuntimeException("Failed to init Cipher", e)
+        } catch (e: IOException) {
+            throw RuntimeException("Failed to init Cipher", e)
+        } catch (e: CertificateException) {
+            throw RuntimeException("Failed to init Cipher", e)
         }
-        return false
     }
 
     override fun getPublicKey(): String {
         val pubKey = generatePublicKey()
         pubKey?.run {
             val encoded = Base64.encodeToString(this.encoded, Base64.NO_WRAP)
-            val publicKeyString = "-----BEGIN PUBLIC KEY-----\n$encoded\n-----END PUBLIC KEY-----"
-            return publicKeyString
+            return "$PUBLIC_KEY_PREFIX$encoded$PUBLIC_KEY_SUFFIX"
         }
         return ""
     }
