@@ -109,7 +109,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun setupView() {
         recycler_view.layoutManager = LinearLayoutManager(context)
         val settingList = listOf(
-                SettingTitleMenuUiModel(PENGATURAN_TOKO, R.drawable.ic_seller_edu),
+                SettingTitleMenuUiModel(PENGATURAN_TOKO, R.drawable.ic_pengaturan_toko),
                 IndentedSettingTitleUiModel(PROFIL_TOKO),
                 MenuItemUiModel(INFORMASI_DASAR, clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO),
                 MenuItemUiModel(CATATAN_TOKO, clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES),
