@@ -89,6 +89,7 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
                 }
 
             })
+            flightCalendarDialog.show(requireFragmentManager(), TAG_DEPARTURE_CALENDAR)
         }
     }
 
@@ -158,6 +159,12 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
                 getString(R.string.flight_max_date_label),
                 SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY,
                 true
+        )
+        flightCalendarDialog.bottomSheetHeader.setPadding(
+                bottomSheetHeader.paddingLeft,
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
+                bottomSheetHeader.paddingRight,
+                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
         )
         flightCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
