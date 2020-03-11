@@ -163,9 +163,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
-                RouteManager.route(applicationContext, ApplinkConst.SellerApp.SELLER_APP_HOME)
+                RouteManager.route(this, ApplinkConst.SellerApp.SELLER_APP_HOME)
             } else {
-                RouteManager.route(applicationContext, ApplinkConst.HOME)
+                RouteManager.route(this, ApplinkConst.HOME)
             }
         } else {
             setResult(Activity.RESULT_OK)
