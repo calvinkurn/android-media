@@ -159,6 +159,7 @@ class TopchatProductAttachmentViewHolder(
         if (product.canShowFooter && !GlobalConfig.isSellerApp()) {
             bindBuy(product)
             bindAtc(product)
+            bindWishList(product)
         } else {
             hideFooter()
         }
@@ -167,6 +168,7 @@ class TopchatProductAttachmentViewHolder(
     private fun hideFooter() {
         itemView.tv_buy?.hide()
         itemView.tv_atc?.hide()
+        itemView.tv_wishlist?.hide()
     }
 
     private fun bindBuy(product: ProductAttachmentViewModel) {
@@ -186,9 +188,28 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindAtc(product: ProductAttachmentViewModel) {
-        itemView.tv_atc?.show()
-        itemView.tv_atc?.setOnClickListener {
-            listener.onClickATCFromProductAttachment(product)
+        itemView.tv_atc?.apply {
+            if (product.hasEmptyStock()) {
+                hide()
+            } else {
+                show()
+                setOnClickListener {
+                    listener.onClickATCFromProductAttachment(product)
+                }
+            }
+        }
+    }
+
+    private fun bindWishList(product: ProductAttachmentViewModel) {
+        itemView.tv_wishlist?.apply {
+            if (product.hasEmptyStock()) {
+                show()
+                setOnClickListener {
+                    listener.onClickAddToWishList(product.productId.toString()) { }
+                }
+            } else {
+                hide()
+            }
         }
     }
 

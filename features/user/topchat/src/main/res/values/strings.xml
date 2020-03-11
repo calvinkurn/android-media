@@ -153,4 +153,5 @@ yang ditemukan</string>
     <string name="title_topchat_success_rfw">Anda berhasil menghapus wishlist</string>
     <string name="title_topchat_list_template">Daftar Template</string>
     <string name="action_atc">+ Keranjang</string>
+    <string name="action_wishlist">+ Wishlist</string>
 </resources>

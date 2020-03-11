@@ -54,16 +54,16 @@
 
             <LinearLayout
                 android:id="@+id/ll_variant"
-                app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
-                app:layout_constraintStart_toStartOf="@+id/tv_product_name"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_marginTop="@dimen/spacing_lvl2"
                 android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:layout_marginRight="@dimen/spacing_lvl3"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_product_name"
+                app:layout_constraintTop_toBottomOf="@+id/tv_product_name">
 
                 <LinearLayout
                     android:id="@+id/ll_variant_color"
@@ -195,6 +195,23 @@
             android:layout_height="wrap_content">
 
             <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/tv_wishlist"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:text="@string/action_wishlist"
+                android:textColor="@color/Green_G500"
+                android:visibility="gone"
+                app:layout_constraintEnd_toStartOf="@+id/tv_atc"
+                app:layout_constraintHorizontal_weight=".4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:unifyButtonSize="small"
+                app:unifyButtonType="transaction"
+                app:unifyButtonVariant="ghost"
+                tools:visibility="visible" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
                 android:id="@+id/tv_atc"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -204,7 +221,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toStartOf="@+id/tv_buy"
                 app:layout_constraintHorizontal_weight=".4"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/tv_wishlist"
                 app:layout_constraintTop_toTopOf="parent"
                 app:unifyButtonSize="small"
                 app:unifyButtonType="transaction"
