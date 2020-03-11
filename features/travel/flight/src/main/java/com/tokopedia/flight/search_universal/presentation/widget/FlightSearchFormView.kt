@@ -36,8 +36,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
 
     private val flightSearchData: FlightDashboardPassDataViewModel = FlightDashboardPassDataViewModel()
 
-    private var departureDate: Date? = null
-    private var returnDate: Date? = null
+    private lateinit var departureDate: Date
+    private lateinit var returnDate: Date
     private var passengerModel: FlightPassengerViewModel? = null
 
     init {
@@ -162,10 +162,28 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         tvFlightOriginAirport.setOnClickListener { listener?.onDepartureAirportClicked() }
         tvFlightDestinationLabel.setOnClickListener { listener?.onDestinationAirportClicked() }
         tvFlightDestinationAirport.setOnClickListener { listener?.onDestinationAirportClicked() }
-        tvFlightDepartureDateLabel.setOnClickListener { listener?.onDepartureDateClicked(returnDate) }
-        tvFlightDepartureDate.setOnClickListener { listener?.onDepartureDateClicked(returnDate) }
-        tvFlightReturnDateLabel.setOnClickListener { listener?.onReturnDateClicked(returnDate) }
-        tvFlightReturnDate.setOnClickListener { listener?.onReturnDateClicked(returnDate) }
+        tvFlightDepartureDateLabel.setOnClickListener {
+            val departureAirport = if (flightSearchData.departureAirportId.contains(","))
+                flightSearchData.departureCityCode else flightSearchData.departureAirportId
+            val arrivalAirport = if (flightSearchData.arrivalAirportId.contains(","))
+                flightSearchData.arrivalCityCode else flightSearchData.arrivalAirportId
+            listener?.onDepartureDateClicked(departureAirport, arrivalAirport,
+                    flightSearchData.flightClass, departureDate, returnDate, flightSearchData.isRoundTrip)
+        }
+        tvFlightDepartureDate.setOnClickListener {
+            val departureAirport = if (flightSearchData.departureAirportId.contains(","))
+                flightSearchData.departureCityCode else flightSearchData.departureAirportId
+            val arrivalAirport = if (flightSearchData.arrivalAirportId.contains(","))
+                flightSearchData.arrivalCityCode else flightSearchData.arrivalAirportId
+            listener?.onDepartureDateClicked(departureAirport, arrivalAirport,
+                    flightSearchData.flightClass, departureDate, returnDate, flightSearchData.isRoundTrip)
+        }
+        tvFlightReturnDateLabel.setOnClickListener {
+            listener?.onReturnDateClicked(departureDate, returnDate)
+        }
+        tvFlightReturnDate.setOnClickListener {
+            listener?.onReturnDateClicked(departureDate, returnDate)
+        }
         tvFlightPassengerLabel.setOnClickListener { listener?.onPassengerClicked(passengerModel) }
         tvFlightPassenger.setOnClickListener { listener?.onPassengerClicked(passengerModel) }
         tvFlightClassLabel.setOnClickListener { listener?.onClassClicked(flightSearchData.flightClass) }
@@ -366,8 +384,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     interface FlightSearchFormListener {
         fun onDepartureAirportClicked()
         fun onDestinationAirportClicked()
-        fun onDepartureDateClicked(departureDate: Date?)
-        fun onReturnDateClicked(returnDate: Date?)
+        fun onDepartureDateClicked(departureAirport: String, arrivalAirport: String, flightClassId: Int,
+                                   departureDate: Date, returnDate: Date, isRoundTrip: Boolean)
+
+        fun onReturnDateClicked(departureDate: Date, returnDate: Date)
         fun onPassengerClicked(passengerModel: FlightPassengerViewModel?)
         fun onClassClicked(flightClassId: Int = -1)
     }
