@@ -285,7 +285,7 @@ public class HomeFragment extends BaseDaggerFragment implements
         setGeolocationPermission();
         needToShowGeolocationComponent();
         getStickyContent();
-        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().startInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        startHomeInitPerformanceMonitoring();
     }
 
     @Override
@@ -294,9 +294,15 @@ public class HomeFragment extends BaseDaggerFragment implements
         stopHomeInitPerformanceMonitoring();
     }
 
+    private void startHomeInitPerformanceMonitoring() {
+        if (getHomeJankyFramesUtil() != null) {
+            getHomeJankyFramesUtil().startInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        }
+    }
+
     private void stopHomeInitPerformanceMonitoring() {
-        if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) {
-            jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().stopInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        if (getHomeJankyFramesUtil() != null) {
+            getHomeJankyFramesUtil().stopInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
         }
     }
 
@@ -1870,7 +1876,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public JankyFrameMonitoringUtil getHomeJankyFramesUtil() {
-        if (jankyFramesMonitoringListener != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
+        if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
         return null;
     }
 }
