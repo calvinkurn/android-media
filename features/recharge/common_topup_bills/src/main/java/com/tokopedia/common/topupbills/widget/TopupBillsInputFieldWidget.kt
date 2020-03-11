@@ -189,6 +189,11 @@ open class TopupBillsInputFieldWidget @JvmOverloads constructor(@NotNull context
         hideErrorMessage()
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        finishInputJob?.cancel()
+    }
+
     interface ActionListener {
         fun onFinishInput(input: String)
         fun onCustomInputClick()

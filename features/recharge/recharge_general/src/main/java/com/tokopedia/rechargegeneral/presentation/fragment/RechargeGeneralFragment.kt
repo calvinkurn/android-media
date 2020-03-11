@@ -112,6 +112,7 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var operatorCluster: String = ""
     private var hasInputData = false
     private var hasFavoriteNumbers = false
+    private var hasPendingAutofillData = false
 
     private var enquiryLabel = ""
     private var enquiryData: TopupBillsEnquiry? = null
@@ -545,18 +546,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun setupAutoFillData(data: TopupBillsRecommendation) {
-        val operatorClusters = viewModel.operatorCluster.value
-        if (operatorClusters is Success
-                && !operatorClusters.data.operatorGroups.isNullOrEmpty()) {
-            with (data) {
-                this@RechargeGeneralFragment.operatorId = operatorId
-                selectedProduct = RechargeGeneralProductSelectData(productId.toString(), title)
-                if (clientNumber.isNotEmpty()) {
-                    inputData[PARAM_CLIENT_NUMBER] = clientNumber
-                }
+        with (data) {
+            this@RechargeGeneralFragment.operatorId = operatorId
+            selectedProduct = RechargeGeneralProductSelectData(productId.toString(), title)
+            if (clientNumber.isNotEmpty()) {
+                inputData[PARAM_CLIENT_NUMBER] = clientNumber
             }
-            renderInitialData()
         }
+        renderInitialData()
     }
 
     private fun renderTickers(tickers: List<TopupBillsTicker>) {
