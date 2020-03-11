@@ -65,13 +65,9 @@ class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (variantCategory.identifier == IDENTIFIER_COLOR) {
-            if (variantCategory.hasCustomImage) {
+        return if (variantCategory.hasCustomImage) {
                 TYPE_IMAGE
             } else {
-                TYPE_COLOR
-            }
-        } else {
             TYPE_CHIP
         }
     }
