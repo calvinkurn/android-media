@@ -16,7 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
@@ -158,7 +157,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 MenuItemUiModel(LAYANAN_KEUANGAN, R.drawable.ic_finance),
                 MenuItemUiModel(PUSAT_EDUKASI_SELLER, R.drawable.ic_seller_edu) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
-                    intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.SELLER_EDU)
+                    intent.putExtra(URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_EDU)
                     context?.startActivity(intent)
                 },
                 MenuItemUiModel(TOKOPEDIA_CARE, R.drawable.ic_tokopedia_care, ApplinkConst.CONTACT_US_NATIVE),
@@ -270,6 +269,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onKreditTopadsClicked() {
-        RouteManager.route(context, ApplinkConstInternalTopAds.HOST_TOPADS)
+        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
     }
 }

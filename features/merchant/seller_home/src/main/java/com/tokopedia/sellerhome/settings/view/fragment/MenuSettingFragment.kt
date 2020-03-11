@@ -56,6 +56,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val CHAT_DAN_NOTIFIKASI = "Chat & Notifikasi"
         private const val BAGIKAN_APLIKASI = "Bagikan Aplikasi"
         private const val REVIEW_APLIKASI = "Review Aplikasi"
+        private const val DEVELOPER_OPTION = "Developer Option"
 
         private const val REQUEST_CHANGE_PASSWORD = 123
         private const val REQUEST_ADD_PASSWORD = 1234
@@ -108,7 +109,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun setupView() {
         recycler_view.layoutManager = LinearLayoutManager(context)
-        val settingList = listOf(
+        val settingList = mutableListOf(
                 SettingTitleMenuUiModel(PENGATURAN_TOKO, R.drawable.ic_pengaturan_toko),
                 IndentedSettingTitleUiModel(PROFIL_TOKO),
                 MenuItemUiModel(INFORMASI_DASAR, clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO),
@@ -121,7 +122,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 DividerUiModel(DividerType.THIN_INDENTED),
                 IndentedSettingTitleUiModel(FITUR_EKSKLUSIF),
                 MenuItemUiModel(LAYANAN_BAYAR_DI_TEMPAT, clickApplink = ApplinkConstInternalMarketplace.COD),
-                MenuItemUiModel(ORDER_PRIORITAS, clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR),
+                MenuItemUiModel(ORDER_PRIORITAS),
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(PENGATURAN_AKUN, R.drawable.ic_account),
                 MenuItemUiModel(PROFIL_DIRI, clickApplink = ApplinkConst.SETTING_PROFILE),
@@ -134,6 +135,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 MenuItemUiModel(REVIEW_APLIKASI) { reviewApplication() },
                 DividerUiModel(DividerType.THIN_INDENTED)
         )
+        if (GlobalConfig.isAllowDebuggingTools())
+            settingList.add(23, MenuItemUiModel(DEVELOPER_OPTION) {
+                RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+            })
         adapter.data.addAll(settingList)
         adapter.notifyDataSetChanged()
         renderList(settingList)
