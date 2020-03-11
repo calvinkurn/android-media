@@ -11,7 +11,7 @@ data class ShippingNoPriceResponse (
 
 data class Response(
         @SerializedName("services")
-        var services: ArrayList<Services> = arrayListOf()
+        var services: List<Services> = emptyList()
 )
 
 data class Services (

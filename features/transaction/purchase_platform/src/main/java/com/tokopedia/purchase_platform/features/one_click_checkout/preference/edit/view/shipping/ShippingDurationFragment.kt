@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
@@ -26,7 +27,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ShippingDurationFragment : BaseDaggerFragment() {
+class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapter.OnShippingMenuSelected{
 
     companion object {
         private const val ARG_IS_EDIT = "is_edit"
@@ -47,7 +48,7 @@ class ShippingDurationFragment : BaseDaggerFragment() {
         ViewModelProviders.of(this, viewModelFactory)[ShippingDurationViewModel::class.java]
     }
 
-    val adapter = ShippingDurationItemAdapter()
+    val adapter = ShippingDurationItemAdapter(this)
 
     override fun getScreenName(): String = ""
 
@@ -59,13 +60,37 @@ class ShippingDurationFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_shipping_duration, container, false)
     }
 
+    override fun onSelect(selection: Int) {
+        viewModel.setSelectedShipping(selection)
+    }
+
     private fun initViewModel() {
+        val parent = activity
+        if (parent is PreferenceEditActivity) {
+            if(parent.shippingId > 0) {
+                viewModel.selectedId = parent.shippingId
+            }
+        }
+
         viewModel.shippingDuration.observe(this, Observer {
             when (it) {
                 is OccState.Success -> {
                     swipe_refresh_layout.isRefreshing = false
                     global_error.gone()
                     content_layout.visible()
+
+                    btn_save_duration.setOnClickListener {
+                        val selectedId = viewModel.selectedId
+                        if (selectedId > 0 ) {
+                            goToNextStep()
+                        }
+                        /*if(arguments?.getBoolean(ARG_IS_EDIT) == false) {
+                            goToNextStep()
+                        } else {
+                            goBack()
+                        }*/
+                    }
+
                     renderData(it.data.services)
                 }
 
@@ -96,20 +121,21 @@ class ShippingDurationFragment : BaseDaggerFragment() {
         ticker_info.setTextDescription(getString(R.string.ticker_label_text))
         shipping_duration_rv.adapter = adapter
         shipping_duration_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-
-        btn_save_duration.setOnClickListener {
-            goToNextStep()
-        }
     }
 
     private fun goToNextStep() {
         val parent = activity
         if (parent is PreferenceEditActivity) {
-            if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
-                parent.goBack()
-            } else {
-                parent.addFragment(PaymentMethodFragment.newInstance())
+            val selectedId = viewModel.selectedId
+            if(selectedId > 0) {
+                parent.shippingId = selectedId
+                if (arguments?.getBoolean(ARG_IS_EDIT) == true) {
+                    parent.goBack()
+                } else {
+                    parent.addFragment(PaymentMethodFragment.newInstance())
+                }
             }
+
         }
     }
 

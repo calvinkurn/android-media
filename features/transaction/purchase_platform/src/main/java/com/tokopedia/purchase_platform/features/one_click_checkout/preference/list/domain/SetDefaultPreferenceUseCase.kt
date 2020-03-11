@@ -35,7 +35,7 @@ class SetDefaultPreferenceUseCase @Inject constructor(val graphqlUseCase: Graphq
         const val PARAM_KEY = "profileId"
         val QUERY = """
             mutation set_default_profile_occ(${"$"}profileId : Int) {
-            set_default_profile_occ(profile_id: ${"$"}profileId, dummy: 1){
+            set_default_profile_occ(profile_id: ${"$"}profileId){
                   error_message
                   status
                   data{
