@@ -160,12 +160,6 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
                 SelectionRangeCalendarWidget.DEFAULT_MIN_SELECTED_DATE_TODAY,
                 true
         )
-        flightCalendarDialog.bottomSheetHeader.setPadding(
-                bottomSheetHeader.paddingLeft,
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4),
-                bottomSheetHeader.paddingRight,
-                resources.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
-        )
         flightCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
 //                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

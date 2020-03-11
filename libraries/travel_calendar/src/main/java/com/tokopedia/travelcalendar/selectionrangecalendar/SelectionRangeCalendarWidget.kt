@@ -1,15 +1,18 @@
 package com.tokopedia.travelcalendar.selectionrangecalendar
 
 import android.app.Application
+import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import android.os.Bundle
-import android.view.View
 import com.tokopedia.calendar.CalendarPickerView
 import com.tokopedia.calendar.Legend
-import com.tokopedia.travelcalendar.*
+import com.tokopedia.travelcalendar.R
+import com.tokopedia.travelcalendar.TRAVEL_CAL_YYYY_MM_DD
+import com.tokopedia.travelcalendar.TravelCalendarComponentInstance
 import com.tokopedia.travelcalendar.data.entity.TravelCalendarHoliday
+import com.tokopedia.travelcalendar.stringToDate
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -138,7 +141,7 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
 
         val header = view?.findViewById(R.id.bottom_sheet_header) as View
         var padding = resources.getDimension(R.dimen.layout_lvl2).toInt()
-        header.setPadding(padding, 0, padding, 0)
+        header.setPadding(padding, padding, padding, 0)
     }
 
 
