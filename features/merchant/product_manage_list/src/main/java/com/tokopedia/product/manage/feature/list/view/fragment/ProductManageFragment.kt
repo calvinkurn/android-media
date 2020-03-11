@@ -1326,10 +1326,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 it.copy(multiSelectActive = multiSelectEnabled)
             }
 
-            textMultipleSelect.text = if(multiSelectEnabled) {
-                cancelMultiSelectText
+            if(multiSelectEnabled) {
+                textMultipleSelect.text = cancelMultiSelectText
             } else {
-                multiSelectText
+                btnMultiEdit.hide()
+                textMultipleSelect.text = multiSelectText
             }
 
             clearProductList()
