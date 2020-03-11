@@ -20,6 +20,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
@@ -118,8 +119,15 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
 
         if (isUsingCacheManager) {
             SaveInstanceCacheManager cacheManager = new SaveInstanceCacheManager(getContext(), variantCacheId);
-            productVariantByCatModelList = cacheManager.get(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST,
-                            (new TypeToken<List<ProductVariantByCatModel>>() {}).getType(), new ArrayList<>());
+            List<String> jsonVariants = cacheManager.get(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST,
+                            (new TypeToken<List<String>>() {}).getType(), new ArrayList<>());
+            productVariantByCatModelList = new ArrayList<>();
+            Gson gson = new Gson();
+            for (String jsonVariant : jsonVariants) {
+                ProductVariantByCatModel productVariantByCatModel =
+                        gson.fromJson(jsonVariant, ProductVariantByCatModel.class);
+                productVariantByCatModelList.add(productVariantByCatModel);
+            }
             currencyType = cacheManager.get(ProductVariantDashboardActivity.EXTRA_CURRENCY_TYPE, int.class, CurrencyTypeDef.TYPE_IDR);
             defaultPrice = cacheManager.get(ProductVariantDashboardActivity.EXTRA_DEFAULT_PRICE, double.class, 0.0);
             defaultStockType = cacheManager.get(ProductVariantDashboardActivity.EXTRA_STOCK_TYPE, int.class, 0);
@@ -128,8 +136,10 @@ public class ProductVariantDashboardFragment extends BaseImageFragment
             hasWholesale = cacheManager.get(ProductVariantDashboardActivity.EXTRA_HAS_WHOLESALE, boolean.class, false);
             defaultSku = cacheManager.getString(ProductVariantDashboardActivity.EXTRA_DEFAULT_SKU);
             isAddStatus = cacheManager.get(ProductVariantDashboardActivity.EXTRA_IS_ADD, boolean.class, false);
-            productVariantViewModel = cacheManager.get(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION, ProductVariantViewModel.class, new ProductVariantViewModel());
-            productSizeChart = cacheManager.get(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART, ProductPictureViewModel.class, new ProductPictureViewModel());
+            String jsonProductVariantViewModel = cacheManager.getString(ProductExtraConstant.EXTRA_PRODUCT_VARIANT_SELECTION);
+            productVariantViewModel = gson.fromJson(jsonProductVariantViewModel, ProductVariantViewModel.class);
+            String jsonProductSizeChart = cacheManager.getString(ProductExtraConstant.EXTRA_PRODUCT_SIZECHART);
+            productSizeChart = gson.fromJson(jsonProductSizeChart, ProductPictureViewModel.class);
         } else {
             productVariantByCatModelList = activityIntent.getParcelableArrayListExtra(ProductVariantDashboardActivity.EXTRA_PRODUCT_VARIANT_BY_CATEGORY_LIST);
             currencyType = activityIntent.getIntExtra(ProductVariantDashboardActivity.EXTRA_CURRENCY_TYPE, CurrencyTypeDef.TYPE_IDR);

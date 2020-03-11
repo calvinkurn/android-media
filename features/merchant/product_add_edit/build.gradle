@@ -17,7 +17,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.baseList)
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     implementation project(rootProject.ext.libraries.applink)
-    implementation project(rootProject.ext.features.productManageItem)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
