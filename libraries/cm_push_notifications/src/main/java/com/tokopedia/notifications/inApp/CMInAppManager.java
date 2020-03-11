@@ -38,7 +38,7 @@ public class CMInAppManager implements CmInAppListener {
 
     private Application application;
 
-    WeakReference<Activity> currentActivity;
+    private WeakReference<Activity> currentActivity;
 
     private CmInAppListener cmInAppListener;
 

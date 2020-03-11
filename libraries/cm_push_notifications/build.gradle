@@ -56,6 +56,12 @@ dependencies {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
 
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.couroutinesTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+
 }
 
 project.ext {
