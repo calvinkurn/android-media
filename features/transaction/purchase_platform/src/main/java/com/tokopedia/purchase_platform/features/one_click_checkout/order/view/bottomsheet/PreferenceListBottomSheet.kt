@@ -4,6 +4,8 @@ import android.view.View
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
@@ -16,7 +18,11 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.bottom_sheet_preference_list.view.*
+import kotlinx.android.synthetic.main.fragment_preference_list.*
 import kotlinx.coroutines.*
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
 class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main.immediate, private val useCase: GetPreferenceListUseCase, private val listener: PreferenceListBottomSheetListener) : CoroutineScope {
@@ -27,6 +33,7 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
     private var rvPreferenceList: RecyclerView? = null
     private var btnAddPreference: UnifyButton? = null
     private var progressBar: ProgressBar? = null
+    private var globalError: GlobalError? = null
 
     private var adapter: PreferenceListAdapter? = null
 
@@ -44,15 +51,55 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
     }
 
     fun getPreferenceList() {
+        globalError?.gone()
+        rvPreferenceList?.gone()
+        btnAddPreference?.gone()
+        progressBar?.visible()
         useCase.execute({ preferenceListResponseModel: PreferenceListResponseModel ->
             updateList(preferenceListResponseModel.profiles ?: ArrayList())
         }, { throwable: Throwable ->
             throwable.printStackTrace()
-            bottomSheet?.dismiss()
+            handleError(throwable)
+//            bottomSheet?.dismiss()
         })
     }
 
-    fun show(fragment: OrderSummaryPageFragment) {
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                    showGlobalError(GlobalError.NO_CONNECTION)
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+                    else -> {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+//                            Toaster.make(it, "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                    }
+                }
+            }
+            else -> {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+//                    Toaster.make(it, throwable.message
+//                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+            }
+        }
+    }
+
+    private fun showGlobalError(type: Int) {
+        globalError?.setType(type)
+        globalError?.setActionClickListener {
+            getPreferenceList()
+        }
+        rvPreferenceList?.gone()
+        btnAddPreference?.gone()
+        progressBar?.gone()
+        globalError?.visible()
+    }
+
+    fun show(fragment: OrderSummaryPageFragment, profileId: Int) {
         fragment.fragmentManager?.let {
             bottomSheet?.dismiss()
             bottomSheet = BottomSheetUnify().apply {
@@ -78,6 +125,7 @@ class PreferenceListBottomSheet(override val coroutineContext: CoroutineContext 
         rvPreferenceList = child.rv_preference_list
         btnAddPreference = child.btn_add_preference
         progressBar = child.progress_bar
+        globalError = child.global_error
 
         rvPreferenceList?.layoutManager = LinearLayoutManager(child.context, LinearLayoutManager.VERTICAL, false)
         adapter = PreferenceListAdapter(getListener(), true)

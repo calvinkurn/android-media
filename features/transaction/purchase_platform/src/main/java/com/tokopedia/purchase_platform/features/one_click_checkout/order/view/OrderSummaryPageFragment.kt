@@ -204,10 +204,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         }
 
-        if (orderTotal.subTotal > 0L) {
-            tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.subTotal, false)
+        if (orderTotal.orderCost.totalPrice > 0.0) {
+            tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.orderCost.totalPrice, false)
         } else {
             tv_total_payment_value.text = "-"
+        }
+
+        btn_order_detail.setOnClickListener {
+            OrderPriceSummaryBottomSheet().show(this, orderTotal.orderCost)
         }
     }
 
@@ -228,10 +232,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun initViews(view: View) {
-        btn_order_detail.setOnClickListener {
-            OrderPriceSummaryBottomSheet().show(this)
-        }
-
         orderProductCard = OrderProductCard(view, this)
 
         orderPreferenceCard = OrderPreferenceCard(view, this, getOrderPreferenceCardListener())
@@ -279,31 +279,34 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     fun showPreferenceListBottomSheet() {
-        PreferenceListBottomSheet(useCase = viewModel.getPreferenceListUseCase, listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
-            override fun onChangePreference(preference: ProfilesItemModel) {
+        val profileId = viewModel._orderPreference?.preference?.profileId ?: 0
+        if (profileId > 0) {
+            PreferenceListBottomSheet(useCase = viewModel.getPreferenceListUseCase, listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
+                override fun onChangePreference(preference: ProfilesItemModel) {
 //                viewModel.updatePreference(preference)
-            }
-
-            override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-                intent.apply {
-                    putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapterPosition)
-                    putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
-                    putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
-                    putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
-                    putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode
-                            ?: "")
-                    putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
-                    putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 }
-                startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
-            }
 
-            override fun onAddPreference() {
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-                startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
-            }
-        }).show(this@OrderSummaryPageFragment)
+                override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+                    intent.apply {
+                        putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapterPosition)
+                        putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
+                        putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
+                        putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
+                        putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode
+                                ?: "")
+                        putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
+                        putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
+                    }
+                    startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
+                }
+
+                override fun onAddPreference() {
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+                    startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
+                }
+            }).show(this@OrderSummaryPageFragment, profileId)
+        }
     }
 
     override fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean) {

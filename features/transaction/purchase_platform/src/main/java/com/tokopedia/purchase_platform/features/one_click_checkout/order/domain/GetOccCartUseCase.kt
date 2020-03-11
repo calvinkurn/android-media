@@ -170,6 +170,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             }
         }
         orderProduct.productPrice = product?.productPrice ?: 0
+        orderProduct.wholesalePrice = product.wholesalePrice
         val productChildList = ArrayList<OrderProductChild>()
         var hasSelectedDefaultVariant = false
         if (variantViewModelList.size > 0) {

@@ -66,9 +66,42 @@ data class Insurance(
 )
 
 data class OrderTotal(
-        val subTotal: Long = 0,
+        val orderCost: OrderCost = OrderCost(),
         val buttonState: ButtonBayarState = ButtonBayarState.DISABLE,
         val isButtonChoosePayment: Boolean = false
+)
+
+data class OrderCost(
+//        val totalItem: Int,
+        val totalItemPrice: Double = 0.0,
+        val totalPrice: Double = 0.0,
+//        val totalWeight: Double,
+        val shippingFee: Double = 0.0,
+        val insuranceFee: Double = 0.0
+//        val priorityFee: Double,
+//        val totalPurchaseProtectionItem: Int,
+//        val purchaseProtectionFee: Double,
+//        val additionalFee: Double,
+//        val promoPrice: Double,
+//        val donation: Double,
+//        val promoMessage: String,
+//        val emasPrice: Double,
+//        val tradeInPrice: Double,
+//        val totalPromoStackAmount: Int,
+//        val totalPromoStackAmountStr: String,
+//        val TotalDiscWithoutCashback: Int,
+//        val macroInsurancePrice: Long,
+//        val macroInsurancePriceLabel: String,
+//        val bookingFee: Int,
+//        val discountLabel: String,
+//        val discountAmount: Int,
+//        val hasDiscountDetails: Boolean,
+//        val shippingDiscountLabel: String,
+//        val shippingDiscountAmount: Int,
+//        val productDiscountLabel: String,
+//        val productDiscountAmount: Int,
+//        val cashbackLabel: String,
+//        val cashbackAmount: Int
 )
 
 enum class ButtonBayarState { NORMAL, LOADING, DISABLE }

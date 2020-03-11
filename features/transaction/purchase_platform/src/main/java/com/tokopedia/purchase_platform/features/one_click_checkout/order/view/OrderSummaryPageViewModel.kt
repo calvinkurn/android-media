@@ -237,6 +237,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.token = "Tokopedia+Kero:LKlL31rEgWx6r0eJBx+GXVrJ+7Q\\u003d"
         shippingParam.ut = "1583825797"
         shippingParam.insurance = 1
+        shippingParam.isPreorder = orderShop.cartResponse.product.isPreorder != 0
         shippingParam.categoryIds = orderShop.cartResponse.product.categoryId.toString()
 //        shippingParam.uniqueId = "478925-0-1493-4646989"
         shippingParam.uniqueId = orderShop.cartResponse.cartId.toString()
@@ -244,7 +245,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.products = listOf(Product(orderProduct.productId.toLong(), orderProduct.isFreeOngkir))
 
         shippingParam.weightInKilograms = orderProduct.quantity!!.orderQuantity * orderProduct.weight / 1000.0
-        shippingParam.productInsurance = 0
+        shippingParam.productInsurance = orderShop.cartResponse.product.productFinsurance
         shippingParam.orderValue = orderProduct.quantity!!.orderQuantity * orderProduct.productPrice.toLong()
         return shippingParam
     }
@@ -277,20 +278,20 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun calculateTotal() {
         val quantity = orderProduct.quantity
         if (quantity != null) {
-            val totalProductPrice = quantity.orderQuantity * orderProduct.productPrice.toLong()
+            val totalProductPrice = quantity.orderQuantity * orderProduct.productPrice.toDouble()
             val shipping = _orderPreference?.shipping
             if (shipping?.shippingPrice != null) {
-                val totalShippingPrice = shipping.shippingPrice
-                var insurancePrice = 0
+                val totalShippingPrice = shipping.shippingPrice.toDouble()
+                var insurancePrice = 0.0
                 if (shipping.isCheckInsurance && shipping.insuranceData != null) {
-                    insurancePrice = shipping.insuranceData.insurancePrice
+                    insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
                 }
                 val subtotal = totalProductPrice + totalShippingPrice + insurancePrice
-                orderTotal.value = orderTotal.value?.copy(subTotal = subtotal)
+                orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice))
                 return
             }
         }
-        orderTotal.value = orderTotal.value?.copy(subTotal = 0)
+        orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost())
     }
 
     fun generateCheckoutRequest() {

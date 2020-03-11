@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model
 
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
+import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.CartDataResponse
 
 
@@ -40,6 +41,7 @@ data class OrderProduct(
         var productId: Int = 0,
         var productName: String = "",
         var productPrice: Int = 0,
+        var wholesalePrice: List<WholesalePrice> = arrayListOf(),
         var productImageUrl: String = "",
         var productChildrenList: ArrayList<OrderProductChild> = arrayListOf(),
         var selectedVariantOptionsIdMap: LinkedHashMap<Int, Int> = LinkedHashMap(),
