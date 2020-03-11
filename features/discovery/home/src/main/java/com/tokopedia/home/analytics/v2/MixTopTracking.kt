@@ -9,10 +9,10 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 object MixTopTracking : BaseTracking() {
     private class CustomAction{
         companion object {
-            val IMPRESSION_ON_CAROUSEL_PRODUCT = Action.IMPRESSION_ON.format("product dynamic channel coupon")
-            val CLICK_ON_CAROUSEL_PRODUCT = Action.CLICK_ON.format("product dynamic channel coupon")
-            const val CLICK_VIEW_ALL_CAROUSEL = "click view all on dynamic channel coupon"
-            const val CLICK_BUTTON_CAROUSEL = "click %s on dynamic channel coupon"
+            val IMPRESSION_ON_CAROUSEL_PRODUCT = Action.IMPRESSION_ON.format("product dynamic channel top carousel")
+            val CLICK_ON_CAROUSEL_PRODUCT = Action.CLICK_ON.format("product dynamic channel top carousel")
+            const val CLICK_VIEW_ALL_CAROUSEL = "click view all on dynamic channel top carousel"
+            const val CLICK_BUTTON_CAROUSEL = "click %s on dynamic channel top carousel"
         }
     }
 
