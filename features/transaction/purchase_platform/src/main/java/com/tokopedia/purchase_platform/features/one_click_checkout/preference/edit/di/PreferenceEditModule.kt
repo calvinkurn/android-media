@@ -3,6 +3,9 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.preference.e
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.logisticcart.domain.executor.MainScheduler
+import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
+import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceEditUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetShippingDurationUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.create.CreatePreferenceUseCase
@@ -30,6 +33,12 @@ class PreferenceEditModule {
     @Provides
     internal fun providesGraphqlRepository(): GraphqlRepository {
         return Interactor.getInstance().graphqlRepository
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideScheduler(): SchedulerProvider {
+        return MainScheduler()
     }
 
     @PreferenceEditScope
@@ -90,5 +99,11 @@ class PreferenceEditModule {
     @Provides
     fun providesUpdatePreferenceUseCase(graphqlUseCase: GraphqlUseCase<UpdatePreferenceGqlResponse>): UpdatePreferenceUseCase {
         return UpdatePreferenceUseCase(graphqlUseCase)
+    }
+
+    @PreferenceEditScope
+    @Provides
+    fun provideRatesGraphqlUseCase(): com.tokopedia.graphql.domain.GraphqlUseCase {
+        return com.tokopedia.graphql.domain.GraphqlUseCase()
     }
 }

@@ -1,16 +1,55 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper
 
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.shipping.RangePrice
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.shipping.Response
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.shipping.ServicesItem
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.RangePriceModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ServicesItemModel
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shipping.ShippingDataModel
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.RatesGqlResponse
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceTextData
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ShippingDataModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.TextsModel
 import javax.inject.Inject
 
 class ShippingDurationModelWithPriceMapper @Inject constructor(): ShippingDurationDataWithPriceMapper {
 
-    override fun convertToDomainModelWithPrice(response: Response): ShippingDataModel {
+    override fun convertToDomainModelWithPrice(response: ShippingRecommendationData): ShippingListModel {
+
+        return ShippingListModel().apply {
+            for (item in response.shippingDurationViewModels) {
+                this.servicesPrice = listOf(servicesItemModel(item.serviceData))
+            }
+        }
+    }
+
+/*
+    override fun convertToDomainModelWithPrice(response: ShippingRecommendationData): ShippingListModel {
+
+        return ShippingListModel().apply {
+            this.servicesPrice = response.shippingDurationViewModels.map {
+//                it.serviceData
+            }
+//            this.servicesPrice = response.ratesData.ratesDetailData.services.map(servicesItemModel)
+        }
+    }*/
+
+
+    private val servicesItemModel: (ServiceData) -> ServicesItemModel = {
+        ServicesItemModel().apply {
+            this.servicesId = it.serviceId
+            this.servicesName = it.serviceName
+            this.texts = textItemModel(it.texts)
+        }
+    }
+
+    private val textItemModel: (ServiceTextData) -> TextsModel = {
+        TextsModel().apply {
+            this.textRangePrice = it.textRangePrice
+            this.textsServiceDesc = it.textServiceDesc
+        }
+    }
+
+/*    //response dari getRates
+    override fun convertToDomainModelWithPrice(response: RatesGqlResponse): ShippingDataModel {
         val shippingDataWithPriceModel = ShippingDataModel()
         shippingDataWithPriceModel.id = response.id
         shippingDataWithPriceModel.ratesId = response.ratesId
@@ -23,8 +62,8 @@ class ShippingDurationModelWithPriceMapper @Inject constructor(): ShippingDurati
         shippingDataWithPriceModel.services = servicesModules
 
         return shippingDataWithPriceModel
-    }
-
+    }*/
+/*
     fun getServicesShipping(servicesItem: ServicesItem): ServicesItemModel {
         val servicesItemModel = ServicesItemModel()
         servicesItemModel.serviceId = servicesItem.serviceId
@@ -39,5 +78,5 @@ class ShippingDurationModelWithPriceMapper @Inject constructor(): ShippingDurati
         rangePriceModel.rangePrice = (rangePrice.minPrice.toString() + "-" + rangePrice.maxPrice.toString())
 
         return rangePriceModel
-    }
+    }*/
 }
