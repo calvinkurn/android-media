@@ -261,13 +261,13 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 }
                 Utils.showPlayServiceErrorDialog(this)
             }
-            ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE -> updateInformationView(R.drawable.ic_ill_general_error,
+            ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE -> updateInformationView(R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_play_store_title),
                     getString(R.string.download_error_play_store_subtitle),
                     getString(R.string.goto_playstore)) {
                 gotoPlayStore()
             }
-            ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(R.drawable.ic_ill_general_error,
+            ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_os_and_play_store_title),
                     getString(R.string.download_error_os_and_play_store_subtitle),
                     getString(R.string.goto_seting)) {
@@ -279,7 +279,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                     getString(R.string.goto_seting)) {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
             }
-            SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(R.drawable.ic_ill_no_connection,
+            SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(R.drawable.unify_globalerrors_connection,
                     getString(R.string.download_error_connection_title),
                     getString(R.string.download_error_connection_subtitle),
                     getString(R.string.df_installer_try_again)) {
