@@ -2,8 +2,8 @@ package com.tokopedia.seller.product.picker.view.mapper
 
 import com.tokopedia.seller.product.picker.view.model.ProductListPickerViewModel
 import com.tokopedia.seller.product.picker.view.model.ProductListSellerModelView
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.Data
-import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductListResponse
+import com.tokopedia.shop.common.data.source.cloud.model.oldproductlist.Data
+import com.tokopedia.shop.common.data.source.cloud.model.oldproductlist.ProductListResponse
 import javax.inject.Inject
 
 class GetProductListMapper @Inject constructor() {

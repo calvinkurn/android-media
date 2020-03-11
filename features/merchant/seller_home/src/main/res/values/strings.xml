@@ -10,6 +10,20 @@
     <string name="sah_failed_to_get_information">Informasi gagal dimuat</string>
     <string name="sah_reload">Muat ulang</string>
 
+    <!--bottom nav-->
+    <string name="sah_home">Home</string>
+    <string name="sah_product">Produk</string>
+    <string name="sah_chat">Chat</string>
+    <string name="sah_sale">Penjualan</string>
+    <string name="sah_others">Lainnya</string>
+
+    <string name="sah_product_list">Daftar Produk</string>
+
+    <!--toolbar menu-->
+    <string name="sah_notification">Notifikasi</string>
+    <string name="sah_add_product">Tambah Produk</string>
+    <string name="sah_chat_settings">Pengaturan Chat</string>
+
     <string name="sah_ticker_warning">#ecdb77</string>
 
     <string name="menu_setting_title">Pengaturan</string>
@@ -38,4 +52,10 @@
     <string name="sh_coachmark_title_promo_recommendation">Buat Promosi</string>
     <string name="sh_coachmark_desc_promo_recommendation">Buat beragam promosi untuk meningkatkan performa toko</string>
     <string name="sh_centralized_promo_title">Promotion</string>
+
+    <string name="seller_home_logout_title">Keluar dari Tokopedia</string>
+    <string name="seller_home_logout_confirm">Apakah Anda ingin keluar?</string>
+    <string name="seller_home_logout_button">Keluar</string>
+    <string name="seller_home_cancel">Batal</string>
+    <string name="seller_home_loading">Loading...</string>
 </resources>
