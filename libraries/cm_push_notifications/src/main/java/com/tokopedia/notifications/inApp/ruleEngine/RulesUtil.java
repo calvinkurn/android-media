@@ -17,7 +17,7 @@ public class RulesUtil {
         lastElapsedTime.elapsedTime = android.os.SystemClock.elapsedRealtime();
 
         RepositoryManager.getInstance().getStorageProvider().
-                putElapsedTimeToStore(lastElapsedTime);
+                putElapsedTimeToStore(lastElapsedTime).subscribe();
         long correctedCurrentTime = currentTimeStamp + deltaTime;
         if(startTime <= correctedCurrentTime && (endTime >= correctedCurrentTime ||
                 endTime == 0l)){

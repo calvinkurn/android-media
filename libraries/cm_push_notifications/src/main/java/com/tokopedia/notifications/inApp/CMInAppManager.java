@@ -16,6 +16,8 @@ import com.tokopedia.notifications.common.IrisAnalyticsEvents;
 import com.tokopedia.notifications.inApp.ruleEngine.RulesManager;
 import com.tokopedia.notifications.inApp.ruleEngine.interfaces.DataProvider;
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager;
+import com.tokopedia.notifications.inApp.ruleEngine.rulesinterpreter.RuleInterpreterImpl;
+import com.tokopedia.notifications.inApp.ruleEngine.storage.DataConsumerImpl;
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.inApp.viewEngine.CMActivityLifeCycle;
 import com.tokopedia.notifications.inApp.viewEngine.CmInAppBundleConvertor;
@@ -34,13 +36,13 @@ public class CMInAppManager implements CmInAppListener {
 
     private static CMInAppManager inAppManager;
 
-    Application application;
+    private Application application;
 
     WeakReference<Activity> currentActivity;
 
-    CmInAppListener cmInAppListener;
+    private CmInAppListener cmInAppListener;
 
-    final Object lock = new Object();
+    private final Object lock = new Object();
 
 
     public static CMInAppManager getInstance() {
@@ -54,7 +56,7 @@ public class CMInAppManager implements CmInAppListener {
     public void init(@NonNull Application application) {
         this.application = application;
         this.cmInAppListener = this;
-        RulesManager.initRuleEngine(application);
+        RulesManager.initRuleEngine(application, new RuleInterpreterImpl(), new DataConsumerImpl());
         initInAppManager();
     }
 
@@ -147,7 +149,7 @@ public class CMInAppManager implements CmInAppListener {
     }
 
     private void putDataToStore(CMInApp inAppData) {
-        RepositoryManager.getInstance().getStorageProvider().putDataToStore(inAppData);
+        RepositoryManager.getInstance().getStorageProvider().putDataToStore(inAppData).subscribe();
     }
 
     public void viewDismissed(long id) {

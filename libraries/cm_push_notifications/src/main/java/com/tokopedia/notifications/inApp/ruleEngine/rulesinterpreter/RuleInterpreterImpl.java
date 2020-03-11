@@ -19,11 +19,10 @@ import rx.schedulers.Schedulers;
 
 public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
 
-    private List<CMInApp> inAppList;
     private ElapsedTime elapsedTimeObj;
 
     @Override
-    public void checkForValidity(String entity, int state, long currentTime,
+    public void checkForValidity(String entity, long currentTime,
                                  DataProvider dataProvider) {
         makeRequestForData(entity, currentTime, dataProvider);
     }
@@ -49,37 +48,7 @@ public class RuleInterpreterImpl implements InterfaceRuleInterpreter {
             }
         }).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<CMInApp>>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        dataProvider.notificationsDataResult(null);
-
-                    }
-
-                    @Override
-                    public void onNext(List<CMInApp> inAppDataList) {
-                        if( inAppDataList != null){
-                            inAppList = inAppDataList;
-                            Iterator<CMInApp> iter = inAppList.iterator();
-                            while (iter.hasNext()) {
-                                CMInApp inAppData = iter.next();
-                                if(!(checkIfActiveInTimeFrame(inAppData, inAppData.currentTime) &&
-                                        checkIfFrequencyIsValid(inAppData, inAppData.currentTime) &&
-                                        checkIfBehaviourRulesAreValid(inAppData))){
-                                    iter.remove();
-                                    if(performdeletion(inAppData)) {
-                                        RepositoryManager.getInstance().getStorageProvider().deleteRecord(inAppData.id);
-                                    }
-                                }
-                            }
-                        }
-                        dataProvider.notificationsDataResult(inAppList);
-                    }
-                });
+                .subscribe(new InAppDataProviderSubscriber(elapsedTimeObj, dataProvider));
     }
 
     private boolean checkIfActiveInTimeFrame(CMInApp inAppData, long currentTime){

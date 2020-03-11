@@ -13,7 +13,7 @@ public class RepositoryManager {
     private static RepositoryManager repositoryManager;
     private Application application;
 
-    RepositoryManager(Application application) {
+    private RepositoryManager(Application application) {
         RoomDB db = RoomDB.getDatabase(application);
         this.storageProvider = new StorageProvider(db.inAppDataDao(), db.elapsedTimeDao());
         this.application = application;
