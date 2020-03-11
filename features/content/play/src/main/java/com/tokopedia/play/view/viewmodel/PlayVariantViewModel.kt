@@ -8,9 +8,12 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.PostAddtoCartUseCase
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.type.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
-import com.tokopedia.variant_common.model.ProductDetailVariantCommonResponse
+import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
+import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.withContext
@@ -29,18 +32,28 @@ class PlayVariantViewModel @Inject constructor(
     private val job = SupervisorJob()
 
     private val _observableAddtoCart = MutableLiveData<CartFeedbackUiModel>()
-    private val _observableProductVariant = MutableLiveData<ProductDetailVariantCommonResponse>()
+    private val _observableProductVariant = MutableLiveData<VariantSheetUiModel>()
 
     val observableAddtoCart: LiveData<CartFeedbackUiModel> = _observableAddtoCart
-    val observableProductVariant: LiveData<ProductDetailVariantCommonResponse> = _observableProductVariant
+    val observableProductVariant: LiveData<VariantSheetUiModel> = _observableProductVariant
 
-    fun getProductVariant(productId: String) {
+    fun getProductVariant(product: ProductLineUiModel, action: ProductAction) {
         launchCatchError(block = {
-            val productVariant = withContext(dispatchers.io) {
-                getProductVariantUseCase.params = getProductVariantUseCase.createParams(productId)
-                getProductVariantUseCase.executeOnBackground()
+           val variantSheetUiModel = withContext(dispatchers.io) {
+               getProductVariantUseCase.params = getProductVariantUseCase.createParams(product.id)
+               val response = getProductVariantUseCase.executeOnBackground()
+               val mapOfSelectedVariants = VariantCommonMapper.mapVariantIdentifierToHashMap(response.data)
+               val categoryVariants = VariantCommonMapper.processVariant(response.data,
+                       mapOfSelectedVariant = mapOfSelectedVariants)
+               VariantSheetUiModel(
+                       product = product,
+                       action = action,
+                       parentVariant = response.data,
+                       mapOfSelectedVariants = mapOfSelectedVariants,
+                       listOfVariantCategory = categoryVariants?: emptyList()
+               )
             }
-            _observableProductVariant.value = productVariant
+            _observableProductVariant.value = variantSheetUiModel
         }){}
     }
 
