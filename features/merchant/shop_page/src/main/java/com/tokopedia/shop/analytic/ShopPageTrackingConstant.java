@@ -71,6 +71,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_SET_SHIPPING_SERVICE = "click set shipping service";
     public static final String CLICK_SHOP_PROFILE = "click shop profile";
     public static final String CLICK_ADD_ETALASE_BUTTON = "click add etalase button";
+    public static final String CLICK_VIEW_ALL_PRODUCT = "click lihat semua produk - %s - %s";
 
     //label
     public static final String CLICK_TAB = "click tab";
