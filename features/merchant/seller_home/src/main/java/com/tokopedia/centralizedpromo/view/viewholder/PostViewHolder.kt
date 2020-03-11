@@ -8,13 +8,13 @@ import com.tokopedia.centralizedpromo.view.model.PostUiModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.R.layout.sah_item_centralized_promo_post
-import kotlinx.android.synthetic.main.sah_item_centralized_promo_post.view.*
+import com.tokopedia.sellerhome.R.layout.centralized_promo_item_post
+import kotlinx.android.synthetic.main.centralized_promo_item_post.view.*
 
 class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
 
     companion object {
-        val RES_LAYOUT = sah_item_centralized_promo_post
+        val RES_LAYOUT = centralized_promo_item_post
     }
 
     override fun bind(element: PostUiModel) {

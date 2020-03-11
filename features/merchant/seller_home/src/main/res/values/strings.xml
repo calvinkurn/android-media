@@ -37,5 +37,5 @@
     <string name="sh_coachmark_desc_on_going_promo">Kamu dapat memantau promosi aktif, dan promosi yang sudah selesai di sini</string>
     <string name="sh_coachmark_title_promo_creation">Buat Promosi</string>
     <string name="sh_coachmark_desc_promo_creation">Buat beragam promosi untuk meningkatkan performa toko</string>
-    <string name="sh_centralized_promo_title">Promotion</string>
+    <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
 </resources>

@@ -11,10 +11,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post.view.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post_error.view.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post_shimmering.view.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post_success.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_post.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_post_error.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_post_shimmering.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_post_success.view.*
 import kotlinx.android.synthetic.main.sah_partial_common_widget_state_error.view.*
 
 class PartialCentralizedPromoPostView(

@@ -9,7 +9,7 @@
 
     <include
         android:id="@+id/partialSuccess"
-        layout="@layout/sah_partial_centralized_promo_creation_success"
+        layout="@layout/centralized_promo_partial_creation_success"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
@@ -29,6 +29,6 @@
         app:layout_constraintTop_toBottomOf="@id/partialSuccess"
         tools:targetApi="lollipop" />
 
-    <include layout="@layout/sah_partial_centralized_promo_creation_shimmering" />
+    <include layout="@layout/centralized_promo_partial_creation_shimmering" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

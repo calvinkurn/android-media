@@ -35,6 +35,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintTop_toBottomOf="@id/tvOnGoingPromo"
         tools:itemCount="4"
-        tools:listitem="@layout/sah_item_centralized_promo_on_going_promo" />
+        tools:listitem="@layout/centralized_promo_item_on_going_promo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

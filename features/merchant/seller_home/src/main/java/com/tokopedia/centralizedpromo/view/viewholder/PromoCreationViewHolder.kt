@@ -9,13 +9,13 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.sellerhome.R.layout.sah_item_centralized_promo_creation
-import kotlinx.android.synthetic.main.sah_item_centralized_promo_creation.view.*
+import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
+import kotlinx.android.synthetic.main.centralized_promo_item_promo_creation.view.*
 
 class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiModel>(view) {
 
     companion object {
-        val RES_LAYOUT = sah_item_centralized_promo_creation
+        val RES_LAYOUT = centralized_promo_item_promo_creation
     }
 
     override fun bind(element: PromoCreationUiModel) {
@@ -47,12 +47,6 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
             with(outRect) {
                 if (parent.getChildAdapterPosition(view) > 1) {
                     top = margin
-                }
-                if (parent.getChildAdapterPosition(view) % 2 != 0) {
-                    left = margin
-                }
-                if (parent.getChildAdapterPosition(view) % 2 == 0) {
-                    right = margin
                 }
                 bottom = margin
             }

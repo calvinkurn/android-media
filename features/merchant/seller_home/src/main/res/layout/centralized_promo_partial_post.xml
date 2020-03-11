@@ -10,15 +10,15 @@
     android:descendantFocusability="blocksDescendants"
     app:cardCornerRadius="@dimen/layout_lvl1">
 
-    <include layout="@layout/sah_partial_centralized_promo_post_success" />
+    <include layout="@layout/centralized_promo_partial_post_success" />
 
-    <include layout="@layout/sah_partial_centralized_promo_post_shimmering" />
+    <include layout="@layout/centralized_promo_partial_post_shimmering" />
 
     <ViewStub
         android:id="@+id/stubLayoutCentralizedPromoPostListError"
         android:layout_width="match_parent"
         android:layout_height="@dimen/sah_large_widget_height"
         android:padding="@dimen/layout_lvl2"
-        android:layout="@layout/sah_partial_centralized_promo_post_error"/>
+        android:layout="@layout/centralized_promo_partial_post_error"/>
 
 </androidx.cardview.widget.CardView>

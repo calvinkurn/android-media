@@ -10,8 +10,8 @@ import com.tokopedia.centralizedpromo.view.viewholder.PromoCreationViewHolder
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_creation.view.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_creation_shimmering.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_creation_shimmering.view.*
 
 class PartialCentralizedPromoCreationView(
         view: View,

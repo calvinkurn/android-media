@@ -6,13 +6,14 @@ import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFa
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
+import com.tokopedia.centralizedpromo.view.viewholder.OnGoingPromoViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo.view.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_error.view.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_shimmering.view.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_success.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_on_going_promo.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_on_going_promo_error.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_on_going_promo_shimmering.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_on_going_promo_success.view.*
 
 class PartialCentralizedPromoOnGoingPromoView(
         private val refreshButtonClickListener: RefreshButtonClickListener,
@@ -87,6 +88,7 @@ class PartialCentralizedPromoOnGoingPromoView(
     private fun setupOnGoingPromo() = with(view) {
         rvCentralizedPromoOnGoingPromo.apply {
             adapter = this@PartialCentralizedPromoOnGoingPromoView.adapter
+            addItemDecoration(OnGoingPromoViewHolder.ItemDecoration(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt()))
         }
     }
 

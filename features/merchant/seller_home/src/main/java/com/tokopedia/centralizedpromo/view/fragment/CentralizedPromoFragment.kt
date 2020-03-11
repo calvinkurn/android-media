@@ -26,9 +26,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_centralized_promo.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_creation.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_on_going_promo_success.*
-import kotlinx.android.synthetic.main.sah_partial_centralized_promo_post.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_on_going_promo_success.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_post.*
 import java.util.*
 import javax.inject.Inject
 
