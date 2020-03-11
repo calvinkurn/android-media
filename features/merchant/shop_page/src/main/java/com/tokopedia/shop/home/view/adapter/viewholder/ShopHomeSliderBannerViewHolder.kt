@@ -94,5 +94,5 @@ class ShopHomeSliderBannerViewHolder(
     }
 
 
-    data class CarouselData(val imageUrl: String)
+    class CarouselData(val imageUrl: String)
 }
