@@ -12,7 +12,6 @@ class SetCashbackUseCase @Inject constructor(
 
     companion object {
         const val CASHBACK_SUCCESS_ERROR_CODE = "200"
-        const val CASHBACK_FAIL_ERROR_CODE = "400"
         const val CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE = "422"
         const val PARAM_PRODUCT_ID = "ProductID"
         const val PARAM_CASHBACK = "Cashback"
@@ -27,13 +26,10 @@ class SetCashbackUseCase @Inject constructor(
             return requestParams
         }
 
-        private val query by lazy {
-            val productID = "\$productID"
-            val cashback = "\$cashback"
-            val isBySystem = "\$isBySystem"
+        private val query =
             """
-            mutation GoldSetProductCashback($productID : Int!, $cashback : Int!, $isBySystem : Boolean!){
-                GoldSetProductCashback(ProductID: $productID, Cashback: $cashback, IsBySystem: $isBySystem){
+            mutation GoldSetProductCashback(${'$'}ProductID : Int!, ${'$'}Cashback : Int!, ${'$'}IsBySystem : Boolean!){
+                GoldSetProductCashback(ProductID: ${'$'}ProductID, Cashback: ${'$'}Cashback, IsBySystem: ${'$'}IsBySystem){
                     header {
                         process_time
                         message
@@ -43,7 +39,6 @@ class SetCashbackUseCase @Inject constructor(
                 }
             }
             """.trimIndent()
-        }
 
 
     }

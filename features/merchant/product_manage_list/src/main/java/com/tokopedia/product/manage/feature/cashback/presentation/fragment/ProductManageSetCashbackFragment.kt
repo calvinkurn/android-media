@@ -97,13 +97,6 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
     override fun onSelectClick(element: SelectViewModel) {
         viewModel.updateCashback(element.value.toIntOrZero())
-        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-        cacheManager?.let {
-            val cacheManagerId = it.id
-            it.put(SET_CASHBACK_PRODUCT, viewModel.product.value)
-            this.activity?.setResult(Activity.RESULT_OK, Intent().putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, cacheManagerId))
-            this.activity?.finish()
-        }
     }
 
     private fun initInjector() {
@@ -112,6 +105,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
     private fun initView() {
         initHeader()
+        initButton()
     }
 
     private fun initHeader() {
@@ -123,6 +117,18 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
             activity?.onBackPressed()
         }
         set_cashback_header.isShowShadow = false
+    }
+
+    private fun initButton() {
+        btn_submit_cashback.setOnClickListener {
+            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+            cacheManager?.let {
+                val cacheManagerId = it.id
+                it.put(SET_CASHBACK_PRODUCT, viewModel.product.value)
+                this.activity?.setResult(Activity.RESULT_OK, Intent().putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, cacheManagerId))
+                this.activity?.finish()
+            }
+        }
     }
 
     private fun initSetCashbackList(product: ProductViewModel) {

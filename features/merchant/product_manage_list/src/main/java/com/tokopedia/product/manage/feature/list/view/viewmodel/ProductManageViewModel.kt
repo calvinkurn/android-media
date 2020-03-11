@@ -14,7 +14,6 @@ import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapTo
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
@@ -222,7 +221,7 @@ class ProductManageViewModel @Inject constructor(
         launchCatchError(block = {
             val result = setCashbackUseCase.executeOnBackground()
             when(result.goldSetProductCashback.header.errorCode) {
-                CASHBACK_SUCCESS_ERROR_CODE -> _setCashbackResult.postValue(Success(SetCashbackResult(productName = productName)))
+                CASHBACK_SUCCESS_ERROR_CODE -> _setCashbackResult.postValue(Success(SetCashbackResult(productId = productId, cashback = cashback, productName = productName)))
                 CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE -> _setCashbackResult.postValue(Fail(SetCashbackResult(limitExceeded = true)))
                 else -> _setCashbackResult.postValue(Fail(SetCashbackResult(productId = productId, productName = productName, cashback = cashback)))
             }

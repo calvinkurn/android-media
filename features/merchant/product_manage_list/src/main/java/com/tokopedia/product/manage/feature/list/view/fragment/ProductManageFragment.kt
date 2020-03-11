@@ -503,7 +503,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
         Toaster.make(coordinatorLayout, getString(
                 R.string.product_manage_set_cashback_success, setCashbackResult.productName),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        productManageListAdapter.updateCashback(setCashbackResult.productId, setCashbackResult.cashback)
     }
 
     private fun showRegularMerchantBottomSheet(featureName: String) {

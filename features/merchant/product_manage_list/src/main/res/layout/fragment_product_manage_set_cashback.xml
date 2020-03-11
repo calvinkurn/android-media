@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_submit"
+            android:id="@+id/btn_submit_cashback"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/filter_expand_save_button"

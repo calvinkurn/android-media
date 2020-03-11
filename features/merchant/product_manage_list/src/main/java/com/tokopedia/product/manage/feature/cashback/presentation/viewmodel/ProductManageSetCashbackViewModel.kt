@@ -18,6 +18,7 @@ class ProductManageSetCashbackViewModel @Inject constructor() : ViewModel() {
     }
 
     fun updateCashback(cashback: Int) {
-        _product.postValue(_product.value?.copy(cashBack = cashback))
+        val updatedProduct = _product.value?.copy(cashBack = cashback)
+        _product.value = updatedProduct
     }
 }
