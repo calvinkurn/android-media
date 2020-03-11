@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.analytic.NavigationTracking
+import com.tokopedia.sellerhome.analytic.TrackingConstant
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
@@ -50,6 +52,7 @@ class SellerHomeActivity : BaseActivity() {
     private val otherSettingsFragment by lazy { OtherMenuFragment.createInstance() }
     private val fragmentManger: FragmentManager by lazy { supportFragmentManager }
 
+    private var currentSelectedMenu = 0
     private var currentFragment: Fragment? = null
     private var hasAttachSettingsFragment = false
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
@@ -112,27 +115,31 @@ class SellerHomeActivity : BaseActivity() {
         sahBottomNav.labelVisibilityMode = LabelVisibilityMode.LABEL_VISIBILITY_LABELED
         sahBottomNav.setOnNavigationItemSelectedListener { menu ->
             when (menu.itemId) {
-                R.id.menu_sah_home -> showContainerFragment(PageFragment(FragmentType.HOME))
-                R.id.menu_sah_product -> showContainerFragment(PageFragment(FragmentType.PRODUCT))
-                R.id.menu_sah_chat -> showContainerFragment(PageFragment(FragmentType.CHAT))
-                R.id.menu_sah_order -> showContainerFragment(lastSomTab)
+                R.id.menu_sah_home -> showContainerFragment(PageFragment(FragmentType.HOME), TrackingConstant.CLICK_HOME)
+                R.id.menu_sah_product -> showContainerFragment(PageFragment(FragmentType.PRODUCT), TrackingConstant.CLICK_PRODUCT)
+                R.id.menu_sah_chat -> showContainerFragment(PageFragment(FragmentType.CHAT), TrackingConstant.CLICK_CHAT)
+                R.id.menu_sah_order -> showContainerFragment(lastSomTab, TrackingConstant.CLICK_ORDER)
                 R.id.menu_sah_other -> showOtherSettingsFragment()
             }
             return@setOnNavigationItemSelectedListener true
         }
     }
 
-    private fun showContainerFragment(page: PageFragment) {
-        if (sahBottomNav.currentItem == page.type) return
+    private fun showContainerFragment(page: PageFragment, trackingAction: String) {
+        if (currentSelectedMenu == page.type) return
+        currentSelectedMenu = page.type
 
         sharedViewModel.setCurrentSelectedPage(page)
         showFragment(containerFragment)
         lastSomTab = PageFragment(FragmentType.ORDER)
+
+        NavigationTracking.sendClickBottomNavigationMenuEvent(trackingAction)
     }
 
     private fun showOtherSettingsFragment() {
         val type = FragmentType.OTHER
-        if (sahBottomNav.currentItem == type) return
+        if (currentSelectedMenu == type) return
+        currentSelectedMenu = type
 
         if (!hasAttachSettingsFragment) {
             addFragment(otherSettingsFragment)
@@ -140,6 +147,8 @@ class SellerHomeActivity : BaseActivity() {
         }
         showFragment(otherSettingsFragment)
         sharedViewModel.setCurrentSelectedPage(PageFragment(type))
+
+        NavigationTracking.sendClickBottomNavigationMenuEvent(TrackingConstant.CLICK_OTHERS)
     }
 
     private fun setupDefaultFragment() {
