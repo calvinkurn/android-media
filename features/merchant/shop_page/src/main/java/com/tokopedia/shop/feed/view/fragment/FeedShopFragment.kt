@@ -164,6 +164,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.attachView(this)
         initVar()
         super.onViewCreated(view, savedInstanceState)
+        isLoadingInitialData = true
     }
 
     override fun onPause() {
@@ -265,7 +266,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onResume() {
         super.onResume()
-        loadInitialData()
+        if (isLoadingInitialData) {
+            loadInitialData()
+        }
     }
 
     override fun loadData(page: Int) {
