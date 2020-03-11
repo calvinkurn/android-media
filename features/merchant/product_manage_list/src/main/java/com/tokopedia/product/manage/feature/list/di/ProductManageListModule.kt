@@ -5,10 +5,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
 import com.tokopedia.gm.common.data.source.GMCommonDataSource
-import com.tokopedia.gm.common.domain.interactor.SetCashbackUseCase
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
@@ -22,11 +22,7 @@ import com.tokopedia.product.manage.item.main.draft.domain.UpdateUploadingDraftP
 import com.tokopedia.product.manage.oldlist.constant.GQL_FEATURED_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.GQL_UPDATE_PRODUCT
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
-import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.ClearAllDraftProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
-import com.tokopedia.product.manage.oldlist.domain.FetchAllDraftProductCountUseCase
-import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
+import com.tokopedia.product.manage.oldlist.domain.*
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenter
 import com.tokopedia.product.manage.oldlist.view.presenter.ProductDraftListCountPresenterImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
@@ -52,32 +48,32 @@ class ProductManageListModule {
     @Provides
     @ProductManageListScope
     fun provideProductManageViewModel(
-        editPriceUseCase: EditPriceUseCase,
-        gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
-        userSession: UserSessionInterface,
-        topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-        setCashbackUseCase: SetCashbackUseCase,
-        popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
-        getProductListUseCase: GQLGetProductListUseCase,
-        bulkUpdateProductUseCase: BulkUpdateProductUseCase,
-        editFeaturedProductUseCase: EditFeaturedProductUseCase,
-        editStockUseCase: EditStockUseCase,
-        deleteProductUseCase: DeleteProductUseCase
+            editPriceUseCase: EditPriceUseCase,
+            gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
+            userSession: UserSessionInterface,
+            topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
+            setCashbackUseCase: SetCashbackUseCase,
+            popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
+            getProductListUseCase: GQLGetProductListUseCase,
+            bulkUpdateProductUseCase: BulkUpdateProductUseCase,
+            editFeaturedProductUseCase: EditFeaturedProductUseCase,
+            editStockUseCase: EditStockUseCase,
+            deleteProductUseCase: DeleteProductUseCase
     ): ProductManageViewModel {
         return ProductManageViewModel(
-            editPriceUseCase,
-            gqlGetShopInfoUseCase,
-            userSession,
-            topAdsGetShopDepositGraphQLUseCase,
-            setCashbackUseCase,
-            popupManagerAddProductUseCase,
-            getProductListUseCase,
-            bulkUpdateProductUseCase,
-            editFeaturedProductUseCase,
-            editStockUseCase,
-            deleteProductUseCase,
-            Dispatchers.IO,
-            Dispatchers.Main
+                editPriceUseCase,
+                gqlGetShopInfoUseCase,
+                userSession,
+                topAdsGetShopDepositGraphQLUseCase,
+                setCashbackUseCase,
+                popupManagerAddProductUseCase,
+                getProductListUseCase,
+                bulkUpdateProductUseCase,
+                editFeaturedProductUseCase,
+                editStockUseCase,
+                deleteProductUseCase,
+                Dispatchers.IO,
+                Dispatchers.Main
         )
     }
 
@@ -167,6 +163,11 @@ class ProductManageListModule {
     @Provides
     fun provideEditPriceUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
             EditPriceUseCase(multiRequestGraphqlUseCase)
+
+    @ProductManageListScope
+    @Provides
+    fun provideSetCashbackUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
+            SetCashbackUseCase(multiRequestGraphqlUseCase)
 
     @ProductManageListScope
     @Provides
