@@ -397,7 +397,7 @@ public abstract class BaseAccountFragment extends TkpdBaseV4Fragment implements 
 
     protected void moveToCreateShop() {
         if (getContext().getApplicationContext() instanceof AccountHomeRouter) {
-            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.OPEN_SHOP), OPEN_SHOP_SUCCESS);
+            startActivityForResult(RouteManager.getIntent(getContext(), ApplinkConst.CREATE_SHOP), OPEN_SHOP_SUCCESS);
         }
     }
 

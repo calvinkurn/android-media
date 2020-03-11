@@ -298,6 +298,7 @@ object DeeplinkMapper {
     private fun getRegisteredNavigationFromSellerapp(deeplink: String): String {
         val trimDeeplink = trimDeeplink(deeplink)
         return when (trimDeeplink) {
+            ApplinkConst.SellerApp.SELLER_APP_HOME -> ApplinkConstInternalSellerapp.SELLER_HOME
             ApplinkConst.SellerApp.TOPADS_DASHBOARD -> ApplinkConstInternalTopAds.TOPADS_DASHBOARD_INTERNAL
             ApplinkConst.SellerApp.PRODUCT_ADD -> ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM
             ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalGlobal.SETTING_PROFILE
