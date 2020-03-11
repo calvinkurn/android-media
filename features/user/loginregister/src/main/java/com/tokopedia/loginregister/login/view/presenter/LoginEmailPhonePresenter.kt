@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.view.presenter
 
 import android.content.Context
+import android.os.Build
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
 import com.facebook.AccessToken
@@ -8,6 +9,7 @@ import com.facebook.CallbackManager
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.loginfingerprint.data.preference.FingerprintSetting
 import com.tokopedia.loginfingerprint.utils.crypto.Cryptography
+import com.tokopedia.loginfingerprint.utils.crypto.CryptographyUtils
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.domain.usecase.DynamicBannerUseCase
 import com.tokopedia.loginregister.discover.usecase.DiscoverUseCase
@@ -52,7 +54,6 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
                                                    private val statusPinUseCase: StatusPinUseCase,
                                                    private val dynamicBannerUseCase: DynamicBannerUseCase,
                                                    private val statusFingerprintUseCase: StatusFingerprintUseCase,
-                                                   private val cryptographyUtils: Cryptography,
                                                    private val fingerprintPreferenceHelper: FingerprintSetting,
                                                    @Named(SESSION_MODULE)
                                                    private val userSession: UserSessionInterface)
@@ -60,6 +61,14 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         LoginEmailPhoneContract.Presenter {
 
     private lateinit var viewEmailPhone: LoginEmailPhoneContract.View
+
+    private var cryptographyUtils: Cryptography? = null
+
+    init {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            cryptographyUtils = CryptographyUtils()
+        }
+    }
 
     fun attachView(view: LoginEmailPhoneContract.View, viewEmailPhone: LoginEmailPhoneContract.View) {
         super.attachView(view)
@@ -265,12 +274,14 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     }
 
     override fun checkStatusFingerprint() {
-        val signature = cryptographyUtils.generateFingerprintSignature(userId = userSession.userId, deviceId = userSession.deviceId)
-        statusFingerprintUseCase.executeCoroutines({
-            onCheckStatusFingerprintSuccess(it)
-        }, {
-            view.onSuccessLogin()
-        }, signature)
+        val signature = cryptographyUtils?.generateFingerprintSignature(userId = userSession.userId, deviceId = userSession.deviceId)
+        signature?.run {
+            statusFingerprintUseCase.executeCoroutines({
+                onCheckStatusFingerprintSuccess(it)
+            }, {
+                view.onSuccessLogin()
+            }, this)
+        }
     }
 
     private fun saveFingerprintStatus(data: StatusFingerprint){
