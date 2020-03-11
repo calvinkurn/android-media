@@ -88,7 +88,7 @@ ext {
     unifyDialogVersion = '1.0.0'
     unifyDatePickerVersion = '1.0.2'
     unifyEmptyStateVersion = '1.0.2'
-    unifyGlobalErrorVersion = '1.0.6'
+    unifyGlobalErrorVersion = '1.0.8'
     unifySortFilterVersion = '1.0.1'
     unifyIconNotificationVersion = '1.0.0'
 

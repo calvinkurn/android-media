@@ -3,20 +3,20 @@ package com.tokopedia.shop.home.view.activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.youtube.player.YouTubeBaseActivity
+import androidx.appcompat.widget.Toolbar
 import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubePlayer
 import com.google.android.youtube.player.YouTubePlayerSupportFragment
 import com.tokopedia.shop.R
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
-import kotlinx.android.synthetic.main.activity_shop_home_page_youtube_player.*
 
 /**
  * Created by rizqiaryansa on 2020-03-02.
  */
 
-class ShopHomePageYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.OnInitializedListener {
+class ShopHomePageYoutubePlayerActivity: AppCompatActivity(), YouTubePlayer.OnInitializedListener {
 
     companion object {
         private const val EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE = "EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE"
@@ -27,17 +27,23 @@ class ShopHomePageYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.On
         }
     }
 
+    private var toolbar: Toolbar? = null
     private var isFullScreen = false
-    private var videoUrls: String? = null
+    private var videoUrl: String? = null
     private lateinit var youtubePlayerScreen: YouTubePlayer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_shop_home_page_youtube_player)
 
-        videoUrls = intent.getStringExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE)
+        toolbar = findViewById(R.id.toolbarVideo)
 
-        youtube_player_main.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
+        setupActionBar()
+
+        videoUrl = intent.getStringExtra(EXTRA_YOUTUBE_VIDEO_ID_SHOP_PAGE)
+
+        val youtubePlayerFragment = supportFragmentManager.findFragmentById(R.id.youtube_fragment) as YouTubePlayerSupportFragment
+        youtubePlayerFragment.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
     override fun onInitializationSuccess(provider: YouTubePlayer.Provider?, player: YouTubePlayer?, p2: Boolean) {
@@ -59,13 +65,33 @@ class ShopHomePageYoutubePlayerActivity: YouTubeBaseActivity(), YouTubePlayer.On
             youtubePlayerScreen.release()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        when(item?.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (::youtubePlayerScreen.isInitialized)
             youtubePlayerScreen.release()
     }
 
+    private fun setupActionBar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            setDisplayShowTitleEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_video_close)
+            title = getString(R.string.close_youtube)
+        }
+    }
+
     private fun playVideo() {
-        youtubePlayerScreen.cueVideo(videoUrls)
+        youtubePlayerScreen.cueVideo(videoUrl)
     }
 }
