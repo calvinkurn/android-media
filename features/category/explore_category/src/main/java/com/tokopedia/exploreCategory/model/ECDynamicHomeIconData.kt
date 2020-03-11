@@ -1,17 +1,20 @@
 package com.tokopedia.exploreCategory.model
 
-import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 data class ECDynamicHomeIconData(
         @SerializedName("dynamicHomeIcon")
         val dynamicHomeIcon: DynamicHomeIcon?
-) {
+) : Parcelable {
+    @Parcelize
     data class DynamicHomeIcon(
             @SerializedName("categoryGroup")
             val categoryGroup: List<CategoryGroup?>?
-    ) {
+    ) : Parcelable {
+        @Parcelize
         data class CategoryGroup(
                 @SerializedName("id")
                 val id: Int,
@@ -23,7 +26,8 @@ data class ECDynamicHomeIconData(
                 val categoryRows: List<CategoryRow?>?,
                 @SerializedName("isClosed")
                 var isOpen : Boolean = false
-        ) {
+        ) : Parcelable {
+            @Parcelize
             data class CategoryRow(
                     @SerializedName("id")
                     val id: Int,
@@ -39,41 +43,7 @@ data class ECDynamicHomeIconData(
                     val categoryLabel: String?,
                     @SerializedName("bu_identifier")
                     val buIdentifier: String?
-            ) : Parcelable {
-                constructor(parcel: Parcel) : this(
-                        parcel.readInt(),
-                        parcel.readString(),
-                        parcel.readString(),
-                        parcel.readString(),
-                        parcel.readString(),
-                        parcel.readString(),
-                        parcel.readString()) {
-                }
-
-                override fun writeToParcel(parcel: Parcel, flags: Int) {
-                    parcel.writeInt(id)
-                    parcel.writeString(name)
-                    parcel.writeString(url)
-                    parcel.writeString(imageUrl)
-                    parcel.writeString(applinks)
-                    parcel.writeString(categoryLabel)
-                    parcel.writeString(buIdentifier)
-                }
-
-                override fun describeContents(): Int {
-                    return 0
-                }
-
-                companion object CREATOR : Parcelable.Creator<CategoryRow> {
-                    override fun createFromParcel(parcel: Parcel): CategoryRow {
-                        return CategoryRow(parcel)
-                    }
-
-                    override fun newArray(size: Int): Array<CategoryRow?> {
-                        return arrayOfNulls(size)
-                    }
-                }
-            }
+            ) : Parcelable
         }
     }
 }

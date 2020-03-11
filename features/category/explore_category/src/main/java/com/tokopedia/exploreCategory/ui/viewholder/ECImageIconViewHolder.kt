@@ -11,7 +11,7 @@ import com.tokopedia.exploreCategory.model.ECDynamicHomeIconData.DynamicHomeIcon
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECImageIconVHViewModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ECImageIconViewHolder(itemView: View?, private val iconListener: IconListener?) : AbstractViewHolder<ECImageIconVHViewModel>(itemView) {
+class ECImageIconViewHolder(itemView: View, private val iconListener: IconListener?) : AbstractViewHolder<ECImageIconVHViewModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
@@ -20,9 +20,9 @@ class ECImageIconViewHolder(itemView: View?, private val iconListener: IconListe
         const val NEW_CATEGORY = "1"
     }
 
-    private var ecTypographyIconTitle = itemView?.findViewById<Typography>(R.id.ec_typography_icon_title)
-    private var ecImageBg = itemView?.findViewById<ImageView>(R.id.ec_image_bg)
-    private val tvNewLabel = itemView?.findViewById<AppCompatTextView>(R.id.ec_new_label)
+    private var ecTypographyIconTitle = itemView.findViewById<Typography>(R.id.ec_typography_icon_title)
+    private var ecImageBg = itemView.findViewById<ImageView>(R.id.ec_image_bg)
+    private val tvNewLabel = itemView.findViewById<AppCompatTextView>(R.id.ec_new_label)
 
     override fun bind(element: ECImageIconVHViewModel?) {
         ecTypographyIconTitle?.text = element?.categoryRow?.name

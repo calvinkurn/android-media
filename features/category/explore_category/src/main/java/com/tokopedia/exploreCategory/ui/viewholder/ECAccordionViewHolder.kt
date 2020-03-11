@@ -13,7 +13,7 @@ import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECAccordionVHViewMo
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
-class ECAccordionViewHolder(itemView: View?,
+class ECAccordionViewHolder(itemView: View,
                             iconListener: ECImageIconViewHolder.IconListener?,
                             private val accordionListener: AccordionListener?)
     : AbstractViewHolder<ECAccordionVHViewModel>(itemView) {
@@ -28,10 +28,10 @@ class ECAccordionViewHolder(itemView: View?,
 
     private val adapter: ECServiceAdapter = ECServiceAdapter(ECServiceAdapterFactory(iconListener, null))
 
-    private var ecTypographyTitle = itemView?.findViewById<Typography>(R.id.ec_typography_title)
-    private var ecRecyclerView = itemView?.findViewById<RecyclerView>(R.id.ec_icons_recycler_view)
-    private var ecIconChevron = itemView?.findViewById<ImageView>(R.id.ec_icon_chevron)
-    private var ecAccordion = itemView?.findViewById<View>(R.id.ec_accordion)
+    private var ecTypographyTitle = itemView.findViewById<Typography>(R.id.ec_typography_title)
+    private var ecRecyclerView = itemView.findViewById<RecyclerView>(R.id.ec_icons_recycler_view)
+    private var ecIconChevron = itemView.findViewById<ImageView>(R.id.ec_icon_chevron)
+    private var ecAccordion = itemView.findViewById<View>(R.id.ec_accordion)
 
     override fun bind(element: ECAccordionVHViewModel?) {
         val layoutManager = GridLayoutManager(itemView.context, COLUMN_COUNT)
