@@ -12,11 +12,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ServicesItemModelNoPrice
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItem
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
@@ -106,7 +105,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         })
     }
 
-    private fun renderData(data: List<ServicesItemModelNoPrice>) {
+    private fun renderData(data: List<ServicesItem>) {
         adapter.shippingDurationList.clear()
         adapter.shippingDurationList.addAll(data)
         adapter.notifyDataSetChanged()
@@ -116,11 +115,29 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
         super.onViewCreated(view, savedInstanceState)
         initHeader()
         initViewModel()
-        viewModel.getShippingDuration()
+        checkEntryPoint()
 
         ticker_info.setTextDescription(getString(R.string.ticker_label_text))
         shipping_duration_rv.adapter = adapter
         shipping_duration_rv.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+    }
+
+    private fun checkEntryPoint(){
+        val parent = activity
+        if(parent is PreferenceEditActivity) {
+            if(parent.listShopShipment.isNullOrEmpty() && parent.shippingParam == null) {
+                viewModel.getShippingDuration()
+            } else {
+                hitRates()
+            }
+        }
+    }
+
+    private fun hitRates(){
+        val parent = activity
+        if(parent is PreferenceEditActivity) {
+            viewModel.getRates(parent.listShopShipment, parent.shippingParam)
+        }
     }
 
     private fun goToNextStep() {

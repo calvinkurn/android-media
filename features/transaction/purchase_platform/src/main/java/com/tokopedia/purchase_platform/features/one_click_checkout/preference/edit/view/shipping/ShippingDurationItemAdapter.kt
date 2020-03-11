@@ -4,14 +4,18 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ServicesItemModelNoPrice
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItem
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModelNoPrice
 import kotlinx.android.synthetic.main.item_shipping_duration.view.*
 
 class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : RecyclerView.Adapter<ShippingDurationItemAdapter.ShippingDurationViewHolder>(){
 
-    var shippingDurationList = mutableListOf<ServicesItemModelNoPrice>()
+    var shippingDurationList = mutableListOf<ServicesItem>()
     var lastCheckedPosition = -1
 //    private var inflater: LayoutInflater = LayoutInflater.from(context)
 //    private val listShippingDuration = emptyList<Preference>()
@@ -26,11 +30,17 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
     }
 
     override fun getItemCount(): Int {
+        Log.d("itemList", shippingDurationList.size.toString())
         return shippingDurationList.size
     }
 
     override fun onBindViewHolder(holder: ShippingDurationViewHolder, position: Int) {
-        holder.bind(shippingDurationList[position])
+        val servicesItem = shippingDurationList[position]
+        if (servicesItem is ServicesItemModelNoPrice) {
+            holder.bind(servicesItem)
+        } else if (servicesItem is ServicesItemModel) {
+            holder.bind(servicesItem)
+        }
     }
 
     /*Inner View Holder*/
@@ -46,6 +56,31 @@ class ShippingDurationItemAdapter(var listener: OnShippingMenuSelected) : Recycl
                 item_shipping_list.setOnClickListener {
 
                     listener.onSelect(data.serviceId)
+                    /*data.serviceId?.let {
+                        shippingDurationPositionId = it
+                    }*/
+                }
+
+
+            }
+        }
+
+        fun bind(data: ServicesItemModel) {
+            with(itemView){
+                text_shipping_item.text = data.servicesName
+                item_shipping_price.text = data.texts?.textRangePrice
+                if(data.texts?.textsServiceDesc?.isNotEmpty() == true) {
+                    item_shipping_desc.visible()
+                    item_shipping_desc.text = data.texts?.textsServiceDesc
+                } else {
+                    item_shipping_desc.gone()
+                }
+
+                item_shipping_radio.isChecked = data.isSelected
+
+                item_shipping_list.setOnClickListener {
+
+                    listener.onSelect(data.servicesId)
                     /*data.serviceId?.let {
                         shippingDurationPositionId = it
                     }*/

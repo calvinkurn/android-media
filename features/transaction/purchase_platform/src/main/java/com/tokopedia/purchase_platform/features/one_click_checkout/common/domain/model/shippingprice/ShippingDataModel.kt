@@ -4,16 +4,27 @@ data class ShippingDataModel (
         var services: List<ServicesItemModel> = emptyList()
 )
 
-data class ServicesItemModel (
+sealed class ServicesItem
+
+class ServicesItemModelNoPrice (
+        var serviceCode: String? = null,
+        var serviceId: Int = -1,
+        var servicesDuration: String? = null,
+        var shipperIds: Int? = null,
+        var spids: Int? = null,
+        var isSelected: Boolean = false
+) : ServicesItem()
+
+class ServicesItemModel (
         var servicesName: String? = null,
-        var servicesId: Int? = -1,
+        var servicesId: Int = -1,
         var texts: TextsModel? = null,
         var isSelected: Boolean = false
 
-)
+) : ServicesItem()
 
 data class TextsModel (
         var textRangePrice: String? = null,
         var textNotes: String? = null,
-        var textsServiceDesc: String? = null
+        var textsServiceDesc: String = ""
 )

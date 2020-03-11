@@ -13,11 +13,13 @@ import javax.inject.Inject
 class ShippingDurationModelWithPriceMapper @Inject constructor(): ShippingDurationDataWithPriceMapper {
 
     override fun convertToDomainModelWithPrice(response: ShippingRecommendationData): ShippingListModel {
+        var servicesList: ArrayList<ServicesItemModel> = ArrayList()
 
         return ShippingListModel().apply {
             for (item in response.shippingDurationViewModels) {
-                this.servicesPrice = listOf(servicesItemModel(item.serviceData))
+                servicesList.add(servicesItemModel(item.serviceData))
             }
+            this.services = servicesList
         }
     }
 
