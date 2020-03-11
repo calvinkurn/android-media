@@ -12,6 +12,7 @@
         android:paddingTop="@dimen/setting_title_padding_top"
         android:paddingBottom="@dimen/setting_title_padding_bottom"
         android:textColor="@color/setting_title_color"
+        android:letterSpacing="@dimen/setting_title_letter_spacing"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:typographyType="body_3"

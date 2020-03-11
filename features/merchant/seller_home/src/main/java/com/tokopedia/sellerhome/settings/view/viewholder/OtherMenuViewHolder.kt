@@ -35,6 +35,7 @@ class OtherMenuViewHolder(private val itemView: View,
         private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
         private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
 
+        private const val REGULAR_MERCHANT = "Regular Merchant"
         private const val FOLLOWERS = "Followers"
         private const val UPDATE = "Update"
         private const val VERIFIKASI = "Verifikasi"
@@ -153,11 +154,15 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
-        regularMerchantStatus.text =
-                when(regularMerchant) {
-                    is RegularMerchant.NeedUpdate -> UPDATE
-                    is RegularMerchant.OnVerification -> VERIFIKASI
-                }
+        regularMerchantStatus.run {
+            text = when(regularMerchant) {
+                is RegularMerchant.NeedUpdate -> UPDATE
+                is RegularMerchant.OnVerification -> VERIFIKASI
+            }
+            setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+            }
+        }
         return this
     }
 
@@ -175,7 +180,9 @@ class OtherMenuViewHolder(private val itemView: View,
             is PowerMerchantStatus.NotActive -> {
                 statusText = TIDAK_AKTIF
                 textColor = RED_TEXT_COLOR }
-            is PowerMerchantStatus.OnVerification -> { }
+            is PowerMerchantStatus.OnVerification -> {
+                powerMerchantText.text = REGULAR_MERCHANT
+            }
         }
         powerMerchantStatusText.text = statusText
         powerMerchantStatusText.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
@@ -190,7 +197,7 @@ class OtherMenuViewHolder(private val itemView: View,
     private fun View.showGeneralInfoDataShimmer() {
         shopInfoLayout.shimmerShopName.visibility = View.VISIBLE
         val statusShimmerLayout = LayoutInflater.from(context).inflate(SHIMMER_STATUS_LAYOUT, null, false)
-        (shopStatus as LinearLayout).run {
+        shopStatus?.run {
             removeAllViews()
             addView(statusShimmerLayout)
         }

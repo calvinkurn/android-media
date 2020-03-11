@@ -16,6 +16,10 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_white_space_height_12"/>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="wrap_content"
@@ -25,10 +29,13 @@
                 android:id="@+id/logoutLayout"
                 layout="@layout/setting_logout"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_white_space_height"/>
+
             <com.tokopedia.unifycomponents.DividerUnify
-                android:layout_width="0dp"
-                android:layout_height="@dimen/setting_divider_thin"
-                android:background="@color/white"/>
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/setting_divider_thin"/>
 
             <include
                 android:id="@+id/tcLayout"
