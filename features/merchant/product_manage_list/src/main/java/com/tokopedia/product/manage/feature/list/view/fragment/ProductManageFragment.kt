@@ -15,7 +15,13 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -77,9 +83,9 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshLis
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductMultiEditBottomSheet
+import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
 import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getSuccessMessage
-import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
@@ -92,7 +98,6 @@ import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCa
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity
-import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
@@ -107,14 +112,11 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.S
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.STOCK_EDIT_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
+import com.tokopedia.product.manage.oldlist.constant.option.CashbackOption
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageFilterModel
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageSortModel
 import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
-import com.tokopedia.product.manage.oldlist.view.bottomsheets.ConfirmationUpdateProductBottomSheet
-import com.tokopedia.product.manage.oldlist.view.bottomsheets.EditProductBottomSheet
-import com.tokopedia.product.share.ProductData
-import com.tokopedia.product.share.ProductShare
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.DELETED
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.INACTIVE
@@ -142,7 +144,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     MerchantCommonBottomSheet.BottomSheetListener,
     BaseCheckableViewHolder.CheckableInteractionListener,
     ProductViewHolder.ProductViewHolderView,
-    EditProductBottomSheet.EditProductInterface,
     FilterViewHolder.ProductFilterListener,
     ProductMenuViewHolder.ProductMenuListener,
     ProductMultiEditBottomSheet.MultiEditListener {
@@ -168,7 +169,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private var productList: MutableList<ProductViewModel> = mutableListOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
     private var stockType = BulkBottomSheetType.StockType()
-    private var confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -201,7 +201,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         renderCheckedView()
 
         observeShopInfo()
-        observeUpdateProduct()
         observeDeleteProduct()
         observeProductListFeaturedOnly()
         observeProductList()
@@ -355,11 +354,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
         renderList(emptyList())
         renderList(productList, hasNextPage)
-    }
-
-    private fun clearEtalaseAndStockData() {
-        stockType = BulkBottomSheetType.StockType()
-        etalaseType = BulkBottomSheetType.EtalaseType()
     }
 
     private fun renderCheckedView() {
@@ -713,9 +707,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             } else {
                 val message = getSuccessMessage(context, result)
                 showMessageToast(message)
-
-                clearEtalaseAndStockData()
-                confirmationProductDataList.clear()
             }
         }
     }
@@ -767,13 +758,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun clearSearchBarInput() {
         searchInputView.searchTextView.text.clear()
-    }
-
-    private fun showMultipleUpdateErrorToast(e: Throwable) {
-        activity?.let {
-            val message = ViewUtils.getErrorMessage(it, e)
-            showErrorToast(message, getString(com.tokopedia.design.R.string.close))
-        }
     }
 
     override fun onItemChecked(data: ProductViewModel, isChecked: Boolean) {
@@ -1021,31 +1005,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun downloadBitmap(product: ProductViewModel) {
-        activity?.let {
-            val price = product.price
-            val productShare = ProductShare(it, ProductShare.MODE_IMAGE)
-
-            val cashBackText = if (product.cashBack > 0) {
-                getString(R.string.pml_sticker_cashback, product.cashBack)
-            } else {
-                ""
-            }
-
-            val data = ProductData().apply {
-                priceText = "Rp $price"
-                cashbacktext = cashBackText
-                productId = product.id
-                productName = product.title
-                productUrl = product.url
-                productImageUrl = product.imageUrl
-                shopUrl = getString(R.string.pml_sticker_shop_link, shopDomain)
-            }
-            
-            productShare.share(data, { showLoadingProgress() }, { hideLoadingProgress() })
-        }
-    }
-
     private fun showDialogVariantPriceLocked() {
         activity?.let {
             val alertDialogBuilder = AlertDialog.Builder(it, com.tokopedia.design.R.style.AppCompatAlertDialogStyle)
@@ -1108,29 +1067,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    override fun goToEtalasePicker(etalaseId: Int) {
+    private fun goToEtalasePicker(etalaseId: Int) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_ETALASE_PICKER,
             etalaseId.toString())
         startActivityForResult(intent, ETALASE_PICKER_REQUEST_CODE)
-    }
-
-    override fun goToEditStock() {
-        activity?.let {
-            startActivityForResult(ProductBulkEditStockActivity.createIntent(it), STOCK_EDIT_REQUEST_CODE)
-        }
-    }
-
-    override fun goToConfirmationBottomSheet(isActionDelete: Boolean) {
-        confirmationProductDataList = viewModel.mapToProductConfirmationData(isActionDelete, stockType, etalaseType, itemsChecked)
-        val confirmationUpdateProductBottomSheet = ConfirmationUpdateProductBottomSheet.newInstance(confirmationProductDataList)
-        confirmationUpdateProductBottomSheet.setListener(this)
-        fragmentManager?.let {
-            confirmationUpdateProductBottomSheet.show(it, "bs_update_product")
-        }
-    }
-
-    override fun updateProduct() {
-        viewModel.updateMultipleProducts(confirmationProductDataList)
     }
 
     override fun onItemClicked(t: ProductViewModel?) {
@@ -1171,7 +1111,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         removeObservers(viewModel.multiEditProductResult)
         removeObservers(viewModel.deleteProductResult)
         removeObservers(viewModel.editPriceResult)
-        removeObservers(viewModel.setCashBackResult)
+        removeObservers(viewModel.setCashbackResult)
         removeObservers(viewModel.getFreeClaimResult)
         removeObservers(viewModel.getPopUpResult)
         removeObservers(viewModel.setFeaturedProductResult)
@@ -1399,10 +1339,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             addProductList(productList)
             showProductList(productList)
         }
-    }
-
-    private fun observeUpdateProduct() {
-        observe(viewModel.updateProductResult) {}
     }
 
     private fun observeDeleteProduct() {

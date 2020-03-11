@@ -30,11 +30,6 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
-import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
-import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
-import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3Param
-import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
-import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.PopupManagerAddProductUseCase
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.Product
@@ -64,7 +59,6 @@ class ProductManageViewModel @Inject constructor(
     private val setCashbackUseCase: SetCashbackUseCase,
     private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
     private val getProductListUseCase: GQLGetProductListUseCase,
-    private val bulkUpdateProductUseCase: BulkUpdateProductUseCase,
     private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
     private val editStockUseCase: EditStockUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
@@ -80,8 +74,6 @@ class ProductManageViewModel @Inject constructor(
         get() = _productListFeaturedOnlyResult
     val shopInfoResult: LiveData<Result<ShopInfoResult>>
         get() = _shopInfoResult
-    val updateProductResult: LiveData<Result<ProductUpdateV3SuccessFailedResponse>>
-        get() = _updateProductResult
     val deleteProductResult: LiveData<Result<DeleteProductResult>>
         get() = _deleteProductResult
     val editPriceResult: LiveData<Result<EditPriceResult>>
@@ -105,7 +97,6 @@ class ProductManageViewModel @Inject constructor(
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
     private val _productListFeaturedOnlyResult = MutableLiveData<Result<Int>>()
     private val _shopInfoResult = MutableLiveData<Result<ShopInfoResult>>()
-    private val _updateProductResult = MutableLiveData<Result<ProductUpdateV3SuccessFailedResponse>>()
     private val _deleteProductResult = MutableLiveData<Result<DeleteProductResult>>()
     private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
     private val _editStockResult = MutableLiveData<Result<EditStockResult>>()
@@ -136,25 +127,6 @@ class ProductManageViewModel @Inject constructor(
         }) {
             _shopInfoResult.value = Fail(it)
         }
-    }
-
-    fun updateMultipleProducts(listUpdateResponse: MutableList<ConfirmationProductData>) {
-        showProgressDialog()
-
-        val updateParam = mapToBulkUpdateParam(listUpdateResponse)
-        val requestParams = BulkUpdateProductUseCase.createRequestParams(updateParam)
-
-        bulkUpdateProductUseCase.execute(requestParams, object : Subscriber<ProductUpdateV3SuccessFailedResponse>() {
-            override fun onNext(listOfUpdateResponse: ProductUpdateV3SuccessFailedResponse) {
-                _updateProductResult.value = Success(listOfUpdateResponse)
-            }
-
-            override fun onCompleted() {}
-
-            override fun onError(e: Throwable) {
-                _updateProductResult.value = Fail(e)
-            }
-        })
     }
 
     fun editProductsByStatus(productIds: List<String>, status: ProductStatus) {
@@ -344,36 +316,6 @@ class ProductManageViewModel @Inject constructor(
 
     }
 
-    fun mapToProductConfirmationData(isActionDelete: Boolean, stockType: BulkBottomSheetType.StockType, etalaseType: BulkBottomSheetType.EtalaseType,
-                                              productManageViewModels: List<ProductViewModel>): ArrayList<ConfirmationProductData> {
-
-        val confirmationProductDataList: ArrayList<ConfirmationProductData> = arrayListOf()
-        productManageViewModels.forEach {
-            val confirmationProductData = ConfirmationProductData()
-            confirmationProductData.productId = it.id
-            confirmationProductData.productName = it.title.orEmpty()
-            confirmationProductData.productImgUrl = it.imageUrl.orEmpty()
-            confirmationProductData.productEtalaseName = etalaseType.etalaseValue
-            confirmationProductData.isVariant = it.isVariant()
-            confirmationProductDataList.add(confirmationProductData)
-
-            if (etalaseType.etalaseId == BulkBottomSheetType.ETALASE_DEFAULT) {
-                confirmationProductData.productEtalaseId = 0
-            } else {
-                confirmationProductData.productEtalaseId = etalaseType.etalaseId
-            }
-
-            if (isActionDelete) {
-                confirmationProductData.statusStock = BulkBottomSheetType.STOCK_DELETED
-            } else {
-                confirmationProductData.statusStock = stockType.stockStatus
-            }
-
-        }
-        return confirmationProductDataList
-
-    }
-
     fun toggleMultiSelect() {
         val multiSelectEnabled = _toggleMultiSelect.value == true
         _toggleMultiSelect.value = !multiSelectEnabled
@@ -384,23 +326,7 @@ class ProductManageViewModel @Inject constructor(
         topAdsGetShopDepositGraphQLUseCase.unsubscribe()
         popupManagerAddProductUseCase.unsubscribe()
         getProductListUseCase.cancelJobs()
-        bulkUpdateProductUseCase.unsubscribe()
         editFeaturedProductUseCase.unsubscribe()
-    }
-
-    private fun mapToBulkUpdateParam(confirmationData: List<ConfirmationProductData>): MutableList<ProductUpdateV3Param> {
-        val listParam: MutableList<ProductUpdateV3Param> = arrayListOf()
-
-        listParam.addAll(confirmationData.map {
-            val response = ProductUpdateV3Param()
-            response.productEtalase.etalaseId = it.productEtalaseId.toString()
-            response.productEtalase.etalaseName = it.productEtalaseName
-            response.productId = it.productId
-            response.productStatus = it.getStatusProductParam()
-            response.shop.shopId = userSessionInterface.shopId
-            response
-        })
-        return listParam
     }
 
     private fun showProductList(products: List<Product>?) {
