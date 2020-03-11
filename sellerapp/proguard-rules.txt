@@ -287,7 +287,7 @@
 
 -keep class com.tokopedia.core.home.model.** { *; }
 
--keep class com.tokopedia.core.util.GlobalConfig
+-keep class com.tokopedia.config.GlobalConfig
 -keep class com.tokopedia.tkpdpdp.fragment.ProductDetailFragment
 -keep class com.tokopedia.core.network.entity.** { *; }
 -dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar

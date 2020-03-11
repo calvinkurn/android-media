@@ -2,7 +2,7 @@ package com.tokopedia.shop.open.view.listener;
 
 import android.app.Activity;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.shop.open.data.model.response.isreservedomain.ResponseIsReserveDomain;
 
 /**

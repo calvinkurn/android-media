@@ -19,22 +19,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:theme="?toolbarTheme"
-            app:layout_collapseMode="pin"
-            app:contentInsetLeft="@dimen/dp_0"
-            app:contentInsetStart="@dimen/dp_0"
-            app:contentInsetRight="@dimen/dp_0"
-            app:contentInsetEnd="@dimen/dp_0"/>
+            app:contentInsetEnd="@dimen/dp_topchat_0"
+            app:contentInsetLeft="@dimen/dp_topchat_0"
+            app:contentInsetRight="@dimen/dp_topchat_0"
+            app:contentInsetStart="@dimen/dp_topchat_0"
+            app:layout_collapseMode="pin" />
 
         <com.tokopedia.design.component.Tabs
             android:id="@+id/indicator"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabMaxWidth="@dimen/dp_0"
-            app:tabType="secondary"
+            app:tabBackground="@drawable/chat_tab_background"
             app:tabGravity="fill"
-            app:tabTextAppearance="@style/Tabs.ChatTabs"
+            app:tabMaxWidth="@dimen/dp_topchat_0"
             app:tabMode="fixed"
-            app:tabBackground="@drawable/chat_tab_background"/>
+            app:tabTextAppearance="@style/Tabs.ChatTabs"
+            app:tabType="secondary" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

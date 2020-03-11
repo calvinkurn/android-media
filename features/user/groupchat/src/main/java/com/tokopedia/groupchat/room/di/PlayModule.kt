@@ -1,11 +1,13 @@
 package com.tokopedia.groupchat.room.di
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.RetentionManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.AccountsAuthorizationInterceptor
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.groupchat.chatroom.data.ChatroomApi
 import com.tokopedia.groupchat.common.data.GroupChatUrl
 import com.tokopedia.groupchat.common.di.qualifier.GcpQualifier
@@ -99,7 +101,15 @@ class PlayModule {
                 .addInterceptor(playInterceptor)
 
         if (GlobalConfig.isAllowDebuggingTools()) {
-            builder.addInterceptor(ChuckInterceptor(context).showNotification(GlobalConfig.isAllowDebuggingTools()))
+            val collector = ChuckerCollector(
+                    context = context,
+                    showNotification = GlobalConfig.isAllowDebuggingTools()
+            )
+
+            builder.addInterceptor(ChuckerInterceptor(
+                    context = context,
+                    collector = collector
+            ))
                     .addInterceptor(httpLoggingInterceptor)
         }
         return builder.build()

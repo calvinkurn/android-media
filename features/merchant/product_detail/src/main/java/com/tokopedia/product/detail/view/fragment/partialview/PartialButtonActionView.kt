@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
 import androidx.core.content.ContextCompat
 import androidx.core.widget.TextViewCompat.setTextAppearance
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -81,7 +81,7 @@ class PartialButtonActionView private constructor(private val view: View,
             showNoStockButton()
         } else if (hasShopAuthority) {
             showShopManageButton()
-        } else if (GlobalConfig.isCustomerApp()) {
+        } else if (!GlobalConfig.isSellerApp()) {
             showNewCheckoutButton(preOrder)
         }
     }

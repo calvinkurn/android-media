@@ -288,7 +288,7 @@
 
 -keep class com.tokopedia.core.home.model.** { *; }
 
--keep class com.tokopedia.core.util.GlobalConfig
+-keep class com.tokopedia.config.GlobalConfig
 -keep class com.tokopedia.tkpdpdp.fragment.ProductDetailFragment
 -keep class com.tokopedia.core.network.entity.** { *; }
 -dontwarn com.akexorcist.roundcornerprogressbar.TextRoundCornerProgressBar
@@ -351,6 +351,7 @@
 #home
 -dontwarn com.tokopedia.home.beranda.data.datasource.**inlined**
 -dontwarn com.tokopedia.home.beranda.data.usecase.**inlined**
+-dontwarn com.tokopedia.home.beranda.data.repository.**inlined**
 
 #Sendbird
 -dontwarn com.sendbird.android.shadow.**

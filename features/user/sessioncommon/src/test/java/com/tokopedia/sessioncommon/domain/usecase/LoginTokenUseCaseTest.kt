@@ -17,7 +17,7 @@ class LoginTokenUseCaseTest : Spek({
     given("LoginTokenUseCase") {
 
         on("test generate param login email") {
-            private val PARAM_INPUT: String = "input"
+            val PARAM_INPUT: String = "input"
 
             val PARAM_USERNAME: String = "username"
             val PARAM_PASSWORD: String = "password"

@@ -1,11 +1,10 @@
 package com.tokopedia.talk.common.analytics
 
 import android.app.Activity
-import com.tokopedia.track.TrackApp;
-import com.tokopedia.track.TrackAppUtils;
-import com.tokopedia.track.interfaces.Analytics;
-import com.tokopedia.track.interfaces.ContextAnalytics;
+import com.tokopedia.talk.producttalk.view.data.ChatBannerUiModel
 import com.tokopedia.talk.talkdetails.view.activity.TalkDetailsActivity
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import javax.inject.Inject
 
 /**
@@ -14,11 +13,19 @@ import javax.inject.Inject
 class TalkAnalytics @Inject constructor() {
     private val EVENT_CLICK_INBOX_CHAT: String = "clickInboxChat"
     private val EVENT_CLICK_SHOP_PAGE: String = "clickShopPage"
+    private val EVENT_CLICK_PDP: String = "clickPDP"
 
     private val CATEGORY_INBOX_TALK: String = "inbox - talk"
     private val CATEGORY_SHOP_PAGE: String = "shop page"
+    private val CATEGORY_PDP: String = "product detail page"
 
-    fun trackSendCommentTalk(source: String) {
+    private val ACTION_CREATE_NEW_TALK: String = "click - kirim to create new talk"
+    private val ACTION_REPLY_TALK: String = "click - kirim to reply talk"
+    private val ACTION_CLICK_CHAT_TICKER: String = "click chat on ticker"
+
+    private val KEY_PRODUCT_ID = "productId"
+
+    fun trackSendCommentTalk(source: String, talkId: String, productId: String) {
         if (source == TalkDetailsActivity.SOURCE_SHOP) {
             TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                     EVENT_CLICK_SHOP_PAGE,
@@ -27,12 +34,15 @@ class TalkAnalytics @Inject constructor() {
                     ""
             ))
         } else {
-            TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                    EVENT_CLICK_INBOX_CHAT,
-                    CATEGORY_INBOX_TALK,
-                    "send comment talk",
-                    source
-            ))
+            val data = mapOf(
+                    TrackAppUtils.EVENT to EVENT_CLICK_PDP,
+                    TrackAppUtils.EVENT_CATEGORY to CATEGORY_INBOX_TALK,
+                    TrackAppUtils.EVENT_ACTION to ACTION_REPLY_TALK,
+                    TrackAppUtils.EVENT_LABEL to talkId,
+                    KEY_PRODUCT_ID to productId
+            )
+
+            TrackApp.getInstance().gtm.sendGeneralEvent(data)
         }
     }
 
@@ -226,6 +236,28 @@ class TalkAnalytics @Inject constructor() {
         } else {
             trackClickUserProfile()
         }
+    }
+
+    fun trackClickSendNewTalk(productId: String) {
+        val data = mapOf(
+                TrackAppUtils.EVENT to EVENT_CLICK_PDP,
+                TrackAppUtils.EVENT_CATEGORY to CATEGORY_INBOX_TALK,
+                TrackAppUtils.EVENT_ACTION to ACTION_CREATE_NEW_TALK,
+                TrackAppUtils.EVENT_LABEL to "",
+                KEY_PRODUCT_ID to productId
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    //#CT
+    fun trackOnClickChatBanner(element: ChatBannerUiModel) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                EVENT_CLICK_PDP,
+                CATEGORY_PDP,
+                ACTION_CLICK_CHAT_TICKER,
+                element.productId
+        )
     }
 
     companion object {

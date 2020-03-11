@@ -22,7 +22,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.shop.R;
 import com.tokopedia.shop.ShopComponentInstance;
-import com.tokopedia.shop.analytic.ShopPageTrackingBuyer;
+import com.tokopedia.shop.analytic.OldShopPageTrackingBuyer;
 import com.tokopedia.shop.common.config.ShopPageConfig;
 import com.tokopedia.shop.common.constant.ShopParamConstant;
 import com.tokopedia.shop.common.di.component.ShopComponent;
@@ -38,7 +38,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
-import static com.tokopedia.shop.analytic.ShopPageTrackingConstant.SCREEN_SHOP_PAGE;
+import static com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE;
 
 /**
  * Created by nathan on 2/15/18.
@@ -53,6 +53,7 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     private ShopComponent component;
     private String shopId;
+    private String shopRef = "";
 
     // this field only used first time for new fragment
     private String keyword = "";
@@ -62,32 +63,34 @@ public class ShopProductListActivity extends BaseSimpleActivity
 
     private SearchInputView searchInputView;
     private ShopInfo shopInfo;
-    private ShopPageTrackingBuyer shopPageTracking;
+    private OldShopPageTrackingBuyer shopPageTracking;
     private RemoteConfig remoteConfig;
     private EditText editTextSearch;
     private View imageViewSortIcon;
     private View textViewCancel;
 
     public static Intent createIntent(Context context, String shopId, String keyword,
-                                      String etalaseId, String attribution, String sortId) {
-        Intent intent = createIntent(context, shopId, keyword, etalaseId, attribution);
+                                      String etalaseId, String attribution, String sortId, String shopRef) {
+        Intent intent = createIntent(context, shopId, keyword, etalaseId, attribution, shopRef);
         intent.putExtra(ShopParamConstant.EXTRA_SORT_ID, sortId);
         return intent;
     }
 
     public static Intent createIntent(Context context, String shopId, String keyword,
-                                      String etalaseId, String attribution) {
+                                      String etalaseId, String attribution, String shopRef) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
         intent.putExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword);
         intent.putExtra(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId);
         intent.putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, attribution);
+        intent.putExtra(ShopParamConstant.EXTRA_SHOP_REF, shopRef);
         return intent;
     }
 
-    public static Intent createIntent(Context context, String shopId) {
+    public static Intent createIntent(Context context, String shopId, String shopRef) {
         Intent intent = new Intent(context, ShopProductListActivity.class);
         intent.putExtra(ShopParamConstant.EXTRA_SHOP_ID, shopId);
+        intent.putExtra(ShopParamConstant.EXTRA_SHOP_REF, shopRef);
         return intent;
     }
 
@@ -98,7 +101,8 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 .setData(uri.build())
                 .putExtra(ShopParamConstant.EXTRA_SHOP_ID, extras.getString(ShopParamConstant.KEY_SHOP_ID))
                 .putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, extras.getString(ShopPageActivity.APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
-                .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID));
+                .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID))
+                .putExtra(ShopParamConstant.EXTRA_SHOP_REF, extras.getString(ShopParamConstant.KEY_SHOP_REF));
     }
 
     @DeepLink(ApplinkConst.SHOP_ETALASE_WITH_KEYWORD_AND_SORT)
@@ -110,13 +114,15 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 .putExtra(ShopParamConstant.EXTRA_ATTRIBUTION, extras.getString(ShopPageActivity.APP_LINK_EXTRA_SHOP_ATTRIBUTION, ""))
                 .putExtra(ShopParamConstant.EXTRA_ETALASE_ID, extras.getString(ShopParamConstant.KEY_ETALASE_ID))
                 .putExtra(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, extras.getString(ShopParamConstant.KEY_KEYWORD))
-                .putExtra(ShopParamConstant.EXTRA_SORT_ID, extras.getString(ShopParamConstant.KEY_SORT));
+                .putExtra(ShopParamConstant.EXTRA_SORT_ID, extras.getString(ShopParamConstant.KEY_SORT))
+                .putExtra(ShopParamConstant.EXTRA_SHOP_REF, extras.getString(ShopParamConstant.KEY_SHOP_REF));
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         remoteConfig = new FirebaseRemoteConfigImpl(this);
         shopId = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_ID);
+        shopRef = getIntent().getStringExtra(ShopParamConstant.EXTRA_SHOP_REF);
         etalaseId = getIntent().getStringExtra(ShopParamConstant.EXTRA_ETALASE_ID);
         sort = getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID) == null ? "" : getIntent().getStringExtra(ShopParamConstant.EXTRA_SORT_ID);
         attribution = getIntent().getStringExtra(ShopParamConstant.EXTRA_ATTRIBUTION);
@@ -128,7 +134,10 @@ public class ShopProductListActivity extends BaseSimpleActivity
         } else {
             keyword = savedInstanceState.getString(SAVED_KEYWORD, "");
         }
-        shopPageTracking = new ShopPageTrackingBuyer(new TrackingQueue(this));
+        if (shopRef == null) {
+            shopRef = "";
+        }
+        shopPageTracking = new OldShopPageTrackingBuyer(new TrackingQueue(this));
         super.onCreate(savedInstanceState);
         initSearchInputView();
         findViewById(R.id.mainLayout).requestFocus();
@@ -193,7 +202,8 @@ public class ShopProductListActivity extends BaseSimpleActivity
                 keyword,
                 cacheManagerId,
                 attribution,
-                sort
+                sort,
+                shopRef
         ));
     }
 
@@ -206,9 +216,9 @@ public class ShopProductListActivity extends BaseSimpleActivity
     @Override
     protected Fragment getNewFragment() {
         if (isNewShopPageEnabled()) {
-            return ShopPageProductListResultFragment.createInstance(shopId, keyword, etalaseId, sort, attribution);
+            return ShopPageProductListResultFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution);
         } else {
-            return ShopProductListFragment.createInstance(shopId, keyword, etalaseId, sort, attribution);
+            return ShopProductListFragment.createInstance(shopId, shopRef, keyword, etalaseId, sort, attribution);
         }
     }
 
