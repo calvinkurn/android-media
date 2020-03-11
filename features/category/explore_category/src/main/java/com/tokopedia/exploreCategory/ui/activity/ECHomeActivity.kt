@@ -1,6 +1,7 @@
 package com.tokopedia.exploreCategory.ui.activity
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.browse.homepage.presentation.activity.DigitalBrowseHomeActivity
 import com.tokopedia.exploreCategory.ECConstants.Companion.DEFAULT_SCREEN
 import com.tokopedia.exploreCategory.ECConstants.Companion.EXTRA_TITLE
 import com.tokopedia.exploreCategory.ECConstants.Companion.EXTRA_TAB
@@ -19,6 +21,8 @@ import com.tokopedia.exploreCategory.ECConstants.Companion.TYPE_LAYANAN
 import com.tokopedia.exploreCategory.ECConstants.Companion.TYPE_BELANJA
 import com.tokopedia.exploreCategory.ui.fragment.ECServiceFragment
 import com.tokopedia.exploreCategory.viewmodel.ECHomeViewModel
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
 class ECHomeActivity : BaseECActivity<ECHomeViewModel>() {
@@ -54,6 +58,15 @@ class ECHomeActivity : BaseECActivity<ECHomeViewModel>() {
     }
 
     private fun handleIntentFromDeeplink() {
+        val remoteConfig = FirebaseRemoteConfigImpl(this)
+        if (!remoteConfig.getBoolean(RemoteConfigKey.APP_SEMUA_CATEGORY_ENABLE, true)) {
+            val bundle = Bundle()
+            bundle.putAll(intent.extras)
+            val intent = Intent(this, DigitalBrowseHomeActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+            finish()
+        }
         val data = intent.data
 
         if (data?.getQueryParameter(EXTRA_TITLE) == null) {

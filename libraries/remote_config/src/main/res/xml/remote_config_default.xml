@@ -346,4 +346,8 @@
         <key>android_main_app_enable_new_shop_page</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>app_semua_category_enable</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
