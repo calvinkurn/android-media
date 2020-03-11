@@ -37,6 +37,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeFeedType
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.HomeFeedItemDecoration;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeFeedViewHolder;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
+import com.tokopedia.topads.sdk.utils.ImpresionTask;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
@@ -334,6 +335,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     @Override
     public void onProductImpression(HomeFeedViewModel model, int position) {
         if (model.isTopAds()) {
+            new ImpresionTask().execute(model.getClickUrl());
             if(userSession.isLoggedIn()){
                 homeTrackingQueue.putEETracking((HashMap<String, Object>) HomeRecommendationTracking.INSTANCE.getRecommendationProductViewLoginTopAds(
                         tabName.toLowerCase(),
@@ -389,6 +391,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                         homeFeedViewModel
                 ));
             } else {
+                new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickLoginTopAds(
                         tabName.toLowerCase(),
                         homeFeedViewModel
@@ -401,6 +404,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                         homeFeedViewModel
                 ));
             } else {
+                new ImpresionTask().execute(homeFeedViewModel.getClickUrl());
                 TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomeRecommendationTracking.INSTANCE.getRecommendationProductClickNonLoginTopAds(
                         tabName.toLowerCase(),
                         homeFeedViewModel

@@ -991,7 +991,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
                 break;
             case REQUEST_CODE_PLAY_ROOM:
-                viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
+                if(data.hasExtra(EXTRA_TOTAL_VIEW)) viewModel.updateBannerTotalView(data.getStringExtra(EXTRA_TOTAL_VIEW));
                 break;
         }
     }
@@ -1299,6 +1299,11 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public void getBusinessUnit(int tabId, int position) {
         viewModel.getBusinessUnitData(tabId, position);
+    }
+
+    @Override
+    public void getPlayChannel(int position) {
+        viewModel.getPlayBanner(position);
     }
 
     public void openWebViewURL(String url) {
@@ -1852,7 +1857,7 @@ public class HomeFragment extends BaseDaggerFragment implements
                 );
                 break;
             case TYPE_MIX_TOP:
-                putEEToIris((HashMap<String, Object>) MixTopTracking.INSTANCE.getMixTopViewIris(MixTopTracking.INSTANCE.mapChannelToProductTracker(channel), channel.getHeader().getName(), String.valueOf(position)));
+                putEEToIris((HashMap<String, Object>) MixTopTracking.INSTANCE.getMixTopViewIris(MixTopTracking.INSTANCE.mapChannelToProductTracker(channel), channel.getHeader().getName(), channel.getId(), String.valueOf(position)));
         }
     }
 
