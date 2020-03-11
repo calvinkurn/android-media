@@ -54,11 +54,6 @@ class RegisterFingerprintOnboardingFragment : BaseDaggerFragment() {
         return inflater.inflate(R.layout.fragment_register_fingerprint_onboarding, container, false)
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-//        cryptographyUtils = CryptographyUtils()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupObserver()
