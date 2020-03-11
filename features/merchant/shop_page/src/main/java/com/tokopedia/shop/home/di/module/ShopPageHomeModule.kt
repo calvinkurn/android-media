@@ -17,6 +17,8 @@ import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -59,6 +61,18 @@ class ShopPageHomeModule {
             gqlUseCase: MultiRequestGraphqlUseCase
     ): GqlGetShopProductUseCase {
         return GqlGetShopProductUseCase(gqlQuery, gqlUseCase)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideAddToWishListUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
+        return AddWishListUseCase(context)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideRemoveFromWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
     }
 
     @ShopPageHomeScope
