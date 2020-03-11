@@ -1034,7 +1034,7 @@ open class PlayViewStateImpl(
     }
 
     override fun onNoInternetConnection() {
-        setEmptyState(R.drawable.ic_play_no_connection,
+        setEmptyState(R.drawable.unify_globalerrors_connection,
                 getStringResource(R.string.no_connection_play),
                 getStringResource(R.string.try_connection_play),
                 getStringResource(com.tokopedia.abstraction.R.string.title_try_again),

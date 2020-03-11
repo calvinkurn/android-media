@@ -250,7 +250,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     private fun showFailedMessage(message: String, errorCode: String = "") {
         errorList.add(errorCode)
         if (!isPlayStoreAvailable(this)) {
-            updateInformationView(R.drawable.ic_ill_general_error,
+            updateInformationView(R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_play_store_title),
                     getString(R.string.download_error_play_store_subtitle),
                     getString(R.string.goto_playstore)) {
@@ -262,7 +262,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
             val lastItem = errorList[lastIndex]
             errorList[lastIndex] = "$lastItem $PLAY_SRV_OOD"
 
-            updateInformationView(R.drawable.ic_ill_general_error,
+            updateInformationView(R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_playservice_title),
                     getString(R.string.download_error_playservice_subtitle),
                     getString(R.string.start_download)) {
@@ -279,7 +279,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
             }
         } else if (SplitInstallErrorCode.NETWORK_ERROR.toString() == errorCode) {
-            updateInformationView(R.drawable.ic_ill_no_connection,
+            updateInformationView(R.drawable.unify_globalerrors_connection,
                     getString(R.string.download_error_connection_title),
                     getString(R.string.download_error_connection_subtitle),
                     getString(R.string.df_installer_try_again)) {
@@ -293,7 +293,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
                 gotoPlayStore()
             }
         } else {
-            updateInformationView(R.drawable.ic_ill_general_error,
+            updateInformationView(R.drawable.unify_globalerrors_500,
                     getString(R.string.download_error_general_title),
                     getString(R.string.download_error_general_subtitle),
                     getString(R.string.df_installer_try_again)) {
