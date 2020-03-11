@@ -52,6 +52,76 @@
                 app:typographyType="body_3"
                 tools:text="1 Line Product Name" />
 
+            <LinearLayout
+                android:id="@+id/ll_variant"
+                app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
+                app:layout_constraintStart_toStartOf="@+id/tv_product_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="@dimen/spacing_lvl2"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
+                android:layout_marginRight="@dimen/spacing_lvl3"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/ll_variant_color"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dp_20"
+                    android:layout_marginEnd="@dimen/dp_4"
+                    android:layout_marginRight="@dimen/dp_4"
+                    android:background="@drawable/bg_attach_product_variant"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/dp_8"
+                    android:paddingEnd="@dimen/dp_8">
+
+                    <ImageView
+                        android:id="@+id/iv_variant_color"
+                        android:layout_width="@dimen/dp_6"
+                        android:layout_height="@dimen/dp_6"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/dp_4"
+                        android:layout_marginRight="@dimen/dp_4"
+                        tools:background="@color/black" />
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_variant_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/Neutral_N200"
+                        app:typographyType="small"
+                        app:typographyWeight="bold"
+                        tools:text="Hitam" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_variant_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="@dimen/dp_8"
+                    android:layout_marginRight="@dimen/dp_8"
+                    android:background="@drawable/bg_attach_product_variant"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/dp_8"
+                    android:paddingEnd="@dimen/dp_8">
+
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_variant_size"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:textColor="@color/Neutral_N200"
+                        app:typographyType="small"
+                        app:typographyWeight="bold"
+                        tools:text="Besar" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
             <com.tokopedia.unifycomponents.Label
                 android:id="@+id/tv_campaign_discount"
                 android:layout_width="wrap_content"
@@ -70,7 +140,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
-                app:layout_constraintTop_toBottomOf="@+id/tv_product_name"
+                app:layout_constraintTop_toBottomOf="@+id/ll_variant"
                 app:lineHeight="@dimen/dp_20"
                 tools:text="20%"
                 tools:visibility="visible" />

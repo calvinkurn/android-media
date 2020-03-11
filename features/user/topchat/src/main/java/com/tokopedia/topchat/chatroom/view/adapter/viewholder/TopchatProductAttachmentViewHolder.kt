@@ -1,9 +1,16 @@
 package com.tokopedia.topchat.chatroom.view.adapter.viewholder
 
 import android.annotation.SuppressLint
+import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
@@ -28,6 +35,7 @@ class TopchatProductAttachmentViewHolder(
         bindProductClick(product)
         bindImage(product)
         bindName(product)
+        bindVariant(product)
         bindCampaign(product)
         bindPrice(product)
         bindFreeShipping(product)
@@ -52,6 +60,64 @@ class TopchatProductAttachmentViewHolder(
 
     private fun bindName(product: ProductAttachmentViewModel) {
         itemView.tv_product_name?.text = product.productName
+    }
+
+    private fun bindVariant(product: ProductAttachmentViewModel) {
+        if (product.doesNotHaveVariant()) {
+            hideVariantLayout()
+            return
+        }
+
+        showVariantLayout()
+        with(itemView) {
+            if (product.hasColorVariant()) {
+                ll_variant_color?.show()
+                val backgroundDrawable = getBackgroundDrawable(product.colorHexVariant)
+                iv_variant_color?.background = backgroundDrawable
+                tv_variant_color?.text = product.colorVariant
+            } else {
+                ll_variant_color?.hide()
+            }
+
+            if (product.hasSizeVariant()) {
+                ll_variant_color?.show()
+                tv_variant_size?.text = product.sizeVariant
+            } else {
+                ll_variant_size?.hide()
+            }
+        }
+    }
+
+    private fun hideVariantLayout() {
+        itemView.ll_variant?.hide()
+    }
+
+    private fun showVariantLayout() {
+        itemView.ll_variant?.show()
+    }
+
+    private fun getBackgroundDrawable(hexColor: String): Drawable? {
+        val backgroundDrawable = MethodChecker.getDrawable(itemView.context, com.tokopedia.chat_common.R.drawable.circle_color_variant_indicator)
+                ?: return null
+
+        if (isWhiteColor(hexColor)) {
+            applyStrokeTo(backgroundDrawable)
+            return backgroundDrawable
+        }
+
+        backgroundDrawable.colorFilter = PorterDuffColorFilter(Color.parseColor(hexColor), PorterDuff.Mode.SRC_ATOP)
+        return backgroundDrawable
+    }
+
+    private fun applyStrokeTo(backgroundDrawable: Drawable) {
+        if (backgroundDrawable is GradientDrawable) {
+            val strokeWidth = 1f.toPx()
+            backgroundDrawable.setStroke(strokeWidth.toInt(), ContextCompat.getColor(itemView.context, com.tokopedia.chat_common.R.color.grey_300))
+        }
+    }
+
+    private fun isWhiteColor(hexColor: String): Boolean {
+        return hexColor == "#ffffff" || hexColor == "#fff"
     }
 
     private fun bindCampaign(product: ProductAttachmentViewModel) {
