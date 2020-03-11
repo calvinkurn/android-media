@@ -20,8 +20,8 @@
 
         <com.tokopedia.variant_common.view.customview.ProductRoundedImageView
             android:id="@+id/variantImg"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
+            android:layout_width="@dimen/pdp_variant_image"
+            android:layout_height="@dimen/pdp_variant_image"
             app:borderRadius="@dimen/dp_6"
             tools:src="@tools:sample/avatars" />
     </FrameLayout>
