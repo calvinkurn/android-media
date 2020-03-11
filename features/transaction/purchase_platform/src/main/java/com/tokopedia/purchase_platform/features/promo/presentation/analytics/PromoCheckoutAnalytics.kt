@@ -109,7 +109,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    fun eventClickExpandPromoList(page: Int) {
+    fun eventClickExpandIneligiblePromoList(page: Int) {
         sendEventByPage(
                 page,
                 EVENT_NAME_CLICK,

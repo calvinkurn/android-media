@@ -65,6 +65,7 @@ class PromoInputViewHolder(private val view: View,
 
         itemView.text_field_input_promo.getFirstIcon().setOnClickListener {
             itemView.text_field_input_promo.textFieldInput.text.clear()
+            listener.onCLickClearManualInputPromo()
         }
 
         itemView.button_apply_promo.setOnClickListener {

@@ -61,7 +61,9 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.ACTION_OK
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART
@@ -102,6 +104,7 @@ import com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -1370,8 +1373,16 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 promoCheckoutBtn.title = errorDefault.title
                 promoCheckoutBtn.desc = errorDefault.desc
                 promoCheckoutBtn.setOnClickListener {
-                    renderPromoCheckoutLoading()
-                    dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
+                    val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+                    val promoRequest = generateParamsCouponList()
+//                    val validateUseRequest = generateParamValidateUsePromoRevamp()
+                    intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CART)
+                    intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+//                    intent.putextra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
+                    startActivityForResult(intent, NAVIGATION_PROMO)
+
+//                    renderPromoCheckoutLoading()
+//                    dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
                 }
             } else {
                 renderPromoCheckoutSuccess(cartListData)
@@ -2733,8 +2744,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.title = getString(R.string.promo_checkout_inactive_label)
         promoCheckoutBtn.desc = getString(R.string.promo_checkout_inactive_desc)
         promoCheckoutBtn.setOnClickListener {
-            renderPromoCheckoutLoading()
-            dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+            val promoRequest = generateParamsCouponList()
+            intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+            startActivityForResult(intent, NAVIGATION_PROMO)
+
+//            renderPromoCheckoutLoading()
+//            dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
         }
     }
 
