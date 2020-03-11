@@ -110,7 +110,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     }
 
     private void setJankyFramesRecyclerViewMonitoring(HomeCategoryListener homeCategoryListener) {
-        if (homeCategoryListener != null && homeCategoryListener.getHomeJankyFramesUtil() != null) {
+        if (homeCategoryListener != null && homeCategoryListener.getHomeJankyFramesUtil() != null && getView() != null) {
             homeCategoryListener.getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
                     getRecyclerView(getView()),
                     HOME_JANKY_FRAMES_MONITORING_PAGE_NAME,
