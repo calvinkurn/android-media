@@ -62,6 +62,9 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
     private static final String PDP_EXTRA_PRODUCT_ID = "product_id";
     private static final String WIHSLIST_STATUS_IS_WISHLIST = "isWishlist";
     private static final String WISHLIST_STATUS_UPDATED_POSITION = "wishlistUpdatedPosition";
+    private static final String HOME_JANKY_FRAMES_MONITORING_PAGE_NAME = "home";
+    private static final String HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME = "feed";
+
     private static final int REQUEST_FROM_PDP = 349;
 
     private static final int DEFAULT_TOTAL_ITEM_PER_PAGE = 12;
@@ -101,8 +104,18 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                             HomeEggListener homeEggListener,
                             HomeTabFeedListener homeTabFeedListener) {
         this.homeCategoryListener = homeCategoryListener;
+        setJankyFramesRecyclerViewMonitoring(homeCategoryListener);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
+    }
+
+    private void setJankyFramesRecyclerViewMonitoring(HomeCategoryListener homeCategoryListener) {
+        if (homeCategoryListener != null && homeCategoryListener.getHomeJankyFramesUtil() != null) {
+            homeCategoryListener.getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
+                    getRecyclerView(getView()),
+                    HOME_JANKY_FRAMES_MONITORING_PAGE_NAME,
+                    HOME_JANKY_FRAMES_MONITORING_SUB_PAGE_NAME);
+        }
     }
 
     public void setParentPool(RecyclerView.RecycledViewPool parentPool) {
@@ -136,11 +149,6 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         getRecyclerView(getView()).addItemDecoration(
                 new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_4))
         );
-        if (homeCategoryListener.getHomeJankyFramesUtil() != null) {
-            homeCategoryListener.getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
-                    getRecyclerView(getView()),
-                    "home", "feed");
-        }
         if (parentPool != null) {
             parentPool.setMaxRecycledViews(
                     HomeFeedViewHolder.Companion.getLAYOUT(),
