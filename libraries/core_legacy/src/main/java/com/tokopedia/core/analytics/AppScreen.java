@@ -37,6 +37,7 @@ public final class AppScreen {
     public static final String SCREEN_HOME_WISHLIST = "WishList page";
     public static final String SCREEN_FRAGMENT_WISHLIST = "WishList page";
     public static final String SCREEN_HOME_HOTLIST = "Home - hot list";
+    public static final String SCREEN_TOPADS = "Top Ads Screen";
     public static final String SCREEN_FIND = "Find";
     public static final String SCREEN_BROWSE_PRODUCT_FROM_CATEGORY = "Browse Category - ";
     public static final String SCREEN_TX_SHOP_CENTER = "Transaction - Sell page";
