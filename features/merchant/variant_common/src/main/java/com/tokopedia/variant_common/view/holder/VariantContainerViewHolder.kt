@@ -5,22 +5,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.variant_common.R
 import com.tokopedia.variant_common.model.VariantCategory
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.adapter.VariantOptionAdapter
+import kotlinx.android.synthetic.main.item_variant_container_view_holder.view.*
+
 
 /**
- * Created by mzennis on 2020-03-10.
+ * Created by mzennis on 2020-03-11.
  */
 class VariantContainerViewHolder(val view: View, val listener: ProductVariantListener) : RecyclerView.ViewHolder(view) {
-
-    private var txtVariantCategoryName = view.findViewById<Typography>(R.id.txtVariantCategoryName)
-    private var txtVariantSelectedOption = view.findViewById<Typography>(R.id.txtVariantSelectedOption)
-    private var txtVariantStockWording = view.findViewById<Typography>(R.id.txtVariantStockWording)
-    private var txtVariantGuideline = view.findViewById<Typography>(R.id.txtVariantGuideline)
-    private var rv_variant = view.findViewById<RecyclerView>(R.id.rv_variant)
 
     private var variantOptionAdapter: VariantOptionAdapter? = null
 
