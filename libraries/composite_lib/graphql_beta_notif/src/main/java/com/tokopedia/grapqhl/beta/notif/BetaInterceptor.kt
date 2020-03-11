@@ -13,7 +13,7 @@ import java.io.IOException
 
 
 const val CHANNEL_ID = "beta"
-const val NOTIFICATION_ID  = 123 shr 5;
+const val NOTIFICATION_ID = 123 shr 5
 
 class BetaInterceptor(private val context: Context) : Interceptor {
 
@@ -42,7 +42,7 @@ class BetaInterceptor(private val context: Context) : Interceptor {
             if (get.equals("https://gql-beta.tokopedia.com")) {
                 context.let {
 
-                    val remoteView = RemoteViews(context.getPackageName(), R.layout.notification_layout)
+                    val remoteView = RemoteViews(context.packageName, R.layout.notification_layout)
 
                     val mBuilder =
                             NotificationCompat.Builder(context, CHANNEL_ID)
@@ -51,10 +51,11 @@ class BetaInterceptor(private val context: Context) : Interceptor {
 
                     mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build())
                 }
-            }else {
+            } else {
                 mNotificationManager.cancel(NOTIFICATION_ID)
             }
         }
-        return response
     }
+    return response
+}
 }
