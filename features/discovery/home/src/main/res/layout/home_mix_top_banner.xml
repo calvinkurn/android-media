@@ -31,6 +31,8 @@
         android:id="@+id/banner_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_8"
+        android:textSize="@dimen/sp_18"
         android:layout_marginStart="@dimen/dp_16"
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_8"
@@ -52,6 +54,8 @@
         android:layout_marginLeft="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
+        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginBottom="@dimen/dp_8"
         android:ellipsize="end"
         android:maxLines="1"
         app:layout_constraintBottom_toTopOf="@+id/dc_banner_rv"
@@ -68,7 +72,6 @@
         android:id="@+id/banner_button"
         android:layout_width="wrap_content"
         android:layout_height="@dimen/dp_32"
-        android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:background="?attr/selectableItemBackground"
@@ -76,10 +79,9 @@
         android:focusable="true"
         app:layout_constraintBottom_toTopOf="@+id/dc_banner_rv"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title_container"
+        app:layout_constraintTop_toTopOf="@+id/background"
         app:unifyButtonSize="small"
         tools:text="Cek Sekarang" />
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/dc_banner_rv"
