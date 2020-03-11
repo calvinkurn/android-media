@@ -474,6 +474,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                             setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
                         }
                     }
+                    dialog.show()
                 }
                 return
             }
