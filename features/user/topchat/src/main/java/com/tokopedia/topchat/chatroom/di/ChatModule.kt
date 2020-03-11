@@ -41,6 +41,7 @@ import com.tokopedia.topchat.chatroom.view.presenter.ChatSettingsPresenter
 import com.tokopedia.topchat.common.analytics.ChatSettingsAnalytics
 import com.tokopedia.topchat.common.chat.api.ChatApi
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext
 import com.tokopedia.topchat.common.network.XUserIdInterceptor
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -213,7 +214,7 @@ class ChatModule {
     @ChatScope
     @Provides
     @Named("atcMutation")
-    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+    fun provideAddToCartMutation(@TopchatContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
     }
 
@@ -232,13 +233,13 @@ class ChatModule {
 
     @ChatScope
     @Provides
-    internal fun provideAddWishListUseCase(@ApplicationContext context: Context): AddWishListUseCase {
+    internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
         return AddWishListUseCase(context)
     }
 
     @ChatScope
     @Provides
-    internal fun provideRemoveWishListUseCase(@ApplicationContext context: Context): RemoveWishListUseCase {
+    internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
         return RemoveWishListUseCase(context)
     }
 

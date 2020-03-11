@@ -40,11 +40,12 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_ORGANIC = 2
         const val TYPE_SIX_GRID_LEGO = 3
         const val TYPE_THREE_GRID_LEGO = 4
-        const val TYPE_FOUR_GRID_LEGO = 9
         const val TYPE_CURATED = 5
         const val TYPE_BANNER = 6
         const val TYPE_BANNER_CAROUSEL = 7
         const val TYPE_GIF_BANNER = 8
+        const val TYPE_FOUR_GRID_LEGO = 9
+        const val TYPE_MIX_TOP = 10
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
             when(channels.layout) {
@@ -57,6 +58,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> return TYPE_BANNER_CAROUSEL
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> return TYPE_GIF_BANNER
+                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> return TYPE_MIX_TOP
 
             }
             return TYPE_CURATED

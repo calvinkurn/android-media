@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -108,6 +109,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private final String NOTIFICATION_CHANNEL_DESC_BTS_ONE = "notification channel for custom sound with BTS tone";
     private final String NOTIFICATION_CHANNEL_DESC_BTS_TWO = "notification channel for custom sound with different BTS tone";
 
+    GratificationSubscriber gratificationSubscriber;
 
     // Used to load the 'native-lib' library on application startup.
     static {
@@ -267,8 +269,8 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         }
         TimberWrapper.init(ConsumerMainApplication.this);
         initializeAbTestVariant();
-        GratificationSubscriber subscriber = new GratificationSubscriber(getApplicationContext());
-        registerActivityLifecycleCallbacks(subscriber);
+        gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
+        registerActivityLifecycleCallbacks(gratificationSubscriber);
         return true;
     }
 
@@ -471,8 +473,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNING_CERTIFICATES);
                 if (null != info && info.signingInfo.getApkContentsSigners().length > 0) {
-                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
                     byte[] rawCertNative = bytesFromJNI();
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signingInfo.getApkContentsSigners()[0].toByteArray();
                     return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 } else {
                     return false;
@@ -480,9 +486,12 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
             } else {
                 info = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
                 if (null != info && info.signatures.length > 0) {
-                    byte[] rawCertJava = info.signatures[0].toByteArray();
                     byte[] rawCertNative = bytesFromJNI();
-
+                    // handle if the library is failing
+                    if (rawCertNative == null) {
+                        return true;
+                    }
+                    byte[] rawCertJava = info.signatures[0].toByteArray();
                     return getInfoFromBytes(rawCertJava).equals(getInfoFromBytes(rawCertNative));
                 } else {
                     return false;
@@ -557,5 +566,15 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
 
     public Class<?> getDeeplinkClass() {
         return DeepLinkActivity.class;
+    }
+
+    @Override
+    public void onNewIntent(Context context, Intent intent) {
+        super.onNewIntent(context, intent);
+        if(gratificationSubscriber != null){
+            if(context instanceof Activity) {
+                gratificationSubscriber.onNewIntent((Activity) context, intent);
+            }
+        }
     }
 }
