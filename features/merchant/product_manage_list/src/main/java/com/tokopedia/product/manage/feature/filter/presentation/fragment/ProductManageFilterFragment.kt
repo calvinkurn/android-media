@@ -260,13 +260,11 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         btn_close_bottom_sheet.isEnabled = false
         filter_recycler_view.visibility= View.INVISIBLE
         filter_loader.visibility = View.VISIBLE
-        ImageHandler.loadGif(filter_loader_image, R.drawable.ic_loading_indeterminate, R.drawable.ic_loading_indeterminate)
     }
 
     private fun hideLoading() {
         filter_loader.visibility = View.GONE
         btn_close_bottom_sheet.isEnabled = true
         filter_recycler_view.visibility= View.VISIBLE
-        ImageHandler.clearImage(filter_loader_image)
     }
 }

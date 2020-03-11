@@ -5,12 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
@@ -31,9 +28,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandSelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_select.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProductManageFilterExpandSelectFragment :
@@ -41,8 +36,6 @@ class ProductManageFilterExpandSelectFragment :
         HasComponent<ProductManageFilterComponent> {
 
     companion object {
-        const val SORT_TITLE = "Urutkan"
-        const val ETALASE_TITLE = "Etalase"
         fun createInstance(flag: String, cacheManagerId: String): ProductManageFilterExpandSelectFragment {
             return ProductManageFilterExpandSelectFragment().apply {
                 arguments = Bundle().apply {
@@ -140,19 +133,16 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun configToolbar() {
-        select_toolbar.setNavigationIcon(R.drawable.ic_back)
-        flag.let {
-            if(it == SORT_CACHE_MANAGER_KEY) {
-                page_title.text = SORT_TITLE
-            } else {
-                page_title.text = ETALASE_TITLE
-            }
+        select_header.isShowBackButton = true
+        select_header.isShowShadow = false
+        select_header.setNavigationOnClickListener {
+            activity?.onBackPressed()
         }
-        activity?.let {
-            (it as? AppCompatActivity)?.let { appCompatActivity ->
-                appCompatActivity.setSupportActionBar(select_toolbar)
-                appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
-                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        context?.let {
+            if(flag == SORT_CACHE_MANAGER_KEY) {
+                select_header.title = it.resources.getString(R.string.product_manage_filter_sort_select_title)
+            } else {
+                select_header.title = it.resources.getString(R.string.product_manage_filter_etalase_select_title)
             }
         }
     }

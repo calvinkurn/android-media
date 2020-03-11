@@ -6,52 +6,11 @@
     android:layout_height="match_parent"
     android:background="@color/product_manage_white">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/filter_search_app_bar"
+    <com.tokopedia.header.HeaderUnify
+        android:id="@+id/filter_search_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/product_manage_white"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/checklist_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/layout_lvl2"
-                android:layout_marginRight="@dimen/layout_lvl2"
-                android:layout_marginEnd="@dimen/layout_lvl2"
-                android:layout_marginBottom="@dimen/layout_lvl2">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/page_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:typographyType="heading_4"
-                    app:typographyWeight="bold"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/reset_checklist"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/filter_expand_reset"
-                    android:textColor="@color/g_500"
-                    app:typographyWeight="reguler"
-                    app:typographyType="body_2"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <com.tokopedia.design.text.SearchInputView
         android:id="@+id/filter_category_search"
@@ -67,7 +26,7 @@
         android:visibility="gone"
         app:siv_search_hint="@string/filter_search_bar"
         app:siv_search_icon="@drawable/ic_search_bar"
-        app:layout_constraintTop_toBottomOf="@id/filter_search_app_bar"/>
+        app:layout_constraintTop_toBottomOf="@id/filter_search_header"/>
 
     <ImageView
         android:id="@+id/filter_search_error_img"

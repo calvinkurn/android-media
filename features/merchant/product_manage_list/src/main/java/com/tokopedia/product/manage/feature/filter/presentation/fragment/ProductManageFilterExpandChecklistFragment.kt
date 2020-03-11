@@ -5,13 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.text.SearchInputView
@@ -31,11 +28,8 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_search.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProductManageFilterExpandChecklistFragment :
@@ -43,8 +37,6 @@ class ProductManageFilterExpandChecklistFragment :
         HasComponent<ProductManageFilterComponent> {
 
     companion object {
-        const val CATEGORIES_TITLE = "Semua Kategori"
-        const val OTHER_FILTER_TITLE = "Filter Lainnya"
         fun createInstance(flag: String, cacheManagerId: String): ProductManageFilterExpandChecklistFragment {
             return ProductManageFilterExpandChecklistFragment().apply {
                 arguments = Bundle().apply {
@@ -118,7 +110,6 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun initView() {
-        initTitle()
         configToolbar()
         filter_search_recycler_view.setOnTouchListener { _, _ ->
             filter_category_search?.hideKeyboard()
@@ -129,13 +120,19 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun configToolbar() {
-        checklist_toolbar?.setNavigationIcon(R.drawable.product_manage_arrow_back)
-        activity?.let {
-            (it as? AppCompatActivity)?.let { appCompatActivity ->
-                appCompatActivity.setSupportActionBar(checklist_toolbar)
-                appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
-                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        filter_search_header.isShowShadow = false
+        filter_search_header.isShowBackButton = true
+        filter_search_header.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+        context?.let {
+            if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
+                filter_search_header.title = it.resources.getString(R.string.product_manage_filter_all_categories_title)
+                initSearchView()
+            } else {
+                filter_search_header.title = it.resources.getString(R.string.product_manage_filter_other_filters_title)
             }
+            filter_search_header.actionText = it.resources.getString(R.string.filter_expand_reset)
         }
     }
 
@@ -192,12 +189,12 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun showButtons() {
         btn_submit.isEnabled = true
-        reset_checklist.visibility = View.VISIBLE
+        filter_search_header.actionTextView?.visibility = View.VISIBLE
     }
 
     private fun hideButtons() {
         btn_submit.isEnabled = false
-        reset_checklist.visibility = View.GONE
+        filter_search_header.actionTextView?.visibility = View.GONE
     }
 
     private fun initButtons() {
@@ -227,17 +224,8 @@ class ProductManageFilterExpandChecklistFragment :
             }
             this.activity?.finish()
         }
-        reset_checklist.setOnClickListener {
+        filter_search_header.actionTextView?.setOnClickListener {
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
-        }
-    }
-
-    private fun initTitle() {
-        if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
-            page_title.text = CATEGORIES_TITLE
-            initSearchView()
-        } else {
-            page_title.text = OTHER_FILTER_TITLE
         }
     }
 
