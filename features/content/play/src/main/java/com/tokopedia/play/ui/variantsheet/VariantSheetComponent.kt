@@ -33,7 +33,6 @@ class VariantSheetComponent(
                             ScreenStateEvent.Init -> uiView.setStateHidden()
                             is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet]?.let(::handleShowHideVariantSheet) }
                             is ScreenStateEvent.SetVariantSheet -> uiView.setVariantSheet(it.variantSheetModel)
-                            is ScreenStateEvent.SetDynamicVariant -> uiView.setDynamicVariant(it.productDetailVariant)
                         }
                     }
         }
@@ -62,6 +61,12 @@ class VariantSheetComponent(
     override fun onBuyClicked(view: VariantSheetView, productId: String) {
         launch {
             bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnBuyProduct(productId))
+        }
+    }
+
+    override fun onVariantGuideLinedClicked(url: String) {
+        launch {
+            bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnClickVariantGuideline(url))
         }
     }
 
