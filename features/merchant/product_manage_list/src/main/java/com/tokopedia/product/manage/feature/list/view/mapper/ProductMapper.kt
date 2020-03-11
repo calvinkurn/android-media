@@ -41,8 +41,9 @@ object ProductMapper {
         val productFilters = mutableListOf<FilterViewModel>(Default)
 
         val availableFilters = productList
-            ?.distinctBy { it.status }
             ?.filter { filterType.contains(it.status) }
+            ?.distinctBy { it.status }
+            ?.sortedBy { it.status }
             ?.map { product ->
                 val productStatus = product.status
                 val productCount = productList.filter {
