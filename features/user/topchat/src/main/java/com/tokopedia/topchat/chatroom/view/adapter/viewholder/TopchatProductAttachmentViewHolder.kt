@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.chat_common.data.ProductAttachmentViewModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
@@ -39,8 +40,7 @@ class TopchatProductAttachmentViewHolder(
         bindCampaign(product)
         bindPrice(product)
         bindFreeShipping(product)
-        bindBuy(product)
-        bindAtc(product)
+        bindFooter(product)
         bindChatReadStatus(product)
         listener.trackSeenProduct(product)
     }
@@ -155,25 +155,31 @@ class TopchatProductAttachmentViewHolder(
         }
     }
 
-    private fun bindBuy(product: ProductAttachmentViewModel) {
-        if (product.isSender) {
-            itemView.tv_buy?.show()
-            itemView.tv_buy?.setOnClickListener {
-                listener.onClickBuyFromProductAttachment(product)
-            }
+    private fun bindFooter(product: ProductAttachmentViewModel) {
+        if (product.canShowFooter && !GlobalConfig.isSellerApp()) {
+            bindBuy(product)
+            bindAtc(product)
         } else {
-            itemView.tv_buy?.hide()
+            hideFooter()
+        }
+    }
+
+    private fun hideFooter() {
+        itemView.tv_buy?.hide()
+        itemView.tv_atc?.hide()
+    }
+
+    private fun bindBuy(product: ProductAttachmentViewModel) {
+        itemView.tv_buy?.show()
+        itemView.tv_buy?.setOnClickListener {
+            listener.onClickBuyFromProductAttachment(product)
         }
     }
 
     private fun bindAtc(product: ProductAttachmentViewModel) {
-        if (product.isSender) {
-            itemView.tv_atc?.show()
-            itemView.tv_atc?.setOnClickListener {
-                listener.onClickATCFromProductAttachment(product)
-            }
-        } else {
-            itemView.tv_atc?.hide()
+        itemView.tv_atc?.show()
+        itemView.tv_atc?.setOnClickListener {
+            listener.onClickATCFromProductAttachment(product)
         }
     }
 
