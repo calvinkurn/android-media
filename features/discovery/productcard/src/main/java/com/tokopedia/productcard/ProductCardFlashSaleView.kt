@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.productcard.utils.glideClear
 import com.tokopedia.productcard.utils.initLabelGroup
 import com.tokopedia.productcard.utils.loadImage
@@ -16,6 +15,7 @@ import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.*
  */
 
 class ProductCardFlashSaleView: BaseCustomView, IProductCardFlashSaleView {
+
 
     constructor(context: Context): super(context) {
         init()
@@ -40,9 +40,8 @@ class ProductCardFlashSaleView: BaseCustomView, IProductCardFlashSaleView {
         labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
 
         renderProductCardFlashSaleContent(productCardModel)
+
     }
-
-
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f
 
@@ -61,4 +60,5 @@ class ProductCardFlashSaleView: BaseCustomView, IProductCardFlashSaleView {
     override fun recycle() {
         imageProduct?.glideClear(context)
     }
+
 }

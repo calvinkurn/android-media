@@ -22,7 +22,13 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.productcard.ProductCardFlashSaleModel
+import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.productcard.v2.BlankSpaceConfig
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 /**
  * @author by yoasfs on 2020-03-05
@@ -31,9 +37,14 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                          val countDownListener: CountDownView.CountDownListener,
                          val flashSaleCardListener: FlashSaleCardListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
-    : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener) {
+    : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), CoroutineScope {
 
     private lateinit var adapter: MixLeftAdapter
+
+
+    private val masterJob = SupervisorJob()
+
+    override val coroutineContext = masterJob + Dispatchers.Main
 
     private val recyclerView: RecyclerView = itemView.findViewById(R.id.rv_product)
     private val image: ImageView = itemView.findViewById(R.id.parallax_image)
@@ -65,7 +76,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
         parallaxBackground.setBackgroundColor(Color.parseColor(channel.header.backColor))
-        image.loadImage("https://upload.wikimedia.org/wikipedia/commons/6/6b/Reynhard_Sinaga.jpg")
+        image.loadImage(channel.banner.imageUrl)
     }
 
     private fun setupList(channel: DynamicHomeChannel.Channels) {
@@ -74,11 +85,21 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(flashSaleCardListener)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(EmptyDataModel())
-        listData.addAll(convertDataToProductData(channel))
+        val productDataList = convertDataToProductData(channel)
+        listData.addAll(productDataList)
         listData.add(SeeMorePdpDataModel())
         adapter = MixLeftAdapter(listData,typeFactoryImpl, homeCategoryListener)
         recyclerView.adapter = adapter
-        adapter.notifyDataSetChanged()
+        recyclerView.setHasFixedSize(true)
+        launch {
+            try {
+                recyclerView.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
+                parentRecycledViewPool.let {recyclerView.setRecycledViewPool(it) }
+            }
+            catch (throwable: Throwable) {
+                throwable.printStackTrace()
+            }
+        }
     }
 
     private fun setSnapEffect() {
@@ -87,6 +108,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     private fun setParallaxEffect() {
+        image.alpha = 1f
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -108,15 +130,40 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         })
     }
 
-    private fun convertDataToProductData(channel: DynamicHomeChannel.Channels): List<Visitable<*>> {
-        val list :MutableList<Visitable<*>> = mutableListOf()
-        for (grid in channel.grids) {
+    private fun convertDataToProductData(channel: DynamicHomeChannel.Channels): List<FlashSaleDataModel> {
+        val list :MutableList<FlashSaleDataModel> = mutableListOf()
+        for (element in channel.grids) {
             list.add(FlashSaleDataModel(
-                    grid,
+                    ProductCardFlashSaleModel(
+                            slashedPrice = element.slashedPrice,
+                            productName = element.name,
+                            formattedPrice = element.price,
+                            productImageUrl = element.imageUrl,
+                            discountPercentage = element.discount,
+                            pdpViewCount = element.productViewCountFormatted,
+                            stockBarLabel = element.label,
+                            stockBarPercentage = element.soldPercentage
+                    ),
                     blankSpaceConfig = BlankSpaceConfig()
             ))
         }
         return list
+    }
+
+    private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
+            productCardModelList: List<ProductCardFlashSaleModel>) {
+        val productCardHeight = getProductCardMaxHeight(productCardModelList)
+
+        val carouselLayoutParams = this.layoutParams
+        carouselLayoutParams?.height = productCardHeight
+        this.layoutParams = carouselLayoutParams
+    }
+
+
+    private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
+        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+
     }
 
 }

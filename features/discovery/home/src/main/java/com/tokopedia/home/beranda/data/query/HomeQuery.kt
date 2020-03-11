@@ -107,6 +107,7 @@ object HomeQuery{
                   isActive
                   imageUrl
                 }
+                productViewCountFormatted
               }
               banner {
                 id

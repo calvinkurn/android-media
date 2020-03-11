@@ -3,10 +3,11 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardTypeFactory
+import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 
 class FlashSaleDataModel (
-        val grid: DynamicHomeChannel.Grid,
+        val productModel: ProductCardFlashSaleModel,
         val blankSpaceConfig: BlankSpaceConfig
 ): Visitable<FlashSaleCardTypeFactory>{
     override fun type(typeFactory: FlashSaleCardTypeFactory): Int {

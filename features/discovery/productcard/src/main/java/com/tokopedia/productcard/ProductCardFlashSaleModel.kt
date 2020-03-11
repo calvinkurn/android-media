@@ -34,15 +34,9 @@ data class ProductCardFlashSaleModel (
         val hasAddToCartButton: Boolean = false,
         val hasRemoveFromWishlistButton: Boolean = false,
         val pdpViewCount: String = "",
-        val stockBarLabel: String = ""
+        val stockBarLabel: String = "",
+        val stockBarPercentage: Int = 0
 ) {
-    @Deprecated("replace with labelGroupList")
-    var isProductSoldOut: Boolean = false
-    @Deprecated("replace with labelGroupList")
-    var isProductPreOrder: Boolean = false
-    @Deprecated("replace with labelGroupList")
-    var isProductWholesale: Boolean = false
-
     @Deprecated("replace with LabelGroup")
     data class Label(
             val position: String = "",
@@ -82,11 +76,4 @@ data class ProductCardFlashSaleModel (
         return findLabelGroup(LABEL_GIMMICK)
     }
 
-    fun getLabelIntegrity(): LabelGroup? {
-        return findLabelGroup(LABEL_INTEGRITY)
-    }
-
-    fun getLabelShipping(): LabelGroup? {
-        return findLabelGroup(LABEL_SHIPPING)
-    }
 }

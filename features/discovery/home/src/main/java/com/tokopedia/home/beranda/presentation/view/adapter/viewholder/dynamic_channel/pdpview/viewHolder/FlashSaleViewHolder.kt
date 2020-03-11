@@ -8,36 +8,27 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 import com.tokopedia.home.beranda.presentation.view.customview.ThematicCardView
 import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.ProductCardFlashSaleView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
-class FlashSaleViewHolder (view: View, private val listener: FlashSaleCardListener): AbstractViewHolder<FlashSaleDataModel>(view){
+class FlashSaleViewHolder (view: View, private val listener: FlashSaleCardListener):
+        AbstractViewHolder<FlashSaleDataModel>(view) {
+
+    companion object{
+        val LAYOUT = R.layout.home_banner_item_flashsale_carousel
+    }
+
     private val productCardView: ProductCardFlashSaleView? by lazy { view.findViewById<ProductCardFlashSaleView>(R.id.productCardView) }
     override fun bind(element: FlashSaleDataModel) {
         setLayout(element)
     }
 
     private fun setLayout(element: FlashSaleDataModel){
-//        val productCardModelLabelGroupList = element.labelGroups.map {
-//            ProductCardFlashSaleModel.LabelGroup(position = it.position, type = it.type, title = it.title)
-//        }
-
         productCardView?.run{
-            setProductModel(
-                    ProductCardFlashSaleModel(
-                            slashedPrice = element.grid.slashedPrice,
-                            productName = element.grid.name,
-                            formattedPrice = element.grid.price,
-                            productImageUrl = element.grid.imageUrl,
-                            discountPercentage = element.grid.discount,
-                            pdpViewCount = "",
-                            stockBarLabel = element.grid.label
-                    )
-            )
             applyCarousel()
+            setProductModel(element.productModel)
         }
-    }
-
-
-    companion object{
-        val LAYOUT = R.layout.home_banner_item_flashsale_carousel
     }
 }
