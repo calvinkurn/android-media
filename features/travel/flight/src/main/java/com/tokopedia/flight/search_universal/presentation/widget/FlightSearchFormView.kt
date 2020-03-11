@@ -59,6 +59,10 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
                 flightDashboardCache.arrivalCityCode,
                 flightDashboardCache.arrivalCityName
         )
+        setPassengerView(flightDashboardCache.passengerAdult, flightDashboardCache.passengerChild, flightDashboardCache.passengerInfant)
+        setClassView(getClassById(flightDashboardCache.classCache))
+
+        renderTripView()
 
         if (flightDashboardCache.departureDate.isNotEmpty() &&
                 FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate)
@@ -78,16 +82,13 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
             setReturnDate(generateDefaultReturnDate(departureDate
                     ?: generateDefaultDepartureDate()))
         }
-
-        setPassengerView(flightDashboardCache.passengerAdult, flightDashboardCache.passengerChild, flightDashboardCache.passengerInfant)
-        setClassView(getClassById(flightDashboardCache.classCache))
-
-        renderTripView()
     }
 
     fun setRoundTrip(isRoundTrip: Boolean) {
         flightSearchData.isRoundTrip = isRoundTrip
     }
+
+    fun isRoundTrip(): Boolean = flightSearchData.isRoundTrip
 
     fun setOriginAirport(originAirport: FlightAirportViewModel) {
         flightSearchData.departureAirportId = if (originAirport.cityAirports != null && originAirport.cityAirports.size > 0) {
@@ -115,6 +116,23 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         this.departureDate = departureDate
         flightSearchData.departureDate = FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_FORMAT)
         tvFlightDepartureDate.text = FlightDateUtil.dateToString(departureDate, FlightDateUtil.DEFAULT_VIEW_FORMAT)
+
+        // check return date
+        if (isRoundTrip()) {
+            if (::returnDate.isInitialized && returnDate < departureDate) {
+                val oneYear = FlightDateUtil.addTimeToSpesificDate(
+                        FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, 1),
+                        Calendar.DATE,
+                        -1)
+                if (returnDate.after(oneYear)) {
+                    setReturnDate(departureDate)
+                } else {
+                    setReturnDate(generateDefaultReturnDate(departureDate))
+                }
+            } else {
+                setReturnDate(generateDefaultReturnDate(departureDate))
+            }
+        }
     }
 
     fun setReturnDate(returnDate: Date) {

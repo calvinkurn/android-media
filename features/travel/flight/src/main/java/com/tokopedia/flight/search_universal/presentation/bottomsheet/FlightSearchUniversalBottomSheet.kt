@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.flight.FlightComponentInstance
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.activity.FlightAirportPickerActivity
@@ -85,7 +86,12 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
             )
             flightCalendarDialog.setListener(object : FlightCalendarOneWayWidget.ActionListener {
                 override fun onDateSelected(dateSelected: Date) {
-                    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                    val errorResourceId = flightSearchUniversalViewModel.validateDepartureDate(dateSelected)
+                    if (errorResourceId == -1) {
+                        mChildView.flightSearchFormView.setDepartureDate(dateSelected)
+                    } else {
+                        showMessageErrorInSnackbar(errorResourceId)
+                    }
                 }
 
             })
@@ -162,7 +168,19 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
         )
         flightCalendarDialog.listener = object : SelectionRangeCalendarWidget.OnDateClickListener {
             override fun onDateClick(dateIn: Date, dateOut: Date) {
-//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+                val departureErrorResourceId = flightSearchUniversalViewModel.validateDepartureDate(dateIn)
+                if (departureErrorResourceId == -1) {
+                    mChildView.flightSearchFormView.setDepartureDate(dateIn)
+                } else {
+                    showMessageErrorInSnackbar(departureErrorResourceId)
+                }
+
+                val returnErrorResourceId = flightSearchUniversalViewModel.validateReturnDate(dateIn, dateOut)
+                if (returnErrorResourceId == -1) {
+                    mChildView.flightSearchFormView.setReturnDate(dateOut)
+                } else {
+                    showMessageErrorInSnackbar(returnErrorResourceId)
+                }
             }
         }
         flightCalendarDialog.show(requireFragmentManager(), tag)
@@ -191,6 +209,10 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
 
     private fun initSearchForm() {
         mChildView.flightSearchFormView.listener = this
+    }
+
+    private fun showMessageErrorInSnackbar(resourceId: Int) {
+        NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resourceId))
     }
 
     companion object {

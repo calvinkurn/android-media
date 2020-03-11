@@ -2,6 +2,7 @@ package com.tokopedia.flight.search_universal.presentation.viewmodel
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.common.travel.utils.TravelDispatcherProvider
+import com.tokopedia.flight.R
 import com.tokopedia.flight.common.util.FlightDateUtil
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightDashboardPassDataViewModel
 import java.util.*
@@ -42,6 +43,38 @@ class FlightSearchUniversalViewModel @Inject constructor(
         maxDateCalendar.set(Calendar.MINUTE, DEFAULT_LAST_MIN)
         maxDateCalendar.set(Calendar.SECOND, DEFAULT_LAST_SEC)
         return Pair(minDate, maxDateCalendar.time)
+    }
+
+    fun validateDepartureDate(departureDate: Date): Int {
+        var resultStringResourceId = -1
+
+        var oneYears = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_YEAR_FOR_FLIGHT),
+                Calendar.DATE, -1)
+
+        if (departureDate.after(oneYears)) {
+            resultStringResourceId = R.string.flight_dashboard_departure_max_one_years_from_today_error
+        } else if (departureDate.before(FlightDateUtil.getCurrentDate())) {
+            resultStringResourceId = R.string.flight_dashboard_departure_should_atleast_today_error
+        }
+
+        return resultStringResourceId
+    }
+
+    fun validateReturnDate(departureDate: Date, returnDate: Date): Int {
+        var resultStringResourceId = -1
+
+        var oneYears = FlightDateUtil.addTimeToSpesificDate(
+                FlightDateUtil.addTimeToCurrentDate(Calendar.YEAR, MAX_YEAR_FOR_FLIGHT),
+                Calendar.DATE, -1)
+
+        if (returnDate.after(oneYears)) {
+            resultStringResourceId = R.string.flight_dashboard_return_max_one_years_from_today_error
+        } else if (returnDate.before(departureDate)) {
+            resultStringResourceId = R.string.flight_dashboard_return_should_greater_equal_error
+        }
+
+        return resultStringResourceId
     }
 
     companion object {
