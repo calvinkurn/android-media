@@ -34,7 +34,8 @@ class NotificationHelper {
                 .setAutoCancel(true)
                 .setShowWhen(true)
                 .setSmallIcon(com.tokopedia.design.R.drawable.ic_search_icon)
-                .setStyle(inboxStyle);
+                .setStyle(inboxStyle)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
         notificationManager.notify(NOTIFICATION_ID, builder.build());
 
     }
@@ -53,7 +54,8 @@ class NotificationHelper {
                 .setAutoCancel(true)
                 .setShowWhen(true)
                 .setSmallIcon(com.tokopedia.design.R.drawable.ic_search_icon)
-                .setStyle(inboxStyle);
+                .setStyle(inboxStyle)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
         notificationManager.notify(NOTIFICATION_ID, builder.build());
 
     }
@@ -72,8 +74,8 @@ class NotificationHelper {
                 .setAutoCancel(true)
                 .setShowWhen(true)
                 .setSmallIcon(com.tokopedia.design.R.drawable.ic_search_icon)
-                .setStyle(inboxStyle);
+                .setStyle(inboxStyle)
+                .setPriority(NotificationCompat.PRIORITY_LOW);
         notificationManager.notify(NOTIFICATION_ID, builder.build());
-
     }
 }
