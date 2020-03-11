@@ -66,6 +66,9 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.Product
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
@@ -74,6 +77,8 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshLis
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductMultiEditBottomSheet
+import com.tokopedia.product.manage.feature.list.view.ui.toast.MultiEditToastMessage.getRetryMessage
+import com.tokopedia.product.manage.feature.list.view.ui.toast.MultiEditToastMessage.getSuccessMessage
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
@@ -105,13 +110,15 @@ import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageFilterModel
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageSortModel
-import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
 import com.tokopedia.product.manage.oldlist.view.bottomsheets.ConfirmationUpdateProductBottomSheet
 import com.tokopedia.product.manage.oldlist.view.bottomsheets.EditProductBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.DELETED
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.INACTIVE
+import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus.MODERATED
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByKeyword
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByPage
@@ -129,7 +136,6 @@ import java.net.UnknownHostException
 import java.util.*
 import java.util.concurrent.TimeoutException
 import javax.inject.Inject
-import kotlin.collections.HashSet
 
 open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, ProductManageAdapterFactory>(),
     BaseListCheckableAdapter.OnCheckableAdapterListener<ProductViewModel>,
@@ -203,6 +209,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
         observeEditPrice()
         observeEditStock()
+        observeMultiEdit()
         observeSetCashback()
         observeGetFreeClaim()
         observeGetPopUpInfo()
@@ -264,19 +271,22 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 } else {
                     tabFilters.resetAllFilter(viewHolder)
                     tabFilters.setSelectedFilter(filter)
-                    filterProductByStatus(selectedFilter)
+                    filterProductByStatus(productList, selectedFilter)
                 }
             }
         }
     }
 
     override fun editMultipleProductsEtalase() {
+        // TO DO
     }
 
-    override fun deactivateMultipleProducts() {
+    override fun editMultipleProductsInActive() {
+        showEditProductsInActiveConfirmationDialog()
     }
 
-    override fun removeMultipleProducts() {
+    override fun deleteMultipleProducts() {
+        showDeleteProductsConfirmationDialog()
     }
 
     private fun setupSearchBar() {
@@ -337,8 +347,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun filterProductByStatus(status: ProductStatus?) {
-        val productList = productList.filter {
+    private fun filterProductByStatus(products: List<ProductViewModel>, status: ProductStatus?) {
+        val productList = products.filter {
             it.status == status
         }
         val hasNextPage = productList.isNotEmpty()
@@ -452,16 +462,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun showProductList(productList: List<ProductViewModel>) {
         if(tabFilters.isActive()) {
             val selectedFilter = tabFilters.selectedFilter?.status
-            filterProductByStatus(selectedFilter)
+            filterProductByStatus(productList, selectedFilter)
         } else {
             val hasNextPage = productList.isNotEmpty()
             renderList(productList, hasNextPage)
         }
     }
 
-    private fun showTabFilters() {
-        val tabFilterList = mapToTabFilters(productList)
-        tabFilters.setData(tabFilterList)
+    private fun showTabFilters(products: MutableList<ProductViewModel>) {
+        tabFilters.setData(mapToTabFilters(products))
     }
 
     private fun addProductList(products: List<ProductViewModel>) {
@@ -589,7 +598,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun showErrorToast(message: String, actionLabel: String, listener: () -> Unit = {}) {
+    private fun showErrorToast(
+        message: String = getString(R.string.product_manage_snack_bar_fail),
+        actionLabel: String = getString(com.tokopedia.abstraction.R.string.close),
+        listener: () -> Unit = {}
+    ) {
         view?.let {
             val onClickActionLabel = View.OnClickListener { listener.invoke() }
             Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, actionLabel, onClickActionLabel)
@@ -683,36 +696,77 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         onSuccessGetPopUp(false, "")
     }
 
-    private fun onSuccessBulkUpdateProduct(listOfResponse: ProductUpdateV3SuccessFailedResponse) {
-        hideLoadingProgress()
-
-        /**
-         * When bulk update products, there's possibility one of the product failed to update from server so
-         * this logic use for catch failed update products
-         */
-        if (listOfResponse.failedResponse.isNotEmpty()) {
-            showErrorToast(getString(R.string.product_manage_bulk_snackbar, listOfResponse.successResponse.size.toString(), listOfResponse.failedResponse.size.toString()), getString(com.tokopedia.abstraction.R.string.retry_label)) {
-                viewModel.updateMultipleProducts(viewModel.failedBulkDataMapper(listOfResponse.failedResponse, confirmationProductDataList))
-            }
-        } else {
-            confirmationProductDataList.clear()
-            clearEtalaseAndStockData()
-            showMessageToast(getString(R.string.product_manage_bulk_snackbar_sucess, listOfResponse.successResponse.size.toString()))
-        }
-
-        productManageListAdapter.resetCheckedItemSet()
+    private fun onSuccessEditMultiProducts(result: MultiEditResult) {
+        showMultiEditToast(result)
+        updateEditProductList(result)
         clearSelectedProduct()
         renderCheckedView()
-        loadInitialData()
+    }
+
+    private fun showMultiEditToast(result: MultiEditResult) {
+        context?.let { context ->
+            if (result.failed.isNotEmpty()) {
+                val retryLabel = getString(R.string.product_manage_snack_bar_retry)
+                val retryMessage = getRetryMessage(context, result)
+
+                showErrorToast(retryMessage, retryLabel) { retryMultiEditProducts(result) }
+            } else {
+                val message = getSuccessMessage(context, result)
+                showMessageToast(message)
+
+                clearEtalaseAndStockData()
+                confirmationProductDataList.clear()
+            }
+        }
+    }
+
+    private fun retryMultiEditProducts(result: MultiEditResult) {
+        when(result) {
+            is EditByStatus -> {
+                val productIds = result.failed.map { it.productID }
+                viewModel.editProductsByStatus(productIds, result.status)
+            }
+            is EditByMenu -> {
+                //TO DO
+            }
+        }
+
+    }
+
+    private fun updateEditProductList(result: MultiEditResult) {
+        val productIds = result.success.map { it.productID }
+
+        when(result) {
+            is EditByStatus -> {
+                val productList = adapter.data
+                val productStatus = result.status
+
+                showTabFilters(productList)
+                updateProductListStatus(productIds, productStatus)
+            }
+            is EditByMenu -> {
+                //TO DO
+            }
+        }
+    }
+
+    private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
+        productIds.forEach { productId ->
+            if(status == INACTIVE) productManageListAdapter.updateInactiveProducts(productId)
+            if(status == DELETED) productManageListAdapter.updateRemovedProducts(productId)
+        }
     }
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        clearSelectedProduct()
-        searchInputView.searchTextView.text.clear()
-        productManageListAdapter.resetCheckedItemSet()
         productList.clear()
+        clearSearchBarInput()
+        clearSelectedProduct()
         renderCheckedView()
+    }
+
+    private fun clearSearchBarInput() {
+        searchInputView.searchTextView.text.clear()
     }
 
     private fun showMultipleUpdateErrorToast(e: Throwable) {
@@ -822,7 +876,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onClickMoreOptionsButton(product: ProductViewModel) {
         hideSoftKeyboard()
 
-        if (product.status == ProductStatus.MODERATED) {
+        if (product.status == MODERATED) {
             val errorMessage = getString(R.string.product_manage_desc_product_on_supervision, product.title)
             NetworkErrorHelper.showSnackbar(activity, errorMessage)
         } else {
@@ -1114,7 +1168,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         removeObservers(viewModel.viewState)
         removeObservers(viewModel.productListResult)
         removeObservers(viewModel.shopInfoResult)
-        removeObservers(viewModel.updateProductResult)
+        removeObservers(viewModel.multiEditProductResult)
         removeObservers(viewModel.deleteProductResult)
         removeObservers(viewModel.editPriceResult)
         removeObservers(viewModel.setCashBackResult)
@@ -1259,13 +1313,56 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
+    private fun observeMultiEdit() {
+        observe(viewModel.multiEditProductResult) {
+            when(it) {
+                is Success -> onSuccessEditMultiProducts(it.data)
+                is Fail -> showErrorToast()
+
+            }
+        }
+    }
+
+    private fun showDeleteProductsConfirmationDialog() {
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.product_manage_dialog_delete_products_title, itemsChecked.count()))
+                setDescription(getString(R.string.product_manage_delete_product_description))
+                setPrimaryCTAText(getString(R.string.product_manage_delete_product_delete_button))
+                setSecondaryCTAText(getString(R.string.product_manage_delete_product_cancel_button))
+                setPrimaryCTAClickListener {
+                    val productIds = itemsChecked.map { item -> item.id }
+                    viewModel.editProductsByStatus(productIds, DELETED)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener { dismiss() }
+            }.show()
+        }
+    }
+
+    private fun showEditProductsInActiveConfirmationDialog() {
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.product_manage_dialog_edit_products_inactive_title, itemsChecked.count()))
+                setPrimaryCTAText(getString(R.string.product_manage_edit_products_inactive_button))
+                setSecondaryCTAText(getString(R.string.product_manage_delete_product_cancel_button))
+                setPrimaryCTAClickListener {
+                    val productIds = itemsChecked.map { item -> item.id }
+                    viewModel.editProductsByStatus(productIds, INACTIVE)
+                    dismiss()
+                }
+                setSecondaryCTAClickListener { dismiss() }
+            }.show()
+        }
+    }
+
     private fun observeProductList() {
         observe(viewModel.productListResult) {
             when (it) {
                 is Success -> {
                     addProductList(it.data)
                     showProductList(it.data)
-                    showTabFilters()
+                    showTabFilters(productList)
                 }
                 is Fail -> loadEmptyList()
             }
@@ -1302,12 +1399,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun observeUpdateProduct() {
-        observe(viewModel.updateProductResult) {
-            when (it) {
-                is Success -> onSuccessBulkUpdateProduct(it.data)
-                is Fail -> showMultipleUpdateErrorToast(it.throwable)
-            }
-        }
+        observe(viewModel.updateProductResult) {}
     }
 
     private fun observeDeleteProduct() {
@@ -1343,6 +1435,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun clearSelectedProduct() {
         itemsChecked.clear()
         checkedPositionList.clear()
+        productManageListAdapter.resetCheckedItemSet()
     }
 
     private fun clearProductList() {

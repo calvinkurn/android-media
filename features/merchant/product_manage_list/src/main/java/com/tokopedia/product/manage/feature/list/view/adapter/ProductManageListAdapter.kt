@@ -56,9 +56,27 @@ class ProductManageListAdapter(
             if (product.id.equals(productId, ignoreCase = true)) {
                 data[index] = product.copy(isFeatured = isFeaturedProduct)
                 notifyItemChanged(index)
+            }
+        }
+    }
+
+    fun updateInactiveProducts(productId: String) {
+        data.forEachIndexed { index, product ->
+            if (product.id.equals(productId, ignoreCase = true)) {
+                data[index] = product.copy(status = ProductStatus.INACTIVE)
+                notifyItemChanged(index)
                 return
             }
         }
     }
 
+    fun updateRemovedProducts(productId: String) {
+        data.forEachIndexed { index, product ->
+            if (product.id.equals(productId, ignoreCase = true)) {
+                data.removeAt(index)
+                notifyItemRemoved(index)
+                return
+            }
+        }
+    }
 }

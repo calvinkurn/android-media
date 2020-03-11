@@ -50,12 +50,13 @@ class ProductMultiEditBottomSheet(
                         listener.editMultipleProductsEtalase()
                     }
                     R.string.product_manage_edit_product_non_active -> {
-                        listener.deactivateMultipleProducts()
+                        listener.editMultipleProductsInActive()
                     }
                     R.string.product_bs_delete_title -> {
-                        listener.removeMultipleProducts()
+                        listener.deleteMultipleProducts()
                     }
                 }
+                dismiss()
             }
         }
     }
@@ -66,7 +67,7 @@ class ProductMultiEditBottomSheet(
 
     interface MultiEditListener{
         fun editMultipleProductsEtalase()
-        fun deactivateMultipleProducts()
-        fun removeMultipleProducts()
+        fun editMultipleProductsInActive()
+        fun deleteMultipleProducts()
     }
 }

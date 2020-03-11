@@ -12,6 +12,8 @@ import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.C
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_SUCCESS_CODE
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
@@ -19,6 +21,9 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
+import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
+import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
+import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult
@@ -28,7 +33,6 @@ import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseC
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3Param
-import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3Response
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
 import com.tokopedia.product.manage.oldlist.domain.BulkUpdateProductUseCase
 import com.tokopedia.product.manage.oldlist.domain.EditFeaturedProductUseCase
@@ -64,6 +68,7 @@ class ProductManageViewModel @Inject constructor(
     private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
     private val editStockUseCase: EditStockUseCase,
     private val deleteProductUseCase: DeleteProductUseCase,
+    private val multiEditProductUseCase: MultiEditProductUseCase,
     mainDispatcher: CoroutineDispatcher
 ): BaseViewModel(mainDispatcher) {
 
@@ -93,6 +98,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _setFeaturedProductResult
     val toggleMultiSelect: LiveData<Boolean>
         get() = _toggleMultiSelect
+    val multiEditProductResult: LiveData<Result<MultiEditResult>>
+        get() = _multiEditProductResult
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -107,6 +114,7 @@ class ProductManageViewModel @Inject constructor(
     private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
     private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
+    private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
@@ -146,6 +154,32 @@ class ProductManageViewModel @Inject constructor(
             override fun onError(e: Throwable) {
                 _updateProductResult.value = Fail(e)
             }
+        })
+    }
+
+    fun editProductsByStatus(productIds: List<String>, status: ProductStatus) {
+        launchCatchError(block = {
+            showProgressDialog()
+
+            val response = withContext(Dispatchers.IO) {
+                val shopParam = ShopParam(userSessionInterface.shopId)
+
+                val params = productIds.map { productId ->
+                    ProductParam(productId = productId, shop = shopParam, status = status)
+                }
+
+                val requestParams = MultiEditProductUseCase.createRequestParam(params)
+                multiEditProductUseCase.execute(requestParams)
+            }
+
+            val success = response.results?.filter { it.isSuccess() }.orEmpty()
+            val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
+
+            _multiEditProductResult.value = Success(EditByStatus(status, success, failed))
+            hideProgressDialog()
+        }, onError = {
+            _multiEditProductResult.value = Fail(it)
+            hideProgressDialog()
         })
     }
 
@@ -338,19 +372,6 @@ class ProductManageViewModel @Inject constructor(
         }
         return confirmationProductDataList
 
-    }
-
-    /**
-     * Filter the data based on failed data
-     * This use for retry update only the failed data
-     */
-    fun failedBulkDataMapper(failData: List<ProductUpdateV3Response>, confirmationProductDataList: List<ConfirmationProductData>)
-        : MutableList<ConfirmationProductData> {
-        return confirmationProductDataList.filter {
-            failData.map { response ->
-                response.productUpdateV3Data.productId
-            }.contains(it.productId)
-        }.toMutableList()
     }
 
     fun toggleMultiSelect() {
