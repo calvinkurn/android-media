@@ -696,7 +696,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         onSuccessGetPopUp(false, "")
     }
 
-    private fun onSuccessEditMultiProducts(result: MultiEditResult) {
+    private fun onSuccessMultiEditProducts(result: MultiEditResult) {
         showMultiEditToast(result)
         updateEditProductList(result)
         clearSelectedProduct()
@@ -741,8 +741,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 val productList = adapter.data
                 val productStatus = result.status
 
-                showTabFilters(productList)
                 updateProductListStatus(productIds, productStatus)
+                showTabFilters(productList)
             }
             is EditByMenu -> {
                 //TO DO
@@ -1316,7 +1316,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun observeMultiEdit() {
         observe(viewModel.multiEditProductResult) {
             when(it) {
-                is Success -> onSuccessEditMultiProducts(it.data)
+                is Success -> onSuccessMultiEditProducts(it.data)
                 is Fail -> showErrorToast()
 
             }
