@@ -369,7 +369,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             textProductCount.text = getString(R.string.product_manage_bulk_count, itemsChecked.size.toString())
         } else {
             btnMultiEdit.hide()
-            textProductCount.text = getString(R.string.product_manage_count_format, productList.count())
+            textProductCount.text = getString(R.string.product_manage_count_format, adapter.data.count())
         }
     }
 
