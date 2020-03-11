@@ -13,8 +13,8 @@ class ConstantWidgetType {
         const val DUAL_BANNER = "DualBanner"
         const val DYNAMIC_BANNER = "DynamicBanner"
         const val LEGO_BANNER = "LegoBanner"
-        const val DUAL_PRODUCT_CARD = "DualProductCard"
-        const val QUAD_PRODUCT_CARD = "QualProductCard"
+        const val DUO_PRODUCT_CARD = "DuoProductCard"
+        const val QUAD_PRODUCT_CARD = "QuadProductCard"
         const val CROSS_SELL_WIDGET = "CrossSell"
     }
 }

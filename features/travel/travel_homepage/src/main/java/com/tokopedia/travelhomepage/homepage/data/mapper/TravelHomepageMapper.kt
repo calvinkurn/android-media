@@ -1,13 +1,9 @@
 package com.tokopedia.travelhomepage.homepage.data.mapper
 
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
-import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
 import com.tokopedia.travelhomepage.homepage.data.widgetmodel.ProductGridCardItemModel
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
 
 /**
  * @author by jessica on 2019-08-14
@@ -17,7 +13,7 @@ class TravelHomepageMapper {
 
     fun mapToViewModel(layoutData: TravelLayoutSubhomepage.Data, unifiedModel: List<TravelUnifiedSubhomepageData>): TravelHomepageItemModel {
         return when (layoutData.widgetType) {
-            ConstantWidgetType.DUAL_PRODUCT_CARD, ConstantWidgetType.QUAD_PRODUCT_CARD -> mapToProductCardModel(layoutData, unifiedModel)
+            ConstantWidgetType.DUO_PRODUCT_CARD, ConstantWidgetType.QUAD_PRODUCT_CARD -> mapToProductCardModel(layoutData, unifiedModel)
             ConstantWidgetType.DYNAMIC_ICON -> mapToCategoryListModel(unifiedModel)
             ConstantWidgetType.SLIDER_BANNER -> mapToBannerModel(layoutData, unifiedModel)
             ConstantWidgetType.SLIDER_PRODUCT_CARD -> mapToHomepageSectionModel(layoutData, unifiedModel)

@@ -6,11 +6,9 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.travelhomepage.homepage.data.*
-import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECENT_SEARCH
 import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
-import com.tokopedia.travelhomepage.homepage.widget.TravelHomepageProductGridCardWidget
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -75,7 +73,7 @@ class GetEmptyModelsUseCase @Inject constructor(val useCase: MultiRequestGraphql
                     travelHomepageItems.add(TravelHomepageBannerModel())
                     travelHomepageItems.lastOrNull()?.layoutData = item
                 }
-                ConstantWidgetType.DUAL_PRODUCT_CARD, ConstantWidgetType.QUAD_PRODUCT_CARD -> {
+                ConstantWidgetType.DUO_PRODUCT_CARD, ConstantWidgetType.QUAD_PRODUCT_CARD -> {
                     travelHomepageItems.add(TravelHomepageProductCardModel())
                     travelHomepageItems.lastOrNull()?.layoutData = item
                 }
