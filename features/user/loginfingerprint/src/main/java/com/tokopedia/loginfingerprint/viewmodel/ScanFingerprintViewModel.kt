@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class ScanFingerprintViewModel @Inject constructor(dispatcher: DispatcherProvider,
                                                    private val userSession: UserSessionInterface,
-                                                   private val cryptographyUtils: Cryptography,
+                                                   private val cryptographyUtils: Cryptography?,
                                                    private val fingerprintSetting: FingerprintSetting,
                                                    private val loginTokenUseCase: LoginTokenUseCase,
                                                    private val validateFingerprintUseCase: ValidateFingerprintUseCase)
@@ -39,9 +39,11 @@ class ScanFingerprintViewModel @Inject constructor(dispatcher: DispatcherProvide
             onErrorValidateFP(), {}, {})
 
     fun validateFingerprint() {
-        val signature = cryptographyUtils.generateFingerprintSignature(fingerprintSetting.getFingerprintUserId(), userSession.deviceId)
-        val param = validateFingerprintUseCase.createRequestParams(fingerprintSetting.getFingerprintUserId(), signature)
-        validateFingerprintUseCase.executeUseCase(param, onSuccessValidateFP(), onErrorValidateFP())
+        val signature = cryptographyUtils?.generateFingerprintSignature(fingerprintSetting.getFingerprintUserId(), userSession.deviceId)
+        signature?.run {
+            val param = validateFingerprintUseCase.createRequestParams(fingerprintSetting.getFingerprintUserId(), signature)
+            validateFingerprintUseCase.executeUseCase(param, onSuccessValidateFP(), onErrorValidateFP())
+        }
     }
 
     fun loginToken(validateToken: String){

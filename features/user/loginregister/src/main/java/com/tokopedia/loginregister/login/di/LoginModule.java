@@ -1,6 +1,10 @@
 package com.tokopedia.loginregister.login.di;
 
 import android.content.Context;
+import android.os.Build;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -38,8 +42,13 @@ public class LoginModule {
 
     @LoginScope
     @Provides
+    @RequiresApi(Build.VERSION_CODES.M)
+    @Nullable
     Cryptography provideCryptographyUtils(){
-        return new CryptographyUtils();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            return new CryptographyUtils();
+        }
+        return null;
     }
 
     @LoginScope

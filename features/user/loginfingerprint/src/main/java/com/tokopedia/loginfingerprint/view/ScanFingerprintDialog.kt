@@ -75,7 +75,8 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var cryptography: Cryptography
+    @JvmField
+    var cryptography: Cryptography? = null
 
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
 
@@ -144,9 +145,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        fingerprintManager = FingerprintManagerCompat.from(context)
-
+    override fun onCreate(savedInstanceState: Bundle?) {
         DaggerLoginFingerprintComponent
                 .builder()
                 .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
@@ -154,6 +153,11 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
                 .loginFingerprintQueryModule(LoginFingerprintQueryModule())
                 .build()
                 .inject(this)
+        super.onCreate(savedInstanceState)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        fingerprintManager = FingerprintManagerCompat.from(context)
 
         if (fingerprintManager?.isHardwareDetected == true) {
             if (fingerprintManager?.hasEnrolledFingerprints() == false) {
@@ -180,7 +184,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
 
     fun startListening() {
         cancellationSignal = CancellationSignal()
-        fingerprintManager?.authenticate(cryptography.getCryptoObject(), 0, cancellationSignal, getAuthenticationCallback(), null)
+        fingerprintManager?.authenticate(cryptography?.getCryptoObject(), 0, cancellationSignal, getAuthenticationCallback(), null)
     }
 
     fun stopListening() {
