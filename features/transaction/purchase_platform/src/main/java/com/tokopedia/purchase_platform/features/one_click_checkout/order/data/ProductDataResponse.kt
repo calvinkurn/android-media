@@ -38,6 +38,9 @@ data class ProductDataResponse(
         @SerializedName("wholesale_price")
         @Expose
         val wholesalePrice: List<WholesalePrice> = ArrayList(),
+        @SerializedName("product_weight")
+        @Expose
+        val productWeight: Int = 0,
         @SerializedName("product_weight_fmt")
         @Expose
         val productWeightFmt: String = "",
@@ -167,5 +170,5 @@ data class ProductDataResponse(
         val bookingStock: Int = 0,
         @SerializedName("product_variant")
         @Expose
-        val productVariant: ProductVariant = ProductVariant()
+        val productVariant: ProductVariantResponse = ProductVariantResponse()
         )

@@ -7,7 +7,9 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.chat_common.data.preview.ProductPreview
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.common_tradein.model.TradeInParams
@@ -76,6 +78,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val trackAffiliateUseCase: TrackAffiliateUseCase,
                                                              private val submitHelpTicketUseCase: SubmitHelpTicketUseCase,
                                                              private val updateCartCounterUseCase: UpdateCartCounterUseCase,
+                                                             private val addToCartOccUseCase: AddToCartOccUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
     val productLayout: LiveData<Result<List<DynamicPdpDataModel>>>
@@ -481,6 +484,30 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
                     override fun onNext(count: Int) {
                         onSuccessRequest(count)
+                    }
+                })
+    }
+
+    fun atcOcc(params: AddToCartOccRequestParams, onError: ((Throwable) -> Unit), onSuccess: ((AddToCartDataModel) -> Unit)) {
+        val requestParams = RequestParams.create().apply {
+            putObject(AddToCartOccUseCase.REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST, params)
+        }
+        addToCartOccUseCase.createObservable(requestParams)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<AddToCartDataModel> {
+                    override fun onError(e: Throwable) {
+                        e.printStackTrace()
+                        onError(e)
+                    }
+
+                    override fun onNext(t: AddToCartDataModel) {
+                        onSuccess(t)
+                    }
+
+                    override fun onCompleted() {
+
                     }
                 })
     }

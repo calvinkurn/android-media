@@ -184,6 +184,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:lines="1"
+            android:visibility="gone"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration"
@@ -198,6 +199,7 @@
             android:layout_marginTop="@dimen/dp_4"
             android:ellipsize="end"
             android:lines="1"
+            android:visibility="gone"
             android:textColor="@color/Red_R600"
             app:layout_constraintEnd_toStartOf="@+id/tv_shipping_change_duration"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
@@ -218,6 +220,7 @@
             android:paddingLeft="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_24"
             android:paddingRight="@dimen/dp_24"
+            android:visibility="gone"
             android:textColor="@color/Neutral_N700_68"
             app:layout_constraintBottom_toTopOf="@+id/tv_shipping_price"
             app:layout_constraintEnd_toEndOf="parent"
@@ -256,6 +259,7 @@
             android:layout_marginRight="@dimen/dp_16"
             android:gravity="center_vertical"
             android:lines="1"
+            android:visibility="gone"
             android:paddingStart="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
             android:paddingEnd="@dimen/dp_0"
@@ -336,6 +340,7 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
+            android:visibility="gone"
             tools:text="pembayaran ini sedang tidak dapat digunakan, silahkan pilih preferensi lainnya" />
 
         <View
