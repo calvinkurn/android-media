@@ -1393,6 +1393,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             }
 
             clearProductList()
+            clearSelectedProduct()
+            renderCheckedView()
+
             addProductList(productList)
             showProductList(productList)
         }
