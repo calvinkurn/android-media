@@ -77,8 +77,8 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshLis
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductManageBottomSheet
 import com.tokopedia.product.manage.feature.list.view.ui.bottomsheet.ProductMultiEditBottomSheet
-import com.tokopedia.product.manage.feature.list.view.ui.toast.MultiEditToastMessage.getRetryMessage
-import com.tokopedia.product.manage.feature.list.view.ui.toast.MultiEditToastMessage.getSuccessMessage
+import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getRetryMessage
+import com.tokopedia.product.manage.feature.multiedit.ui.toast.MultiEditToastMessage.getSuccessMessage
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
 import com.tokopedia.product.manage.feature.quickedit.delete.data.model.DeleteProductResult
 import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPriceResult

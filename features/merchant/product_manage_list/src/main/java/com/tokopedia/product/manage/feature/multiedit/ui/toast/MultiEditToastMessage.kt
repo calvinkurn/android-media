@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.list.view.ui.toast
+package com.tokopedia.product.manage.feature.multiedit.ui.toast
 
 import android.content.Context
 import com.tokopedia.product.manage.R
