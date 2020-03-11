@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.ShopPageHomeCarousellAdapter
@@ -23,7 +24,7 @@ import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 
 class ShopHomeCarousellProductViewHolder(
         itemView: View,
-        shopPageHomeProductClickListener: ShopPageHomeProductClickListener
+        val shopPageHomeProductClickListener: ShopPageHomeProductClickListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
     private var textViewTitle: TextView? = null
     private var textViewCta: TextView? = null
@@ -76,6 +77,8 @@ class ShopHomeCarousellProductViewHolder(
             textViewCta?.apply {
                 visibility = View.VISIBLE
                 text = MethodChecker.fromHtml(shopHomeCarousellProductUiModel.header.ctaText)
+
+                shopPageHomeProductClickListener.onCtaClicked(shopHomeCarousellProductUiModel)
             }
         }
         adapterCarousell.shopHomeCarousellProductUiModel = shopHomeCarousellProductUiModel
