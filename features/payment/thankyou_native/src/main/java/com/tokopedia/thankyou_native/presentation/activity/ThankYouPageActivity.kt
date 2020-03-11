@@ -11,6 +11,7 @@ import com.tokopedia.thankyou_native.di.DaggerThankYouPageComponent
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.ThanksPageData
 import com.tokopedia.thankyou_native.helper.*
+import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
 import com.tokopedia.thankyou_native.presentation.fragment.InstantPaymentFragment
 import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
 
@@ -45,13 +46,14 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             is PaymentVerified -> {
                 InstantPaymentFragment.getLoaderFragmentInstance(Bundle(), thanksPageData)
             }
+            is PaymentWaiting -> {
+                DeferredPaymentFragment.getFragmentInstance(thanksPageData)
+            }
             /*is PaymentExpired -> {
             }
             is PaymentActive -> {
             }
-            is PaymentWaiting -> {
-            }*/
-            /*is PaymentCancelled -> {
+            is PaymentCancelled -> {
             }
             is PaymentVoid -> {
             }
@@ -68,7 +70,6 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
 
         const val ARG_PAYMENT_ID = "paymentID"
         const val ARG_MERCHANT = "merchant"
-        const val ARG_PLATFORM = "platform"
 
         fun createIntent(context: Context, paymentID: String, merchant: String) = Intent(context, ThankYouPageActivity::class.java).apply {
             putExtra(ARG_MERCHANT, merchant)

@@ -64,6 +64,7 @@ class InstantPaymentFragment : BaseDaggerFragment() {
 
         fun getLoaderFragmentInstance(bundle: Bundle?, thanksPageData: ThanksPageData)
                 : InstantPaymentFragment = InstantPaymentFragment().apply {
+
             bundle?.let {
                 arguments = bundle
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
