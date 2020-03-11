@@ -19,8 +19,8 @@ const val NOTIFICATION_ID = 123 shr 5
 class BetaInterceptor(private val context: Context) : Interceptor {
 
     companion object {
-        var URL = "https://gql-beta.tokopedia.com"
-        var ACCESS_CONTROL_ALLOW_ORIGIN = "access-control-allow-origin"
+        var URL_BETA = "https://gql-beta.tokopedia.com"
+        var HEADER_ACCESS_CONTROL_ALLOW_ORIGIN = "access-control-allow-origin"
     }
 
 
@@ -45,8 +45,8 @@ class BetaInterceptor(private val context: Context) : Interceptor {
                                 NotificationManager.IMPORTANCE_LOW))
             }
 
-            var get = headers.get(ACCESS_CONTROL_ALLOW_ORIGIN)
-            if (get.equals(URL)) {
+            var get = headers.get(HEADER_ACCESS_CONTROL_ALLOW_ORIGIN)
+            if (get.equals(URL_BETA)) {
                 context.let {
 
                     val remoteView = RemoteViews(context.packageName, R.layout.notification_layout)
