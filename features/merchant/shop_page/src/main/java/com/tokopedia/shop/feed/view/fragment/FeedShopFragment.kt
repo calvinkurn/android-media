@@ -155,6 +155,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun getSwipeRefreshLayout(view: View?): SwipeRefreshLayout? {
         return view!!.findViewById(R.id.swipeToRefresh)
     }
+
+    override fun callInitialLoadAutomatically(): Boolean {
+        return false
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         presenter.attachView(this)
         initVar()
@@ -258,6 +263,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadInitialData()
+    }
+
     override fun loadData(page: Int) {
         if (shopId.isNotEmpty() && !isLoading) {
             isLoading = true
@@ -280,6 +290,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isForceRefresh = true
         isLoading = false
         if (element.isNotEmpty()) {
+            trackFeedShopImpression(element)
             if (shopId.equals(userSession.shopId) && !whitelistDomain.authors.isEmpty()) {
                 showFAB()
             } else {
@@ -290,6 +301,22 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         } else {
             dataList.add(getEmptyResultViewModel())
             renderList(dataList)
+        }
+    }
+
+    private fun trackFeedShopImpression(listFeed: List<Visitable<*>>) {
+        for (i in listFeed.indices) {
+            val visitable = listFeed[i]
+            if (visitable is DynamicPostViewModel) {
+                val trackingPostModel = visitable.trackingPostModel
+                if (visitable.postTag.items.isNotEmpty()) {
+                    postTagAnalytics.trackViewPostTagFeedShop(
+                            visitable.id,
+                            visitable.postTag.items,
+                            visitable.header.followCta.authorType,
+                            trackingPostModel)
+                }
+            }
         }
     }
 
@@ -317,6 +344,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onSuccessGetFeed(visitables: List<Visitable<*>>, lastCursor: String) {
         isLoading = false
         updateCursor(lastCursor)
+        trackFeedShopImpression(visitables)
         renderList(visitables, lastCursor.isNotEmpty())
     }
 
@@ -539,6 +567,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
         onGoToLink(redirectUrl)
+    }
+
+    override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
+        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+            feedAnalytics.eventImageImpressionPost(
+                    FeedAnalyticTracker.Screen.FEED_SHOP,
+                    trackingPostModel.postId.toString(),
+                    trackingPostModel.activityName,
+                    trackingPostModel.mediaType,
+                    trackingPostModel.mediaUrl,
+                    trackingPostModel.recomId,
+                    positionInFeed)
+        }
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
