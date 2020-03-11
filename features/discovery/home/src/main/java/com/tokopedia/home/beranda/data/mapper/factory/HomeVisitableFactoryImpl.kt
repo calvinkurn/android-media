@@ -216,6 +216,7 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                             trackingData = HomePageTrackingV2.RecommendationList.getRecommendationListImpression(channel)
                     )
                 }
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_1_IMAGE -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }
                 DynamicHomeChannel.Channels.LAYOUT_REVIEW -> { createReviewWidget() }

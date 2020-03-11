@@ -170,6 +170,12 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             DynamicHomeChannel.Channels.LAYOUT_LEGO_3_IMAGE -> DynamicLegoBannerViewHolder.LAYOUT
 
             /**
+             * refer to 1 grid item layout {@link com.tokopedia.home.R.layout#home_dc_deals}
+             * used by deals widget to show 1 product item
+             */
+            DynamicHomeChannel.Channels.LAYOUT_LEGO_1_IMAGE -> DealsViewHolder.LAYOUT
+
+            /**
              * refer to sprint product item layout {@link com.tokopedia.home.R.layout#layout_sprint_product_item}
              * no further development for this viewholder
              * backend possibly return this layout for android version  >= 2.19
