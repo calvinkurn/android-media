@@ -75,7 +75,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
-        parallaxBackground.setBackgroundColor(Color.parseColor(channel.header.backColor))
+        parallaxBackground.setBackgroundColor(Color.parseColor(channel.banner.backColor))
         image.loadImage(channel.banner.imageUrl)
     }
 
