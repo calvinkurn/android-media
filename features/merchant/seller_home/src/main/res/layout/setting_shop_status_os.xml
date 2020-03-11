@@ -35,19 +35,10 @@
 
             <View
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:background="@drawable/setting_shop_pm_partial"/>
-
-            <View
-                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/leftGuideline"
-                android:background="@drawable/setting_os_tip"/>
+                android:background="@drawable/setting_tip_bar_os"/>
 
             <View
                 android:id="@+id/badgeBorder"

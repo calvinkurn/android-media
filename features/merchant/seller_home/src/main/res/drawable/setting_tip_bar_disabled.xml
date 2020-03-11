@@ -19,4 +19,18 @@
       </gradient>
     </aapt:attr>
   </path>
+  <path
+      android:pathData="M0,7V7C4.4183,7 8,10.5817 8,15V27C8,31.4183 4.4183,35 0,35V35V7Z">
+    <aapt:attr name="android:fillColor">
+      <gradient 
+          android:startY="35"
+          android:startX="8"
+          android:endY="17.3511"
+          android:endX="-9.83539"
+          android:type="linear">
+        <item android:offset="0" android:color="#4CFFFFFF"/>
+        <item android:offset="1" android:color="#00FFFFFF"/>
+      </gradient>
+    </aapt:attr>
+  </path>
 </vector>
