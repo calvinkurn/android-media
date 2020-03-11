@@ -16,6 +16,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
@@ -142,8 +143,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun populateAdapterData() {
         val settingList = mutableListOf(
-                DividerUiModel(DividerType.THIN_FULL),
-                DividerUiModel(),
                 SettingTitleUiModel(TINGKATKAN_PENJUALAN),
                 MenuItemUiModel(STATISTIK_TOKO, R.drawable.ic_statistic_setting, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
                 MenuItemUiModel(IKLAN_DAN_PROMOSI_TOKO, R.drawable.ic_ads_promotion, null /* TODO("Masukkin applink lw di sini cup, ganti nullnya. Utk saat ini hanya support applink") */),
@@ -214,7 +213,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun showError(throwable: Throwable, errorType: SettingErrorType) {
-        throwable.message?.let { view?.showToasterError(it, errorType) }
+        throwable.message?.let { view?.showToasterError(it) }
         when(errorType) {
             is SettingErrorType.GENERAL_INFO_ERROR -> {
                 if (!generalShopInfoIsAlreadyLoaded)
@@ -235,7 +234,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewModel.getAllSettingShopInfo()
     }
 
-    private fun View.showToasterError(errorMessage: String, errorType: SettingErrorType) {
+    private fun View.showToasterError(errorMessage: String) {
         Toaster.make(this,
                 errorMessage,
                 Snackbar.LENGTH_LONG,
@@ -253,7 +252,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewHolder?.initBindView()
     }
 
-    override fun onShopNextClicked() {
+    override fun onShopInfoClicked() {
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
@@ -271,6 +270,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onKreditTopadsClicked() {
-
+        RouteManager.route(context, ApplinkConstInternalTopAds.HOST_TOPADS)
     }
 }

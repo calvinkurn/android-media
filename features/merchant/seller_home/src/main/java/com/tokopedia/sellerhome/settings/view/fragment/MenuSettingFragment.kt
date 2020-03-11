@@ -46,6 +46,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val TAMBAH_DAN_LOKASI_TOKO = "Tambah dan lokasi toko"
         private const val ATUR_LAYANAN_PENGIRIMAN = "Atur layanan pengiriman"
         private const val FITUR_EKSKLUSIF = "FITUR EKSKLUSIF"
+        private const val LAYANAN_BAYAR_DI_TEMPAT = "Layanan bayar di tempat"
+        private const val ORDER_PRIORITAS = "Order prioritas"
         private const val PENGATURAN_AKUN = "Pengaturan Akun"
         private const val PROFIL_DIRI = "Profil Diri"
         private const val REKENING_BANK = "Rekening Bank"
@@ -118,8 +120,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 MenuItemUiModel(ATUR_LAYANAN_PENGIRIMAN, clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR),
                 DividerUiModel(DividerType.THIN_INDENTED),
                 IndentedSettingTitleUiModel(FITUR_EKSKLUSIF),
-                MenuItemUiModel(TAMBAH_DAN_LOKASI_TOKO, clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
-                MenuItemUiModel(ATUR_LAYANAN_PENGIRIMAN, clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR),
+                MenuItemUiModel(LAYANAN_BAYAR_DI_TEMPAT, clickApplink = ApplinkConstInternalMarketplace.COD),
+                MenuItemUiModel(ORDER_PRIORITAS, clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR),
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(PENGATURAN_AKUN, R.drawable.ic_account),
                 MenuItemUiModel(PROFIL_DIRI, clickApplink = ApplinkConst.SETTING_PROFILE),

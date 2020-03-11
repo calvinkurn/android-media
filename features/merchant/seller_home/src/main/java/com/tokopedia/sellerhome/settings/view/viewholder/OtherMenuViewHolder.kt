@@ -8,6 +8,8 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
@@ -179,6 +181,9 @@ class OtherMenuViewHolder(private val itemView: View,
         powerMerchantStatusText.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
         powerMerchantLeftStatus.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
         powerMerchantIcon.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
+        setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+        }
         return this
     }
 
@@ -199,15 +204,19 @@ class OtherMenuViewHolder(private val itemView: View,
         topAdsBalance.shimmeringBalanceValue.visibility = View.GONE
     }
 
-    fun View.setOnClickAction() {
-        shopInfoLayout.settingShopNext.setOnClickListener { listener.onShopNextClicked() }
-        shopInfoLayout.shopFollowers.setOnClickListener { listener.onFollowersCountClicked() }
+    private fun View.setOnClickAction() {
+        shopInfoLayout?.run {
+            shopImage.setOnClickListener { listener.onShopInfoClicked() }
+            shopName.setOnClickListener { listener.onShopInfoClicked() }
+            settingShopNext.setOnClickListener { listener.onShopInfoClicked() }
+            shopFollowers.setOnClickListener { listener.onFollowersCountClicked() }
+        }
         saldoBalance.setOnClickListener { listener.onSaldoClicked() }
         topAdsBalance.setOnClickListener { listener.onKreditTopadsClicked() }
     }
 
     interface Listener {
-        fun onShopNextClicked()
+        fun onShopInfoClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onKreditTopadsClicked()

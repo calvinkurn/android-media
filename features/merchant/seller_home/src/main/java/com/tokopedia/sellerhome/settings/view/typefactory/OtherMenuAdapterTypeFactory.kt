@@ -11,7 +11,10 @@ class OtherMenuAdapterTypeFactory : BaseAdapterTypeFactory(), OtherMenuTypeFacto
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
-            DividerViewHolder.LAYOUT -> DividerViewHolder(parent)
+            DividerViewHolder.THICK_LAYOUT -> DividerViewHolder(parent)
+            DividerViewHolder.THIN_LAYOUT_FULL -> DividerViewHolder(parent)
+            DividerViewHolder.THIN_LAYOUT_PARTIAL -> DividerViewHolder(parent)
+            DividerViewHolder.THIN_LAYOUT_INDENTED -> DividerViewHolder(parent)
             SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
             IndentedSettingTitleViewHolder.LAYOUT -> IndentedSettingTitleViewHolder(parent)
             MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent)
@@ -21,7 +24,7 @@ class OtherMenuAdapterTypeFactory : BaseAdapterTypeFactory(), OtherMenuTypeFacto
     }
 
     override fun type(dividerUiModel: DividerUiModel): Int {
-        return DividerViewHolder.LAYOUT
+        return DividerViewHolder.getDividerView(dividerUiModel.dividerType)
     }
 
     override fun type(settingTitleUiModel: SettingTitleUiModel): Int {

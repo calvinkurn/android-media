@@ -15,6 +15,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -26,12 +27,17 @@ class OtherMenuViewModel @Inject constructor(
         private val getShopTotalFollowersUseCase: GetShopTotalFollowersUseCase
 ): BaseViewModel(dispatcher) {
 
+    companion object {
+        private const val DELAY_TIME = 5000L
+    }
+
     private val _generalShopInfoLiveData = MutableLiveData<Result<GeneralShopInfoUiModel>>()
     private val _totalFollowersLiveData = MutableLiveData<Result<Int>>()
     private val _shopBadgeLiveData = MutableLiveData<Result<String>>()
     private val _isGeneralShopInfoAlreadyLoadedLiveData = MutableLiveData<Boolean>().apply { value = false }
     private val _isShopBadgeAlreadyLoadedLiveData = MutableLiveData<Boolean>().apply { value = false }
     private val _isTotalFollowersAlreadyLoadedLiveData = MutableLiveData<Boolean>().apply { value = false }
+    private val _isToasterAlreadyShown = MutableLiveData<Boolean>().apply { value = false }
 
     val generalShopInfoLiveData: LiveData<Result<GeneralShopInfoUiModel>>
         get() = _generalShopInfoLiveData
@@ -46,7 +52,8 @@ class OtherMenuViewModel @Inject constructor(
     val isTotalFollowersAlreadyLoadedLiveData: LiveData<Boolean>
         get() = _isTotalFollowersAlreadyLoadedLiveData
 
-    fun getAllSettingShopInfo() {
+    fun getAllSettingShopInfo(isRetry: Boolean = false) {
+        _isToasterAlreadyShown.value = isRetry
         userSession.run {
             getSettingShopInfo()
             getShopTotalFollowers()
@@ -63,7 +70,7 @@ class OtherMenuViewModel @Inject constructor(
             _generalShopInfoLiveData.value = Success(generalShopInfoUiModel)
             _isGeneralShopInfoAlreadyLoadedLiveData.value = true
         }, onError = {
-            _generalShopInfoLiveData.value = Fail(it)
+            checkDelayErrorResponseTrigger { _generalShopInfoLiveData.value = Fail(it) }
         })
     }
 
@@ -75,7 +82,7 @@ class OtherMenuViewModel @Inject constructor(
             _totalFollowersLiveData.value = Success(totalFollowers)
             _isTotalFollowersAlreadyLoadedLiveData.value = true
         }, onError = {
-            _totalFollowersLiveData.value = Fail(it)
+            checkDelayErrorResponseTrigger { _totalFollowersLiveData.value = Fail(it) }
         })
     }
 
@@ -87,8 +94,19 @@ class OtherMenuViewModel @Inject constructor(
             _shopBadgeLiveData.value = Success(shopBadgeUrl)
             _isShopBadgeAlreadyLoadedLiveData.value = true
         }, onError = {
-            _shopBadgeLiveData.value = Fail(it)
+            checkDelayErrorResponseTrigger { _shopBadgeLiveData.value = Fail(it) }
         })
+    }
+
+    private suspend fun checkDelayErrorResponseTrigger(action: () -> Unit) {
+        _isToasterAlreadyShown.value?.let { isToasterAlreadyShown ->
+            if (!isToasterAlreadyShown){
+                _isToasterAlreadyShown.value = true
+                action.invoke()
+                delay(DELAY_TIME)
+                _isToasterAlreadyShown.value = false
+            }
+        }
     }
 
 }
