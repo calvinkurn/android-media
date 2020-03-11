@@ -170,9 +170,18 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindBuy(product: ProductAttachmentViewModel) {
-        itemView.tv_buy?.show()
-        itemView.tv_buy?.setOnClickListener {
-            listener.onClickBuyFromProductAttachment(product)
+        itemView.tv_buy?.apply {
+            show()
+            if (product.hasEmptyStock()) {
+                isEnabled = false
+                setText(com.tokopedia.chat_common.R.string.action_empty_stock)
+            } else {
+                isEnabled = true
+                setText(com.tokopedia.chat_common.R.string.action_buy)
+                setOnClickListener {
+                    listener.onClickBuyFromProductAttachment(product)
+                }
+            }
         }
     }
 
