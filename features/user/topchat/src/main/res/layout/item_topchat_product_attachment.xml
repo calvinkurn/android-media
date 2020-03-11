@@ -44,13 +44,13 @@
                 android:layout_marginStart="@dimen/dp_topchat_12"
                 android:layout_marginLeft="@dimen/dp_topchat_12"
                 android:ellipsize="end"
-                android:maxLines="1"
+                android:maxLines="2"
                 android:textColor="@color/light_N700_96"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iv_thumbnail"
                 app:layout_constraintTop_toTopOf="parent"
                 app:typographyType="body_3"
-                tools:text="1 Line Product Name" />
+                tools:text="@tools:sample/lorem/random" />
 
             <LinearLayout
                 android:id="@+id/ll_variant"
