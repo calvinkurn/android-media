@@ -186,7 +186,16 @@
 
     <string name="product_manage_snack_bar_retry">Coba lagi</string>
     <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
-    <string name="product_manage_multi_edit_button">Atur Sekaligus</string>
+    <string name="product_manage_button_multi_edit">Atur Sekaligus</string>
+    <string name="product_manage_dialog_delete_products_title">Hapus %d Produk?</string>
+    <string name="product_manage_dialog_edit_products_inactive_title">Nonaktifkan %d Produk?</string>
+    <string name="product_manage_edit_products_inactive_button">Ya, Nonaktifkan</string>
+    <string name="product_manage_edit_products_inactive_success">%d produk berhasil dinonaktifkan.</string>
+    <string name="product_manage_delete_products_success">%d produk berhasil dihapus.</string>
+    <string name="product_manage_delete_products_retry">%1$d produk berhasil dihapus, %2$d gagal dihapus.</string>
+    <string name="product_manage_edit_products_inactive_retry">%1$d produk berhasil dinonaktifkan, %2$d gagal dinonaktifkan.</string>
+    <string name="product_manage_edit_products_retry">%1$d produk berhasil diubah, %2$d gagal diubah.</string>
+    <string name="product_manage_edit_products_success">%1$d produk berhasil diubah.</string>
 
     <string name="product_manage_set_cashback">Cashback</string>
     <string name="product_manage_set_cashback_success">Pengaturan Cashback untuk \"%1$s\" berhasil.</string>
