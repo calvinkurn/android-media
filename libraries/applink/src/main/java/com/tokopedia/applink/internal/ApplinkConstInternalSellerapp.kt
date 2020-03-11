@@ -20,4 +20,8 @@ object ApplinkConstInternalSellerapp {
     @JvmField
     val SELLER_HOME = "$INTERNAL_SELLERAPP/sellerhome"
 
+    //WelcomeActivity
+    @JvmField
+    val WELCOME = "$INTERNAL_SELLERAPP/welcome"
+
 }

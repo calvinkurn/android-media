@@ -8,4 +8,5 @@
         order by name
     -->
     <string name="path_sellerhome" translatable="false">/sellerhome</string>
+    <string name="path_welcome" translatable="false">/welcome</string>
 </resources>
