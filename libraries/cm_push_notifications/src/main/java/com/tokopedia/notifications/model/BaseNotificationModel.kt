@@ -19,7 +19,6 @@ parcel.createTypedArrayList(Carousel.CREATOR),
  */
 @Entity(tableName = "BaseNotificationModel")
 data class BaseNotificationModel(
-
         @ColumnInfo(name = "notificationId")
         var notificationId: Int = 0,
         
@@ -108,7 +107,6 @@ data class BaseNotificationModel(
         @ColumnInfo(name = "campaignUserToken")
         var campaignUserToken: String? = null,
 
-
         //new Fields for offline
         @ColumnInfo(name = "notificationStatus")
         var status: NotificationStatus = NotificationStatus.PENDING,
@@ -120,9 +118,23 @@ data class BaseNotificationModel(
         var endTime: Long = 0,
 
         @ColumnInfo(name = "notificationMode")
-        var notificationMode: NotificationMode = NotificationMode.OFFLINE
-        //new Fields for offline ends
+        var notificationMode: NotificationMode = NotificationMode.OFFLINE,
 
+        //notification attribution
+        @ColumnInfo(name = "transId")
+        var transactionId: String? = null,
+
+        @ColumnInfo(name = "userTransId")
+        var userTransactionId: String? = null,
+
+        @ColumnInfo(name = "userId")
+        var userId: String? = null,
+
+        @ColumnInfo(name = "shopId")
+        var shopId: String? = null,
+
+        @ColumnInfo(name = "notifcenterBlastId")
+        var blastId: String? = null
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
