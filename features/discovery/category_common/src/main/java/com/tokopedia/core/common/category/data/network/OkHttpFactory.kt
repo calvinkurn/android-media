@@ -1,7 +1,7 @@
 package com.tokopedia.core.common.category.data.network
 
 import android.content.Context
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.interceptor.DebugInterceptor
@@ -48,7 +48,7 @@ class OkHttpFactory(val context: Context) {
             bearerWithAuthInterceptor: TopAdsAuthInterceptor,
             fingerprintInterceptor: FingerprintInterceptor,
             tkpdBaseInterceptor: TkpdBaseInterceptor,
-            chuckInterceptor: ChuckInterceptor,
+            chuckInterceptor: ChuckerInterceptor,
             debugInterceptor: DebugInterceptor,
             cacheApiInterceptor: CacheApiInterceptor): OkHttpClient {
 
