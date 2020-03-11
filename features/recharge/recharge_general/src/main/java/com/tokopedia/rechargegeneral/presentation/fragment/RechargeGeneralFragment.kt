@@ -112,7 +112,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     private var operatorCluster: String = ""
     private var hasInputData = false
     private var hasFavoriteNumbers = false
-    private var hasPendingAutofillData = false
 
     private var enquiryLabel = ""
     private var enquiryData: TopupBillsEnquiry? = null
