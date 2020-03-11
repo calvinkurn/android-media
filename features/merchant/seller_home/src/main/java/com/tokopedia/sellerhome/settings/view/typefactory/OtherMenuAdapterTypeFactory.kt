@@ -18,6 +18,7 @@ class OtherMenuAdapterTypeFactory : BaseAdapterTypeFactory(), OtherMenuTypeFacto
             SettingTitleViewHolder.LAYOUT -> SettingTitleViewHolder(parent)
             IndentedSettingTitleViewHolder.LAYOUT -> IndentedSettingTitleViewHolder(parent)
             MenuItemsViewHolder.LAYOUT -> MenuItemsViewHolder(parent)
+            MenuItemsViewHolder.LAYOUT_NO_ICON -> MenuItemsViewHolder(parent)
             SettingTitleMenuViewHolder.LAYOUT -> SettingTitleMenuViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
@@ -32,7 +33,7 @@ class OtherMenuAdapterTypeFactory : BaseAdapterTypeFactory(), OtherMenuTypeFacto
     }
 
     override fun type(menuItemUiModel: MenuItemUiModel): Int {
-        return MenuItemsViewHolder.LAYOUT
+        return MenuItemsViewHolder.getLayoutRes(menuItemUiModel.isNoIcon)
     }
 
     override fun type(settingTitleMenuUiModel: SettingTitleMenuUiModel): Int {

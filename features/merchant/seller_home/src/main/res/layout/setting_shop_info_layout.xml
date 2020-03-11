@@ -55,7 +55,7 @@
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
         app:layout_constraintEnd_toEndOf="@id/settingShopGuidelineRight"
         app:layout_constraintBottom_toBottomOf="@id/settingMiddleGuideline"
-        app:typographyType="heading_2"
+        app:typographyType="heading_3"
         app:typographyWeight="bold"/>
 
     <androidx.appcompat.widget.AppCompatImageView
