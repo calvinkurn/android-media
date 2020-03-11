@@ -28,6 +28,8 @@
 
     <dimen name="play_product_variant_image_size">88dp</dimen>
 
+    <dimen name="play_product_action_container_elevation">4dp</dimen>
     <dimen name="play_product_action_container_shadow_height">1dp</dimen>
-    <dimen name="play_product_action_container_shadow_height_minus">-1dp</dimen>
+
+    <dimen name="play_navigation_overlay_elevation">6dp</dimen>
 </resources>
