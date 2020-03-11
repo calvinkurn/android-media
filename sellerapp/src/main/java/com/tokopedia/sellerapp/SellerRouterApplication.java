@@ -942,6 +942,6 @@ public abstract class SellerRouterApplication extends MainApplication
 
     @Override
     public void onNewIntent(Context context, Intent intent) {
-
+        //no op
     }
 }
