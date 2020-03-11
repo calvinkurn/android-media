@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.c
 import android.annotation.SuppressLint
 import android.view.View
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
@@ -24,6 +25,57 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
 
     @SuppressLint("SetTextI18n")
     private fun showPreference() {
+        showAddress()
+
+        showShipping()
+
+        showPayment()
+
+        view.tv_choose_preference.setOnClickListener {
+            listener.onChangePreferenceClicked()
+        }
+    }
+
+    private fun showShipping() {
+        val shipmentModel = preference.preference.shipment
+        view.tv_shipping_name.text = shipmentModel.serviceName
+        view.tv_shipping_duration.text = shipmentModel.serviceDuration
+
+        val shipping = preference.shipping
+
+        if (shipping == null) {
+            view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+            view.ticker_shipping_promo.gone()
+            view.tv_shipping_price.gone()
+        } else {
+            if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
+                if (!shipping.isServicePickerEnable) {
+                    view.tv_shipping_duration.text = "${shipmentModel.serviceDuration} - ${shipping.shipperName}"
+                    view.tv_shipping_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
+                            ?: 0, false)
+                    view.tv_shipping_price.setOnClickListener {
+                        chooseCourier()
+                    }
+                    view.tv_shipping_price.visible()
+                }
+            }
+        }
+    }
+
+    private fun showPayment() {
+        val paymentModel = preference.preference.payment
+        ImageHandler.loadImageFitCenter(view.context, view.iv_payment, paymentModel.image)
+        view.tv_payment_name.text = paymentModel.gatewayName
+        val description = paymentModel.description
+        if (description.isNotBlank()) {
+            view.tv_payment_detail.text = description
+            view.tv_payment_detail.visible()
+        } else {
+            view.tv_payment_detail.gone()
+        }
+    }
+
+    private fun showAddress() {
         val addressModel = preference.preference.address
         view.tv_address_name.text = addressModel.addressName
         val receiverName = addressModel.receiverName
@@ -46,48 +98,40 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
                 addressModel.cityName + ", " +
                 addressModel.provinceName + " " +
                 addressModel.postalCode
-
-        val shipmentModel = preference.preference.shipment
-        view.tv_shipping_name.text = shipmentModel.serviceName
-        view.tv_shipping_duration.text = shipmentModel.serviceDuration
-        view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
-        view.ticker_shipping_promo.gone()
-        view.tv_shipping_price.gone()
-
-        val paymentModel = preference.preference.payment
-        ImageHandler.loadImageFitCenter(view.context, view.iv_payment, paymentModel.image)
-        view.tv_payment_name.text = paymentModel.gatewayName
-        val description = paymentModel.description
-        if (description.isNotBlank()) {
-            view.tv_payment_detail.text = description
-            view.tv_payment_detail.visible()
-        } else {
-            view.tv_payment_detail.gone()
-        }
     }
 
     fun initView() {
-        view.tv_shipping_price.setOnClickListener {
-            ShippingCourierOccBottomSheet().showBottomSheet(fragment, listOf(), object : ShippingCourierOccBottomSheetListener {
-                override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
-
-                }
-
-                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-
-                }
-            })
-        }
-        view.tv_choose_preference.setOnClickListener {
-            listener.onChangePreferenceClicked()
-        }
         view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.ic_arrow_drop_down_grey_checkout_module, 0)
+    }
+
+    private fun chooseCourier() {
+        if (!fragment.isLoading()) {
+            val shippingRecommendationData = preference.shipping?.shippingRecommendationData
+            if (shippingRecommendationData != null) {
+                val list: ArrayList<RatesViewModelType> = ArrayList()
+                for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                    if (shippingDurationViewModel.isSelected) {
+                        list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
+                        break
+                    }
+                }
+                ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
+                    override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
+                        fragment.onChooseCourier(shippingCourierViewModel)
+                    }
+
+                    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+
+                    }
+                })
+            }
+        }
     }
 
     interface OrderPreferenceCardListener {
 
         fun onChangePreferenceClicked()
 
-        fun onCourierChange()
+//        fun onCourierChange()
     }
 }

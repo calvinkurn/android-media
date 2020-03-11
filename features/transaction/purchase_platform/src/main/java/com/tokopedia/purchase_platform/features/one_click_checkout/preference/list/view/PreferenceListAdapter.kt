@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 
-class PreferenceListAdapter(private val listener: PreferenceListAdapterListener) : ListAdapter<ProfilesItemModel, PreferenceListViewHolder>(DIFF_CALLBACK) {
+class PreferenceListAdapter(private val listener: PreferenceListAdapterListener, private val isFromOsp: Boolean = false) : ListAdapter<ProfilesItemModel, PreferenceListViewHolder>(DIFF_CALLBACK) {
 
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ProfilesItemModel>() {
@@ -28,7 +28,7 @@ class PreferenceListAdapter(private val listener: PreferenceListAdapterListener)
     }
 
     override fun onBindViewHolder(holder: PreferenceListViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.bind(getItem(position), isFromOsp)
     }
 
     interface PreferenceListAdapterListener {

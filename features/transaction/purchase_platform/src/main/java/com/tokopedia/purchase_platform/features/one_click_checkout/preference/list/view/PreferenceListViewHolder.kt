@@ -16,6 +16,7 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
     }
 
     private val tvChoosePreference = itemView.tv_choose_preference
+    private val tvChosenPreference = itemView.tv_choosen_preference
     private val ivEditPreference = itemView.iv_edit_preference
     private val tvCardHeader = itemView.tv_card_header
     private val lblMainPreference = itemView.lbl_main_preference
@@ -31,14 +32,28 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
     private val tvPaymentName = itemView.tv_payment_name
     private val tvPaymentDetail = itemView.tv_payment_detail
 
-    fun bind(preference: ProfilesItemModel) {
+    fun bind(preference: ProfilesItemModel, fromOsp: Boolean) {
         tvCardHeader.text = itemView.context.getString(R.string.preference_number, adapterPosition + 1)
-        if (preference.status == 2) {
-            lblMainPreference.visible()
-            tvChoosePreference.gone()
+        if (!fromOsp) {
+            tvChosenPreference.gone()
+            if (preference.status == 2) {
+                lblMainPreference.visible()
+                tvChoosePreference.gone()
+            } else {
+                lblMainPreference.gone()
+                tvChoosePreference.visible()
+            }
         } else {
-            lblMainPreference.gone()
-            tvChoosePreference.visible()
+            if (preference.status == 2) {
+                lblMainPreference.visible()
+                tvChoosePreference.gone()
+                tvChosenPreference.visible()
+            } else {
+                lblMainPreference.gone()
+                tvChosenPreference.gone()
+                tvChoosePreference.text = "Gunakan"
+                tvChoosePreference.visible()
+            }
         }
 
         val addressModel = preference.addressModel

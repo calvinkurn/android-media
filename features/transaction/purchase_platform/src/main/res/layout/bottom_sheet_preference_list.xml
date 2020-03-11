@@ -29,7 +29,7 @@
             android:layout_margin="@dimen/dp_16"
             android:visibility="gone"
             app:unifyButtonVariant="ghost"
-            tools:text="Tambah Pilihan" />
+            android:text="@string/add_preference" />
 
     </LinearLayout>
 

@@ -9,6 +9,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.GetOccCartUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationViewModel
@@ -25,8 +26,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     var orderProduct: OrderProduct = OrderProduct()
     var orderShop: OrderShop = OrderShop()
+    var _orderPreference: OrderPreference? = null
 
-    var orderPreference: MutableLiveData<OrderPreference> = MutableLiveData()
+    var orderPreference: MutableLiveData<OccState<OrderPreference>> = MutableLiveData(OccState.Loading)
 
     var orderTotal: MutableLiveData<OrderTotal> = MutableLiveData(OrderTotal())
 
@@ -36,21 +38,27 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun getOccCart() {
         getOccCartUseCase.execute({ orderData: OrderData ->
-            val o = orderData
             orderProduct = orderData.cart.product
             orderShop = orderData.cart.shop
             var preference = orderData.preference
             preference = preference.copy(shipment = preference.shipment.copy(serviceId = 1104))
-            orderPreference.value = OrderPreference(preference)
+            _orderPreference = OrderPreference(preference)
+            orderPreference.value = OccState.Success(_orderPreference!!)
+            if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
+                getRates()
+            }
         }, { throwable: Throwable ->
+            _orderPreference = null
+            orderPreference.value = OccState.Fail(false, throwable, "")
             throwable.printStackTrace()
         })
     }
 
     fun updateProduct(product: OrderProduct, shouldReloadRates: Boolean = true) {
         orderProduct = product
-        orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
         if (shouldReloadRates) {
+            calculateTotal()
+            orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
             debounce()
         }
     }
@@ -62,11 +70,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     fun updateCourier() {
-        calculateTotal()
+//        calculateTotal()
     }
 
     fun updateDuration() {
-        calculateTotal()
+//        calculateTotal()
     }
 
     fun loadOrder() {
@@ -98,7 +106,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         compositeSubscription.add(
                 ratesUseCase.execute(ratesParam)
                         .map {
-                            val value = orderPreference.value
+                            val value = _orderPreference
                             val data = ratesResponseStateConverter.fillState(it, generateListShopShipment(), value?.shipping?.shipperProductId
                                     ?: 0, value?.shipping?.serviceId ?: 0)
                             if (data.shippingDurationViewModels != null) {
@@ -123,12 +131,48 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             }
 
                             override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
-                                val value = orderPreference.value
+                                val value = _orderPreference
                                 if (value != null) {
                                     val curShip = value.preference.shipment
                                     var shipping = value.shipping
                                     if (shipping != null) {
-                                        shipping = shipping.copy(serviceId = curShip.serviceId, serviceDuration = curShip.serviceDuration, shippingRecommendationData = shippingRecommendationData)
+                                        val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
+                                        var selectedShippingDurationViewModel: ShippingDurationUiModel? = null
+                                        for (shippingDurationViewModel in shippingDurationViewModels) {
+                                            if (shippingDurationViewModel.serviceData.serviceId == shipping!!.serviceId) {
+                                                shippingDurationViewModel.isSelected = true
+                                                selectedShippingDurationViewModel = shippingDurationViewModel
+                                                val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
+                                                var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
+                                                for (shippingCourierUiModel in shippingCourierViewModelList) {
+                                                    if (shippingCourierUiModel.productData.shipperProductId == shipping.shipperProductId) {
+                                                        shippingCourierUiModel.isSelected = true
+                                                        selectedShippingCourierUiModel = shippingCourierUiModel
+                                                    } else {
+                                                        shippingCourierUiModel.isSelected = false
+                                                    }
+                                                }
+//                                                if (selectedShippingCourierUiModel == null) {
+//                                                    selectedShippingCourierUiModel = shippingCourierViewModelList[0]
+//                                                }
+                                                if (selectedShippingCourierUiModel != null) {
+                                                    shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                                            shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                                                            insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                                            serviceId = shippingDurationViewModel.serviceData.serviceId,
+                                                            serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
+                                                            serviceName = shippingDurationViewModel.serviceData.serviceName,
+                                                            shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                            shippingRecommendationData = shippingRecommendationData)
+                                                }
+                                            } else {
+                                                shippingDurationViewModel.isSelected = false
+                                            }
+                                        }
+                                        if (selectedShippingDurationViewModel == null) {
+                                            shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = "durasi tidak tersedia", shippingRecommendationData = shippingRecommendationData)
+                                        }
+//                                        shipping = shipping.copy(serviceId = curShip.serviceId, serviceDuration = curShip.serviceDuration, shippingRecommendationData = shippingRecommendationData)
                                     } else {
                                         val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
                                         var selectedShippingDurationViewModel: ShippingDurationUiModel? = null
@@ -154,6 +198,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                             serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                             serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
                                                             serviceName = shippingDurationViewModel.serviceData.serviceName,
+                                                            shippingPrice = selectedShippingCourierUiModel.productData.price.price,
                                                             shippingRecommendationData = shippingRecommendationData)
                                                 }
                                             } else {
@@ -164,9 +209,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                             shipping = Shipment(serviceName = curShip.serviceName, serviceDuration = curShip.serviceDuration, serviceErrorMessage = "durasi tidak tersedia", shippingRecommendationData = shippingRecommendationData)
                                         }
                                     }
-                                    orderPreference.value = value.copy(shipping = shipping)
+                                    _orderPreference = value.copy(shipping = shipping)
+                                    orderPreference.value = OccState.Success(_orderPreference!!)
+                                    orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.NORMAL)
+                                    calculateTotal()
                                 }
-                                orderTotal.value = OrderTotal(subTotal = 0L, buttonState = ButtonBayarState.NORMAL)
                             }
 
                             override fun onCompleted() {
@@ -182,10 +229,10 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.originPostalCode = orderShop.postalCode
         shippingParam.originLatitude = orderShop.latitude
         shippingParam.originLongitude = orderShop.longitude
-        shippingParam.destinationDistrictId = orderPreference.value?.preference?.address?.districtId?.toString()
-        shippingParam.destinationPostalCode = orderPreference.value?.preference?.address?.postalCode
-        shippingParam.destinationLatitude = orderPreference.value?.preference?.address?.latitude
-        shippingParam.destinationLongitude = orderPreference.value?.preference?.address?.longitude
+        shippingParam.destinationDistrictId = _orderPreference?.preference?.address?.districtId?.toString()
+        shippingParam.destinationPostalCode = _orderPreference?.preference?.address?.postalCode
+        shippingParam.destinationLatitude = _orderPreference?.preference?.address?.latitude
+        shippingParam.destinationLongitude = _orderPreference?.preference?.address?.longitude
         shippingParam.shopId = orderShop.shopId.toString()
         shippingParam.token = "Tokopedia+Kero:LKlL31rEgWx6r0eJBx+GXVrJ+7Q\\u003d"
         shippingParam.ut = "1583825797"
@@ -193,7 +240,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.categoryIds = orderShop.cartResponse.product.categoryId.toString()
 //        shippingParam.uniqueId = "478925-0-1493-4646989"
         shippingParam.uniqueId = orderShop.cartResponse.cartId.toString()
-        shippingParam.addressId = orderPreference.value?.preference?.address?.addressId ?: 0
+        shippingParam.addressId = _orderPreference?.preference?.address?.addressId ?: 0
         shippingParam.products = listOf(Product(orderProduct.productId.toLong(), orderProduct.isFreeOngkir))
 
         shippingParam.weightInKilograms = orderProduct.quantity!!.orderQuantity * orderProduct.weight / 1000.0
@@ -228,7 +275,22 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     }
 
     fun calculateTotal() {
-
+        val quantity = orderProduct.quantity
+        if (quantity != null) {
+            val totalProductPrice = quantity.orderQuantity * orderProduct.productPrice.toLong()
+            val shipping = _orderPreference?.shipping
+            if (shipping?.shippingPrice != null) {
+                val totalShippingPrice = shipping.shippingPrice
+                var insurancePrice = 0
+                if (shipping.isCheckInsurance && shipping.insuranceData != null) {
+                    insurancePrice = shipping.insuranceData.insurancePrice
+                }
+                val subtotal = totalProductPrice + totalShippingPrice + insurancePrice
+                orderTotal.value = orderTotal.value?.copy(subTotal = subtotal)
+                return
+            }
+        }
+        orderTotal.value = orderTotal.value?.copy(subTotal = 0)
     }
 
     fun generateCheckoutRequest() {
@@ -352,5 +414,45 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         super.onCleared()
         compositeSubscription.clear()
         debounceJob?.cancel()
+    }
+
+    fun chooseCourier(choosenShippingCourierViewModel: ShippingCourierUiModel) {
+        val value = _orderPreference
+        val shippingRecommendationData = value?.shipping?.shippingRecommendationData
+        val curShip = value?.preference?.shipment
+        val shipping = value?.shipping
+        if (shippingRecommendationData != null && curShip != null && shipping != null) {
+            val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
+            for (shippingDurationViewModel in shippingDurationViewModels) {
+                if (shippingDurationViewModel.serviceData.serviceId == curShip.serviceId) {
+                    val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
+                    var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
+                    for (shippingCourierUiModel in shippingCourierViewModelList) {
+                        if (shippingCourierUiModel.productData.shipperProductId == choosenShippingCourierViewModel.productData.shipperProductId) {
+                            selectedShippingCourierUiModel = shippingCourierUiModel
+                        } else {
+                            shippingCourierUiModel.isSelected = false
+                        }
+                    }
+                    if (selectedShippingCourierUiModel != null) {
+                        selectedShippingCourierUiModel.isSelected = true
+                        _orderPreference = _orderPreference?.copy(shipping = shipping.copy(
+                                shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                shippingPrice = selectedShippingCourierUiModel.productData.price.price))
+                        orderPreference.value = OccState.Success(_orderPreference!!)
+                        calculateTotal()
+                    }
+                }
+            }
+        }
+    }
+
+    fun setInsuranceCheck(checked: Boolean) {
+        if (_orderPreference != null && _orderPreference?.shipping != null) {
+            _orderPreference = _orderPreference?.copy(shipping = _orderPreference?.shipping?.copy(isCheckInsurance = checked))
+            calculateTotal()
+        }
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipProd
@@ -23,17 +24,29 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 R.raw.mutation_get_occ)
         graphqlUseCase.setGraphqlQuery(graphqlRequest)
         val response = graphqlUseCase.executeOnBackground()
-        val orderCart = OrderCart()
-        if (response.response.data.cartList.isNotEmpty()) {
-            val cart = response.response.data.cartList[0]
-            val orderProduct = generateOrderProduct(cart.product)
-            orderCart.product = orderProduct
-            val orderShop = generateOrderShop(cart.shop)
-            generateShopShipment(orderShop, cart.shopShipments)
-            orderShop.cartResponse = cart
-            orderCart.shop = orderShop
+        if (response.response.status.equals("OK", true)) {
+            if (response.response.data.cartList.isNotEmpty() && response.response.data.profileResponse.profileId > 0) {
+                val orderCart = OrderCart()
+                val cart = response.response.data.cartList[0]
+                val orderProduct = generateOrderProduct(cart.product)
+                orderCart.product = orderProduct
+                val orderShop = generateOrderShop(cart.shop)
+                generateShopShipment(orderShop, cart.shopShipments)
+                orderShop.cartResponse = cart
+                orderCart.shop = orderShop
+                return OrderData(orderCart, response.response.data.profileResponse)
+            } else if (response.response.data.errors.isNotEmpty()){
+                throw MessageErrorException(response.response.data.errors[0])
+            } else {
+                throw MessageErrorException("Terjadi kesalahan")
+            }
+        } else {
+            if (response.response.errorMessages.isNotEmpty()) {
+                throw MessageErrorException(response.response.errorMessages[0])
+            } else {
+                throw MessageErrorException("Terjadi kesalahan")
+            }
         }
-        return OrderData(orderCart, response.response.data.profileResponse)
     }
 
     private fun generateShopShipment(orderShop: OrderShop, shopShipments: List<ShopShipment>) {

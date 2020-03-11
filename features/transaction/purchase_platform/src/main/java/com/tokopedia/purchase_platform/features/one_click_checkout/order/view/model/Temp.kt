@@ -27,10 +27,12 @@ data class Shipment(
         val isServicePickerEnable: Boolean = false,
         val shipperName: String? = null,
         val shipperProductId: Int? = null,
+        val shippingPrice: Int? = null,
         val logisticPromoTickerMessage: String? = null,
         val logisticPromoViewModel: LogisticPromoUiModel? = null, // BBO ?
         val shippingRecommendationData: ShippingRecommendationData? = null,
-        val insuranceData: InsuranceData? = null
+        val insuranceData: InsuranceData? = null,
+        val isCheckInsurance: Boolean = false
 )
 
 data class Payment(

@@ -1,5 +1,6 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -15,16 +16,24 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.design.component.Tooltip
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.PreferenceListBottomSheet
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.*
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderPreferenceCard
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderProductCard
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.ButtonBayarState
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.unifycomponents.Toaster
@@ -58,9 +67,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_CREATE_PREFERENCE || requestCode == REQUEST_EDIT_PREFERENCE) {
-            showPreferenceListBottomSheet()
-        }
+//        if (requestCode == REQUEST_CREATE_PREFERENCE || requestCode == REQUEST_EDIT_PREFERENCE) {
+//            showPreferenceListBottomSheet()
+//        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -70,22 +79,36 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        swipe_refresh_layout.isRefreshing = true
         initViews(view)
         initViewModel()
     }
 
     private fun initViewModel() {
         viewModel.orderPreference.observe(this, Observer {
-            view?.let {
-                Toaster.make(it, "success")
-            }
-            if (viewModel.orderProduct.quantity != null) {
-                orderProductCard.setProduct(viewModel.orderProduct)
-                orderProductCard.setShop(viewModel.orderShop)
-                orderProductCard.initView()
-                showMessage(it.preference)
-                if (it.preference.address.addressId > 0) {
-                    orderPreferenceCard.setPreference(it)
+            if (it is OccState.Success) {
+                swipe_refresh_layout.isRefreshing = false
+                main_content.visible()
+                view?.let { v ->
+                    Toaster.make(v, "success")
+                    if (viewModel.orderProduct.quantity != null) {
+                        orderProductCard.setProduct(viewModel.orderProduct)
+                        orderProductCard.setShop(viewModel.orderShop)
+                        orderProductCard.initView()
+                        showMessage(it.data.preference)
+                        if (it.data.preference.address.addressId > 0) {
+                            orderPreferenceCard.setPreference(it.data)
+                        }
+                    }
+
+                    setupInsurance(it)
+                }
+            } else if (it is OccState.Loading) {
+                swipe_refresh_layout.isRefreshing = true
+            } else {
+                swipe_refresh_layout.isRefreshing = false
+                view?.let {
+                    Toaster.make(it, "Error", type = Toaster.TYPE_ERROR)
                 }
             }
         })
@@ -95,6 +118,56 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (viewModel.orderProduct.parentId == 0) {
             viewModel.getOccCart()
         }
+    }
+
+    private fun setupInsurance(it: OccState.Success<OrderPreference>) {
+        val insuranceData = it.data.shipping?.insuranceData
+        if (insuranceData != null) {
+            if (insuranceData.insurancePrice > 0) {
+                tv_insurance_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false)
+                tv_insurance_price.visible()
+            } else {
+                tv_insurance_price.gone()
+            }
+            img_bt_insurance_info.setOnClickListener {
+                showBottomSheet(img_bt_insurance_info.context,
+                        img_bt_insurance_info.context.getString(R.string.title_bottomsheet_insurance),
+                        insuranceData.insuranceUsedInfo,
+                        R.drawable.ic_pp_insurance)
+            }
+            cb_insurance.setOnCheckedChangeListener { _, isChecked ->
+                viewModel.setInsuranceCheck(isChecked)
+            }
+            if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
+                tv_insurance.setText(R.string.label_must_insurance)
+                cb_insurance.isChecked = true
+                cb_insurance.isEnabled = false
+                group_insurance.visible()
+            } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO) {
+                group_insurance.gone()
+            } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_OPTIONAL) {
+                tv_insurance.setText(R.string.label_shipment_insurance)
+                cb_insurance.isEnabled = true
+                if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
+                    cb_insurance.isChecked = true
+                } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
+                    cb_insurance.isChecked = false
+                }
+                group_insurance.visible()
+            }
+        } else {
+            group_insurance.gone()
+        }
+    }
+
+    private fun showBottomSheet(context: Context, title: String, message: String, image: Int) {
+        val tooltip = Tooltip(context)
+        tooltip.setTitle(title)
+        tooltip.setDesc(message)
+        tooltip.setTextButton(context.getString(R.string.label_button_bottomsheet_close))
+        tooltip.setIcon(image)
+        tooltip.btnAction.setOnClickListener { tooltip.dismiss() }
+        tooltip.show()
     }
 
     private fun setupButtonBayar(orderTotal: OrderTotal) {
@@ -129,6 +202,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 btn_pay.isLoading = false
                 btn_pay.isEnabled = false
             }
+        }
+
+        if (orderTotal.subTotal > 0L) {
+            tv_total_payment_value.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(orderTotal.subTotal, false)
+        } else {
+            tv_total_payment_value.text = "-"
         }
     }
 
@@ -194,9 +273,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             showPreferenceListBottomSheet()
         }
 
-        override fun onCourierChange() {
-            viewModel.updateCourier()
-        }
+//        override fun onCourierChange() {
+//            viewModel.updateCourier()
+//        }
     }
 
     fun showPreferenceListBottomSheet() {
@@ -205,12 +284,15 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 //                viewModel.updatePreference(preference)
             }
 
-            override fun onEditPreference(preference: ProfilesItemModel) {
+            override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
                 val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
                 intent.apply {
-                    putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, 1)
-                    putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, 1)
-                    putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, "")
+                    putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapterPosition)
+                    putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
+                    putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
+                    putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
+                    putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode
+                            ?: "")
                     putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
                     putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
                 }
@@ -226,6 +308,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     override fun onProductChange(product: OrderProduct, shouldReloadRates: Boolean) {
         viewModel.updateProduct(product, shouldReloadRates)
+    }
+
+    fun isLoading(): Boolean {
+        return viewModel.orderTotal.value?.buttonState == ButtonBayarState.LOADING
+    }
+
+    fun onChooseCourier(shippingCourierViewModel: ShippingCourierUiModel) {
+        viewModel.chooseCourier(shippingCourierViewModel)
     }
 
     companion object {
