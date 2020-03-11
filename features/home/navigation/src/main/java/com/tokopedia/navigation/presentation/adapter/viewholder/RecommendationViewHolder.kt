@@ -65,7 +65,9 @@ class RecommendationViewHolder(itemView: View, private val recommendationListene
     }
 
     override fun bind(element: Recommendation, payloads: MutableList<Any>) {
-        if (payloads.getOrNull(0) !is Boolean) return
+        val isWishlisted = payloads.getOrNull(0) as? Boolean ?: return
+
+        element.recommendationItem.isWishlist = isWishlisted
 
         productCardView?.setThreeDotsOnClickListener {
             recommendationListener.onThreeDotsClick(element.recommendationItem, adapterPosition)
