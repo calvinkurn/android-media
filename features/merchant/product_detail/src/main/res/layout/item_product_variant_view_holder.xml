@@ -10,11 +10,15 @@
         android:id="@+id/rvContainerVariant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
-        android:clipToPadding="false"
         android:layout_marginBottom="@dimen/dp_16"
+        android:background="@color/white"
+        android:clipToPadding="false"
+        android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-    <include layout="@layout/item_dynamic_separator" />
+    <include
+        android:id="@+id/variant_separator"
+        layout="@layout/item_dynamic_separator"
+        android:visibility="gone" />
+
 </LinearLayout>

@@ -60,7 +60,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
-import com.tokopedia.design.dialog.AccessRequestDialogFragment
 import com.tokopedia.design.dialog.IAccessRequestListener
 import com.tokopedia.design.dialog.ProductAccessRequestDialogFragment
 import com.tokopedia.design.drawable.CountDrawable
@@ -2540,7 +2539,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         startActivityForResult(intent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE)
     }
 
-    fun goToTradeInHome() {
+    private fun goToTradeInHome() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.TRADEIN)
         val tradeinParam = viewModel.tradeInParams
 
@@ -2549,7 +2548,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             tradeinParam.productId = it.basic.getProductId()
             tradeinParam.productName = it.data.name
         }
-
         intent.putExtra(TradeInParams.PARAM_PERMISSION_GIVEN, true)
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
         startActivityForResult(intent, ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST)

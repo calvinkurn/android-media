@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.variant_common.util.VariantItemDecorator
@@ -24,11 +25,12 @@ class ProductVariantViewHolder(val view: View,
 
     override fun bind(element: VariantDataModel) {
         with(view) {
-            containerAdapter = VariantContainerAdapter(listener)
-            rvContainerVariant.adapter = containerAdapter
-            rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context,R.drawable.bg_separator_variant)))
-            rvContainerVariant.itemAnimator = null
             element.listOfVariantCategory?.let {
+                variant_separator.show()
+                containerAdapter = VariantContainerAdapter(listener)
+                rvContainerVariant.adapter = containerAdapter
+                rvContainerVariant.addItemDecoration(VariantItemDecorator(MethodChecker.getDrawable(view.context, R.drawable.bg_separator_variant)))
+                rvContainerVariant.itemAnimator = null
                 containerAdapter?.setData(it)
             }
         }

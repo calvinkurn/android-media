@@ -75,7 +75,12 @@ class PartialSnapshotView(private val view: View,
                 } else {
                     discount_timer_holder.gone()
                     sale_text_stock_available.gone()
-                    text_stock_available.visible()
+
+                    if (data.variant.isVariant) {
+                        text_stock_available.hide()
+                    } else {
+                        text_stock_available.visible()
+                    }
                 }
             } else {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
@@ -85,14 +90,14 @@ class PartialSnapshotView(private val view: View,
                 discount_timer_holder.visibility = View.GONE
                 text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
                 sale_text_stock_available.gone()
-                text_stock_available.visible()
+                if (data.variant.isVariant) {
+                    text_stock_available.hide()
+                } else {
+                    text_stock_available.visible()
+                }
             }
             label_prescription.showWithCondition(basic.needPrescription)
             divider.visible()
-
-            if (product.data.variant.isVariant && campaign.activeAndHasId) {
-                text_stock_available.gone()
-            }
         }
     }
 
