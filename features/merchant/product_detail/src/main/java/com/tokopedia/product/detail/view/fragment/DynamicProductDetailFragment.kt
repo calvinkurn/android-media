@@ -89,6 +89,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.data.model.ProductInfoP2General
 import com.tokopedia.product.detail.data.model.ProductInfoP2ShopData
 import com.tokopedia.product.detail.data.model.ProductInfoP3
+import com.tokopedia.product.detail.data.model.TradeinResponse
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
@@ -926,6 +927,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     }
 
     override fun clickAccept() {
+        val tradeinResponse = viewModel.p2ShopDataResp.value?.tradeinResponse ?: TradeinResponse()
+        if (tradeinResponse.validateTradeInPDP.usedPrice > 0) {
+            goToHargaFinal()
+        } else {
+            goToTradeInHome()
+        }
     }
 
     override fun clickDeny() {
@@ -2524,12 +2531,27 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.FINAL_PRICE)
         val tradeinParam = viewModel.tradeInParams
         viewModel.getDynamicProductInfoP1?.let {
-            tradeinParam.setPrice(it.data.price.value.toInt())
+            tradeinParam.setPrice(it.data.price.value)
             tradeinParam.productId = it.basic.getProductId()
             tradeinParam.productName = it.data.name
         }
 
         intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
         startActivityForResult(intent, ApplinkConstInternalCategory.FINAL_PRICE_REQUEST_CODE)
+    }
+
+    fun goToTradeInHome() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalCategory.TRADEIN)
+        val tradeinParam = viewModel.tradeInParams
+
+        viewModel.getDynamicProductInfoP1?.let {
+            tradeinParam.setPrice(it.data.price.value)
+            tradeinParam.productId = it.basic.getProductId()
+            tradeinParam.productName = it.data.name
+        }
+
+        intent.putExtra(TradeInParams.PARAM_PERMISSION_GIVEN, true)
+        intent.putExtra(TradeInParams.TRADE_IN_PARAMS, tradeinParam)
+        startActivityForResult(intent, ApplinkConstInternalCategory.TRADEIN_HOME_REQUEST)
     }
 }
