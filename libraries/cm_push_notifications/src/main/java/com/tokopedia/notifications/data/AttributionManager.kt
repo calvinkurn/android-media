@@ -22,22 +22,11 @@ class AttributionManager(
                 shopId = notification?.shopId,
                 blastId = notification?.blastId
         )
-        useCase.execute(params, ::onSuccess, ::onError)
-    }
-
-    private fun onSuccess(data: AttributionNotifier) {
-        Log.d("TAG", data.webhookAttributionNotifier.isSuccess.toString())
-    }
-
-    private fun onError(throwable: Throwable) {
-        Log.d("TAG", throwable.localizedMessage)
+        useCase.execute(params, {}, {})
     }
 
     companion object {
         fun post(context: Context, notification: BaseNotificationModel?) {
-            //post notification attribution only has shopId
-            if (notification?.shopId == null) return
-
             val query = raw(context.resources, R.raw.query_notification_attribution)
             val useCase = GraphqlUseCase<AttributionNotifier>(
                     GraphqlInteractor.getInstance().graphqlRepository
