@@ -1,0 +1,5 @@
+mutation onboardingStatusSet {
+  feedUserOnboardingStatusSet {
+    success
+  }
+}

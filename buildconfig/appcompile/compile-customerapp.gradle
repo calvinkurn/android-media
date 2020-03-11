@@ -190,12 +190,14 @@ include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
+include "features:user:loginfingerprint"
 
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
 include "features:user:seamless_login"
+include "features:user:liveness"
 
 include 'features:fcm_common'
 include 'features:user:campaign_shake_landing'

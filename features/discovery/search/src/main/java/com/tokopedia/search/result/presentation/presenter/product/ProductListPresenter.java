@@ -16,6 +16,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.seamless_login.domain.usecase.SeamlessLoginUsecase;
 import com.tokopedia.seamless_login.subscriber.SeamlessLoginSubscriber;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
+import com.tokopedia.search.di.module.SearchContextModule;
 import com.tokopedia.search.result.domain.model.SearchProductModel;
 import com.tokopedia.search.result.presentation.ProductListSectionContract;
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper;
@@ -32,6 +33,7 @@ import com.tokopedia.search.result.presentation.model.ProductViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationTitleViewModel;
 import com.tokopedia.search.result.presentation.presenter.localcache.SearchLocalCacheHandler;
+import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment;
 import com.tokopedia.search.utils.UrlParamUtils;
 import com.tokopedia.topads.sdk.domain.TopAdsParams;
 import com.tokopedia.topads.sdk.domain.model.Badge;
@@ -101,9 +103,9 @@ final class ProductListPresenter
     LocalCacheHandler advertisingLocalCache;
     @Inject
     @Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
-    public UseCase<DynamicFilterModel> getDynamicFilterUseCase;
+    UseCase<DynamicFilterModel> getDynamicFilterUseCase;
     @Inject
-    public SearchLocalCacheHandler searchLocalCacheHandler;
+    SearchLocalCacheHandler searchLocalCacheHandler;
 
     private boolean enableGlobalNavWidget = true;
     private boolean changeParamRow = false;
@@ -122,6 +124,7 @@ final class ProductListPresenter
     public void initInjector(ProductListSectionContract.View view) {
         ProductListPresenterComponent component = DaggerProductListPresenterComponent.builder()
                 .baseAppComponent(view.getBaseAppComponent())
+                .searchContextModule(createSearchContextModule(view))
                 .build();
 
         component.inject(this);
@@ -129,6 +132,19 @@ final class ProductListPresenter
         enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
         changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
         isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+    }
+
+    /**
+     * Very ugly hack.
+     * It is only intended for hotfix to reduce number of file changed
+    * */
+    @Deprecated
+    private SearchContextModule createSearchContextModule(ProductListSectionContract.View view) {
+        ProductListFragment fragment = (ProductListFragment)view;
+
+        if (fragment == null || fragment.getActivity() == null) return null;
+
+        return new SearchContextModule(fragment.getActivity());
     }
 
     @Override

@@ -187,12 +187,28 @@ open class FlightSearchRepository @Inject constructor(
         })
     }
 
+    fun getSearchFilterCoroutine(@TravelSortOption sortOption: Int, filterModel: FlightFilterModel):
+            JourneyAndRoutesModel {
+        return JourneyAndRoutesModel(flightSearchSingleDataDbSource.getFilteredJourneysCoroutine(filterModel, sortOption),
+                flightSearchDataCacheSource.cacheCoroutine)
+    }
+
+    fun getSearchFilterStatisticCoroutine(@TravelSortOption sortOption: Int, filterModel: FlightFilterModel):
+            JourneyAndRoutesModel {
+        return JourneyAndRoutesModel(flightSearchSingleDataDbSource.getFilteredJourneysStatisticCoroutine(filterModel, sortOption),
+                flightSearchDataCacheSource.cacheCoroutine)
+    }
+
     fun getSearchJourneyById(journeyId: String): Observable<JourneyAndRoutes> {
         return flightSearchSingleDataDbSource.getJourneyById(journeyId)
     }
 
     fun getSearchCount(filterModel: FlightFilterModel): Observable<Int> {
         return flightSearchSingleDataDbSource.getSearchCount(filterModel)
+    }
+
+    fun getSearchCountCoroutine(filterModel: FlightFilterModel): Int {
+        return flightSearchSingleDataDbSource.getSearchCountCoroutine(filterModel)
     }
 
     private fun getRouteAirlineByIdAndAirports(route: Route, included: List<Included<AttributesInc>>):

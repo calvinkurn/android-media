@@ -1,0 +1,9 @@
+query {
+  topadsGetExploreSort {
+      sort {
+          key
+          asc
+          text
+        }
+   }
+}

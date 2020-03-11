@@ -10,6 +10,7 @@ import com.tokopedia.topchat.chatroom.view.viewmodel.InvoicePreviewUiModel;
 import com.tokopedia.topchat.chatroom.view.viewmodel.QuotationUiModel;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
+import com.tokopedia.user.session.UserSessionInterface;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,6 +30,7 @@ public class TopChatAnalytics {
     private static final String EVENT_CATEGORY = "eventCategory";
     private static final String EVENT_ACTION = "eventAction";
     private static final String EVENT_LABEL = "eventLabel";
+    private static final String USER_ID = "userId";
     private static final String ECOMMERCE = "ecommerce";
     public static final String SCREEN_CHAT_LIST = "inbox-chat";
     public static final String SCREEN_CHAT_ROOM = "chatroom";
@@ -77,7 +79,7 @@ public class TopChatAnalytics {
         public static final String CHAT_DETAIL_ATTACHMENT = "click on send product attachment";
         public static final String TEMPLATE_CHAT_CLICK = "click on template chat";
         public static final String UPDATE_TEMPLATE = "click on tambah template";
-        public static final String CLICK_PRODUCT_IMAGE = "click on product image";
+        public static final String CLICK_PRODUCT_IMAGE = "click on product thumbnail";
         public static final String VIEW_PRODUCT_PREVIEW = "view on product thumbnail";
         public static final String CLICK_THUMBNAIL = "click on thumbnail";
         public static final String CLICK_COPY_VOUCHER_THUMBNAIL = "click copy on shop voucher thumbnail";
@@ -245,51 +247,68 @@ public class TopChatAnalytics {
         ));
     }
 
-    public void eventClickProductThumbnailEE(int blastId, String productId, String productName,
-                                             int productPrice, String category, String variant) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT_NAME, Name.EVENT_NAME_PRODUCT_CLICK,
-                EVENT_CATEGORY, Category.CHAT_DETAIL,
-                EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
-                EVENT_LABEL, String.format("chat - %s - %s", productId, String.valueOf(blastId)),
-                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
-                        "click", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "/chat"),
-                                "products", DataLayer.listOf(
+    // #AP6
+    public void eventClickProductThumbnailEE(
+            @NotNull ProductAttachmentViewModel product,
+            @NotNull UserSessionInterface user
+    ) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, Name.EVENT_NAME_PRODUCT_CLICK,
+                        EVENT_CATEGORY, Category.CHAT_DETAIL,
+                        EVENT_ACTION, Action.CLICK_PRODUCT_IMAGE,
+                        EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
+                        USER_ID, user.getUserId(),
+                        ECOMMERCE, DataLayer.mapOf(
+                                "click", DataLayer.mapOf(
+                                        "actionField", DataLayer.mapOf("list", "/chat"),
+                                        "products", DataLayer.listOf(
+                                                DataLayer.mapOf(
+                                                        "name", product.getProductName(),
+                                                        "id", product.getIdString(),
+                                                        "price", product.getPriceInt(),
+                                                        "brand", "none",
+                                                        "category", product.getCategory(),
+                                                        "variant", product.getVariants().toString(),
+                                                        "list", getField(String.valueOf(product.getBlastId())),
+                                                        "position", 0
+                                                )
+                                        )
+                                )
+                        )
+                )
+        );
+    }
+
+    // #AP5
+    public void eventSeenProductAttachment(
+            @NotNull ProductAttachmentViewModel product,
+            @NotNull UserSessionInterface user
+    ) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(
+                DataLayer.mapOf(
+                        EVENT_NAME, Name.EVENT_NAME_PRODUCT_PREVIEW,
+                        EVENT_CATEGORY, Category.CHAT_DETAIL,
+                        EVENT_ACTION, Action.VIEW_PRODUCT_PREVIEW,
+                        EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
+                        USER_ID, user.getUserId(),
+                        ECOMMERCE, DataLayer.mapOf(
+                                "currencyCode", "IDR",
+                                "impressions", DataLayer.listOf(
                                         DataLayer.mapOf(
-                                                "name", productName,
-                                                "id", productId,
-                                                "price", productPrice,
+                                                "name", product.getProductName(),
+                                                "id", product.getProductId(),
+                                                "price", product.getProductPrice(),
                                                 "brand", "none",
-                                                "category", category,
-                                                "variant", variant,
+                                                "category", product.getCategory(),
+                                                "variant", product.getVariants().toString(),
+                                                "list", getField(String.valueOf(product.getBlastId())),
                                                 "position", 0
                                         )
                                 )
                         )
                 )
-        ));
-    }
-
-    public void eventSeenProductAttachment(@NotNull ProductAttachmentViewModel product) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT_NAME, Name.EVENT_NAME_PRODUCT_PREVIEW,
-                EVENT_CATEGORY, Category.CHAT_DETAIL,
-                EVENT_ACTION, Action.VIEW_PRODUCT_PREVIEW,
-                EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
-                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
-                        "impressions", DataLayer.mapOf(
-                                "name", product.getProductName(),
-                                "id", product.getProductId(),
-                                "price", product.getProductPrice(),
-                                "brand", "none",
-                                "category", product.getCategory(),
-                                "variant", product.getVariants().toString(),
-                                "list", getField(String.valueOf(product.getBlastId())),
-                                "position", 0
-                        )
-                )
-        ));
+        );
     }
 
 
@@ -299,66 +318,29 @@ public class TopChatAnalytics {
         );
     }
 
-
-    public void eventClickAddToCartProductAttachment(String blastId, String productName, String productId, String productPrice, int quantity, String shopId, String shopName) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT_NAME, Name.EVENT_NAME_ATC,
+    // #AP7
+    public void eventClickAddToCartProductAttachment(
+            @NotNull ProductAttachmentViewModel product,
+            @NotNull UserSessionInterface user
+    ) {
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                EVENT_NAME, Name.CHAT_DETAIL,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_ATC_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("%s - %s", getField(blastId), String.valueOf(blastId)),
-                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
-                        "click", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", String.format("/%s", getField(blastId))),
-                                "products", DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                "name", productName,
-                                                "id", productId,
-                                                "price", productPrice,
-                                                "quantity", quantity,
-                                                "shop_id", shopId,
-                                                "shop_type", "",
-                                                "shop_name", shopName,
-                                                "category_id", "",
-                                                "dimension45", ""
-                                        )
-                                )
-                        )
-                )
+                EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId())),
+                USER_ID, user.getUserId()
         ));
     }
 
+    // #AP9
     public void eventClickBuyProductAttachment(
-            String blastId,
-            String productName,
-            String productId,
-            String productPrice,
-            int quantity,
-            String shopId,
-            String shopName
+            @NotNull ProductAttachmentViewModel product
     ) {
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                EVENT_NAME, Name.EVENT_NAME_ATC,
+        TrackApp.getInstance().getGTM().sendGeneralEvent(DataLayer.mapOf(
+                EVENT_NAME, Name.CHAT_DETAIL,
                 EVENT_CATEGORY, Category.CHAT_DETAIL,
                 EVENT_ACTION, Action.CLICK_BUY_PRODUCT_THUMBNAIL,
-                EVENT_LABEL, String.format("%s - %s", getField(blastId), String.valueOf(blastId)),
-                ECOMMERCE, DataLayer.mapOf("currencyCode", "IDR",
-                        "add", DataLayer.mapOf(
-                                "actionField", DataLayer.mapOf("list", "/chat"),
-                                "products", DataLayer.listOf(
-                                        DataLayer.mapOf(
-                                                "name", productName,
-                                                "id", productId,
-                                                "price", productPrice,
-                                                "quantity", quantity,
-                                                "shop_id", shopId,
-                                                "shop_type", "",
-                                                "shop_name", shopName,
-                                                "category_id", "",
-                                                "dimension45", ""
-                                        )
-                                )
-                        )
-                )
+                EVENT_LABEL, String.format("chat - %s", String.valueOf(product.getBlastId()))
         ));
     }
 

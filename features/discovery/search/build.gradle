@@ -114,6 +114,7 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.spek2Dsl
     testImplementation rootProject.ext.supportLibDependencies.kotlinReflection
     testImplementation "org.json:json:20140107"
+    implementation project(rootProject.ext.libraries.iris)
 }
 
 project.ext {
@@ -121,14 +122,6 @@ project.ext {
     groupId = 'com.tokopedia.discovery'
     versionName = "0.0.1"
     artifactName ="search-release"
-    unitTestJavaIncludes = [
-            '**/UrlParamUtils.*'
-    ]
-    unitTestKotlinIncludes = [
-            '**/SearchShopViewModel.*',
-            '**/SearchViewModel.*',
-            '**/SearchKotlinExtKt.*',
-    ]
 }
 
 apply from: '../../../publish_local.gradle'

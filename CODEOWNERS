@@ -24,7 +24,6 @@
 /features/digital/digital_browse/                   	@tokopedia/minion-dave
 /features/discovery/global_nav_widget/              	@tokopedia/minion-dave
 /features/discovery/global_nav_widget_samples/      	@tokopedia/minion-dave
-/features/home/account-home/                        	@tokopedia/minion-dave
 /features/home/navigation/                          	@tokopedia/minion-dave
 /features/home/navigation-common/                   	@tokopedia/minion-dave
 /features/home/searchbar/                           	@tokopedia/minion-dave
@@ -73,12 +72,13 @@
 
 /libraries/kotlin_extensions/                           @tokopedia/minion-stuart
 
-/features/top_ads/top_ads_free_claim/                   @tokopedia/minion-darth
-/features/top_ads/top_ads_management/                   @tokopedia/minion-darth
-/features/top_ads/top_ads_management_common/            @tokopedia/minion-darth
-/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-darth
-/features/top_ads/top_ads_autoads/                      @tokopedia/minion-darth
-/features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-darth
+/features/top_ads/top_ads_free_claim/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management/                   @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_common/            @tokopedia/minion-skywalker
+/features/top_ads/top_ads_management_sourcetagging/     @tokopedia/minion-skywalker
+/features/top_ads/top_ads_autoads/                      @tokopedia/minion-skywalker
+/features/top_ads/top_ads_create/                       @tokopedia/minion-skywalker
+/features/top_ads/top_ads_detail_sheet/                 @tokopedia/minion-skywalker
 
 /features/recharge/digital_topup_bills                  @tokopedia/minion-mark
 /features/recharge/rechargeocr                          @tokopedia/minion-mark
@@ -152,6 +152,8 @@
 /features/user/attachcommon/                            @tokopedia/minion-kevin
 /features/user/stickylogin/                             @tokopedia/minion-kevin
 /features/user/campaign_shake_landing/                  @tokopedia/minion-kevin
+/features/home/account-home/                        	@tokopedia/minion-kevin
+/features/user/loginfingerprint/                        @tokopedia/minion-kevin
 
 /features/operational/contact_us        				@tokopedia/minion-darth
 
@@ -182,6 +184,8 @@
 
 /libraries/adapter_delegate/							@tokopedia/core-team
 /libraries/analytics/							        @tokopedia/core-team
+/libraries/analytics_debugger/							@tokopedia/core-team
+/libraries/analytics_debugger_noop/					    @tokopedia/core-team
 /libraries/applink/										@tokopedia/core-team
 /libraries/banner_dynamic/								@tokopedia/core-team
 /libraries/base_adapter/								@tokopedia/core-team
