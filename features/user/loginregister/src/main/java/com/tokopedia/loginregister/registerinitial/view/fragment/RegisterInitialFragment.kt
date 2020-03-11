@@ -39,6 +39,7 @@ import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
@@ -1075,7 +1076,12 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onSuccessRegister() {
         activity?.let {
-            registerAnalytics.trackSuccessRegister(userSession.loginMethod)
+            registerAnalytics.trackSuccessRegister(
+                    userSession.loginMethod,
+                    userSession.userId.toIntOrZero(),
+                    userSession.name,
+                    userSession.email
+            )
 
             if (isFromAccount()) {
                 val intent = RouteManager.getIntent(context, ApplinkConst.DISCOVERY_NEW_USER)
