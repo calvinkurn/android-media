@@ -104,7 +104,6 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
                             HomeEggListener homeEggListener,
                             HomeTabFeedListener homeTabFeedListener) {
         this.homeCategoryListener = homeCategoryListener;
-        setJankyFramesRecyclerViewMonitoring(homeCategoryListener);
         this.homeEggListener = homeEggListener;
         this.homeTabFeedListener = homeTabFeedListener;
     }
@@ -156,6 +155,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             );
             getRecyclerView(getView()).setRecycledViewPool(parentPool);
         }
+        setJankyFramesRecyclerViewMonitoring(homeCategoryListener);
     }
     @Override
     public void loadData(int page) {
