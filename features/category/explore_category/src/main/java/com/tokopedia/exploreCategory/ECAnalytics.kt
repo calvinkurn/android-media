@@ -14,6 +14,7 @@ class ECAnalytics {
         private const val EVENT_VIEW = "promoView"
         private const val EVENT_CATEGORY = "semua kategori page"
         private const val EVENT_ACTION_CLICK_BACK = "click back button"
+        private const val PROMO_SLOT_NAME = "promo slot name"
 
         private const val KEY_EVENT = "event"
         private const val KEY_EVENT_CATEGORY = "eventCategory"
@@ -32,7 +33,7 @@ class ECAnalytics {
                         "promoClick", DataLayer.mapOf(
                         "promotions", DataLayer.listOf(DataLayer.mapOf(
                         "id", it.id.toString(),
-                        "name", "category/${it.title?.toLowerCase(Locale.getDefault())} - ${it.id}",
+                        "name", PROMO_SLOT_NAME,
                         "creative", it.title?.toLowerCase(Locale.getDefault()),
                         "creative_url", NONE_OTHER,
                         "position", position + 1,
@@ -58,7 +59,7 @@ class ECAnalytics {
                 val map = HashMap<String, Any>()
                 categoryGroup?.let {
                     map["id"] = it.id.toString()
-                    map["name"] = "category/${it.title?.toLowerCase(Locale.getDefault())} - ${it.id}"
+                    map["name"] = PROMO_SLOT_NAME
                     map["creative"] = it.title?.toLowerCase(Locale.getDefault())
                             ?: NONE_OTHER
                     map["creative_url"] = NONE_OTHER
@@ -92,7 +93,7 @@ class ECAnalytics {
                         "promoClick", DataLayer.mapOf(
                         "promotions", DataLayer.listOf(DataLayer.mapOf(
                         "id", it.id.toString(),
-                        "name", "category/${it.name?.toLowerCase(Locale.getDefault())} - ${it.id}",
+                        "name", PROMO_SLOT_NAME,
                         "creative", it.name?.toLowerCase(Locale.getDefault()),
                         "creative_url", NONE_OTHER,
                         "position", position + 1,
@@ -118,7 +119,7 @@ class ECAnalytics {
                     val map = HashMap<String, Any>()
                     icon?.let {
                         map["id"] = it.id.toString()
-                        map["name"] = "category/${it.name?.toLowerCase(Locale.getDefault())} - ${it.id}"
+                        map["name"] = PROMO_SLOT_NAME
                         map["creative"] = it.name?.toLowerCase(Locale.getDefault())
                                 ?: NONE_OTHER
                         map["creative_url"] = it.imageUrl ?: NONE_OTHER
