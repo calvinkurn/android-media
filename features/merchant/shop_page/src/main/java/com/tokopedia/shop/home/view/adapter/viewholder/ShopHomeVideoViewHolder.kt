@@ -98,7 +98,7 @@ class ShopHomeVideoViewHolder(
             R.id.btn_youtube_player -> {
                 view.context?.let {
                     youtubVideoModel?.data?.let{ videoItemList ->
-                        listener.onItemClicked(youtubVideoModel, videoItemList.first(),adapterPosition, 0)
+                        listener.onDisplayItemClicked(youtubVideoModel, videoItemList.first(),adapterPosition, 0)
                     }
                     if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                             == YouTubeInitializationResult.SUCCESS) {

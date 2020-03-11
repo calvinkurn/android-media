@@ -3,14 +3,14 @@ package com.tokopedia.shop.home.view.listener;
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 
 interface ShopHomeDisplayWidgetListener {
-    fun onItemImpression(
+    fun onDisplayItemImpression(
             displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
             displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
             parentPosition: Int,
             adapterPosition: Int
     )
 
-    fun onItemClicked(
+    fun onDisplayItemClicked(
             displayWidgetUiModel: ShopHomeDisplayWidgetUiModel?,
             displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem,
             parentPosition: Int,

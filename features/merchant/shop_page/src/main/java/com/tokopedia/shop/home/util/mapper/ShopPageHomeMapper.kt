@@ -138,7 +138,7 @@ object ShopPageHomeMapper {
                 widgetModel.name,
                 widgetModel.type,
                 mapToHeaderModel(widgetModel.header),
-                mapToProductViewModel(widgetModel.data, isMyOwnProduct)
+                mapToListHomeProductViewModel(widgetModel.data, isMyOwnProduct)
         )
     }
 
@@ -153,13 +153,13 @@ object ShopPageHomeMapper {
         )
     }
 
-    private fun mapToProductViewModel(
+    private fun mapToListHomeProductViewModel(
             data: List<ShopLayoutWidget.Widget.Data>,
             isMyOwnProduct: Boolean
     ): List<ShopHomeProductViewModel> {
         return mutableListOf<ShopHomeProductViewModel>().apply {
             data.onEach {
-                add(mapFeaturedProductToProductViewModel(it, isMyOwnProduct))
+                add(mapToHomeProductViewModel(it, isMyOwnProduct))
             }
         }.toList()
     }
@@ -192,7 +192,7 @@ object ShopPageHomeMapper {
                 freeOngkirPromoIcon = shopProduct.freeOngkir.imgUrl
             }
 
-    private fun mapFeaturedProductToProductViewModel(
+    private fun mapToHomeProductViewModel(
             response: ShopLayoutWidget.Widget.Data,
             isMyOwnProduct: Boolean
     ): ShopHomeProductViewModel =
@@ -207,7 +207,6 @@ object ShopPageHomeMapper {
                 totalReview = response.totalReview
                 rating = (response.rating / 20).roundToInt().toDouble()
                 isPo = response.isPO
-                //todo change this
                 isWishList = false
                 productUrl = response.productUrl
                 isSoldOut = response.isSoldOut

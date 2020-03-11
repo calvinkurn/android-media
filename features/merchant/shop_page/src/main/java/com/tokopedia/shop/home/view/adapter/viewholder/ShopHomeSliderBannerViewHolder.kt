@@ -47,7 +47,7 @@ class ShopHomeSliderBannerViewHolder(
     override fun onPromoClick(position: Int) {
         bannerData?.data?.let {
             val widgetItem = it[position]
-            listener.onItemClicked(bannerData, widgetItem, adapterPosition, position)
+            listener.onDisplayItemClicked(bannerData, widgetItem, adapterPosition, position)
         }
     }
 
@@ -61,7 +61,7 @@ class ShopHomeSliderBannerViewHolder(
         bannerData?.data?.let {
             val widgetItem = it[position]
             if(!widgetItem.isInvoke){
-                listener.onItemImpression(bannerData, widgetItem, adapterPosition, position)
+                listener.onDisplayItemImpression(bannerData, widgetItem, adapterPosition, position)
                 widgetItem.invoke()
             }
         }

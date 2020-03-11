@@ -17,8 +17,15 @@ class ShopHomeSliderSquareAdapter(
         private val listener: ShopHomeDisplayWidgetListener
 ): ListAdapter<ShopHomeDisplayWidgetUiModel.DisplayWidgetItem, ShopHomeItemSliderSquareViewHolder>(AdapterDiffCallback.WidgetDiffCallback) {
 
+    var displayWidgetUiModel: ShopHomeDisplayWidgetUiModel? = null
+    var parentPosition: Int = 0
+
     override fun onBindViewHolder(holderItem: ShopHomeItemSliderSquareViewHolder, position: Int) {
-        getItem(position)?.let { holderItem.bind(it) }
+        getItem(position)?.let {
+            holderItem.displayWidgetUiModel = displayWidgetUiModel
+            holderItem.parentPosition = parentPosition
+            holderItem.bind(it)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopHomeItemSliderSquareViewHolder {

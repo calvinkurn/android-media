@@ -65,6 +65,7 @@ class ShopHomeCarousellProductViewHolder(
     }
 
     override fun bind(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
+        val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
         val title = shopHomeCarousellProductUiModel.header.title
         val ctaText = shopHomeCarousellProductUiModel.header.ctaText
         if(title.isEmpty() && ctaText.isEmpty()){
@@ -82,5 +83,8 @@ class ShopHomeCarousellProductViewHolder(
         adapterCarousell.parentIndex = adapterPosition
         adapterCarousell.clearAllElements()
         adapterCarousell.setProductListData(shopHomeCarousellProductUiModel.productList)
+        if (recyclerViewState != null) {
+            recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
+        }
     }
 }

@@ -101,6 +101,7 @@ object HomeConstant {
 
 object GqlQueryConstant {
     const val GQL_GET_SHOP_PAGE_HOME_LAYOUT = "gql_get_shop_page_home_layout"
+    const val GQL_ATC_MUTATION = "atcMutation"
 }
 
 object WidgetType {

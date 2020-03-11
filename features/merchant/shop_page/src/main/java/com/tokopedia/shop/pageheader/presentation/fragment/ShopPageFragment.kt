@@ -616,7 +616,8 @@ class ShopPageFragment :
                         shopId ?: "",
                         isOfficialStore,
                         isGoldMerchant,
-                        shopName
+                        shopName,
+                        shopAttribution ?: ""
                 )
             } else {
                 HomeProductFragment.createInstance().apply {

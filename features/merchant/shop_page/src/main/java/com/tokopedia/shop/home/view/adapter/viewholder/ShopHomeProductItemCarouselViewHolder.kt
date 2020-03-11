@@ -34,6 +34,8 @@ class ShopHomeProductItemCarouselViewHolder(
         if (deviceWidth > 0) {
             itemView.layoutParams.width = (deviceWidth / RATIO_WITH_RELATIVE_TO_SCREEN).toInt()
         }
+        val isAtcFlag = shopHomeCarousellProductUiModel?.header?.isATC ?: 0
+        productCard.setAddToCartVisible(isAtcFlag == 1)
     }
 
     override fun setListener(){
@@ -64,6 +66,10 @@ class ShopHomeProductItemCarouselViewHolder(
                 //                if (!it.isSoldOut)
 //                    shopProductClickedListener?.onWishListClicked(shopHomeProductViewModel, shopTrackType)
             }
+
+        }
+
+        productCard.setAddToCartOnClickListener {
 
         }
     }

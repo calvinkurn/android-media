@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
@@ -36,6 +37,13 @@ class ShopPageHomeModule {
     @Named(GQLQueryConstant.SHOP_PRODUCT)
     fun getShopProductQuery(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_shop_product)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GQL_ATC_MUTATION)
+    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart);
     }
 
     @ShopPageHomeScope

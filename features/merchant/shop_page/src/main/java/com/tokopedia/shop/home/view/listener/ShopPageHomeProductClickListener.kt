@@ -40,4 +40,11 @@ interface ShopPageHomeProductClickListener {
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
             shopHomeProductViewModel: ShopHomeProductViewModel?
     )
+
+    fun onCarouselProductItemClickAddToCart(
+            parentPosition: Int,
+            itemPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductViewModel?
+    )
 }

@@ -25,10 +25,10 @@ class ShopHomeItemImageColumnViewHolder(
     fun bind(data: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem) {
         ImageHandler.LoadImage(ivMultipleColumn, data.imageUrl)
         ivMultipleColumn.setOnClickListener {
-            listener.onItemClicked(displayWidgetUiModel, data, parentPosition, adapterPosition)
+            listener.onDisplayItemClicked(displayWidgetUiModel, data, parentPosition, adapterPosition)
         }
         ivMultipleColumn.addOnImpressionListener(data) {
-            listener.onItemImpression(displayWidgetUiModel, data, parentPosition, adapterPosition)
+            listener.onDisplayItemImpression(displayWidgetUiModel, data, parentPosition, adapterPosition)
         }
     }
 }

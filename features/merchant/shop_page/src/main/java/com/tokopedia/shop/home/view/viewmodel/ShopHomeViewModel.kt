@@ -3,6 +3,10 @@ package com.tokopedia.shop.home.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Companion.STATUS_OK
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.util.Util
@@ -12,9 +16,7 @@ import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutUseCase
 import com.tokopedia.shop.home.util.asyncCatchError
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
-import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
-import com.tokopedia.shop.home.view.model.ShopPageHomeLayoutUiModel
+import com.tokopedia.shop.home.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -27,7 +29,8 @@ class ShopHomeViewModel @Inject constructor(
         userSession: UserSessionInterface,
         private val getShopPageHomeLayoutUseCase: GetShopPageHomeLayoutUseCase,
         private val getShopProductUseCase: GqlGetShopProductUseCase,
-        private val dispatcherProvider: CoroutineDispatcherProvider
+        private val dispatcherProvider: CoroutineDispatcherProvider,
+        private val addToCartUseCase: AddToCartUseCase
 ) : BaseViewModel(dispatcherProvider.main()) {
 
     companion object {
@@ -42,7 +45,12 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopHomeLayoutData
     private val _shopHomeLayoutData = MutableLiveData<Result<ShopPageHomeLayoutUiModel>>()
 
+    val addToCartSubmitData: LiveData<Result<ShopHomeAddToCartSuccessDataModel>>
+        get() = _addToCartSubmitData
+    private val _addToCartSubmitData = MutableLiveData<Result<ShopHomeAddToCartSuccessDataModel>>()
+
     val userSessionShopId = userSession.shopId ?: ""
+    val isLogin = userSession.isLoggedIn
 
     fun getShopPageHomeData(shopId: String) {
         launchCatchError(block = {
@@ -108,12 +116,37 @@ class ShopHomeViewModel @Inject constructor(
             page: Int
     ) {
         launchCatchError(block = {
-            val listProductData = withContext(Dispatchers.IO) {
+            val listProductData = withContext(dispatcherProvider.io()) {
                 getProductList(shopId, page)
             }
             _productListData.postValue(Success(listProductData))
         }) {
             _productListData.postValue(Fail(it))
         }
+    }
+
+    fun addProductToCart(
+            parentPosition: Int,
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel,
+            shopHomeProductViewModel: ShopHomeProductViewModel,
+            shopId: String
+    ) {
+        launchCatchError(block = {
+            val addToCartSubmitData = withContext(dispatcherProvider.io()) {
+                submitAddProductToCart(shopId, shopHomeProductViewModel.id ?: "")
+            }
+            if (addToCartSubmitData.status == STATUS_OK)
+                _addToCartSubmitData.postValue(Success(ShopHomeAddToCartSuccessDataModel(
+                        parentPosition,
+                        shopHomeCarousellProductUiModel,
+                        shopHomeProductViewModel,
+                        addToCartSubmitData.data
+                )))
+        }) {}
+    }
+
+    private fun submitAddProductToCart(shopId: String, productId: String): AddToCartDataModel {
+        val requestParams = AddToCartUseCase.getMinimumParams(productId, shopId)
+        return addToCartUseCase.createObservable(requestParams).toBlocking().first()
     }
 }
