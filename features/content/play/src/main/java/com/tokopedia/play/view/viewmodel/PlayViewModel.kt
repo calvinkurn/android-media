@@ -281,7 +281,6 @@ class PlayViewModel @Inject constructor(
 
         _observableBottomInsetsState.value = insetsMap
         _observableVariantSheetContent.value = VariantSheetUiModel(
-                title = "Detail Produk",
                 product = product,
                 action = action
         )
@@ -634,7 +633,6 @@ class PlayViewModel @Inject constructor(
 
     private fun setMockVariantSheetContent(action: ProductAction) {
         _observableVariantSheetContent.value = VariantSheetUiModel(
-                title = "Detail Produk",
                 product = ProductLineUiModel(
                         id = "123",
                         imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",

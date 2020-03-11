@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.R
 import com.tokopedia.play.component.EventBusFactory
@@ -140,7 +141,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
                                 ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetDynamicVariant(it)
+                                ScreenStateEvent.SetVariantSheet(it)
                         )
             }
         })
@@ -211,6 +212,9 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                             VariantSheetInteractionEvent.OnCloseVariantSheet -> closeVariantSheet()
                             is VariantSheetInteractionEvent.OnBuyProduct -> shouldBuyProduct(it.productId)
                             is VariantSheetInteractionEvent.OnAddProductToCart -> shouldAtcProduct(it.productId)
+                            is VariantSheetInteractionEvent.OnClickVariantGuideline -> {
+                                startActivity(ImagePreviewActivity.getCallingIntent(requireContext(), arrayListOf(it.url)))
+                            }
                         }
                     }
         }
@@ -224,7 +228,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun openVariantSheet(product: ProductLineUiModel, action: ProductAction) {
         playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
-        playVariantViewModel.getProductVariant(product.id)
+        playVariantViewModel.getProductVariant(product, action)
     }
 
     private fun closeVariantSheet() {
