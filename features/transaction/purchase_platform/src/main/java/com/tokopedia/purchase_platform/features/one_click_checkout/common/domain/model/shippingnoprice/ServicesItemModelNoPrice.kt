@@ -4,7 +4,7 @@ data class ServicesItemModelNoPrice (
     var serviceCode: String? = null,
     var serviceId: Int = -1,
     var servicesDuration: String? = null,
-    var shipperIds: List<ShipperIds?>? = null,
-    var spids: List<Spids?>? = null,
+    var shipperIds: Int? = null,
+    var spids: Int? = null,
     var isSelected: Boolean = false
 )
