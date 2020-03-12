@@ -391,10 +391,18 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun updateSearchParamCache() {
-        flightDashboardCache.putDepartureAirport(flightSearchData.departureAirport.airportCode)
+        val departureAirport = if (flightSearchData.departureAirport.cityAirports != null && flightSearchData.departureAirport.cityAirports.size > 0)
+            buildAirportListString(flightSearchData.departureAirport.cityAirports)
+        else flightSearchData.departureAirport.airportCode
+
+        val arrivalAirport = if (flightSearchData.arrivalAirport.cityAirports != null && flightSearchData.arrivalAirport.cityAirports.size > 0)
+            buildAirportListString(flightSearchData.arrivalAirport.cityAirports)
+        else flightSearchData.arrivalAirport.airportCode
+
+        flightDashboardCache.putDepartureAirport(departureAirport)
         flightDashboardCache.putDepartureCityCode(flightSearchData.departureAirport.cityCode)
         flightDashboardCache.putDepartureCityName(flightSearchData.departureAirport.cityName)
-        flightDashboardCache.putArrivalAirport(flightSearchData.arrivalAirport.airportCode)
+        flightDashboardCache.putArrivalAirport(arrivalAirport)
         flightDashboardCache.putArrivalCityCode(flightSearchData.arrivalAirport.cityCode)
         flightDashboardCache.putArrivalCityName(flightSearchData.arrivalAirport.cityName)
         flightDashboardCache.putRoundTrip(!flightSearchData.isOneWay)
@@ -406,6 +414,20 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
                 flightSearchData.flightPassengerViewModel.infant
         )
         flightDashboardCache.putClassCache(flightSearchData.flightClass.id)
+    }
+
+    private fun buildAirportListString(airportIdList: List<String>): String {
+        var airportId = ""
+
+        for ((index, item) in airportIdList.withIndex()) {
+            airportId += if (index < airportIdList.size - 1) {
+                "$item,"
+            } else {
+                item
+            }
+        }
+
+        return airportId
     }
 
     interface FlightSearchFormListener {
