@@ -136,7 +136,7 @@
                     android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularViewPager
+                    <com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
                       android:id="@+id/cv_trending_promos"
                       android:layout_width="match_parent"
                       android:layout_height="match_parent"
@@ -148,7 +148,7 @@
                       android:nestedScrollingEnabled="false"
                       app:layout_constraintTop_toTopOf="parent"/>
 
-                    <com.tokopedia.home_page_banner.presentation.widgets.pageIndicator.CircularPageIndicator
+                    <com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator
                         android:id="@+id/indicator_banner"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/dp_10"
@@ -297,6 +297,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/dp_16"
                         android:clipToPadding="false"
+                        android:visibility="gone"
                         android:nestedScrollingEnabled="false"
                         android:paddingLeft="@dimen/dp_12"
                         android:paddingRight="@dimen/dp_12"

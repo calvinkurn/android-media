@@ -446,8 +446,10 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     @Override
     public void addDealsToCards(@NotNull ArrayList<ProductItem> productItems) {
         ((DealsCategoryAdapter) Objects.requireNonNull(recyclerViewDeals.getAdapter())).addAll(productItems);
-        if (recyclerViewDeals.getAdapter().getItemCount() > 0)
+        if (recyclerViewDeals.getAdapter().getItemCount() > 0){
             tvRecommendedDeals.setVisibility(View.VISIBLE);
+            recyclerViewDeals.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

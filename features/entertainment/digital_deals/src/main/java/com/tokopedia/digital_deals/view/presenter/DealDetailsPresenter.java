@@ -225,8 +225,6 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
                     getView().addDealsToCards((ArrayList<ProductItem>) processSearchResponse(searchResponse));
 
                     checkIfToLoad(getView().getLayoutManager());
-                } else {
-                    getView().hideRecomendationDealsView();
                 }
             }
         });

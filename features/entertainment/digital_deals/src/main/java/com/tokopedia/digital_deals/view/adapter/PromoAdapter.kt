@@ -9,15 +9,12 @@ import android.view.ViewGroup
 import android.widget.ImageView
 
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.digital_deals.view.utils.DealsAnalytics
-import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularListener
-import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularModel
-import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularViewHolder
-import com.tokopedia.home_page_banner.presentation.widgets.circularViewPager.CircularViewPagerAdapter
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewHolder
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPagerAdapter
 
 class PromoAdapter(itemList: List<CircularModel>, listener: CircularListener) : CircularViewPagerAdapter(itemList, true, listener) {
-    private var dealsAnalytics: DealsAnalytics = DealsAnalytics()
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CircularViewHolder {
         return PromosViewHolder(LayoutInflater.from(parent.context).inflate(com.tokopedia.digital_deals.R.layout.promo_item, parent, false))
     }
