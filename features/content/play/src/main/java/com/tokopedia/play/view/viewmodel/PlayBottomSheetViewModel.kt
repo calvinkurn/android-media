@@ -8,10 +8,14 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.domain.PostAddtoCartUseCase
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
+import com.tokopedia.play.view.wrapper.InteractionEvent
+import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.coroutines.SupervisorJob
@@ -23,9 +27,10 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-03-06.
  */
-class PlayVariantViewModel @Inject constructor(
+class PlayBottomSheetViewModel @Inject constructor(
         private val getProductVariantUseCase: GetProductVariantUseCase,
         private val postAddtoCartUseCase: PostAddtoCartUseCase,
+        private val userSession: UserSessionInterface,
         private val dispatchers: CoroutineDispatcherProvider
 ) : BaseViewModel(dispatchers.main) {
 
@@ -33,6 +38,9 @@ class PlayVariantViewModel @Inject constructor(
 
     private val _observableAddtoCart = MutableLiveData<CartFeedbackUiModel>()
     private val _observableProductVariant = MutableLiveData<VariantSheetUiModel>()
+
+    private val _observableLoggedInInteractionEvent = MutableLiveData<Event<LoginStateEvent>>()
+    val observableLoggedInInteractionEvent: LiveData<Event<LoginStateEvent>> = _observableLoggedInInteractionEvent
 
     val observableAddtoCart: LiveData<CartFeedbackUiModel> = _observableAddtoCart
     val observableProductVariant: LiveData<VariantSheetUiModel> = _observableProductVariant
@@ -55,6 +63,13 @@ class PlayVariantViewModel @Inject constructor(
             }
             _observableProductVariant.value = variantSheetUiModel
         }){}
+    }
+
+    fun doInteractionEvent(event: InteractionEvent) {
+        _observableLoggedInInteractionEvent.value = Event(
+                if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn
+                else LoginStateEvent.InteractionAllowed(event)
+        )
     }
 
     fun addtoCart(productId: String, shopId: String, quantity: Int = 1, notes: String = "", isAtcOnly: Boolean = true) {
