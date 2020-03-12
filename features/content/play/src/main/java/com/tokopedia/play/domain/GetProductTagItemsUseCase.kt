@@ -2,7 +2,7 @@ package com.tokopedia.play.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.play.data.Product
-import com.tokopedia.play.data.ProductTaggingItems
+import com.tokopedia.play.data.ProductTagging
 import com.tokopedia.play.data.Voucher
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
@@ -13,16 +13,17 @@ import javax.inject.Inject
  * Created by mzennis on 2020-03-06.
  */
 class GetProductTagItemsUseCase @Inject constructor(val graphqlRepository: GraphqlRepository) :
-        UseCase<ProductTaggingItems>() {
+        UseCase<ProductTagging>() {
 
     var channelId: String = ""
 
-    override suspend fun executeOnBackground(): ProductTaggingItems {
+    override suspend fun executeOnBackground(): ProductTagging {
         val params = RequestParams.create()
         params.putString("channelId", channelId)
 
-        return ProductTaggingItems(
-                title = "Jangan Sampai Kehabisan Barang & Promo Pilihan",
+
+
+        return ProductTagging(
                 listOfProducts = listOf(
                         Product(id = 689413405,
                                 appLink = "tokopedia://product/689413405",
