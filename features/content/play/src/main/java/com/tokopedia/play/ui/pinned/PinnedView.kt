@@ -101,6 +101,7 @@ class PinnedView(
                 if (pinnedProduct.isPromo) R.raw.anim_play_product_promo
                 else R.raw.anim_play_product
         )
+        animationProduct.playAnimation()
     }
 
     fun onDestroy() {

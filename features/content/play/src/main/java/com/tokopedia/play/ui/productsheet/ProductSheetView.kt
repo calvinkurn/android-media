@@ -90,10 +90,6 @@ class ProductSheetView(
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    internal fun setStateHidden() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
     internal fun showWithHeight(height: Int) {
         if (view.height != height) {
             val layoutParams = view.layoutParams as CoordinatorLayout.LayoutParams

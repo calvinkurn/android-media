@@ -27,7 +27,7 @@ class VariantImageViewHolder(val view: View,
     }
 
     override fun bind(element: VariantOptionWithAttribute) = with(view) {
-        ImageHandler.LoadImage(variantImg, element.image)
+        ImageHandler.LoadImage(variantImg, element.image200)
         setState(element)
     }
 
@@ -35,17 +35,17 @@ class VariantImageViewHolder(val view: View,
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
                 overlayVariantImgContainer.show()
-                variantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
+                view.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
                 view.isEnabled = false
             }
             VariantConstant.STATE_SELECTED -> {
                 overlayVariantImgContainer.hide()
-                variantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_selected)
+                view.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_selected)
                 view.isEnabled = false
             }
             VariantConstant.STATE_UNSELECTED -> {
                 overlayVariantImgContainer.hide()
-                variantImgContainer.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
+                view.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_img_unselected)
                 view.isEnabled = true
             }
         }

@@ -1,5 +1,6 @@
 package com.tokopedia.play.ui.variantsheet.adapter.delegate
 
+import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
@@ -18,6 +19,11 @@ class VariantAdapterDelegate(
 
     override fun onBindViewHolder(item: VariantCategory, holder: VariantContainerViewHolder) {
         holder.bind(item)
+    }
+
+    override fun onBindViewHolderWithPayloads(item: VariantCategory, holder: VariantContainerViewHolder, payloads: Bundle) {
+        val isOptionChanged = payloads.getBoolean(VariantContainerViewHolder.VARIANT_OPTION_CHANGED)
+        holder.bind(item, isOptionChanged)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, basicView: View): VariantContainerViewHolder {
