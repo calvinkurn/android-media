@@ -51,6 +51,7 @@ import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckou
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCartMapData;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
@@ -1202,6 +1203,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             if (validateUsePromoRevampUiModel.getMessage() != null && validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                                 String errMessage = validateUsePromoRevampUiModel.getMessage().get(0).toString();
                                                 mTrackerShipment.eventClickLanjutkanTerapkanPromoError(errMessage);
+                                                PromoRevampAnalytics.INSTANCE.eventCheckoutViewPromoMessage(errMessage);
                                                 getView().showToastError(errMessage);
                                                 getView().resetCourier(cartPosition);
                                             }

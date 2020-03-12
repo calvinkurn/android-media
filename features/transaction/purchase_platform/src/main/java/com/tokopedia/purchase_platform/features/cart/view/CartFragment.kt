@@ -473,6 +473,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     if (isChecked == prevIsChecked) {
                         if (isChecked != cartListData?.isAllSelected) {
                             //TODO : hit update cart & validate use
+                            // dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp())
                             println("++ YEY HIT!!")
                             onSelectAllClicked()
                         }
@@ -1407,6 +1408,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
                 // analytics
                 PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApply), isApplied)
+            }
+            if (isApplied) {
+                PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
             }
         }
     }

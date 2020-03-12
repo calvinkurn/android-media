@@ -12,14 +12,16 @@ data class PromoCheckoutData (var promoLabel: String = "",
                               var state: ButtonPromoCheckoutView.State = ButtonPromoCheckoutView.State.ACTIVE,
                               var codes: List<String> = emptyList(),
                               var totalBenefitLabel: String = "",
-                              var totalBenefitAmountStr: String = "") : Parcelable {
+                              var totalBenefitAmountStr: String = "",
+                              var listAllPromoCodes: List<String>) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readParcelable(ButtonPromoCheckoutView.State::class.java.classLoader),
             parcel.createStringArrayList(),
             parcel.readString() ?: "",
-            parcel.readString() ?: "") {
+            parcel.readString() ?: "",
+            parcel.createStringArrayList()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -29,6 +31,7 @@ data class PromoCheckoutData (var promoLabel: String = "",
         parcel.writeStringList(codes)
         parcel.writeString(totalBenefitLabel)
         parcel.writeString(totalBenefitAmountStr)
+        parcel.writeStringList(listAllPromoCodes)
     }
 
     override fun describeContents(): Int {
@@ -52,6 +55,7 @@ data class PromoCheckoutData (var promoLabel: String = "",
         var codes: List<String> = emptyList()
         var totalBenefitLabel: String = ""
         var totalBenefitAmountStr: String = ""
+        var listAllPromoCodes: List<String> = emptyList()
 
         fun promoLabel(promoLabel: String) = apply { this.promoLabel = promoLabel }
         fun promoUsageInfo(promoUsageInfo: String) = apply { this.promoUsageInfo = promoUsageInfo }
@@ -59,6 +63,7 @@ data class PromoCheckoutData (var promoLabel: String = "",
         fun codes(codes: List<String>) = apply { this.codes = codes }
         fun totalBenefitLabel(totalBenefitLabel: String) = apply { this.totalBenefitLabel = totalBenefitLabel }
         fun totalBenefitAmountStr(totalBenefitAmountStr: String) = apply { this.totalBenefitAmountStr = totalBenefitAmountStr }
+        fun listAllPromoCodes(listAllPromoCodes: List<String>) = apply { this.listAllPromoCodes = listAllPromoCodes }
 
         fun build() = PromoCheckoutData(
                 promoLabel,
@@ -66,6 +71,7 @@ data class PromoCheckoutData (var promoLabel: String = "",
                 state,
                 codes,
                 totalBenefitLabel,
-                totalBenefitAmountStr)
+                totalBenefitAmountStr,
+                listAllPromoCodes)
     }
 }

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.promocheckout.common.view.model.PromoCheckoutData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
@@ -99,6 +100,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
     private PromoStackingData promoGlobalStackData;
     private PromoCheckoutData promoCheckoutData;
+    private LastApplyUiModel lastApplyUiModel;
     private List<PromoStackingData.Builder> listPromoStackingMerchantData;
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private RecipientAddressModel recipientAddressModel;
@@ -383,6 +385,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (promoCheckoutData != null) {
             this.promoCheckoutData = promoCheckoutData;
             shipmentDataList.add(promoCheckoutData);
+        }
+    }
+
+    public void addLastApplyUiDataModel(LastApplyUiModel lastApplyUiModel) {
+        if (lastApplyUiModel != null) {
+            this.lastApplyUiModel = lastApplyUiModel;
+            shipmentDataList.add(lastApplyUiModel);
         }
     }
 
@@ -1375,6 +1384,10 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return promoCheckoutData;
     }
 
+    public LastApplyUiModel getLastApplyUiModel() {
+        return lastApplyUiModel;
+    }
+
     public String getInsuranceProductId() {
         return insuranceProductId;
     }
@@ -1437,7 +1450,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public void updatePromoCheckoutData(PromoUiModel promoUiModel) {
-        PromoCheckoutData  promoCheckoutData = new PromoCheckoutData();
         promoCheckoutData.setPromoLabel(promoUiModel.getAdditionalInfoUiModel().getMessageInfoUiModel().getMessage());
         promoCheckoutData.setPromoUsageInfo(promoUiModel.getAdditionalInfoUiModel().getMessageInfoUiModel().getDetail());
 
@@ -1456,6 +1468,6 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
             }
         }
-        this.promoCheckoutData = promoCheckoutData;
+        notifyDataSetChanged();
     }
 }
