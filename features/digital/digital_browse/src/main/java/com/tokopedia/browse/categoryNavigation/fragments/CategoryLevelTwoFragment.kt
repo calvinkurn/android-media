@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 
@@ -61,42 +62,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         currentPosition = id
         currentCategoryName = categoryName
         categoryLevelTwoViewModel.refresh(id)
-        setShimmer(id)
         categoryApplink = applink
-    }
-
-    private fun setShimmer(id: String) {
-        slave_list.visibility = View.GONE
-
-    }
-
-    private fun removeShimmer() {
-
-        if (currentPosition != defaultCaseId) {
-           // label_lihat_semua.visibility = View.VISIBLE
-            //hotlist.visibility = View.VISIBLE
-            // hotlist_name.visibility = View.VISIBLE
-        }
-
-
-        slave_list.visibility = View.VISIBLE
-
-        if (categoryApplink != null) {
-
-          /*  label_lihat_semua.setOnClickListener {
-                routeToCategoryLevelTwo(activity, categoryApplink ?: "")
-            }
-            category_name.setOnClickListener {
-                routeToCategoryLevelTwo(activity, categoryApplink ?: "")
-            }*/
-        }
-    }
-
-    private fun routeToCategoryLevelTwo(context: Context?, categoryApplink: String) {
-        context?.let {
-            RouteManager.route(it, categoryApplink)
-           // CategoryAnalytics.createInstance().eventClickLihatSemua(label_lihat_semua.text.toString())
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -118,17 +84,12 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
             when (it) {
                 is Success -> {
-                   // empty_view_second_level.visibility = View.GONE
                     childList.clear()
                     childList.addAll(it.data)
-                    removeShimmer()
                     slave_list.adapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
                 }
 
                 is Fail -> {
-                   /* shimmer_layout_default.visibility = View.GONE
-                    shimmer_layout.visibility = View.GONE
-                    empty_view_second_level.visibility = View.VISIBLE*/
 
                 }
             }
@@ -138,12 +99,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun initView() {
-
-      /*  empty_view_second_level.setOnClickListener {
-            categoryLevelTwoViewModel.refresh(currentPosition)
-
-        }*/
-
+        addShimmerItems(childList)
         categoryLevelTwoAdapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
         gridLayoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
 
@@ -153,25 +109,30 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
                     Constants.ProductHeaderView -> 6
                     Constants.YangLagiHitsView -> 3
                     Constants.ProductView -> 2
+                    Constants.HeaderShimmer -> 6
+                    Constants.ProductShimmer -> 2
                     else -> 6
                 }
 
             }
         }
+        slave_list.apply {
+            layoutManager = gridLayoutManager
+            adapter = categoryLevelTwoAdapter
+        }
+    }
 
-
-        slave_list.layoutManager = gridLayoutManager
-        slave_list.adapter = categoryLevelTwoAdapter
-        //slave_list.isNestedScrollingEnabled = false
-
-
-        /*  val hotlistAdapter = HotlistAdapter(categoryHotlist, activityStateListener?.getActivityTrackingQueue())
-          val horizontalLayout = GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
-          hotlist.layoutManager = horizontalLayout
-          hotlist.adapter = hotlistAdapter
-          hotlist.isNestedScrollingEnabled = false*/
-
-
+    private fun addShimmerItems(childList: ArrayList<CategoryChildItem>) {
+        val item1 = CategoryChildItem()
+        item1.itemType = Constants.HeaderShimmer
+        childList.add(item1)
+        val item2 = CategoryChildItem()
+        item2.itemType = Constants.ProductShimmer
+        for (i in 1..12) {
+            item2.sameCategoryTotalCount = 11
+            item2.categoryPosition = i
+            childList.add(item2)
+        }
     }
 
     private fun initViewModel() {
@@ -179,21 +140,6 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         categoryLevelTwoViewModel = viewModelProvider.get(CategoryLevelTwoViewModel::class.java)
     }
 
-    fun startShimmer(isStarted: Boolean) {
-      /*  if (isStarted) {
-            if (currentPosition == defaultCaseId) {
-                shimmer_layout_default.visibility = View.VISIBLE
-                shimmer_layout.visibility = View.GONE
-            } else {
-                shimmer_layout_default.visibility = View.GONE
-                shimmer_layout.visibility = View.VISIBLE
-            }
-        } else {
-            shimmer_layout_default.visibility = View.GONE
-            shimmer_layout.visibility = View.GONE
-        }*/
-
-    }
 }
 
 interface Listener {

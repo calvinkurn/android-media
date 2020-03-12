@@ -38,7 +38,6 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
         val iterator = categoryAllList.categories
         val childList: MutableList<CategoryChildItem>? = ArrayList()
 
-
         iterator?.forEach {
 
             if (it?.id.equals(id)) {
@@ -66,10 +65,12 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
 
                 } else {
                     childList?.add(createChildItem(Constants.ProductHeaderView, it))
+                    var position = 1
+                    val totalCount = it?.child?.size ?: 0
                     it?.child?.let { levelOneList ->
                         for (element in levelOneList) {
-                            childList?.add(createChildItem(Constants.ProductView, element))
-
+                            childList?.add(createChildItem(Constants.ProductView, element, position, totalCount))
+                            position++
                         }
                     }
                     return Success(childList as List<CategoryChildItem>)
@@ -79,12 +80,14 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
         return Fail(Throwable("no data"))
     }
 
-    private fun createChildItem(itemType: Int, childItem: ChildItem?): CategoryChildItem {
-        return CategoryChildItem(itemType,
+    private fun createChildItem(itemType: Int, childItem: ChildItem?, position: Int = 0, sameCategoryTotalCount: Int = 0): CategoryChildItem {
+        return CategoryChildItem(sameCategoryTotalCount,
+                position,
+                itemType,
                 childItem?.identifier,
                 childItem?.hexColor,
                 childItem?.parentName,
-                childItem?.iconImageUrl,
+                if (itemType == Constants.ProductHeaderView || itemType == Constants.YangLagiHitsView) childItem?.iconBannerURL else childItem?.iconImageUrl,
                 childItem?.applinks,
                 childItem?.name,
                 childItem?.id,
@@ -93,12 +96,14 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
 
     }
 
-    private fun createChildItem(itemType: Int, childItem: CategoriesItem?): CategoryChildItem {
-        return CategoryChildItem(itemType,
+    private fun createChildItem(itemType: Int, childItem: CategoriesItem?, position: Int = 0, sameCategoryTotalCount: Int = 0): CategoryChildItem {
+        return CategoryChildItem(sameCategoryTotalCount,
+                position,
+                itemType,
                 childItem?.identifier,
                 childItem?.hexColor,
                 childItem?.parentName,
-                childItem?.iconImageUrl,
+                if (itemType == Constants.ProductHeaderView) childItem?.iconBannerURL else childItem?.iconImageUrl,
                 childItem?.applinks,
                 childItem?.name,
                 childItem?.id,

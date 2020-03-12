@@ -1,9 +1,9 @@
 package com.tokopedia.browse.categoryNavigation.analytics
 
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
+/*import com.tokopedia.browse.categoryNavigation.data.model.category.CategoriesItem
 import com.tokopedia.browse.categoryNavigation.data.model.category.ChildItem
-import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem
+import com.tokopedia.browse.categoryNavigation.data.model.hotlist.ListItem*/
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -13,7 +13,7 @@ private const val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
 
 class CategoryAnalytics {
 
-    private val pageName = "/kategori-belanja"
+  /*  private val pageName = "/kategori-belanja"
     private val nameWithPageName = "$pageName - %s"
 
     companion object {
@@ -283,5 +283,5 @@ class CategoryAnalytics {
         )
         tracker.sendEnhanceEcommerceEvent(map)
 
-    }
+    }*/
 }

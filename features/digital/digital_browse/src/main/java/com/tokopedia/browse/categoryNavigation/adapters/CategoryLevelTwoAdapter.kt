@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryChildItem
 import com.tokopedia.browse.categoryNavigation.utils.Constants
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_product_header_view.view.*
 import kotlinx.android.synthetic.main.item_category_product_header_view.view.product_name
@@ -40,9 +41,17 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category_product_header_view, parent, false)
                 ProductHeaderViewHolder(view)
             }
-            else -> {
+            Constants.ProductView -> {
                 val view = LayoutInflater.from(parent.context).inflate(R.layout.item_category_product_view, parent, false)
                 ProductViewHolder(view)
+            }
+            Constants.HeaderShimmer -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_shimmer_product_header, parent, false)
+                ShimmerProductHeaderViewHolder(view)
+            }
+            else -> {
+                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_shimmer_product, parent, false)
+                ShimmerProductViewHolder(view)
             }
         }
 
@@ -51,7 +60,6 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     override fun getItemViewType(position: Int): Int {
         return list[position].itemType ?: 0
     }
-
 
     override fun getItemCount(): Int {
         return list.size
@@ -68,24 +76,50 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
             Constants.ProductHeaderView -> {
                 initProductHeaderViewHolderLayout(holder as ProductHeaderViewHolder, position)
             }
-            else -> {
+            Constants.ProductView -> {
                 initProductViewHolderLayout(holder as ProductViewHolder, position)
+            }
+            else -> {
+
             }
         }
     }
 
     private fun initProductViewHolderLayout(productViewHolder: ProductViewHolder, position: Int) {
         val item = list[position]
-        ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.category_product_image, item.iconImageUrl, R.drawable.loading_page)
+        ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.category_product_image, item.iconImageUrl, R.drawable.category_ic_broken_image)
         productViewHolder.category_product_name.text = item.name
         productViewHolder.category_parent_layout.setOnClickListener {
             fireApplink(productViewHolder.itemView.context, item.applinks)
         }
+
+        if (isLeafElement(item.sameCategoryTotalCount, item.categoryPosition)) {
+            productViewHolder.bottomBorder.hide()
+        }
+        when (item.categoryPosition % 3) {
+            0 -> {
+                productViewHolder.leftBorder.hide()
+                productViewHolder.rightBorder.hide()
+            }
+
+            1 -> {
+                productViewHolder.leftBorder.hide()
+                if (item.categoryPosition != item.sameCategoryTotalCount) {
+                    productViewHolder.rightBorder.hide()
+                }
+            }
+        }
     }
+
+    private fun isLeafElement(sameCategoryTotalCount: Int, categoryPosition: Int): Boolean {
+        val x = sameCategoryTotalCount / 3
+        return (categoryPosition - 3 * x > 0) || (categoryPosition > sameCategoryTotalCount - 3)
+    }
+
 
     private fun initProductHeaderViewHolderLayout(productHeaderViewHolder: ProductHeaderViewHolder, position: Int) {
         val item = list[position]
-        ImageHandler.loadImage(productHeaderViewHolder.itemView.context, productHeaderViewHolder.product_image, item.iconImageUrl, R.drawable.loading_page)
+        ImageHandler.loadImage(productHeaderViewHolder.itemView.context, productHeaderViewHolder.product_image, item.iconImageUrl, R.drawable.category_ic_broken_image)
         productHeaderViewHolder.product_name.text = item.name
         setDrawableRoundedImage(productHeaderViewHolder.product_header_parent, item.hexColor)
 
@@ -97,7 +131,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     private fun initYangLagiHitViewHolderLayout(yangLagiHitsViewHolder: YangLagiHitsViewHolder, position: Int) {
         val item = list[position]
         setDrawableRoundedImage(yangLagiHitsViewHolder.yang_lagi_layout, item.hexColor)
-        ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.item_icon, item.iconImageUrl, R.drawable.loading_page)
+        ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.item_icon, item.iconImageUrl, R.drawable.category_ic_broken_image)
         yangLagiHitsViewHolder.item_name.text = item.name
         yangLagiHitsViewHolder.yang_lagi_layout.setOnClickListener {
             fireApplink(yangLagiHitsViewHolder.itemView.context, item.applinks)
@@ -113,7 +147,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     private fun setDrawableRoundedImage(view: ConstraintLayout, color: String?) {
         try {
             val shape = GradientDrawable()
-            shape.cornerRadius = 15.0f
+            shape.cornerRadius = 17.0f
             shape.setColor(Color.parseColor((color?.trim())))
             view.background = shape
         } catch (e: Exception) {
@@ -145,6 +179,14 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         val category_product_image: ImageView = view.category_product_image
         val category_product_name: TextView = view.category_product_name
         val category_parent_layout: ConstraintLayout = view.category_parent_layout
+        val leftBorder: View = view.border_left
+        val rightBorder: View = view.border_right
+        val bottomBorder: View = view.border_bottom
     }
+
+
+    class ShimmerProductHeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    class ShimmerProductViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
 }

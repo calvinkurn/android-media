@@ -4,6 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class CategoriesItem(
 
+        @field:SerializedName("type")
+        var type: Int = 1,
+
         @field:SerializedName("identifier")
         val identifier: String? = null,
 

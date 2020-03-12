@@ -24,7 +24,6 @@ class CategoryLevelOneViewModel @Inject constructor(private var getCategoryListU
             override fun onError(e: Throwable) {
                 categoryAllList.value = Fail(e)
             }
-
             override fun onNext(t: com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryAllList?) {
                 categoryAllList.value = Success((t as com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryAllList))
             }

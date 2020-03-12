@@ -4,8 +4,14 @@ import com.google.gson.annotations.SerializedName
 
 data class CategoryChildItem(
 
+        @field:SerializedName("sameCategoryTotalCount")
+        var sameCategoryTotalCount: Int = 0,
+
+        @field:SerializedName("categoryPosition")
+        var categoryPosition: Int = 0,
+
         @field:SerializedName("itemType")
-        val itemType: Int? = null,
+        var itemType: Int? = null,
 
         @field:SerializedName("identifier")
         val identifier: String? = null,

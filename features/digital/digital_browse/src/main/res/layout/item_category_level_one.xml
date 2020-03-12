@@ -5,33 +5,38 @@
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#80F3F4F5">
+    android:background="#80F3F4F5"
+    android:paddingTop="@dimen/dp_5">
 
     <ImageView
         android:id="@+id/category_imageview"
         android:layout_width="@dimen/dp_35"
         android:layout_height="@dimen/dp_35"
-        android:paddingTop="@dimen/dp_6"
+        android:layout_margin="@dimen/dp_8"
         app:layout_constraintBottom_toTopOf="@+id/category_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:gravity="center"
-        android:paddingLeft="@dimen/dp_4"
-        android:minLines="3"
-        android:paddingRight="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_10"
-        android:textSize="@dimen/sp_14"
+        android:lines="2"
+        android:maxLength="18"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_10"
+        android:textColor="@color/clr_ae31353b"
         app:layout_constraintBottom_toTopOf="@+id/border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category_imageview"
-        tools:text="fashion wanita" />
+        app:layout_constraintWidth_default="spread"
+        app:typographyType="small"
+        tools:text="dfgfddddfashiddddddddddddccdddddddvluasdsfdbdghjdfdfddi;jikjhxtercjhg" />
 
 
     <View
