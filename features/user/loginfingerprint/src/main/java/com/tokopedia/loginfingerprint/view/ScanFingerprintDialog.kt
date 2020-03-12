@@ -277,7 +277,7 @@ class ScanFingerprintDialog(val context: FragmentActivity, val listener: ScanFin
                     var errorString = errString.toString()
                     viewState.postValue(STATE_ERROR)
                     if(errMsgId == FingerprintManager.FINGERPRINT_ERROR_LOCKOUT) {
-                        errorString = getString(R.string.error_too_many_attempts)
+                        errorString = activity?.getString(R.string.error_too_many_attempts) ?: ""
                         dismiss()
                     }
                     listener?.onFingerprintError(errorString, errMsgId)
