@@ -22,7 +22,7 @@ class TravelHomepageProductGridCardWidget @JvmOverloads constructor(context: Con
     var listener: ActionListener? = null
     var titleText: String = ""
     var subtitleText: String = ""
-    lateinit var adapter : TravelHomepageProductGridCardAdapter
+    lateinit var adapter: TravelHomepageProductGridCardAdapter
     var hasSeeAllButton = true
 
     init {
@@ -41,14 +41,13 @@ class TravelHomepageProductGridCardWidget @JvmOverloads constructor(context: Con
             travel_homepage_product_widget_subtitle.text = subtitleText
         } else travel_homepage_product_widget_subtitle.hide()
 
-        if (!::adapter.isInitialized) {
-            val listSize = productList.size
-            if (listSize > 2 && listSize % 2 != 0) {
-                adapter = TravelHomepageProductGridCardAdapter(productList.subList(0, listSize - (listSize % 2)), listener)
-            } else adapter = TravelHomepageProductGridCardAdapter(productList, listener)
+        val listSize = productList.size
+        if (listSize > 2 && listSize % 2 != 0) {
+            adapter = TravelHomepageProductGridCardAdapter(productList.subList(0, listSize - (listSize % 2)), listener)
+        } else adapter = TravelHomepageProductGridCardAdapter(productList, listener)
 
-            travel_homepage_product_rv.layoutManager = GridLayoutManager(context, 2)
-        }
+        travel_homepage_product_rv.layoutManager = GridLayoutManager(context, 2)
+
         travel_homepage_product_rv.adapter = adapter
 
         if (hasSeeAllButton) {

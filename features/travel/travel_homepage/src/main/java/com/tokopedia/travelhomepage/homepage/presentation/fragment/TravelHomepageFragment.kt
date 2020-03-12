@@ -11,7 +11,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -23,7 +22,6 @@ import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.di.TravelHomepageComponent
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageAdapter
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
@@ -58,12 +56,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.destination_toolbar_transition_range)
     }
 
-    override fun createAdapterInstance(): BaseListAdapter<TravelHomepageItemModel, TravelHomepageTypeFactory> {
-        val baseListAdapter = TravelHomepageAdapter(adapterTypeFactory)
-        baseListAdapter.setHasStableIds(true)
-        return baseListAdapter
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.travel_homepage_fragment, container, false)
         return view
@@ -82,6 +74,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         calculateToolbarView(0)
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+        (getRecyclerView(view) as VerticalRecyclerView).isNestedScrollingEnabled = false;
         getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -141,6 +134,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         travelHomepageViewModel.travelItemList.observe(this, Observer {
             clearAllData()
             renderList(it)
+            adapter.notifyDataSetChanged()
         })
 
         travelHomepageViewModel.isAllError.observe(this, Observer {
@@ -228,6 +222,30 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     override fun onItemBindViewHolder(travelLayoutSubhomepageMetaData: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
         travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
                 travelLayoutSubhomepageMetaData, position, true)
+    }
+
+    override fun onBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    }
+
+    override fun onCategoryItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    }
+
+    override fun onDestinationItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    }
+
+    override fun onLegoBannerItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    }
+
+    override fun onProductCardItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
+    }
+
+    override fun onHomepageSectionItemBind(travelLayoutSubhomepage: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
+        onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
     }
 
     companion object {

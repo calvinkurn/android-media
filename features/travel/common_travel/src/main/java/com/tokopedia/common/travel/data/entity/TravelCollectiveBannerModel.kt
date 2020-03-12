@@ -15,7 +15,7 @@ class TravelCollectiveBannerModel(@SerializedName("banners")
 
     data class Banner(@SerializedName("id")
                       @Expose
-                      var id: String = "",
+                      var id: String = "0",
                       @SerializedName("product")
                       @Expose
                       var product: String = "",

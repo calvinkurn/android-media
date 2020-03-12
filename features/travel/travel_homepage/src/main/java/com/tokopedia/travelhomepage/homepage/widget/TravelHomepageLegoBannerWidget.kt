@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageLegoBannerAdapter
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageProductGridCardAdapter
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.layout_travel_homepage_lego_banner_widget.view.*
 
@@ -37,16 +36,14 @@ class TravelHomepageLegoBannerWidget @JvmOverloads constructor(context: Context,
             travel_homepage_lego_banner_subtitle.text = subtitleText
         } else travel_homepage_lego_banner_subtitle.hide()
 
-        if (!::adapter.isInitialized) {
-            val listSize = bannerList.size
+        val listSize = bannerList.size
+        adapter = if (listSize > 3 && listSize % 3 != 0) {
+            TravelHomepageLegoBannerAdapter(bannerList.subList(0, listSize - (listSize % 3)), listener)
+        } else
+            TravelHomepageLegoBannerAdapter(bannerList, listener)
 
-            if (listSize > 3 && listSize % 3 != 0) {
-                adapter = TravelHomepageLegoBannerAdapter(bannerList.subList(0, listSize - (listSize % 3)), listener)
-            } else
-                adapter = TravelHomepageLegoBannerAdapter(bannerList, listener)
+        travel_homepage_lego_banner_rv.layoutManager = GridLayoutManager(context, 3)
 
-            travel_homepage_lego_banner_rv.layoutManager = GridLayoutManager(context, 3)
-        }
         travel_homepage_lego_banner_rv.adapter = adapter
     }
 

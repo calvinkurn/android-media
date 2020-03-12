@@ -34,6 +34,7 @@ class TravelHomepageLegoBannerViewHolder(itemView: View, private val onItemBindL
                 }
             } else {
                 // hide shimmering and hide layout
+                itemView.legoBannerWidget.buildView(listOf())
                 itemView.legoBannerWidget.setShimmeringVisibility(false)
                 itemView.legoBannerWidget.setLayoutVisibility(false)
             }
@@ -42,7 +43,7 @@ class TravelHomepageLegoBannerViewHolder(itemView: View, private val onItemBindL
             itemView.legoBannerWidget.setShimmeringVisibility(true)
             itemView.legoBannerWidget.setLayoutVisibility(false)
 
-            onItemBindListener.onItemBindViewHolder(element.layoutData, adapterPosition, element.isLoadFromCloud)
+            onItemBindListener.onLegoBannerItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
         }
 
     }
