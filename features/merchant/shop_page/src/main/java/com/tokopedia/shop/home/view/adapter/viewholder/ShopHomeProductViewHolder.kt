@@ -49,40 +49,8 @@ open class ShopHomeProductViewHolder(
         } catch (ignored: ParseException) {
             0
         }
-        val discountPercentage = if (shopHomeProductViewModel.discountPercentage == "0") {
-            ""
-        } else {
-            "${shopHomeProductViewModel.discountPercentage}%"
-        }
         val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon!!)
-        productCard.setProductModel(
-                ProductCardModel(
-                        shopHomeProductViewModel.imageUrl!!,
-                        shopHomeProductViewModel.isWishList,
-                        shopHomeProductViewModel.isShowWishList,
-                        ProductCardModel.Label(),
-                        "",
-                        "",
-                        shopHomeProductViewModel.name!!,
-                        discountPercentage,
-                        shopHomeProductViewModel.originalPrice!!,
-                        shopHomeProductViewModel.displayedPrice!!,
-                        ArrayList(),
-                        "",
-                        shopHomeProductViewModel.rating.toInt(),
-                        totalReview,
-                        ProductCardModel.Label(),
-                        ProductCardModel.Label(),
-                        freeOngkirObject,
-                        false
-                ).apply {
-                    isProductSoldOut = shopHomeProductViewModel.isSoldOut
-                    isProductPreOrder = shopHomeProductViewModel.isPo
-                    isProductWholesale = shopHomeProductViewModel.isWholesale
-                },
-                BlankSpaceConfig()
-        )
-
+        productCard.setProductModel(getProductModel(shopHomeProductViewModel), BlankSpaceConfig())
         if (shopHomeProductViewModel.isCarousel) {
             if (shopHomeProductViewModel.rating <= 0 && totalReview <= 0) {
                 productCard.setImageRatingInvisible(true)
@@ -128,6 +96,48 @@ open class ShopHomeProductViewHolder(
                 )
             }
 
+        }
+    }
+
+    protected open fun getProductModel(
+            shopHomeProductViewModel: ShopHomeProductViewModel
+    ): ProductCardModel {
+        val totalReview = try {
+            NumberFormat.getInstance().parse(shopHomeProductViewModel.totalReview).toInt()
+        } catch (ignored: ParseException) {
+            0
+        }
+        val discountPercentage = if (shopHomeProductViewModel.discountPercentage == "0") {
+            ""
+        } else if ((shopHomeProductViewModel.discountPercentage ?: "").contains("%")) {
+            shopHomeProductViewModel.discountPercentage ?: ""
+        } else {
+            "${shopHomeProductViewModel.discountPercentage}%"
+        }
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon!!)
+        return ProductCardModel(
+                shopHomeProductViewModel.imageUrl!!,
+                shopHomeProductViewModel.isWishList,
+                shopHomeProductViewModel.isShowWishList,
+                ProductCardModel.Label(),
+                "",
+                "",
+                shopHomeProductViewModel.name!!,
+                discountPercentage,
+                shopHomeProductViewModel.originalPrice!!,
+                shopHomeProductViewModel.displayedPrice!!,
+                ArrayList(),
+                "",
+                shopHomeProductViewModel.rating.toInt(),
+                totalReview,
+                ProductCardModel.Label(),
+                ProductCardModel.Label(),
+                freeOngkirObject,
+                false
+        ).apply {
+            isProductSoldOut = shopHomeProductViewModel.isSoldOut
+            isProductPreOrder = shopHomeProductViewModel.isPo
+            isProductWholesale = shopHomeProductViewModel.isWholesale
         }
     }
 }

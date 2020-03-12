@@ -164,7 +164,7 @@ object ShopPageHomeMapper {
         }.toList()
     }
 
-    fun mapShopProductToProductViewModel(
+    fun mapToHomeProductViewModelForAllProduct(
             shopProduct: ShopProduct,
             isMyOwnProduct: Boolean
     ): ShopHomeProductViewModel =

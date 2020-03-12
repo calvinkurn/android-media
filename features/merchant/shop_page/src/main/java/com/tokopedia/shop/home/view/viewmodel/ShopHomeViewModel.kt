@@ -203,7 +203,7 @@ class ShopHomeViewModel @Inject constructor(
         return Pair(
                 isHasNextPage,
                 productListResponse.data.map {
-                    ShopPageHomeMapper.mapShopProductToProductViewModel(
+                    ShopPageHomeMapper.mapToHomeProductViewModelForAllProduct(
                             it,
                             Util.isMyShop(shopId, userSessionShopId)
                     )

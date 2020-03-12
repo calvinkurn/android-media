@@ -5,11 +5,14 @@ import android.view.View
 
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.productcard.v2.ProductCardModel
 
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopPageHomeProductClickListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
+import java.text.NumberFormat
+import java.text.ParseException
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -80,6 +83,39 @@ class ShopHomeProductItemCarouselViewHolder(
                     shopHomeCarousellProductUiModel,
                     shopHomeProductViewModel
             )
+        }
+    }
+
+    override fun getProductModel(shopHomeProductViewModel: ShopHomeProductViewModel): ProductCardModel {
+        val totalReview = try {
+            NumberFormat.getInstance().parse(shopHomeProductViewModel.totalReview).toInt()
+        } catch (ignored: ParseException) {
+            0
+        }
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon!!)
+        return ProductCardModel(
+                shopHomeProductViewModel.imageUrl!!,
+                shopHomeProductViewModel.isWishList,
+                shopHomeProductViewModel.isShowWishList,
+                ProductCardModel.Label(),
+                "",
+                "",
+                shopHomeProductViewModel.name!!,
+                shopHomeProductViewModel.discountPercentage ?: "",
+                shopHomeProductViewModel.originalPrice!!,
+                shopHomeProductViewModel.displayedPrice!!,
+                ArrayList(),
+                "",
+                shopHomeProductViewModel.rating.toInt(),
+                totalReview,
+                ProductCardModel.Label(),
+                ProductCardModel.Label(),
+                freeOngkirObject,
+                false
+        ).apply {
+            isProductSoldOut = shopHomeProductViewModel.isSoldOut
+            isProductPreOrder = shopHomeProductViewModel.isPo
+            isProductWholesale = shopHomeProductViewModel.isWholesale
         }
     }
 }
