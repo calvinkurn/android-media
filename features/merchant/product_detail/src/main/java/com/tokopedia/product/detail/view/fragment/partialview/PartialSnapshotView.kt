@@ -112,14 +112,14 @@ class PartialSnapshotView(private val view: View,
         }
     }
 
-    fun updateStockAndPriceWarehouse(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular) {
+    fun updateStockAndPriceWarehouse(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular, variant: Boolean) {
         with(view) {
             if (campaign.activeAndHasId) {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
                 sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
             } else {
-                text_stock_available.showWithCondition(!nearestWarehouseData.nearestWarehouseStockWording.isBlank())
+                text_stock_available.showWithCondition(!nearestWarehouseData.nearestWarehouseStockWording.isBlank() && !variant)
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
                 text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)

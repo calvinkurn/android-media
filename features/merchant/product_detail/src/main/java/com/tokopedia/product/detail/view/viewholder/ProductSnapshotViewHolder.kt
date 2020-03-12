@@ -80,16 +80,16 @@ class ProductSnapshotViewHolder(private val view: View,
             ProductDetailConstant.PAYLOAD_P3 -> {
                 view.label_cod.visibility = if (element.shouldShowCod) View.VISIBLE else View.GONE
 
-                renderStockWording(element.getNearestWarehouse(), element.getCampaignModular())
+                renderStockWording(element.getNearestWarehouse(), element.getCampaignModular(), element.dynamicProductInfoP1?.data?.variant?.isVariant ?: false)
                 renderCod(element.shouldShowCod)
             }
             ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
         }
     }
 
-    private fun renderStockWording(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular) {
+    private fun renderStockWording(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular, variant: Boolean) {
         if (nearestWarehouseData.nearestWarehouseId.isNotBlank())
-            header.updateStockAndPriceWarehouse(nearestWarehouseData, campaign)
+            header.updateStockAndPriceWarehouse(nearestWarehouseData, campaign, variant)
 
     }
 
