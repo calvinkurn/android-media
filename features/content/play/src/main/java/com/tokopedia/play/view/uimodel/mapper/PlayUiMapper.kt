@@ -90,6 +90,7 @@ object PlayUiMapper {
                         id = it.id.toString(),
                         imageUrl = it.image,
                         title = it.name,
+                        isVariantAvailable = it.isVariant,
                         price = if (it.price != 0) {
                             DiscountedPrice(
                                     originalPrice = it.originalPriceFormatted,
