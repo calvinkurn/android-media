@@ -11,7 +11,7 @@ class SetCashbackUseCase @Inject constructor(
         private val graphqlUseCase: MultiRequestGraphqlUseCase) : UseCase<SetCashbackResponse>() {
 
     companion object {
-        const val CASHBACK_SUCCESS_ERROR_CODE = "200"
+        const val CASHBACK_SUCCESS_CODE = "200"
         const val CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE = "422"
         const val PARAM_PRODUCT_ID = "ProductID"
         const val PARAM_CASHBACK = "Cashback"
