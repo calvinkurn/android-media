@@ -14,6 +14,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -85,6 +86,11 @@ class VariantSheetView(
         rvVariantList.apply {
             layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
             adapter = variantAdapter
+            itemAnimator = object: DefaultItemAnimator() {
+                override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder, payloads: MutableList<Any>): Boolean {
+                    return true
+                }
+            }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -101,10 +107,6 @@ class VariantSheetView(
     }
 
     override fun hide() {
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
-    internal fun setStateHidden() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
@@ -164,12 +166,13 @@ class VariantSheetView(
             it.mapOfSelectedVariants[variantOptions.variantOptionIdentifier] = variantOptions.variantId
         }
 
-        val isPartialSelected = variantSheetUiModel?.isPartialySelected()?:false
+        val isPartialSelected = variantSheetUiModel?.isPartialySelected() ?: false
         val listOfVariants = VariantCommonMapper.processVariant(
                 variantSheetUiModel?.parentVariant,
                 variantSheetUiModel?.mapOfSelectedVariants,
                 variantOptions.level,
-                isPartialSelected)
+                isPartialSelected
+        )
 
         if (!listOfVariants.isNullOrEmpty()) {
             if (!isPartialSelected) {

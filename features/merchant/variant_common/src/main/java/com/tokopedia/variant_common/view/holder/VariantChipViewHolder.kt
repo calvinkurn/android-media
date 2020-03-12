@@ -35,19 +35,21 @@ class VariantChipViewHolder(val view: View,
         when (element.currentState) {
             VariantConstant.STATE_EMPTY -> {
                 txtChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_disabled)
+                txtChipVariant.setTextColor(MethodChecker.getColor(context,R.color.Neutral_N700_32))
                 view.isEnabled = false
                 view.setOnClickListener(null)
             }
             VariantConstant.STATE_SELECTED -> {
                 txtChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_selected)
+                txtChipVariant.setTextColor(MethodChecker.getColor(context,R.color.g_500))
                 view.isEnabled = true
                 view.setOnClickListener(null)
             }
             VariantConstant.STATE_UNSELECTED -> {
                 txtChipVariant.background = MethodChecker.getDrawable(context, R.drawable.bg_variant_chip_unselected)
+                txtChipVariant.setTextColor(MethodChecker.getColor(context,R.color.g_500))
                 view.isEnabled = true
             }
         }
-
     }
 } 
