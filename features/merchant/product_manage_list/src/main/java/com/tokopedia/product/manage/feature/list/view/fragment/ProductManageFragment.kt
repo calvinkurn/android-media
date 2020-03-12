@@ -260,22 +260,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder) {
         when(filter) {
-            is Default -> {
-                showFilterBottomSheet()
-            }
-            else -> {
-                val selectedFilter = filter.status
-                val currentFilter = tabFilters.selectedFilter?.status
-
-                if(selectedFilter == currentFilter) {
-                    showAllProducts()
-                    tabFilters.resetSelectedFilter()
-                } else {
-                    tabFilters.resetAllFilter(viewHolder)
-                    tabFilters.setSelectedFilter(filter)
-                    filterProductByStatus(allProductList, selectedFilter)
-                }
-            }
+            is Default -> showFilterBottomSheet()
+            else -> clickStatusFilterTab(filter, viewHolder)
         }
     }
 
@@ -335,6 +321,20 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             ProductManageFilterFragment.createInstance(it, viewModel.selectedFilterAndSort.value,this)
         }
         this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
+    }
+
+    private fun clickStatusFilterTab(filter: FilterViewModel, viewHolder: FilterViewHolder) {
+        val selectedFilter = filter.status
+        val currentFilter = tabFilters.selectedFilter?.status
+
+        if (selectedFilter == currentFilter) {
+            showAllProducts()
+            tabFilters.resetSelectedFilter()
+        } else {
+            tabFilters.resetAllFilter(viewHolder)
+            tabFilters.setSelectedFilter(filter)
+            filterProductByStatus(allProductList, selectedFilter)
+        }
     }
 
     private fun showAllProducts() {
