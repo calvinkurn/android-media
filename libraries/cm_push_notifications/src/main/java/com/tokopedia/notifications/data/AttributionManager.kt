@@ -19,10 +19,11 @@ class AttributionManager(
         val params = useCase.params(
                 transactionId = notification?.transactionId,
                 userTransId = notification?.userTransactionId,
+                recipientId = notification?.userId,
                 shopId = notification?.shopId,
                 blastId = notification?.blastId
         )
-        useCase.execute(params, {}, {})
+        useCase.execute(params)
     }
 
     companion object {
