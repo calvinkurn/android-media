@@ -29,6 +29,11 @@ public interface DigitalRestApi {
             @Header("Idempotency-Key") String idemPotencyKeyHeader
     );
 
+    @GET("cart")
+    Observable<Response<DataResponse<ResponseCartData>>> getCart(
+            @Header("Idempotency-Key") String idemPotencyKeyHeader
+    );
+
     @POST("checkout")
     @Headers({"Content-Type: application/json"})
     Observable<Response<DataResponse<ResponseCheckoutData>>> checkout(@Body JsonObject requestBody);

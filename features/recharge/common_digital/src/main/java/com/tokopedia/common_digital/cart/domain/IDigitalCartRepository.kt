@@ -16,6 +16,10 @@ interface IDigitalCartRepository {
             requestBodyAtcDigital: RequestBodyAtcDigital, idemPotencyKeyHeader: String
     ): Observable<CartDigitalInfoData>
 
+    fun getCart(
+            requestBodyAtcDigital: RequestBodyAtcDigital, idemPotencyKeyHeader: String
+    ): Observable<CartDigitalInfoData>
+
     fun instantCheckout(requestBodyCheckout: RequestBodyCheckout): Observable<InstantCheckoutData>
 
 }

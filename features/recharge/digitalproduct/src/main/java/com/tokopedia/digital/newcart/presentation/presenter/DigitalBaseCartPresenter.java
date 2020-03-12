@@ -3,6 +3,7 @@ package com.tokopedia.digital.newcart.presentation.presenter;
 import androidx.annotation.NonNull;
 
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
+import com.tokopedia.common_digital.cart.domain.usecase.DigitalGetCartUseCase;
 import com.tokopedia.network.constant.ErrorNetMessage;
 import com.tokopedia.abstraction.common.network.exception.HttpErrorException;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -64,12 +65,14 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
     private UserSession userSession;
     private DigitalCheckoutUseCase digitalCheckoutUseCase;
     private DigitalAddToCartUseCase digitalAddToCartUseCase;
+    private DigitalGetCartUseCase digitalGetCartUseCase;
     private DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase;
     private String PROMO_CODE = "promoCode";
     public static final String KEY_CACHE_PROMO_CODE = "KEY_CACHE_PROMO_CODE";
 
 
     public DigitalBaseCartPresenter(DigitalAddToCartUseCase digitalAddToCartUseCase,
+                                    DigitalGetCartUseCase digitalGetCartUseCase,
                                     DigitalAnalytics digitalAnalytics,
                                     RechargeAnalytics rechargeAnalytics,
                                     ICartDigitalInteractor cartDigitalInteractor,
@@ -77,6 +80,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
                                     DigitalCheckoutUseCase digitalCheckoutUseCase,
                                     DigitalInstantCheckoutUseCase digitalInstantCheckoutUseCase) {
         this.digitalAddToCartUseCase = digitalAddToCartUseCase;
+        this.digitalGetCartUseCase = digitalGetCartUseCase;
         this.digitalAnalytics = digitalAnalytics;
         this.rechargeAnalytics = rechargeAnalytics;
         this.cartDigitalInteractor = cartDigitalInteractor;
@@ -103,7 +107,11 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
             RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
                     getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
             getView().startPerfomanceMonitoringTrace();
-            digitalAddToCartUseCase.execute(requestParams, getSubscriberAddToCart());
+            if (getView().getCartPassData().getNeedGetCart()) {
+                digitalGetCartUseCase.execute(requestParams, getSubscriberCart());
+            } else {
+                digitalAddToCartUseCase.execute(requestParams, getSubscriberCart());
+            }
         }
     }
 
@@ -163,7 +171,7 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         return requestBodyAtcDigital;
     }
 
-    private Subscriber<CartDigitalInfoData> getSubscriberAddToCart() {
+    private Subscriber<CartDigitalInfoData> getSubscriberCart() {
         return new Subscriber<CartDigitalInfoData>() {
             @Override
             public void onCompleted() {
