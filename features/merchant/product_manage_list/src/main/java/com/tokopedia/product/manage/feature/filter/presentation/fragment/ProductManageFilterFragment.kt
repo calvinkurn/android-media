@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
@@ -25,6 +27,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdap
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -223,6 +226,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             }
             super.dismiss()
         }
+        adjustBottomSheetPadding()
         initBottomSheetReset()
     }
 
@@ -266,5 +270,10 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         filterLoadingSpinner.visibility = View.GONE
         buttonCloseBottomSheet.isEnabled = true
         filterRecyclerView.visibility= View.VISIBLE
+    }
+
+    private fun adjustBottomSheetPadding() {
+        bottomSheetWrapper.setPadding(0,0,0,0)
+        (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(16.toPx(),16.toPx(),16.toPx(),16.toPx())
     }
 }

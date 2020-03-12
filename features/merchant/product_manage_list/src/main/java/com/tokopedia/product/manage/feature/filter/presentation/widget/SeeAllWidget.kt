@@ -3,8 +3,8 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.unifycomponents.BaseCustomView
 
 class SeeAllWidget : BaseCustomView {
 

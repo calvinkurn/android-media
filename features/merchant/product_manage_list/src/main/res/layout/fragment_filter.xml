@@ -23,6 +23,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
+            android:paddingLeft="@dimen/layout_lvl2"
+            android:paddingRight="@dimen/layout_lvl2"
             app:layout_constraintBottom_toTopOf="@id/bottomsheet_button_divider"
             app:layout_constraintTop_toBottomOf="@id/bottomsheet_title_divider" />
 
