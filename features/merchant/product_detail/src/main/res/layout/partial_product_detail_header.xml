@@ -238,45 +238,57 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/dp_8"
                 android:layout_marginLeft="@dimen/dp_8"
-                android:paddingRight="@dimen/dp_8"
-                android:paddingEnd="@dimen/dp_8"
-                android:paddingLeft="@dimen/dp_8"
-                android:paddingStart="@dimen/dp_8"
                 android:background="@drawable/bg_countdown_rounded_white"
+                android:paddingStart="@dimen/dp_8"
+                android:paddingLeft="@dimen/dp_8"
+                android:paddingEnd="@dimen/dp_8"
+                android:paddingRight="@dimen/dp_8"
                 app:coundDownBackgroud="@android:color/transparent"
                 app:countDownSparatorColor="@color/Red_R500"
                 app:countDownTxtColor="@color/Red_R500"
-                app:layout_constraintBottom_toBottomOf="@+id/text_title_discount_timer"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toRightOf="@+id/text_title_discount_timer"
                 app:layout_constraintStart_toEndOf="@+id/text_title_discount_timer"
                 app:layout_constraintTop_toTopOf="@+id/text_title_discount_timer" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/sale_text_stock_available"
-            android:layout_width="0dp"
+        <ProgressBar
+            android:id="@+id/stock_bar_sold_product"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="@dimen/dp_100"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dp_16"
             android:layout_marginLeft="@dimen/dp_16"
-            android:layout_marginTop="@dimen/dp_8"
-            android:layout_marginEnd="@dimen/dp_16"
-            android:layout_marginRight="@dimen/dp_16"
-            android:layout_marginBottom="@dimen/dp_8"
-            android:ellipsize="end"
-            android:gravity="center_vertical"
-            android:lineSpacingExtra="@dimen/sp_10"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:visibility="gone"
-            app:fontSize="small"
+            android:layout_marginStart="@dimen/dp_16"
+            android:layout_marginTop="@dimen/dp_14"
+            android:layout_marginBottom="@dimen/dp_14"
+            android:indeterminate="false"
+            android:minHeight="@dimen/dp_6"
+            android:minWidth="@dimen/dp_150"
+            android:max="100"
+            android:progress="25"
+            android:progressDrawable="@drawable/bg_progress_bar"
             app:layout_constraintTop_toBottomOf="@id/layout_discount_timer"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:textViewTheme="lightPrimary"
-            app:weight="medium"
-            tools:text="Stok tersedia (>100)"
-            tools:visibility="visible" />
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/sale_text_stock_available"
+            android:layout_width="@dimen/dp_0"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_8"
+            android:layout_marginLeft="@dimen/dp_8"
+            android:text="Stok tersedia (>100)"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@color/sale_stock_available_text"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@id/stock_bar_sold_product"
+            app:layout_constraintBottom_toBottomOf="@id/stock_bar_sold_product"
+            app:layout_constraintLeft_toRightOf="@id/stock_bar_sold_product" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -390,6 +402,5 @@
         app:layout_constraintTop_toBottomOf="@+id/divider"
         tools:text="Stok tersedia ( >100 )"
         tools:visibility="visible" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

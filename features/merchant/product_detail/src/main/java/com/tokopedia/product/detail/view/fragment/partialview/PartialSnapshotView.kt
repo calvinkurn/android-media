@@ -70,6 +70,7 @@ class PartialSnapshotView(private val view: View,
                     discount_timer_holder.visibility = View.VISIBLE
                     showCountDownTimer(data.campaign)
                     sale_text_stock_available.visible()
+                    setProgressStockBar(campaign)
                     text_stock_available.gone()
                 } else {
                     discount_timer_holder.gone()
@@ -200,4 +201,13 @@ class PartialSnapshotView(private val view: View,
         }
     }
 
+    private fun setProgressStockBar(campaign: CampaignModular) {
+        try {
+            val progress: Int = (campaign.stockSoldPercentage * 100).toInt()
+            view.stock_bar_sold_product.progress = progress
+            view.stock_bar_sold_product.visible()
+        } catch (ex: Exception) {
+            view.stock_bar_sold_product.visibility = View.GONE
+        }
+    }
 }
