@@ -18,6 +18,7 @@ import com.tokopedia.flight.dashboard.view.activity.FlightSelectPassengerActivit
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightClassViewModel
 import com.tokopedia.flight.dashboard.view.fragment.viewmodel.FlightPassengerViewModel
 import com.tokopedia.flight.dashboard.view.widget.FlightCalendarOneWayWidget
+import com.tokopedia.flight.search.presentation.model.FlightSearchPassDataViewModel
 import com.tokopedia.flight.search_universal.di.DaggerFlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.di.FlightSearchUniversalComponent
 import com.tokopedia.flight.search_universal.presentation.viewmodel.FlightSearchUniversalViewModel
@@ -39,6 +40,8 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
     private lateinit var flightSearchUniversalComponent: FlightSearchUniversalComponent
 
     private lateinit var mChildView: View
+
+    lateinit var listener: Listener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,6 +121,13 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
     override fun onClassClicked(flightClassId: Int) {
         val intent = FlightClassesActivity.getCallingIntent(requireContext(), flightClassId)
         startActivityForResult(intent, REQUEST_CODE_SELECT_CLASSES)
+    }
+
+    override fun onSaveSearch(flightSearchData: FlightSearchPassDataViewModel) {
+        if (::listener.isInitialized) {
+            listener.onSaveSearchParams(flightSearchData)
+            dismiss()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -213,6 +223,10 @@ class FlightSearchUniversalBottomSheet : BottomSheetUnify(), FlightSearchFormVie
 
     private fun showMessageErrorInSnackbar(resourceId: Int) {
         NetworkErrorHelper.showRedCloseSnackbar(activity, getString(resourceId))
+    }
+
+    interface Listener {
+        fun onSaveSearchParams(flightSearchParams: FlightSearchPassDataViewModel)
     }
 
     companion object {

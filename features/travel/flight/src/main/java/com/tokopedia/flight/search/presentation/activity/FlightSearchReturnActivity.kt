@@ -92,6 +92,8 @@ class FlightSearchReturnActivity : FlightSearchActivity(),
         }
     }
 
+    override fun isReturnPage(): Boolean = true
+
     companion object {
         val EXTRA_DEPARTURE_ID = "EXTRA_DEPARTURE_ID"
         val EXTRA_DEPARTURE_TERM = "EXTRA_DEPARTURE_TERM"

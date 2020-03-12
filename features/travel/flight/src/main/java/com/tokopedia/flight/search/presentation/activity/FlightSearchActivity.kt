@@ -27,7 +27,8 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 
 open class FlightSearchActivity : BaseFlightActivity(),
-        FlightSearchFragment.OnFlightSearchFragmentListener {
+        FlightSearchFragment.OnFlightSearchFragmentListener,
+        FlightSearchUniversalBottomSheet.Listener {
 
     protected lateinit var dateString: String
     protected lateinit var passengerString: String
@@ -110,6 +111,15 @@ open class FlightSearchActivity : BaseFlightActivity(),
                             FlightFlowUtil.actionSetResultAndClose(this, intent,
                                     FlightFlowConstant.EXPIRED_JOURNEY)
                         }
+                        FlightFlowConstant.CHANGE_SEARCH_PARAM -> {
+                            if (fragment is FlightSearchFragment) {
+                                (fragment as FlightSearchFragment).flightSearchPresenter
+                                        .attachView(fragment as FlightSearchFragment)
+                                (fragment as FlightSearchFragment)
+                                        .setSearchPassData((data.getParcelableExtra(EXTRA_PASS_DATA) as FlightSearchPassDataViewModel))
+                                (fragment as FlightSearchFragment).refreshData()
+                            }
+                        }
                     }
                 }
             }
@@ -154,6 +164,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
         return when (item.itemId) {
             R.id.menu_change_search -> {
                 val flightChangeSearchBottomSheet = FlightSearchUniversalBottomSheet.getInstance()
+                flightChangeSearchBottomSheet.listener = this
                 flightChangeSearchBottomSheet.setShowListener { flightChangeSearchBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
                 flightChangeSearchBottomSheet.show(supportFragmentManager, FlightSearchUniversalBottomSheet.TAG_SEARCH_FORM)
                 true
@@ -164,12 +175,37 @@ open class FlightSearchActivity : BaseFlightActivity(),
         }
     }
 
+    override fun onSaveSearchParams(flightSearchParams: FlightSearchPassDataViewModel) {
+        passDataViewModel.departureAirport = flightSearchParams.departureAirport
+        passDataViewModel.arrivalAirport = flightSearchParams.arrivalAirport
+        passDataViewModel.isOneWay = flightSearchParams.isOneWay
+        passDataViewModel.departureDate = flightSearchParams.departureDate
+        passDataViewModel.returnDate = flightSearchParams.returnDate
+        passDataViewModel.flightPassengerViewModel = flightSearchParams.flightPassengerViewModel
+        passDataViewModel.flightClass = flightSearchParams.flightClass
+
+        if (isReturnPage()) {
+            val intent = Intent()
+            intent.putExtra(EXTRA_PASS_DATA, passDataViewModel)
+            FlightFlowUtil.actionSetResultAndClose(this, intent, FlightFlowConstant.CHANGE_SEARCH_PARAM)
+        } else {
+            if (fragment is FlightSearchFragment) {
+                (fragment as FlightSearchFragment).flightSearchPresenter
+                        .attachView(fragment as FlightSearchFragment)
+                (fragment as FlightSearchFragment).setSearchPassData(passDataViewModel)
+                (fragment as FlightSearchFragment).refreshData()
+            }
+        }
+    }
+
+    open fun isReturnPage(): Boolean = false
+
     companion object {
 
-        val EXTRA_PASS_DATA = "EXTRA_PASS_DATA"
+        const val EXTRA_PASS_DATA = "EXTRA_PASS_DATA"
 
-        private val REQUEST_CODE_BOOKING = 10
-        private val REQUEST_CODE_RETURN = 11
+        private const val REQUEST_CODE_BOOKING = 10
+        private const val REQUEST_CODE_RETURN = 11
 
         fun getCallingIntent(context: Context, passDataViewModel: FlightSearchPassDataViewModel): Intent {
             val intent = Intent(context, FlightSearchActivity::class.java)

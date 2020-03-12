@@ -8,9 +8,10 @@ import java.lang.annotation.RetentionPolicy;
 /**
  * @author by alvarisi on 12/5/17.
  */
-@IntDef({FlightFlowConstant.PRICE_CHANGE, FlightFlowConstant.EXPIRED_JOURNEY})
+@IntDef({FlightFlowConstant.PRICE_CHANGE, FlightFlowConstant.EXPIRED_JOURNEY, FlightFlowConstant.CHANGE_SEARCH_PARAM})
 @Retention(RetentionPolicy.SOURCE)
 public @interface FlightFlowConstant {
     int PRICE_CHANGE = 1;
     int EXPIRED_JOURNEY = 2;
+    int CHANGE_SEARCH_PARAM = 3;
 }
