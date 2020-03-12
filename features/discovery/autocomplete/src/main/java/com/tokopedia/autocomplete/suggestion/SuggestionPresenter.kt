@@ -67,6 +67,7 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
                     SUGGESTION_HEADER -> addTitleToVisitable(item)
                     SUGGESTION_SINGLE_LINE -> addSingleLineToVisitable(typePosition, item)
                     SUGGESTION_DOUBLE_LINE -> addDoubleLineToVisitable(typePosition, item)
+                    else -> addSingleLineToVisitable(typePosition, item)
                 }
             }
         }
