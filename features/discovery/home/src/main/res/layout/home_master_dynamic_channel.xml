@@ -51,7 +51,7 @@
         tools:layout_width="100dp"
         tools:visibility="visible"/>
 
-    <TextView
+    <ViewStub
         android:id="@+id/see_all_button"
         android:inflatedId="@+id/see_all_button"
         android:layout="@layout/view_stub_see_all"
