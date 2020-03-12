@@ -140,7 +140,8 @@ object VariantCommonMapper {
             return@map VariantOptionWithAttribute(
                     variantName = option.value.orEmpty(),
                     variantId = option.id.orZero(),
-                    image = option.picture?.thumbnail.orEmpty(),
+                    image200 = option.picture?.thumbnail.orEmpty(),
+                    imageOriginal = option.picture?.original.orEmpty(),
                     variantHex = option.hex.orEmpty(),
                     currentState = currentState,
                     stock = stock,
