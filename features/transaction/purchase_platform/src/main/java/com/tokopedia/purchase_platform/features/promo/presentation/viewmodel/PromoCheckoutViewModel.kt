@@ -129,7 +129,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
             }
 
             if (response.couponListRecommendation.status == "OK") {
-                // Todo : Check if apply promo manual input success. Waiting backend
                 if (response.couponListRecommendation.data.couponSections.isNotEmpty()) {
                     if (getCouponRecommendationResponse.value == null) {
                         _getCouponRecommendationResponse.value = GetCouponRecommendationAction()
@@ -145,6 +144,19 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     initPromoRecommendation(response)
                     initPromoInput()
                     initPromoList(response)
+
+                    val attemptedPromoCodeError = response.couponListRecommendation.data.attemptedPromoCodeError
+                    if (attemptedPromoCodeError.code.isNotBlank() && attemptedPromoCodeError.message.isNotBlank()) {
+                        promoInputUiModel.value?.let {
+                            it.uiData.exception = MessageErrorException(attemptedPromoCodeError.message)
+                            it.uiData.promoCode = attemptedPromoCodeError.code
+                            it.uiState.isError = true
+                            it.uiState.isButtonSelectEnabled = true
+                            it.uiState.isLoading = false
+
+                            _promoInputUiModel.value = it
+                        }
+                    }
 
                     var tmpHasPreSelectedPromo = false
                     promoListUiModel.value?.forEach {

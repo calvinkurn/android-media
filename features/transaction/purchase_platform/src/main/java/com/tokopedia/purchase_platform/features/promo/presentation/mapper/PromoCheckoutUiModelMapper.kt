@@ -7,10 +7,10 @@ import javax.inject.Inject
 
 class PromoCheckoutUiModelMapper @Inject constructor() {
 
-    fun mapFragmentUiModel(pageSource: Int): FragmentUiModel {
+    fun mapFragmentUiModel(valuePageSource: Int): FragmentUiModel {
         return FragmentUiModel(
                 uiData = FragmentUiModel.UiData().apply {
-                    pageSource = pageSource
+                    pageSource = valuePageSource
                     totalBenefit = 0
                     usedPromoCount = 0
                 },

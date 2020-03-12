@@ -31,6 +31,8 @@ data class Data(
         val promoRecommendation: PromoRecommendation = PromoRecommendation(),
         @SerializedName("coupon_sections")
         val couponSections: List<CouponSection> = emptyList(),
+        @SerializedName("attempted_promo_code_error")
+        val attemptedPromoCodeError: AttemptedPromoCodeError = AttemptedPromoCodeError(),
         @SerializedName("additional_message")
         val additionalMessage: String = "",
         @SerializedName("reward_points_info")
@@ -52,10 +54,10 @@ data class GainRewardPointsTnc(
 )
 
 data class TncDetail(
-      @SerializedName("icon_image_url")
-      val iconImageUrl: String = "",
-      @SerializedName("description")
-      val description: String = ""
+        @SerializedName("icon_image_url")
+        val iconImageUrl: String = "",
+        @SerializedName("description")
+        val description: String = ""
 )
 
 data class ResultStatus(
@@ -66,11 +68,11 @@ data class ResultStatus(
         @SerializedName("reason")
         val reason: String = ""
 ) {
-        companion object {
-                const val STATUS_COUPON_LIST_EMPTY = "42050"
-                const val STATUS_PHONE_NOT_VERIFIED = "42049"
-                const val STATUS_USER_BLACKLISTED = "42003"
-        }
+    companion object {
+        const val STATUS_COUPON_LIST_EMPTY = "42050"
+        const val STATUS_PHONE_NOT_VERIFIED = "42049"
+        const val STATUS_USER_BLACKLISTED = "42003"
+    }
 }
 
 data class EmptyStateResponse(
@@ -159,6 +161,13 @@ data class Coupon(
 )
 
 data class ClashingInfo(
+        @SerializedName("code")
+        val code: String = "",
+        @SerializedName("message")
+        val message: String = ""
+)
+
+data class AttemptedPromoCodeError(
         @SerializedName("code")
         val code: String = "",
         @SerializedName("message")
