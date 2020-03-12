@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.analyticsdebugger.debugger.data.source.FpmLogDBSource;
+import com.tokopedia.analyticsdebugger.debugger.domain.model.FpmFileLogModel;
 import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel;
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity;
 import com.tokopedia.config.GlobalConfig;
@@ -74,7 +75,7 @@ public class FpmLogger implements PerformanceLogger {
             }
 
             if(cache.getBoolean(IS_FPM_DEBUGGER_AUTO_LOG_FILE_ENABLED, false)) {
-                writeToFile(createFormattedDataString(performanceLogModel));
+                writeToFile(createFormattedDataString(performanceLogModel) + ",\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,30 +84,25 @@ public class FpmLogger implements PerformanceLogger {
 
     private String createFormattedDataString(PerformanceLogModel model) {
 
+        FpmFileLogModel fpmFileLogModel = new FpmFileLogModel();
         Gson gson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().create();
 
-        String traceName = model.getTraceName();
-        long duration = model.getEndTime() - model.getStartTime();
-
-        String attributes;
-        String metrics;
-        try {
-            attributes = URLDecoder.decode(gson.toJson(model.getAttributes()), "UTF-8");
-            metrics = URLDecoder.decode(gson.toJson(model.getMetrics()), "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            attributes = "UnsupportedEncodingException";
-            metrics = "UnsupportedEncodingException";
-            e.printStackTrace();
-        }
+        fpmFileLogModel.setTraceName(model.getTraceName());
+        fpmFileLogModel.setDurationMs(model.getEndTime() - model.getStartTime());
+        fpmFileLogModel.setMetrics(model.getMetrics());
+        fpmFileLogModel.setAttributes(model.getAttributes());
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-        String timestamp = dateFormat.format(new Date());
+        Date timestamp = new Date();
 
-        return  "\r\n\r\n\r\ntraceName: " + traceName +
-                "\r\ntraceDuration: " + duration + "ms" +
-                "\r\nmetrics: " + metrics +
-                "\r\nattributes: " + attributes +
-                "\r\ntimestamp: " + timestamp;
+        fpmFileLogModel.setTimestampMs(timestamp.getTime());
+        fpmFileLogModel.setTimestampFormatted(dateFormat.format(timestamp));
+
+        try {
+            return URLDecoder.decode(gson.toJson(fpmFileLogModel), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            return gson.toJson(fpmFileLogModel);
+        }
     }
 
     private void writeToFile(String data) {
