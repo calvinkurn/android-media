@@ -19,6 +19,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
+import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.usecase.coroutines.Fail
@@ -317,9 +318,9 @@ class PlayViewModel @Inject constructor(
             BottomInsetsType.ProductSheet to BottomInsetsState.Hidden(false),
             BottomInsetsType.VariantSheet to BottomInsetsState.Hidden(false)
     )
-    //end region
+    //endregion
 
-    // video player region
+    //region video player
     fun startCurrentVideo() {
         playVideoManager.resumeCurrentVideo()
     }
@@ -329,12 +330,16 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun initiateVideo(channel: Channel) {
-        startVideoWithUrlString(channel.videoStream.config.streamUrl, channel.videoStream.isLive)
+        startVideoWithUrlString(
+                channel.videoStream.config.streamUrl,
+                channel.videoStream.isLive,
+                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) } ?: PlayBufferControl()
+        )
         playVideoManager.setRepeatMode(false)
     }
 
-    private fun startVideoWithUrlString(urlString: String, isLive: Boolean) {
-        playVideoManager.safePlayVideoWithUriString(urlString, isLive)
+    private fun startVideoWithUrlString(urlString: String, isLive: Boolean, bufferControl: PlayBufferControl) {
+        playVideoManager.safePlayVideoWithUriString(urlString, isLive, bufferControl)
     }
 
     private fun playVideoStream(channel: Channel) {
@@ -344,9 +349,9 @@ class PlayViewModel @Inject constructor(
     private fun stopPlayer() {
         playVideoManager.stopPlayer()
     }
-    // end region
+    //endregion
 
-    // API & Socket
+    //region API & Socket
     fun getChannelInfo(channelId: String) {
 
         var retryCount = 0
@@ -580,6 +585,13 @@ class PlayViewModel @Inject constructor(
             freezeButtonUrl = channel.freezeChannelState.btnAppLink
     )
 
+    private fun mapBufferControl(bufferControl: VideoStream.BufferControl) = PlayBufferControl(
+            minBufferMs = bufferControl.minBufferingSecond * MS_PER_SECOND,
+            maxBufferMs = bufferControl.maxBufferingSecond * MS_PER_SECOND,
+            bufferForPlaybackMs = bufferControl.bufferForPlayback * MS_PER_SECOND,
+            bufferForPlaybackAfterRebufferMs = bufferControl.bufferForPlaybackAfterRebuffer * MS_PER_SECOND
+    )
+
     private fun doOnChannelFreeze() {
         destroy()
         stopPlayer()
@@ -589,6 +601,8 @@ class PlayViewModel @Inject constructor(
 
     companion object {
         private const val MAX_RETRY_CHANNEL_INFO = 3
+
+        private const val MS_PER_SECOND = 1000
     }
 
 

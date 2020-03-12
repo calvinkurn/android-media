@@ -1,5 +1,6 @@
 package com.tokopedia.play.data
 
+import com.google.android.exoplayer2.DefaultLoadControl
 import com.google.gson.annotations.SerializedName
 
 
@@ -18,7 +19,7 @@ data class VideoStream(
         @SerializedName("config")
         val config: Config = Config(),
         @SerializedName("buffer_control")
-        val bufferControl: BufferControl = BufferControl()
+        val bufferControl: BufferControl? = BufferControl()
 ) {
 
     data class Config(
@@ -32,12 +33,12 @@ data class VideoStream(
 
     data class BufferControl(
             @SerializedName("max_buffer_in_second")
-            val maxBufferingSecond: Int = 0,
+            val maxBufferingSecond: Int = DefaultLoadControl.DEFAULT_MAX_BUFFER_MS,
             @SerializedName("min_buffer_in_second")
-            val minBufferingSecond: Int = 0,
+            val minBufferingSecond: Int = DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
             @SerializedName("buffer_for_playback")
-            val bufferForPlayback: Int = 0,
+            val bufferForPlayback: Int = DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS,
             @SerializedName("buffer_for_playback_after_rebuffer")
-            val bufferForPlaybackAfterRebuffer: Int = 0
+            val bufferForPlaybackAfterRebuffer: Int = DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS
     )
 }
