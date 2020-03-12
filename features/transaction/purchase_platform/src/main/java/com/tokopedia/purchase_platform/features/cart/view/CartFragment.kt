@@ -1501,6 +1501,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         sendAnalyticsOnButtonCheckoutClickedFailed()
         sendAnalyticsOnGoToShipmentFailed(message)
         showToastMessageRed(message)
+
+        refreshHandler?.startRefresh()
     }
 
     override fun renderErrorToShipmentForm(throwable: Throwable) {
