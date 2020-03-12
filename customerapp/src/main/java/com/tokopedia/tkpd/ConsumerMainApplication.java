@@ -128,7 +128,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
         initRemoteConfig();
         TokopediaUrl.Companion.init(this); // generate base url
 
-        FpmLogger.Companion.init(this);
+        FpmLogger.init(this);
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);

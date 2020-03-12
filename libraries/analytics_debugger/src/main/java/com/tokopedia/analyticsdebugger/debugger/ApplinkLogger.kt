@@ -97,6 +97,7 @@ class ApplinkLogger private constructor(private val context: Context) : ApplinkL
         var instance: ApplinkLoggerInterface? = null
             private set
 
+        @JvmStatic
         fun getInstance(context: Context): ApplinkLoggerInterface {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools()!!) {

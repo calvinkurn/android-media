@@ -114,6 +114,7 @@ class GtmLogger private constructor(private val context: Context) : AnalyticsLog
 
         private var instance: AnalyticsLogger? = null
 
+        @JvmStatic
         fun getInstance(context: Context): AnalyticsLogger {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools()!!) {

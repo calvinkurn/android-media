@@ -90,6 +90,7 @@ class IrisLogger private constructor(private val context: Context) : IrisLoggerI
 
         private var instance: IrisLoggerInterface? = null
 
+        @JvmStatic
         fun getInstance(context: Context): IrisLoggerInterface {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools()!!) {

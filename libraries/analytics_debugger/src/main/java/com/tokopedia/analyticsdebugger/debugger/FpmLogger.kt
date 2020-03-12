@@ -143,11 +143,16 @@ class FpmLogger private constructor(private val context: Context) : PerformanceL
         private val IS_FPM_DEBUGGER_NOTIF_ENABLED = "is_notif_enabled"
         private val IS_FPM_DEBUGGER_AUTO_LOG_FILE_ENABLED = "is_auto_log_file_enabled"
 
-        var instance: PerformanceLogger? = null
-            private set
+        private var instance: PerformanceLogger? = null
 
+        @JvmStatic
+        fun getInstance() : PerformanceLogger? {
+            return instance
+        }
+
+        @JvmStatic
         fun init(context: Context) {
-            if (GlobalConfig.isAllowDebuggingTools()!!) {
+            if (GlobalConfig.isAllowDebuggingTools()) {
                 instance = FpmLogger(context)
             } else {
                 instance = emptyInstance()
