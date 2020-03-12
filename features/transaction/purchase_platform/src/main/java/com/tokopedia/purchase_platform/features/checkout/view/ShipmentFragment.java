@@ -3306,7 +3306,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
         intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
-        intent.putExtra(ARGS_PROMO_REQUEST, promoRequest);
+        intent.putExtra(ARGS_PROMO_REQUEST, generateCouponListRecommendationRequest());
         intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest);
 
         startActivityForResult(intent, REQUEST_CODE_PROMO);

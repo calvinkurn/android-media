@@ -244,11 +244,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun applyPromo(mutation: String) {
-        launch { doApplyPromo(mutation) }
+    fun applyPromo(mutation: String, requestParam: PromoRequest) {
+        launch { doApplyPromo(mutation, requestParam) }
     }
 
-    private suspend fun doApplyPromo(mutation: String) {
+    private suspend fun doApplyPromo(mutation: String, requestParam: PromoRequest) {
         launchCatchError(block = {
             // Initialize response action state
             if (applyPromoResponse.value == null) {
