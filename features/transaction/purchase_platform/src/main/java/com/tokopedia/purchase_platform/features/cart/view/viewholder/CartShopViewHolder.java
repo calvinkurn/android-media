@@ -137,7 +137,6 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void itemCheckboxWatcherAction(Boolean isChecked) {
-        System.out.println("++ YEAY HIT!!");
         actionListener.onCartShopNameChecked(isChecked);
     }
 
@@ -330,14 +329,14 @@ public class CartShopViewHolder extends RecyclerView.ViewHolder {
             } else {
                 layoutError.setVisibility(View.GONE);
             }
-            renderPromoMerchant(data, false);
+            // renderPromoMerchant(data, false);
         } else {
             cbSelectShop.setEnabled(true);
             flShopItemContainer.setForeground(ContextCompat.getDrawable(flShopItemContainer.getContext(), R.drawable.fg_enabled_item));
             llShopContainer.setBackgroundColor(llShopContainer.getContext().getResources().getColor(R.color.white));
 
             layoutError.setVisibility(View.GONE);
-            renderPromoMerchant(data, true);
+            // renderPromoMerchant(data, true);
         }
     }
 

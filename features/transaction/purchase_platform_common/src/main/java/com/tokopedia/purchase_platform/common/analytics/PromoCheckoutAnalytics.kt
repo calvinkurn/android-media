@@ -1,0 +1,73 @@
+package com.tokopedia.purchase_platform.common.analytics
+
+import android.media.ImageWriter
+import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
+
+/**
+ * Created by fwidjaja on 11/03/20.
+ */
+object PromoCheckoutAnalytics {
+    private const val VIEW_ATC_IRIS = "viewATCIris"
+    private const val CLICK_ATC = "clickATC"
+    private const val CATEGORY_CART = "cart"
+    private const val EMPTY_CART_PROMO_APPLIED = "empty cart - promo already applied"
+    private const val CLICK_PROMO_SECTION_WITH_PROMO = "click promo section with promo"
+    private const val APPLIED = "applied"
+    private const val NOT_APPLIED = "not applied"
+    private const val VIEW_PROMO = "view promo"
+    private const val DECREASED = "decreased"
+    private const val RELEASED = "released"
+    private const val AFTER_ADJUST_ITEM = " after adjust item"
+    private const val VIEW_PROMO_ALREADY_APPLIED_IN_CART_LIST = "view promo already applied in cart list"
+    private const val VIEW_PROMO_MESSAGE = "view promo message"
+
+    private fun sendEventCategoryAction(event: String, eventCategory: String,
+                                        eventAction: String) {
+        sendEventCategoryActionLabel(event, eventCategory, eventAction, "")
+    }
+
+    private fun sendEventCategoryActionLabel(event: String, eventCategory: String,
+                                             eventAction: String, eventLabel: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+                event, eventCategory, eventAction, eventLabel))
+    }
+
+    fun eventEmptyCartPromoApplied(listPromoCodes: List<String>) {
+        var promo = ""
+        listPromoCodes.forEach {
+            if (promo.isNotEmpty()) promo += ", "
+            promo += it
+        }
+        sendEventCategoryActionLabel(VIEW_ATC_IRIS, CATEGORY_CART, EMPTY_CART_PROMO_APPLIED, promo)
+    }
+
+    fun eventClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean) {
+        var eventAction = CLICK_PROMO_SECTION_WITH_PROMO
+        eventAction += if (isApplied) APPLIED
+        else NOT_APPLIED
+
+        var promo = ""
+        listPromoCodes.forEach {
+            if (promo.isNotEmpty()) promo += ", "
+            promo += it
+        }
+        sendEventCategoryActionLabel(CLICK_ATC, CATEGORY_CART, CLICK_PROMO_SECTION_WITH_PROMO, promo)
+    }
+
+    fun eventViewPromoAfterAdjustItem(isDecreased: Boolean) {
+        var eventAction = VIEW_PROMO
+        eventAction += if (isDecreased) eventAction += " $DECREASED"
+        else eventAction += " $RELEASED"
+        eventAction += ""
+        sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, AFTER_ADJUST_ITEM)
+    }
+
+    fun eventViewPromoAlreadyAppliedInCart() {
+        sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, VIEW_PROMO_ALREADY_APPLIED_IN_CART_LIST)
+    }
+
+    fun eventViewPromoMessage(promoMessage: String) {
+        sendEventCategoryActionLabel(VIEW_ATC_IRIS, CATEGORY_CART, VIEW_PROMO_MESSAGE, promoMessage)
+    }
+}

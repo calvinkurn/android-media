@@ -287,13 +287,15 @@ public class ShipmentMapper implements IShipmentMapper {
                 lastApplyData.setAdditionalInfoDetailMsg(responseAdditionalInfo.getMessageInfo().getDetail());
                 lastApplyData.setErrorDetailMsg(responseAdditionalInfo.getErrorDetail().getMessage());
 
-                if (lastApply.getData().getBenefitSummaryInfo().getSummaries().size() > 0) {
-                    for (int i=0; i<lastApply.getData().getBenefitSummaryInfo().getSummaries().size(); i++) {
-                        SummariesItem summariesItem = lastApply.getData().getBenefitSummaryInfo().getSummaries().get(i);
-                        if (summariesItem.getType().equalsIgnoreCase(TYPE_CASHBACK)) {
-                            lastApplyData.setFinalBenefitText(summariesItem.getDescription());
-                            lastApplyData.setFinalBenefitAmount(summariesItem.getAmountStr());
-                            break;
+                if (lastApply.getData().getBenefitSummaryInfo() != null && lastApply.getData().getBenefitSummaryInfo().getSummaries() != null) {
+                    if (lastApply.getData().getBenefitSummaryInfo().getSummaries().size() > 0) {
+                        for (int i=0; i<lastApply.getData().getBenefitSummaryInfo().getSummaries().size(); i++) {
+                            SummariesItem summariesItem = lastApply.getData().getBenefitSummaryInfo().getSummaries().get(i);
+                            if (summariesItem.getType().equalsIgnoreCase(TYPE_CASHBACK)) {
+                                lastApplyData.setFinalBenefitText(summariesItem.getDescription());
+                                lastApplyData.setFinalBenefitAmount(summariesItem.getAmountStr());
+                                break;
+                            }
                         }
                     }
                 }
@@ -304,7 +306,7 @@ public class ShipmentMapper implements IShipmentMapper {
 
         if (shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault() != null) {
             PromoCheckoutErrorDefault promoCheckoutErrorDefault = new PromoCheckoutErrorDefault();
-            promoCheckoutErrorDefault.setTitle(shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault().getMessage());
+            promoCheckoutErrorDefault.setTitle(shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault().getTitle());
             promoCheckoutErrorDefault.setDesc(shipmentAddressFormDataResponse.getPromoSAFResponse().getErrorDefault().getDescription());
             dataResult.setPromoCheckoutErrorDefault(promoCheckoutErrorDefault);
         }

@@ -19,7 +19,9 @@ class PromoCheckoutViewHolder(val view: View, val actionListener: ShipmentAdapte
     }
 
     fun bindViewHolder(promoCheckoutData: PromoCheckoutData) {
-        itemView.promo_checkout_btn_shipment.title = promoCheckoutData.promoLabel
+        var title = itemView.context.getString(R.string.promo_funnel_label)
+        if (promoCheckoutData.promoLabel.isNotEmpty()) title = promoCheckoutData.promoLabel
+        itemView.promo_checkout_btn_shipment.title = title
         itemView.promo_checkout_btn_shipment.desc = promoCheckoutData.promoUsageInfo
         itemView.promo_checkout_btn_shipment.state = promoCheckoutData.state
         itemView.promo_checkout_btn_shipment.setOnClickListener { actionListener.onClickPromoCheckout(promoCheckoutData) }

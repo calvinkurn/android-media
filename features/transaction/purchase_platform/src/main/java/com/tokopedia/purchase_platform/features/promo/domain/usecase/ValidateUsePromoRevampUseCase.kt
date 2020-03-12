@@ -27,17 +27,21 @@ class ValidateUsePromoRevampUseCase @Inject constructor (@ApplicationContext pri
     companion object {
         const val PARAM_VALIDATE_USE = "PARAM_VALIDATE_USE"
         const val PARAM_PROMO = "promo"
+        const val PARAM_PARAMS = "params"
     }
 
     override fun createObservable(requestParams: RequestParams?): Observable<ValidateUsePromoRevampUiModel> {
         val paramValidateUse = requestParams?.getObject(PARAM_VALIDATE_USE) as ValidateUsePromoRequest
 
-        val variables = mapOf(
+        val varPromo = mapOf(
                 PARAM_PROMO to paramValidateUse
+        )
+        val varParams = mapOf(
+                PARAM_PARAMS to varPromo
         )
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.mutation_validate_use_promo_revamp), ValidateUseResponse::class.java, variables)
+                R.raw.mutation_validate_use_promo_revamp), ValidateUseResponse::class.java, varParams)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)
 
@@ -45,7 +49,7 @@ class ValidateUsePromoRevampUseCase @Inject constructor (@ApplicationContext pri
                 .map { it ->
                     var validateUsePromoRevampUiModel = ValidateUsePromoRevampUiModel()
                     val validateUseGqlRespons = it.getData<ValidateUseResponse>(ValidateUseResponse::class.java)
-                    validateUseGqlRespons.validateUsePromoRevamp?.let {
+                    validateUseGqlRespons.validateUsePromoRevamp.let {
                         validateUsePromoRevampUiModel = ValidateUsePromoCheckoutMapper.mapToValidateUseRevampPromoUiModel(it)
                     }
                     validateUsePromoRevampUiModel
