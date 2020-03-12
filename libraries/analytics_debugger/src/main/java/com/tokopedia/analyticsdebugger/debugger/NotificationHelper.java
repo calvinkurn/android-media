@@ -12,7 +12,9 @@ import androidx.core.app.NotificationCompat;
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData;
 import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel;
 import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel;
+import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerActivity;
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerActivity;
+import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity;
 
 /**
  * @author okasurya on 6/28/18.
@@ -30,23 +32,27 @@ class NotificationHelper {
     private static final String NOTIF_CHANNEL_NAME = "Debugging Tools";
 
     public static void show(Context context, AnalyticsLogData data) {
-        showNotif(context, NOTIF_ID_ANALYTICS_DEBUGGER, NOTIF_TITLE_ANALYTICS_DEBUGGER, data.getName(), data.getData());
+        showNotif(context, NOTIF_ID_ANALYTICS_DEBUGGER, NOTIF_TITLE_ANALYTICS_DEBUGGER,
+                data.getName(), data.getData(), AnalyticsDebuggerActivity.newInstance(context));
     }
 
     public static void show(Context context, PerformanceLogModel data) {
-        showNotif(context, NOTIF_ID_PERFORMANCE_DEBUGGER, NOTIF_TITLE_PERFORMANCE_DEBUGGER, data.getTraceName(), data.getData());
+        showNotif(context, NOTIF_ID_PERFORMANCE_DEBUGGER, NOTIF_TITLE_PERFORMANCE_DEBUGGER,
+                data.getTraceName(), data.getData(), FpmDebuggerActivity.newInstance(context));
     }
 
     public static void show(Context context, ApplinkLogModel data) {
-        showNotif(context, NOTIF_ID_APPLINK_DEBUGGER, NOTIF_TITLE_APPLINK_DEBUGGER, data.getApplink(), data.getData());
+        showNotif(context, NOTIF_ID_APPLINK_DEBUGGER, NOTIF_TITLE_APPLINK_DEBUGGER,
+                data.getApplink(), data.getData(), ApplinkDebuggerActivity.newInstance(context));
     }
 
-    private static void showNotif(Context context, int notifId, String contentTitle, String contentText, String payload) {
+    private static void showNotif(Context context, int notifId, String contentTitle,
+                                  String contentText, String payload, Intent intent) {
+
         NotificationManager notificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         setNotificationChannel(notificationManager);
 
-        Intent intent = ApplinkDebuggerActivity.newInstance(context);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.BigTextStyle inboxStyle = new NotificationCompat.BigTextStyle().bigText(payload);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NOTIF_CHANNEL_ID)
