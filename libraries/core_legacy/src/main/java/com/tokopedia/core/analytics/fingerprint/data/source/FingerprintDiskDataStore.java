@@ -54,6 +54,7 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                         String carrier      = DeviceConnectionInfo.getCarrierName(context);
                         String adsId = getGoogleAdId(context);
                         String androidId = DeviceInfo.getAndroidId(context);
+                        String imei = DeviceInfo.getImei(context);
                         boolean isx86 = DeviceInfo.isx86();
                         String packageName = DeviceInfo.getPackageName(context);
 
@@ -78,6 +79,7 @@ public class FingerprintDiskDataStore implements FingerprintDataStore {
                                 .androidId(androidId)
                                 .isx86(isx86)
                                 .packageName(packageName)
+                                .imei(imei)
                                 .build();
 
                         return fp;
