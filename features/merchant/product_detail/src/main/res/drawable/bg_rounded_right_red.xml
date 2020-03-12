@@ -6,9 +6,9 @@
         android:bottomLeftRadius="@dimen/dp_0"
         android:bottomRightRadius="@dimen/dp_24"
         android:topLeftRadius="@dimen/dp_0"
-        android:topRightRadius="@dimen/dp_0" />
+        android:topRightRadius="@dimen/dp_24" />
 
-    <solid android:color="#D50000" />
+    <solid android:color="@color/red_ribbon" />
 
 
 </shape>
