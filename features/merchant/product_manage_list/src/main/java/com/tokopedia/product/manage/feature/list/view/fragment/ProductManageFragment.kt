@@ -73,7 +73,7 @@ import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.Product
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToTabFilters
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
-import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
+import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.MoreFilter
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByMenu
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
@@ -260,7 +260,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder) {
         when(filter) {
-            is Default -> showFilterBottomSheet()
+            is MoreFilter -> showFilterBottomSheet()
             else -> clickStatusFilterTab(filter, viewHolder)
         }
     }
