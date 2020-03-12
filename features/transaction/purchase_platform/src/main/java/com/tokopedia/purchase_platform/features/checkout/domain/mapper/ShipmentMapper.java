@@ -13,6 +13,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.mode
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.VoucherOrders;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyAdditionalInfoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyEmptyCartInfoUiModel;
@@ -351,8 +352,19 @@ public class ShipmentMapper implements IShipmentMapper {
                 lastApplyMessageUiModel.setColor(lastApplyMessage.getColor());
                 lastApplyUiModel.setMessage(lastApplyMessageUiModel);
 
-                //TODO : map red states
+                ArrayList<String> listRedStates = new ArrayList<>();
+                if (lastApply.getData().getMessage().getState().equalsIgnoreCase(STATE_RED)) {
+                    for (String code : lastApply.getData().getCodes()) {
+                        listRedStates.add(code);
+                    }
+                }
 
+                for (com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.VoucherOrdersItem voucherOrdersItem : lastApply.getData().getVoucherOrders()) {
+                    if (voucherOrdersItem.getMessage().getState().equalsIgnoreCase(STATE_RED)) {
+                        listRedStates.add(voucherOrdersItem.getCode());
+                    }
+                }
+                lastApplyUiModel.setListRedPromos(listRedStates);
                 dataResult.setLastApplyData(lastApplyUiModel);
             }
         }

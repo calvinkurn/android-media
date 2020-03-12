@@ -114,6 +114,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
@@ -1069,6 +1070,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             listCodes.add(lastApplyData.getCodes().get(i));
         }
 
+        ArrayList<String> listAllPromoCodes = new ArrayList<>();
+        for (int i=0; i<lastApplyData.getCodes().size(); i++) {
+            listAllPromoCodes.add(lastApplyData.getCodes().get(i));
+        }
+        for (LastApplyVoucherOrdersItemUiModel voucherOrdersItemUiModel : lastApplyData.getVoucherOrders()) {
+            listAllPromoCodes.add(voucherOrdersItemUiModel.getCode());
+        }
+
         builder.setState(ButtonPromoCheckoutView.State.ACTIVE);
         builder.promoLabel(label);
         builder.promoUsageInfo(usageInfo);
@@ -1076,13 +1085,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         // TODO: set with new structure of benefit!
         builder.totalBenefitLabel("");
         builder.totalBenefitAmountStr("");
+        builder.listAllPromoCodes(listAllPromoCodes);
         shipmentAdapter.addPromoCheckoutData(builder.build());
-
-        if (shipmentAdapter.getShipmentCartItemModelList() != null) {
-            for (ShipmentCartItemModel shipmentCartItemModel : shipmentAdapter.getShipmentCartItemModelList()) {
-
-            }
-        }
 
         shipmentAdapter.notifyDataSetChanged();
     }
@@ -3321,5 +3325,15 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentAdapter.updatePromoCheckoutData(promoUiModel);
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
         onNeedUpdateViewItem(shipmentAdapter.getPromoCheckoutPosition());
+    }
+
+    @Override
+    public void onSendAnalyticsClickPromoCheckout(Boolean isApplied, List<String> listAllPromoCodes) {
+        PromoRevampAnalytics.INSTANCE.eventCheckoutClickPromoSection(listAllPromoCodes, isApplied);
+    }
+
+    @Override
+    public void onSendAnalyticsViewPromoCheckoutApplied() {
+        PromoRevampAnalytics.INSTANCE.eventCheckoutViewPromoAlreadyApplied();
     }
 }

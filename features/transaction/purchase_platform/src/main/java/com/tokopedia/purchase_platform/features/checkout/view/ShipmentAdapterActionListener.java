@@ -128,4 +128,8 @@ public interface ShipmentAdapterActionListener {
     void onTradeInAddressTabChanged(int position);
 
     void onClickPromoCheckout(PromoCheckoutData promoCheckoutData);
+
+    void onSendAnalyticsClickPromoCheckout(Boolean isApplied, List<String> listAllPromoCodes);
+
+    void onSendAnalyticsViewPromoCheckoutApplied();
 }

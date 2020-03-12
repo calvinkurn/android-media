@@ -63,6 +63,7 @@ object PromoRevampAnalytics {
         sendEventCategoryActionLabel(CLICK_ATC, CATEGORY_CART, CLICK_PROMO_SECTION_WITH_PROMO, promo)
     }
 
+    // TODO : check after backend give new struct
     fun eventCartViewPromoAfterAdjustItem(isDecreased: Boolean) {
         var eventAction = VIEW_PROMO
         eventAction += if (isDecreased) eventAction += " $DECREASED"
@@ -92,7 +93,7 @@ object PromoRevampAnalytics {
         sendEventCategoryActionLabel(CLICK_COURIER, CATEGORY_COURIER_SELECTION, CLICK_PROMO_SECTION_WITH_PROMO, promo)
     }
 
-    fun eventCheckoutVIewPromoAlreadyApplied() {
+    fun eventCheckoutViewPromoAlreadyApplied() {
         sendEventCategoryAction(VIEW_COURIER_IRIS, CATEGORY_COURIER_SELECTION, VIEW_PROMO_ALREADY_APPLIED_IN_CHECKOUT_LIST)
     }
 
