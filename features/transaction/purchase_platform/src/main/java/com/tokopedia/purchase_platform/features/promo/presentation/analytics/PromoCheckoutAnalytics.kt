@@ -46,6 +46,33 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         }
     }
 
+    fun eventViewBlacklistErrorAfterApplyPromo(page: Int) {
+        sendEventByPage(
+                page,
+                EVENT_NAME_VIEW,
+                EventAction.VIEW_BLACKLIST_ERROR_AFTER_APPLY_PROMO,
+                ""
+        )
+    }
+
+    fun eventViewPhoneVerificationMessage(page: Int) {
+        sendEventByPage(
+                page,
+                EVENT_NAME_VIEW,
+                EventAction.VIEW_PHONE_VERIFICATION_MESSAGE,
+                ""
+        )
+    }
+
+    fun eventClickButtonVerifikasiNomorHp(page: Int) {
+        sendEventByPage(
+                page,
+                EVENT_NAME_VIEW,
+                EventAction.CLICK_BUTTON_VERIFIKASI_NOMOR_HP,
+                ""
+        )
+    }
+
     fun eventViewAvailablePromoListIneligibleProduct(page: Int) {
         sendEventByPage(
                 page,
@@ -163,6 +190,9 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    // Todo FU : action not valid, row 30
+
+    // Todo FU : error code from backend, row 34
     fun eventClickPakaiPromoFailedExpired(page: Int) {
         sendEventByPage(
                 page,
@@ -172,6 +202,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    // Todo FU : error code from backend, row 36
     fun eventClickPakaiPromoFailedOutOfStock(page: Int) {
         sendEventByPage(
                 page,
@@ -181,6 +212,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    // Todo FU : error code from backend, row 37
     fun eventClickPakaiPromoFailedTerjadiKesalahanServer(page: Int) {
         sendEventByPage(
                 page,
@@ -190,6 +222,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    // Todo FU : Error code from backend, row 38
     fun eventClickPakaiPromoFailedUsedPromoCodes(page: Int) {
         sendEventByPage(
                 page,
@@ -199,6 +232,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    // Todo FU : UI not valid, row 39
     fun eventViewErrorPopup(page: Int) {
         sendEventByPage(
                 page,
@@ -208,6 +242,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    // Todo FU : UI not valid, row 40
     fun eventClickCobaLagi(page: Int) {
         sendEventByPage(
                 page,
@@ -244,7 +279,8 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    fun eventClickPakaiPromoSuccess(page: Int, status: String, promoCode: String) {
+    // Todo FU : `status` meaning?
+    fun eventClickPakaiPromoSuccess(page: Int, status: String, promoCodes: List<String>) {
         val data = hashMapOf<String, Any>()
         if (page == PAGE_CART) {
             data["event"] = EventName.CLICK_ATC
@@ -255,7 +291,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         }
         data["eventAction"] = EventAction.CLICK_PAKAI_PROMO
         data["eventLabel"] = "success $status"
-        data["promoCode"] = promoCode
+        data["promoCode"] = promoCodes.joinToString(", ", "[", "]")
 
         if (data.containsKey("event") && data.containsKey("eventCategory")) {
             sendGeneralEvent(data)
@@ -271,6 +307,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
+    // Todo FU : UI not valid, row 46
     fun eventClickBeliTanpaPromo(page: Int) {
         sendEventByPage(
                 page,

@@ -508,6 +508,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setPrimaryCTAText("Simpan Promo Baru")
                 setSecondaryCTAText("Keluar Halaman")
                 setPrimaryCTAClickListener {
+                    viewModel.sendAnalyticsClickSimpanPromoBaru()
                     if (viewModel.isHasAnySelectedPromoItem()) {
                         viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
                     } else {
@@ -515,6 +516,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     }
                 }
                 setSecondaryCTAClickListener {
+                    viewModel.sendAnalyticsClickKeluarHalaman()
                     dismiss()
                     it.finish()
                 }
@@ -582,6 +584,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickEmptyStateButton(element: PromoEmptyStateUiModel) {
         if (element.uiData.emptyStateStatus == STATUS_PHONE_NOT_VERIFIED) {
+            viewModel.sendAnalyticsClickButtonVerifikasiNomorHp()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION)
         }

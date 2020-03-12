@@ -366,6 +366,9 @@ public interface ConstantTransactionAnalytics {
         String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
 
         // Promo checkout revamp
+        String VIEW_BLACKLIST_ERROR_AFTER_APPLY_PROMO = "view blacklist error after apply promo";
+        String VIEW_PHONE_VERIFICATION_MESSAGE = "view phone verification message";
+        String CLICK_BUTTON_VERIFIKASI_NOMOR_HP = "click button verifikasi nomor HP";
         String VIEW_AVAILABLE_PROMO_LIST = "view available promo list";
         String CLICK_PILIH_PROMO_RECOMMENDATION = "click pilih promo recommendation";
         String SELECT_KUPON = "select kupon";
