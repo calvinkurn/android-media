@@ -375,6 +375,16 @@ public interface ConstantTransactionAnalytics {
         String CLICK_REMOVE_PROMO_CODE = "click remove promo code";
         String CLICK_TERAPKAN_PROMO = "click terapkan promo";
         String SELECT_PROMO = "select promo";
+        String DESELECT_PROMO = "deselect promo";
+        String VIEW_POP_UP_SAVE_PROMO = "view pop up save promo";
+        String CLICK_PAKAI_PROMO = "click pakai promo";
+        String VIEW_ERROR_POP_UP = "view error pop up";
+        String CLICK_COBA_LAGI = "click coba lagi";
+        String CLICK_SIMPAN_PROMO_BARU = "click simpan promo baru";
+        String CLICK_PILIH_PROMO = "click pilih promo";
+        String CLICK_KELUAR_HALAMAN = "click keluar halaman";
+        String CLICK_RESET_PROMO = "click reset promo";
+        String CLICK_BELI_TANPA_PROMO = "click beli tanpa promo";
     }
 
     interface EventLabel {
@@ -426,6 +436,10 @@ public interface ConstantTransactionAnalytics {
         String INELIGIBLE_PRODUCT = "ineligible product";
         String NO_PROMO = "no promo";
         String INELIGIBLE_PROMO_LIST = "ineligible promo list";
+        String FAILED_EXPIRED_PROMO_CODES = "failed - expired promo codes";
+        String FAILED_OUT_OF_STOCK_PROMO_CODES = "failed - out of stock promo codes";
+        String FAILED_TERJADI_KESALAHAN_SERVER = "failed - error terjadi kesalahan server";
+        String FAILED_USED_PROMO_CODES = "failed - used promo codes";
     }
 
     interface ScreenName {
