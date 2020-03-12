@@ -521,7 +521,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (carousel.getItems() != null && carousel.getItems().size() > 0) {
             clPromos.setVisibility(View.VISIBLE);
             bannerList = carousel.getItems();
-            bannerList.add(carousel.getItems().get(0));
             initBanner();
         } else {
             clPromos.setVisibility(View.GONE);
@@ -566,13 +565,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if(!bannerList.isEmpty() && bannerList.size() > position){
             ProductItem item = bannerList.get(position);
             dealsAnalytics.sendOnClickBannerPromoEvent(item, position);
-
-//            mPresenter.sendEventEcommerce(bannerList.get(position) -> item,
-//            position,
-//            bannerList.get(position).getDisplayName() -> creative,
-//            DealsAnalytics.EVENT_PROMO_CLICK -> event
-//                    , DealsAnalytics.EVENT_CLICK_PROMO_BANNER -> action,
-//                    DealsAnalytics.LIST_SUGGESTED_DEALS); -> name
             mPresenter.onClickBanner(bannerList.get(position));
         }
     }

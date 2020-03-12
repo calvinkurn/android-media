@@ -560,11 +560,6 @@ public class DealsHomePresenter extends BaseDaggerPresenter<DealsContract.View>
         }
     }
 
-//    public void sendEventEcommerce(ProductItem item, int position, String creative, String event, String action, String name) {
-//        dealsAnalytics.sendPromoClickEvent(item, position, creative, event
-//                , action, name);
-//    }
-
     public void sendEventView(String action, String label) {
         dealsAnalytics.sendEventDealsDigitalView(action, label);
     }

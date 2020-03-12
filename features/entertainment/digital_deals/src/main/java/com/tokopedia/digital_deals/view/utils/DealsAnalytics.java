@@ -555,43 +555,14 @@ public class DealsAnalytics {
         }
     }
 
-//    public void sendPromoClickEvent(ProductItem productItem, int position, String creative, String event, String action, String name) {
-//        try {
-//            HashMap<String, Object> bannerMap = new HashMap<>();
-//            HashMap<String, Object> promotions = new HashMap<>();
-//            HashMap<String, Object> ecommerce = new HashMap<>();
-//
-//            bannerMap.put(ID, String.valueOf(productItem.getId()));
-//            bannerMap.put(NAME, name);
-//            bannerMap.put(POSITION, String.valueOf(position));
-//            bannerMap.put(CATEGORY, DEALS);
-//            bannerMap.put(PROMO_CODE, "none");
-//            bannerMap.put(PROMO_ID, "0");
-//            bannerMap.put(CREATIVE, creative);
-//
-//            promotions.put(KEY_PROMOTIONS, Collections.singletonList(bannerMap));
-//
-//            ecommerce.put(EVENT_PROMO_CLICK, promotions);
-//            sendEventEcommerce(event, action,
-//                    String.format("%s - %s", creative
-//                            , position).toLowerCase(), ecommerce);
-//
-//        } catch (Exception e) {
-//
-//        }
-//    }
-
     public void sendOnClickBannerPromoEvent(ProductItem item, int position){
         try{
             Map promotion = DataLayer.mapOf(
                     ID, String.valueOf(item.getId()),
                     NAME, LIST_SUGGESTED_DEALS,
                     CREATIVE, item.getDisplayName(),
-//                CREATIVE_URL, ""
                     POSITION, String.valueOf(position),
                     CATEGORY, DEALS
-//                PROMO_ID, "",
-//                PROMO_CODE, ""
             );
             ArrayList promotions = new ArrayList();
             promotions.add(promotion);
@@ -733,28 +704,6 @@ public class DealsAnalytics {
     public void sendSeeAllTrendingDeals() {
         TrackApp.getInstance().getGTM().sendGeneralEvent(EVENT_CLICK_DEALS, DIGITAL_DEALS, EVENT_CLICK_SEE_ALL_TRENDING_DEALS, "");
     }
-
-//    public void sendPromoImpressionEvent(ProductItem item, int index) {
-//        HashMap<String, Object> promo = new HashMap<>();
-//        HashMap<String, Object> promoViews = new HashMap<>();
-//        HashMap<String, Object> ecommerce = new HashMap<>();
-//
-//        List<HashMap<String, Object>> products = new ArrayList<>();
-//
-//        promo.put(ID, String.valueOf(item.getId()));
-//        promo.put(NAME, DEALS_HOME_PAGE);
-//        promo.put(CREATIVE, item.getBrand().getTitle());
-//        promo.put(POSITION, String.valueOf(index));
-//        promo.put(CATEGORY, DEALS);
-//        promo.put(PROMO_ID, String.valueOf(0));
-//        promo.put(PROMO_CODE, "none");
-//        products.add(promo);
-//
-//        promoViews.put(KEY_PROMOTIONS, products);
-//        ecommerce.put(KEY_PROMOVIEW, promoViews);
-//        sendEventEcommerce(EVENT_PROMO_VIEW, EVENT_IMPRESSION_PROMO_BANNER,
-//                String.format("%s - %s", "Product", String.valueOf(index)), ecommerce);
-//    }
 
     public void sendPromoImpressionEvent(ProductItem item, int index) {
         try{
