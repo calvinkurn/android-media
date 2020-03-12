@@ -132,9 +132,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val updatedImageVariant: LiveData<MutableList<Media>>
         get() = _updatedImageVariant
 
-    private val _addToCartDataModel = MutableLiveData<Result<AddToCartDataModel>>()
-    val addToCartDataModel: LiveData<Result<AddToCartDataModel>>
-        get() = _addToCartDataModel
+    private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
+    val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
+        get() = _addToCartLiveData
 
     private val _initialVariantData = MutableLiveData<MutableList<VariantCategory>?>()
     val initialVariantData: LiveData<MutableList<VariantCategory>?>
@@ -150,6 +150,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     var variantData: ProductVariantCommon? = null
     var listOfParentMedia: MutableList<Media>? = null
     var buttonAction: Int = 0
+    var tradeinDeviceId: String = ""
     private var submitTicketSubscription: Subscription? = null
     private var updateCartCounterSubscription: Subscription? = null
 
@@ -242,17 +243,17 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             when (atcParams) {
                 is AddToCartRequestParams -> {
                     withContext(dispatcher.io()) {
-                        _addToCartDataModel.postValue(Success(addToCartUseCase.createObservable(requestParams).toBlocking().single()))
+                        _addToCartLiveData.postValue(Success(addToCartUseCase.createObservable(requestParams).toBlocking().single()))
                     }
                 }
                 is AddToCartOcsRequestParams -> {
                     withContext(dispatcher.io()) {
-                        _addToCartDataModel.postValue(Success(addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()))
+                        _addToCartLiveData.postValue(Success(addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()))
                     }
                 }
             }
         }) {
-            _addToCartDataModel.value = Fail(it)
+            _addToCartLiveData.value = Fail(it)
         }
     }
 

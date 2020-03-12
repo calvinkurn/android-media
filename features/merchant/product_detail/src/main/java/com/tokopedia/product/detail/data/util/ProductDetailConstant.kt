@@ -150,4 +150,11 @@ object ProductDetailConstant {
     const val BUY_BUTTON = 1
     const val ATC_BUTTON = 2
     const val LEASING_BUTTON = 3
+    const val TRADEIN_BUTTON = 4
+    const val TRADEIN_AFTER_DIAGNOSE = 5
+
+    const val REQUEST_CODE_LOGIN_THEN_ATC = 562
+    const val REQUEST_CODE_LOGIN_THEN_BUY = 563
+    const val REQUEST_CODE_LOGIN_THEN_TRADE_IN = 564
+    const val REQUEST_CODE_LOGIN_THEN_APPLY_CREDIT = 569
 }
