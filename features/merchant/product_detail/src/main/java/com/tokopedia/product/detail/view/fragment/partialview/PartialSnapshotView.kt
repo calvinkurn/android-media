@@ -109,7 +109,6 @@ class PartialSnapshotView(private val view: View,
             if (campaign.activeAndHasId) {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         nearestWarehouse.price.getCurrencyFormatted())
-                sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouse.stockWording)
             } else {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         nearestWarehouse.price.getCurrencyFormatted())
