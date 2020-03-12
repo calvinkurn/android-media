@@ -567,6 +567,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         )
     }
 
+    override fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
+
+        shopPageHomeTracking.clickCta(
+                layoutId = shopPageHomeLayoutUiModel?.layoutId.toString(),
+                widgetName = shopHomeCarouselProductUiModel?.name.toString(),
+                widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
+                appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
+                shopId = shopId,
+                shopType = customDimensionShopPage.shopType,
+                isOwner = isOwner
+        )
+
+        context?.let {
+            RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaText)
+        }
+    }
+
     private fun onErrorRemoveWishList(errorMessage: String?) {
         NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
     }

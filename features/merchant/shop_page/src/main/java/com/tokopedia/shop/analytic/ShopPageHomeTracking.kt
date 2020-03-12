@@ -451,4 +451,25 @@ class ShopPageHomeTracking(
         )
     }
 
+    fun clickCta(layoutId: String,
+                 widgetName: String,
+                 widgetId: String,
+                 appLink: String,
+                 shopId: String,
+                 shopType: String,
+                 isOwner: Boolean) {
+
+        val eventMap = mapOf(
+                EVENT to CLICK_SHOP_PAGE,
+                EVENT_CATEGORY to getShopPageCategory(isOwner),
+                EVENT_ACTION to String.format(CLICK_VIEW_ALL_PRODUCT, layoutId, widgetName),
+                EVENT_LABEL to "$widgetId - $appLink",
+                SHOP_ID to shopId,
+                SHOP_TYPE to shopType,
+                PAGE_TYPE to SHOPPAGE
+        )
+
+        sendDataLayerEvent(eventMap)
+    }
+
 }

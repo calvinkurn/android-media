@@ -3,12 +3,13 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.banner.BannerView
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.widget.BannerShopPage
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
+import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.setImage
+import java.util.ArrayList
 
 /**
  * Created by rizqiaryansa on 2020-02-25.
@@ -17,64 +18,74 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 class ShopHomeSliderBannerViewHolder(
         view: View?,
         private val listener: ShopHomeDisplayWidgetListener
-) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
-        BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
-        BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
-        BannerView.OnPromoLoadedListener {
+) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view)
+//        BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
+//        BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
+//        BannerView.OnPromoLoadedListener
+{
 
-    private var banner: BannerShopPage? = null
+    private var carouselShopPage: CarouselUnify? = null
     private var bannerData: ShopHomeDisplayWidgetUiModel? = null
 
     init {
-        banner = view?.findViewById(R.id.banner_shop_page)
+        carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
     }
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         bannerData = element
-        banner?.setPromoList(dataWidgetToString(element))
-        banner?.onPromoAllClickListener = this
-        banner?.onPromoScrolledListener = this
-        banner?.setOnPromoLoadedListener(this)
-        banner?.setOnPromoDragListener(this)
-        banner?.onPromoClickListener = this
-        banner?.buildView()
-    }
+        val carouselData = dataWidgetToCarouselData(element)
 
-    override fun onPromoLoaded() {
-        this.banner?.bannerIndicator?.visible()
-    }
+        val itemCarousel = { view: View, data: Any ->
+            val img: ImageUnify = view.findViewById(R.id.imageCarousel)
 
-    override fun onPromoClick(position: Int) {
-        bannerData?.data?.let {
-            val widgetItem = it[position]
-            listener.onDisplayItemClicked(bannerData, widgetItem, adapterPosition, position)
+            img.setImage((data as CarouselData).imageUrl, 0F)
+        }
+
+        carouselShopPage?.apply {
+            autoplay = true
+            autoplayDuration = 5000L
+            indicatorPosition = CarouselUnify.INDICATOR_BL
+            infinite = true
+
+            addItems(R.layout.widget_slider_banner_item, carouselData, itemCarousel)
         }
     }
 
-    override fun onPromoAllClick() {}
+//    override fun onPromoLoaded() {
+//        this.banner?.bannerIndicator?.visible()
+//    }
+//
+//    override fun onPromoClick(position: Int) {
+//        bannerData?.data?.let {
+//            val widgetItem = it[position]
+//            listener.onItemClicked(bannerData, widgetItem, adapterPosition, position)
+//        }
+//    }
+//
+//    override fun onPromoAllClick() {}
+//
+//    override fun onPromoDragEnd() {}
+//
+//    override fun onPromoDragStart() {}
+//
+//    override fun onPromoScrolled(position: Int) {
+//        bannerData?.data?.let {
+//            val widgetItem = it[position]
+//            if(!widgetItem.isInvoke){
+//                listener.onItemImpression(bannerData, widgetItem, adapterPosition, position)
+//                widgetItem.invoke()
+//            }
+//        }
+//    }
 
-    override fun onPromoDragEnd() {}
-
-    override fun onPromoDragStart() {}
-
-    override fun onPromoScrolled(position: Int) {
-        bannerData?.data?.let {
-            val widgetItem = it[position]
-            if(!widgetItem.isInvoke){
-                listener.onDisplayItemImpression(bannerData, widgetItem, adapterPosition, position)
-                widgetItem.invoke()
-            }
-        }
-    }
-
-    private fun dataWidgetToString(element: ShopHomeDisplayWidgetUiModel): List<String>? {
-        val mutableString: MutableList<String>? = mutableListOf()
+    private fun dataWidgetToCarouselData(element: ShopHomeDisplayWidgetUiModel): ArrayList<Any> {
+        val mutableString: ArrayList<Any> = ArrayList()
         element.data?.map {
             it.imageUrl.let { img ->
-                mutableString?.add(img)
+                mutableString.add(CarouselData(img))
             }
         }
-        return mutableString?.toList()
+        return mutableString
     }
 
     companion object {
@@ -82,4 +93,6 @@ class ShopHomeSliderBannerViewHolder(
         val LAYOUT_RES = R.layout.viewmodel_slider_banner
     }
 
+
+    class CarouselData(val imageUrl: String)
 }

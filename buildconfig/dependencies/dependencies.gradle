@@ -91,6 +91,7 @@ ext {
     unifyGlobalErrorVersion = '1.0.8'
     unifySortFilterVersion = '1.0.1'
     unifyIconNotificationVersion = '1.0.0'
+    unifyCarouselVersion = '1.0.0'
 
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
@@ -311,6 +312,7 @@ ext {
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
             global_error    : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
-            sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar"
+            sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar",
+            carousel        : "com.tokopedia.unify.compositions:carousel:${unifyCarouselVersion}@aar"
     ]
 }

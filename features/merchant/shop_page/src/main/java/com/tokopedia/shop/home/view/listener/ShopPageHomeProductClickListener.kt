@@ -41,6 +41,8 @@ interface ShopPageHomeProductClickListener {
             shopHomeProductViewModel: ShopHomeProductViewModel?
     )
 
+    fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?)
+
     fun onCarouselProductItemClickAddToCart(
             parentPosition: Int,
             itemPosition: Int,
