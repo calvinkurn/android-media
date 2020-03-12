@@ -236,7 +236,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
     private JankyFramesMonitoringListener jankyFramesMonitoringListener;
-    private JankyFrameMonitoringUtil homeScrollJankyMonitoringUtil;
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
@@ -392,9 +391,11 @@ public class HomeFragment extends BaseDaggerFragment implements
                 }
             }
         });
-        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().recordRecyclerViewScrollPerformance(
-                homeRecyclerView,
-                PERFORMANCE_PAGE_NAME_HOME, "");
+        if (getHomeJankyFramesUtil() != null) {
+            getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
+                    homeRecyclerView,
+                    PERFORMANCE_PAGE_NAME_HOME, "");
+        }
     }
 
     private void setupStatusBar() {
