@@ -104,12 +104,16 @@ public abstract class DigitalBaseCartPresenter<T extends DigitalBaseContract.Vie
         } else {
             getView().hideCartView();
             getView().showFullPageLoading();
-            RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
-                    getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
             getView().startPerfomanceMonitoringTrace();
             if (getView().getCartPassData().getNeedGetCart()) {
+                RequestParams requestParams = digitalGetCartUseCase.createRequestParams(
+                        getView().getCartPassData().getCategoryId(),
+                        userSession.getUserId(),
+                        userSession.getDeviceId());
                 digitalGetCartUseCase.execute(requestParams, getSubscriberCart());
             } else {
+                RequestParams requestParams = digitalAddToCartUseCase.createRequestParams(
+                        getRequestBodyAtcDigital(), getView().getIdemPotencyKey());
                 digitalAddToCartUseCase.execute(requestParams, getSubscriberCart());
             }
         }

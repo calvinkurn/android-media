@@ -6,12 +6,16 @@ import com.tokopedia.common_digital.cart.data.entity.response.ResponseCartData;
 import com.tokopedia.common_digital.cart.data.entity.response.ResponseCheckoutData;
 import com.tokopedia.common_digital.product.data.response.TkpdDigitalResponse;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import retrofit2.Response;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 /**
@@ -30,9 +34,7 @@ public interface DigitalRestApi {
     );
 
     @GET("cart")
-    Observable<Response<DataResponse<ResponseCartData>>> getCart(
-            @Header("Idempotency-Key") String idemPotencyKeyHeader
-    );
+    Observable<Response<DataResponse<ResponseCartData>>> getCart(@QueryMap HashMap<String, Object> map);
 
     @POST("checkout")
     @Headers({"Content-Type: application/json"})

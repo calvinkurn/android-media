@@ -8,6 +8,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.checkout.Reques
 import com.tokopedia.common_digital.cart.domain.IDigitalCartRepository
 import com.tokopedia.common_digital.cart.view.model.cart.CartDigitalInfoData
 import com.tokopedia.common_digital.cart.view.model.checkout.InstantCheckoutData
+import com.tokopedia.usecase.RequestParams
 
 import rx.Observable
 
@@ -22,8 +23,8 @@ class DigitalCartRepository(private val digitalAddToCartDataSource: DigitalAddTo
         return digitalAddToCartDataSource.addToCart(requestBodyAtcDigital, idemPotencyKeyHeader)
     }
 
-    override fun getCart(requestBodyAtcDigital: RequestBodyAtcDigital, idemPotencyKeyHeader: String): Observable<CartDigitalInfoData> {
-        return digitalGetCartDataSource.getCart(requestBodyAtcDigital, idemPotencyKeyHeader)
+    override fun getCart(requestParam: RequestParams): Observable<CartDigitalInfoData> {
+        return digitalGetCartDataSource.getCart(requestParam)
     }
 
     override fun instantCheckout(requestBodyCheckout: RequestBodyCheckout): Observable<InstantCheckoutData> {
