@@ -206,6 +206,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         departureAirport.cityName = departureCityName
         if (departureAirportId.contains(",")) {
             val airportIds = departureAirportId.split(",")
+            departureAirport.cityAirports = arrayListOf()
             for (item in airportIds) {
                 departureAirport.cityAirports.add(item)
             }
@@ -227,6 +228,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         arrivalAirport.cityName = arrivalCityName
         if (arrivalAirportId.contains(",")) {
             val airportIds = arrivalAirportId.split(",")
+            arrivalAirport.cityAirports = arrayListOf()
             for (item in airportIds) {
                 arrivalAirport.cityAirports.add(item)
             }
