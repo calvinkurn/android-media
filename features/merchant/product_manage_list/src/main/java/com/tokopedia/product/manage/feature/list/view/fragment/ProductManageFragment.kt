@@ -1297,6 +1297,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         context?.let {
             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.product_manage_dialog_edit_products_inactive_title, itemsChecked.count()))
+                setDescription(getString(R.string.product_manage_edit_products_inactive_description))
                 setPrimaryCTAText(getString(R.string.product_manage_edit_products_inactive_button))
                 setSecondaryCTAText(getString(R.string.product_manage_delete_product_cancel_button))
                 setPrimaryCTAClickListener {

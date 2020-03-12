@@ -196,6 +196,7 @@
     <string name="product_manage_edit_products_inactive_retry">%1$d produk berhasil dinonaktifkan, %2$d gagal dinonaktifkan.</string>
     <string name="product_manage_edit_products_retry">%1$d produk berhasil diubah, %2$d gagal diubah.</string>
     <string name="product_manage_edit_products_success">%1$d produk berhasil diubah.</string>
+    <string name="product_manage_edit_products_inactive_description">Produk yang dinonaktifkan tidak dapat dilihat calon pembeli.</string>
 
     <string name="product_manage_set_cashback">Cashback</string>
     <string name="product_manage_set_cashback_success">Pengaturan Cashback untuk \"%1$s\" berhasil.</string>
