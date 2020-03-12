@@ -2,10 +2,11 @@ package com.tokopedia.notifications.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.notifications.data.model.AttributionNotifier
+import javax.inject.Inject
 
 typealias UseCase = GraphqlUseCase<AttributionNotifier>
 
-class AttributionUseCase(
+class AttributionUseCase @Inject constructor(
         private val useCase: UseCase,
         private val query: String
 ) {
