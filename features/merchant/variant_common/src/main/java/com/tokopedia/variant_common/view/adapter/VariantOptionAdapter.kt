@@ -2,8 +2,9 @@ package com.tokopedia.variant_common.view.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.variant_common.model.VariantCategory
+import com.tokopedia.variant_common.constant.VariantConstant
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.holder.BaseVariantViewHolder
@@ -21,11 +22,16 @@ class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.
     private val TYPE_CHIP = 3
     private val IDENTIFIER_COLOR = "colour"
 
-    private var variantCategory: VariantCategory = VariantCategory()
+    private val optionList: MutableList<VariantOptionWithAttribute> = mutableListOf()
 
-    fun setData(data: VariantCategory) {
-        this.variantCategory = data
-        notifyDataSetChanged()
+    fun setData(newOptionList: List<VariantOptionWithAttribute>) {
+
+        val callback = VariantOptionDiffUtilCallback(optionList, newOptionList)
+        val diffResult = DiffUtil.calculateDiff(callback)
+
+        diffResult.dispatchUpdatesTo(this)
+        optionList.clear()
+        optionList.addAll(newOptionList)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseVariantViewHolder<VariantOptionWithAttribute> {
@@ -49,26 +55,42 @@ class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.
         }
     }
 
-    override fun getItemCount(): Int = variantCategory.variantOptions.size
+    override fun getItemCount(): Int = optionList.size
 
     override fun onBindViewHolder(holder: BaseVariantViewHolder<VariantOptionWithAttribute>, position: Int) {
-        holder.bind(variantCategory.variantOptions[position])
-    }
+        val option = optionList[position]
+        holder.bind(option)
 
-    override fun onBindViewHolder(holder: BaseVariantViewHolder<VariantOptionWithAttribute>, position: Int, payloads: MutableList<Any>) {
-        if (payloads.isNotEmpty()) {
-            holder.bind(variantCategory.variantOptions[position], payloads.firstOrNull() as? Int
-                    ?: 0)
-        } else {
-            super.onBindViewHolder(holder, position, payloads)
-        }
+        if (option.currentState == VariantConstant.STATE_SELECTED) listener.onSelectionChanged(holder.itemView, position)
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (variantCategory.hasCustomImage) {
-                TYPE_IMAGE
-            } else {
+        return if (optionList[position].hasCustomImages) {
+            TYPE_IMAGE
+        } else {
             TYPE_CHIP
+        }
+    }
+
+    inner class VariantOptionDiffUtilCallback(
+            private val oldList: List<VariantOptionWithAttribute>,
+            private val newList: List<VariantOptionWithAttribute>
+    ) : DiffUtil.Callback() {
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].variantId == newList[newItemPosition].variantId
+        }
+
+        override fun getOldListSize(): Int {
+            return oldList.size
+        }
+
+        override fun getNewListSize(): Int {
+            return newList.size
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return oldList[oldItemPosition].currentState == newList[newItemPosition].currentState
         }
     }
 }
