@@ -491,7 +491,7 @@ class PlayViewModel @Inject constructor(
     private fun getProductTagItems(channel: Channel) {
         launchCatchError(block = {
             val productTagsItems = withContext(dispatchers.io) {
-                getProductTagItemsUseCase.channelId = channel.channelId
+                getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
                 getProductTagItemsUseCase.executeOnBackground()
             }
             _observableProductSheetContent.value = PlayUiMapper.mapProductSheet(

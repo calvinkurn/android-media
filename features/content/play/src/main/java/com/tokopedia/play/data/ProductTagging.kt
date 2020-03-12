@@ -11,4 +11,9 @@ data class ProductTagging(
         val listOfProducts: List<Product> = emptyList(),
         @SerializedName("vouchers")
         val listOfVouchers: List<Voucher> = emptyList()
-)
+) {
+        data class Response(
+                @SerializedName("playGetTagsItem")
+                val playGetTagsItem: ProductTagging = ProductTagging()
+        )
+}
