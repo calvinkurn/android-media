@@ -15,7 +15,6 @@ include "features:user:sessioncommon"
 include "features:common:resources_common"
 include 'libraries:play_core'
 include ':libraries:base_list'
-include ':libraries:remoteresourcerequest'
 
 include 'testapp'
 

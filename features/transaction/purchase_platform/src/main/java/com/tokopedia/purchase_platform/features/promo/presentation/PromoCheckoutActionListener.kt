@@ -8,6 +8,8 @@ interface PromoCheckoutActionListener {
 
     fun onClickApplyManualInputPromo(promoCode: String)
 
+    fun onCLickClearManualInputPromo()
+
     fun onClickPromoListHeader(element: PromoListHeaderUiModel)
 
     fun onClickPromoListItem(element: PromoListItemUiModel)

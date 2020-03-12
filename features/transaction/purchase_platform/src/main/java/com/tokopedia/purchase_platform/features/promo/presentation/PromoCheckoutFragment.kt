@@ -36,9 +36,12 @@ import com.tokopedia.promocheckout.common.data.EXTRA_KUPON_CODE
 import com.tokopedia.promocheckout.common.data.ONE_CLICK_SHIPMENT
 import com.tokopedia.promocheckout.common.data.PAGE_TRACKING
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.feature.tokopointstnc.TokoPointsTncBottomsheet
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
+import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.response.ResultStatus.Companion.STATUS_PHONE_NOT_VERIFIED
 import com.tokopedia.purchase_platform.features.promo.di.DaggerPromoCheckoutMarketplaceComponent
 import com.tokopedia.purchase_platform.features.promo.presentation.adapter.PromoCheckoutAdapter
@@ -77,10 +80,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
         const val HAS_ELEVATION = 6
         const val NO_ELEVATION = 0
 
-        fun createInstance(promoRequest: PromoRequest): PromoCheckoutFragment {
+        fun createInstance(pageSource: Int,
+                           promoRequest: PromoRequest,
+                           validateUsePromoRequest: ValidateUsePromoRequest): PromoCheckoutFragment {
             return PromoCheckoutFragment().apply {
                 arguments = Bundle().apply {
+                    putInt(ARGS_PAGE_SOURCE, pageSource)
                     putParcelable(ARGS_PROMO_REQUEST, promoRequest)
+                    putParcelable(ARGS_VALIDATE_USE_REQUEST, validateUsePromoRequest)
                 }
             }
         }
@@ -115,6 +122,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupToolbar(view)
+        viewModel.initFragmentUiModel(arguments?.getInt(ARGS_PAGE_SOURCE, 0) ?: 0)
+
         button_apply_promo.setOnClickListener {
             setButtonLoading(button_apply_promo, true)
             viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
@@ -499,6 +508,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setPrimaryCTAText("Simpan Promo Baru")
                 setSecondaryCTAText("Keluar Halaman")
                 setPrimaryCTAClickListener {
+                    viewModel.sendAnalyticsClickSimpanPromoBaru()
                     if (viewModel.isHasAnySelectedPromoItem()) {
                         viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
                     } else {
@@ -506,10 +516,13 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                     }
                 }
                 setSecondaryCTAClickListener {
+                    viewModel.sendAnalyticsClickKeluarHalaman()
                     dismiss()
                     it.finish()
                 }
             }.show()
+
+            viewModel.sendAnalyticsViewPopupSavePromo()
         }
     }
 
@@ -535,11 +548,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickApplyManualInputPromo(promoCode: String) {
         activity?.let {
-            viewModel.updatePromoInputState(promoCode)
+            viewModel.updatePromoInputStateBeforeApplyPromo(promoCode)
             val promoRequest = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
             val mutation = GraphqlHelper.loadRawString(it.resources, R.raw.get_coupon_list_recommendation)
             viewModel.loadData(mutation, promoRequest, promoCode)
         }
+    }
+
+    override fun onCLickClearManualInputPromo() {
+        viewModel.sendAnalyticsClickRemovePromoCode()
     }
 
     override fun onClickPromoListHeader(element: PromoListHeaderUiModel) {
@@ -551,6 +568,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     override fun onClickPromoItemDetail(element: PromoListItemUiModel) {
+        viewModel.sendAnalyticsClickLihatDetailKupon(element.uiData.promoCode)
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_DETAIL_MARKETPLACE).apply {
             putExtra(EXTRA_KUPON_CODE, element.uiData.promoCode)
             putExtra(EXTRA_IS_USE, true)
@@ -566,6 +584,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     override fun onClickEmptyStateButton(element: PromoEmptyStateUiModel) {
         if (element.uiData.emptyStateStatus == STATUS_PHONE_NOT_VERIFIED) {
+            viewModel.sendAnalyticsClickButtonVerifikasiNomorHp()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_PHONE_VERIFICATION)
         }

@@ -73,6 +73,10 @@ mutation coupon_list_recommendation($params: PromoStackRequest) {
                     }
                 }
             }
+            attempted_promo_code_error {
+                code
+                message
+            }
             additional_message
             reward_points_info {
                 message

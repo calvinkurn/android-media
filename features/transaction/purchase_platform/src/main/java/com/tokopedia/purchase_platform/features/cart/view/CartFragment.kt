@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.cart.view
 
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Canvas
@@ -17,10 +16,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearSmoothScroller
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
+import com.chuckerteam.chucker.api.Chucker
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
-import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -62,7 +64,9 @@ import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnaly
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment
+import com.tokopedia.purchase_platform.common.constant.ARGS_PAGE_SOURCE
 import com.tokopedia.purchase_platform.common.constant.ARGS_PROMO_REQUEST
+import com.tokopedia.purchase_platform.common.constant.ARGS_VALIDATE_USE_REQUEST
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CartConstant.ACTION_OK
 import com.tokopedia.purchase_platform.common.constant.CartConstant.CART
@@ -99,12 +103,14 @@ import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
-import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.Order
 import com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail
+import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -188,6 +194,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private var cartUnavailableWishlistActionListener: WishListActionListener? = null
     private var lastSeenWishlistActionListener: WishListActionListener? = null
     private var wishlistsWishlistActionListener: WishListActionListener? = null
+    private var lastValidateUsePromoRequest: ValidateUsePromoRequest? = null
 
     private var hasTriedToLoadWishList: Boolean = false
     private var hasTriedToLoadRecentViewList: Boolean = false
@@ -457,7 +464,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     private fun setCbSelectAllOnCheckedChangeListener() {
         var prevIsChecked = cartListData?.isAllSelected
         cbSelectAll.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked != prevIsChecked)  {
+            if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
                 cbChangeJob?.cancel()
@@ -1386,7 +1393,15 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             promoCheckoutBtn.setOnClickListener {
                 val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
                 val promoRequest = generateParamsCouponList()
+                var validateUseRequest: ValidateUsePromoRequest? = null
+                if (lastValidateUsePromoRequest != null) {
+                    validateUseRequest = lastValidateUsePromoRequest
+                } else {
+                    validateUseRequest = generateParamValidateUsePromoRevamp(false, -1, true)
+                }
+                intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CART)
                 intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
 
                 startActivityForResult(intent, NAVIGATION_PROMO)
 
@@ -1504,7 +1519,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         return listOrder
     }
 
-    private fun generateParamsCouponList() : PromoRequest {
+    private fun generateParamsCouponList(): PromoRequest {
         val globalPromo = arrayListOf<String>()
         cartListData?.lastApplyShopGroupSimplifiedData?.codes?.forEach { globalPromo.add(it) }
 
@@ -1995,6 +2010,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_PDP -> {
                 refreshHandler?.isRefreshing = true
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+            }
+            NAVIGATION_PROMO -> {
+                dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
             }
         }
     }
@@ -2757,13 +2775,13 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             showToaster(errorDetailMsg)
             PromoRevampAnalytics.eventCartViewPromoMessage(errorDetailMsg)
         } else {
-            if (additionalInfoMsg.isEmpty() && additionalInfoDesc.isEmpty())  {
+            if (additionalInfoMsg.isEmpty() && additionalInfoDesc.isEmpty()) {
                 showPromoCheckoutStickyButtonInactive()
             } else {
                 promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
                 promoCheckoutBtn.title = additionalInfoMsg
                 promoCheckoutBtn.desc = additionalInfoDesc
-                promoCheckoutBtn.setOnClickListener{
+                promoCheckoutBtn.setOnClickListener {
                     val params = generateParamsCouponList()
                     // TODO: then intent to coupon list page with params above
                 }
@@ -2782,7 +2800,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartListData?.lastApplyShopGroupSimplifiedData?.listRedPromos = mapCreateListRedPromos(validateUsePromoRevampUiModel)
     }
 
-    private fun mapCreateListRedPromos(validateUseUiModel: ValidateUsePromoRevampUiModel) : List<String> {
+    private fun mapCreateListRedPromos(validateUseUiModel: ValidateUsePromoRevampUiModel): List<String> {
         val listRedPromos = arrayListOf<String>()
         if (validateUseUiModel.promoUiModel.messageUiModel.state.equals(STATE_RED, true)) {
             validateUseUiModel.promoUiModel.codes.forEach {

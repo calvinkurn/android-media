@@ -8,6 +8,7 @@ data class FragmentUiModel(
 ) {
 
     data class UiData(
+            var pageSource: Int = 0,
             var totalBenefit: Int = 0,
             var usedPromoCount: Int = 0,
             var exception: Throwable? = null,
