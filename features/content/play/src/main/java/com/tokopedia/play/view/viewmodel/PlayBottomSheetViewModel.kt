@@ -67,7 +67,7 @@ class PlayBottomSheetViewModel @Inject constructor(
 
     fun doInteractionEvent(event: InteractionEvent) {
         _observableLoggedInInteractionEvent.value = Event(
-                if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn
+                if (event.needLogin && !userSession.isLoggedIn) LoginStateEvent.NeedLoggedIn(event)
                 else LoginStateEvent.InteractionAllowed(event)
         )
     }

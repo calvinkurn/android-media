@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -49,6 +51,8 @@ import kotlin.coroutines.CoroutineContext
 class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
+        private const val REQUEST_CODE_LOGIN = 191
+
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
 
         fun newInstance(): PlayBottomSheetFragment {
@@ -117,6 +121,13 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         observeProductSheetContent()
         observeVariantSheetContent()
         observeBottomInsetsState()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
+            if (lastAction != null) handleInteractionEvent(lastAction.event)
+        } else super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun observeProductSheetContent() {
@@ -273,12 +284,12 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun doAtcProduct(productId: String) {
-        Toaster.make(requireView(), "Product bought for id: $productId", Snackbar.LENGTH_SHORT)
+        Toaster.make(requireView(), "Product added to cart for id: $productId", Snackbar.LENGTH_SHORT)
         closeVariantSheet()
     }
 
     private fun doBuyProduct(productId: String) {
-        Toaster.make(requireView(), "Product added to cart for id: $productId", Snackbar.LENGTH_SHORT)
+        Toaster.make(requireView(), "Product bought for id: $productId", Snackbar.LENGTH_SHORT)
         closeVariantSheet()
     }
 
@@ -287,7 +298,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun openPageByApplink(applink: String, vararg params: String, shouldFinish: Boolean = false) {
-        RouteManager.route(context, applink, *params)
+        val intent = RouteManager.getIntent(context, applink, *params)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
 
         if (shouldFinish) activity?.finish()
