@@ -21,4 +21,6 @@ object CartConstant {
     const val PARAM_PROMO = "promo"
     const val ACTION_OK = "OK"
     const val STATE_RED = "red"
+    const val PARAM_DEFAULT = "default"
+    const val PARAM_CART = "cart"
 }

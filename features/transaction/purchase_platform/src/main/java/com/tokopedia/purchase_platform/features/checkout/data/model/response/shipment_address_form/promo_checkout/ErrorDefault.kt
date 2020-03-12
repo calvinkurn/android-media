@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
  * Created by fwidjaja on 09/03/20.
  */
 data class ErrorDefault (
-        @field:SerializedName("message")
-        val message: String? = null,
+        @field:SerializedName("title")
+        val title: String? = null,
 
-        @field:SerializedName("Description")
+        @field:SerializedName("description")
         val description: String? = null)

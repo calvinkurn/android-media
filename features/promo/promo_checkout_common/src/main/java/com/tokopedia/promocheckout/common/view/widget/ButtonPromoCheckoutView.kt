@@ -73,9 +73,15 @@ class ButtonPromoCheckoutView @JvmOverloads constructor(
     private fun setViewActive() {
         promo_checkout_loading_state?.visibility = View.GONE
         tv_promo_checkout_title?.visibility = View.VISIBLE
-        tv_promo_checkout_desc?.visibility = View.VISIBLE
         tv_promo_checkout_title?.text = title
-        tv_promo_checkout_desc?.text = desc
+
+        if (desc.isEmpty()) {
+            tv_promo_checkout_desc?.visibility = View.GONE
+        } else {
+            tv_promo_checkout_desc?.visibility = View.VISIBLE
+            tv_promo_checkout_desc?.text = desc
+        }
+
         iv_promo_checkout_left?.setImageResource(R.drawable.ic_promo_checkout_percentage)
         iv_promo_checkout_right?.setImageResource(R.drawable.ic_promo_checkout_chevron_right)
     }

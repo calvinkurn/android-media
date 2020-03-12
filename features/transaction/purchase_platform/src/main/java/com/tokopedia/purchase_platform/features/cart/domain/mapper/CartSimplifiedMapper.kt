@@ -10,16 +10,13 @@ import com.tokopedia.purchase_platform.common.data.model.response.Messages
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.AutoApplyStack
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.Message
-import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.CartPromoData
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.ErrorDefault
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.LastApplyPromo
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.LastApplyPromoData
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.*
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.*
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.SimilarProductData
@@ -65,7 +62,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
 
         cartListData.autoApplyStackData = mapAutoApplyStackData(cartDataListResponse.autoApplyStack)
         cartListData.globalCouponAttrData = mapGlobalCouponAttr(cartDataListResponse.globalCouponAttr)
-        cartListData.lastApplyData = mapLastApply(cartDataListResponse.promo.lastApplyPromo)
+        cartListData.lastApplyShopGroupSimplifiedData = mapLastApplySimplified(cartDataListResponse.promo.lastApplyPromo.lastApplyPromoData)
         cartListData.errorDefault = mapPromoCheckoutErrorDefault(cartDataListResponse.promo.errorDefault)
         cartListData.isAllSelected = cartDataListResponse.isGlobalCheckboxState
         cartListData.isShowOnboarding = false
@@ -151,7 +148,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         return isDisableAllProducts1
     }
 
-    private fun mapVoucherOrdersItemData(voucherOrdersItem: VoucherOrdersItem): VoucherOrdersItemData {
+    private fun mapVoucherOrdersItemData(voucherOrdersItem: com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem): VoucherOrdersItemData {
         return VoucherOrdersItemData().let {
             it.code = voucherOrdersItem.code
             it.isSuccess = voucherOrdersItem.isSuccess
@@ -508,7 +505,7 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         }
     }
 
-    private fun mapVoucherOrdersItemDataList(voucherOrdersItemList: List<VoucherOrdersItem>?): List<VoucherOrdersItemData> {
+    private fun mapVoucherOrdersItemDataList(voucherOrdersItemList: List<com.tokopedia.purchase_platform.common.feature.promo_auto_apply.data.model.VoucherOrdersItem>?): List<VoucherOrdersItemData> {
         val voucherOrderItemsDataList = arrayListOf<VoucherOrdersItemData>()
         voucherOrdersItemList?.forEach {
             val voucherOrderItemData = mapVoucherOrdersItemData(it)
@@ -536,6 +533,63 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 emptyCartInfoMsg = lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.message,
                 emptyCartInfoDetail = lastApplyPromo.lastApplyPromoData.additionalInfo.emptyCartInfo.detail,
                 listRedPromos = mapCreateListRedPromos(lastApplyPromo.lastApplyPromoData))
+    }
+
+    private fun mapLastApplySimplified(lastApplyPromoData: LastApplyPromoData): LastApplyShopGroupSimplifiedData {
+        return LastApplyShopGroupSimplifiedData(
+                codes = lastApplyPromoData.codes,
+                voucherOrders = mapListVoucherOrders(lastApplyPromoData.listVoucherOrders),
+                additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
+                message = mapMessageGlobalPromo(lastApplyPromoData.message),
+                listRedPromos = mapCreateListRedPromos(lastApplyPromoData)
+        )
+    }
+
+    private fun mapListVoucherOrders(listVoucherOrdersItem: List<VoucherOrders>): List<VoucherOrdersItem> {
+        val listVoucherOrders: ArrayList<VoucherOrdersItem> = arrayListOf()
+        listVoucherOrdersItem.forEach {
+            listVoucherOrders.add(mapVoucherOrders(it))
+        }
+        return listVoucherOrders
+    }
+
+    private fun mapVoucherOrders(voucherOrders: VoucherOrders): VoucherOrdersItem {
+        return VoucherOrdersItem(
+                code = voucherOrders.code,
+                message = mapMessage(voucherOrders.message)
+        )
+    }
+
+    private fun mapMessage(message: MessageVoucherOrders): com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.Message {
+        return Message(
+                color = message.color,
+                state = message.state,
+                text = message.text)
+    }
+
+    private fun mapMessageGlobalPromo(message: MessageGlobalPromo): com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.Message {
+        return Message(
+                color = message.color,
+                state = message.state,
+                text = message.text)
+    }
+
+    private fun mapAdditionalInfo(promoAdditionalInfo: PromoAdditionalInfo): AdditionalInfo {
+        return AdditionalInfo(
+                messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
+                errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail)
+        )
+    }
+
+    private fun mapMessageInfo(promoMessageInfo: PromoMessageInfo): MessageInfo {
+        return MessageInfo(
+                detail = promoMessageInfo.detail,
+                message = promoMessageInfo.message)
+    }
+
+    private fun mapErrorDetail(promoErrorDetail: PromoErrorDetail): ErrorDetail {
+        return ErrorDetail(
+                message = promoErrorDetail.message)
     }
 
     private fun mapPromoCheckoutErrorDefault(errorDefault: ErrorDefault): PromoCheckoutErrorDefault {

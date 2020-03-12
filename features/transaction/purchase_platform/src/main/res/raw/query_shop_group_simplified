@@ -137,6 +137,7 @@ query shop_group_simplified($lang: String, $selected_cart_id: String) {
         hashed_email
         shop_group_available {
           errors
+          promo_codes
           user_address_id
           cart_string
           total_cart_details_error
