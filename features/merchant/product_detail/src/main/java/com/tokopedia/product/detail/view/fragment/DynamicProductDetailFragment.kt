@@ -1385,7 +1385,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     updatedDynamicProductInfo?.data?.media?.firstOrNull()?.uRLOriginal != pdpHashMapUtil?.snapShotMap?.media?.firstOrNull()?.urlOriginal) pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
             pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
 
-            viewModel.multiOrigin[selectedChild?.productId ?: ""]?.let {
+            viewModel.multiOrigin[selectedChild?.productId.toString()]?.let {
                 viewModel.selectedMultiOrigin = it
                 pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(it.warehouseInfo.id, it.price, it.stockWording)
             }
