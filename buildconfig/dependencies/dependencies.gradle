@@ -87,6 +87,7 @@ ext {
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.0'
     unifyDatePickerVersion = '1.0.3'
+    unifyPinVersion = '1.0.0'
     unifyEmptyStateVersion = '1.0.2'
     unifyGlobalErrorVersion = '1.0.6'
     unifySortFilterVersion = '1.0.1'
@@ -313,6 +314,7 @@ ext {
             dialog          : "com.tokopedia.unify.compositions:dialog:${unifyDialogVersion}@aar",
             datepicker      : "com.tokopedia.unify.compositions:datepicker:${unifyDatePickerVersion}@aar",
             empty_state     : "com.tokopedia.unify.compositions:empty_state:${unifyEmptyStateVersion}@aar",
+            pin             : "com.tokopedia.unify.compositions:pin:${unifyPinVersion}@aar",
             global_error    : "com.tokopedia.unify.compositions:global_error:${unifyGlobalErrorVersion}@aar",
             iconNotification: "com.tokopedia.unify.compositions:icon_notification:${unifyIconNotificationVersion}@aar",
             sortFilter      : "com.tokopedia.unify.compositions:sort_filter:${unifySortFilterVersion}@aar"
