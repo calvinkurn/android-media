@@ -26,7 +26,7 @@ class FilterViewHolder(view: View,
         private const val FLIPPED_ROTATION = 180f
     }
 
-    private val recyclerView: RecyclerView = itemView.chips_recycler_view
+    private val recyclerView: RecyclerView = itemView.chipsRecyclerView
     private var adapter: ChipsAdapter? = null
     private val headerWidget: HeaderWidget = itemView.filterHeader
     private val seeAllWidget: SeeAllWidget = itemView.filterSeeAll
