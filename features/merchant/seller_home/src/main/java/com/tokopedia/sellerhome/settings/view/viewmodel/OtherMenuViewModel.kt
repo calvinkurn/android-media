@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.settings.domain.mapToGeneralShopInfo
 import com.tokopedia.sellerhome.settings.domain.usecase.GetSettingShopInfoUseCase
 import com.tokopedia.sellerhome.settings.domain.usecase.GetShopBadgeUseCase
@@ -14,6 +15,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.delay
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -26,11 +28,16 @@ class OtherMenuViewModel @Inject constructor(
 ): BaseViewModel(dispatcher) {
 
     companion object {
+        private const val DELAY_TIME = 5000L
     }
 
     private val _generalShopInfoLiveData = MutableLiveData<Result<GeneralShopInfoUiModel>>()
     private val _totalFollowersLiveData = MutableLiveData<Result<Int>>()
     private val _shopBadgeLiveData = MutableLiveData<Result<String>>()
+    private val _isGeneralShopInfoAlreadyLoadedLiveData = MutableLiveData<Boolean>().apply { value = false }
+    private val _isShopBadgeAlreadyLoadedLiveData = MutableLiveData<Boolean>().apply { value = false }
+    private val _isTotalFollowersAlreadyLoadedLiveData = MutableLiveData<Boolean>().apply { value = false }
+    private val _isToasterAlreadyShown = MutableLiveData<Boolean>().apply { value = false }
 
     val generalShopInfoLiveData: LiveData<Result<GeneralShopInfoUiModel>>
         get() = _generalShopInfoLiveData
@@ -38,44 +45,68 @@ class OtherMenuViewModel @Inject constructor(
         get() = _totalFollowersLiveData
     val shopBadgeLiveData: LiveData<Result<String>>
         get() = _shopBadgeLiveData
+    val isGeneralShopInfoAlreadyLoaded: LiveData<Boolean>
+        get() = _isGeneralShopInfoAlreadyLoadedLiveData
+    val isShopBadgeAlreadyLoadedLiveData: LiveData<Boolean>
+        get() = _isShopBadgeAlreadyLoadedLiveData
+    val isTotalFollowersAlreadyLoadedLiveData: LiveData<Boolean>
+        get() = _isTotalFollowersAlreadyLoadedLiveData
 
-    fun getAllSettingShopInfo() {
+    fun getAllSettingShopInfo(isRetry: Boolean = false) {
+        _isToasterAlreadyShown.value = isRetry
         userSession.run {
-            getSettingShopInfo(userId)
-            getShopTotalFollowers(shopId.toInt())
-            getShopBadge(shopId.toInt())
+            getSettingShopInfo()
+            getShopTotalFollowers()
+            getShopBadge()
         }
     }
 
-    private fun getSettingShopInfo(userId: String) {
+    private fun getSettingShopInfo() {
+        val userId = userSession.userId.toIntOrZero()
         launchCatchError(block = {
-            getSettingShopInfoUseCase.params = GetSettingShopInfoUseCase.createRequestParams(userId.toInt())
+            getSettingShopInfoUseCase.params = GetSettingShopInfoUseCase.createRequestParams(userId)
             val shopInfo = getSettingShopInfoUseCase.executeOnBackground()
             val generalShopInfoUiModel = shopInfo.mapToGeneralShopInfo()
             _generalShopInfoLiveData.value = Success(generalShopInfoUiModel)
+            _isGeneralShopInfoAlreadyLoadedLiveData.value = true
         }, onError = {
-            _generalShopInfoLiveData.value = Fail(it)
+            checkDelayErrorResponseTrigger { _generalShopInfoLiveData.value = Fail(it) }
         })
     }
 
-    private fun getShopTotalFollowers(shopId: Int) {
+    private fun getShopTotalFollowers() {
+        val shopId = userSession.shopId.toIntOrZero()
         launchCatchError(block = {
             getShopTotalFollowersUseCase.params = GetShopTotalFollowersUseCase.createRequestParams(shopId)
             val totalFollowers = getShopTotalFollowersUseCase.executeOnBackground()
             _totalFollowersLiveData.value = Success(totalFollowers)
+            _isTotalFollowersAlreadyLoadedLiveData.value = true
         }, onError = {
-            _totalFollowersLiveData.value = Fail(it)
+            checkDelayErrorResponseTrigger { _totalFollowersLiveData.value = Fail(it) }
         })
     }
 
-    private fun getShopBadge(shopId: Int) {
+    private fun getShopBadge() {
+        val shopId = userSession.shopId.toIntOrZero()
         launchCatchError(block = {
             getShopBadgeUseCase.params = GetShopBadgeUseCase.createRequestParams(shopId)
             val shopBadgeUrl = getShopBadgeUseCase.executeOnBackground()
             _shopBadgeLiveData.value = Success(shopBadgeUrl)
+            _isShopBadgeAlreadyLoadedLiveData.value = true
         }, onError = {
-            _shopBadgeLiveData.value = Fail(it)
+            checkDelayErrorResponseTrigger { _shopBadgeLiveData.value = Fail(it) }
         })
+    }
+
+    private suspend fun checkDelayErrorResponseTrigger(action: () -> Unit) {
+        _isToasterAlreadyShown.value?.let { isToasterAlreadyShown ->
+            if (!isToasterAlreadyShown){
+                _isToasterAlreadyShown.value = true
+                action.invoke()
+                delay(DELAY_TIME)
+                _isToasterAlreadyShown.value = false
+            }
+        }
     }
 
 }

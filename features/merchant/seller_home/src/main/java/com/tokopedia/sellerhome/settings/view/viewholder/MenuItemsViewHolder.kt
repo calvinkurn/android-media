@@ -14,6 +14,11 @@ class MenuItemsViewHolder(itemView: View) : AbstractViewHolder<MenuItemUiModel>(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.setting_menu_list
+        @LayoutRes
+        val LAYOUT_NO_ICON = R.layout.setting_menu_list_no_icon
+
+        fun getLayoutRes(isNoIcon: Boolean) =
+                if (isNoIcon) LAYOUT_NO_ICON else LAYOUT
     }
 
     override fun bind(element: MenuItemUiModel) {

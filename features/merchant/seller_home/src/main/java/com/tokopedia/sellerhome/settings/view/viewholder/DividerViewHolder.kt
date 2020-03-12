@@ -12,38 +12,25 @@ class DividerViewHolder(itemView: View) : AbstractViewHolder<DividerUiModel>(ite
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.setting_divider
+        val THICK_LAYOUT = R.layout.setting_divider
+        @LayoutRes
+        val THIN_LAYOUT_FULL = R.layout.setting_divider_thin
+        @LayoutRes
+        val THIN_LAYOUT_PARTIAL = R.layout.setting_divider_partial_thin
+        @LayoutRes
+        val THIN_LAYOUT_INDENTED = R.layout.setting_divider_indented_thin
+
+        fun getDividerView(type: DividerType) : Int =
+                when(type) {
+                    DividerType.THICK -> THICK_LAYOUT
+                    DividerType.THIN_FULL -> THIN_LAYOUT_FULL
+                    DividerType.THIN_PARTIAL -> THIN_LAYOUT_PARTIAL
+                    DividerType.THIN_INDENTED -> THIN_LAYOUT_INDENTED
+                }
     }
 
     override fun bind(element: DividerUiModel) {
-        with(itemView) {
-            when(element.dividerType) {
-                DividerType.THICK -> {
-                    thickDivider.visibility = View.VISIBLE
-                    thinPartialDivider.visibility = View.GONE
-                    thinFullDivider.visibility = View.GONE
-                    thinIndentedDivider.visibility = View.GONE
-                }
-                DividerType.THIN_PARTIAL -> {
-                    thickDivider.visibility = View.GONE
-                    thinPartialDivider.visibility = View.VISIBLE
-                    thinFullDivider.visibility = View.GONE
-                    thinIndentedDivider.visibility = View.GONE
-                }
-                DividerType.THIN_FULL -> {
-                    thickDivider.visibility = View.GONE
-                    thinPartialDivider.visibility = View.GONE
-                    thinFullDivider.visibility = View.VISIBLE
-                    thinIndentedDivider.visibility = View.GONE
-                }
-                DividerType.THIN_INDENTED -> {
-                    thickDivider.visibility = View.GONE
-                    thinPartialDivider.visibility = View.GONE
-                    thinFullDivider.visibility = View.GONE
-                    thinIndentedDivider.visibility = View.VISIBLE
-                }
-            }
-        }
+
     }
 
 }
