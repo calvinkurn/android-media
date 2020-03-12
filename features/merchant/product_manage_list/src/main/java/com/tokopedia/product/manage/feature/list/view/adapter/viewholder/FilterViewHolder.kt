@@ -48,7 +48,7 @@ class FilterViewHolder(
     }
 
     private fun onClickProductFilter(filter: FilterViewModel) {
-        listener.onClickProductFilter(filter, this)
+        listener.onClickProductFilter(filter, this, chipText.text.toString())
     }
 
     private fun toggleSelectFilter(filter: FilterViewModel) {
@@ -71,6 +71,6 @@ class FilterViewHolder(
     }
 
     interface ProductFilterListener {
-        fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder)
+        fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder, tabName: String)
     }
 }

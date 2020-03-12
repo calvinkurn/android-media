@@ -3,14 +3,12 @@ package com.tokopedia.product.manage.feature.filter.presentation.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
@@ -27,14 +25,12 @@ import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.Produc
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_filter.*
-import kotlinx.android.synthetic.main.fragment_product_manage.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProductManageFilterFragment : BottomSheetUnify(),
@@ -50,6 +46,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         const val OTHER_FILTER_CACHE_MANAGER_KEY = "filter"
         const val BOTTOMSHEET_TITLE = "Filter"
         const val REST_BUTTON_TEXT = "Reset"
+        const val TAB_NAME = "tab_name"
         const val EXPAND_FILTER_REQUEST = 1
         const val UPDATE_SORT_SUCCESS_RESPONSE = 200
         const val UPDATE_ETALASE_SUCCESS_RESPONSE = 300
@@ -89,12 +86,14 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         super.onCreate(savedInstanceState)
         initInjector()
         var cacheManagerId: String = ""
-        arguments?.let {
-            cacheManagerId = it.getString(CACHE_MANAGER_KEY) ?: ""
+        arguments?.let { bundle ->
+            cacheManagerId = bundle.getString(CACHE_MANAGER_KEY) ?: ""
         }
         val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
         val savedInstanceManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
         //TODO use this cache manager to get filters from product list page
+
+
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -132,6 +131,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             ProductManageFilterMapper.SORT_HEADER -> {
                 cacheManager?.put(SORT_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, SORT_CACHE_MANAGER_KEY)
+                ProductManageTracking.eventSortingFilter()
             }
             ProductManageFilterMapper.ETALASE_HEADER -> {
                 cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, element)
@@ -140,10 +140,12 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             ProductManageFilterMapper.CATEGORY_HEADER -> {
                 cacheManager?.put(CATEGORIES_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, CATEGORIES_CACHE_MANAGER_KEY)
+                ProductManageTracking.eventCategoryFilter()
             }
             ProductManageFilterMapper.OTHER_FILTER_HEADER -> {
                 cacheManager?.put(OTHER_FILTER_CACHE_MANAGER_KEY, element)
                 intent.putExtra(ACTIVITY_EXPAND_FLAG, OTHER_FILTER_CACHE_MANAGER_KEY)
+                ProductManageTracking.eventOthersFilter()
             }
         }
         intent.putExtra(CACHE_MANAGER_KEY, cacheManager?.id)
@@ -186,8 +188,11 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     override fun onChipClicked(data: FilterDataViewModel, canSelectMany: Boolean, title: String) {
         if(canSelectMany) {
             productManageFilterViewModel.updateSelect(data)
+            if(title == ProductManageFilterMapper.OTHER_FILTER_HEADER) ProductManageTracking.eventOthersFilterName(data.name)
         } else {
             productManageFilterViewModel.updateSelect(data, title)
+            if(title == ProductManageFilterMapper.ETALASE_HEADER) ProductManageTracking.eventEtalaseFilter(data.name)
+            else ProductManageTracking.eventSortingFilterName(data.name)
         }
     }
 
@@ -229,6 +234,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
                 }
             }
             super.dismiss()
+            ProductManageTracking.eventFilter()
         }
         initBottomSheetReset()
     }

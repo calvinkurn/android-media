@@ -18,6 +18,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.CreateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.createupdateresponse.UpdateStockReminderResponse
 import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.response.getresponse.GetStockReminderResponse
@@ -52,6 +53,7 @@ class StockReminderFragment: BaseDaggerFragment() {
     private var productName: String? = null
     private var warehouseId: String? = null
     private var threshold: Int? = null
+    private var checked: Boolean? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -98,10 +100,15 @@ class StockReminderFragment: BaseDaggerFragment() {
         getStockReminder()
 
         swStockReminder.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked) {
-                containerStockReminder.visibility = View.VISIBLE
-            } else {
-                containerStockReminder.visibility = View.GONE
+            checked = isChecked
+            if(isChecked) containerStockReminder.visibility = View.VISIBLE
+            else containerStockReminder.visibility = View.GONE
+        }
+
+        swStockReminder.setOnClickListener {
+            checked?.let {
+                if (it) ProductManageTracking.eventToggleReminder(getString(R.string.product_manage_stock_reminder_active))
+                else ProductManageTracking.eventToggleReminder(getString(R.string.product_manage_stock_reminder_not_active))
             }
         }
 
@@ -115,6 +122,10 @@ class StockReminderFragment: BaseDaggerFragment() {
             } else {
                 threshold = qeStock.getValue()
                 updateStockReminder()
+            }
+            checked?.let {
+                if (it) ProductManageTracking.eventToggleReminderSave(getString(R.string.product_manage_stock_reminder_active))
+                else ProductManageTracking.eventToggleReminderSave(getString(R.string.product_manage_stock_reminder_not_active))
             }
         }
     }
@@ -149,7 +160,6 @@ class StockReminderFragment: BaseDaggerFragment() {
     private fun getStockReminder() {
         showLoading()
         productId?.let { viewModel.getStockReminder(it) }
-
     }
 
     private fun createStockReminder() {

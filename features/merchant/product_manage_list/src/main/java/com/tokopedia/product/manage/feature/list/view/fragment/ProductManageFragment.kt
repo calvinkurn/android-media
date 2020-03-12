@@ -60,6 +60,7 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.view.adapter.ProductManageListAdapter
 import com.tokopedia.product.manage.feature.list.view.adapter.decoration.ProductListItemDecoration
 import com.tokopedia.product.manage.feature.list.view.adapter.factory.ProductManageAdapterFactory
@@ -115,10 +116,8 @@ import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageFilterModel
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageSortModel
 import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.ProductUpdateV3SuccessFailedResponse
-import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
 import com.tokopedia.product.manage.oldlist.view.bottomsheets.ConfirmationUpdateProductBottomSheet
 import com.tokopedia.product.manage.oldlist.view.bottomsheets.EditProductBottomSheet
-import com.tokopedia.product.manage.oldlist.view.fragment.ProductManageEditPriceDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
@@ -244,30 +243,29 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.add_product_menu) {
             val subMenu = item.subMenu
-
             val addProductMenu = subMenu.findItem(R.id.label_view_add_image)
             val importFromInstagramMenu = subMenu.findItem(R.id.label_view_import_from_instagram)
 
-            addProductMenu.setOnMenuItemClickListener { menuItem ->
+            addProductMenu.setOnMenuItemClickListener {
                 startActivity(ProductAddNameCategoryActivity.createInstance(activity))
-                ProductManageTracking.eventProductManageTopNav(menuItem.title.toString())
                 true
             }
 
             importFromInstagramMenu.setOnMenuItemClickListener { menuItem ->
                 val intent = AddProductImagePickerBuilder.createPickerIntentInstagramImport(context)
                 startActivityForResult(intent, INSTAGRAM_SELECT_REQUEST_CODE)
-                ProductManageTracking.eventProductManageTopNav(menuItem.title.toString())
                 false
             }
+
+            ProductManageTracking.eventAddProduct()
         }
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder) {
+    override fun onClickProductFilter(filter: FilterViewModel, viewHolder: FilterViewHolder, tabName: String) {
         when(filter) {
             is Default -> {
-                showFilterBottomSheet()
+                showFilterBottomSheet(tabName)
             }
             else -> {
                 val selectedFilter = filter.status
@@ -283,14 +281,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 }
             }
         }
+        ProductManageTracking.eventInventory(tabName)
     }
 
-    private fun showFilterBottomSheet() {
+    private fun showFilterBottomSheet(tabName: String) {
         val savedInstanceManager = this.context?.let { SaveInstanceCacheManager(it, true) }
         savedInstanceManager?.let { cacheManager ->
             filterProductBottomSheet = context?.let { cacheManager.id?.let { id -> ProductManageFilterFragment.createInstance(it, id) } }
             setupFilterProductBottomSheet()
-            this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
+            this.childFragmentManager.let {
+                filterProductBottomSheet?.show(it,"BottomSheetTag")
+            }
         }
     }
 
@@ -389,7 +390,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     override fun onSearchSubmitted(text: String) {
         getProductList(keyword = text, isRefresh = true)
-        ProductManageTracking.eventProductManageSearch()
     }
 
     override fun onSearchTextChanged(text: String?) {
@@ -610,13 +610,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 val txtTipsTrick: TextView = dialog.findViewById(R.id.txt_tips_trick)
 
                 btnSubmit.setOnClickListener {
-                    ProductManageTracking.trackerManageCourierButton()
                     RouteManager.route(context, ApplinkConst.SELLER_SHIPPING_EDITOR)
                     activity.finish()
                 }
 
                 btnGoToPdp.setOnClickListener {
-                    ProductManageTracking.trackerSeeProduct()
                     goToPDP(productId)
                     dialog.dismiss()
                 }
@@ -630,7 +628,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
                 val cs = object : ClickableSpan() {
                     override fun onClick(v: View) {
-                        ProductManageTracking.trackerLinkClick()
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, URL_TIPS_TRICK))
                         activity.finish()
                     }
@@ -752,7 +749,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         val cacheManager = context?.let { SaveInstanceCacheManager(it,true) }
         cacheManager?.put(EDIT_STOCK_PRODUCT, product)
         val editStockBottomSheet = context?.let { cacheManager?.id?.let {
-            cacheId -> ProductManageQuickEditStockFragment.createInstance(it, cacheId) } }
+            cacheId -> ProductManageQuickEditStockFragment.createInstance(it, cacheId, product.id) } }
         editStockBottomSheet?.setOnDismissListener {
             if(editStockBottomSheet.editStockSuccess) {
                 editStockBottomSheet.editStockSuccess = false
@@ -768,6 +765,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             }
         }
         editStockBottomSheet?.show(childFragmentManager, "quick_edit_stock")
+        ProductManageTracking.eventEditStock(product.id)
     }
 
     override fun onClickMoreOptionsButton(product: ProductViewModel) {
@@ -782,7 +780,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onClickEditPriceButton(product: ProductViewModel) {
-        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it, product.price ?: "") }
+        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it, product.price ?: "", product.id ?: "") }
         editPriceBottomSheet?.setOnDismissListener {
             if(editPriceBottomSheet.editPriceSuccess) {
                 editPriceBottomSheet.editPriceSuccess = false
@@ -790,6 +788,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             }
         }
         editPriceBottomSheet?.show(childFragmentManager, "quick_edit_price")
+        ProductManageTracking.eventEditPrice(product.id)
     }
 
     override fun onClickOptionMenu(menu: ProductMenuViewModel) {
@@ -799,14 +798,38 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         val menuTitle = getString(menu.title)
 
         when(menu) {
-            is Preview -> goToPDP(productId)
-            is Duplicate -> clickDuplicateProduct(productId, menuTitle)
-            is StockReminder -> { onSetStockReminderClicked(product)}
-            is Delete -> clickDeleteProductMenu(productName, productId)
-            is SetTopAds -> onPromoTopAdsClicked(product)
-            is SetCashBack -> onSetCashbackClicked(product)
-            is SetFeaturedProduct -> onSetFeaturedProductClicked(product)
-            is RemoveFeaturedProduct -> onRemoveFeaturedProductClicked(product)
+            is Preview -> {
+                goToPDP(productId)
+                ProductManageTracking.eventSettingsPreview(productId)
+            }
+            is Duplicate -> {
+                clickDuplicateProduct(productId, menuTitle)
+                ProductManageTracking.eventSettingsDuplicate(productId)
+            }
+            is StockReminder -> {
+                onSetStockReminderClicked(product)
+                ProductManageTracking.eventSettingsReminder(productId)
+            }
+            is Delete -> {
+                clickDeleteProductMenu(productName, productId)
+                ProductManageTracking.eventSettingsDelete(productId)
+            }
+            is SetTopAds -> {
+                onPromoTopAdsClicked(product)
+                ProductManageTracking.eventSettingsTopads(productId)
+            }
+            is SetCashBack -> {
+                onSetCashbackClicked(product)
+                ProductManageTracking.eventSettingsCashback(productId)
+            }
+            is SetFeaturedProduct -> {
+                onSetFeaturedProductClicked(product)
+                ProductManageTracking.eventSettingsFeatured(productId)
+            }
+            is RemoveFeaturedProduct -> {
+                onRemoveFeaturedProductClicked(product)
+                ProductManageTracking.eventSettingsFeatured(productId)
+            }
         }
 
         manageProductBottomSheet?.dismiss()
@@ -814,7 +837,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun clickDuplicateProduct(productId: String, menuTitle: String) {
         goToDuplicateProduct(productId)
-        ProductManageTracking.eventProductManageOverflowMenu(menuTitle)
     }
 
     private fun clickDeleteProductMenu(productName: String, productId: String) {
@@ -859,6 +881,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                             showLoadingProgress()
                             setFeaturedProduct(productManageViewModel.id, ProductManageListConstant.FEATURED_PRODUCT_ADD_STATUS)
                             dialogFeaturedProduct?.dismiss()
+                            ProductManageTracking.eventFeaturedProductPopUpSave()
                         }
                         dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
                         dialogFeaturedProduct?.show()
@@ -875,6 +898,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 dialogFeaturedProduct?.setPrimaryCTAClickListener {
                     dialogFeaturedProduct?.dismiss()
                     RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                    ProductManageTracking.eventFeaturedProductPopUpMore()
                 }
                 dialogFeaturedProduct?.setSecondaryCTAClickListener { dialogFeaturedProduct?.dismiss() }
                 dialogFeaturedProduct?.show()
@@ -964,7 +988,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 else -> {
                 }
             }
-            ProductManageTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_cashback_title) + " - " + it.title)
         }
     }
 
@@ -1043,6 +1066,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             dialog.setPrimaryCTAClickListener {
                 viewModel.deleteSingleProduct(productName, productId)
                 dialog.dismiss()
+                ProductManageTracking.eventDeleteProduct(productId)
             }
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
@@ -1053,7 +1077,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     override fun onClickProductItem(product: ProductViewModel) {
         goToPDP(product.id)
-        ProductManageTracking.eventProductManageClickDetail()
+        ProductManageTracking.eventOnProduct(product.id)
     }
 
     /**
@@ -1134,7 +1158,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 REQUEST_CODE_FILTER -> if (resultCode == Activity.RESULT_OK) {
                     productManageFilterModel = it.getParcelableExtra(EXTRA_FILTER_SELECTED)
                     loadInitialData()
-                    ProductManageTracking.trackingFilter(productManageFilterModel)
                 }
                 ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                     val etalaseId = it.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
@@ -1151,7 +1174,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 REQUEST_CODE_SORT -> if (resultCode == Activity.RESULT_OK) {
                     val productManageSortModel: ProductManageSortModel = it.getParcelableExtra(EXTRA_SORT_SELECTED)
                     loadInitialData()
-                    ProductManageTracking.eventProductManageSortProduct(productManageSortModel.titleSort)
                 }
                 REQUEST_CODE_STOCK_REMINDER -> if(resultCode == Activity.RESULT_OK) {
                     val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)

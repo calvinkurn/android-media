@@ -14,6 +14,7 @@ import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
@@ -26,17 +27,19 @@ import java.util.*
 class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
 
     companion object {
+        private const val PRODUCT_ID = "id"
         private const val PRODUCT_PRICE = "price"
         private const val MAX_PRICE = 100000000
         private const val MIN_PRICE = 100
         private const val MAXIMUM_STRING_LENGTH = 11
-        fun createInstance(context: Context, price: String) : ProductManageQuickEditPriceFragment {
+        fun createInstance(context: Context, price: String, id: String) : ProductManageQuickEditPriceFragment {
             return ProductManageQuickEditPriceFragment().apply{
                 val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
                 setChild(view)
                 setTitle(context.resources.getString(R.string.product_manage_menu_set_price))
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 arguments =  Bundle().apply{
+                    putString(PRODUCT_ID, id)
                     putString(PRODUCT_PRICE, price)
                 }
             }
@@ -44,12 +47,14 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
     }
 
     var editPriceSuccess = false
+    var id = ""
     var price = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             price = it.getString(PRODUCT_PRICE) ?: ""
+            id = it.getString(PRODUCT_ID) ?: ""
         }
     }
 
@@ -96,6 +101,7 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
         quick_edit_price.requestFocus()
         quick_edit_save_button.setOnClickListener {
             isPriceValid()
+            ProductManageTracking.eventEditPriceSave(id)
         }
     }
 

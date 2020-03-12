@@ -184,4 +184,11 @@
     <string name="product_manage_snack_bar_retry">Coba lagi</string>
     <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
 
+    <string name="add_product_text_description">Tambah Produk</string>
+    <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>
+
+    <string name="product_manage_stock_reminder_active">active</string>
+    <string name="product_manage_stock_reminder_not_active">not active</string>
+
+
 </resources>

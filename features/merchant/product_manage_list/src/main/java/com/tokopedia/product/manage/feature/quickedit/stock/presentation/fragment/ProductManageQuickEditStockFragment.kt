@@ -12,12 +12,12 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.quickedit.stock.di.DaggerProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
 import javax.inject.Inject
 
@@ -27,11 +27,12 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
     companion object {
 
         const val EDIT_STOCK_CACHE_ID = "edit_stock_cache_id"
+        const val EDIT_STOCK_PRODUCT_ID = "edit_stock_product_id"
         const val EDIT_STOCK_PRODUCT = "edit_stock_product"
         const val MAXIMUM_STOCK = 999999
         const val MINIMUM_STOCK = 0
 
-        fun createInstance(context: Context, cacheManagerId: String) : ProductManageQuickEditStockFragment {
+        fun createInstance(context: Context, cacheManagerId: String, productId: String) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment().apply{
                 val view = View.inflate(context, R.layout.fragment_quick_edit_stock,null)
                 setChild(view)
@@ -39,6 +40,7 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 arguments =  Bundle().apply{
                     putString(EDIT_STOCK_CACHE_ID, cacheManagerId)
+                    putString(EDIT_STOCK_PRODUCT_ID, productId)
                 }
             }
         }
@@ -49,6 +51,8 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
 
     var editStockSuccess = false
     var cacheManagerId: String? = ""
+    var productId: String = ""
+    var checked: Boolean = false
 
     private var product: ProductViewModel? = null
 
@@ -105,14 +109,22 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
             }
             editStockSuccess = true
             super.dismiss()
+            ProductManageTracking.eventEditStockSave(productId)
         }
         quick_edit_stock_activate_switch.setOnCheckedChangeListener { _, isChecked ->
+            checked = isChecked
             if (isChecked) {
                 viewModel.updateStatus(ProductStatus.ACTIVE)
             } else {
                 viewModel.updateStatus(ProductStatus.INACTIVE)
             }
         }
+
+        quick_edit_stock_activate_switch.setOnClickListener {
+            if(checked) ProductManageTracking.eventEditStockToggle(getString(R.string.product_manage_stock_reminder_active),productId)
+            else ProductManageTracking.eventEditStockToggle(getString(R.string.product_manage_stock_reminder_not_active), productId)
+        }
+
         product?.let {
             quick_edit_stock_activate_switch.isChecked = it.isActive()
             it.stock?.let { stock ->

@@ -5,13 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.design.text.SearchInputView
@@ -31,11 +28,9 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandChecklistViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_search.*
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ProductManageFilterExpandChecklistFragment :
@@ -96,6 +91,10 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     override fun onChecklistClick(element: ChecklistViewModel) {
+        if(flag == OTHER_FILTER_CACHE_MANAGER_KEY) {
+            if(!element.isSelected) ProductManageTracking.eventMoreOthersFilter(element.name, getString(R.string.product_manage_stock_reminder_active))
+            else ProductManageTracking.eventMoreOthersFilter(element.name, getString(R.string.product_manage_stock_reminder_not_active))
+        }
         productManageFilterExpandChecklistViewModel.updateSelectedItem(element)
     }
 
@@ -226,6 +225,7 @@ class ProductManageFilterExpandChecklistFragment :
                         Intent().putExtra(ProductManageFilterFragment.CACHE_MANAGER_KEY, cacheManagerId))
             }
             this.activity?.finish()
+            ProductManageTracking.eventMoreOthersFilterSave()
         }
         reset_checklist.setOnClickListener {
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
