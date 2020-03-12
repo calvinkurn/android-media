@@ -86,7 +86,7 @@ class ProductCheckoutViewHolder(
         }
     }
 
-    override fun bindProductCardClick(element: NotificationItemViewBean) {
+    override fun trackProduct(element: NotificationItemViewBean) {
         if (element.totalProduct == SINGLE_PRODUCT) {
             listener.getAnalytic().trackSingleProductCheckoutCardClick(
                     notification = element
@@ -100,7 +100,7 @@ class ProductCheckoutViewHolder(
 
     private fun onProductCheckoutClick(element: NotificationItemViewBean) {
         btnCheckout.setOnClickListener {
-            baseItemMarkedClick(element)
+            notificationItemMarkedClick(element)
             listener.getAnalytic().trackAtcOnSingleProductClick(notification = element)
             listener.addProductToCheckout(element.userInfo, element.getAtcProduct())
         }

@@ -114,14 +114,14 @@ abstract class BaseNotificationItemViewHolder(
 
     abstract fun bindNotificationPayload(element: NotificationItemViewBean)
 
-    protected open fun baseItemMarkedClick(element: NotificationItemViewBean) {
+    protected open fun notificationItemMarkedClick(element: NotificationItemViewBean) {
         listener.itemClicked(element, adapterPosition)
         element.isRead = true
     }
 
     protected open fun bindOnNotificationClick(element: NotificationItemViewBean) {
         container.setOnClickListener {
-            baseItemMarkedClick(element)
+            notificationItemMarkedClick(element)
             if (element.isLongerContent) {
                 listener.showNotificationDetail(BottomSheetType.LongerContent, element)
             } else {

@@ -27,7 +27,7 @@ abstract class BaseProductCampaignViewHolder(
     private val productVariant: ProductVariantLayout = itemView.findViewById(R.id.pvl_variant)
 
     abstract fun bindProductView(element: NotificationItemViewBean)
-    abstract fun bindProductCardClick(element: NotificationItemViewBean)
+    abstract fun trackProduct(element: NotificationItemViewBean)
 
     override fun bindNotificationPayload(element: NotificationItemViewBean) {
         val product = element.getAtcProduct() ?: return
@@ -45,13 +45,15 @@ abstract class BaseProductCampaignViewHolder(
         val product = element.getAtcProduct() ?: return
         //single product container
         productContainer.setOnClickListener {
-            baseItemMarkedClick(element)
+            notificationItemMarkedClick(element)
+            trackProduct(element)
             getItemClickListener(product)
         }
 
         //common notification container
         container.setOnClickListener {
-            baseItemMarkedClick(element)
+            notificationItemMarkedClick(element)
+            trackProduct(element)
             if (element.products.isSingleItem()) {
                 getItemClickListener(product)
             } else {
@@ -73,11 +75,6 @@ abstract class BaseProductCampaignViewHolder(
             val bottomSheetType = BottomSheetType.map(element.typeBottomSheet)
             listener.showNotificationDetail(bottomSheetType, element)
         }
-    }
-
-    override fun baseItemMarkedClick(element: NotificationItemViewBean) {
-        super.baseItemMarkedClick(element)
-        bindProductCardClick(element)
     }
 
 }
