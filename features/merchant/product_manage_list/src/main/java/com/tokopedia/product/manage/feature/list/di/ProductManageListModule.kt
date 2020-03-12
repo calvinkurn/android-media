@@ -7,8 +7,10 @@ import com.tokopedia.gm.common.data.repository.GMCommonRepositoryImpl
 import com.tokopedia.gm.common.data.source.GMCommonDataSource
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
+import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
@@ -194,5 +196,11 @@ class ProductManageListModule {
             context.resources,
             com.tokopedia.shop.common.R.raw.gql_mutation_gold_manage_featured_product_v2
         )
+    }
+
+    @ProductManageListScope
+    @Provides
+    fun provideMultiEditProductUseCase(graphqlRepository: GraphqlRepository): MultiEditProductUseCase {
+        return MultiEditProductUseCase(graphqlRepository)
     }
 }

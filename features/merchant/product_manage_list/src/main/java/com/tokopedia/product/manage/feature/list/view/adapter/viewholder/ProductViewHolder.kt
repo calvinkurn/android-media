@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.item_manage_product_list.view.*
 class ProductViewHolder(
     view: View,
     checkableListener: CheckableInteractionListener,
-    val listener: ProductViewHolderView
+    private val listener: ProductViewHolderView
 ): BaseCheckableViewHolder<ProductViewModel>(view, checkableListener),
     CompoundButton.OnCheckedChangeListener, View.OnClickListener {
 
@@ -35,6 +35,7 @@ class ProductViewHolder(
 
         showProductImage(product)
         showStockHintImage(product)
+        showProductCheckBox(product)
 
         setOnClickListeners(product)
     }
@@ -72,10 +73,19 @@ class ProductViewHolder(
     }
 
     private fun showProductButton(product: ProductViewModel) {
-        itemView.btnContactCS.showViewIf(product.isBanned())
-        itemView.btnEditVariant.showViewIf(product.isVariant())
-        itemView.btnEditPrice.showViewIf(product.isNotVariant())
-        itemView.btnEditStock.showViewIf(product.isNotVariant())
+        if(product.multiSelectActive) {
+            itemView.btnContactCS.hide()
+            itemView.btnEditVariant.hide()
+            itemView.btnEditPrice.hide()
+            itemView.btnEditStock.hide()
+            itemView.btnMoreOptions.hide()
+        } else {
+            itemView.btnContactCS.showViewIf(product.isBanned())
+            itemView.btnEditVariant.showViewIf(product.isVariant())
+            itemView.btnEditPrice.showViewIf(product.isNotVariant())
+            itemView.btnEditStock.showViewIf(product.isNotVariant())
+            itemView.btnMoreOptions.show()
+        }
     }
 
     private fun showStockHintImage(product: ProductViewModel) {
@@ -93,11 +103,15 @@ class ProductViewHolder(
         itemView.btnEditPrice.setOnClickListener { listener.onClickEditPriceButton(product) }
         itemView.btnEditStock.setOnClickListener { listener.onClickEditStockButton(product) }
     }
-    
+
+    private fun showProductCheckBox(product: ProductViewModel) {
+        itemView.checkBoxSelect.showViewIf(product.multiSelectActive)
+    }
+
     private fun View.showViewIf(predicate: Boolean) {
         if(predicate) show() else hide()
     }
-    
+
     interface ProductViewHolderView {
         fun onClickStockInformation()
         fun onClickMoreOptionsButton(product: ProductViewModel)
