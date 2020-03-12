@@ -7,9 +7,7 @@ import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
  */
 
 data class ImageTooltipModel(
-        override var id: Int,
         override var title: String,
-        var subtitle : String,
-        var image : String = "") : TooltipModel(id, title) {
+        var imageUrl : String = "") : TooltipModel(title) {
     override fun type(typeFactory: TooltipTypeFactory): Int = typeFactory.type(this)
 }

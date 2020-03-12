@@ -12,6 +12,8 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.description.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.model.VideoLinkModel
+import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
+import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
@@ -63,15 +65,50 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         }
 
         layoutDescriptionTips.setOnClickListener {
-            // no-op
+            showDescriptionTips()
         }
 
         layoutVariantTips.setOnClickListener {
-            // no-op
+            showVariantTips()
         }
 
         tvAddVariant.setOnClickListener {
             showVariantDialog()
+        }
+    }
+
+    private fun showDescriptionTips() {
+        fragmentManager?.let {
+            val tooltipBottomSheet = TooltipBottomSheet()
+            val tips: ArrayList<NumericTooltipModel> = ArrayList()
+            val tooltipTitle = getString(R.string.title_tooltip_description_tips)
+            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_1)))
+            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_2)))
+            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_description_tips_3)))
+
+            tooltipBottomSheet.apply {
+                setTitle(tooltipTitle)
+                setItemMenuList(tips)
+                show(it, null)
+            }
+        }
+    }
+
+    private fun showVariantTips() {
+        fragmentManager?.let {
+            val tooltipBottomSheet = TooltipBottomSheet()
+            val tips: ArrayList<NumericTooltipModel> = ArrayList()
+            val tooltipTitle = getString(R.string.title_tooltip_variant_tips)
+            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_1)))
+            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_2)))
+            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_3)))
+            tips.add(NumericTooltipModel(getString(R.string.message_tooltip_variant_tips_4)))
+
+            tooltipBottomSheet.apply {
+                setTitle(tooltipTitle)
+                setItemMenuList(tips)
+                show(it, null)
+            }
         }
     }
 
@@ -137,8 +174,9 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
         const val EXTRA_VARIANT_CACHE_ID = "variant_cache_id"
         const val EXTRA_IS_USING_CACHE_MANAGER = "is_using_cache_manager"
 
+        // TODO faisalramd
         const val TEST_VARIANT = "{\"variant_id\":1,\"name\":\"Warna\",\"identifier\":\"colour\",\"status\":2,\"has_unit\":0,\"units\":[{\"unit_id\":0,\"name\":\"\",\"short_name\":\"\",\"values\":[{\"value_id\":1,\"value\":\"Putih\",\"hex_code\":\"#ffffff\",\"icon\":\"\"},{\"value_id\":2,\"value\":\"Hitam\",\"hex_code\":\"#000000\",\"icon\":\"\"}]}]}"
-        const val TEST_IMAGE_URL = "https://placekitten.com/200/200"
+        const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
 
 }

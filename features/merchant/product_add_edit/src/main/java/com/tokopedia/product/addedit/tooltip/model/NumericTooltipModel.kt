@@ -7,8 +7,7 @@ import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
  */
 
 data class NumericTooltipModel(
-        override var id: Int,
         override var title: String,
-        var number : String = "") : TooltipModel(id, title) {
+        var number : String = "") : TooltipModel(title) {
     override fun type(typeFactory: TooltipTypeFactory): Int = typeFactory.type(this)
 }

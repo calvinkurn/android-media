@@ -1,23 +1,26 @@
 package com.tokopedia.product.addedit.tooltip.presentation
 
-import android.graphics.PorterDuff
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
+import com.tokopedia.kotlin.extensions.view.toDp
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.tooltip.adapter.TooltipTypeFactory
 import com.tokopedia.product.addedit.tooltip.model.TooltipModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import kotlinx.android.synthetic.main.bottom_sheet_list.view.*
-import kotlin.math.roundToInt
 
 class TooltipBottomSheet: BottomSheetUnify() {
 
@@ -39,32 +42,33 @@ class TooltipBottomSheet: BottomSheetUnify() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        changeCloseButtonColour()
+        changeCloseButtonSize()
         removeContainerPadding()
         addMarginCloseButton()
     }
 
-    private fun changeCloseButtonColour() {
-        context?.let { ctx ->
-            val color = ContextCompat.getColor(ctx, R.color.Neutral_N400)
-            bottomSheetClose.drawable?.apply {
-                mutate()
-                setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
-            }
+    private fun changeCloseButtonSize() {
+        val fontSize = resources.getDimension(R.dimen.fontSize_lvl7).toDp()
+        bottomSheetTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
+        bottomSheetClose.drawable?.apply {
+            val bitmap = (this as BitmapDrawable).bitmap
+            val drawableSize = resources.getDimensionPixelSize(R.dimen.tooltip_close_size)
+            val scaled = BitmapDrawable(resources, Bitmap.createScaledBitmap(bitmap, drawableSize, drawableSize, true))
+            bottomSheetClose.setImageDrawable(scaled)
         }
     }
 
     private fun removeContainerPadding() {
-        val paddingTop = resources.getDimension(R.dimen.tooltip_padding).toPx().roundToInt()
-        val padding = resources.getDimension(R.dimen.tooltip_padding_top).toPx().roundToInt()
+        val padding = resources.getDimensionPixelSize(R.dimen.tooltip_padding)
+        val paddingTop = resources.getDimensionPixelSize(R.dimen.tooltip_padding_top)
         bottomSheetWrapper.setPadding(padding, paddingTop, padding, padding)
     }
 
     private fun addMarginCloseButton() {
-        val horizontalMargin =
-                resources.getDimension(R.dimen.bottom_sheet_margin_close).toPx().roundToInt()
+        val topMargin = resources.getDimensionPixelSize(R.dimen.spacing_lvl3)
+        val horizontalMargin = resources.getDimensionPixelSize(R.dimen.tooltip_close_margin)
         (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
-            setMargins(horizontalMargin, 0, horizontalMargin, 0)
+            setMargins(horizontalMargin, topMargin, horizontalMargin, 0)
             addRule(RelativeLayout.CENTER_VERTICAL)
         }
     }
