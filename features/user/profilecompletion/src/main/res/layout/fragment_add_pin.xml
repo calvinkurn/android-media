@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="@dimen/spacing_lvl4"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,11 +15,7 @@
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl7"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
             android:text="@string/create_pin"
             android:textAlignment="center"
             app:typographyType="heading_2"
@@ -37,20 +32,16 @@
             android:textAlignment="center"
             app:typographyType="body_2"
             android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginRight="@dimen/spacing_lvl4"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginLeft="@dimen/spacing_lvl4"
-            android:layout_marginStart="@dimen/spacing_lvl4"
             app:layout_constraintTop_toBottomOf="@+id/title" />
 
         <com.tokopedia.pin.PinUnify
             android:id="@+id/inputPin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/spacing_lvl5"
-            android:layout_marginStart="@dimen/spacing_lvl5"
-            android:layout_marginRight="@dimen/spacing_lvl5"
-            android:layout_marginEnd="@dimen/spacing_lvl5"
+            android:layout_marginLeft="@dimen/spacing_lvl3"
+            android:layout_marginStart="@dimen/spacing_lvl3"
+            android:layout_marginRight="@dimen/spacing_lvl3"
+            android:layout_marginEnd="@dimen/spacing_lvl3"
             android:layout_marginTop="@dimen/spacing_lvl5"
             android:orientation="horizontal"
             app:pin_count="6"
@@ -64,13 +55,14 @@
             android:id="@+id/info_bottom_pin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="@dimen/spacing_lvl4"
             android:layout_marginTop="@dimen/spacing_lvl6"
             android:text="@string/info_create_pin"
             android:textAlignment="center"
-            app:typographyType="body_3"
-            android:layout_margin="@dimen/spacing_lvl4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inputPin"
-            tools:layout_editor_absoluteX="16dp" />
+            app:typographyType="body_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
