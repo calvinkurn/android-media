@@ -161,6 +161,9 @@ private fun ProductCardModel.getCredibilitySectionHeight(context: Context): Int 
 
 private fun ProductCardModel.getRatingHeight(context: Context): Int {
     return when {
+        !willShowRatingAndReviewCount() -> {
+            0
+        }
         ratingString.isNotEmpty() -> {
             val textRatingStringMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_rating_string_margin_top)
             val textRatingStringHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_rating_string_height)
@@ -173,12 +176,14 @@ private fun ProductCardModel.getRatingHeight(context: Context): Int {
 
             imageRatingStarMarginTop + imageRatingStarHeight
         }
-        else -> 0
+        else -> {
+            0
+        }
     }
 }
 
 private fun ProductCardModel.getReviewCountHeight(context: Context): Int {
-    return if (reviewCount > 0) {
+    return if (willShowRatingAndReviewCount()) {
         val textReviewCountMarginTop = context.resources.getDimensionPixelSize(R.dimen.product_card_text_review_count_margin_top)
         val textReviewCountHeight = context.resources.getDimensionPixelSize(R.dimen.product_card_text_review_count_height)
 

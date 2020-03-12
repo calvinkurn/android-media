@@ -24,6 +24,7 @@ internal val productCardModelMatcherData: List<ProductCardModelMatcher> = mutabl
     it.add(testLabelShippingInfo())
     it.add(testNoShopBadge())
     it.add(testNoRatingButHasReviewCount())
+    it.add(testHasRatingButNoReviewCount())
     it.add(testProductRatingStar1())
     it.add(testProductRatingStar2())
     it.add(testProductRatingStar3())
@@ -401,7 +402,31 @@ private fun testNoRatingButHasReviewCount(): ProductCardModelMatcher {
         it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
         it[R.id.imageShopBadge] = isDisplayed()
         it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
-        it[R.id.textViewReviewCount] = isDisplayedWithText("(${productCardModel.reviewCount})")
+    }
+
+    return ProductCardModelMatcher(productCardModel, productCardMatcher)
+}
+
+private fun testHasRatingButNoReviewCount(): ProductCardModelMatcher {
+    val productCardModel = ProductCardModel(
+            productName = "Has Rating but No Review Count",
+            productImageUrl = productImageUrl,
+            shopBadgeList = mutableListOf<ShopBadge>().also { badges ->
+                badges.add(ShopBadge(isShown = true, imageUrl = officialStoreBadgeImageUrl))
+            },
+            formattedPrice = "Rp7.999.000",
+            shopLocation = "DKI Jakarta",
+            ratingCount = 4,
+            ratingString = "4.5",
+            reviewCount = 0
+    )
+
+    val productCardMatcher = mutableMapOf<Int, Matcher<View?>>().also {
+        it[R.id.imageProduct] = isDisplayed()
+        it[R.id.textViewProductName] = isDisplayedWithText(productCardModel.productName)
+        it[R.id.textViewPrice] = isDisplayedWithText(productCardModel.formattedPrice)
+        it[R.id.imageShopBadge] = isDisplayed()
+        it[R.id.textViewShopLocation] = isDisplayedWithText(productCardModel.shopLocation)
     }
 
     return ProductCardModelMatcher(productCardModel, productCardMatcher)
