@@ -3,6 +3,7 @@ package com.tokopedia.variant_common.view.holder
 import android.content.Context
 import android.view.View
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
@@ -15,9 +16,10 @@ import com.tokopedia.variant_common.view.adapter.VariantOptionAdapter
 /**
  * Created by mzennis on 2020-03-11.
  */
-class VariantContainerViewHolder(val view: View, val listener: ProductVariantListener) : RecyclerView.ViewHolder(view) {
+class VariantContainerViewHolder(val view: View, val listener: ProductVariantListener) : RecyclerView.ViewHolder(view), ProductVariantListener by listener {
 
-    private var variantOptionAdapter = VariantOptionAdapter(listener)
+    private val variantOptionAdapter = VariantOptionAdapter(this)
+    private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
     private val txtVariantSelectedOption = view.findViewById<TextView>(R.id.txtVariantSelectedOption)
     private val txtVariantStockWording = view.findViewById<TextView>(R.id.txtVariantStockWording)
@@ -30,6 +32,7 @@ class VariantContainerViewHolder(val view: View, val listener: ProductVariantLis
 
     init {
         rvVariant.adapter = variantOptionAdapter
+        rvVariant.layoutManager = layoutManager
         rvVariant.itemAnimator = null
     }
 
@@ -55,6 +58,11 @@ class VariantContainerViewHolder(val view: View, val listener: ProductVariantLis
         }
 
         variantOptionAdapter.setData(data.variantOptions)
+    }
+
+    override fun onSelectionChanged(view: View, position: Int) {
+        if (!layoutManager.isViewPartiallyVisible(view, true, true))
+            view.post { rvVariant.smoothScrollToPosition(position) }
     }
 
     private fun setSelectedOptionText(data: VariantCategory) {

@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.variant_common.model.VariantCategory
+import com.tokopedia.variant_common.constant.VariantConstant
 import com.tokopedia.variant_common.model.VariantOptionWithAttribute
 import com.tokopedia.variant_common.view.ProductVariantListener
 import com.tokopedia.variant_common.view.holder.BaseVariantViewHolder
@@ -58,7 +58,10 @@ class VariantOptionAdapter(val listener: ProductVariantListener) : RecyclerView.
     override fun getItemCount(): Int = optionList.size
 
     override fun onBindViewHolder(holder: BaseVariantViewHolder<VariantOptionWithAttribute>, position: Int) {
-        holder.bind(optionList[position])
+        val option = optionList[position]
+        holder.bind(option)
+
+        if (option.currentState == VariantConstant.STATE_SELECTED) listener.onSelectionChanged(holder.itemView, position)
     }
 
     override fun getItemViewType(position: Int): Int {

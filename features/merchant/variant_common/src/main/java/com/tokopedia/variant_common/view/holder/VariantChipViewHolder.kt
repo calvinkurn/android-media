@@ -48,6 +48,5 @@ class VariantChipViewHolder(val view: View,
                 view.isEnabled = true
             }
         }
-
     }
 } 
