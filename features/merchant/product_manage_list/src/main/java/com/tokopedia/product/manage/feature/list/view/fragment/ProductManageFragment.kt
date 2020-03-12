@@ -61,6 +61,7 @@ import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
@@ -92,7 +93,6 @@ import com.tokopedia.product.manage.feature.quickedit.price.data.model.EditPrice
 import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragment.ProductManageQuickEditPriceFragment
 import com.tokopedia.product.manage.feature.quickedit.stock.data.model.EditStockResult
 import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment
-import com.tokopedia.product.manage.feature.quickedit.stock.presentation.fragment.ProductManageQuickEditStockFragment.Companion.EDIT_STOCK_PRODUCT
 import com.tokopedia.product.manage.item.imagepicker.imagepickerbuilder.AddProductImagePickerBuilder
 import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCategoryActivity
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
@@ -144,7 +144,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     ProductViewHolder.ProductViewHolderView,
     FilterViewHolder.ProductFilterListener,
     ProductMenuViewHolder.ProductMenuListener,
-    ProductMultiEditBottomSheet.MultiEditListener {
+    ProductMultiEditBottomSheet.MultiEditListener,
+    ProductManageFilterFragment.OnFinishedListener,
+    ProductManageQuickEditPriceFragment.OnFinishedListener,
+    ProductManageQuickEditStockFragment.OnFinishedListener {
 
     @Inject
     lateinit var viewModel: ProductManageViewModel
@@ -213,6 +216,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
         observeSetFeaturedProduct()
         observeViewState()
+        observeFilter()
 
         getProductListFeaturedOnlySize()
         getTopAdsFreeClaim()
@@ -286,6 +290,24 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         showDeleteProductsConfirmationDialog()
     }
 
+    override fun onFinish(selectedData: FilterOptionWrapper) {
+        viewModel.setSelectedFilterAndSort(selectedData)
+    }
+
+    override fun onFinishEditPrice(product: ProductViewModel) {
+        product.title?.let { product.price?.let { price -> viewModel.editPrice(product.id, price, it) } }
+    }
+
+    override fun onFinishEditStock(modifiedProduct: ProductViewModel) {
+        modifiedProduct.stock?.let { stock ->
+            modifiedProduct.title?.let { title ->
+                modifiedProduct.status?.let { status ->
+                        viewModel.editStock( modifiedProduct.id, stock, title, status)
+                }
+            }
+        }
+    }
+
     private fun setupSearchBar() {
         searchInputView.clearFocus()
         searchInputView.closeImageButton.setOnClickListener {
@@ -312,37 +334,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun showFilterBottomSheet() {
-        val savedInstanceManager = this.context?.let { SaveInstanceCacheManager(it, true) }
-        savedInstanceManager?.let { cacheManager ->
-            filterProductBottomSheet = context?.let { cacheManager.id?.let { id -> ProductManageFilterFragment.createInstance(it, id) } }
-            setupFilterProductBottomSheet()
-            this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
-        }
-    }
-
-    private fun setupFilterProductBottomSheet() {
-//        filterProductBottomSheet?.let { bottomSheet ->
-//            bottomSheet.setOnDismissListener {
-//                if(bottomSheet.isResultReady) {
-//                    bottomSheet.isResultReady = false
-//                    val cacheManager = context?.let { SaveInstanceCacheManager(it, bottomSheet.resultCacheManagerId) }
-//                    val filterOptionWrapper: FilterOptionWrapper? = cacheManager?.get(ProductManageFilterFragment.SELECTED_FILTER, FilterOptionWrapper::class.java)
-//                    filterOptionWrapper?.let {
-//                        viewModel.getProductList(userSession.shopId, filterOptionWrapper.filterOptions, filterOptionWrapper.sortOption)
-//                    }
-//                }
-//            }
-//        }
-        filterProductBottomSheet?.let { bottomSheet ->
-            bottomSheet.setOnDismissListener {
-                if(bottomSheet.isResultReady) {
-                    bottomSheet.isResultReady = false
-                    viewModel.getProductList(userSession.shopId,
-                            bottomSheet.selectedFilterOptions?.filterOptions,
-                            bottomSheet.selectedFilterOptions?.sortOption, true)
-                }
-            }
-        }
+        filterProductBottomSheet = context?.let { ProductManageFilterFragment.createInstance(it, this) }
+        this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
     }
 
     private fun filterProductByStatus(products: List<ProductViewModel>, status: ProductStatus?) {
@@ -424,7 +417,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun getProductList(page: Int = 1, keyword: String? = null, isRefresh: Boolean = false) {
-        val selectedFilter = filterProductBottomSheet?.selectedFilterOptions
+        val selectedFilter = viewModel.selectedFilterAndSort.value
         val filterOptions = createFilterOptions(page, keyword)
         val sortOption = selectedFilter?.sortOption
 
@@ -436,9 +429,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun createFilterOptions(page: Int, keyword: String?): MutableList<FilterOption> {
-        val selectedFilter = filterProductBottomSheet?.selectedFilterOptions
-        val filterOptions = selectedFilter?.filterOptions.orEmpty()
-            .toMutableList()
+        val selectedFilter = viewModel.selectedFilterAndSort.value
+        val filterOptions = selectedFilter?.filterOptions.orEmpty().toMutableList()
 
         filterOptions.addKeywordFilter(keyword)
         filterOptions.add(FilterByPage(page))
@@ -846,24 +838,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onClickEditStockButton(product: ProductViewModel) {
-        val cacheManager = context?.let { SaveInstanceCacheManager(it,true) }
-        cacheManager?.put(EDIT_STOCK_PRODUCT, product)
-        val editStockBottomSheet = context?.let { cacheManager?.id?.let {
-            cacheId -> ProductManageQuickEditStockFragment.createInstance(it, cacheId) } }
-        editStockBottomSheet?.setOnDismissListener {
-            if(editStockBottomSheet.editStockSuccess) {
-                editStockBottomSheet.editStockSuccess = false
-                val editStockCacheManager = context?.let { SaveInstanceCacheManager(it, editStockBottomSheet.cacheManagerId) }
-                val modifiedProduct: ProductViewModel? = editStockCacheManager?.get(
-                        EDIT_STOCK_PRODUCT, ProductViewModel::class.java)
-                modifiedProduct?.let { product ->
-                    product.stock?.let { stock ->
-                        product.title?.let { title ->
-                            product.status?.let { status ->
-                                viewModel.editStock( product.id, stock, title, status) } } }
-                }
-            }
-        }
+        val editStockBottomSheet = context?.let { ProductManageQuickEditStockFragment.createInstance(it, product, this) }
         editStockBottomSheet?.show(childFragmentManager, "quick_edit_stock")
     }
 
@@ -879,13 +854,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onClickEditPriceButton(product: ProductViewModel) {
-        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it, product.price ?: "") }
-        editPriceBottomSheet?.setOnDismissListener {
-            if(editPriceBottomSheet.editPriceSuccess) {
-                editPriceBottomSheet.editPriceSuccess = false
-                product.title?.let { viewModel.editPrice(product.id, editPriceBottomSheet.price, it) }
-            }
-        }
+        val editPriceBottomSheet = context?.let { ProductManageQuickEditPriceFragment.createInstance(it, product, this) }
         editPriceBottomSheet?.show(childFragmentManager, "quick_edit_price")
     }
 
@@ -1359,6 +1328,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 is Success -> onSuccessDeleteProduct(it.data.productName, it.data.productId)
                 is Fail -> onErrorDeleteProduct(it.throwable as DeleteProductResult)
             }
+        }
+    }
+
+    private fun observeFilter() {
+        observe(viewModel.selectedFilterAndSort) {
+            viewModel.getProductList(userSession.shopId, it.filterOptions, it.sortOption, true)
         }
     }
 

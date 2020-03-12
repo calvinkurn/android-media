@@ -9,7 +9,6 @@ import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
@@ -20,25 +19,21 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
 import javax.inject.Inject
 
-class ProductManageQuickEditStockFragment : BottomSheetUnify(),
+class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFinishedListener,
+                                          private var product: ProductViewModel) : BottomSheetUnify(),
         HasComponent<ProductManageQuickEditStockComponent> {
 
     companion object {
 
-        const val EDIT_STOCK_CACHE_ID = "edit_stock_cache_id"
-        const val EDIT_STOCK_PRODUCT = "edit_stock_product"
         const val MAXIMUM_STOCK = 999999
         const val MINIMUM_STOCK = 0
 
-        fun createInstance(context: Context, cacheManagerId: String) : ProductManageQuickEditStockFragment {
-            return ProductManageQuickEditStockFragment().apply{
+        fun createInstance(context: Context, product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditStockFragment {
+            return ProductManageQuickEditStockFragment(onFinishedListener, product).apply{
                 val view = View.inflate(context, R.layout.fragment_quick_edit_stock,null)
                 setChild(view)
                 setTitle(context.resources.getString(R.string.product_manage_quick_edit_stock_title))
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-                arguments =  Bundle().apply{
-                    putString(EDIT_STOCK_CACHE_ID, cacheManagerId)
-                }
             }
         }
     }
@@ -46,19 +41,9 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
     @Inject
     lateinit var viewModel: ProductManageQuickEditStockViewModel
 
-    var editStockSuccess = false
-    var cacheManagerId: String? = ""
-
-    private var product: ProductViewModel? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        arguments?.let {
-            val cacheManagerId: String? = it.getString(EDIT_STOCK_CACHE_ID)
-            val cacheManager = context?.let {context -> SaveInstanceCacheManager(context, cacheManagerId) }
-            product = cacheManager?.get(EDIT_STOCK_PRODUCT, ProductViewModel::class.java)
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -97,12 +82,7 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
         }
 
         quickEditStockSaveButton.setOnClickListener {
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            cacheManager?.let {
-                cacheManagerId = it.id
-                it.put(EDIT_STOCK_PRODUCT, product)
-            }
-            editStockSuccess = true
+            onFinishedListener.onFinishEditStock(product)
             super.dismiss()
         }
         quickEditStockActivateSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -112,15 +92,13 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
                 viewModel.updateStatus(ProductStatus.INACTIVE)
             }
         }
-        product?.let {
-            quickEditStockActivateSwitch.isChecked = it.isActive()
-            it.stock?.let { stock ->
-                quickEditStockQuantityEditor.setValue(stock)
-                viewModel.updateStock(stock)
-            }
-            it.status?.let { status ->
-                viewModel.updateStatus(status)
-            }
+        quickEditStockActivateSwitch.isChecked = product.isActive()
+        product.stock?.let { stock ->
+            quickEditStockQuantityEditor.setValue(stock)
+            viewModel.updateStock(stock)
+        }
+        product.status?.let { status ->
+            viewModel.updateStatus(status)
         }
         observeStatus()
         observeStock()
@@ -129,16 +107,18 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
 
     private fun observeStock() {
         viewModel.stock.observe(this, Observer {
-            product = product?.copy(stock = it)
+            product = product.copy(stock = it)
         })
     }
 
     private fun observeStatus() {
         viewModel.status.observe(this, Observer {
             quickEditStockActivateSwitch.isChecked = it == ProductStatus.ACTIVE
-            product = product?.copy(status = it)
+            product = product.copy(status = it)
         })
     }
 
-
+    interface OnFinishedListener {
+        fun onFinishEditStock(modifiedProduct: ProductViewModel)
+    }
 }
