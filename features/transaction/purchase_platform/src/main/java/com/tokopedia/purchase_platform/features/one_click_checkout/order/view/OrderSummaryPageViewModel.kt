@@ -43,7 +43,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             var preference = orderData.preference
             preference = preference.copy(shipment = preference.shipment.copy(serviceId = 1104))
             _orderPreference = OrderPreference(preference)
-            orderPreference.value = OccState.Success(_orderPreference!!)
+            orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 getRates()
             }
@@ -79,9 +79,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun loadOrder() {
         // get order
-        orderProduct = OrderProduct()
+//        orderProduct = OrderProduct()
 //        orderPreference.value = OrderPreference(preference = Preference())
-        orderTotal.value = OrderTotal(buttonState = ButtonBayarState.LOADING)
+//        orderTotal.value = OrderTotal(buttonState = ButtonBayarState.LOADING)
     }
 
     fun debounce() {
@@ -246,7 +246,16 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
         shippingParam.weightInKilograms = orderProduct.quantity!!.orderQuantity * orderProduct.weight / 1000.0
         shippingParam.productInsurance = orderShop.cartResponse.product.productFinsurance
-        shippingParam.orderValue = orderProduct.quantity!!.orderQuantity * orderProduct.productPrice.toLong()
+        var productPrice = orderProduct.productPrice.toLong()
+        if (orderProduct.wholesalePrice.isNotEmpty()) {
+            for (wholesalePrice in orderProduct.wholesalePrice) {
+                if (orderProduct.quantity!!.orderQuantity >= wholesalePrice.qtyMin) {
+                    productPrice = wholesalePrice.prdPrc.toLong()
+                }
+            }
+        }
+        val totalProductPrice = orderProduct.quantity!!.orderQuantity * productPrice
+        shippingParam.orderValue = totalProductPrice
         return shippingParam
     }
 
@@ -278,7 +287,15 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun calculateTotal() {
         val quantity = orderProduct.quantity
         if (quantity != null) {
-            val totalProductPrice = quantity.orderQuantity * orderProduct.productPrice.toDouble()
+            var productPrice = orderProduct.productPrice.toDouble()
+            if (orderProduct.wholesalePrice.isNotEmpty()) {
+                for (wholesalePrice in orderProduct.wholesalePrice) {
+                    if (quantity.orderQuantity >= wholesalePrice.qtyMin) {
+                        productPrice = wholesalePrice.prdPrc.toDouble()
+                    }
+                }
+            }
+            val totalProductPrice = quantity.orderQuantity * productPrice
             val shipping = _orderPreference?.shipping
             if (shipping?.shippingPrice != null) {
                 val totalShippingPrice = shipping.shippingPrice.toDouble()

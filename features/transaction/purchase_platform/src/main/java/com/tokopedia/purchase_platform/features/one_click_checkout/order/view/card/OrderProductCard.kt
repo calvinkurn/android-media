@@ -43,7 +43,7 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
         if (::product.isInitialized) {
             ImageHandler.loadImageFitCenter(view.context, view.iv_product_image, product.productImageUrl)
             view.tv_product_name.text = product.productName
-            view.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(product.productPrice, false)
+            showPrice()
             view.et_note.filters = arrayOf(InputFilter.LengthFilter(100))
             view.et_note.addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
@@ -156,8 +156,21 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             } else {
                 element.isStateError = false
                 view.tv_error_form_validation.visibility = View.GONE
+                showPrice()
             }
         }
+    }
+
+    private fun showPrice() {
+        var productPrice = product.productPrice.toLong()
+        if (product.wholesalePrice.isNotEmpty()) {
+            for (wholesalePrice in product.wholesalePrice) {
+                if (product.quantity!!.orderQuantity >= wholesalePrice.qtyMin) {
+                    productPrice = wholesalePrice.prdPrc.toLong()
+                }
+            }
+        }
+        view.tv_product_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(productPrice, false)
     }
 
     fun setShop(orderShop: OrderShop) {

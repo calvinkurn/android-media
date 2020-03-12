@@ -86,12 +86,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun initViewModel() {
         viewModel.orderPreference.observe(this, Observer {
-            if (it is OccState.Success) {
+            if (it is OccState.FirstLoad) {
                 swipe_refresh_layout.isRefreshing = false
                 main_content.visible()
                 view?.let { v ->
-                    Toaster.make(v, "success")
-                    if (viewModel.orderProduct.quantity != null) {
+                    Toaster.make(v, "success first")
+//                    if (viewModel.orderProduct.quantity != null) {
                         orderProductCard.setProduct(viewModel.orderProduct)
                         orderProductCard.setShop(viewModel.orderShop)
                         orderProductCard.initView()
@@ -99,7 +99,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         if (it.data.preference.address.addressId > 0) {
                             orderPreferenceCard.setPreference(it.data)
                         }
-                    }
+//                    }
+
+//                    setupInsurance(it)
+                }
+            }
+            else if (it is OccState.Success) {
+                swipe_refresh_layout.isRefreshing = false
+                main_content.visible()
+                view?.let { v ->
+                    Toaster.make(v, "success")
+//                    if (viewModel.orderProduct.quantity != null) {
+//                        orderProductCard.setProduct(viewModel.orderProduct)
+//                        orderProductCard.setShop(viewModel.orderShop)
+//                        orderProductCard.initView()
+//                        showMessage(it.data.preference)
+                        if (it.data.preference.address.addressId > 0) {
+                            orderPreferenceCard.setPreference(it.data)
+                        }
+//                    }
 
                     setupInsurance(it)
                 }
@@ -233,9 +251,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun initViews(view: View) {
         orderProductCard = OrderProductCard(view, this)
-
         orderPreferenceCard = OrderPreferenceCard(view, this, getOrderPreferenceCardListener())
-        orderPreferenceCard.initView()
+//        orderPreferenceCard.initView()
 
 //        btn_pay.isEnabled = true
 //        btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)

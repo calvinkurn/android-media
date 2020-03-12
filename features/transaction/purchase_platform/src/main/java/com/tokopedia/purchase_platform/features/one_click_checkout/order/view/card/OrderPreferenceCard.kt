@@ -101,7 +101,7 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
     }
 
     fun initView() {
-        view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.ic_arrow_drop_down_grey_checkout_module, 0)
+//        view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.ic_arrow_drop_down_grey_checkout_module, 0)
     }
 
     private fun chooseCourier() {

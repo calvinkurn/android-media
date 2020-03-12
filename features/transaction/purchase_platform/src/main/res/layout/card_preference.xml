@@ -227,13 +227,13 @@
             android:paddingEnd="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_12"
+            android:text="@string/lbl_make_default_preference"
             android:textColor="@color/Green_G500"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider3"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:text="@string/lbl_make_default_preference"
             tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -248,15 +248,15 @@
             android:paddingEnd="@dimen/dp_16"
             android:paddingRight="@dimen/dp_16"
             android:paddingBottom="@dimen/dp_12"
+            android:text="Digunakan"
             android:textColor="@color/Neutral_N700_96"
+            android:visibility="gone"
             app:drawableLeftCompat="@drawable/ic_action_check"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider3"
             app:typographyType="body_3"
             app:typographyWeight="bold"
-            android:visibility="gone"
-            tools:text="Digunakan"
             tools:visibility="visible" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
