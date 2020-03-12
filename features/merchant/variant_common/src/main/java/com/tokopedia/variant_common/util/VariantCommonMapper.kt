@@ -1,5 +1,6 @@
 package com.tokopedia.variant_common.util
 
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.variant_common.constant.VariantConstant
 import com.tokopedia.variant_common.model.*
 
@@ -18,10 +19,10 @@ object VariantCommonMapper {
         })?.toMutableMap() ?: mutableMapOf()
     }
 
-    fun processVariant(variantData: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): MutableList<VariantCategory>? {
+    fun processVariant(variantData: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>? = mutableMapOf(), level: Int = -1, isPartialySelected: Boolean = false): List<VariantCategory>? {
         if (variantData == null) return null
 
-        val listOfVariant: MutableList<VariantCategory> = arrayListOf()
+        val listOfVariant: MutableList<VariantCategory> = mutableListOf()
         var updatedSelectedOptionsId: List<Int>
         val isSelectedLevelOne = level < 1
 
@@ -74,20 +75,11 @@ object VariantCommonMapper {
                                         isSelectedProductBuyable: Boolean,
                                         partialySelected: Boolean,
                                         selectedLevelOne: Boolean): VariantCategory {
-        val variantDataModel = VariantCategory(variant.name ?: "", variant.identifier ?: "")
-        variantDataModel.variantGuideline = if (variant.isSizeIdentifier && variantData.sizeChart.isNotEmpty()) {
-            variantData.sizeChart
-        } else {
-            ""
-        }
-        variantDataModel.isLeaf = isLeaf
 
         //If all options has images, show images, if not show colour type / chip type
         val hasCustomImage = variant.options.all {
             it.picture?.thumbnail?.isNotEmpty() == true
         }
-
-        variantDataModel.hasCustomImage = hasCustomImage
 
         val partialSelectedListByLevel = if (selectedOptionIds.isNotEmpty()) {
             selectedOptionIds.subList(0, level)
@@ -95,22 +87,17 @@ object VariantCommonMapper {
             selectedOptionIds
         }
 
-        variant.options.forEach { option ->
-            val optionVariantDataModel = VariantOptionWithAttribute()
-            optionVariantDataModel.variantName = option.value ?: ""
-            optionVariantDataModel.variantId = option.id ?: 0
-            optionVariantDataModel.image = option.picture?.thumbnail ?: ""
-            optionVariantDataModel.variantHex = option.hex ?: ""
-
-            optionVariantDataModel.currentState = VariantConstant.STATE_EMPTY
+        val optionList = variant.options.map { option ->
+            var currentState = VariantConstant.STATE_EMPTY
+            var stock = 0
 
             if (selectedOptionIds.isNotEmpty() && option.id in selectedOptionIds) {
                 if (isSelectedProductBuyable) {
-                    optionVariantDataModel.currentState = VariantConstant.STATE_SELECTED
+                    currentState = VariantConstant.STATE_SELECTED
                 } else {
                     for (child: VariantChildCommon in variantData.children) {
                         if (child.isBuyable && selectedOptionIds.first() in child.optionIds) {
-                            optionVariantDataModel.currentState = VariantConstant.STATE_SELECTED
+                            currentState = VariantConstant.STATE_SELECTED
                             break
                         }
                     }
@@ -124,38 +111,53 @@ object VariantCommonMapper {
                         //|| (partialySelected && !isLeaf)
                         if (partialSelectedListByLevel.isEmpty()) {
                             // if not lvl 1, should not go to this if , so have to check if not leaf
-                            optionVariantDataModel.currentState = VariantConstant.STATE_UNSELECTED
+                            currentState = VariantConstant.STATE_UNSELECTED
                         } else {
                             val childOptionId = child.optionIds.getOrNull(level)
                             childOptionId?.let {
                                 if (child.optionIds.subList(0, level) == partialSelectedListByLevel) {
                                     //User selecting 2+ level variant
-                                    optionVariantDataModel.currentState = VariantConstant.STATE_UNSELECTED
+                                    currentState = VariantConstant.STATE_UNSELECTED
                                     // || (partialySelected && isLeaf)
                                 } else if (selectedOptionIds.isEmpty()) {
-                                    optionVariantDataModel.currentState = VariantConstant.STATE_UNSELECTED
+                                    currentState = VariantConstant.STATE_UNSELECTED
                                 }
 
                                 // This code is works if user only select 1 level and its leaf
                                 if (partialySelected) {
                                     if (selectedLevelOne) return@let
                                     if (isLeaf)
-                                        optionVariantDataModel.currentState = VariantConstant.STATE_UNSELECTED
+                                        currentState = VariantConstant.STATE_UNSELECTED
                                 }
 
                             }
                         }
                     }
-                    optionVariantDataModel.stock = child.stock?.stock ?: 0
+                    stock = child.stock?.stock.orZero()
                 }
             }
-            optionVariantDataModel.hasCustomImages = hasCustomImage
-            optionVariantDataModel.level = level
-            optionVariantDataModel.variantOptionIdentifier = variant.identifier ?: ""
-            variantDataModel.variantOptions.add(optionVariantDataModel)
+
+            return@map VariantOptionWithAttribute(
+                    variantName = option.value.orEmpty(),
+                    variantId = option.id.orZero(),
+                    image = option.picture?.thumbnail.orEmpty(),
+                    variantHex = option.hex.orEmpty(),
+                    currentState = currentState,
+                    stock = stock,
+                    hasCustomImages = hasCustomImage,
+                    level = level,
+                    variantOptionIdentifier = variant.identifier.orEmpty()
+            )
         }
 
-        return variantDataModel
+        return VariantCategory(
+                name = variant.name.orEmpty(),
+                identifier = variant.identifier.orEmpty(),
+                variantGuideline = if (variant.isSizeIdentifier && variantData.sizeChart.isNotEmpty()) variantData.sizeChart else "",
+                isLeaf = isLeaf,
+                hasCustomImage = hasCustomImage,
+                variantOptions = optionList
+        )
     }
 
     private fun getOtherSiblingProduct(productInfoAndVariant: ProductVariantCommon?, optionId: List<Int>): VariantChildCommon? {
