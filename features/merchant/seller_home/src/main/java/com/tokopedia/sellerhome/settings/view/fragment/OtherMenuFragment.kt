@@ -1,13 +1,16 @@
 package com.tokopedia.sellerhome.settings.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -37,6 +40,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.*
+import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import javax.inject.Inject
 
 class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener{
@@ -71,6 +75,9 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private var shopBadgeIsAlreadyLoaded = false
     private var totalFollowersIsAlreadyLoaded = false
 
+    private var startToTransitionOffset = 0
+    private var statusInfoTransitionOffset = 0
+
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
     }
@@ -78,6 +85,19 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     override fun onResume() {
         super.onResume()
         getAllShopInfoData()
+    }
+
+    @SuppressLint("ResourceType")
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        activity?.theme?.let {
+            val tv = TypedValue()
+            if (it.resolveAttribute(R.attr.actionBarSize, tv, true)) {
+                startToTransitionOffset = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
+            }
+        }
+        statusInfoTransitionOffset = resources.getDimensionPixelSize(R.dimen.setting_shop_info_height)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -255,6 +275,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this)}
         otherMenuViewHolder?.initBindView()
+        view.observeRecyclerViewScrollListener()
     }
 
     override fun onShopInfoClicked() {
