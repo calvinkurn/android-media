@@ -268,7 +268,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 val currentFilter = tabFilters.selectedFilter?.status
 
                 if(selectedFilter == currentFilter) {
-                    renderList(allProductList)
+                    showAllProducts()
                     tabFilters.resetSelectedFilter()
                 } else {
                     tabFilters.resetAllFilter(viewHolder)
@@ -335,6 +335,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             ProductManageFilterFragment.createInstance(it, viewModel.selectedFilterAndSort.value,this)
         }
         this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
+    }
+
+    private fun showAllProducts() {
+        val hasNextPage = allProductList.isNotEmpty()
+        renderList(emptyList())
+        renderList(allProductList, hasNextPage)
     }
 
     private fun filterProductByStatus(products: List<ProductViewModel>, status: ProductStatus?) {
