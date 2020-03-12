@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -61,6 +62,10 @@ class ShopHomeCarousellProductViewHolder(
                     LinearLayoutManager.HORIZONTAL,
                     false
             )
+            val animator = recyclerView?.itemAnimator
+            if (animator is SimpleItemAnimator) {
+                animator.supportsChangeAnimations = false
+            }
         }
     }
 

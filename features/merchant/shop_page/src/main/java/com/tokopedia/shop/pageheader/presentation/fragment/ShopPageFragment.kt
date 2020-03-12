@@ -744,6 +744,14 @@ class ShopPageFragment :
         if (feedfragment != null && feedfragment is FeedShopFragment) {
             feedfragment.clearCache()
         }
+
+        if (isShowHomeTab() && isShowNewHomeTab()) {
+            val shopPageHomeFragment: Fragment? = viewPagerAdapter.getRegisteredFragment(TAB_POSITION_HOME)
+            if (shopPageHomeFragment != null && shopPageHomeFragment is ShopPageHomeFragment) {
+                shopPageHomeFragment.clearCache()
+            }
+        }
+
         getShopInfo(true)
         swipeToRefresh.isRefreshing = true
     }

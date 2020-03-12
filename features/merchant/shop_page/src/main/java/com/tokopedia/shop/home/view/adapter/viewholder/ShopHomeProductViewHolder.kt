@@ -122,8 +122,10 @@ open class ShopHomeProductViewHolder(
         }
         productCard.setButtonWishlistOnClickListener {
             shopHomeProductViewModel?.let {
-                //                if (!it.isSoldOut)
-//                    shopProductClickedListener?.onWishListClicked(shopHomeProductViewModel, shopTrackType)
+                shopPageHomeProductClickListener?.onAllProductItemWishlist(
+                        adapterPosition,
+                        it
+                )
             }
 
         }

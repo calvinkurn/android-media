@@ -213,6 +213,7 @@ public class ShopPageTrackingConstant {
     public static final String ALL_PRODUCT = "all product";
     public static final String WITH_CART = "with cart";
     public static final String WITHOUT_CART = "without cart";
+    public static final String GENERAL = "general";
 
 
 

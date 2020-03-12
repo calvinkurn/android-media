@@ -9,12 +9,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -30,6 +32,7 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.common.di.component.ShopComponent
+import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.util.Util
 import com.tokopedia.shop.home.WidgetName.VIDEO
 import com.tokopedia.shop.home.di.component.DaggerShopPageHomeComponent
@@ -47,7 +50,6 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.android.synthetic.main.fragment_shop_page_home.*
 import javax.inject.Inject
 
@@ -126,8 +128,13 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         getRecyclerView(view)?.apply {
             layoutManager = recyclerViewLayoutManager
         }
+        getRecyclerView(view)?.let {
+            val animator = it.itemAnimator
+            if (animator is SimpleItemAnimator) {
+                animator.supportsChangeAnimations = false
+            }
+        }
         observeLiveData()
-
     }
 
     override fun onPause() {
@@ -171,6 +178,28 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 }
             }
         })
+
+        viewModel.checkWishlistData.observe(this, Observer {
+            when (it) {
+                is Success -> {
+                    onSuccessCheckWishlist(it.data)
+                }
+            }
+        })
+    }
+
+    private fun onSuccessCheckWishlist(data: List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>) {
+        data.onEach {
+            it.second.onEach { checkWishlistResult ->
+                val productData = it.first.productList.find { shopHomeProductViewModel ->
+                    shopHomeProductViewModel.id == checkWishlistResult.productId
+                }
+                productData?.let { shopHomeProductViewModel ->
+                    shopHomeProductViewModel.isWishList = checkWishlistResult.isWishlist
+                }
+            }
+            shopHomeAdapter.updateProductWidgetData(it.first)
+        }
     }
 
     private fun onSuccessAddToCart(
@@ -202,9 +231,9 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     private fun onErrorGetShopHomeLayoutData(throwable: Throwable) {
-        if(throwable is MessageErrorException){
+        if (throwable is MessageErrorException) {
             globalError_shopPage.setType(GlobalError.SERVER_ERROR)
-        } else{
+        } else {
             globalError_shopPage.setType(GlobalError.NO_CONNECTION)
         }
 
@@ -223,6 +252,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeAdapter.setEtalaseTitleData()
         }
         shopHomeAdapter.setProductListData(productList)
+        updateScrollListenerState(hasNextPage)
     }
 
     private fun onSuccessGetShopHomeLayoutData(data: ShopPageHomeLayoutUiModel) {
@@ -230,6 +260,8 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         shopHomeAdapter.hideLoading()
         scrollView_globalError_shopPage.hide()
         globalError_shopPage.hide()
+        val listProductWidget = data.listWidget.filterIsInstance<ShopHomeCarousellProductUiModel>()
+        viewModel.getWishlistStatus(listProductWidget)
         shopHomeAdapter.setHomeLayoutData(data.listWidget)
     }
 
@@ -375,6 +407,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onAllProductItemClicked(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+        val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.clickProduct(
                     isOwner,
@@ -385,7 +418,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel.displayedPrice ?: "",
                     shopName,
                     shopHomeAdapter.getAllProductWidgetPosition() + 1,
-                    itemPosition + 1,
+                    realItemPositonOnTheList + 1,
                     "",
                     "",
                     0,
@@ -396,6 +429,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onAllProductItemImpression(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel?) {
+        val realItemPositonOnTheList = itemPosition - shopHomeAdapter.getAllProductWidgetPosition()
         shopHomeProductViewModel?.let {
             shopPageHomeTracking.impressionProduct(
                     isOwner,
@@ -406,7 +440,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                     shopHomeProductViewModel.displayedPrice ?: "",
                     shopName,
                     shopHomeAdapter.getAllProductWidgetPosition() + 1,
-                    itemPosition + 1,
+                    realItemPositonOnTheList + 1,
                     "",
                     "",
                     0,
@@ -416,6 +450,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     }
 
     override fun onAllProductItemWishlist(itemPosition: Int, shopHomeProductViewModel: ShopHomeProductViewModel) {
+        if (isLogin) {
+            viewModel.clearGetShopProductUseCase()
+            if (shopHomeProductViewModel.isWishList) {
+                viewModel.removeWishList(
+                        shopHomeProductViewModel.id ?: "",
+                        { onSuccessRemoveWishList(null, shopHomeProductViewModel) },
+                        ::onErrorRemoveWishList
+                )
+            } else {
+                viewModel.addWishList(
+                        shopHomeProductViewModel.id ?: "",
+                        { onSuccessAddWishlist(null, shopHomeProductViewModel) },
+                        ::onErrorAddWishlist)
+            }
+        } else {
+            redirectToLoginPage()
+        }
     }
 
     override fun onCarouselProductItemClicked(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
@@ -473,34 +524,66 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             if (shopHomeProductViewModel?.isWishList == true) {
                 viewModel.removeWishList(
                         shopHomeProductViewModel.id ?: "",
-                        ::onSuccessRemoveWishList,
+                        { onSuccessRemoveWishList(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
                         ::onErrorRemoveWishList
                 )
             } else {
                 viewModel.addWishList(
                         shopHomeProductViewModel?.id ?: "",
-                        ::onSuccessAddWishlist,
-                        ::onErrorAddWishlist)
+                        { onSuccessAddWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel) },
+                        ::onErrorAddWishlist
+                )
             }
         } else {
             redirectToLoginPage()
         }
     }
 
-    private fun onSuccessRemoveWishList() {
-
+    private fun onSuccessRemoveWishList(
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductViewModel?
+    ) {
+        shopHomeProductViewModel?.let {
+            showToastSuccess(getString(R.string.msg_success_remove_wishlist))
+            shopHomeAdapter.updateWishlistProduct(it.id ?: "", false)
+            trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, false)
+        }
     }
 
-    private fun onErrorRemoveWishList() {
-
+    private fun trackClickWishlist(
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductViewModel,
+            isWishlist: Boolean
+    ) {
+        shopPageHomeTracking.clickWishlist(
+                isOwner,
+                isWishlist,
+                shopPageHomeLayoutUiModel?.layoutId ?: "",
+                isLogin,
+                shopHomeCarousellProductUiModel?.name ?: "",
+                shopHomeCarousellProductUiModel?.widgetId ?: "",
+                shopHomeProductViewModel.id ?: "",
+                customDimensionShopPage
+        )
     }
 
-    private fun onSuccessAddWishlist() {
-
+    private fun onErrorRemoveWishList(errorMessage: String?) {
+        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
     }
 
-    private fun onErrorAddWishlist() {
+    private fun onSuccessAddWishlist(
+            shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
+            shopHomeProductViewModel: ShopHomeProductViewModel?
+    ) {
+        shopHomeProductViewModel?.let {
+            showToastSuccess(getString(R.string.msg_success_remove_wishlist))
+            shopHomeAdapter.updateWishlistProduct(it.id ?: "", true)
+            trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, true)
+        }
+    }
 
+    private fun onErrorAddWishlist(errorMessage: String?) {
+        NetworkErrorHelper.showCloseSnackbar(activity, errorMessage)
     }
 
     override fun onCarouselProductItemClickAddToCart(
@@ -532,5 +615,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     private fun redirectToLoginPage() {
         RouteManager.route(context, ApplinkConst.LOGIN)
+    }
+
+    private fun showToastSuccess(message: String) {
+        activity?.run {
+            Toaster.make(findViewById(android.R.id.content), message)
+        }
+    }
+
+    fun clearCache(){
+        viewModel.clearCache()
+
     }
 }

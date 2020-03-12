@@ -49,7 +49,7 @@ data class ShopLayoutWidget(
                 val cover: String = "",
                 @SerializedName("ratio")
                 val ratio: String = "",
-                @SerializedName("isAtc")
+                @SerializedName("isATC")
                 val isAtc: Int = 0
         )
 

@@ -292,7 +292,7 @@ class ShopPageHomeTracking(
         )
         eventMap[ECOMMERCE] = mapOf(
                 CLICK to mapOf(
-                        ACTION_FIELD to listEventValue,
+                        ACTION_FIELD to mapOf(LIST to listEventValue),
                         PRODUCTS to listOf(createProductItemMap(
                                 productName,
                                 productId,
@@ -401,7 +401,7 @@ class ShopPageHomeTracking(
             cartId: String,
             attribution: String,
             customDimensionShopPage: CustomDimensionShopPage
-    ): Map<String,Any> {
+    ): Map<String, Any> {
         val dimension40Value = createProductListValue(
                 isLogin,
                 verticalPosition,
@@ -425,6 +425,29 @@ class ShopPageHomeTracking(
                 DIMENSION_40 to dimension40Value,
                 DIMENSION_81 to customDimensionShopPage.shopType,
                 DIMENSION_79 to customDimensionShopPage.shopId
+        )
+    }
+
+    fun clickWishlist(
+            isOwner: Boolean,
+            isWishlist: Boolean,
+            layoutId: String,
+            isLogin: Boolean,
+            widgetName: String,
+            widgetId: String,
+            productId: String,
+            customDimensionShopPage: CustomDimensionShopPage
+    ) {
+        val addOrRemoveEventValue = if(isWishlist) ADD else REMOVE
+        val loginNonLoginEventValue = if (isLogin) LOGIN else NON_LOGIN
+        val widgetNameEventValue = widgetName.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
+        val widgetIdEventValue = widgetId.takeIf { it.isNotEmpty() } ?: ALL_PRODUCT
+        sendGeneralEvent(
+                CLICK_WISHLIST,
+                getShopPageCategory(isOwner),
+                "$addOrRemoveEventValue $WISHLIST - $layoutId - $widgetNameEventValue - $loginNonLoginEventValue",
+                "$widgetIdEventValue - $GENERAL - $productId",
+                customDimensionShopPage
         )
     }
 

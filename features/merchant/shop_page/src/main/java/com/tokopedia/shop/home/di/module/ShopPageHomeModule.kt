@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
+import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.HomeConstant
@@ -46,6 +48,13 @@ class ShopPageHomeModule {
     @Named(GQL_ATC_MUTATION)
     fun provideAddToCartMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart);
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GQL_CHECK_WISHLIST)
+    fun provideCheckWishlistQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_check_wishlist);
     }
 
     @ShopPageHomeScope

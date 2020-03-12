@@ -10,6 +10,7 @@ import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 
 /**
@@ -72,6 +73,29 @@ class ShopHomeAdapter(
         return visitables.filter {
             (it !is LoadingModel) && (it !is LoadingMoreModel) && (it !is ShopHomeProductEtalaseTitleUiModel)
         }.indexOfFirst { it is ShopHomeProductViewModel }
+    }
+
+    fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
+        val position = visitables.indexOf(shopHomeCarousellProductUiModel)
+        notifyItemChanged(position)
+    }
+
+    fun updateWishlistProduct(productId: String, isWishlist: Boolean) {
+        visitables.filterIsInstance<ShopHomeProductViewModel>().onEach {
+            if(it.id == productId){
+                it.isWishList = isWishlist
+                notifyItemChanged(visitables.indexOf(it))
+            }
+        }
+        visitables.filterIsInstance<ShopHomeCarousellProductUiModel>().onEach { shopHomeCarousellProductUiModel ->
+            val totalFoundProductId = shopHomeCarousellProductUiModel.productList.filter {
+                it.id == productId
+            }.onEach {
+                it.isWishList = isWishlist
+            }.size
+            if(totalFoundProductId != 0)
+                notifyItemChanged(visitables.indexOf(shopHomeCarousellProductUiModel))
+        }
     }
 
 }

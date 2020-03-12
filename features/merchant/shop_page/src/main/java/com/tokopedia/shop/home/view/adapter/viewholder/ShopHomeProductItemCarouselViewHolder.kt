@@ -63,14 +63,23 @@ class ShopHomeProductItemCarouselViewHolder(
 
         productCard.setButtonWishlistOnClickListener {
             shopHomeProductViewModel?.let {
-                //                if (!it.isSoldOut)
-//                    shopProductClickedListener?.onWishListClicked(shopHomeProductViewModel, shopTrackType)
+                    shopPageHomeProductClickListener?.onCarouselProductItemWishlist(
+                            parentIndex,
+                            adapterPosition,
+                            shopHomeCarousellProductUiModel,
+                            shopHomeProductViewModel
+                    )
             }
 
         }
 
         productCard.setAddToCartOnClickListener {
-
+            shopPageHomeProductClickListener?.onCarouselProductItemClickAddToCart(
+                    parentIndex,
+                    adapterPosition,
+                    shopHomeCarousellProductUiModel,
+                    shopHomeProductViewModel
+            )
         }
     }
 }
