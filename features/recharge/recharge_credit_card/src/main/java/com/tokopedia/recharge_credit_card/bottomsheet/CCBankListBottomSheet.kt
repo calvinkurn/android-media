@@ -1,4 +1,4 @@
-package com.tokopedia.recharge_credit_card
+package com.tokopedia.recharge_credit_card.bottomsheet
 
 import android.os.Bundle
 import android.view.View
@@ -10,14 +10,16 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.recharge_credit_card.adapter.CCBankListAdapter
+import com.tokopedia.recharge_credit_card.R
+import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
+import com.tokopedia.recharge_credit_card.adapter.CreditCardBankAdapter
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
 
 class CCBankListBottomSheet : BottomSheetUnify() {
 
-    private lateinit var adapter: CCBankListAdapter
+    private lateinit var adapter: CreditCardBankAdapter
     private lateinit var childView: View
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var recyclerView: RecyclerView
@@ -51,8 +53,8 @@ class CCBankListBottomSheet : BottomSheetUnify() {
 
     private fun initInjector() {
         activity?.let {
-            val digitalTopupComponent = RechargeCCInstance.getComponent(it.application)
-            digitalTopupComponent.inject(this)
+            val creditCardComponent = RechargeCCInstance.getComponent(it.application)
+            creditCardComponent.inject(this)
         }
     }
 
@@ -64,7 +66,7 @@ class CCBankListBottomSheet : BottomSheetUnify() {
     }
 
     private fun initAdapter() {
-        adapter = CCBankListAdapter(mutableListOf())
+        adapter = CreditCardBankAdapter(mutableListOf())
         recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
     }
@@ -73,7 +75,7 @@ class CCBankListBottomSheet : BottomSheetUnify() {
         descBankList.text = getString(R.string.cc_desc_bank_list)
         rechargeCCViewModel.getListBank(GraphqlHelper.loadRawString(resources, R.raw.query_cc_bank_list), 26)
         rechargeCCViewModel.rechargeCCBankList.observe(this, Observer {
-            adapter = CCBankListAdapter(it.bankList)
+            adapter = CreditCardBankAdapter(it.bankList)
             recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recyclerView.adapter = adapter
         })

@@ -10,7 +10,7 @@ import com.tokopedia.recharge_credit_card.R
 import com.tokopedia.recharge_credit_card.datamodel.RechargeCCBank
 import com.tokopedia.recharge_credit_card.getColorFromResources
 
-class CCBankListAdapter(private val listBank: List<RechargeCCBank>) : RecyclerView.Adapter<CCBankListAdapter.ItemViewHolder>() {
+class CreditCardBankAdapter(private val listBank: List<RechargeCCBank>) : RecyclerView.Adapter<CreditCardBankAdapter.ItemViewHolder>() {
 
     private lateinit var context: Context
 

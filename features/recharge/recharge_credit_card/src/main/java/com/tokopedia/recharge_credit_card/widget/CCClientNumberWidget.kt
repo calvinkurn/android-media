@@ -7,7 +7,7 @@ import android.util.AttributeSet
 import android.view.View
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.recharge_credit_card.R
-import com.tokopedia.recharge_credit_card.RechargeCCUtil
+import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.recharge_credit_card.getColorFromResources
 import kotlinx.android.synthetic.main.widget_cc_number.view.*
 import org.jetbrains.annotations.NotNull
@@ -76,6 +76,10 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         cc_button_next.setOnClickListener {
             listener.onClickNextButton(cc_input_number.text.toString())
         }
+    }
+
+    fun getClientNumber(): String {
+        return cc_input_number.text.toString().replace(" ", "")
     }
 
     fun setListener(actionListener: ActionListener) {

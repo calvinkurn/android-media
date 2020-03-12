@@ -1,7 +1,8 @@
 package com.tokopedia.recharge_credit_card.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.recharge_credit_card.CCBankListBottomSheet
+import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
+import com.tokopedia.recharge_credit_card.RechargeCCFragment
 import dagger.Component
 
 @RechargeCCScope
@@ -10,5 +11,7 @@ import dagger.Component
 interface RechargeCCComponent {
 
     fun inject(CCBankListBottomSheet: CCBankListBottomSheet)
+
+    fun inject(rechargeCCFragment: RechargeCCFragment)
 
 }

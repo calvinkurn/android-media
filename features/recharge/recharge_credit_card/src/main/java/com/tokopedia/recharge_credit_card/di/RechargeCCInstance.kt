@@ -1,4 +1,4 @@
-package com.tokopedia.recharge_credit_card
+package com.tokopedia.recharge_credit_card.di
 
 import android.app.Application
 import com.tokopedia.abstraction.base.app.BaseMainApplication
