@@ -80,7 +80,8 @@ class ProductSnapshotViewHolder(private val view: View,
             ProductDetailConstant.PAYLOAD_P3 -> {
                 view.label_cod.visibility = if (element.shouldShowCod) View.VISIBLE else View.GONE
 
-                renderStockWording(element.getNearestWarehouse(), element.getCampaignModular(), element.dynamicProductInfoP1?.data?.variant?.isVariant ?: false)
+                renderStockWording(element.getNearestWarehouse(), element.getCampaignModular(), element.dynamicProductInfoP1?.data?.variant?.isVariant
+                        ?: false)
                 renderCod(element.shouldShowCod)
             }
             ProductDetailConstant.PAYLOAD_TRADEIN -> renderTradein(element.shouldShowTradein)
@@ -108,9 +109,10 @@ class ProductSnapshotViewHolder(private val view: View,
 
     private fun renderWishlist(isAllowManage: Int, wishlisted: Boolean) {
         view.context?.let {
-            view.fab_detail.show()
+            view.fab_detail.hide()
             if (isAllowManage == 1) {
                 view.fab_detail.setImageDrawable(ContextCompat.getDrawable(it, R.drawable.ic_edit))
+                view.fab_detail.show()
             } else {
                 updateWishlist(wishlisted)
             }
