@@ -8,8 +8,10 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 
 import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData;
+import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel;
 import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel;
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.AnalyticsDebuggerActivity;
+import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerActivity;
 import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity;
 
 /**
@@ -48,6 +50,25 @@ class NotificationHelper {
                 .setContentIntent(pendingIntent)
                 .setContentTitle("Open Performance Debugger")
                 .setContentText(data.getTraceName())
+                .setAutoCancel(true)
+                .setShowWhen(true)
+                .setSmallIcon(com.tokopedia.design.R.drawable.ic_search_icon)
+                .setStyle(inboxStyle);
+        notificationManager.notify(NOTIFICATION_ID, builder.build());
+
+    }
+
+    public static void show(Context context, ApplinkLogModel data) {
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Intent intent = ApplinkDebuggerActivity.newInstance(context);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.BigTextStyle inboxStyle = new NotificationCompat.BigTextStyle().bigText(data.getData());
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "ANDROID_GENERAL_CHANNEL")
+                .setContentIntent(pendingIntent)
+                .setContentTitle("Open Applink Debugger")
+                .setContentText(data.getApplink())
                 .setAutoCancel(true)
                 .setShowWhen(true)
                 .setSmallIcon(com.tokopedia.design.R.drawable.ic_search_icon)

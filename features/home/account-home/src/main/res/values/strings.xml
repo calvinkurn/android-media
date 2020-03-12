@@ -129,7 +129,7 @@
     <string name="label_menu_resolution_center">Lihat solusi terbaik atau hubungi kami</string>
     <string name="title_menu_top_up_bill"><![CDATA[Top-up & Tagihan]]></string>
     <string name="title_menu_market_place">Belanja</string>
-    <string name="title_menu_deals">Deals</string>
+    <string name="title_menu_deals">Food &amp; Voucher</string>
     <string name="title_menu_train">Kereta</string>
     <string name="title_menu_flight">Pesawat</string>
     <string name="title_menu_hotel">Hotel</string>
@@ -235,6 +235,7 @@
     <string name="account_home_safe_mode_unselected_dialog_positive_button">Nonaktifkan</string>
     <string name="account_go_to_wishlist">Lihat Wishlist</string>
     <string name="tokopedia_care">Tokopedia Care</string>
+    <string name="title_about_us">Tentang Tokopedia</string>
     <string name="label_tokopedia_pay_action">Atur</string>
 
     <string name="title_app_advanced_setting">Pengaturan Tambahan</string>

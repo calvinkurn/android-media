@@ -103,7 +103,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
         dialog.setOk(getString(R.string.title_add_phone))
         dialog.setOkOnClickListner(View.OnClickListener { goToAddPhone() })
-        dialog.setSecondary(getString(com.tokopedia.abstraction.R.string.label_cancel))
+        dialog.setSecondary(getString(R.string.label_cancel))
         dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
     }
@@ -114,7 +114,7 @@ class SettingProfileFragment : BaseDaggerFragment() {
         dialog.setDescription(getString(R.string.add_and_verify_phone_detail))
         dialog.setOk(getString(R.string.title_verify_phone))
         dialog.setOkOnClickListner(View.OnClickListener { goToVerifyPhone() })
-        dialog.setSecondary(getString(com.tokopedia.abstraction.R.string.label_cancel))
+        dialog.setSecondary(getString(R.string.label_cancel))
         dialog.setSecondaryOnClickListner(View.OnClickListener { dialog.dismiss() })
         dialog.show()
     }

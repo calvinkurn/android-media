@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.digital.home.DigitalHomePageTestDispatchersProvider
 import com.tokopedia.digital.home.domain.DigitalHomePageUseCase
 import com.tokopedia.digital.home.model.DigitalHomePageBannerModel
 import com.tokopedia.digital.home.model.DigitalHomePageCategoryModel
@@ -10,7 +11,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.Dispatchers
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -32,30 +33,23 @@ class DigitalHomePageViewModelTest {
         MockKAnnotations.init(this)
 
         digitalHomePageViewModel =
-                DigitalHomePageViewModel(Dispatchers.Unconfined, digitalHomePageUseCase)
+                DigitalHomePageViewModel(digitalHomePageUseCase, DigitalHomePageTestDispatchersProvider())
     }
 
     @Test
     fun initialize() {
         coEvery { digitalHomePageUseCase.getEmptyList() } returns listOf(DigitalHomePageCategoryModel())
 
-        val dataObserver = Observer<List<DigitalHomePageItemModel>> {
-            assert(it.isNotEmpty())
-            assert(it[0] is DigitalHomePageCategoryModel)
+        digitalHomePageViewModel.initialize(mapParams)
+        val actualData = digitalHomePageViewModel.digitalHomePageList.value
+        assertNotNull(actualData)
+        actualData?.run {
+            assert(actualData.isNotEmpty())
+            assert(actualData[0] is DigitalHomePageCategoryModel)
         }
-
-        val errorObserver = Observer<Boolean> {
-            assertEquals(it, false)
-        }
-
-        try {
-            digitalHomePageViewModel.digitalHomePageList.observeForever(dataObserver)
-            digitalHomePageViewModel.isAllError.observeForever(errorObserver)
-            digitalHomePageViewModel.initialize(mapParams)
-        } finally {
-            digitalHomePageViewModel.digitalHomePageList.removeObserver(dataObserver)
-            digitalHomePageViewModel.isAllError.removeObserver(errorObserver)
-        }
+        val actualErrorData = digitalHomePageViewModel.isAllError.value
+        assertNotNull(actualErrorData)
+        actualErrorData?.run { assertFalse(actualErrorData) }
     }
 
     @Test
@@ -68,27 +62,23 @@ class DigitalHomePageViewModelTest {
         categoryData.isSuccess = true
         coEvery { digitalHomePageUseCase.executeOnBackground() } returns listOf(bannerData, categoryData)
 
-        val observer = Observer<List<DigitalHomePageItemModel>> {
-            assert(it.isNotEmpty())
+        digitalHomePageViewModel.getData(true)
+        val actualData = digitalHomePageViewModel.digitalHomePageList.value
+        assertNotNull(actualData)
+        actualData?.run {
+            assert(actualData.isNotEmpty())
 
-            assert(it[0] is DigitalHomePageBannerModel)
-            val actualBannerData = it[0] as DigitalHomePageBannerModel
+            assert(actualData[0] is DigitalHomePageBannerModel)
+            val actualBannerData = actualData[0] as DigitalHomePageBannerModel
             assertEquals(actualBannerData.isSuccess, true)
             assert(actualBannerData.bannerList.isNotEmpty())
             assertEquals(actualBannerData.bannerList[0].id, 1)
 
-            assert(it[1] is DigitalHomePageCategoryModel)
-            val actualCategoryData = it[1] as DigitalHomePageCategoryModel
+            assert(actualData[1] is DigitalHomePageCategoryModel)
+            val actualCategoryData = actualData[1] as DigitalHomePageCategoryModel
             assertEquals(actualCategoryData.isSuccess, true)
             assert(actualCategoryData.listSubtitle.isNotEmpty())
             assertEquals(actualCategoryData.listSubtitle[0].name, "Prabayar & Pascabayar")
-        }
-
-        try {
-            digitalHomePageViewModel.digitalHomePageList.observeForever(observer)
-            digitalHomePageViewModel.getData(true)
-        } finally {
-            digitalHomePageViewModel.digitalHomePageList.removeObserver(observer)
         }
     }
 
@@ -100,24 +90,20 @@ class DigitalHomePageViewModelTest {
         failedCategoryData.isSuccess = false
         coEvery { digitalHomePageUseCase.executeOnBackground() } returns listOf(bannerData, failedCategoryData)
 
-        val observer = Observer<List<DigitalHomePageItemModel>> {
-            assert(it.isNotEmpty())
+        digitalHomePageViewModel.getData(true)
+        val actualData = digitalHomePageViewModel.digitalHomePageList.value
+        assertNotNull(actualData)
+        actualData?.run {
+            assert(actualData.isNotEmpty())
 
-            assert(it[0] is DigitalHomePageBannerModel)
-            val actualBannerData = it[0] as DigitalHomePageBannerModel
+            assert(actualData[0] is DigitalHomePageBannerModel)
+            val actualBannerData = actualData[0] as DigitalHomePageBannerModel
             assertEquals(actualBannerData.isSuccess, true)
             assert(actualBannerData.bannerList.isNotEmpty())
             assertEquals(actualBannerData.bannerList[0].id, 1)
 
-            assert(it[1] is DigitalHomePageCategoryModel)
-            assertEquals((it as DigitalHomePageItemModel).isSuccess, false)
-        }
-
-        try {
-            digitalHomePageViewModel.digitalHomePageList.observeForever(observer)
-            digitalHomePageViewModel.getData(true)
-        } finally {
-            digitalHomePageViewModel.digitalHomePageList.removeObserver(observer)
+            assert(actualData[1] is DigitalHomePageCategoryModel)
+            assertEquals(actualData[1].isSuccess, false)
         }
     }
 
@@ -125,16 +111,10 @@ class DigitalHomePageViewModelTest {
     fun getData_Fail_Query() {
         coEvery { digitalHomePageUseCase.executeOnBackground() } returns listOf()
 
-        val observer = Observer<Boolean> {
-            assertEquals(it, true)
-        }
-
-        try {
-            digitalHomePageViewModel.isAllError.observeForever(observer)
-            digitalHomePageViewModel.getData(true)
-        } finally {
-            digitalHomePageViewModel.isAllError.removeObserver(observer)
-        }
+        digitalHomePageViewModel.getData(true)
+        val actualErrorData = digitalHomePageViewModel.isAllError.value
+        assertNotNull(actualErrorData)
+        actualErrorData?.run { assert(actualErrorData) }
     }
 
     @Test
@@ -147,15 +127,9 @@ class DigitalHomePageViewModelTest {
                 failedBannerData, failedCategoryData
         )
 
-        val observer = Observer<Boolean> {
-            assertEquals(it, true)
-        }
-
-        try {
-            digitalHomePageViewModel.isAllError.observeForever(observer)
-            digitalHomePageViewModel.getData(true)
-        } finally {
-            digitalHomePageViewModel.isAllError.removeObserver(observer)
-        }
+        digitalHomePageViewModel.getData(true)
+        val actualErrorData = digitalHomePageViewModel.isAllError.value
+        assertNotNull(actualErrorData)
+        actualErrorData?.run { assert(actualErrorData) }
     }
 }

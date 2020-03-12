@@ -234,6 +234,7 @@ object DeeplinkMapper {
             ApplinkConst.KYC_FORM_NO_PARAM -> ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM_BASE
             ApplinkConst.SETTING_BANK -> ApplinkConstInternalGlobal.SETTING_BANK
             ApplinkConst.ADD_PIN_ONBOARD -> ApplinkConstInternalGlobal.ADD_PIN_ONBOARDING
+            ApplinkConst.ADD_FINGERPRINT_ONBOARDING -> ApplinkConstInternalGlobal.ADD_FINGERPRINT_ONBOARDING
             ApplinkConst.FLIGHT -> ApplinkConstInternalTravel.DASHBOARD_FLIGHT
             ApplinkConst.SALDO -> ApplinkConstInternalGlobal.SALDO_DEPOSIT
             ApplinkConst.SALDO_INTRO -> ApplinkConstInternalGlobal.SALDO_INTRO

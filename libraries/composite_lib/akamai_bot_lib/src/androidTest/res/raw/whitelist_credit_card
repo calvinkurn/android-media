@@ -1,0 +1,10 @@
+mutation checkWhiteListStatus($updateStatus : Boolean!, $authValue : Int!) {
+   checkWhiteListStatus(updateStatus: $updateStatus, authValue: $authValue) {
+      status_code
+      message
+      data {
+        state
+        user_email
+      }
+   }
+}
