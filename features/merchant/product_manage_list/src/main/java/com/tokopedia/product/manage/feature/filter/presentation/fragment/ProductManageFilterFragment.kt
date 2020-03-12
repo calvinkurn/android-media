@@ -44,7 +44,6 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         const val CATEGORIES_CACHE_MANAGER_KEY = "categories"
         const val OTHER_FILTER_CACHE_MANAGER_KEY = "filter"
         const val BOTTOMSHEET_TITLE = "Filter"
-        const val REST_BUTTON_TEXT = "Reset"
         const val EXPAND_FILTER_REQUEST = 1
         const val UPDATE_SORT_SUCCESS_RESPONSE = 200
         const val UPDATE_ETALASE_SUCCESS_RESPONSE = 300
@@ -250,7 +249,9 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
     private fun initBottomSheetReset() {
         bottomSheetAction.visibility = View.GONE
-        bottomSheetAction.text = REST_BUTTON_TEXT
+        context?.let {
+            bottomSheetAction.text = it.resources.getString(R.string.filter_expand_reset)
+        }
         bottomSheetAction.setOnClickListener {
             productManageFilterViewModel.clearSelected()
         }

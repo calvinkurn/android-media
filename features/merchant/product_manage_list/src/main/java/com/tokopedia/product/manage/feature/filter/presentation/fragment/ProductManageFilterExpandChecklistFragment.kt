@@ -225,6 +225,7 @@ class ProductManageFilterExpandChecklistFragment :
             this.activity?.finish()
         }
         filter_search_header.actionTextView?.setOnClickListener {
+            adapter?.reset()
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
         }
     }

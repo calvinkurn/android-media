@@ -25,15 +25,9 @@ class ChecklistWidget: BaseCustomView {
         View.inflate(context, com.tokopedia.product.manage.R.layout.widget_checklist, this)
     }
 
-    fun bind(element: ChecklistViewModel, checklistClickListener: ChecklistClickListener) {
+    fun bind(element: ChecklistViewModel) {
         this.checklist.text = element.name
         this.checklist.isChecked = element.isSelected
-        this.checklist.setOnClickListener {
-            checklistClickListener.onChecklistClick(element)
-        }
-        this.setOnClickListener {
-            checklistClickListener.onChecklistClick(element)
-        }
     }
 }
 
