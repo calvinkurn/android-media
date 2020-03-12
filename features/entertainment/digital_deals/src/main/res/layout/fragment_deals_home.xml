@@ -151,9 +151,9 @@
                     <com.tokopedia.home_page_banner.presentation.widgets.pageIndicator.CircularPageIndicator
                         android:id="@+id/indicator_banner"
                         android:layout_width="wrap_content"
-                        android:layout_height="10dp"
-                        android:layout_marginStart="16dp"
-                        android:layout_marginLeft="16dp"
+                        android:layout_height="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_16"
+                        android:layout_marginLeft="@dimen/dp_16"
                         android:orientation="horizontal"
                         app:circle_height="@dimen/dp_8"
                         app:circle_margin="@dimen/dp_2"

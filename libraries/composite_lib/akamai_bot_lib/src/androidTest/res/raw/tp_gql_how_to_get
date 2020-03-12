@@ -1,0 +1,19 @@
+{
+  tokopoints {
+    resultStatus {
+      code
+      message
+      status
+    }
+    sheetHowToGet {
+      title
+      description
+      services {
+        icon
+        text
+        url
+        appLink
+      }
+    }
+  }
+}

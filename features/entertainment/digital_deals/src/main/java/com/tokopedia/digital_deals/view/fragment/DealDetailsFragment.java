@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -156,6 +155,8 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private final int SALAM_VALUE = 32768;
     private final int SALAM_INDICATOR = 0;
     private final String SALAM_REGEX_PATTERN = "<a(?:[^>]+)?>(.*?)<\\/a>";
+    private final int URL_GROUP = 1;
+    private final int FIRST_VALUE = 0;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();
@@ -707,20 +708,18 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     private Function1<? super EventContentData, Unit> onSuccessGetEventContent(){
         return success -> {
-            String valueText = success.getEventContentById().getData().getSectionDatas().get(0).getContents().get(0).getValueText();
+            String valueText = success.getEventContentById().getData().getSectionDatas().get(FIRST_VALUE).getContents().get(FIRST_VALUE).getValueText();
             Pattern pattern = Pattern.compile(SALAM_REGEX_PATTERN);
             Matcher matcher = pattern.matcher(valueText);
             if(matcher.find()){
-                startGeneralWebView(matcher.group(1));
+                startGeneralWebView(matcher.group(URL_GROUP));
             }
             return Unit.INSTANCE;
         };
     }
 
     private Function1<? super Throwable, Unit> onErrorGetEventContent(){
-        return error -> {
-            return showErrorMessage();
-        };
+        return error -> showErrorMessage();
     }
 
     private Unit showErrorMessage(){
