@@ -100,7 +100,11 @@ public interface CMConstant {
         String NOTIFICATION_START_TIME= "startTime";
         String NOTIFICATION_END_TIME= "endTime";
 
-
+        String TRANSACTION_ID = "transId";
+        String USER_TRANSACTION_ID = "userTransId";
+        String USER_ID = "userId";
+        String SHOP_ID = "shopId";
+        String BLAST_ID = "notifcenterBlastId";
     }
 
     interface ReceiverExtraData {
