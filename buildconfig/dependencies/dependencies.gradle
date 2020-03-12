@@ -86,7 +86,7 @@ ext {
     unifyCalendarVersion = '1.0.2'
     unifyBannerVersion = '1.0.4'
     unifyDialogVersion = '1.0.0'
-    unifyDatePickerVersion = '1.0.2'
+    unifyDatePickerVersion = '1.0.3'
     unifyEmptyStateVersion = '1.0.2'
     unifyGlobalErrorVersion = '1.0.6'
     unifySortFilterVersion = '1.0.1'
@@ -95,6 +95,10 @@ ext {
     gradlePlugin = [
             crashlytics   : "io.fabric.tools:gradle:${crashlyticsGradleVersion}",
             googleServices: "com.google.gms:google-services:${googleServiceGradleVersion}"
+    ]
+
+    monitoringDependencies = [
+            bugSnag       : "com.bugsnag:bugsnag-android:4.22.3"
     ]
 
     networkDependencies = [
@@ -234,7 +238,8 @@ ext {
             viewPager2            : "androidx.viewpager2:viewpager2:$viewPager2",
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
-            liveness              : "ai.advance.liveness:guardian_core_v1.6@aar"
+            liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
+            javaxInject           :  "javax.inject:javax.inject:1"
     ]
 
     testDependencies = [

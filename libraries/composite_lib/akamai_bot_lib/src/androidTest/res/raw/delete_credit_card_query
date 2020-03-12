@@ -1,0 +1,3 @@
+mutation removeCreditCard($tokenId : String!) {
+  remove_credit_card(token_id: $tokenId){}
+}

@@ -53,7 +53,8 @@ open class SelectionRangeCalendarWidget : BottomSheetUnify() {
         super.onCreate(savedInstanceState)
 
         setTitle(CALENDAR_TITLE)
-        setFullPage(true)
+        isFullpage = true
+        showCloseIcon = true
         setCloseClickListener { this.dismissAllowingStateLoss() }
 
         val childView = View.inflate(context, R.layout.dialog_calendar_multi_pick, null)

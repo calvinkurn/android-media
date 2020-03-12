@@ -1,0 +1,18 @@
+query ($transfer_id:Int!){
+  goalQRThanks(transfer_id: $transfer_id) {
+    transfer_id
+    status
+    message
+    transaction_date
+    amount
+    help_url
+    merchant {
+      name
+      description
+    }
+    errors {
+      title
+      message
+    }
+  }
+}

@@ -1,0 +1,8 @@
+query getShopFeature($shopID: String!) {
+  shopFeature(type: 4, shopID: $shopID) {
+    data {
+      title
+      value
+    }
+  }
+}
