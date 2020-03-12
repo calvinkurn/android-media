@@ -31,7 +31,6 @@ class UmrahTravelAgentProductViewHolder (view: View, private val listener: SetOn
 
             setOnClickListener {
                 listener.onProductClicked(element, position)
-                listener.trackingProduct()
                 RouteManager.route(context, ApplinkConst.SALAM_UMRAH_PDP, element.slugName)
             }
         }
@@ -43,6 +42,5 @@ class UmrahTravelAgentProductViewHolder (view: View, private val listener: SetOn
 
     interface SetOnClickListener{
         fun onProductClicked(umrahTravelProduct: UmrahTravelProduct, position:Int)
-        fun trackingProduct()
     }
 }

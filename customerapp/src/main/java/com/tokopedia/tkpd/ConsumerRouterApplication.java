@@ -1289,7 +1289,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     }
 
     private boolean executeAppflyerInit(){
-        TkpdAppsFlyerMapper.getInstance(this).mapAnalytics();
+        TkpdAppsFlyerMapper.getInstance(ConsumerRouterApplication.this).mapAnalytics();
         return true;
     }
 

@@ -1,0 +1,13 @@
+query getOtherProduct($params: String){
+  searchProduct(params: $params){
+    count
+    products{
+      id
+      name
+      url
+      image_url
+      image_url_300
+      price_int
+    }
+  }
+}

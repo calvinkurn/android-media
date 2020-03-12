@@ -898,8 +898,13 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 setDesc(getString(R.string.campaign_expired_descr))
                 setBtnOk(getString(R.string.exp_dialog_ok))
                 setBtnCancel(getString(R.string.close))
-                setOnCancelClickListener { loadProductData(true); dismiss() }
-                setOnOkClickListener { dismiss(); }
+                setOnCancelClickListener { 
+                    onSwipeRefresh();
+                    dismiss();
+                }
+                setOnOkClickListener { 
+                    dismiss();
+                }
             }.show()
         }
     }
