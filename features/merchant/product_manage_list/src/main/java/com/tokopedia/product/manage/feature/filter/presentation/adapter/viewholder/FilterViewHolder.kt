@@ -28,8 +28,8 @@ class FilterViewHolder(view: View,
 
     private val recyclerView: RecyclerView = itemView.chips_recycler_view
     private var adapter: ChipsAdapter? = null
-    private val headerWidget: HeaderWidget = itemView.filter_header
-    private val seeAllWidget: SeeAllWidget = itemView.filter_see_all
+    private val headerWidget: HeaderWidget = itemView.filterHeader
+    private val seeAllWidget: SeeAllWidget = itemView.filterSeeAll
 
 
     init {

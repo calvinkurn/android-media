@@ -7,7 +7,6 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
@@ -97,8 +96,8 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         layoutManager = LinearLayoutManager(this.context)
         val adapterTypeFactory = FilterAdapterTypeFactory(this, this, this)
         filterAdapter = FilterAdapter(adapterTypeFactory)
-        filter_recycler_view.layoutManager = layoutManager
-        filter_recycler_view.adapter = filterAdapter
+        filterRecyclerView.layoutManager = layoutManager
+        filterRecyclerView.adapter = filterAdapter
         observeCombinedResponse()
         observeFilterData()
         initView()
@@ -210,7 +209,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     }
 
     private fun initView() {
-        btn_close_bottom_sheet.setOnClickListener {
+        buttonCloseBottomSheet.setOnClickListener {
             isResultReady = true
             productManageFilterViewModel.filterData.value?.let { data ->
                 context?.let {
@@ -258,14 +257,14 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     }
 
     private fun showLoading() {
-        btn_close_bottom_sheet.isEnabled = false
-        filter_recycler_view.visibility= View.INVISIBLE
-        filter_loader.visibility = View.VISIBLE
+        buttonCloseBottomSheet.isEnabled = false
+        filterRecyclerView.visibility= View.INVISIBLE
+        filterLoadingSpinner.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        filter_loader.visibility = View.GONE
-        btn_close_bottom_sheet.isEnabled = true
-        filter_recycler_view.visibility= View.VISIBLE
+        filterLoadingSpinner.visibility = View.GONE
+        buttonCloseBottomSheet.isEnabled = true
+        filterRecyclerView.visibility= View.VISIBLE
     }
 }

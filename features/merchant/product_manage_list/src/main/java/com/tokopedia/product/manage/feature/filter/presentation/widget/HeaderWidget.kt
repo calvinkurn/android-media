@@ -25,8 +25,8 @@ class HeaderWidget : BaseCustomView {
         View.inflate(context, com.tokopedia.product.manage.R.layout.widget_header, this)
     }
 
-    fun bind(title: String) {
-        tv_header.text = title
+    fun bind(headerText: String) {
+        title.text = headerText
     }
 }
 

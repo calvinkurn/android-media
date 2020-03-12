@@ -15,13 +15,13 @@ class CheckListViewHolder(view: View, private val checklistClickListener: Checkl
         val LAYOUT = R.layout.item_checklist
     }
 
-    private var checklistWidget: ChecklistWidget = itemView.checklist_widget
+    private var checklistWidget: ChecklistWidget = itemView.checklistWidget
 
     override fun bind(element: ChecklistViewModel) {
         itemView.setOnClickListener {
             checklistClickListener.onChecklistClick(element)
             checklistWidget.checklist.isChecked = !checklistWidget.checklist.isChecked
         }
-        checklistWidget.bind(element)
+        checklistWidget.bind(element, checklistClickListener)
     }
 }

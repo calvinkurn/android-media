@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -80,8 +79,8 @@ class ProductManageFilterExpandChecklistFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        filter_search_recycler_view.adapter = adapter
-        filter_search_recycler_view.layoutManager = LinearLayoutManager(this.context)
+        filterCheckListRecyclerView.adapter = adapter
+        filterCheckListRecyclerView.layoutManager = LinearLayoutManager(this.context)
         observeDataLength()
         observeChecklistData()
         initView()
@@ -111,36 +110,36 @@ class ProductManageFilterExpandChecklistFragment :
 
     private fun initView() {
         configToolbar()
-        filter_search_recycler_view.setOnTouchListener { _, _ ->
-            filter_category_search?.hideKeyboard()
-            btn_submit.visibility = View.VISIBLE
+        filterCheckListRecyclerView.setOnTouchListener { _, _ ->
+            filterSearchBar?.hideKeyboard()
+            filterSubmitButton.visibility = View.VISIBLE
             false
         }
         initButtons()
     }
 
     private fun configToolbar() {
-        filter_search_header.isShowShadow = false
-        filter_search_header.isShowBackButton = true
-        filter_search_header.setNavigationOnClickListener {
+        filterSearchHeader.isShowShadow = false
+        filterSearchHeader.isShowBackButton = true
+        filterSearchHeader.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
         context?.let {
             if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
-                filter_search_header.title = it.resources.getString(R.string.product_manage_filter_all_categories_title)
+                filterSearchHeader.title = it.resources.getString(R.string.product_manage_filter_all_categories_title)
                 initSearchView()
             } else {
-                filter_search_header.title = it.resources.getString(R.string.product_manage_filter_other_filters_title)
+                filterSearchHeader.title = it.resources.getString(R.string.product_manage_filter_other_filters_title)
             }
-            filter_search_header.actionText = it.resources.getString(R.string.filter_expand_reset)
+            filterSearchHeader.actionText = it.resources.getString(R.string.filter_expand_reset)
         }
     }
 
     private fun initSearchView() {
-        filter_category_search.setDelayTextChanged(250)
-        filter_category_search.setListener(object : SearchInputView.Listener {
+        filterSearchBar.setDelayTextChanged(250)
+        filterSearchBar.setListener(object : SearchInputView.Listener {
             override fun onSearchSubmitted(text: String?) {
-                filter_category_search.hideKeyboard()
+                filterSearchBar.hideKeyboard()
             }
             override fun onSearchTextChanged(text: String?) {
                 hideError()
@@ -161,12 +160,12 @@ class ProductManageFilterExpandChecklistFragment :
                 }
             }
         })
-        filter_category_search.visibility = View.VISIBLE
-        filter_category_search.setFocusChangeListener {
-            if(btn_submit.visibility == View.VISIBLE) {
-                btn_submit.visibility = View.GONE
+        filterSearchBar.visibility = View.VISIBLE
+        filterSearchBar.setFocusChangeListener {
+            if(filterSubmitButton.visibility == View.VISIBLE) {
+                filterSubmitButton.visibility = View.GONE
             } else {
-                btn_submit.visibility = View.VISIBLE
+                filterSubmitButton.visibility = View.VISIBLE
             }
         }
     }
@@ -188,17 +187,17 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showButtons() {
-        btn_submit.isEnabled = true
-        filter_search_header.actionTextView?.visibility = View.VISIBLE
+        filterSubmitButton.isEnabled = true
+        filterSearchHeader.actionTextView?.visibility = View.VISIBLE
     }
 
     private fun hideButtons() {
-        btn_submit.isEnabled = false
-        filter_search_header.actionTextView?.visibility = View.GONE
+        filterSubmitButton.isEnabled = false
+        filterSearchHeader.actionTextView?.visibility = View.GONE
     }
 
     private fun initButtons() {
-        btn_submit.setOnClickListener {
+        filterSubmitButton.setOnClickListener {
             val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
             val cacheManagerId = cacheManager?.id
             productManageFilterExpandChecklistViewModel.checklistData.value?.sortByDescending { it.isSelected }
@@ -224,7 +223,7 @@ class ProductManageFilterExpandChecklistFragment :
             }
             this.activity?.finish()
         }
-        filter_search_header.actionTextView?.setOnClickListener {
+        filterSearchHeader.actionTextView?.setOnClickListener {
             adapter?.reset()
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
         }
@@ -241,15 +240,15 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showError() {
-        filter_search_recycler_view.visibility = View.GONE
-        filter_search_error_img.visibility = View.VISIBLE
-        filter_search_error_text.visibility = View.VISIBLE
+        filterCheckListRecyclerView.visibility = View.GONE
+        filterSearchErrorImage.visibility = View.VISIBLE
+        filterSearchErrorText.visibility = View.VISIBLE
     }
 
     private fun hideError() {
-        filter_search_recycler_view.visibility = View.VISIBLE
-        filter_search_error_img?.visibility = View.GONE
-        filter_search_error_text.visibility = View.GONE
+        filterCheckListRecyclerView.visibility = View.VISIBLE
+        filterSearchErrorImage?.visibility = View.GONE
+        filterSearchErrorText.visibility = View.GONE
     }
 
 

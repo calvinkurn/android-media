@@ -7,7 +7,7 @@
     android:background="@color/product_manage_white">
 
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/filter_search_header"
+        android:id="@+id/filterSearchHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -16,10 +16,10 @@
         android:id="@+id/header_divider"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        app:layout_constraintTop_toBottomOf="@id/filter_search_header"/>
+        app:layout_constraintTop_toBottomOf="@id/filterSearchHeader"/>
 
     <com.tokopedia.design.text.SearchInputView
-        android:id="@+id/filter_category_search"
+        android:id="@+id/filterSearchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/layout_lvl2"
@@ -35,18 +35,18 @@
         app:layout_constraintTop_toBottomOf="@id/header_divider"/>
 
     <ImageView
-        android:id="@+id/filter_search_error_img"
+        android:id="@+id/filterSearchErrorImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/unify_globalerrors_404"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/filter_category_search"
+        app:layout_constraintTop_toBottomOf="@id/filterSearchBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/filter_search_error_text"
+        android:id="@+id/filterSearchErrorText"
         android:layout_width="match_parent"
         android:layout_height="@dimen/layout_lvl0"
         android:layout_marginLeft="@dimen/layout_lvl7"
@@ -56,13 +56,13 @@
         android:visibility="gone"
         app:typographyWeight="bold"
         app:typographyType="heading_2"
-        app:layout_constraintTop_toBottomOf="@id/filter_search_error_img" />
+        app:layout_constraintTop_toBottomOf="@id/filterSearchErrorImage" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/filter_search_recycler_view"
+        android:id="@+id/filterCheckListRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/filter_category_search"/>
+        app:layout_constraintTop_toBottomOf="@id/filterSearchBar"/>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/bottomsheet_button_divider"
@@ -80,7 +80,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_submit"
+            android:id="@+id/filterSubmitButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/filter_expand_save_button"

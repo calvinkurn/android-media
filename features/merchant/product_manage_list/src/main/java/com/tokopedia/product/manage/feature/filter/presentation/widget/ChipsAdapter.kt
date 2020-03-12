@@ -48,7 +48,7 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
 
     inner class ItemViewHolder(itemView: View,
                                private val clickListener: ChipClickListener) : RecyclerView.ViewHolder(itemView) {
-        private var chips: ChipWidget =  itemView.findViewById(com.tokopedia.product.manage.R.id.chips_item)
+        private var chips: ChipWidget =  itemView.findViewById(com.tokopedia.product.manage.R.id.chipsItem)
 
         fun bind(element: FilterDataViewModel) {
             chips.bind(element, clickListener, canSelectMany, title)

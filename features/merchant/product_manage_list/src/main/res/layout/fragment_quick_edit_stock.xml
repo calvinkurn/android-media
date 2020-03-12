@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
-            android:id="@+id/quick_edit_stock_activate_switch"
+            android:id="@+id/quickEditStockActivateSwitch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:enabled="true"
@@ -37,7 +37,6 @@
         app:layout_constraintTop_toBottomOf="@id/quick_edit_stock_activate_product_layout">
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/quick_edit_total_stock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/product_manage_quick_edit_stock_total_stock"
@@ -47,7 +46,7 @@
             app:layout_constraintStart_toStartOf="parent"/>
 
         <com.tokopedia.unifycomponents.QuantityEditorUnify
-            android:id="@+id/quick_edit_stock_quantity_editor"
+            android:id="@+id/quickEditStockQuantityEditor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
@@ -64,7 +63,7 @@
         app:layout_constraintTop_toBottomOf="@id/quick_edit_stock_quantity_editor_layout">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/quick_edit_stock_save_button"
+            android:id="@+id/quickEditStockSaveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/filter_expand_save_button"

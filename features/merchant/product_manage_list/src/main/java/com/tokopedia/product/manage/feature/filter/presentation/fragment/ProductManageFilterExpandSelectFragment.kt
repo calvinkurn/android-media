@@ -80,8 +80,8 @@ class ProductManageFilterExpandSelectFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        select_recycler_view.adapter = adapter
-        select_recycler_view.layoutManager = LinearLayoutManager(this.context)
+        filterSelectRecyclerView.adapter = adapter
+        filterSelectRecyclerView.layoutManager = LinearLayoutManager(this.context)
         initView()
     }
 
@@ -133,16 +133,16 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun configToolbar() {
-        select_header.isShowBackButton = true
-        select_header.isShowShadow = false
-        select_header.setNavigationOnClickListener {
+        filterSelectHeader.isShowBackButton = true
+        filterSelectHeader.isShowShadow = false
+        filterSelectHeader.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
         context?.let {
             if(flag == SORT_CACHE_MANAGER_KEY) {
-                select_header.title = it.resources.getString(R.string.product_manage_filter_sort_select_title)
+                filterSelectHeader.title = it.resources.getString(R.string.product_manage_filter_sort_select_title)
             } else {
-                select_header.title = it.resources.getString(R.string.product_manage_filter_etalase_select_title)
+                filterSelectHeader.title = it.resources.getString(R.string.product_manage_filter_etalase_select_title)
             }
         }
     }
