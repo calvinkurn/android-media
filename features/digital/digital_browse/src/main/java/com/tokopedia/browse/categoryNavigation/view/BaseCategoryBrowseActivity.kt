@@ -12,6 +12,7 @@ import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragment
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.browse.categoryNavigation.fragments.Listener
@@ -173,7 +174,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-            // CategoryAnalytics.createInstance().eventBackButtonClick()
+             CategoryAnalytics.createInstance().eventBackButtonClick()
             onBackPressed()
             return true
         }

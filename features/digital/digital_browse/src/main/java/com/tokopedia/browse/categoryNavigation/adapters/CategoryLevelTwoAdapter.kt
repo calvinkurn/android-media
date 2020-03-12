@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryChildItem
 import com.tokopedia.browse.categoryNavigation.utils.Constants
 import com.tokopedia.kotlin.extensions.view.hide
@@ -25,6 +26,9 @@ import kotlinx.android.synthetic.main.item_category_yang_lagi_hit.view.*
 
 class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                               private val trackingQueue: TrackingQueue?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    val viewMap = HashMap<Int, Boolean>()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -66,6 +70,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+
         when (holder.itemViewType) {
             Constants.TextHeaderView -> {
                 initTextHeaderViewHolderLayout(holder as TextHeaderViewHolder, position)
@@ -91,6 +96,12 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         productViewHolder.category_product_name.text = item.name
         productViewHolder.category_parent_layout.setOnClickListener {
             fireApplink(productViewHolder.itemView.context, item.applinks)
+
+            if (item.isSeringKamuLihat) {
+                CategoryAnalytics.createInstance().eventSeringKamuLihatClick(item, item.categoryPosition + 1)
+            } else {
+                CategoryAnalytics.createInstance().eventBannerCategoryLevelTwoClick(item, position)
+            }
         }
 
         if (isLeafElement(item.sameCategoryTotalCount, item.categoryPosition)) {
@@ -125,6 +136,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
         productHeaderViewHolder.product_header_parent.setOnClickListener {
             fireApplink(productHeaderViewHolder.itemView.context, item.applinks)
+            CategoryAnalytics.createInstance().eventBannerCategoryLevelOneClick(list[position])
         }
     }
 
@@ -135,6 +147,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         yangLagiHitsViewHolder.item_name.text = item.name
         yangLagiHitsViewHolder.yang_lagi_layout.setOnClickListener {
             fireApplink(yangLagiHitsViewHolder.itemView.context, item.applinks)
+            CategoryAnalytics.createInstance().eventYangLagiHitClick(list[position], position)
         }
     }
 
@@ -188,5 +201,39 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     class ShimmerProductHeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     class ShimmerProductViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        val position = holder.adapterPosition
+        if (!viewMap.containsKey(position)) {
+            viewMap[position] = true
+            val item = list[position]
+            when (holder.itemViewType) {
+                Constants.ProductView -> {
+                    if (list[position].isSeringKamuLihat) {
+                        trackingQueue?.let {
+                            CategoryAnalytics.createInstance().eventSeringkkamuLihatView(it, item, item.categoryPosition)
+                        }
+                    } else {
+                        trackingQueue?.let {
+                            CategoryAnalytics.createInstance().eventCategoryLevelTwoView(it, item, position)
+                        }
+                    }
+                }
+                Constants.YangLagiHitsView -> {
+                    trackingQueue?.let {
+                        CategoryAnalytics.createInstance().eventYangLagiHitView(it, item, position)
+                    }
+                }
+                Constants.ProductHeaderView -> {
+                    trackingQueue?.let {
+                        CategoryAnalytics.createInstance().eventCategoryLevelOneBannerView(it, item, 1)
+                    }
+                }
+            }
+        }
+
+
+    }
 
 }

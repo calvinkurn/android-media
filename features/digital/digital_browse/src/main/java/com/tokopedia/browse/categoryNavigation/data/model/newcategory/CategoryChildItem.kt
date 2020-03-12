@@ -13,6 +13,9 @@ data class CategoryChildItem(
         @field:SerializedName("itemType")
         var itemType: Int? = null,
 
+        @field:SerializedName("isSeringKamuLihat")
+        var isSeringKamuLihat: Boolean = false,
+
         @field:SerializedName("identifier")
         val identifier: String? = null,
 

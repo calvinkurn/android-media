@@ -54,8 +54,16 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
                                         Constants.ProductView
                                     }
 
+                                    val pos = 1
                                     for (childItem in levelTwoChildItem) {
-                                        childList?.add(createChildItem(type, childItem))
+                                        lateinit var item: CategoryChildItem
+                                        if (type == Constants.ProductView) {
+                                            item = createChildItem(type, childItem, pos)
+                                            item.isSeringKamuLihat = true
+                                        } else {
+                                            item = createChildItem(type, childItem)
+                                        }
+                                        childList?.add(item)
                                     }
                                 }
                             }
@@ -84,6 +92,7 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
         return CategoryChildItem(sameCategoryTotalCount,
                 position,
                 itemType,
+                false,
                 childItem?.identifier,
                 childItem?.hexColor,
                 childItem?.parentName,
@@ -100,6 +109,7 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
         return CategoryChildItem(sameCategoryTotalCount,
                 position,
                 itemType,
+                false,
                 childItem?.identifier,
                 childItem?.hexColor,
                 childItem?.parentName,

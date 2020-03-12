@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.browse.R
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_level_one.view.*
@@ -22,6 +23,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val categoryItem = 1
+    val viewMap = HashMap<Int, Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
@@ -63,6 +65,8 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
             listener.onItemClicked(categoryList[position].id
                     ?: "", position, categoryList[position].name
                     ?: "", categoryList[position].applinks)
+
+                CategoryAnalytics.createInstance().eventSideBarCategoryClick(categoryList[position], position)
         }
         if (categoryList[position].isSelected) {
             ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrl, R.drawable.category_ic_broken_image)
@@ -93,6 +97,17 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
 
     class ShimmerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val shimmerParent: LinearLayout = view.shimmer_parent
+    }
+
+    override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        val position = holder.adapterPosition
+        if (!viewMap.containsKey(position)) {
+            viewMap[position] = true
+            trackingQueue?.let {
+                CategoryAnalytics.createInstance().eventSideCategoryView(it, categoryList[position], position)
+            }
+        }
     }
 
 }

@@ -129,8 +129,6 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
         val item2 = CategoryChildItem()
         item2.itemType = Constants.ProductShimmer
         for (i in 1..12) {
-            item2.sameCategoryTotalCount = 11
-            item2.categoryPosition = i
             childList.add(item2)
         }
     }
