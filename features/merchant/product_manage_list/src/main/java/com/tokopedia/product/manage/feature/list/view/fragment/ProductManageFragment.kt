@@ -398,7 +398,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun loadData(page: Int) {
-        getProductList(page)
+        val keyword = searchInputView.searchText
+        getProductList(page, keyword)
     }
 
     override fun renderList(list: List<ProductViewModel>, hasNextPage: Boolean) {
@@ -1031,8 +1032,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onClickProductItem(product: ProductViewModel) {
-        goToPDP(product.id)
-        ProductManageTracking.eventProductManageClickDetail()
+        goToEditProduct(product.id)
     }
 
     /**
