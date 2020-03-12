@@ -23,7 +23,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val categoryItem = 1
-    val viewMap = HashMap<Int, Boolean>()
+    private val viewMap = HashMap<Int, Boolean>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {

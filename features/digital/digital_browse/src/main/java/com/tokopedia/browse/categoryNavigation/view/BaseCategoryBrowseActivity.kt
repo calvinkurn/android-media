@@ -34,7 +34,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
     private var deepLinkCategoryName: String? = null
 
-    private var TOOLBAR_NAME = "Kategori"
+    private var toolbarName = "Kategori"
     private lateinit var globalError: GlobalError
 
 
@@ -92,7 +92,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
             }
         }
         super.onCreate(savedInstanceState)
-        setupToolbar(TOOLBAR_NAME)
+        setupToolbar(toolbarName)
     }
 
     override fun onPause() {
@@ -157,13 +157,16 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     override fun onError(e: Throwable) {
         slave_view.hide()
         master_view.hide()
+
         if (e is UnknownHostException
                 || e is SocketTimeoutException) {
             globalError.setType(GlobalError.NO_CONNECTION)
         } else {
             globalError.setType(GlobalError.SERVER_ERROR)
         }
+
         globalError.show()
+
         globalError.setOnClickListener {
             slave_view.show()
             master_view.show()
@@ -174,7 +177,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
-             CategoryAnalytics.createInstance().eventBackButtonClick()
+            CategoryAnalytics.createInstance().eventBackButtonClick()
             onBackPressed()
             return true
         }

@@ -4,7 +4,6 @@ package com.tokopedia.browse.categoryNavigation.fragments
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -12,10 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.applink.RouteManager
-
 import com.tokopedia.browse.R
 import com.tokopedia.browse.categoryNavigation.adapters.CategoryLevelTwoAdapter
 import com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoryChildItem
@@ -24,7 +20,6 @@ import com.tokopedia.browse.categoryNavigation.di.DaggerCategoryNavigationCompon
 import com.tokopedia.browse.categoryNavigation.utils.Constants
 import com.tokopedia.browse.categoryNavigation.view.ActivityStateListener
 import com.tokopedia.browse.categoryNavigation.viewmodel.CategoryLevelTwoViewModel
-import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.fragment_category_level_two.*
 import javax.inject.Inject
@@ -35,17 +30,17 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private lateinit var categoryLevelTwoViewModel: CategoryLevelTwoViewModel
-
     private lateinit var categoryLevelTwoAdapter: CategoryLevelTwoAdapter
     private lateinit var gridLayoutManager: GridLayoutManager
-
     private val childList = ArrayList<CategoryChildItem>()
-    private val defaultCaseId = "0"
-
     private var currentPosition = "0"
-
     private var categoryApplink: String? = null
     private var currentCategoryName: String = ""
+
+    private var totalSpanCount = 6
+    private var fullItemSpan = 6
+    private var halfItemSpan = 3
+    private var oneThirdSpan = 2
 
     var activityStateListener: ActivityStateListener? = null
 
@@ -81,16 +76,11 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
 
     private fun setUpObserver() {
         categoryLevelTwoViewModel.getCategoryChildren().observe(viewLifecycleOwner, Observer {
-
             when (it) {
                 is Success -> {
                     childList.clear()
                     childList.addAll(it.data)
                     slave_list.adapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
-                }
-
-                is Fail -> {
-
                 }
             }
 
@@ -101,17 +91,17 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     private fun initView() {
         addShimmerItems(childList)
         categoryLevelTwoAdapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
-        gridLayoutManager = GridLayoutManager(context, 6, GridLayoutManager.VERTICAL, false)
+        gridLayoutManager = GridLayoutManager(context, totalSpanCount, GridLayoutManager.VERTICAL, false)
 
         gridLayoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (slave_list.adapter?.getItemViewType(position)) {
-                    Constants.ProductHeaderView -> 6
-                    Constants.YangLagiHitsView -> 3
-                    Constants.ProductView -> 2
-                    Constants.HeaderShimmer -> 6
-                    Constants.ProductShimmer -> 2
-                    else -> 6
+                    Constants.ProductHeaderView -> fullItemSpan
+                    Constants.YangLagiHitsView -> halfItemSpan
+                    Constants.ProductView -> oneThirdSpan
+                    Constants.HeaderShimmer -> fullItemSpan
+                    Constants.ProductShimmer -> oneThirdSpan
+                    else -> fullItemSpan
                 }
 
             }
@@ -123,13 +113,14 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
     }
 
     private fun addShimmerItems(childList: ArrayList<CategoryChildItem>) {
-        val item1 = CategoryChildItem()
-        item1.itemType = Constants.HeaderShimmer
-        childList.add(item1)
-        val item2 = CategoryChildItem()
-        item2.itemType = Constants.ProductShimmer
+        // adding shimmer elements in recyclerview
+        val headerItem = CategoryChildItem()
+        headerItem.itemType = Constants.HeaderShimmer
+        childList.add(headerItem)
+        val productItem = CategoryChildItem()
+        productItem.itemType = Constants.ProductShimmer
         for (i in 1..12) {
-            childList.add(item2)
+            childList.add(productItem)
         }
     }
 

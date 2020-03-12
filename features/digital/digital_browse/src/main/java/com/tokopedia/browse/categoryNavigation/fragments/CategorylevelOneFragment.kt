@@ -89,6 +89,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
     }
 
     private fun addShimmerItems(categoryList: ArrayList<CategoriesItem>) {
+        // adding shimmer elements in recyclerview
         val item = CategoriesItem()
         item.type = 0
         for (i in 0..8) {
@@ -121,7 +122,7 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
         })
     }
 
-    private fun getPositionFromIdentifier(categoryList: ArrayList<com.tokopedia.browse.categoryNavigation.data.model.newcategory.CategoriesItem>): Int {
+    private fun getPositionFromIdentifier(categoryList: ArrayList<CategoriesItem>): Int {
         for (i in 0 until categoryList.size) {
             categoryList[i].identifier?.let {
                 if (it == selectedItemIdentifier) {
@@ -130,7 +131,6 @@ class CategorylevelOneFragment : Fragment(), HasComponent<CategoryNavigationComp
                 }
             }
         }
-
         return 0
     }
 

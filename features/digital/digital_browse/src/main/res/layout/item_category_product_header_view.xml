@@ -14,15 +14,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription"
         tools:srcCompat="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/product_name"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_12"
         android:ellipsize="end"
         android:maxLines="2"
+        android:padding="@dimen/dp_12"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,20 +32,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_default="spread"
         app:typographyType="heading_4"
-        tools:text="gaming seru banqet ygubjbjbjkbjbjkbjkbkjbkjbkjbjkbk" />
+        tools:text="Fashion Wanita" />
 
     <ImageView
         android:id="@+id/arrow_icon"
         android:layout_width="@dimen/dp_30"
         android:layout_height="@dimen/dp_30"
+        android:layout_marginStart="@dimen/dp_6"
         android:layout_marginLeft="@dimen/dp_6"
+        android:layout_marginEnd="@dimen/dp_24"
         android:layout_marginRight="@dimen/dp_24"
         android:padding="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/product_name"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/category_ic_arrow_right" />
-
+        app:srcCompat="@drawable/category_ic_arrow_right"
+        tools:ignore="ContentDescription" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

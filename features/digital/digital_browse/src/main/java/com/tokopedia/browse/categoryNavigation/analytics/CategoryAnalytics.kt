@@ -10,58 +10,71 @@ import java.util.HashMap
 
 private const val EVENT_CATEGORY_BELANJA_PAGE = "belanja page"
 
+private const val KEY_EVENT = "event"
+private const val KEY_EVENT_CATEGORY = "eventCategory"
+private const val KEY_EVENT_ACTION = "eventAction"
+private const val KEY_EVENT_LABEL = "eventLabel"
+private const val KEY_PROMOTIONS = "promotions"
+private const val KEY_PROMO_VIEW = "promoView"
+private const val KEY_PROMO_CLICK = "promoClick"
+private const val KEY_CREATIVE = "creative"
+private const val KEY_CREATIVE_URL = "creative_url"
+private const val KEY_PROMO_ID = "promo_id"
+private const val KEY_POSITION = "position"
+private const val KEY_ECOMMERCE = "ecommerce"
+private const val KEY_PROMO_CODE = "promo_code"
+private const val KEY_NAME = "name"
+private const val KEY_ID = "id"
+
 class CategoryAnalytics {
 
     companion object {
-        fun createInstance(): CategoryAnalytics {
-            return CategoryAnalytics()
-        }
-
-        fun getTracker(): Analytics {
-            return TrackApp.getInstance().gtm
-        }
+        fun createInstance(): CategoryAnalytics = CategoryAnalytics()
     }
 
+    private fun getTracker(): Analytics {
+        return TrackApp.getInstance().gtm
+    }
 
     // 3
     fun eventYangLagiHitClick(product: CategoryChildItem, position: Int) {
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        "event", "promoClick",
-                        "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                        "eventAction", "click banner inside kategori hits pilihan",
-                        "eventLabel", product.id + " - " + product.name,
-                        "ecommerce", DataLayer.mapOf(
-                        "promoClick", DataLayer.mapOf(
-                        "promotions", DataLayer.listOf(
+                        KEY_EVENT, KEY_PROMO_CLICK,
+                        KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                        KEY_EVENT_ACTION, "click banner inside kategori hits pilihan",
+                        KEY_EVENT_LABEL, product.id + " - " + product.name,
+                        KEY_ECOMMERCE, DataLayer.mapOf(
+                        KEY_PROMO_CLICK, DataLayer.mapOf(
+                        KEY_PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
-                                "id", product.id.toString(),
-                                "name", "category/" + product.name + " - " + product.id,
-                                "creative", product.name,
-                                "creative_url", product.iconImageUrl,
-                                "position", (position).toString(),
-                                "promo_id", "",
-                                "promo_code", ""
+                                KEY_ID, product.id.toString(),
+                                KEY_NAME, "category/" + product.name + " - " + product.id,
+                                KEY_CREATIVE, product.name,
+                                KEY_CREATIVE_URL, product.iconImageUrl,
+                                KEY_POSITION, (position).toString(),
+                                KEY_PROMO_ID, "",
+                                KEY_PROMO_CODE, ""
                         ))))))
     }
 
     // 4
     fun eventYangLagiHitView(trackingQueue: TrackingQueue, product: CategoryChildItem, position: Int) {
         val map = DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "impression banner inside kategori hits pilihan",
-                "eventLabel", product.id + " - " + product.name,
-                "ecommerce", DataLayer.mapOf(
-                "promoView", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id.toString(),
-                "name", "category/" + product.name + " - " + product.id,
-                "creative", product.name,
-                "creative_url", product.iconImageUrl,
-                "position", (position).toString(),
-                "promo_id", "",
-                "promo_code", ""
+                KEY_EVENT, KEY_PROMO_VIEW,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                KEY_EVENT_ACTION, "impression banner inside kategori hits pilihan",
+                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_ECOMMERCE, DataLayer.mapOf(
+                KEY_PROMO_VIEW, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                KEY_ID, product.id.toString(),
+                KEY_NAME, "category/" + product.name + " - " + product.id,
+                KEY_CREATIVE, product.name,
+                KEY_CREATIVE_URL, product.iconImageUrl,
+                KEY_POSITION, (position).toString(),
+                KEY_PROMO_ID, "",
+                KEY_PROMO_CODE, ""
         )))
         ))
         trackingQueue.putEETracking(map as HashMap<String, Any>)
@@ -72,41 +85,41 @@ class CategoryAnalytics {
     fun eventSeringKamuLihatClick(product: CategoryChildItem, position: Int) {
         getTracker().sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
-                        "event", "promoClick",
-                        "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                        "eventAction", "click banner inside sering kamu lihat",
-                        "eventLabel", product.id + " - " + product.name,
-                        "ecommerce", DataLayer.mapOf(
-                        "promoClick", DataLayer.mapOf(
-                        "promotions", DataLayer.listOf(
+                        KEY_EVENT, KEY_PROMO_CLICK,
+                        KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                        KEY_EVENT_ACTION, "click banner inside sering kamu lihat",
+                        KEY_EVENT_LABEL, product.id + " - " + product.name,
+                        KEY_ECOMMERCE, DataLayer.mapOf(
+                        KEY_PROMO_CLICK, DataLayer.mapOf(
+                        KEY_PROMOTIONS, DataLayer.listOf(
                         DataLayer.mapOf(
-                                "id", product.id.toString(),
-                                "name", "category/" + product.name + " - " + product.id,
-                                "creative", product.name,
-                                "creative_url", product.iconImageUrl,
-                                "position", (position).toString(),
-                                "promo_id", "",
-                                "promo_code", ""
+                                KEY_ID, product.id.toString(),
+                                KEY_NAME, "category/" + product.name + " - " + product.id,
+                                KEY_CREATIVE, product.name,
+                                KEY_CREATIVE_URL, product.iconImageUrl,
+                                KEY_POSITION, (position).toString(),
+                                KEY_PROMO_ID, "",
+                                KEY_PROMO_CODE, ""
                         ))))))
     }
 
     // 6
     fun eventSeringkkamuLihatView(trackingQueue: TrackingQueue, product: CategoryChildItem, position: Int) {
         val map = DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "impression banner inside sering kamu lihat",
-                "eventLabel", product.id + " - " + product.name,
-                "ecommerce", DataLayer.mapOf(
-                "promoView", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id.toString(),
-                "name", "category/" + product.name + " - " + product.id,
-                "creative", product.name,
-                "creative_url", product.iconImageUrl,
-                "position", (position).toString(),
-                "promo_id", "",
-                "promo_code", ""
+                KEY_EVENT, KEY_PROMO_VIEW,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                KEY_EVENT_ACTION, "impression banner inside sering kamu lihat",
+                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_ECOMMERCE, DataLayer.mapOf(
+                KEY_PROMO_VIEW, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                KEY_ID, product.id.toString(),
+                KEY_NAME, "category/" + product.name + " - " + product.id,
+                KEY_CREATIVE, product.name,
+                KEY_CREATIVE_URL, product.iconImageUrl,
+                KEY_POSITION, (position).toString(),
+                KEY_PROMO_ID, "",
+                KEY_PROMO_CODE, ""
         )))
         ))
         trackingQueue.putEETracking(map as HashMap<String, Any>)
@@ -122,20 +135,20 @@ class CategoryAnalytics {
         }
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "promoClick",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "click category on side bar",
-                "eventLabel", eventLabel,
-                "ecommerce", DataLayer.mapOf(
-                "promoClick", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id.toString(),
-                "name", "category/" + product.name + " - " + product.id,
-                "creative", product.name,
-                "creative_url", product.iconImageUrl,
-                "position", (position + 1).toString(),
-                "promo_id", "",
-                "promo_code", "")))
+                KEY_EVENT, KEY_PROMO_CLICK,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                KEY_EVENT_ACTION, "click category on side bar",
+                KEY_EVENT_LABEL, eventLabel,
+                KEY_ECOMMERCE, DataLayer.mapOf(
+                KEY_PROMO_CLICK, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                KEY_ID, product.id.toString(),
+                KEY_NAME, "category/" + product.name + " - " + product.id,
+                KEY_CREATIVE, product.name,
+                KEY_CREATIVE_URL, product.iconImageUrl,
+                KEY_POSITION, (position + 1).toString(),
+                KEY_PROMO_ID, "",
+                KEY_PROMO_CODE, "")))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -144,20 +157,20 @@ class CategoryAnalytics {
 
     fun eventSideCategoryView(trackingQueue: TrackingQueue, product: CategoriesItem, position: Int) {
         val map = DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "impression category on side bar",
-                "eventLabel", product.id + " - " + product.name,
-                "ecommerce", DataLayer.mapOf(
-                "promoView", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id.toString(),
-                "name", "category/" + product.name + " - " + product.id,
-                "creative", product.name,
-                "creative_url", product.iconImageUrl,
-                "position", (position).toString(),
-                "promo_id", "",
-                "promo_code", ""
+                KEY_EVENT, KEY_PROMO_VIEW,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                KEY_EVENT_ACTION, "impression category on side bar",
+                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_ECOMMERCE, DataLayer.mapOf(
+                KEY_PROMO_VIEW, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                KEY_ID, product.id.toString(),
+                KEY_NAME, "category/" + product.name + " - " + product.id,
+                KEY_CREATIVE, product.name,
+                KEY_CREATIVE_URL, product.iconImageUrl,
+                KEY_POSITION, (position).toString(),
+                KEY_PROMO_ID, "",
+                KEY_PROMO_CODE, ""
         )))
         ))
         trackingQueue.putEETracking(map as HashMap<String, Any>)
@@ -168,19 +181,19 @@ class CategoryAnalytics {
     fun eventBannerCategoryLevelOneClick(product: CategoryChildItem) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "promoClick",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "click banner category level 1",
-                "eventLabel", product.id + " - " + product.name,
-                "ecommerce", DataLayer.mapOf(
-                "promoClick", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id.toString(),
-                "name", "category/" + product.name + " - " + product.id,
-                "creative", product.name,
-                "creative_url", product.iconImageUrl,
-                "promo_id", "",
-                "promo_code", "")))
+                KEY_EVENT, KEY_PROMO_CLICK,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                KEY_EVENT_ACTION, "click banner category level 1",
+                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_ECOMMERCE, DataLayer.mapOf(
+                KEY_PROMO_CLICK, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                KEY_ID, product.id.toString(),
+                KEY_NAME, "category/" + product.name + " - " + product.id,
+                KEY_CREATIVE, product.name,
+                KEY_CREATIVE_URL, product.iconImageUrl,
+                KEY_PROMO_ID, "",
+                KEY_PROMO_CODE, "")))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -190,21 +203,21 @@ class CategoryAnalytics {
     fun eventBannerCategoryLevelTwoClick(product: CategoryChildItem, position: Int) {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "promoClick",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "cclick banner category level 2",
-                "eventLabel", product.id + " - " + product.name,
-                "ecommerce", DataLayer.mapOf(
-                "promoClick", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id.toString(),
-                "name", "category/" + product.name + " - " + product.id,
-                "creative", product.name,
+                KEY_EVENT, KEY_PROMO_CLICK,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                KEY_EVENT_ACTION, "click banner category level 2",
+                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_ECOMMERCE, DataLayer.mapOf(
+                KEY_PROMO_CLICK, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                KEY_ID, product.id.toString(),
+                KEY_NAME, "category/" + product.name + " - " + product.id,
+                KEY_CREATIVE, product.name,
                 "category", "",
-                "position", position,
-                "creative_url", product.iconImageUrl,
-                "promo_id", "",
-                "promo_code", "")))
+                KEY_POSITION, position,
+                KEY_CREATIVE_URL, product.iconImageUrl,
+                KEY_PROMO_ID, "",
+                KEY_PROMO_CODE, "")))
         ))
         tracker.sendEnhanceEcommerceEvent(map)
     }
@@ -212,20 +225,20 @@ class CategoryAnalytics {
     // 11
     fun eventCategoryLevelOneBannerView(trackingQueue: TrackingQueue, product: CategoryChildItem, position: Int) {
         val map = DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "impression banner category level 1",
-                "eventLabel", product.id + " - " + product.name,
-                "ecommerce", DataLayer.mapOf(
-                "promoView", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id.toString(),
-                "name", "category/" + product.name + " - " + product.id,
-                "creative", product.name,
-                "creative_url", product.iconImageUrl,
-                "position", (position).toString(),
-                "promo_id", "",
-                "promo_code", ""
+                KEY_EVENT, KEY_PROMO_VIEW,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                KEY_EVENT_ACTION, "impression banner category level 1",
+                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_ECOMMERCE, DataLayer.mapOf(
+                KEY_PROMO_VIEW, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                KEY_ID, product.id.toString(),
+                KEY_NAME, "category/" + product.name + " - " + product.id,
+                KEY_CREATIVE, product.name,
+                KEY_CREATIVE_URL, product.iconImageUrl,
+                KEY_POSITION, (position + 1).toString(),
+                KEY_PROMO_ID, "",
+                KEY_PROMO_CODE, ""
         )))
         ))
         trackingQueue.putEETracking(map as HashMap<String, Any>)
@@ -235,20 +248,20 @@ class CategoryAnalytics {
 
     fun eventCategoryLevelTwoView(trackingQueue: TrackingQueue, product: CategoryChildItem, position: Int) {
         val map = DataLayer.mapOf(
-                "event", "promoView",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "impression banner category level 2",
-                "eventLabel", product.id + " - " + product.name,
-                "ecommerce", DataLayer.mapOf(
-                "promoView", DataLayer.mapOf(
-                "promotions", DataLayer.listOf(DataLayer.mapOf(
-                "id", product.id.toString(),
-                "name", "category/" + product.name + " - " + product.id,
-                "creative", product.name,
-                "creative_url", product.iconImageUrl,
-                "position", (position).toString(),
-                "promo_id", "",
-                "promo_code", ""
+                KEY_EVENT, KEY_PROMO_VIEW,
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                KEY_EVENT_ACTION, "impression banner category level 2",
+                KEY_EVENT_LABEL, product.id + " - " + product.name,
+                KEY_ECOMMERCE, DataLayer.mapOf(
+                KEY_PROMO_VIEW, DataLayer.mapOf(
+                KEY_PROMOTIONS, DataLayer.listOf(DataLayer.mapOf(
+                KEY_ID, product.id.toString(),
+                KEY_NAME, "category/" + product.name + " - " + product.id,
+                KEY_CREATIVE, product.name,
+                KEY_CREATIVE_URL, product.iconImageUrl,
+                KEY_POSITION, (position).toString(),
+                KEY_PROMO_ID, "",
+                KEY_PROMO_CODE, ""
         )))
         ))
         trackingQueue.putEETracking(map as HashMap<String, Any>)
@@ -260,10 +273,10 @@ class CategoryAnalytics {
     fun eventBackButtonClick() {
         val tracker = getTracker()
         val map = DataLayer.mapOf(
-                "event", "clickCategory",
-                "eventCategory", EVENT_CATEGORY_BELANJA_PAGE,
-                "eventAction", "click back button",
-                "eventLabel", ""
+                KEY_EVENT, "clickCategory",
+                KEY_EVENT_CATEGORY, EVENT_CATEGORY_BELANJA_PAGE,
+                KEY_EVENT_ACTION, "click back button",
+                KEY_EVENT_LABEL, ""
         )
         tracker.sendEnhanceEcommerceEvent(map)
     }

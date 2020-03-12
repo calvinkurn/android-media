@@ -16,9 +16,11 @@ import javax.inject.Inject
 
 class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQueryUseCase: AllCategoryQueryUseCase) : ViewModel() {
 
+    var categoryDepth = 2
     var childItem = MutableLiveData<Result<List<CategoryChildItem>>>()
+    var YANG_LAGI_HITS_TITLE = "yanglagihits"
     fun refresh(id: String) {
-        allCategoryQueryUseCase.execute(allCategoryQueryUseCase.createRequestParams(2, true), object : Subscriber<CategoryAllList>() {
+        allCategoryQueryUseCase.execute(allCategoryQueryUseCase.createRequestParams(categoryDepth, true), object : Subscriber<CategoryAllList>() {
             override fun onCompleted() {
             }
 
@@ -34,12 +36,10 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
 
     private fun createChildList(categoryAllList: CategoryAllList, id: String): Result<List<CategoryChildItem>>? {
         val defaultCaseID = "0"
-
         val iterator = categoryAllList.categories
         val childList: MutableList<CategoryChildItem>? = ArrayList()
 
         iterator?.forEach {
-
             if (it?.id.equals(id)) {
                 if (id == defaultCaseID) {
                     it?.child?.let { levelOneList ->
@@ -48,7 +48,7 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
                             levelOneChild?.child.let { levelTwoChildItem ->
                                 if (levelTwoChildItem != null) {
                                     val type = if (getTrimmedString(levelOneChild?.name
-                                                    ?: "") == "yanglagihits") {
+                                                    ?: "") == YANG_LAGI_HITS_TITLE) {
                                         Constants.YangLagiHitsView
                                     } else {
                                         Constants.ProductView
@@ -85,7 +85,7 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
                 }
             }
         }
-        return Fail(Throwable("no data"))
+        return Fail(Throwable("NO DATA"))
     }
 
     private fun createChildItem(itemType: Int, childItem: ChildItem?, position: Int = 0, sameCategoryTotalCount: Int = 0): CategoryChildItem {
@@ -125,10 +125,7 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
         return label.replace(" ", "").toLowerCase()
     }
 
-
-    fun getCategoryChildren(): MutableLiveData<Result<List<CategoryChildItem>>> {
-        return childItem
-    }
+    fun getCategoryChildren(): MutableLiveData<Result<List<CategoryChildItem>>> = childItem
 
     override fun onCleared() {
         super.onCleared()

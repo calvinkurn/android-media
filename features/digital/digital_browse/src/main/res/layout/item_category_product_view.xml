@@ -8,8 +8,8 @@
 
     <View
         android:id="@+id/border_left"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="@dimen/dp_0"
         android:background="@color/category_border_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,11 +23,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/avatars" />
+        tools:srcCompat="@tools:sample/avatars"
+        tools:ignore="ContentDescription" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_product_name"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_12"
         android:layout_marginBottom="@dimen/dp_12"
@@ -42,23 +43,21 @@
         app:layout_constraintTop_toBottomOf="@+id/category_product_image"
         app:layout_constraintWidth_default="spread"
         app:typographyType="body_3"
-        tools:text="fcjgvhkjbknlmmkjkhgchxgdfhchvjbk" />
-
+        tools:text="Atasan" />
 
     <View
         android:id="@+id/border_right"
-        android:layout_width="1dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/dp_1"
+        android:layout_height="@dimen/dp_0"
         android:background="@color/category_border_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <View
         android:id="@+id/border_bottom"
-        android:layout_width="0dp"
-        android:layout_height="1dp"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="@dimen/dp_1"
         android:background="@color/category_border_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

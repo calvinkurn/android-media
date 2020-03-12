@@ -27,8 +27,10 @@ import kotlinx.android.synthetic.main.item_category_yang_lagi_hit.view.*
 class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                               private val trackingQueue: TrackingQueue?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    val viewMap = HashMap<Int, Boolean>()
-
+    private val viewMap = HashMap<Int, Boolean>()
+    private val totalColumns = 3
+    private val rowZero = 0
+    private val rowOne = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -92,9 +94,9 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initProductViewHolderLayout(productViewHolder: ProductViewHolder, position: Int) {
         val item = list[position]
-        ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.category_product_image, item.iconImageUrl, R.drawable.category_ic_broken_image)
-        productViewHolder.category_product_name.text = item.name
-        productViewHolder.category_parent_layout.setOnClickListener {
+        ImageHandler.loadImage(productViewHolder.itemView.context, productViewHolder.productImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
+        productViewHolder.productName.text = item.name
+        productViewHolder.productRootLayout.setOnClickListener {
             fireApplink(productViewHolder.itemView.context, item.applinks)
 
             if (item.isSeringKamuLihat) {
@@ -107,13 +109,13 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         if (isLeafElement(item.sameCategoryTotalCount, item.categoryPosition)) {
             productViewHolder.bottomBorder.hide()
         }
-        when (item.categoryPosition % 3) {
-            0 -> {
+        when (item.categoryPosition % totalColumns) {
+            rowZero -> {
                 productViewHolder.leftBorder.hide()
                 productViewHolder.rightBorder.hide()
             }
 
-            1 -> {
+            rowOne -> {
                 productViewHolder.leftBorder.hide()
                 if (item.categoryPosition != item.sameCategoryTotalCount) {
                     productViewHolder.rightBorder.hide()
@@ -123,18 +125,18 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     }
 
     private fun isLeafElement(sameCategoryTotalCount: Int, categoryPosition: Int): Boolean {
-        val x = sameCategoryTotalCount / 3
-        return (categoryPosition - 3 * x > 0) || (categoryPosition > sameCategoryTotalCount - 3)
+        val x = sameCategoryTotalCount / totalColumns
+        return (categoryPosition - totalColumns * x > 0) || (categoryPosition > sameCategoryTotalCount - totalColumns)
     }
 
 
     private fun initProductHeaderViewHolderLayout(productHeaderViewHolder: ProductHeaderViewHolder, position: Int) {
         val item = list[position]
-        ImageHandler.loadImage(productHeaderViewHolder.itemView.context, productHeaderViewHolder.product_image, item.iconImageUrl, R.drawable.category_ic_broken_image)
-        productHeaderViewHolder.product_name.text = item.name
-        setDrawableRoundedImage(productHeaderViewHolder.product_header_parent, item.hexColor)
+        ImageHandler.loadImage(productHeaderViewHolder.itemView.context, productHeaderViewHolder.productHeaderImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
+        productHeaderViewHolder.productHeaderName.text = item.name
+        setDrawableRoundedImage(productHeaderViewHolder.productHeaderRoot, item.hexColor)
 
-        productHeaderViewHolder.product_header_parent.setOnClickListener {
+        productHeaderViewHolder.productHeaderRoot.setOnClickListener {
             fireApplink(productHeaderViewHolder.itemView.context, item.applinks)
             CategoryAnalytics.createInstance().eventBannerCategoryLevelOneClick(list[position])
         }
@@ -142,10 +144,10 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initYangLagiHitViewHolderLayout(yangLagiHitsViewHolder: YangLagiHitsViewHolder, position: Int) {
         val item = list[position]
-        setDrawableRoundedImage(yangLagiHitsViewHolder.yang_lagi_layout, item.hexColor)
-        ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.item_icon, item.iconImageUrl, R.drawable.category_ic_broken_image)
-        yangLagiHitsViewHolder.item_name.text = item.name
-        yangLagiHitsViewHolder.yang_lagi_layout.setOnClickListener {
+        setDrawableRoundedImage(yangLagiHitsViewHolder.ylhRootLayout, item.hexColor)
+        ImageHandler.loadImage(yangLagiHitsViewHolder.itemView.context, yangLagiHitsViewHolder.ylhProductImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
+        yangLagiHitsViewHolder.ylhProductName.text = item.name
+        yangLagiHitsViewHolder.ylhRootLayout.setOnClickListener {
             fireApplink(yangLagiHitsViewHolder.itemView.context, item.applinks)
             CategoryAnalytics.createInstance().eventYangLagiHitClick(list[position], position)
         }
@@ -153,7 +155,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
 
     private fun initTextHeaderViewHolderLayout(textHeaderViewHolder: TextHeaderViewHolder, position: Int) {
         val item = list[position]
-        textHeaderViewHolder.header_title.text = item.name
+        textHeaderViewHolder.headerTitle.text = item.name
     }
 
 
@@ -173,25 +175,25 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
     }
 
     class YangLagiHitsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val item_icon: ImageView = view.item_icon
-        val item_name: TextView = view.item_name
-        val yang_lagi_layout: ConstraintLayout = view.yang_lagi_layout
+        val ylhProductImage: ImageView = view.item_icon
+        val ylhProductName: TextView = view.item_name
+        val ylhRootLayout: ConstraintLayout = view.yang_lagi_layout
     }
 
     class TextHeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val header_title: TextView = view.header_title
+        val headerTitle: TextView = view.header_title
     }
 
     class ProductHeaderViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val product_image: ImageView = view.product_image
-        val product_name: TextView = view.product_name
-        val product_header_parent: ConstraintLayout = view.product_header_parent
+        val productHeaderImage: ImageView = view.product_image
+        val productHeaderName: TextView = view.product_name
+        val productHeaderRoot: ConstraintLayout = view.product_header_parent
     }
 
     class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val category_product_image: ImageView = view.category_product_image
-        val category_product_name: TextView = view.category_product_name
-        val category_parent_layout: ConstraintLayout = view.category_parent_layout
+        val productImage: ImageView = view.category_product_image
+        val productName: TextView = view.category_product_name
+        val productRootLayout: ConstraintLayout = view.category_parent_layout
         val leftBorder: View = view.border_left
         val rightBorder: View = view.border_right
         val bottomBorder: View = view.border_bottom
@@ -210,12 +212,10 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
             val item = list[position]
             when (holder.itemViewType) {
                 Constants.ProductView -> {
-                    if (list[position].isSeringKamuLihat) {
-                        trackingQueue?.let {
+                    trackingQueue?.let {
+                        if (list[position].isSeringKamuLihat) {
                             CategoryAnalytics.createInstance().eventSeringkkamuLihatView(it, item, item.categoryPosition)
-                        }
-                    } else {
-                        trackingQueue?.let {
+                        } else {
                             CategoryAnalytics.createInstance().eventCategoryLevelTwoView(it, item, position)
                         }
                     }
@@ -227,7 +227,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                 }
                 Constants.ProductHeaderView -> {
                     trackingQueue?.let {
-                        CategoryAnalytics.createInstance().eventCategoryLevelOneBannerView(it, item, 1)
+                        CategoryAnalytics.createInstance().eventCategoryLevelOneBannerView(it, item, position)
                     }
                 }
             }
