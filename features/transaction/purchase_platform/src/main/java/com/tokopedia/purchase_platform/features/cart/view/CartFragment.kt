@@ -1393,7 +1393,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 if (lastValidateUsePromoRequest != null) {
                     validateUseRequest = lastValidateUsePromoRequest
                 } else {
-                    validateUseRequest = generateParamValidateUsePromoRevamp(true, -1, false)
+                    validateUseRequest = generateParamValidateUsePromoRevamp(false, -1, true)
                 }
                 intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CART)
                 intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
@@ -1989,6 +1989,9 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
             NAVIGATION_PDP -> {
                 refreshHandler?.isRefreshing = true
                 dPresenter.processInitialGetCartData(getCartId(), cartListData == null, true)
+            }
+            NAVIGATION_PROMO -> {
+                dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
             }
         }
     }
@@ -2725,14 +2728,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         promoCheckoutBtn.title = getString(R.string.promo_checkout_inactive_label)
         promoCheckoutBtn.desc = getString(R.string.promo_checkout_inactive_desc)
         promoCheckoutBtn.setOnClickListener {
-            // Todo : revert to commented code
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-            val promoRequest = generateParamsCouponList()
-            intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
-            startActivityForResult(intent, NAVIGATION_PROMO)
-
-//            renderPromoCheckoutLoading()
-//            dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
+            renderPromoCheckoutLoading()
+            dPresenter.doValidateUse(generateParamValidateUsePromoRevamp(false, -1, true))
         }
     }
 

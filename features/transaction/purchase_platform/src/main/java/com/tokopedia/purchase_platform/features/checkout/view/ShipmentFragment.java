@@ -139,6 +139,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentBu
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
+import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem;
@@ -169,6 +170,9 @@ import static com.tokopedia.logisticcart.cod.view.CodActivity.EXTRA_COD_DATA;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_CHECKOUT;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.PARAM_DEFAULT;
 import static com.tokopedia.purchase_platform.common.constant.Constant.EXTRA_CHECKOUT_REQUEST;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PAGE_SOURCE;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_PROMO_REQUEST;
+import static com.tokopedia.purchase_platform.common.constant.PromoConstantKt.ARGS_VALIDATE_USE_REQUEST;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RECOMMENDATION;
 
 /**
@@ -187,6 +191,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CHOOSE_PICKUP_POINT = 12;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_SEND_TO_MULTIPLE_ADDRESS = 55;
+    private static final int REQUEST_CODE_PROMO = 98744;
+
     public static final int INDEX_PROMO_GLOBAL = -1;
 
     private static final int REQUEST_CODE_NORMAL_CHECKOUT = 0;
@@ -1392,7 +1398,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onResultFromEditAddress();
         } else if (requestCode == LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN) {
             onResultFromSetTradeInPinpoint(data);
+        } else if (requestCode == REQUEST_CODE_PROMO) {
+
         }
+    }
+
+    private void onResultFromPromo() {
+        // Todo : hit validate use and render data
+//        shipmentPresenter.doValidateuseLogisticPromo();
     }
 
     public void onResultFromEditAddress() {
@@ -2751,7 +2764,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (promoCheckoutData != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
             if (promoCheckoutData.getCodes().size() > 0) {
-                for (int i=0; i<promoCheckoutData.getCodes().size(); i++) {
+                for (int i = 0; i < promoCheckoutData.getCodes().size(); i++) {
                     globalPromoCodes.add(promoCheckoutData.getCodes().get(i));
                 }
             }
@@ -3238,12 +3251,20 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         PromoRequest promoRequest = new PromoRequest();
         promoRequest.setState(CheckoutConstant.CHECKOUT);
         promoRequest.setCodes(new ArrayList<>(promoCheckoutData.getCodes()));
-        //TODO: intent to coupon list page with promoRequest
+
+        ValidateUsePromoRequest validateUseRequest = generateValidateUsePromoRequest();
+
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
+        intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
+        intent.putExtra(ARGS_PROMO_REQUEST, promoRequest);
+        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest);
+
+        startActivityForResult(intent, REQUEST_CODE_PROMO);
     }
 
     @Override
     public void updateButtonPromoCheckout(PromoUiModel promoUiModel) {
-       doUpdateButtonPromoCheckout(promoUiModel);
+        doUpdateButtonPromoCheckout(promoUiModel);
     }
 
     private void doUpdateButtonPromoCheckout(PromoUiModel promoUiModel) {

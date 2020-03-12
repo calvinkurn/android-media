@@ -8,6 +8,7 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
 
     companion object {
         val PAGE_CART = 1
+        @JvmStatic
         val PAGE_CHECKOUT = 2
 
         val EVENT_NAME_VIEW = "view"
