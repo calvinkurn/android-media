@@ -168,7 +168,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private val productManageListAdapter by lazy { adapter as ProductManageListAdapter }
     private val checkedPositionList: HashSet<Int> = hashSetOf()
 
-    private var productList: MutableList<ProductViewModel> = mutableListOf()
+    private val allProductList: MutableList<ProductViewModel> = mutableListOf()
     private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
     private var stockType = BulkBottomSheetType.StockType()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
@@ -268,12 +268,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 val currentFilter = tabFilters.selectedFilter?.status
 
                 if(selectedFilter == currentFilter) {
-                    renderList(productList)
+                    renderList(allProductList)
                     tabFilters.resetSelectedFilter()
                 } else {
                     tabFilters.resetAllFilter(viewHolder)
                     tabFilters.setSelectedFilter(filter)
-                    filterProductByStatus(productList, selectedFilter)
+                    filterProductByStatus(allProductList, selectedFilter)
                 }
             }
         }
@@ -309,7 +309,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         searchInputView.clearFocus()
         searchInputView.closeImageButton.setOnClickListener {
             searchInputView.searchText = ""
-            productList.clear()
+            allProductList.clear()
             loadInitialData()
         }
         searchInputView.setSearchHint(getString(R.string.product_manage_search_hint))
@@ -448,7 +448,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun showProductList(productList: List<ProductViewModel>) {
         if(tabFilters.isActive()) {
             val selectedFilter = tabFilters.selectedFilter?.status
-            filterProductByStatus(productList, selectedFilter)
+            filterProductByStatus(allProductList, selectedFilter)
         } else {
             val hasNextPage = productList.isNotEmpty()
             renderList(productList, hasNextPage)
@@ -457,7 +457,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun showTabFilters() {
         val filters = if(tabFilters.isActive()) {
-            mapToTabFilters(productList)
+            mapToTabFilters(allProductList)
         } else {
             mapToTabFilters(adapter.data)
         }
@@ -465,7 +465,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun addProductList(products: List<ProductViewModel>) {
-        productList.addAll(products)
+        allProductList.addAll(products)
     }
 
     private fun onErrorEditPrice(editPriceResult: EditPriceResult) {
@@ -727,7 +727,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         when(result) {
             is EditByStatus -> {
                 updateProductListStatus(productIds, result.status)
-                showProductList(productList)
+                showProductList(allProductList)
                 showTabFilters()
             }
             is EditByMenu -> {
@@ -739,12 +739,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
         productIds.forEach { productId ->
             if(status == INACTIVE) {
-                val index = productList.indexOfFirst { it.id == productId }
-                if(index >= 0) productList[index] = productList[index].copy(status = status)
+                val index = allProductList.indexOfFirst { it.id == productId }
+                if(index >= 0) allProductList[index] = allProductList[index].copy(status = status)
                 productManageListAdapter.updateInactiveProducts(productId)
             }
             if(status == DELETED) {
-                productList.removeFirst { it.id == productId }
+                allProductList.removeFirst { it.id == productId }
                 productManageListAdapter.deleteProduct(productId)
             }
         }
@@ -752,7 +752,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        productList.clear()
+        allProductList.clear()
         clearSearchBarInput()
         clearSelectedProduct()
         renderCheckedView()
@@ -1307,7 +1307,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         val cancelMultiSelectText = getString(R.string.product_manage_cancel_multiple_select)
 
         observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
-            val productList = productList.map {
+            val productList = allProductList.map {
                 it.copy(multiSelectActive = multiSelectEnabled)
             }
 
@@ -1371,7 +1371,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun clearProductList() {
         renderList(emptyList())
-        productList.clear()
+        allProductList.clear()
     }
 
     private fun goToProductDraft(imageUrls: ArrayList<String>?, imageDescList: ArrayList<String>?) {
