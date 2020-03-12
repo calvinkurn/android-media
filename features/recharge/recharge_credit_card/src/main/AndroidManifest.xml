@@ -7,7 +7,7 @@
             android:name=".RechargeCCActivity"
             android:label="Bayar Kartu Kredit"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateAlwaysVisible"
+            android:windowSoftInputMode="stateHidden"
             android:theme="@style/Theme.White" />
 
     </application>

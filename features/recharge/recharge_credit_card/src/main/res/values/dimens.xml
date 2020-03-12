@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="cc_space_1">1dp</dimen>
     <dimen name="cc_space_12">12dp</dimen>
     <dimen name="cc_space_4">4dp</dimen>
 </resources>

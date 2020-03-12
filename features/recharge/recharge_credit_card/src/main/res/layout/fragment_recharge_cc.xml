@@ -37,4 +37,21 @@
         android:layout_centerInParent="true"
         android:visibility="gone"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/cc_space_1"
+        android:background="@color/cc_separator"
+        android:layout_marginLeft="@dimen/layout_lvl2"
+        android:layout_marginRight="@dimen/layout_lvl2"
+        android:layout_above="@+id/cc_logo_verified"/>
+
+    <ImageView
+        android:id="@+id/cc_logo_verified"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/cc_ic_logo_verified"
+        android:scaleType="fitCenter"
+        android:layout_margin="@dimen/layout_lvl2"
+        android:layout_alignParentBottom="true"/>
+
 </RelativeLayout>
