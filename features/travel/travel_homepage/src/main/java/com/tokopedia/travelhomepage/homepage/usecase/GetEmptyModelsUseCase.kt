@@ -67,43 +67,53 @@ class GetEmptyModelsUseCase @Inject constructor(val useCase: MultiRequestGraphql
 
     private fun mappingToTravelHomepageItem(list: List<TravelLayoutSubhomepage.Data>): List<TravelHomepageItemModel> {
         val travelHomepageItems = mutableListOf<TravelHomepageItemModel>()
-        for (item in list) {
+        for ((position, item) in list.withIndex()) {
+            item.position = position
             when (item.widgetType) {
                 ConstantWidgetType.SLIDER_BANNER -> {
-                    travelHomepageItems.add(TravelHomepageBannerModel())
-                    travelHomepageItems.lastOrNull()?.layoutData = item
+                    val model = TravelHomepageBannerModel()
+                    model.layoutData = item
+                    travelHomepageItems.add(model)
                 }
                 ConstantWidgetType.DUO_PRODUCT_CARD, ConstantWidgetType.QUAD_PRODUCT_CARD -> {
-                    travelHomepageItems.add(TravelHomepageProductCardModel())
-                    travelHomepageItems.lastOrNull()?.layoutData = item
+                    val model = TravelHomepageProductCardModel()
+                    model.layoutData = item
+                    travelHomepageItems.add(model)
                 }
                 ConstantWidgetType.DYNAMIC_ICON -> {
-                    travelHomepageItems.add(TravelHomepageCategoryListModel())
-                    travelHomepageItems.lastOrNull()?.layoutData = item
+                    val model = TravelHomepageCategoryListModel()
+                    model.layoutData = item
+                    travelHomepageItems.add(model)
                 }
                 ConstantWidgetType.SLIDER_PRODUCT_CARD -> {
-                    travelHomepageItems.add(TravelHomepageSectionModel())
-                    travelHomepageItems.lastOrNull()?.layoutData = item
+                    val model = TravelHomepageSectionModel()
+                    model.layoutData = item
+                    travelHomepageItems.add(model)
                 }
                 ConstantWidgetType.DUAL_BANNER -> {
-                    travelHomepageItems.add(TravelHomepageDestinationModel(spanSize = 2))
-                    travelHomepageItems.lastOrNull()?.layoutData = item
+                    val model = TravelHomepageDestinationModel(spanSize = 2)
+                    model.layoutData = item
+                    travelHomepageItems.add(model)
                 }
                 ConstantWidgetType.SINGLE_BANNER -> {
-                    travelHomepageItems.add(TravelHomepageDestinationModel(spanSize = 1))
-                    travelHomepageItems.lastOrNull()?.layoutData = item
+                    val model = TravelHomepageDestinationModel(spanSize = 1)
+                    model.layoutData = item
+                    travelHomepageItems.add(model)
                 }
                 ConstantWidgetType.DYNAMIC_BANNER -> {
-                    travelHomepageItems.add(TravelHomepageDestinationModel(spanSize = 0))
-                    travelHomepageItems.lastOrNull()?.layoutData = item
+                    val model = TravelHomepageDestinationModel(spanSize = 0)
+                    model.layoutData = item
+                    travelHomepageItems.add(model)
                 }
                 ConstantWidgetType.LEGO_BANNER -> {
-                    travelHomepageItems.add(TravelHomepageLegoBannerModel())
-                    travelHomepageItems.lastOrNull()?.layoutData = item
+                    val model = TravelHomepageLegoBannerModel()
+                    model.layoutData = item
+                    travelHomepageItems.add(model)
                 }
                 else -> {
-                    travelHomepageItems.add(TravelHomepageSectionModel())
-                    travelHomepageItems.lastOrNull()?.layoutData = item
+                    val model = TravelHomepageSectionModel()
+                    model.layoutData = item
+                    travelHomepageItems.add(model)
                 }
             }
         }

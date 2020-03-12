@@ -51,7 +51,9 @@ data class TravelLayoutSubhomepage(
 
             @SerializedName("metaText")
             @Expose
-            val metaText: String = ""
+            val metaText: String = "",
+
+            var position: Int = 0
     )
 
     data class Meta(

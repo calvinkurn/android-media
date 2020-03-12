@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.layout_travel_homepage_product_card.view.*
 
 class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBindListener: OnItemBindListener,
                                           private val onItemClickListener: OnItemClickListener) : AbstractViewHolder<TravelHomepageProductCardModel>(itemView) {
+
     override fun bind(element: TravelHomepageProductCardModel) {
         if (element.isLoaded) {
             if (element.isSuccess && element.productItem.isNotEmpty()) {
@@ -25,7 +26,7 @@ class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBind
 
                     productCardWidget.titleText = element.title
                     productCardWidget.subtitleText = element.subtitle
-                    productCardWidget.hasSeeAllButton = element.clickSeeAllUrl.isEmpty()
+                    productCardWidget.hasSeeAllButton = element.clickSeeAllUrl.isNotEmpty()
                     productCardWidget.listener = object: TravelHomepageProductGridCardWidget.ActionListener {
                         override fun onItemClickListener(item: ProductGridCardItemModel) {
                             onItemClickListener.onItemClick(item.appUrl)

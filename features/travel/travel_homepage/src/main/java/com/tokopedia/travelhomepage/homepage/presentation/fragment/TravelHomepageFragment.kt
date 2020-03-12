@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -22,6 +23,7 @@ import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.di.TravelHomepageComponent
+import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageAdapter
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
@@ -48,13 +50,18 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
             travelHomepageViewModel = viewModelProvider.get(TravelHomepageViewModel::class.java)
         }
 
         searchBarTransitionRange = resources.getDimensionPixelSize(R.dimen.destination_toolbar_transition_range)
+    }
+
+    override fun createAdapterInstance(): BaseListAdapter<TravelHomepageItemModel, TravelHomepageTypeFactory> {
+        val baseListAdapter = TravelHomepageAdapter(adapterTypeFactory)
+        baseListAdapter.setHasStableIds(true)
+        return baseListAdapter
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -133,7 +140,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
         travelHomepageViewModel.travelItemList.observe(this, Observer {
             clearAllData()
-            it?.run { renderList(this) }
+            renderList(it)
         })
 
         travelHomepageViewModel.isAllError.observe(this, Observer {

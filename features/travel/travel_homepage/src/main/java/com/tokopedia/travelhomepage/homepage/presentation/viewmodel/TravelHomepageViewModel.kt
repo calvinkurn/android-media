@@ -16,6 +16,7 @@ import com.tokopedia.travelhomepage.homepage.data.TravelUnifiedSubhomepageData
 import com.tokopedia.travelhomepage.homepage.data.mapper.TravelHomepageMapper
 import com.tokopedia.travelhomepage.homepage.usecase.GetEmptyModelsUseCase
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -47,7 +48,8 @@ class TravelHomepageViewModel @Inject constructor(
 
     fun getTravelUnifiedData(rawQuery: String, layoutData: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean) {
 
-        launchCatchError(block = {
+        launchCatchError(context = dispatcherProvider.io(), block = {
+            delay(300)
             val data = withContext(dispatcherProvider.ui()) {
                 val param = mapOf(DATA_TYPE_PARAM to layoutData.dataType, WIDGET_TYPE_PARAM to layoutData.widgetType, "data" to ParamData())
                 val graphqlRequest = GraphqlRequest(rawQuery, TravelUnifiedSubhomepageData.Response::class.java, param)
@@ -58,16 +60,16 @@ class TravelHomepageViewModel @Inject constructor(
 
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[position] = mapper.mapToViewModel(layoutData, data.response)
-                updatedList[position].isLoaded = true
-                updatedList[position].isSuccess = true
+                updatedList[layoutData.position] = mapper.mapToViewModel(layoutData, data.response)
+                updatedList[layoutData.position].isLoaded = true
+                updatedList[layoutData.position].isSuccess = true
                 travelItemList.postValue(updatedList)
             }
         }) {
             travelItemList.value?.let {
                 val updatedList = it.toMutableList()
-                updatedList[position].isLoaded = true
-                updatedList[position].isSuccess = false
+                updatedList[layoutData.position].isLoaded = true
+                updatedList[layoutData.position].isSuccess = false
                 travelItemList.postValue(updatedList)
             }
             checkIfAllError()

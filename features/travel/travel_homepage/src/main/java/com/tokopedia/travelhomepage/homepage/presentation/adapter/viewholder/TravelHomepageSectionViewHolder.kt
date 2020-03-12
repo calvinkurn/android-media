@@ -28,7 +28,7 @@ class TravelHomepageSectionViewHolder(itemView: View,
 
     override fun bind(element: TravelHomepageSectionModel) {
         if (element.isLoaded) {
-            if (element.list.isNotEmpty()) {
+            if (element.isSuccess && element.list.isNotEmpty()) {
                 itemView.section_layout.visibility = View.VISIBLE
                 itemView.shimmering.visibility = View.GONE
 
