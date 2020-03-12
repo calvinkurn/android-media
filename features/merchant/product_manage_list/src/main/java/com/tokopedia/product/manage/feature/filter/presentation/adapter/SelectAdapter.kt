@@ -29,7 +29,7 @@ class SelectAdapter(
 
     fun reset() {
         visitables.forEachIndexed { index, visitable ->
-            (visitable as ChecklistViewModel).isSelected = false
+            (visitable as? ChecklistViewModel)?.isSelected = false
             notifyItemChanged(index)
         }
     }
