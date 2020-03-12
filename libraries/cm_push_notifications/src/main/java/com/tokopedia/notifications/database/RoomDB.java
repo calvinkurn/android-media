@@ -25,7 +25,7 @@ import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.ElapsedTime
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp;
 import com.tokopedia.notifications.model.BaseNotificationModel;
 
-@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 6)
+@Database(entities = {CMInApp.class, ElapsedTime.class, BaseNotificationModel.class}, version = 7)
 @TypeConverters({ButtonListConverter.class,
         NotificationModeConverter.class,
         NotificationStatusConverter.class,
