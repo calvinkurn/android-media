@@ -14,7 +14,6 @@ import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dynamicfeatures.DFInstaller
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.onboarding.R
@@ -24,7 +23,6 @@ import com.tokopedia.onboarding.data.OnboardingScreenItem
 import com.tokopedia.onboarding.di.OnboardingComponent
 import com.tokopedia.onboarding.view.adapter.OnboardingViewPagerAdapter
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.UnifyButton
@@ -32,6 +30,9 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
 import javax.inject.Inject
 
@@ -48,8 +49,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     private lateinit var nextAction: Typography
     private lateinit var joinButton: UnifyButton
     private lateinit var tabIndicator: TabLayout
-
-    private var abTestVariant = ""
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -86,37 +85,11 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     @NotNull
     private fun executeViewCreateFlow() : Boolean{
-        initAbTesting()
-        trackPreinstall()
-        initView()
+        GlobalScope.launch(Dispatchers.Main) {
+            trackPreinstall()
+            initView()
+        }
         return true
-    }
-
-    private fun getAbTestVariant(): String = RemoteConfigInstance
-            .initAbTestPlatform(activity?.application)
-            .abTestPlatform
-            .getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
-
-    private fun setViewByAbTestVariant() {
-        when (abTestVariant) {
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> showJoinButton()
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST -> hideJoinButton()
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> showJoinButton()
-            else -> showJoinButton()
-        }
-    }
-
-    private fun getAbTestVariantAnalytics(): String {
-        return when (abTestVariant) {
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> ""
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST -> ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST_SCREEN
-            ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER_SCREEN
-            else -> ""
-        }
-    }
-
-    private fun initAbTesting() {
-        abTestVariant = getAbTestVariant()
     }
 
     private fun initView() {
@@ -124,41 +97,17 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val listItem = generateListAllButton()
 
             onboardingViewPagerAdapter = OnboardingViewPagerAdapter(it, listItem)
-            screenViewpager.adapter = onboardingViewPagerAdapter
-            tabIndicator.setupWithViewPager(screenViewpager)
+            screenViewpager.apply {
+                adapter = onboardingViewPagerAdapter
+                offscreenPageLimit = 2
+                addOnPageChangeListener(OnPageChangeListener())
+            }
 
-            screenViewpager.offscreenPageLimit = 2
+            tabIndicator.setupWithViewPager(screenViewpager)
 
             skipAction.setOnClickListener(skipActionClickListener())
             nextAction.setOnClickListener(nextActionClickListener())
             joinButton.setOnClickListener(joinActionClickListener())
-
-            setViewByAbTestVariant()
-
-            tabIndicator.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-                override fun onTabReselected(tab: TabLayout.Tab?) {}
-
-                override fun onTabUnselected(tab: TabLayout.Tab?) {}
-
-                override fun onTabSelected(tab: TabLayout.Tab?) {
-                    tab?.let {
-                        val position = tab.position
-
-                        onboardingAnalytics.trackScreen(position, getAbTestVariantAnalytics())
-                        val size = onboardingViewPagerAdapter.listScreen.size
-                        if (position < size) {
-                            setViewByAbTestVariant()
-                            showNextAction()
-                        }
-
-                        if (position == size - 1) {
-                            loadLastScreen()
-                        }
-                    }
-                }
-            })
-
-            screenViewpager.currentItem = screenViewpager.currentItem
         }
     }
 
@@ -188,7 +137,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         if (GlobalConfig.IS_PREINSTALL) {
             onboardingAnalytics.trackMoengage()
         }
-        onboardingAnalytics.trackScreen(0, getAbTestVariantAnalytics())
+        onboardingAnalytics.trackScreen(0)
     }
 
     private fun joinActionClickListener(): View.OnClickListener {
@@ -209,10 +158,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             context?.let {
                 onboardingAnalytics.eventOnboardingSkip(screenViewpager.currentItem)
                 val intent = if (TextUtils.isEmpty(TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)) {
-                    when(abTestVariant) {
-                        ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.OFFICIAL_STORE)
-                        else -> RouteManager.getIntent(it, ApplinkConst.HOME)
-                    }
+                    RouteManager.getIntent(it, ApplinkConst.HOME)
                 } else {
                     RouteManager.getIntent(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
                 }
@@ -236,26 +182,16 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private fun startActivityWithBackTask() {
         context?.let {
-            finishOnBoarding()
             val taskStackBuilder = TaskStackBuilder.create(it)
             val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
+            val loginIntent = RouteManager.getIntent(it, ApplinkConst.REGISTER)
+
+            finishOnBoarding()
+
             taskStackBuilder.addNextIntent(homeIntent)
-            val intent = when(abTestVariant) {
-                ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.REGISTER)
-                else -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            }
-            taskStackBuilder.addNextIntent(intent)
+            taskStackBuilder.addNextIntent(loginIntent)
             taskStackBuilder.startActivities()
         }
-    }
-
-    private fun hideJoinButton() {
-        joinButton.hide()
-    }
-
-    private fun showJoinButton() {
-        joinButton.show()
     }
 
     private fun hideNextAction() {
@@ -267,7 +203,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     private fun loadLastScreen() {
-        showJoinButton()
         hideNextAction()
     }
 
@@ -284,15 +219,24 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         return true
     }
 
+    inner class OnPageChangeListener: ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(state: Int) { }
+        override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) { }
+
+        override fun onPageSelected(position: Int) {
+            onboardingAnalytics.trackScreen(position)
+            val size = onboardingViewPagerAdapter.listScreen.size
+            if (position < size) {
+                showNextAction()
+            }
+
+            if (position == size - 1) {
+                loadLastScreen()
+            }
+        }
+    }
+
     companion object {
-
-        const val ONBOARD_BUTTON_AB_TESTING_KEY = "Onboarding Button"
-        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON = "All button"
-        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER = "All button register"
-        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST = "Button on last"
-        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER_SCREEN = "B"
-        const val ONBOARD_BUTTON_AB_TESTING_VARIANT_BUTTON_ON_LAST_SCREEN = "A"
-
         const val ONBOARD_IMAGE_PAGE_1_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_1.png"
         const val ONBOARD_IMAGE_PAGE_2_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_2.png"
         const val ONBOARD_IMAGE_PAGE_3_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_3.png"

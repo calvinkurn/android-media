@@ -7,7 +7,6 @@
   android:layout_height="wrap_content"
   android:adjustViewBounds="true"
   android:scaleType="fitCenter"
-  android:src="@drawable/onboarding_image_page_1_placeholder"
   app:layout_constraintBottom_toBottomOf="parent"
   app:layout_constraintEnd_toEndOf="parent"
   app:layout_constraintStart_toStartOf="parent"

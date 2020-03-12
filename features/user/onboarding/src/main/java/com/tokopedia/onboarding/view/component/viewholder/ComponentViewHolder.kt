@@ -1,8 +1,12 @@
 package com.tokopedia.onboarding.view.component.viewholder
 
+import android.content.Context
+import android.util.DisplayMetrics
 import android.view.View
+import android.view.WindowManager
 import android.widget.ImageView
 import com.tokopedia.adapterdelegate.BaseViewHolder
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.view.component.uimodel.ButtonUiModel
 import com.tokopedia.onboarding.view.component.uimodel.ImageUiModel
@@ -21,6 +25,10 @@ class ComponentViewHolder(itemView: View) : BaseViewHolder(itemView) {
         title.apply {
             text = textDataModel.text
             setVisible(textDataModel.visibility)
+
+            if (getScreenHigh() <= 700) {
+                setType(Typography.HEADING_2)
+            }
         }
     }
 
@@ -38,8 +46,15 @@ class ComponentViewHolder(itemView: View) : BaseViewHolder(itemView) {
     fun bindButton(buttonDataModel: ButtonUiModel) {
         button?.apply {
             text = buttonDataModel.text
-            setVisible(buttonDataModel.visibility)
+            setVisible(false)
         }
+    }
+
+    private fun getScreenHigh(): Int {
+        val displayMetrics = DisplayMetrics()
+        val windowManager = itemView.context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics.heightPixels.pxToDp(displayMetrics)
     }
 
     private fun View.setVisible(isVisible: Boolean) {

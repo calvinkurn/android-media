@@ -1,8 +1,9 @@
-package com.tokopedia.onboarding.di
+package com.tokopedia.onboarding.di.module
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.onboarding.domain.model.DynamicOnboardingDataModel
+import com.tokopedia.onboarding.di.OnboardingScope
+import com.tokopedia.onboarding.domain.model.DynamicOnboardingResponseDataModel
 import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
 import dagger.Module
 import dagger.Provides
@@ -13,13 +14,13 @@ class DynamicOnboardingUseCaseModule {
 
     @OnboardingScope
     @Provides
-    fun provideGrapqlUseCase(repository: GraphqlRepository): GraphqlUseCase<DynamicOnboardingDataModel> {
+    fun provideGrapqlUseCase(repository: GraphqlRepository): GraphqlUseCase<DynamicOnboardingResponseDataModel> {
         return GraphqlUseCase(repository)
     }
 
     @OnboardingScope
     @Provides
-    fun provideDynamicOnboardingUseCase(rawQueries: Map<String, String>, useCase: GraphqlUseCase<DynamicOnboardingDataModel>): DynamicOnboardingUseCase {
+    fun provideDynamicOnboardingUseCase(rawQueries: Map<String, String>, useCase: GraphqlUseCase<DynamicOnboardingResponseDataModel>): DynamicOnboardingUseCase {
         return DynamicOnboardingUseCase(rawQueries, useCase)
     }
 }

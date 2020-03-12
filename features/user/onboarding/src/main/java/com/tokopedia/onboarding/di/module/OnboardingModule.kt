@@ -1,12 +1,12 @@
-package com.tokopedia.onboarding.di
+package com.tokopedia.onboarding.di.module
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
+import com.tokopedia.onboarding.di.OnboardingScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module

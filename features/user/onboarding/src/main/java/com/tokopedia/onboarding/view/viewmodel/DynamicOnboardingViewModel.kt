@@ -3,7 +3,7 @@ package com.tokopedia.onboarding.view.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.onboarding.domain.model.DynamicOnboardingDataModel
+import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.domain.usecase.DynamicOnboardingUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -16,13 +16,13 @@ class DynamicOnboardingViewModel @Inject constructor(
         private val dynamicOnboardingUseCase: DynamicOnboardingUseCase
 ) : BaseViewModel(dispatcher) {
 
-    private val _dynamicOnboardingData = MutableLiveData<Result<DynamicOnboardingDataModel>>()
-    val dynamicOnboardingData: LiveData<Result<DynamicOnboardingDataModel>>
+    private val _dynamicOnboardingData = MutableLiveData<Result<ConfigDataModel>>()
+    val configData: LiveData<Result<ConfigDataModel>>
         get() = _dynamicOnboardingData
 
     fun getData() {
         var isFinished = false
-        dynamicOnboardingUseCase.getData({
+        dynamicOnboardingUseCase.getDynamicOnboardingData({
             if (!isFinished) {
                 isFinished = true
                 _dynamicOnboardingData.postValue(Success(it))
@@ -37,7 +37,7 @@ class DynamicOnboardingViewModel @Inject constructor(
         startTimer(TIMEOUT) {
             if (!isFinished) {
                 isFinished = true
-                _dynamicOnboardingData.postValue(Fail(Throwable("Job was canceled")))
+                _dynamicOnboardingData.postValue(Fail(Throwable(JOB_WAS_CANCELED)))
                 dynamicOnboardingUseCase.cancelJobs()
             }
         }
@@ -55,5 +55,6 @@ class DynamicOnboardingViewModel @Inject constructor(
 
     companion object {
         const val TIMEOUT = 1000L
+        const val JOB_WAS_CANCELED = "job was canceled"
     }
 }

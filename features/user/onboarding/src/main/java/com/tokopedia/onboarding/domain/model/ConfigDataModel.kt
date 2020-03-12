@@ -8,9 +8,9 @@ import kotlinx.android.parcel.Parcelize
 
 @SuppressLint("ParcelCreator")
 @Parcelize
-data class DynamicOnboardingDataModel(
-    @SerializedName("navigation")
+data class ConfigDataModel(
+    @SerializedName("user-ob-navigation")
     var navigationDataModel: NavigationDataModel = NavigationDataModel(),
-    @SerializedName("pages")
+    @SerializedName("user-ob-pages")
     var pageDataModels: MutableList<PageDataModel> = mutableListOf()
 ) : Parcelable

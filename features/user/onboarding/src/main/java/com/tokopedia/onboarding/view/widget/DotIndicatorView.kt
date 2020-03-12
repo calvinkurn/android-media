@@ -2,10 +2,13 @@ package com.tokopedia.onboarding.view.widget
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.viewpager2.widget.ViewPager2
+import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.onboarding.R
 
 class DotIndicatorView : LinearLayout {
@@ -14,6 +17,7 @@ class DotIndicatorView : LinearLayout {
 
     private lateinit var viewDot: LinearLayout
     private lateinit var viewPager: ViewPager2
+    private var dotSize: Int = 24
 
     constructor(context: Context) : super(context) {
         dots.clear()
@@ -35,18 +39,24 @@ class DotIndicatorView : LinearLayout {
         val view = layout.inflate(R.layout.layout_dot_indicator, this, true)
 
         viewDot = view.findViewById(R.id.layoutDots)
+
+        if (getScreenHeight() <= 700) {
+            this.dotSize = 24
+        } else {
+            this.dotSize = 32
+        }
     }
 
     fun setViewpager(viewPager2: ViewPager2) {
         this.viewPager = viewPager2
     }
 
-    fun addDots(dotSize: Int) {
+    fun addDots(itemsSize: Int) {
         dots.clear()
         viewDot.removeAllViews()
-        (0 until dotSize).forEach { index ->
+        (0 until itemsSize).forEach { index ->
             dots.add(index, ImageView(context).apply {
-                layoutParams = LayoutParams(24, 24)
+                layoutParams = LayoutParams(dotSize, dotSize)
                 setPadding(5, 0, 5, 0)
                 setImageResource(getDefaultIndicatorUnselected())
                 setOnClickListener {
@@ -73,7 +83,14 @@ class DotIndicatorView : LinearLayout {
         }
     }
 
+    private fun getScreenHeight(): Int {
+        val displayMetrics = DisplayMetrics()
+        val windowManager = context.applicationContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        return displayMetrics.heightPixels.pxToDp(displayMetrics)
+    }
+
     //override this to change indicator color as you want
-    fun getDefaultIndicatorSelected(): Int = R.drawable.unify_default_indicator_selected
-    fun getDefaultIndicatorUnselected(): Int = R.drawable.unify_default_indicator_unselected
+    fun getDefaultIndicatorSelected(): Int = com.tokopedia.unifycomponents.R.drawable.unify_default_indicator_selected
+    fun getDefaultIndicatorUnselected(): Int = com.tokopedia.unifycomponents.R.drawable.unify_default_indicator_unselected
 }

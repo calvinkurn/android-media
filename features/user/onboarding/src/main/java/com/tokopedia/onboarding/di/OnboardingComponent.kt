@@ -1,6 +1,10 @@
 package com.tokopedia.onboarding.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
+import com.tokopedia.onboarding.di.module.DynamicOnboardingUseCaseModule
+import com.tokopedia.onboarding.di.module.DynamicOnboardingViewModelModule
+import com.tokopedia.onboarding.di.module.OnboardingModule
 import com.tokopedia.onboarding.view.activity.OnboardingActivity
 import com.tokopedia.onboarding.view.fragment.DynamicOnboardingFragment
 import com.tokopedia.onboarding.view.fragment.OnboardingFragment

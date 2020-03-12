@@ -4,31 +4,36 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.TaskStackBuilder
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayout
+import androidx.viewpager2.widget.ViewPager2.OnPageChangeCallback
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.analytics.OnboardingAnalytics
-import com.tokopedia.onboarding.common.ext.TabLayoutMediator
-import com.tokopedia.onboarding.common.ext.TabLayoutMediator.TabConfigurationStrategy
+import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.onboarding.di.OnboardingComponent
-import com.tokopedia.onboarding.domain.model.DynamicOnboardingDataModel
+import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.view.adapter.PageAdapter
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.weaver.WeaveInterface
 import com.tokopedia.weaver.Weaver
-import kotlinx.android.synthetic.main.fragment_dynamic_onbaording.*
+import kotlinx.android.synthetic.main.fragment_dynamic_onboarding.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
 import javax.inject.Inject
 
-class DynamicOnboardingFragment : BaseDaggerFragment(), TabConfigurationStrategy {
+
+class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -39,7 +44,7 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), TabConfigurationStrategy
     @Inject
     lateinit var remoteConfig: RemoteConfig
 
-    private var dynamicOnboardingDataModel = DynamicOnboardingDataModel()
+    private var dynamicOnboardingDataModel = ConfigDataModel()
     private var pagesAdapter = PageAdapter()
 
     override fun getScreenName(): String = OnboardingAnalytics.SCREEN_ONBOARDING
@@ -49,14 +54,14 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), TabConfigurationStrategy
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_dynamic_onbaording, container, false)
+        return inflater.inflate(R.layout.fragment_dynamic_onboarding, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         arguments?.let {
-            dynamicOnboardingDataModel = it.getParcelable(ARG_DYNAMIC_ONBAORDING_DATA) as DynamicOnboardingDataModel
+            dynamicOnboardingDataModel = it.getParcelable(ARG_DYNAMIC_ONBAORDING_DATA) as ConfigDataModel
         }
 
         val executeViewCreatedWeave = object : WeaveInterface {
@@ -67,10 +72,17 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), TabConfigurationStrategy
         Weaver.executeWeaveCoRoutineWithFirebase(executeViewCreatedWeave, RemoteConfigKey.ENABLE_ASYNC_ONBOARDING_CREATE, context)
     }
 
+    override fun onBackPressed(): Boolean {
+        finishOnBoarding()
+        return true
+    }
+
     @NotNull
     private fun executeViewCreateFlow(): Boolean {
-        trackPreInstall()
-        initView()
+        GlobalScope.launch(Dispatchers.Main) {
+            trackPreInstall()
+            initView()
+        }
         return true
     }
 
@@ -79,6 +91,8 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), TabConfigurationStrategy
 
         pagesAdapter.clearAllItems()
         pagesAdapter.addPages(dynamicOnboardingDataModel.pageDataModels)
+
+        pageDots?.addDots(pagesAdapter.itemCount)
     }
 
     private fun preparePages() {
@@ -92,21 +106,9 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), TabConfigurationStrategy
                 visibility = View.VISIBLE
             }, 10)
 
-            registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
-                override fun onPageSelected(position: Int) {
-                    if (position >= pagesAdapter.itemCount - 1) {
-                        nextDynamicOnbaording?.visibility = View.GONE
-                    } else {
-                        nextDynamicOnbaording?.visibility = View.VISIBLE
-                    }
-
-                    super.onPageSelected(position)
-                }
-            })
+            pageDots?.setViewpager(this)
+            registerOnPageChangeCallback(OnPageChangeListener())
         }
-
-        TabLayoutMediator(indicatorDynamicOnbaording, viewPagerDynamicOnboarding, this)
-                .attach()
 
         navigationDynamicOnbaording?.apply {
             visibility = if (dynamicOnboardingDataModel.navigationDataModel.visibility) {
@@ -116,40 +118,36 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), TabConfigurationStrategy
             }
         }
 
-        // TODO : If use global button
-        buttonGlobalDynamicOnbaording?.apply {
-            setOnClickListener(globalButtonClickListener())
-        }
-
         skipDynamicOnbaording?.apply {
-            text = dynamicOnboardingDataModel.navigationDataModel.skipButtonDataModel.name
-            setOnClickListener(skipButtonClickListener())
+            setOnClickListener(skipButtonClickListener(dynamicOnboardingDataModel.navigationDataModel.skipButtonDataModel.appLink))
         }
 
         nextDynamicOnbaording?.apply {
-            text = dynamicOnboardingDataModel.navigationDataModel.nextDataModel.name
             setOnClickListener(nextButtonClickListener())
         }
+
+        pageDots?.apply {
+            visibility = if (dynamicOnboardingDataModel.navigationDataModel.indicatorsDataModel.visibility) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+        }
+
+        checkGlobalButtonState(0)
     }
 
-    override fun onConfigureTab(tab: TabLayout.Tab, position: Int) {
-        viewPagerDynamicOnboarding?.setCurrentItem(position, true)
-    }
-
-    private fun globalButtonClickListener(): View.OnClickListener {
+    private fun globalButtonClickListener(appLink: String): View.OnClickListener {
         return View.OnClickListener {
-            // TODO : If global button available
+            onboardingAnalytics.eventOnboardingJoin(viewPagerDynamicOnboarding?.currentItem ?: 0)
+            startActivityWithBackTask(appLink)
         }
     }
 
-    private fun skipButtonClickListener(): View.OnClickListener {
+    private fun skipButtonClickListener(appLink: String): View.OnClickListener {
         return View.OnClickListener {
-            activity?.let {
-                onboardingAnalytics.eventOnboardingSkip(viewPagerDynamicOnboarding?.currentItem
-                        ?: 0)
-                RouteManager.route(it, dynamicOnboardingDataModel.navigationDataModel.skipButtonDataModel.appLink)
-                finishOnBoarding()
-            }
+            onboardingAnalytics.eventOnboardingSkip(viewPagerDynamicOnboarding?.currentItem ?: 0)
+            startActivityWithBackTask(appLink)
         }
     }
 
@@ -167,16 +165,69 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), TabConfigurationStrategy
         }
     }
 
+    private fun checkGlobalButtonState(position: Int) {
+        buttonGlobalDynamicOnbaording?.apply {
+            val buttonDataModel = dynamicOnboardingDataModel.pageDataModels[position].componentsDataModel.buttonDataModel
+            val appLink = buttonDataModel.appLink
+
+            text = buttonDataModel.text
+            visibility = if (buttonDataModel.visibility) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+            setOnClickListener(globalButtonClickListener(appLink))
+        }
+    }
+
     private fun trackPreInstall() {
         if (GlobalConfig.IS_PREINSTALL) {
             onboardingAnalytics.trackMoengage()
+        }
+        onboardingAnalytics.trackScreen(0)
+    }
+
+    private fun startActivityWithBackTask(appLink: String) {
+        context?.let {
+            val taskStackBuilder = TaskStackBuilder.create(it)
+            val defferedDeeplinkPath = TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
+            val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
+            var page = RouteManager.getIntent(it, appLink)
+
+            if (defferedDeeplinkPath.isEmpty()) {
+                taskStackBuilder.addNextIntent(homeIntent)
+                taskStackBuilder.addNextIntent(page)
+            } else {
+                page = RouteManager.getIntent(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
+                taskStackBuilder.addNextIntent(page)
+            }
+
+            taskStackBuilder.startActivities()
+            finishOnBoarding()
         }
     }
 
     private fun finishOnBoarding() {
         activity?.let {
             userSession.setFirstTimeUserOnboarding(false)
+            DFInstaller().uninstallOnBackground(it.application, listOf(DeeplinkDFMapper.DFM_ONBOARDING))
             it.finish()
+        }
+    }
+
+    inner class OnPageChangeListener : OnPageChangeCallback() {
+        override fun onPageSelected(position: Int) {
+            if (position >= pagesAdapter.itemCount - 1) {
+                nextDynamicOnbaording?.visibility = View.GONE
+            } else {
+                nextDynamicOnbaording?.visibility = View.VISIBLE
+            }
+
+            onboardingAnalytics.trackScreen(position)
+            checkGlobalButtonState(position)
+            pageDots?.setCurrent(position)
+            super.onPageSelected(position)
         }
     }
 

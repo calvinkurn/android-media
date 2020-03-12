@@ -1,59 +1,8 @@
-query get_dynamic_onboarding() {
-    navigation {
-        componentName
-        visibility
-        previous {
-            name
-            visibility
-            color
-        },
-        next {
-            name
-            visibility
-            color
-        },
-        skipButton {
-            name
-            visibility
-            appLink
-        },
-        indicators {
-            visibility
-            SelectedColor
-            DefaultColor
-        }
-    },
-    pages [
-        {
-            pageNumber
-            pageName
-            components {
-                totalComponents
-                text {
-                    componentLevel
-                    componentName
-                    visibility
-                    text
-                    textColor
-                    typographyType
-                },
-                button {
-                    componentLevel
-                    componentName
-                    visibility
-                    text
-                    textColor
-                    color
-                    appLink
-                },
-                image {
-                    componentLevel
-                    componentName
-                    visibility
-                    imageUrl
-                    animationUrl
-                }
-            }
-        }
-    ]
-}
+query {
+    GetDynamicOnboarding {
+        enable
+        config
+        message
+        error_message
+    }
+ }

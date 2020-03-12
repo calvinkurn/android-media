@@ -16,15 +16,13 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.onboarding.R
 import com.tokopedia.onboarding.common.IOnBackPressed
-import com.tokopedia.onboarding.data.OnboardingConstant
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
-import com.tokopedia.onboarding.di.DynamicOnboardingQueryModule
+import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
 import com.tokopedia.onboarding.di.OnboardingComponent
-import com.tokopedia.onboarding.domain.model.DynamicOnboardingDataModel
+import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.view.fragment.DynamicOnboardingFragment
 import com.tokopedia.onboarding.view.fragment.OnboardingFragment
 import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -75,20 +73,15 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
 
     override fun getComponent(): OnboardingComponent = DaggerOnboardingComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .dynamicOnbaordingQueryModule(DynamicOnboardingQueryModule(this))
+            .dynamicOnboardingQueryModule(DynamicOnboardingQueryModule(this))
             .build()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         component.inject(this)
 
-        remoteConfig = FirebaseRemoteConfigImpl(this)
-        if (remoteConfig.getBoolean(OnboardingConstant.RemoteConfig.DYNAMIC_ONBOARDING)) {
-            initObserver()
-            viewModel.getData()
-        } else {
-            showStaticOnboarding()
-        }
+        initObserver()
+        viewModel.getData()
     }
 
     override fun onBackPressed() {
@@ -110,15 +103,15 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     }
 
     private fun initObserver() {
-        viewModel.dynamicOnboardingData.observe(this, Observer {
-            when(it) {
-                is Success -> { onGetDynamicOnboardingSuccess(it.data) }
-                is Fail -> { onGetDynamicOnboardingFailed(it.throwable) }
+        viewModel.configData.observe(this, Observer { result ->
+            when(result) {
+                is Success -> { onGetDynamicOnboardingSuccess(result.data) }
+                is Fail -> { onGetDynamicOnboardingFailed(result.throwable) }
             }
         })
     }
 
-    private fun onGetDynamicOnboardingSuccess(data: DynamicOnboardingDataModel) {
+    private fun onGetDynamicOnboardingSuccess(data: ConfigDataModel) {
         val bundle = Bundle()
         intent.extras?.let { bundle.putAll(it) }
         bundle.putParcelable(DynamicOnboardingFragment.ARG_DYNAMIC_ONBAORDING_DATA, data)
