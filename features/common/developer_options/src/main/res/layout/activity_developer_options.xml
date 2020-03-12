@@ -247,6 +247,31 @@
             android:text="@string/remote_config_start_button"
             android:textColor="@color/Neutral_N0" />
 
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_route_manager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="String to be put in RouteManager.route(...)"
+            app:backgroundTint="@color/Green_G500" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_route_manager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="Try RouteManager.route"
+            android:textColor="@color/Neutral_N0" />
+
         <TableLayout
             android:stretchColumns="1"
             android:layout_width="match_parent"

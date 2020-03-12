@@ -131,7 +131,7 @@ public class ConsumerSplashScreen extends SplashScreen {
                 .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(homeIntent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        finishAffinity();
+        finish();
     }
 
     private void startWarmStart() {
