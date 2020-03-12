@@ -64,6 +64,7 @@ object SomConsts {
     const val KEY_REQUEST_PICKUP = "request_pickup"
     const val KEY_CONFIRM_SHIPPING = "confirm_shipping"
     const val KEY_VIEW_COMPLAINT_SELLER = "view_complaint"
+    const val KEY_SET_DELIVERED = "set_delivered"
 
     const val KEY_REASON_EMPTY_STOCK = "empty_stock"
     const val KEY_REASON_SHOP_CLOSED = "shop_closed"

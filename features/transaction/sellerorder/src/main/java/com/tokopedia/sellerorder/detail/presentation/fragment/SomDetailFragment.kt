@@ -56,6 +56,7 @@ import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CHANGE_COURIER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REJECT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_REQUEST_PICKUP
+import com.tokopedia.sellerorder.common.util.SomConsts.KEY_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_TRACK_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UBAH_NO_RESI
 import com.tokopedia.sellerorder.common.util.SomConsts.KEY_UPLOAD_AWB
@@ -521,6 +522,10 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
     }
 
+    private fun setDelivered() {
+        somDetailViewModel.setDelivered()
+    }
+
     private fun showFreeShippingAcceptOrderDialog(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
         view?.context?.let {
             val dialogUnify = DialogUnify(it, HORIZONTAL_ACTION, NO_IMAGE).apply {
@@ -646,6 +651,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(key)
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it)
+                    key.equals(KEY_SET_DELIVERED, true) -> setDelivered()
                 }
             }
         }
