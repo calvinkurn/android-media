@@ -104,6 +104,7 @@ query pdpGetLayout($productID: String, $shopDomain:String, $productKey:String) {
             originalPrice
             discountedPrice
             stock
+            stockSoldPercentage
             startDate
             endDate
             endDateUnix
