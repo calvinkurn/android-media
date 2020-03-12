@@ -622,6 +622,7 @@ class PlayViewModel @Inject constructor(
                                     id = it.toString(),
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",
+                                    isVariantAvailable = true,
                                     price = if (it % 2 == 0) {
                                         OriginalPrice("Rp20$it.000")
                                     } else {
@@ -644,6 +645,7 @@ class PlayViewModel @Inject constructor(
                         id = "123",
                         imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                         title = "Product Value",
+                        isVariantAvailable = true,
                         price = DiscountedPrice(
                                 originalPrice = "Rp20.000",
                                 discountPercent = 10,
