@@ -748,7 +748,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         productIds.forEach { productId ->
             if(status == INACTIVE) {
                 val index = productList.indexOfFirst { it.id == productId }
-                productList[index] = productList[index].copy(status = status)
+                if(index >= 0) productList[index] = productList[index].copy(status = status)
                 productManageListAdapter.updateInactiveProducts(productId)
             }
             if(status == DELETED) {
