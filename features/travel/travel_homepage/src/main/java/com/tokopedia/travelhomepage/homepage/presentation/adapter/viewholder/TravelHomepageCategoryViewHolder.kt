@@ -4,6 +4,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageCategoryListAdapter
@@ -25,8 +27,14 @@ class TravelHomepageCategoryViewHolder(itemView: View, private val onItemBindLis
         categoriesRecyclerView.layoutManager = layoutManager
 
         if (element.isLoaded) {
-            categoriesRecyclerView.adapter = TravelHomepageCategoryListAdapter(element.categories, onItemClickListener)
+            if (element.isSuccess && element.categories.isNotEmpty()) {
+                categoriesRecyclerView.show()
+                categoriesRecyclerView.adapter = TravelHomepageCategoryListAdapter(element.categories, onItemClickListener)
+            }
+            else categoriesRecyclerView.hide()
+
         } else {
+            categoriesRecyclerView.show()
             onItemBindListener.onCategoryItemBind(element.layoutData, adapterPosition, element.isLoadFromCloud)
             categoriesRecyclerView.adapter = TravelHomepageCategoryListShimmeringAdapter()
         }
