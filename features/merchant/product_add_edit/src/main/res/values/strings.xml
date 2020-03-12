@@ -24,4 +24,19 @@
     <string name="label_add_video">+ Tambah video</string>
     <string name="label_next_button">Lanjut</string>
     <string name="label_video_url_placeholder">Link Video</string>
+
+    <!--Tooltip wording-->
+    <string name="title_tooltip_photo_tips">Tips memilih foto produk</string>
+    <string name="title_tooltip_description_tips">Tips buat deskripsi produk</string>
+    <string name="title_tooltip_variant_tips">Tips menentukan varian</string>
+    <string name="message_tooltip_photo_tips_1">Gunakan foto dengan latar belakang putih.</string>
+    <string name="message_tooltip_photo_tips_2">Tampilkan foto dari berbagai sisi supaya pembeli makin tertarik.</string>
+    <string name="message_tooltip_photo_tips_3">Pastikan pencahayaan foto cukup agar produkmu jelas terlihat.</string>
+    <string name="message_tooltip_description_tips_1">Deskripsi produk harus jelas (merek, ukuran, bahan)</string>
+    <string name="message_tooltip_description_tips_2">Tambahkan keterangan pelengkap.</string>
+    <string name="message_tooltip_description_tips_3">Bahasa harus mudah dipahami.</string>
+    <string name="message_tooltip_variant_tips_1">Isi nama dan kategori produkmu.</string>
+    <string name="message_tooltip_variant_tips_2">Klik ‘Tambah Varian Produk’.</string>
+    <string name="message_tooltip_variant_tips_3">Atur kategori varian dan lengkapi informasinya.</string>
+    <string name="message_tooltip_variant_tips_4">Klik ‘Terapkan’.</string>
 </resources>

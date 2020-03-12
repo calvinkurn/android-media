@@ -15,15 +15,14 @@ class TooltipTypeFactory: BaseAdapterTypeFactory(){
         this.listener = listener
     }
 
-    fun type(tooltipModel: TooltipModel): Int = TooltipViewHolder.LAYOUT
+    fun type(type: ImageTooltipModel): Int = ImageTooltipViewHolder.LAYOUT
 
-    fun type(tooltipModel: ImageTooltipModel): Int = TooltipViewHolder.LAYOUT
-
-    fun type(tooltipModel: NumericTooltipModel): Int = TooltipViewHolder.LAYOUT
+    fun type(type: NumericTooltipModel): Int = NumericTooltipViewHolder.LAYOUT
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type){
-            TooltipViewHolder.LAYOUT -> TooltipViewHolder(parent, listener)
+            NumericTooltipViewHolder.LAYOUT -> NumericTooltipViewHolder(parent, listener)
+            ImageTooltipViewHolder.LAYOUT -> ImageTooltipViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

@@ -5,6 +5,11 @@
     <dimen name="dp_27">27dp</dimen>
     <dimen name="dp_35">35dp</dimen>
 
+    <!--tooltip dimens-->
     <dimen name="tooltip_padding">0dp</dimen>
     <dimen name="tooltip_padding_top">24dp</dimen>
+    <dimen name="tooltip_close_margin">17dp</dimen>
+    <dimen name="tooltip_close_size">30dp</dimen>
+    <dimen name="tooltip_image_size">64dp</dimen>
+
 </resources>
