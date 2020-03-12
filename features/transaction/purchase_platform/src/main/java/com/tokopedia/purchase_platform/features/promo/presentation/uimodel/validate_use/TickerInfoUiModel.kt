@@ -6,12 +6,12 @@ import android.os.Parcelable
 data class TickerInfoUiModel(
 	var uniqueId: String? = "",
 	var statusCode: Int? = -1,
-	var message: String? = ""
+	var message: String = ""
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readString(),
 			parcel.readValue(Int::class.java.classLoader) as? Int,
-			parcel.readString())
+			parcel.readString() ?: "")
 
 	override fun writeToParcel(parcel: Parcel, flags: Int) {
 		parcel.writeString(uniqueId)
