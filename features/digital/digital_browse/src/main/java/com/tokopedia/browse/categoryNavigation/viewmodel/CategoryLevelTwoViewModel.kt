@@ -14,9 +14,10 @@ import com.tokopedia.usecase.coroutines.Success
 import rx.Subscriber
 import javax.inject.Inject
 
+const val categoryDepth = 2
+
 class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQueryUseCase: AllCategoryQueryUseCase) : ViewModel() {
 
-    var categoryDepth = 2
     var childItem = MutableLiveData<Result<List<CategoryChildItem>>>()
     var YANG_LAGI_HITS_TITLE = "yanglagihits"
     fun refresh(id: String) {

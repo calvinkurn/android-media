@@ -24,13 +24,14 @@ import kotlinx.android.synthetic.main.item_category_product_view.view.*
 import kotlinx.android.synthetic.main.item_category_text_header.view.*
 import kotlinx.android.synthetic.main.item_category_yang_lagi_hit.view.*
 
+private const val totalColumns = 3
+private const val rowZero = 0
+private const val rowOne = 1
+
 class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                               private val trackingQueue: TrackingQueue?) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val viewMap = HashMap<Int, Boolean>()
-    private val totalColumns = 3
-    private val rowZero = 0
-    private val rowOne = 1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
 
@@ -86,9 +87,6 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
             Constants.ProductView -> {
                 initProductViewHolderLayout(holder as ProductViewHolder, position)
             }
-            else -> {
-
-            }
         }
     }
 
@@ -100,7 +98,7 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
             fireApplink(productViewHolder.itemView.context, item.applinks)
 
             if (item.isSeringKamuLihat) {
-                CategoryAnalytics.createInstance().eventSeringKamuLihatClick(item, item.categoryPosition + 1)
+                CategoryAnalytics.createInstance().eventSeringKamuLihatClick(item, item.categoryPosition)
             } else {
                 CategoryAnalytics.createInstance().eventBannerCategoryLevelTwoClick(item, position)
             }
@@ -199,7 +197,6 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
         val bottomBorder: View = view.border_bottom
     }
 
-
     class ShimmerProductHeaderViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
     class ShimmerProductViewHolder(view: View) : RecyclerView.ViewHolder(view)
@@ -232,8 +229,5 @@ class CategoryLevelTwoAdapter(private val list: MutableList<CategoryChildItem>,
                 }
             }
         }
-
-
     }
-
 }
