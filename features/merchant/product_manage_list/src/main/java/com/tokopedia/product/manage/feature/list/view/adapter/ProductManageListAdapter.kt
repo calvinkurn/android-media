@@ -31,6 +31,16 @@ class ProductManageListAdapter(
         }
     }
 
+    fun updateCashback(productId: String, cashback: Int) {
+        data.forEachIndexed { index, it ->
+            if (it.id.equals(productId, ignoreCase = true)) {
+                data[index] = it.copy(cashBack = cashback)
+                notifyItemChanged(index)
+                return
+            }
+        }
+    }
+
     fun deleteProduct(productId: String) {
         data.forEachIndexed { index, it ->
             if (it.id.equals(productId, ignoreCase = true)) {

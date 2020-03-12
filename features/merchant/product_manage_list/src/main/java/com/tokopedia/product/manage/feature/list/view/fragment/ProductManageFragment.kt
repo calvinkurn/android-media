@@ -2,7 +2,10 @@ package com.tokopedia.product.manage.feature.list.view.fragment
 
 import android.app.Activity
 import android.app.Dialog
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Bundle
@@ -12,20 +15,11 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Lifecycle
-import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener
-import com.github.rubensousa.bottomsheetbuilder.custom.CheckedBottomSheetBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListCheckableAdapter
@@ -33,7 +27,6 @@ import com.tokopedia.abstraction.base.view.adapter.holder.BaseCheckableViewHolde
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.common.network.exception.MessageErrorException
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
-import com.tokopedia.abstraction.common.utils.KMNumbers
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -54,9 +47,12 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMA
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
+import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
+import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
+import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
@@ -70,16 +66,8 @@ import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapTo
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel
 import com.tokopedia.product.manage.feature.list.view.model.FilterViewModel.Default
 import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Delete
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Duplicate
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.Preview
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.RemoveFeaturedProduct
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetCashBack
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetFeaturedProduct
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.SetTopAds
-import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.StockReminder
+import com.tokopedia.product.manage.feature.list.view.model.ProductMenuViewModel.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
-import com.tokopedia.product.manage.feature.list.view.model.SetCashBackResult
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.list.view.ui.ManageProductBottomSheet
 import com.tokopedia.product.manage.feature.list.view.viewmodel.ProductManageViewModel
@@ -98,7 +86,6 @@ import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActi
 import com.tokopedia.product.manage.item.stock.view.activity.ProductBulkEditStockActivity
 import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ERROR_CODE_LIMIT_CASHBACK
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
@@ -107,9 +94,9 @@ import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.I
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_FILTER
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_SORT
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.REQUEST_CODE_STOCK_REMINDER
+import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.SET_CASHBACK_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.STOCK_EDIT_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.URL_TIPS_TRICK
-import com.tokopedia.product.manage.oldlist.constant.option.CashbackOption
 import com.tokopedia.product.manage.oldlist.data.ConfirmationProductData
 import com.tokopedia.product.manage.oldlist.data.model.BulkBottomSheetType
 import com.tokopedia.product.manage.oldlist.data.model.ProductManageFilterModel
@@ -118,12 +105,12 @@ import com.tokopedia.product.manage.oldlist.data.model.mutationeditproduct.Produ
 import com.tokopedia.product.manage.oldlist.utils.ProductManageTracking
 import com.tokopedia.product.manage.oldlist.view.bottomsheets.ConfirmationUpdateProductBottomSheet
 import com.tokopedia.product.manage.oldlist.view.bottomsheets.EditProductBottomSheet
-import com.tokopedia.product.manage.oldlist.view.fragment.ProductManageEditPriceDialogFragment
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStatus
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
-import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.*
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByKeyword
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption.FilterByPage
 import com.tokopedia.topads.common.data.model.DataDeposit
 import com.tokopedia.topads.common.data.model.FreeDeposit.CREATOR.DEPOSIT_ACTIVE
 import com.tokopedia.topads.freeclaim.data.constant.TOPADS_FREE_CLAIM_URL
@@ -205,10 +192,10 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
         observeEditPrice()
         observeEditStock()
+        observeSetCashback()
         observeGetFreeClaim()
         observeGetPopUpInfo()
 
-        observeSetCashBack()
         observeSetFeaturedProduct()
         observeViewState()
 
@@ -446,23 +433,48 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onErrorEditPrice(editPriceResult: EditPriceResult) {
-        editPriceResult.let {result ->
-            Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                    View.OnClickListener {
-                        viewModel.editPrice(result.productId, result.price, result.productName)
-                    })
-        }
+        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                View.OnClickListener {
+                    viewModel.editPrice(editPriceResult.productId, editPriceResult.price, editPriceResult.productName)
+                })
     }
 
     private fun onErrorEditStock(editStockResult: EditStockResult) {
-        editStockResult.let { result ->
-            Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                    View.OnClickListener {
-                        viewModel.editStock(result.productId, result.stock, result.productName, result.status)
-                    })
+        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                View.OnClickListener {
+                    viewModel.editStock(editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
+                })
+    }
+
+    private fun onErrorSetCashback(setCashbackResult: SetCashbackResult) {
+        if(setCashbackResult.limitExceeded) {
+            context?.let {
+                DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+                    setTitle(it.resources.getString(R.string.product_manage_set_cashback_dialog_title))
+                    setDescription(it.resources.getString(R.string.product_manage_set_cashback_dialog_desc))
+                    setPrimaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_upgrade_button))
+                    setSecondaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_see_cashback_products_button))
+                    setPrimaryCTAClickListener {
+                        dismiss()
+                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                    }
+                    setSecondaryCTAClickListener {
+                        dismiss()
+                        viewModel.getProductList(userSession.shopId, listOf(FilterOption.FilterByCondition.CashBackOnly))
+                    }
+                    setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
+                }.show()
+            }
+            return
         }
+        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                View.OnClickListener {
+                     viewModel.setCashback(productId = setCashbackResult.productId,
+                             productName = setCashbackResult.productName, cashback = setCashbackResult.cashback)
+                })
     }
 
     private fun onSuccessEditPrice(productId: String, price: String, productName: String) {
@@ -479,24 +491,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         productManageListAdapter.updateStock(productId, stock, status)
     }
 
-    private fun onErrorSetCashback(t: Throwable?, productId: String?, cashback: Int) {
-        context?.let {
-            if (t is MessageErrorException && t.errorCode == ERROR_CODE_LIMIT_CASHBACK) {
-                if (viewModel.isIdlePowerMerchant()) {
-                    showIdlePowerMerchantBottomSheet(getString(R.string.product_manage_feature_name_cashback))
-                } else if (!viewModel.isPowerMerchant()) {
-                    showRegularMerchantBottomSheet(getString(R.string.product_manage_feature_name_cashback))
-                } else {
-                    showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
-                        viewModel.setCashback(productId ?: "", cashback)
-                    }
-                }
-            } else {
-                showSnackBarWithAction(ViewUtils.getErrorMessage(it, t)) {
-                    viewModel.setCashback(productId ?: "", cashback)
-                }
-            }
-        }
+    private fun onSuccessSetCashback(setCashbackResult: SetCashbackResult) {
+        Toaster.make(coordinatorLayout, getString(
+                R.string.product_manage_set_cashback_success, setCashbackResult.productName),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+        productManageListAdapter.updateCashback(setCashbackResult.productId, setCashbackResult.cashback)
     }
 
     private fun showRegularMerchantBottomSheet(featureName: String) {
@@ -909,74 +908,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onSetCashbackClicked(productManageViewModel: ProductViewModel) {
-        activity?.let {
-            if (!GlobalConfig.isSellerApp()) {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.GOLD_MERCHANT_REDIRECT)
-                return
-            }
-            showOptionCashback(productManageViewModel.id, productManageViewModel.price, productManageViewModel.price.toIntOrZero())
+        val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+        cacheManager?.let {
+            val intent = Intent(this.activity,ProductManageSetCashbackActivity::class.java)
+            it.put(SET_CASHBACK_PRODUCT, productManageViewModel)
+            intent.putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, it.id)
+            startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
         }
-    }
-
-
-    private fun showOptionCashback(productId: String, productPrice: String?, productCashback: Int) {
-        val bottomSheetBuilder = CheckedBottomSheetBuilder(activity)
-            .setMode(BottomSheetBuilder.MODE_LIST)
-            .addTitleItem(getString(R.string.product_manage_cashback_title))
-
-        addCashbackBottomSheetItemMenu(bottomSheetBuilder, productPrice, productCashback, CashbackOption.CASHBACK_OPTION_3)
-        addCashbackBottomSheetItemMenu(bottomSheetBuilder, productPrice, productCashback, CashbackOption.CASHBACK_OPTION_4)
-        addCashbackBottomSheetItemMenu(bottomSheetBuilder, productPrice, productCashback, CashbackOption.CASHBACK_OPTION_5)
-        addCashbackBottomSheetItemMenu(bottomSheetBuilder, productPrice, productCashback, CashbackOption.CASHBACK_OPTION_NONE)
-
-        val bottomSheetDialog = bottomSheetBuilder.expandOnStart(true)
-            .setItemClickListener(onOptionCashbackClicked(productId))
-            .createDialog()
-        bottomSheetDialog.show()
-    }
-
-    private fun addCashbackBottomSheetItemMenu(
-        bottomSheetBuilder: BottomSheetBuilder,
-        productPrice: String?,
-        productCashback: Int,
-        @CashbackOption cashbackOption: Int
-    ) {
-        if (bottomSheetBuilder is CheckedBottomSheetBuilder && productPrice != null) {
-            val productPricePlain = java.lang.Double.parseDouble(productPrice)
-            val cashbackMenuText = getCashbackMenuText(cashbackOption, productPricePlain)
-
-            bottomSheetBuilder.addItem(
-                cashbackOption,
-                cashbackMenuText,
-                null,
-                productCashback == cashbackOption
-            )
-        }
-    }
-
-    private fun onOptionCashbackClicked(productId: String): BottomSheetItemClickListener {
-        return BottomSheetItemClickListener {
-            when (it.itemId) {
-                CashbackOption.CASHBACK_OPTION_3 -> viewModel.setCashback(productId, CashbackOption.CASHBACK_OPTION_3)
-                CashbackOption.CASHBACK_OPTION_4 -> viewModel.setCashback(productId, CashbackOption.CASHBACK_OPTION_4)
-                CashbackOption.CASHBACK_OPTION_5 -> viewModel.setCashback(productId, CashbackOption.CASHBACK_OPTION_5)
-                CashbackOption.CASHBACK_OPTION_NONE -> viewModel.setCashback(productId, CashbackOption.CASHBACK_OPTION_NONE)
-                else -> {
-                }
-            }
-            ProductManageTracking.eventProductManageOverflowMenu(getString(R.string.product_manage_cashback_title) + " - " + it.title)
-        }
-    }
-
-    private fun getCashbackMenuText(cashBackOption: Int, productPricePlain: Double): String {
-        var cashbackText = getString(R.string.product_manage_cashback_option_none)
-        val productPriceSymbol = "Rp"
-        if (cashBackOption > 0) {
-            cashbackText = getString(R.string.product_manage_cashback_option, cashBackOption.toString(),
-                productPriceSymbol,
-                KMNumbers.formatDouble2PCheckRound(cashBackOption.toDouble() * productPricePlain / 100f, productPriceSymbol != "Rp"))
-        }
-        return cashbackText
     }
 
     private fun downloadBitmap(product: ProductViewModel) {
@@ -1157,6 +1095,16 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
                     Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
                 }
+                SET_CASHBACK_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
+                    val cacheManagerId = it.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
+                    val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
+                    val product: ProductViewModel? = cacheManager?.get(SET_CASHBACK_PRODUCT, ProductViewModel::class.java)
+                    product?.let { modifiedProduct ->
+                        modifiedProduct.title?.let { title ->
+                            viewModel.setCashback(modifiedProduct.id, title, modifiedProduct.cashBack)
+                        }
+                    }
+                }
                 else -> super.onActivityResult(requestCode, resultCode, it)
             }
         }
@@ -1211,17 +1159,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun observeSetCashBack() {
-        observe(viewModel.setCashBackResult) {
-            when (it) {
-                is Fail -> {
-                    val result = it.throwable as SetCashBackResult
-                    onErrorSetCashback(result.error, result.productId, result.cashback)
-                }
-            }
-        }
-    }
-
     private fun observeEditPrice() {
         observe(viewModel.editPriceResult) {
             when (it) {
@@ -1239,6 +1176,19 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 is Success -> onSuccessEditStock(it.data.productId, it.data.stock, it.data.productName, it.data.status)
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
+                }
+            }
+        }
+    }
+
+    private fun observeSetCashback() {
+        observe(viewModel.setCashbackResult) {
+            when (it) {
+                is Success -> {
+                    onSuccessSetCashback(it.data)
+                }
+                is Fail -> {
+                    onErrorSetCashback(it.throwable as SetCashbackResult)
                 }
             }
         }
@@ -1277,14 +1227,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun observeDeleteProduct() {
         observe(viewModel.deleteProductResult) {
             when (it) {
-                is Success ->  {
-                    it.data.let { result ->
-                        onSuccessDeleteProduct(result.productName, result.productId)
-                    }
-                }
-                is Fail -> {
-                    onErrorDeleteProduct(it.throwable as DeleteProductResult)
-                }
+                is Success -> onSuccessDeleteProduct(it.data.productName, it.data.productId)
+                is Fail -> onErrorDeleteProduct(it.throwable as DeleteProductResult)
             }
         }
     }

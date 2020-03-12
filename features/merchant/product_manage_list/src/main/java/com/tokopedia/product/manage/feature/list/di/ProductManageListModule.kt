@@ -8,6 +8,7 @@ import com.tokopedia.gm.common.data.source.GMCommonDataSource
 import com.tokopedia.gm.common.domain.repository.GMCommonRepository
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.domain.GraphqlUseCase
+import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
 import com.tokopedia.product.manage.feature.quickedit.delete.domain.DeleteProductUseCase
 import com.tokopedia.product.manage.feature.quickedit.price.domain.EditPriceUseCase
 import com.tokopedia.product.manage.feature.quickedit.stock.domain.EditStockUseCase
@@ -127,6 +128,11 @@ class ProductManageListModule {
     @Provides
     fun provideEditPriceUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
             EditPriceUseCase(multiRequestGraphqlUseCase)
+
+    @ProductManageListScope
+    @Provides
+    fun provideSetCashbackUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
+            SetCashbackUseCase(multiRequestGraphqlUseCase)
 
     @ProductManageListScope
     @Provides

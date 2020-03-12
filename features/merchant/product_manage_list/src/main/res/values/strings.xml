@@ -184,4 +184,18 @@
     <string name="product_manage_snack_bar_retry">Coba lagi</string>
     <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
 
+    <string name="product_manage_set_cashback">Cashback</string>
+    <string name="product_manage_set_cashback_success">Pengaturan Cashback untuk \"%1$s\" berhasil.</string>
+    <string name="product_manage_set_cashback_header_title">Atur Cashback</string>
+    <string name="product_manage_set_cashback_ticker_title">Info Cashback</string>
+    <string name="product_manage_set_cashback_ticker_info">Cashback akan otomatis dikurangi dari harga produkmu.</string>
+    <string name="product_manage_set_cashback_no_cashback">Tidak ada cashback</string>
+    <string name="product_manage_set_cashback_three_percent">3%% cashback %1$s </string>
+    <string name="product_manage_set_cashback_four_percent">4%% cashback %1$s </string>
+    <string name="product_manage_set_cashback_five_percent">5%% cashback %1$s </string>
+    <string name="product_manage_set_cashback_dialog_title">Promo cashback maksimum 5 produk</string>
+    <string name="product_manage_set_cashback_dialog_desc">Maksimalkan penjualanmu dengan upgrade jadi Power Merchant agar lebih bebas menggunakan promo cashback.</string>
+    <string name="product_manage_set_cashback_dialog_upgrade_button">Upgrade Tokomu</string>
+    <string name="product_manage_set_cashback_dialog_see_cashback_products_button">Lihat Produk Cashback</string>
+
 </resources>

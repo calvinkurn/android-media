@@ -8,10 +8,10 @@
 
     <com.tokopedia.header.HeaderUnify
         android:id="@+id/header"
-        app:headerTitle="@string/product_stock_reminder_header_title"
         android:layout_height="?actionBarSize"
         android:theme="?toolbarTheme"
-        android:layout_width="match_parent" />
+        android:layout_width="match_parent"
+        app:title="@string/product_stock_reminder_header_title"/>
 
     <FrameLayout
         android:id="@+id/parent_view"

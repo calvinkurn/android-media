@@ -17,8 +17,10 @@ class StockReminderActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         setupLayout(savedInstanceState)
 
-        header.backButtonView?.setOnClickListener { onBackPressed() }
-        header.subTitle = productName
+        header.setNavigationOnClickListener {
+            onBackPressed()
+        }
+        header.headerSubTitle = productName
     }
 
     override fun getNewFragment(): Fragment? {
