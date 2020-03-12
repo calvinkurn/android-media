@@ -7,18 +7,20 @@ import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.centralizedpromo.view.viewholder.PromoCreationViewHolder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.view.*
+import com.tokopedia.sellerhome.R
 import kotlinx.android.synthetic.main.centralized_promo_partial_creation_shimmering.view.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.view.*
 
 class PartialCentralizedPromoCreationView(
         view: View,
         adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
         coachMarkListener: CoachMarkListener,
-        shouldWaitForCoachMark: Boolean
-) : BasePartialListView<PromoCreationListUiModel, CentralizedPromoAdapterTypeFactory, PromoCreationUiModel>(view, adapterTypeFactory, coachMarkListener, shouldWaitForCoachMark) {
+        showCoachMark: Boolean
+) : BasePartialListView<PromoCreationListUiModel, CentralizedPromoAdapterTypeFactory, PromoCreationUiModel>(view, adapterTypeFactory, coachMarkListener, showCoachMark) {
 
     init {
         setupPromoRecommendation()
@@ -43,6 +45,14 @@ class PartialCentralizedPromoCreationView(
         partialSuccess.show()
         rvCentralizedPromoCreation.show()
         layoutCentralizedPromoCreationShimmering.hide()
+    }
+
+    override fun shouldShowCoachMark(): Boolean = showCoachMark && view.partialSuccess.isShown
+
+    override fun getCoachMarkItem() = with(view) {
+        CoachMarkItem(layoutCentralizedPromoCreation,
+                context.getString(R.string.sh_coachmark_title_promo_creation),
+                context.getString(R.string.sh_coachmark_desc_promo_creation))
     }
 
     override fun onRecyclerViewItemEmpty() {}

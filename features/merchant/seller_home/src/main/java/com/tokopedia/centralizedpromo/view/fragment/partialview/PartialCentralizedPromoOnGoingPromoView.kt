@@ -7,6 +7,7 @@ import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoListUiModel
 import com.tokopedia.centralizedpromo.view.model.OnGoingPromoUiModel
 import com.tokopedia.centralizedpromo.view.viewholder.OnGoingPromoViewHolder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
@@ -20,8 +21,8 @@ class PartialCentralizedPromoOnGoingPromoView(
         view: View,
         adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
         coachMarkListener: CoachMarkListener,
-        shouldWaitForCoachMark: Boolean
-) : BasePartialListView<OnGoingPromoListUiModel, CentralizedPromoAdapterTypeFactory, OnGoingPromoUiModel>(view, adapterTypeFactory, coachMarkListener, shouldWaitForCoachMark) {
+        showCoachMark: Boolean
+) : BasePartialListView<OnGoingPromoListUiModel, CentralizedPromoAdapterTypeFactory, OnGoingPromoUiModel>(view, adapterTypeFactory, coachMarkListener, showCoachMark) {
 
     init {
         setupOnGoingPromo()
@@ -83,6 +84,14 @@ class PartialCentralizedPromoOnGoingPromoView(
         layoutCentralizedPromoOnGoingPromoShimmering.hide()
         layoutCentralizedPromoOnGoingPromoError?.hide()
         localLoadOnGoingPromo?.progressState = false
+    }
+
+    override fun shouldShowCoachMark(): Boolean = showCoachMark && view.layoutCentralizedPromoOnGoingPromoSuccess.isShown
+
+    override fun getCoachMarkItem() = with(view) {
+        CoachMarkItem(layoutCentralizedPromoOnGoingPromoSuccess,
+                context.getString(R.string.sh_coachmark_title_on_going_promo),
+                context.getString(R.string.sh_coachmark_desc_on_going_promo))
     }
 
     private fun setupOnGoingPromo() = with(view) {

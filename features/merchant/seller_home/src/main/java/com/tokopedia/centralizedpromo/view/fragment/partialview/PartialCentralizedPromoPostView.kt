@@ -7,6 +7,7 @@ import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFa
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.PostListUiModel
 import com.tokopedia.centralizedpromo.view.model.PostUiModel
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -21,8 +22,8 @@ class PartialCentralizedPromoPostView(
         view: View,
         adapterTypeFactory: CentralizedPromoAdapterTypeFactory,
         coachMarkListener: CoachMarkListener,
-        shouldWaitForCoachMark: Boolean
-) : BasePartialListView<PostListUiModel, CentralizedPromoAdapterTypeFactory, PostUiModel>(view, adapterTypeFactory, coachMarkListener, shouldWaitForCoachMark) {
+        showCoachMark: Boolean
+) : BasePartialListView<PostListUiModel, CentralizedPromoAdapterTypeFactory, PostUiModel>(view, adapterTypeFactory, coachMarkListener, showCoachMark) {
 
     init {
         setupPostRecycler()
@@ -67,6 +68,10 @@ class PartialCentralizedPromoPostView(
         layoutCentralizedPromoPostListError?.hide()
         layoutCentralizedPromoPostListSuccess.show()
     }
+
+    override fun shouldShowCoachMark(): Boolean = false
+
+    override fun getCoachMarkItem(): CoachMarkItem? = null
 
     override fun onRecyclerViewItemEmpty() = view.gone()
 }

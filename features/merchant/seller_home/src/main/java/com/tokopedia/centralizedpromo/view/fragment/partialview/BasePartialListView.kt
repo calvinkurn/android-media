@@ -13,8 +13,8 @@ abstract class BasePartialListView<T : BaseUiListModel<V>, F : BaseAdapterTypeFa
         view: View,
         typeFactory: F,
         coachMarkListener: CoachMarkListener,
-        shouldWaitForCoachMark: Boolean
-) : BasePartialView<T>(coachMarkListener, view, shouldWaitForCoachMark) {
+        showCoachMark: Boolean
+) : BasePartialView<T>(coachMarkListener, view, showCoachMark) {
 
     protected val adapter by lazy {
         CentralizedPromoAdapter<V, F>(typeFactory, ::onResultDispatched)

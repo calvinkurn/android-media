@@ -2,10 +2,9 @@ package com.tokopedia.centralizedpromo.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.domain.usecase.GetOnGoingPromotionUseCase
+import com.tokopedia.centralizedpromo.domain.usecase.GetPostUseCase
 import com.tokopedia.centralizedpromo.view.LayoutType
-import com.tokopedia.centralizedpromo.view.OnGoingPromoStaticData
 import com.tokopedia.centralizedpromo.view.PromoCreationStaticData
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -64,9 +63,9 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getOnGoingPromotion(): Result<BaseUiModel> {
         return try {
-//            getOnGoingPromotionUseCase.params = GetOnGoingPromotionUseCase.getRequestParams(false)
-//            Success(getOnGoingPromotionUseCase.executeOnBackground())
-            Success(OnGoingPromoStaticData.provideStaticData())
+            getOnGoingPromotionUseCase.params = GetOnGoingPromotionUseCase.getRequestParams(false)
+            Success(getOnGoingPromotionUseCase.executeOnBackground())
+//            Success(OnGoingPromoStaticData.provideStaticData())
         } catch (t: Throwable) {
             Fail(t)
         }

@@ -14,7 +14,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.centralizedpromo.view.LayoutType
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
-import com.tokopedia.centralizedpromo.view.fragment.partialview.*
+import com.tokopedia.centralizedpromo.view.fragment.partialview.BasePartialView
+import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoCreationView
+import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoOnGoingPromoView
+import com.tokopedia.centralizedpromo.view.fragment.partialview.PartialCentralizedPromoPostView
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.centralizedpromo.view.viewmodel.CentralizedPromoViewModel
 import com.tokopedia.coachmark.CoachMark
@@ -25,10 +28,10 @@ import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.fragment_centralized_promo.*
-import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.*
 import kotlinx.android.synthetic.main.centralized_promo_partial_on_going_promo_success.*
 import kotlinx.android.synthetic.main.centralized_promo_partial_post.*
+import kotlinx.android.synthetic.main.centralized_promo_partial_promo_creation.*
+import kotlinx.android.synthetic.main.fragment_centralized_promo.*
 import java.util.*
 import javax.inject.Inject
 
@@ -96,7 +99,7 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     }
 
     override fun onViewReadyForCoachMark() {
-        partialViews.forEach { if (it.value.shouldWaitForCoachMark) return }
+        partialViews.forEach { if (it.value.showCoachMark && !it.value.readyToShowCoachMark) return }
 
         view?.post {
             showCoachMark()
@@ -108,19 +111,19 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
             view = container,
             adapterTypeFactory = adapterTypeFactory,
             coachMarkListener = this,
-            shouldWaitForCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION, true))
+            showCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION, true))
 
     private fun createPromoRecommendationView() = PartialCentralizedPromoCreationView(
             view = layoutCentralizedPromoCreation,
             adapterTypeFactory = adapterTypeFactory,
             coachMarkListener = this,
-            shouldWaitForCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true))
+            showCoachMark = sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true))
 
     private fun createPromoPostView() = PartialCentralizedPromoPostView(
             view = layoutCentralizedPromoPostList,
             adapterTypeFactory = adapterTypeFactory,
             coachMarkListener = this,
-            shouldWaitForCoachMark = false)
+            showCoachMark = false)
 
     private fun setupView() {
         swipeRefreshLayout.setOnRefreshListener {
@@ -170,17 +173,9 @@ class CentralizedPromoFragment : BaseDaggerFragment(), PartialCentralizedPromoOn
     private fun showCoachMark() {
         if (!isCoachMarkShowed) {
             isCoachMarkShowed = true
-            val coachMarkItem = ArrayList<CoachMarkItem>()
-            if (layoutCentralizedPromoOnGoingPromoSuccess.isShown && sharedPref.getBoolean(SHARED_PREF_COACH_MARK_ON_GOING_PROMOTION, true)) {
-                coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoOnGoingPromoSuccess,
-                        getString(R.string.sh_coachmark_title_on_going_promo),
-                        getString(R.string.sh_coachmark_desc_on_going_promo)))
-            }
-            if (layoutCentralizedPromoCreation.isShown && sharedPref.getBoolean(SHARED_PREF_COACH_MARK_PROMO_RECOMMENDATION, true)) {
-                coachMarkItem.add(CoachMarkItem(layoutCentralizedPromoCreation,
-                        getString(R.string.sh_coachmark_title_promo_creation),
-                        getString(R.string.sh_coachmark_desc_promo_creation)))
-            }
+            val coachMarkItem = ArrayList(partialViews.filter { it.value.shouldShowCoachMark() }
+                    .map { it.value.getCoachMarkItem() }
+                    .filterNotNull())
 
             context?.let {
                 layoutCentralizedPromoOnGoingPromoSuccess.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
