@@ -52,6 +52,7 @@ import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.PICKER_RES
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity.RESULT_IMAGE_DESCRIPTION_LIST
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.kotlin.extensions.view.removeObservers
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
@@ -292,6 +293,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         searchInputView.clearFocus()
         searchInputView.closeImageButton.setOnClickListener {
             searchInputView.searchText = ""
+            productList.clear()
             loadInitialData()
         }
         searchInputView.setSearchHint(getString(R.string.product_manage_search_hint))
@@ -386,6 +388,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                         val productId = intent.extras?.getString(TkpdState.ProductService.PRODUCT_ID)
                             ?: ""
                         viewModel.getPopupsInfo(productId)
+                        clearProductList()
                         loadInitialData()
                     }
                 }
@@ -463,8 +466,13 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun showTabFilters(products: MutableList<ProductViewModel>) {
-        tabFilters.setData(mapToTabFilters(products))
+    private fun showTabFilters() {
+        val filters = if(tabFilters.isActive()) {
+            mapToTabFilters(productList)
+        } else {
+            mapToTabFilters(adapter.data)
+        }
+        tabFilters.setData(filters)
     }
 
     private fun addProductList(products: List<ProductViewModel>) {
@@ -729,11 +737,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
         when(result) {
             is EditByStatus -> {
-                val productList = adapter.data
-                val productStatus = result.status
-
-                updateProductListStatus(productIds, productStatus)
-                showTabFilters(productList)
+                updateProductListStatus(productIds, result.status)
+                showProductList(productList)
+                showTabFilters()
             }
             is EditByMenu -> {
                 //TO DO
@@ -743,8 +749,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
 
     private fun updateProductListStatus(productIds: List<String>, status: ProductStatus) {
         productIds.forEach { productId ->
-            if(status == INACTIVE) productManageListAdapter.updateInactiveProducts(productId)
-            if(status == DELETED) productManageListAdapter.updateRemovedProducts(productId)
+            if(status == INACTIVE) {
+                val index = productList.indexOfFirst { it.id == productId }
+                productList[index] = productList[index].copy(status = status)
+                productManageListAdapter.updateInactiveProducts(productId)
+            }
+            if(status == DELETED) {
+                productList.removeFirst { it.id == productId }
+                productManageListAdapter.deleteProduct(productId)
+            }
         }
     }
 
@@ -1302,7 +1315,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 is Success -> {
                     addProductList(it.data)
                     showProductList(it.data)
-                    showTabFilters(productList)
+                    showTabFilters()
                 }
                 is Fail -> loadEmptyList()
             }

@@ -69,14 +69,4 @@ class ProductManageListAdapter(
             }
         }
     }
-
-    fun updateRemovedProducts(productId: String) {
-        data.forEachIndexed { index, product ->
-            if (product.id.equals(productId, ignoreCase = true)) {
-                data.removeAt(index)
-                notifyItemRemoved(index)
-                return
-            }
-        }
-    }
 }
