@@ -99,7 +99,8 @@ object VariantCommonMapper {
             val optionVariantDataModel = VariantOptionWithAttribute()
             optionVariantDataModel.variantName = option.value ?: ""
             optionVariantDataModel.variantId = option.id ?: 0
-            optionVariantDataModel.image = option.picture?.thumbnail ?: ""
+            optionVariantDataModel.image200 = option.picture?.thumbnail ?: ""
+            optionVariantDataModel.imageOriginal = option.picture?.original ?: ""
             optionVariantDataModel.variantHex = option.hex ?: ""
 
             optionVariantDataModel.currentState = VariantConstant.STATE_EMPTY
