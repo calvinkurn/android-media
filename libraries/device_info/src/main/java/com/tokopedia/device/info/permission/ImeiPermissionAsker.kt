@@ -21,6 +21,9 @@ import com.tokopedia.device.info.cache.FingerprintCache
  *              // show intro of why this permission needed
  *              // for example: show dialog to info that this permission is needed to enable promo
  *              // when user click ok, call ImeiPermissionAsker.askImeiPermission(activity)
+ *          },onUserAlreadyDeniedAndDontAskAgain = {
+ *              // user has previously denied and don't ask again.
+ *              // show intro then show user to open settings
  *          }, onAlreadyGranted = {
  *              // user already grant imei permission, so go to next step
  *          })
@@ -34,6 +37,7 @@ import com.tokopedia.device.info.cache.FingerprintCache
  *              // user click don't allow imei permission
  *          }, onUserDeniedAndDontAskAgain = {
  *              // user click don't allow imei permission and don't ask again
+ *              // ask user to open settings
  *          }, onUserAcceptPermission = {
  *              // user click allow, so go to next step
  *          })
@@ -44,14 +48,27 @@ import com.tokopedia.device.info.cache.FingerprintCache
 object ImeiPermissionAsker {
     const val IMEI_PERMISION_REQ_CODE = 720
 
-    fun checkImeiPermission(activity: Activity, onNeedAskPermission: (() -> Unit), onAlreadyGranted: (() -> Unit)) {
+    fun checkImeiPermission(activity: Activity,
+                            onNeedAskPermission: (() -> Unit),
+                            onAlreadyGranted: (() -> Unit),
+                            onUserAlreadyDeniedAndDontAskAgain: (() -> Unit)) {
         val hasPhoneStatePermission = ContextCompat.checkSelfPermission(
             activity,
             Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
         if (hasPhoneStatePermission) {
             onAlreadyGranted.invoke()
         } else {
-            onNeedAskPermission.invoke()
+            val imeiCache = DeviceInfo.getImei(activity)
+            if (!imeiCache.isNullOrEmpty()) {
+                onAlreadyGranted.invoke()
+            } else {
+                val showRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE)
+                if (!showRationale) {
+                    onUserAlreadyDeniedAndDontAskAgain.invoke()
+                } else {
+                    onNeedAskPermission.invoke()
+                }
+            }
         }
     }
 
