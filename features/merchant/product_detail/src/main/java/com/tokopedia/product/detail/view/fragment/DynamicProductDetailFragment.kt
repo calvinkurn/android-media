@@ -1372,8 +1372,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         if (isPartialySelected) {
             //If user select partialy and its colour type, only update image in snapshot
-            if (variantOptions.variantOptionIdentifier == "colour" && variantOptions.image.isNotBlank()) {
-                viewModel.addPartialImage(variantOptions.image)
+            if (variantOptions.variantOptionIdentifier == "colour" && variantOptions.imageOriginal.isNotBlank()) {
+                viewModel.addPartialImage(variantOptions.imageOriginal)
             } else {
                 dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel)
             }
@@ -1919,7 +1919,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun showToasterError(message: String) {
         view?.let {
-            Toaster.make(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, "Oke",clickListener = View.OnClickListener {})
+            Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "Oke", clickListener = View.OnClickListener {})
         }
     }
 
@@ -2374,8 +2374,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         activity?.run {
             Toaster.make(findViewById(android.R.id.content),
                     ProductDetailErrorHandler.getErrorMessage(this, throwable),
-                    Toaster.LENGTH_LONG,
-                    Toaster.TYPE_ERROR,"Oke", clickListener = View.OnClickListener {}
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR, "Oke", clickListener = View.OnClickListener {}
             )
         }
     }
