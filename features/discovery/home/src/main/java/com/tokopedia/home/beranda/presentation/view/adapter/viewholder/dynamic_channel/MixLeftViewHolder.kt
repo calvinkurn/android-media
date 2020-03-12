@@ -82,7 +82,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     private fun setupList(channel: DynamicHomeChannel.Channels) {
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(flashSaleCardListener)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(flashSaleCardListener, channel)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)
