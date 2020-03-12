@@ -16,6 +16,8 @@ import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.Loader.UnexpectedLoaderException
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.exception.PlayVideoErrorException
+import com.tokopedia.play_common.model.PlayBufferControl
+import com.tokopedia.play_common.model.PlayPlayerModel
 import com.tokopedia.play_common.state.PlayVideoPrepareState
 import com.tokopedia.play_common.state.PlayVideoState
 import com.tokopedia.play_common.state.VideoPositionHandle
@@ -65,15 +67,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
     private var currentPrepareState: PlayVideoPrepareState = PlayVideoPrepareState.Unprepared(null, PlayVideoType.Unknown, null, true)
     private val _observablePlayVideoState = MutableLiveData<PlayVideoState>()
     private val _observableVideoPlayer = MutableLiveData<SimpleExoPlayer>()
-
-    private val customLoadControl: LoadControl = DefaultLoadControl.Builder()
-            .setBufferDurationsMs(
-                    DefaultLoadControl.DEFAULT_MIN_BUFFER_MS,
-                    MAX_BUFFER_MS,
-                    DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_MS,
-                    DefaultLoadControl.DEFAULT_BUFFER_FOR_PLAYBACK_AFTER_REBUFFER_MS
-            )
-            .createDefaultLoadControl()
 
     private val playerEventListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
@@ -133,12 +126,15 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
     }
 
-    var videoPlayer: SimpleExoPlayer by Delegates.observable(initVideoPlayer(null)) { _, _, _ ->
-        _observableVideoPlayer.value = videoPlayer
+    private var playerModel: PlayPlayerModel by Delegates.observable(initVideoPlayer(null, PlayBufferControl())) { _, _, new ->
+        _observableVideoPlayer.value = new.player
     }
 
+    val videoPlayer: SimpleExoPlayer
+        get() = playerModel.player
+
     //region public method
-    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true) {
+    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl) {
         if (uri.toString().isEmpty()) {
             releasePlayer()
             return
@@ -149,7 +145,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             is PlayVideoPrepareState.Unprepared -> prepareState.previousUri
             is PlayVideoPrepareState.Prepared -> prepareState.uri
         }
-        if (currentUri == null) videoPlayer = initVideoPlayer(videoPlayer)
+        if (currentUri == null) playerModel = initVideoPlayer(playerModel, bufferControl)
         if (prepareState is PlayVideoPrepareState.Unprepared || currentUri != uri) {
             val lastPosition = if (prepareState is PlayVideoPrepareState.Unprepared && !prepareState.previousType.isLive && currentUri == uri) prepareState.lastPosition else null
             val resetState = if (prepareState is PlayVideoPrepareState.Unprepared && currentUri == uri) prepareState.resetState else true
@@ -159,13 +155,13 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
-    fun safePlayVideoWithUriString(uriString: String?, autoPlay: Boolean = true) {
+    fun safePlayVideoWithUriString(uriString: String?, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl) {
         if (uriString.isNullOrEmpty()) {
             releasePlayer()
             return
         }
 
-        safePlayVideoWithUri(Uri.parse(uriString), autoPlay)
+        safePlayVideoWithUri(Uri.parse(uriString), autoPlay, bufferControl)
     }
 
     private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, lastPosition: Long?, resetState: Boolean = true) {
@@ -202,7 +198,7 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
             currentPrepareState = PlayVideoPrepareState.Unprepared(
                     prepareState.uri,
                     if (isVideoLive()) PlayVideoType.Live else PlayVideoType.VOD,
-                    when (prepareState.positionHandle){
+                    when (prepareState.positionHandle) {
                         VideoPositionHandle.Handled -> getCurrentPosition()
                         is VideoPositionHandle.NotHandled -> prepareState.positionHandle.lastPosition
                     },
@@ -276,11 +272,23 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
     }
 
-    private fun initVideoPlayer(videoPlayer: SimpleExoPlayer?): SimpleExoPlayer {
-        videoPlayer?.removeListener(playerEventListener)
-        return SimpleExoPlayer.Builder(applicationContext)
-                .setLoadControl(customLoadControl)
+    private fun initVideoPlayer(playerModel: PlayPlayerModel?, bufferControl: PlayBufferControl): PlayPlayerModel {
+        playerModel?.player?.removeListener(playerEventListener)
+        val videoPlayer = SimpleExoPlayer.Builder(applicationContext)
+                .setLoadControl(initCustomLoadControl(bufferControl))
                 .build()
                 .apply { addListener(playerEventListener) }
+
+        return PlayPlayerModel(videoPlayer, bufferControl)
+    }
+
+    private fun initCustomLoadControl(bufferControl: PlayBufferControl): LoadControl {
+        return DefaultLoadControl.Builder()
+                .setBufferDurationsMs(
+                        bufferControl.minBufferMs,
+                        bufferControl.maxBufferMs,
+                        bufferControl.bufferForPlaybackMs,
+                        bufferControl.bufferForPlaybackAfterRebufferMs
+                ).createDefaultLoadControl()
     }
 }
