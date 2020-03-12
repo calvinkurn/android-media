@@ -433,58 +433,48 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun onErrorEditPrice(editPriceResult: EditPriceResult) {
-        editPriceResult.let {result ->
-            Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                    View.OnClickListener {
-                        viewModel.editPrice(result.productId, result.price, result.productName)
-                    })
-        }
+        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                View.OnClickListener {
+                    viewModel.editPrice(editPriceResult.productId, editPriceResult.price, editPriceResult.productName)
+                })
     }
 
     private fun onErrorEditStock(editStockResult: EditStockResult) {
-        editStockResult.let { result ->
-            Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                    View.OnClickListener {
-                        viewModel.editStock(result.productId, result.stock, result.productName, result.status)
-                    })
-        }
+        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                View.OnClickListener {
+                    viewModel.editStock(editStockResult.productId, editStockResult.stock, editStockResult.productName, editStockResult.status)
+                })
     }
 
     private fun onErrorSetCashback(setCashbackResult: SetCashbackResult) {
-        setCashbackResult.let { result ->
-            if(result.limitExceeded) {
-                context?.let {
-                    val dialog = DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION)
-                    it.resources.let { resources ->
-                        dialog.apply {
-                            setTitle(resources.getString(R.string.product_manage_set_cashback_dialog_title))
-                            setDescription(resources.getString(R.string.product_manage_set_cashback_dialog_desc))
-                            setPrimaryCTAText(resources.getString(R.string.product_manage_set_cashback_dialog_upgrade_button))
-                            setSecondaryCTAText(resources.getString(R.string.product_manage_set_cashback_dialog_see_cashback_products_button))
-                            setPrimaryCTAClickListener {
-                                dialog.dismiss()
-                                RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-                            }
-                            setSecondaryCTAClickListener {
-                                dialog.dismiss()
-                                viewModel.getProductList(userSession.shopId, listOf(FilterOption.FilterByCondition.CashBackOnly))
-                            }
-                            setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
-                        }
+        if(setCashbackResult.limitExceeded) {
+            context?.let {
+                DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+                    setTitle(it.resources.getString(R.string.product_manage_set_cashback_dialog_title))
+                    setDescription(it.resources.getString(R.string.product_manage_set_cashback_dialog_desc))
+                    setPrimaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_upgrade_button))
+                    setSecondaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_see_cashback_products_button))
+                    setPrimaryCTAClickListener {
+                        dismiss()
+                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
                     }
-                    dialog.show()
-                }
-                return
+                    setSecondaryCTAClickListener {
+                        dismiss()
+                        viewModel.getProductList(userSession.shopId, listOf(FilterOption.FilterByCondition.CashBackOnly))
+                    }
+                    setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
+                }.show()
             }
-            Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
-                    Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                    View.OnClickListener {
-                         viewModel.setCashback(productId = result.productId,
-                                 productName = result.productName, cashback = result.cashback)
-                    })
+            return
         }
+        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                View.OnClickListener {
+                     viewModel.setCashback(productId = setCashbackResult.productId,
+                             productName = setCashbackResult.productName, cashback = setCashbackResult.cashback)
+                })
     }
 
     private fun onSuccessEditPrice(productId: String, price: String, productName: String) {
@@ -1237,14 +1227,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun observeDeleteProduct() {
         observe(viewModel.deleteProductResult) {
             when (it) {
-                is Success ->  {
-                    it.data.let { result ->
-                        onSuccessDeleteProduct(result.productName, result.productId)
-                    }
-                }
-                is Fail -> {
-                    onErrorDeleteProduct(it.throwable as DeleteProductResult)
-                }
+                is Success -> onSuccessDeleteProduct(it.data.productName, it.data.productId)
+                is Fail -> onErrorDeleteProduct(it.throwable as DeleteProductResult)
             }
         }
     }

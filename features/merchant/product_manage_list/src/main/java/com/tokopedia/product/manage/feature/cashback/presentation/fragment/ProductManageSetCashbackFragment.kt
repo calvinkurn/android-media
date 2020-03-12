@@ -134,32 +134,29 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     private fun initSetCashbackList(product: ProductViewModel) {
         val setCashbackList = mutableListOf<SetCashbackViewModel>()
         context?.let {
-            it.resources.let { resources ->
-                setCashbackList.addAll(
-                        listOf(
-                                SetCashbackViewModel(
-                                        resources.getString(R.string.product_manage_set_cashback_no_cashback),
-                                        ZERO_CASHBACK,
-                                        product.cashBack == ZERO_CASHBACK),
-                                SetCashbackViewModel(
-                                        resources.getString(R.string.product_manage_set_cashback_three_percent,
-                                                product.price?.let { price -> getCashbackPrice(price, THREE_PERCENT_CASHBACK) }),
-                                        THREE_PERCENT_CASHBACK,
-                                        product.cashBack == THREE_PERCENT_CASHBACK),
-                                SetCashbackViewModel(
-                                        resources.getString(R.string.product_manage_set_cashback_four_percent,
-                                                product.price?.let { price -> getCashbackPrice(price, FOUR_PERCENT_CASHBACK) }),
-                                        FOUR_PERCENT_CASHBACK,
-                                        product.cashBack == FOUR_PERCENT_CASHBACK),
-                                SetCashbackViewModel(
-                                        resources.getString(R.string.product_manage_set_cashback_five_percent,
-                                                product.price?.let { price -> getCashbackPrice(price, FIVE_PERCENT_CASHBACK) }),
-                                        FIVE_PERCENT_CASHBACK,
-                                        product.cashBack == FIVE_PERCENT_CASHBACK)
-                        )
-
-                )
-            }
+            setCashbackList.addAll(
+                    listOf(
+                            SetCashbackViewModel(
+                                    it.resources.getString(R.string.product_manage_set_cashback_no_cashback),
+                                    ZERO_CASHBACK,
+                                    product.cashBack == ZERO_CASHBACK),
+                            SetCashbackViewModel(
+                                    it.resources.getString(R.string.product_manage_set_cashback_three_percent,
+                                            product.price?.let { price -> getCashbackPrice(price, THREE_PERCENT_CASHBACK) }),
+                                    THREE_PERCENT_CASHBACK,
+                                    product.cashBack == THREE_PERCENT_CASHBACK),
+                            SetCashbackViewModel(
+                                    it.resources.getString(R.string.product_manage_set_cashback_four_percent,
+                                            product.price?.let { price -> getCashbackPrice(price, FOUR_PERCENT_CASHBACK) }),
+                                    FOUR_PERCENT_CASHBACK,
+                                    product.cashBack == FOUR_PERCENT_CASHBACK),
+                            SetCashbackViewModel(
+                                    it.resources.getString(R.string.product_manage_set_cashback_five_percent,
+                                            product.price?.let { price -> getCashbackPrice(price, FIVE_PERCENT_CASHBACK) }),
+                                    FIVE_PERCENT_CASHBACK,
+                                    product.cashBack == FIVE_PERCENT_CASHBACK)
+                    )
+            )
         }
         adapter?.updateCashback(setCashbackList)
     }
