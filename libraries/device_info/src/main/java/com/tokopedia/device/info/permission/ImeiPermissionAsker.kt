@@ -2,10 +2,12 @@ package com.tokopedia.device.info.permission
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceInfo
+import com.tokopedia.device.info.DeviceInfo.getImeiCache
 import com.tokopedia.device.info.cache.DeviceInfoCache
 import com.tokopedia.device.info.cache.FingerprintCache
 
@@ -56,12 +58,20 @@ object ImeiPermissionAsker {
             activity,
             Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED
         if (hasPhoneStatePermission) {
+            // user already allow permission, but may clear data/clear cache
+            val (_, isCached) = getImeiCache(activity)
+            if (!isCached) {
+                updateImeiCache(activity)
+            }
             onAlreadyGranted.invoke()
         } else {
             val imeiCache = DeviceInfo.getImei(activity)
+            // user don't allow permission but imei is in cache.
             if (!imeiCache.isNullOrEmpty()) {
                 onAlreadyGranted.invoke()
-            } else {
+            }
+            // user don't allow permission and imei is not in cache.
+            else {
                 val showRationale = ActivityCompat.shouldShowRequestPermissionRationale(activity, Manifest.permission.READ_PHONE_STATE)
                 if (!showRationale) {
                     onUserAlreadyDeniedAndDontAskAgain.invoke()
@@ -98,14 +108,18 @@ object ImeiPermissionAsker {
                             onUserDenied.invoke()
                         }
                     } else if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                        DeviceInfoCache(activity).clearImei()
-                        DeviceInfo.getImei(activity)
-                        FingerprintCache.clearFingerprintCache(activity)
+                        updateImeiCache(activity)
                         onUserAcceptPermission.invoke()
                     }
                     break
                 }
             }
         }
+    }
+
+    private fun updateImeiCache(context: Context) {
+        DeviceInfoCache(context).clearImei()
+        DeviceInfo.getImei(context)
+        FingerprintCache.clearFingerprintCache(context)
     }
 }

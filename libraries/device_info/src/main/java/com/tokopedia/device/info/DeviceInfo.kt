@@ -163,5 +163,10 @@ object DeviceInfo {
         }
     }
 
+    fun getImeiCache(context: Context): Pair<String, Boolean> {
+        val deviceInfoCache = DeviceInfoCache(context.applicationContext)
+        return deviceInfoCache.getImei()
+    }
+
 }
 
