@@ -14,4 +14,6 @@ sealed class InteractionEvent {
     }
     data class Like(val shouldLike: Boolean, override val needLogin: Boolean = true) : InteractionEvent()
     data class Follow(val partnerId: Long, val partnerAction: PartnerFollowAction, override val needLogin: Boolean = true) : InteractionEvent()
+    data class AtcProduct(val productId: String, override val needLogin: Boolean = true) : InteractionEvent()
+    data class BuyProduct(val productId: String, override val needLogin: Boolean = true) : InteractionEvent()
 }

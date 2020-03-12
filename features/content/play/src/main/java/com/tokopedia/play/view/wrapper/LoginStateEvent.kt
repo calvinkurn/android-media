@@ -5,6 +5,8 @@ package com.tokopedia.play.view.wrapper
  */
 sealed class LoginStateEvent {
 
-    data class InteractionAllowed(val event: InteractionEvent) : LoginStateEvent()
-    object NeedLoggedIn : LoginStateEvent()
+    abstract val event: InteractionEvent
+
+    data class InteractionAllowed(override val event: InteractionEvent) : LoginStateEvent()
+    data class NeedLoggedIn(override val event: InteractionEvent) : LoginStateEvent()
 }

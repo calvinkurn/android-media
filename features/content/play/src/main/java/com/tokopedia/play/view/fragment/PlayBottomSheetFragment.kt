@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.R
@@ -23,13 +27,16 @@ import com.tokopedia.play.ui.productsheet.interaction.ProductSheetInteractionEve
 import com.tokopedia.play.ui.variantsheet.VariantSheetComponent
 import com.tokopedia.play.ui.variantsheet.interaction.VariantSheetInteractionEvent
 import com.tokopedia.play.util.CoroutineDispatcherProvider
+import com.tokopedia.play.util.event.EventObserver
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.type.ProductLineUiModel
-import com.tokopedia.play.view.viewmodel.PlayVariantViewModel
+import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.view.wrapper.InteractionEvent
+import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -44,6 +51,8 @@ import kotlin.coroutines.CoroutineContext
 class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
+        private const val REQUEST_CODE_LOGIN = 191
+
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
 
         fun newInstance(): PlayBottomSheetFragment {
@@ -65,7 +74,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
 
     private lateinit var playViewModel: PlayViewModel
-    private lateinit var playVariantViewModel: PlayVariantViewModel
+    private lateinit var viewModel: PlayBottomSheetViewModel
 
     private lateinit var productSheetComponent: UIComponent<*>
     private lateinit var variantSheetComponent: UIComponent<*>
@@ -91,7 +100,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
-        playVariantViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayVariantViewModel::class.java)
+        viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayBottomSheetViewModel::class.java)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -108,9 +117,17 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        observeLoggedInInteractionEvent()
         observeProductSheetContent()
         observeVariantSheetContent()
         observeBottomInsetsState()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
+            if (lastAction != null) handleInteractionEvent(lastAction.event)
+        } else super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun observeProductSheetContent() {
@@ -136,7 +153,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
             }
         })
 
-        playVariantViewModel.observableProductVariant.observe(viewLifecycleOwner, Observer {
+        viewModel.observableProductVariant.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
                         .emit(
@@ -163,6 +180,10 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                 }
             }
         })
+    }
+
+    private fun observeLoggedInInteractionEvent() {
+        viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
     }
 
     private fun setupView(view: View) {
@@ -228,7 +249,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun openVariantSheet(product: ProductLineUiModel, action: ProductAction) {
         playViewModel.onShowVariantSheet(variantSheetMaxHeight, product, action)
-        playVariantViewModel.getProductVariant(product, action)
+        viewModel.getProductVariant(product, action)
     }
 
     private fun closeVariantSheet() {
@@ -236,17 +257,51 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun shouldBuyProduct(productId: String) {
-        Toaster.make(requireView(), "Product bought", Snackbar.LENGTH_SHORT)
-        closeVariantSheet()
+        viewModel.doInteractionEvent(InteractionEvent.BuyProduct(productId))
     }
 
     private fun shouldAtcProduct(productId: String) {
-        Toaster.make(requireView(), "Product added to cart", Snackbar.LENGTH_SHORT)
-        closeVariantSheet()
+        viewModel.doInteractionEvent(InteractionEvent.AtcProduct(productId))
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
         val requiredMargin = offset16
         playFragment.onBottomInsetsViewShown(getScreenHeight() - (productSheetHeight + requiredMargin))
+    }
+
+    private fun handleLoginInteractionEvent(loginInteractionEvent: LoginStateEvent) {
+        when (loginInteractionEvent) {
+            is LoginStateEvent.InteractionAllowed -> handleInteractionEvent(loginInteractionEvent.event)
+            is LoginStateEvent.NeedLoggedIn -> openLoginPage()
+        }
+    }
+
+    private fun handleInteractionEvent(event: InteractionEvent) {
+        when (event) {
+            is InteractionEvent.AtcProduct -> doAtcProduct(event.productId)
+            is InteractionEvent.BuyProduct -> doBuyProduct(event.productId)
+        }
+    }
+
+    private fun doAtcProduct(productId: String) {
+        Toaster.make(requireView(), "Product added to cart for id: $productId", Snackbar.LENGTH_SHORT)
+        closeVariantSheet()
+    }
+
+    private fun doBuyProduct(productId: String) {
+        Toaster.make(requireView(), "Product bought for id: $productId", Snackbar.LENGTH_SHORT)
+        closeVariantSheet()
+    }
+
+    private fun openLoginPage() {
+        openPageByApplink(ApplinkConst.LOGIN)
+    }
+
+    private fun openPageByApplink(applink: String, vararg params: String, shouldFinish: Boolean = false) {
+        val intent = RouteManager.getIntent(context, applink, *params)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+        activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
+
+        if (shouldFinish) activity?.finish()
     }
 }
