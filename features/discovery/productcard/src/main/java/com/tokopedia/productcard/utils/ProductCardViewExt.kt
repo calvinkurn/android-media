@@ -2,8 +2,10 @@ package com.tokopedia.productcard.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
 import android.graphics.drawable.GradientDrawable
 import android.os.Build
+import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -217,5 +219,21 @@ private fun safeParseColor(color: String): Int {
     catch (throwable: Throwable) {
         throwable.printStackTrace()
         0
+    }
+}
+
+internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) {
+    val parent = parent
+
+    if (parent is View) {
+        val hitRect = Rect()
+        getHitRect(hitRect)
+
+        hitRect.left -= left
+        hitRect.top -= top
+        hitRect.right += right
+        hitRect.bottom += bottom
+
+        parent.touchDelegate = TouchDelegate(hitRect, this)
     }
 }
