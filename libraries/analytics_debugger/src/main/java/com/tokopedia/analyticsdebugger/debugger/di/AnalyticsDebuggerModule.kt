@@ -36,6 +36,13 @@ class AnalyticsDebuggerModule {
     }
 
     @Provides
+    @Named(NAMED_APPLINK)
+    fun provideApplinkPresenter(getApplinkLogUseCase: GetApplinkLogUseCase,
+                            deleteApplinkLogUseCase: DeleteApplinkLogUseCase): ApplinkDebugger.Presenter {
+        return ApplinkDebuggerPresenter(getApplinkLogUseCase, deleteApplinkLogUseCase)
+    }
+
+    @Provides
     @Named(NAMED_GTM_ERROR_ANALYTICS)
     fun provideGtmErrorPresenter(getGtmErrorLogUseCase: GetGtmErrorLogUseCase,
                                  deleteGtmErrorLogUseCase: DeleteGtmErrorLogUseCase): AnalyticsDebugger.Presenter {
