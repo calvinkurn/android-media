@@ -10,7 +10,6 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
@@ -77,7 +76,7 @@ class PartialSnapshotView(private val view: View,
                     sale_text_stock_available.gone()
 
                     if (data.variant.isVariant) {
-                        text_stock_available.hide()
+                        text_stock_available.gone()
                     } else {
                         text_stock_available.visible()
                     }
@@ -91,7 +90,7 @@ class PartialSnapshotView(private val view: View,
                 text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
                 sale_text_stock_available.gone()
                 if (data.variant.isVariant) {
-                    text_stock_available.hide()
+                    text_stock_available.gone()
                 } else {
                     text_stock_available.visible()
                 }
@@ -120,7 +119,7 @@ class PartialSnapshotView(private val view: View,
                         nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
                 sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
             } else {
-                if (nearestWarehouseData.nearestWarehouseStockWording.isBlank()) text_stock_available.hide()
+                text_stock_available.showWithCondition(!nearestWarehouseData.nearestWarehouseStockWording.isBlank())
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
                         nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
                 text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)

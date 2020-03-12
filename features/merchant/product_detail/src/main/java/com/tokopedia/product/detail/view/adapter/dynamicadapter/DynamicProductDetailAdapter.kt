@@ -3,13 +3,11 @@ package com.tokopedia.product.detail.view.adapter.dynamicadapter
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.product.detail.common.data.model.product.Variant
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAdapterFactoryImpl
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.product.detail.view.viewholder.ProductRecommendationViewHolder
-import com.tokopedia.product.detail.view.viewholder.ProductVariantViewHolder
 
 class DynamicProductDetailAdapter(
         adapterTypeFactory: DynamicProductDetailAdapterFactoryImpl,
@@ -96,8 +94,10 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifyVariantSection(data: VariantDataModel?){
-        data?.let{
+    fun getVariantPosition(data: VariantDataModel?): Int = if (data != null) list.indexOf(data) else 0
+
+    fun notifyVariantSection(data: VariantDataModel?) {
+        data?.let {
             val indexOfSnapshot = list.indexOf(it)
             notifyItemChanged(indexOfSnapshot)
         }

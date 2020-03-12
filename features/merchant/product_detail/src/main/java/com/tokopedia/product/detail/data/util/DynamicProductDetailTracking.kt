@@ -20,7 +20,7 @@ import org.json.JSONObject
 object DynamicProductDetailTracking {
 
 
-    fun sendScreen(irisSessionId:String, shopID: String, shopType: String, productId: String) {
+    fun sendScreen(irisSessionId: String, shopID: String, shopType: String, productId: String) {
         val customDimension: MutableMap<String, String> = java.util.HashMap()
         customDimension[ProductTrackingConstant.Tracking.KEY_SHOP_ID_SELLER] = shopID
         customDimension[ProductTrackingConstant.Tracking.KEY_PAGE_TYPE] = "/product"
@@ -53,6 +53,13 @@ object DynamicProductDetailTracking {
                     shopName)
 
             TrackingUtil.addComponentTracker(mapEvent, productInfo, componentTrackDataModel, ProductTrackingConstant.Action.CLICK_UNFOLLOW)
+        }
+
+        fun trackTradein(usedPrice: Int, productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
+            if (usedPrice > 0)
+                trackTradeinAfterDiagnotics(productInfo, componentTrackDataModel)
+            else
+                trackTradeinBeforeDiagnotics(productInfo, componentTrackDataModel)
         }
 
         fun trackTradeinBeforeDiagnotics(productInfo: DynamicProductInfoP1?, componentTrackDataModel: ComponentTrackDataModel) {
@@ -444,13 +451,29 @@ object DynamicProductDetailTracking {
             TrackingUtil.addComponentTracker(mapEvent, productInfo, null, ProductTrackingConstant.Action.CLICK_CART_BUTTON_VARIANT)
         }
 
-        fun eventClickBuy(productInfo: DynamicProductInfoP1?, isVariant: Boolean) {
+        fun eventClickBuy(userSessionActive: Boolean, productInfo: DynamicProductInfoP1?, isVariant: Boolean) {
+            if (userSessionActive) {
+                eventClickBuyAfterLogin(productInfo, isVariant)
+            } else {
+                eventClickBuyBeforeLogin(productInfo)
+            }
+        }
+
+        fun eventClickBuyAfterLogin(productInfo: DynamicProductInfoP1?, isVariant: Boolean) {
             if (productInfo?.basic?.productID?.isEmpty() == true) return
 
             eventClickBuyOrAddToCart(productInfo, isVariant, ProductTrackingConstant.Action.CLICK_BELI)
         }
 
-        fun eventAddToCart(irisSessionId:String, productInfo: DynamicProductInfoP1?, isVariant: Boolean) {
+        fun eventAddToCart(userSessionActive: Boolean, irisSessionId: String, productInfo: DynamicProductInfoP1?, isVariant: Boolean) {
+            if (userSessionActive) {
+                eventAddToCartAfterLogin(irisSessionId, productInfo, isVariant)
+            } else {
+                eventAddToCartBeforeLogin(productInfo)
+            }
+        }
+
+        fun eventAddToCartAfterLogin(irisSessionId: String, productInfo: DynamicProductInfoP1?, isVariant: Boolean) {
             if (productInfo?.basic?.productID?.isEmpty() == true) return
 
             eventClickBuyOrAddToCartWithIris(irisSessionId, productInfo, isVariant, ProductTrackingConstant.Action.CLICK_ADD_TO_CART)
@@ -479,7 +502,7 @@ object DynamicProductDetailTracking {
 
         }
 
-        private fun eventClickBuyOrAddToCartWithIris(irisSessionId:String, productInfo: DynamicProductInfoP1?, isVariant: Boolean, action: String) {
+        private fun eventClickBuyOrAddToCartWithIris(irisSessionId: String, productInfo: DynamicProductInfoP1?, isVariant: Boolean, action: String) {
             val mapEvent = TrackAppUtils.gtmData(
                     ProductTrackingConstant.PDP.EVENT_CLICK_PDP,
                     ProductTrackingConstant.Category.PDP,
@@ -768,7 +791,7 @@ object DynamicProductDetailTracking {
             }?.firstOrNull()?.uRLOriginal ?: ""
 
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                    KEY_SESSION_IRIS,  irisSessionId,
+                    KEY_SESSION_IRIS, irisSessionId,
                     ProductTrackingConstant.Tracking.KEY_EVENT, "viewProduct",
                     ProductTrackingConstant.Tracking.KEY_CATEGORY, "product page",
                     ProductTrackingConstant.Tracking.KEY_ACTION, "view product page",
