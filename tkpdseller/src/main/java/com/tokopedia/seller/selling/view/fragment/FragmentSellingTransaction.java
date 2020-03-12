@@ -55,7 +55,6 @@ import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.TransactionViewHolder;
-import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 import com.tokopedia.transaction.common.TransactionRouter;
 
 import java.util.List;
@@ -323,9 +322,6 @@ public class FragmentSellingTransaction extends BaseFragment<SellingStatusTransa
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                if (GlobalConfig.isSellerApp()) {
-                    SellerDrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
-                }
                 presenter.onRefreshView();
             }
         };

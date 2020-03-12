@@ -29,7 +29,6 @@ import com.tokopedia.seller.product.draft.view.listener.ProductDraftSaveBulkView
 import com.tokopedia.seller.product.draft.view.model.InstagramMediaModel;
 import com.tokopedia.seller.product.draft.view.presenter.ProductDraftSaveBulkPresenter;
 import com.tokopedia.seller.product.draft.view.presenter.ResolutionImageException;
-import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,11 +122,6 @@ public class ProductDraftListActivity extends BaseTemporaryDrawerActivity
                         });
             }
         }
-    }
-
-    @Override
-    protected void startDrawerGetNotificationServiceOnResume() {
-        SellerDrawerGetNotificationService.startService(this,true,true);
     }
 
     public void saveValidImagesToDraft(ArrayList<String> localPaths, @NonNull ArrayList<String> imageDescriptionList) {

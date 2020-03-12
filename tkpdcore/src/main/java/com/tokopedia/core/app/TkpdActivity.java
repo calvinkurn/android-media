@@ -5,9 +5,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.tokopedia.abstraction.base.view.activity.BaseActivity;
 import com.tokopedia.core.receiver.CartBadgeNotificationReceiver;
 import com.tokopedia.core2.R;
-import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawerActivity;
 
 /**
  * Created by Nisie on 31/08/15.
@@ -17,7 +17,7 @@ import com.tokopedia.sellerhomedrawer.presentation.view.BaseSellerReceiverDrawer
  * Extends one of BaseActivity from tkpd abstraction eg:BaseSimpleActivity, BaseStepperActivity, BaseTabActivity, etc
  */
 @Deprecated
-public abstract class TkpdActivity extends BaseSellerReceiverDrawerActivity implements
+public abstract class TkpdActivity extends BaseActivity implements
         CartBadgeNotificationReceiver.ActionListener {
 
     private CartBadgeNotificationReceiver cartBadgeNotificationReceiver;
@@ -34,11 +34,6 @@ public abstract class TkpdActivity extends BaseSellerReceiverDrawerActivity impl
         cartBadgeNotificationReceiver = new CartBadgeNotificationReceiver(this);
         IntentFilter intentFilter = new IntentFilter(CartBadgeNotificationReceiver.ACTION);
         registerReceiver(cartBadgeNotificationReceiver, intentFilter);
-    }
-
-    @Override
-    protected int getLayoutRes() {
-        return R.layout.sh_drawer_activity;
     }
 
     @Override
@@ -66,9 +61,4 @@ public abstract class TkpdActivity extends BaseSellerReceiverDrawerActivity impl
     }
 
     public abstract int getDrawerPosition();
-
-    @Override
-    protected int setDrawerPosition() {
-        return getDrawerPosition();
-    }
 }
