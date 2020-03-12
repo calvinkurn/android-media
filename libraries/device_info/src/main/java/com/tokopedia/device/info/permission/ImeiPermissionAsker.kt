@@ -15,27 +15,29 @@ import com.tokopedia.device.info.cache.FingerprintCache
  * It will automatically setImei to cache whenever the user accept the Imei Permission
  * How to use:
  *
-{
-ImeiPermissionAsker.checkImeiPermission(activity, onNeedAskPermission = {
-// show intro of why this permission needed
-// for example: show dialog to info that this permission is needed to enable promo
-// when user click ok, call ImeiPermissionAsker.askImeiPermission(activity)
-}, onAlreadyGranted = {
-// user already grant imei permission, so go to next step
-})
-}
-
-override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-ImeiPermissionAsker.onImeiRequestPermissionsResult(activity, requestCode, permissions, grantResults,
-onUserDenied = {
-// user click don't allow imei permission
-}, onUserDeniedAndDontAskAgain = {
-// user click don't allow imei permission and don't ask again
-}, onUserAcceptPermission = {
-// user click allow, so go to next step
-})
-}
+ * {
+ *      ...
+ *      ImeiPermissionAsker.checkImeiPermission(activity, onNeedAskPermission = {
+ *              // show intro of why this permission needed
+ *              // for example: show dialog to info that this permission is needed to enable promo
+ *              // when user click ok, call ImeiPermissionAsker.askImeiPermission(activity)
+ *          }, onAlreadyGranted = {
+ *              // user already grant imei permission, so go to next step
+ *          })
+ *      }
+ *  }
+ *
+ *  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+ *      super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+ *      ImeiPermissionAsker.onImeiRequestPermissionsResult(activity, requestCode, permissions, grantResults,
+ *          onUserDenied = {
+ *              // user click don't allow imei permission
+ *          }, onUserDeniedAndDontAskAgain = {
+ *              // user click don't allow imei permission and don't ask again
+ *          }, onUserAcceptPermission = {
+ *              // user click allow, so go to next step
+ *          })
+ *  }
  *
  */
 
