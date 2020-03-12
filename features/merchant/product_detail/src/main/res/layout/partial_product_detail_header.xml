@@ -278,6 +278,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dp_8"
             android:layout_marginLeft="@dimen/dp_8"
+            android:layout_marginEnd="@dimen/dp_16"
+            android:layout_marginRight="@dimen/dp_16"
             android:text="Stok tersedia (>100)"
             android:ellipsize="end"
             android:maxLines="1"
