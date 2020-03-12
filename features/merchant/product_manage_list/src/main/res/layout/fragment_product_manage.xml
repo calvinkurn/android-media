@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<LinearLayout
     android:id="@+id/coordinatorLayout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +34,7 @@
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|snap|enterAlways"/>
 
-        <com.tokopedia.product.manage.feature.list.view.ui.ProductManageTabFilter
+        <com.tokopedia.product.manage.feature.list.view.ui.tab.ProductManageTabFilter
             android:id="@+id/tabFilters"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -69,25 +74,45 @@
         </LinearLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        tools:visibility="gone">
-
-        <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
-            android:id="@+id/recycler_view"
+        <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+            android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:scrollbars="vertical" />
-    </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+            tools:visibility="gone"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
+            <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
+        </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/btnMultiEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:visibility="gone"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        app:cardElevation="@dimen/layout_lvl2"
+        app:contentPaddingBottom="@dimen/spacing_lvl3"
+        app:contentPaddingLeft="@dimen/spacing_lvl4"
+        app:contentPaddingRight="@dimen/spacing_lvl4"
+        app:contentPaddingTop="@dimen/spacing_lvl3"
+        tools:visibility="visible">
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/product_manage_button_multi_edit"
+            app:unifyButtonSize="large" />
+    </androidx.cardview.widget.CardView>
+</LinearLayout>
