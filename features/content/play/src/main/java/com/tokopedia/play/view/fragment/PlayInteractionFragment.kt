@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -79,6 +81,8 @@ import kotlin.coroutines.CoroutineContext
 class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreActionBottomSheet.Listener {
 
     companion object {
+        private const val REQUEST_CODE_LOGIN = 192
+
         private const val PERCENT_PRODUCT_SHEET_HEIGHT = 0.6
 
         private const val INVISIBLE_ALPHA = 0f
@@ -216,6 +220,13 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
             EventBusFactory.get(viewLifecycleOwner)
                     .emit(ScreenStateEvent::class.java, ScreenStateEvent.OnNoMoreAction)
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
+            val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
+            if (lastAction != null) handleInteractionEvent(lastAction.event)
+        } else super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun setInsets(view: View) {
@@ -1031,7 +1042,8 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openPageByApplink(applink: String, vararg params: String, shouldFinish: Boolean = false) {
-        RouteManager.route(context, applink, *params)
+        val intent = RouteManager.getIntent(context, applink, *params)
+        startActivityForResult(intent, REQUEST_CODE_LOGIN)
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
 
         if (shouldFinish) activity?.finish()
