@@ -33,8 +33,6 @@ import kotlin.properties.Delegates
 class PlayVideoManager private constructor(private val applicationContext: Context) {
 
     companion object {
-        private const val MAX_BUFFER_MS = 30000
-
         private const val RETRY_COUNT_LIVE = 1
         private const val RETRY_COUNT_DEFAULT = 2
         private const val RETRY_DELAY = 1000L
