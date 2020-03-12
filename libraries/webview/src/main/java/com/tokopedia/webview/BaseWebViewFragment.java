@@ -466,7 +466,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             startActivity(intent);
         } else if (BRANCH_IO_HOST.equalsIgnoreCase(uri.getHost())) {
-            Intent intent = RouteManager.getIntentNoFallback(getActivity(), ApplinkConst.CONSUMER_SPLASH_SCREEN);
+            Intent intent = RouteManager.getIntentNoFallback(getActivity(), url);
             if (intent != null) {
                 startActivity(intent);
             }
