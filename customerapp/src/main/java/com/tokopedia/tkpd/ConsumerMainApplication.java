@@ -370,7 +370,7 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     private void initializeSdk() {
         Bugsnag.beforeNotify(new BeforeNotify() {
                 @Override
-                public boolean run(Error error) { {
+                public boolean run(Error error) {
                     UserSessionInterface userSession = new UserSession(this);
                     if (!TextUtils.isEmpty(userSession.getUserId())) {
                         error.addToTab("account", "userId", userSession.getUserId());
