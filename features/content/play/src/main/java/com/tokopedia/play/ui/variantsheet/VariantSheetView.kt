@@ -175,20 +175,18 @@ class VariantSheetView(
         )
 
         if (!listOfVariants.isNullOrEmpty()) {
-            if (!isPartialSelected) {
-                val selectedProduct = VariantCommonMapper.selectedProductData(
-                        variantSheetUiModel?.parentVariant?: ProductVariantCommon())
-                if (selectedProduct != null) {
-                    val product = ProductLineUiModel(
-                            id = selectedProduct.productId.toString(),
-                            imageUrl = selectedProduct.picture?.original?:"",
-                            title = selectedProduct.name,
-                            stock = selectedProduct.stock?.stockWordingHTML?:"",
-                            price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull())
-                    )
-                    variantSheetUiModel?.product = product
-                    setProduct(product)
-                }
+            val selectedProduct = VariantCommonMapper.selectedProductData(
+                    variantSheetUiModel?.parentVariant?: ProductVariantCommon())
+            if (selectedProduct != null) {
+                val product = ProductLineUiModel(
+                        id = selectedProduct.productId.toString(),
+                        imageUrl = selectedProduct.picture?.original?:"",
+                        title = selectedProduct.name,
+                        stock = selectedProduct.stock?.stockWordingHTML?:"",
+                        price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull())
+                )
+                variantSheetUiModel?.product = product
+                setProduct(product)
             }
             variantAdapter.setItemsAndAnimateChanges(listOfVariants)
         }

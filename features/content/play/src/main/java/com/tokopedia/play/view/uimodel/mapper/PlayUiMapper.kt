@@ -34,11 +34,11 @@ object PlayUiMapper {
         )
     } else null
 
-    fun mapPinnedProduct(partnerName: String, productTagging: ProductTagging) = if (productTagging.isShowProductTagging)
+    fun mapPinnedProduct(partnerName: String, isShowProductTagging: Boolean, pinnedProduct: PinnedProduct) = if (isShowProductTagging)
         PinnedProductUiModel(
             partnerName = partnerName,
-            title = productTagging.title,
-            isPromo = productTagging.isShowDiscount
+            title = pinnedProduct.title,
+            isPromo = pinnedProduct.isShowDiscount
     ) else null
 
     fun mapVideoStream(videoStream: VideoStream, isActive: Boolean) = VideoStreamUiModel(
@@ -74,11 +74,11 @@ object PlayUiMapper {
             isFollowable = shopId != shopInfo.shopCore.shopId
     )
 
-    fun mapProductSheet(productTaggingItems: ProductTaggingItems): ProductSheetUiModel {
+    fun mapProductSheet(title: String, productTagging: ProductTagging): ProductSheetUiModel {
         return ProductSheetUiModel(
-                title = productTaggingItems.title,
-                productList = mapItemProducts(productTaggingItems.listOfProducts),
-                voucherList = mapItemVouchers(productTaggingItems.listOfVouchers)
+                title = title,
+                productList = mapItemProducts(productTagging.listOfProducts),
+                voucherList = mapItemVouchers(productTagging.listOfVouchers)
         )
     }
 

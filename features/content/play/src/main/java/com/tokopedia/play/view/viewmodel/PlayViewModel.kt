@@ -360,7 +360,7 @@ class PlayViewModel @Inject constructor(
             launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
             launch { getBadgeCart(channel.isShowCart) }
-            launch { if (channel.productTagging.isShowProductTagging) getProductTagItems(channelId) } //
+            launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
 
             /**
              * If Live => start web socket
@@ -370,6 +370,10 @@ class PlayViewModel @Inject constructor(
                 startWebSocket(channelId, channel.gcToken, channel.settings)
 
             playVideoStream(channel)
+
+            // TODO("testing")
+            channel.isShowCart = true
+            channel.isShowProductTagging = true
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
 
@@ -484,13 +488,15 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    private fun getProductTagItems(channelId: String) {
+    private fun getProductTagItems(channel: Channel) {
         launchCatchError(block = {
             val productTagsItems = withContext(dispatchers.io) {
-                getProductTagItemsUseCase.channelId = channelId
+                getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
                 getProductTagItemsUseCase.executeOnBackground()
             }
-            _observableProductSheetContent.value = PlayUiMapper.mapProductSheet(productTagsItems)
+            _observableProductSheetContent.value = PlayUiMapper.mapProductSheet(
+                    channel.pinnedProduct.titleBottomSheet,
+                    productTagsItems)
         }) {}
     }
 
@@ -555,7 +561,8 @@ class PlayViewModel @Inject constructor(
             ),
             pinnedProduct = PlayUiMapper.mapPinnedProduct(
                     _observablePartnerInfo.value?.name.orEmpty(),
-                    channel.productTagging),
+                    channel.isShowProductTagging,
+                    channel.pinnedProduct),
             quickReply = PlayUiMapper.mapQuickReply(channel.quickReply),
             totalView = PlayUiMapper.mapTotalViews(channel.totalViews),
             event = mapEvent(channel)

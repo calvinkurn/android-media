@@ -1,28 +1,43 @@
 package com.tokopedia.play.domain
 
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.data.Product
-import com.tokopedia.play.data.ProductTaggingItems
+import com.tokopedia.play.data.ProductTagging
 import com.tokopedia.play.data.Voucher
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
-
 
 /**
  * Created by mzennis on 2020-03-06.
  */
-class GetProductTagItemsUseCase @Inject constructor(val graphqlRepository: GraphqlRepository) :
-        UseCase<ProductTaggingItems>() {
+class GetProductTagItemsUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) :
+        UseCase<ProductTagging>() {
 
-    var channelId: String = ""
+    var params: HashMap<String, Any> = HashMap()
 
-    override suspend fun executeOnBackground(): ProductTaggingItems {
-        val params = RequestParams.create()
-        params.putString("channelId", channelId)
+    override suspend fun executeOnBackground(): ProductTagging {
+        require(params.isNotEmpty()) { "please input the channel id" }
 
-        return ProductTaggingItems(
-                title = "Jangan Sampai Kehabisan Barang & Promo Pilihan",
+        val gqlRequest = GraphqlRequest(query, ProductTagging.Response::class.java, params)
+        val gqlResponse = graphqlRepository.getReseponse(listOf(gqlRequest), GraphqlCacheStrategy
+                .Builder(CacheType.ALWAYS_CLOUD).build())
+        val response = gqlResponse.getData<ProductTagging.Response>(ProductTagging.Response::class.java)
+        if (response?.playGetTagsItem != null) {
+            return if (response.playGetTagsItem.listOfProducts.isEmpty()
+                    || response.playGetTagsItem.listOfVouchers.isEmpty()) { // TODO ("testing")
+                mockProductTagging()
+            } else response.playGetTagsItem
+        } else {
+            throw MessageErrorException("server error")
+        }
+    }
+
+    private fun mockProductTagging(): ProductTagging {
+        return ProductTagging(
                 listOfProducts = listOf(
                         Product(id = 689413405,
                                 appLink = "tokopedia://product/689413405",
@@ -112,5 +127,62 @@ class GetProductTagItemsUseCase @Inject constructor(val graphqlRepository: Graph
                         )
                 )
         )
+    }
+
+    companion object {
+
+        private const val REQ = "playTagsItemReq"
+        private const val CHANNEL_ID = "channelID"
+
+        private val query = getQuery()
+
+        private fun getQuery() : String {
+            val playTagsItemReq = "\$playTagsItemReq"
+
+            return """
+           query($playTagsItemReq: PlayGetTagsItemReq!){
+              playGetTagsItem(req: $playTagsItemReq){
+                products{
+                  id: ID
+                  name: Name
+                  image_url: ImageUrl
+                  shopID: ShopID
+                  original_price: OriginalPrice
+                  original_price_formatted: OriginalPriceFormatted
+                  discount: Discount
+                  price: Price
+                  price_formatted: PriceFormatted
+                  quantity: Quantity
+                  is_variant: IsVariant
+                  is_available: IsAvailable
+                  order: Order
+                  applink: AppLink
+                  web_link: WebLink
+                  min_quantity: MinQuantity
+                }
+                vouchers{
+                  voucher_id: ID
+                  voucher_name: Name
+                  shop_id: ShopID
+                  title: Title
+                  subtitle: Subtitle
+                  voucher_type: VoucherType
+                  voucher_image: VoucherImage
+                  voucher_image_square: VoucherImageSquare
+                  voucher_quota: VoucherQuota
+                  voucher_finish_time: VoucherFinishTime
+                }
+              }
+            }
+            """.trimIndent()
+        }
+
+        fun createParam(channelId: String): HashMap<String, Any> {
+            return hashMapOf(
+                    REQ to hashMapOf(
+                            CHANNEL_ID to channelId
+                    )
+            )
+        }
     }
 }

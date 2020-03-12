@@ -54,7 +54,7 @@ class PlayActivity : BaseActivity(), PlayNewChannelInteractor {
 //                .replace(R.id.fl_fragment, getFragment(channelId), PLAY_FRAGMENT_TAG)
 //                .commit()
         supportFragmentManager.beginTransaction()
-                .replace(R.id.fl_fragment, getFragment("2183"), PLAY_FRAGMENT_TAG)
+                .replace(R.id.fl_fragment, getFragment("194"), PLAY_FRAGMENT_TAG)
                 .commit()
     }
 
