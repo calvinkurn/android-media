@@ -4,6 +4,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.common.travel.utils.TextHtmlUtils
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,14 +38,18 @@ class TravelHomepageProductGridCardAdapter(var list: List<ProductGridCardItemMod
                 travel_homepage_product_image.loadImage(item.imageUrl)
                 travel_homepage_product_title.text = item.title
 
-                if (item.price.isNotEmpty()) {
-                    travel_homepage_product_final_price.text = item.price
+                if (item.subtitle.isNotEmpty()) {
+                    travel_homepage_product_final_price.text = item.subtitle
                     travel_homepage_product_final_price.show()
                 } else travel_homepage_product_final_price.hide()
 
-                if (item.strikethroughPrice.isNotEmpty()) {
+                if (item.prefix.isNotEmpty()) {
                     travel_homepage_product_strikethrough_price.show()
-                    travel_homepage_product_strikethrough_price.text = item.strikethroughPrice
+                    travel_homepage_product_strikethrough_price.text = when (item.prefixStyling) {
+                        PREFIX_STYLE_STRIKETHROUGH -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_strikethrough, item.prefix, ""))
+                        PREFIX_STYLE_NORMAL -> TextHtmlUtils.getTextFromHtml(resources.getString(R.string.travel_prefix_normal, item.prefix, ""))
+                        else -> item.prefix
+                    }
                 } else travel_homepage_product_strikethrough_price.hide()
 
                 if (item.tag.isNotEmpty()) {
@@ -56,6 +61,8 @@ class TravelHomepageProductGridCardAdapter(var list: List<ProductGridCardItemMod
 
         companion object {
             val LAYOUT = R.layout.item_travel_homepage_product_widget_card
+            val PREFIX_STYLE_STRIKETHROUGH = "strikethrough"
+            val PREFIX_STYLE_NORMAL = "normal"
         }
     }
 

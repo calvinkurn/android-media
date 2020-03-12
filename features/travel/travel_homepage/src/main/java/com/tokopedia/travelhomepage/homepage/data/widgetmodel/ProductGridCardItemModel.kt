@@ -7,8 +7,10 @@ package com.tokopedia.travelhomepage.homepage.data.widgetmodel
 data class ProductGridCardItemModel(
         var title: String = "",
         var tag: String = "",
-        var price: String = "",
-        var strikethroughPrice: String = "",
+        var subtitle: String = "",
+        var prefixStyling: String = "",
+        var prefix: String = "",
+        var value: String = "",
         var imageUrl: String = "",
         var appUrl: String = ""
 )

@@ -107,8 +107,10 @@ class TravelHomepageMapper {
             var product = ProductGridCardItemModel()
             product.title = item.title
             product.tag = item.promoCode
-            product.price = item.subtitle
-            product.strikethroughPrice = item.prefix
+            product.subtitle = item.subtitle
+            product.prefix = item.prefix
+            product.prefixStyling = item.prefixStyle
+            product.value = item.value
             product.imageUrl = item.imageUrl
             product.appUrl = item.appUrl
 

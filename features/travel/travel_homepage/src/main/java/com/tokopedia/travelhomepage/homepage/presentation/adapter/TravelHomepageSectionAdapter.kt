@@ -43,11 +43,7 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionM
 
     override fun getItemViewType(position: Int): Int {
         val item = list[position]
-        return if (type == TYPE_ORDER_LIST) {
-            if (item.subtitle.isBlank()) ViewHolder.ORDER_LAYOUT_WITHOUT_SUBTITLE else ViewHolder.ORDER_LAYOUT
-        } else {
-            if (item.subtitle.isBlank()) ViewHolder.LAYOUT_WITHOUT_SUBTITLE else ViewHolder.LAYOUT
-        }
+        return if (item.subtitle.isBlank()) ViewHolder.LAYOUT_WITHOUT_SUBTITLE else ViewHolder.LAYOUT
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -77,8 +73,6 @@ class TravelHomepageSectionAdapter(private var list: List<TravelHomepageSectionM
         companion object {
             val LAYOUT = R.layout.travel_homepage_section_list_item
             val LAYOUT_WITHOUT_SUBTITLE = R.layout.travel_homepage_section_list_item_without_subtitle
-            val ORDER_LAYOUT = R.layout.travel_homepage_order_section_list_item
-            val ORDER_LAYOUT_WITHOUT_SUBTITLE = R.layout.travel_homepage_order_section_list_without_subtitle_item
         }
     }
 }
