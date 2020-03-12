@@ -11,12 +11,15 @@ import com.tokopedia.commonpromo.PromoCodeAutoApplyUseCase
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.common.*
 import com.tokopedia.notifications.data.AttributionManager
+import com.tokopedia.notifications.di.DaggerCMNotificationComponent
+import com.tokopedia.notifications.di.module.NotificationModule
 import com.tokopedia.notifications.factory.CarouselNotification
 import com.tokopedia.notifications.factory.ProductNotification
 import com.tokopedia.notifications.model.*
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
 
@@ -25,10 +28,21 @@ import kotlin.coroutines.CoroutineContext
  */
 class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
 
+    @Inject lateinit var attributionManager: AttributionManager
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main
 
+    private fun initInjector(context: Context) {
+        DaggerCMNotificationComponent.builder()
+                .notificationModule(NotificationModule(context))
+                .build()
+                .inject(this)
+    }
+
     override fun onReceive(context: Context, intent: Intent) {
+        initInjector(context)
+
         try {
             val action = intent.action
             if (!intent.hasExtra(CMConstant.EXTRA_NOTIFICATION_ID)) return
@@ -51,7 +65,7 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
 
                         //post notification attribution
-                        AttributionManager.post(context, baseNotificationModel)
+                        attributionManager.post(baseNotificationModel)
                     }
 
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
