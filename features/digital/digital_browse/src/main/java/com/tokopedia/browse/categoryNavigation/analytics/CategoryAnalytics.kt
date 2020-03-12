@@ -29,7 +29,7 @@ private const val KEY_ID = "id"
 class CategoryAnalytics {
 
     companion object {
-        fun createInstance(): CategoryAnalytics = CategoryAnalytics()
+        val categoryAnalytics: CategoryAnalytics by lazy { CategoryAnalytics() }
     }
 
     private fun getTracker(): Analytics {

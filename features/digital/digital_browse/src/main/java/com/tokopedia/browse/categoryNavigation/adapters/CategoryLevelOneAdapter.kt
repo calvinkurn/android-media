@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.browse.R
-import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics.Companion.categoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.item_category_level_one.view.*
@@ -66,7 +66,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
                     ?: "", position, categoryList[position].name
                     ?: "", categoryList[position].applinks)
 
-                CategoryAnalytics.createInstance().eventSideBarCategoryClick(categoryList[position], position)
+            categoryAnalytics.eventSideBarCategoryClick(categoryList[position], position)
         }
         if (categoryList[position].isSelected) {
             ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrl, R.drawable.category_ic_broken_image)
@@ -105,7 +105,7 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
         if (!viewMap.containsKey(position)) {
             viewMap[position] = true
             trackingQueue?.let {
-                CategoryAnalytics.createInstance().eventSideCategoryView(it, categoryList[position], position)
+                categoryAnalytics.eventSideCategoryView(it, categoryList[position], position)
             }
         }
     }
