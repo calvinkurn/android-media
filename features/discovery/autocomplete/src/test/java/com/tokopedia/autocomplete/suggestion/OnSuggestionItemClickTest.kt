@@ -73,7 +73,11 @@ internal class OnSuggestionItemClickTest {
     }
 
     private fun `then verify view tracking click item keyword is correct`(item: BaseSuggestionViewModel) {
-        val expectedEventLabel = "keyword: $keyword - value: $title - po: $position - applink: $applinkShopWithQueryParams"
+        val expectedEventLabel = "" +
+                "keyword: $title " + // in item type keyword, event label `keyword` is the item title
+                "- value: $keyword " + // and event label `value` is the keyword typed by user
+                "- po: $position " +
+                "- applink: $applinkShopWithQueryParams"
 
         verify {
             suggestionView.trackEventClickKeyword(expectedEventLabel)

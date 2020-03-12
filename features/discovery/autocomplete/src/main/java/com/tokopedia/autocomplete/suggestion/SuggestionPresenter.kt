@@ -135,8 +135,8 @@ class SuggestionPresenter @Inject constructor() : BaseDaggerPresenter<Suggestion
     private fun getKeywordEventLabelForTracking(item: BaseSuggestionViewModel): String {
         return String.format(
                 "keyword: %s - value: %s - po: %s - applink: %s",
-                item.searchTerm,
                 item.title,
+                item.searchTerm,
                 item.position,
                 item.applink
         )
