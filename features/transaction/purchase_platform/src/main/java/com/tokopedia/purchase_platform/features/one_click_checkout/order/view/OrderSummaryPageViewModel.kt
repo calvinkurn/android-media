@@ -6,13 +6,12 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.GetOccCartUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationViewModel
 import kotlinx.coroutines.*
 import rx.Observer
 import rx.subscriptions.CompositeSubscription
@@ -41,11 +40,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             orderProduct = orderData.cart.product
             orderShop = orderData.cart.shop
             var preference = orderData.preference
-            preference = preference.copy(shipment = preference.shipment.copy(serviceId = 1104))
+            preference = preference.copy(shipment = preference.shipment.copy(serviceId = 1000))
             _orderPreference = OrderPreference(preference)
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
+                orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
                 getRates()
+            } else {
+                orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
             }
         }, { throwable: Throwable ->
             _orderPreference = null
@@ -63,28 +65,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         }
     }
 
-    fun updatePreference(preference: Preference) {
-//        this.orderPreference.value = orderPreference.value?.copy(preference = preference)
-        debounceJob?.cancel()
-        getRates()
-    }
-
-    fun updateCourier() {
-//        calculateTotal()
-    }
-
-    fun updateDuration() {
-//        calculateTotal()
-    }
-
-    fun loadOrder() {
-        // get order
-//        orderProduct = OrderProduct()
-//        orderPreference.value = OrderPreference(preference = Preference())
-//        orderTotal.value = OrderTotal(buttonState = ButtonBayarState.LOADING)
-    }
-
-    fun debounce() {
+    private fun debounce() {
         debounceJob?.cancel()
         Log.i("OSP DEBOUNCE", "CANCEL")
         debounceJob = launch {
@@ -102,10 +83,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val shippingParam = generateShippingParam()
         val ratesParamBuilder = RatesParam.Builder(generateListShopShipment(), shippingParam)
         val ratesParam = ratesParamBuilder.build()
-        ratesParam.occ = 1
+        ratesParam.occ = "1"
         compositeSubscription.add(
                 ratesUseCase.execute(ratesParam)
                         .map {
+                            Log.i("OSP", Thread.currentThread().name)
                             val value = _orderPreference
                             val data = ratesResponseStateConverter.fillState(it, generateListShopShipment(), value?.shipping?.shipperProductId
                                     ?: 0, value?.shipping?.serviceId ?: 0)
@@ -180,26 +162,45 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                             if (shippingDurationViewModel.serviceData.serviceId == curShip.serviceId) {
                                                 shippingDurationViewModel.isSelected = true
                                                 selectedShippingDurationViewModel = shippingDurationViewModel
-                                                val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
-                                                var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
-                                                for (shippingCourierUiModel in shippingCourierViewModelList) {
-                                                    if (shippingCourierUiModel.isSelected) {
-                                                        selectedShippingCourierUiModel = shippingCourierUiModel
-                                                    }
-                                                }
-                                                if (selectedShippingCourierUiModel == null) {
-                                                    selectedShippingCourierUiModel = shippingCourierViewModelList[0]
-                                                }
-                                                if (selectedShippingCourierUiModel != null) {
-                                                    selectedShippingCourierUiModel.isSelected = true
-                                                    shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
-                                                            shipperName = selectedShippingCourierUiModel.productData.shipperName,
-                                                            insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                                val durationError = shippingDurationViewModel.serviceData.error
+                                                if (durationError.errorId != null && durationError.errorId.isNotBlank() && durationError.errorMessage.isNotBlank()) {
+                                                    shipping = Shipment(
                                                             serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                             serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
                                                             serviceName = shippingDurationViewModel.serviceData.serviceName,
-                                                            shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                            serviceErrorMessage = durationError.errorMessage,
                                                             shippingRecommendationData = shippingRecommendationData)
+                                                } else {
+                                                    val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
+                                                    var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
+                                                    for (shippingCourierUiModel in shippingCourierViewModelList) {
+                                                        if (shippingCourierUiModel.isSelected) {
+                                                            selectedShippingCourierUiModel = shippingCourierUiModel
+                                                        }
+                                                    }
+                                                    if (selectedShippingCourierUiModel == null) {
+                                                        selectedShippingCourierUiModel = shippingCourierViewModelList[0]
+                                                    }
+                                                    if (selectedShippingCourierUiModel != null) {
+                                                        selectedShippingCourierUiModel.isSelected = true
+                                                        var flagNeedToSetPinpoint = false
+                                                        var errorMessage: String? = null
+                                                        if (selectedShippingCourierUiModel.productData.error != null && selectedShippingCourierUiModel.productData.error.errorMessage != null && selectedShippingCourierUiModel.productData.error.errorId != null) {
+                                                            errorMessage = selectedShippingCourierUiModel.productData.error.errorMessage
+                                                            if (selectedShippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                                                                flagNeedToSetPinpoint = true
+                                                            }
+                                                        }
+                                                        shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                                                                needPinpoint = flagNeedToSetPinpoint,
+                                                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                                                                serviceId = shippingDurationViewModel.serviceData.serviceId,
+                                                                serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
+                                                                serviceName = shippingDurationViewModel.serviceData.serviceName,
+                                                                shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                                                                shippingRecommendationData = shippingRecommendationData)
+                                                    }
                                                 }
                                             } else {
                                                 shippingDurationViewModel.isSelected = false
@@ -239,12 +240,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.insurance = 1
         shippingParam.isPreorder = orderShop.cartResponse.product.isPreorder != 0
         shippingParam.categoryIds = orderShop.cartResponse.product.categoryId.toString()
-//        shippingParam.uniqueId = "478925-0-1493-4646989"
         shippingParam.uniqueId = orderShop.cartResponse.cartId.toString()
         shippingParam.addressId = _orderPreference?.preference?.address?.addressId ?: 0
         shippingParam.products = listOf(Product(orderProduct.productId.toLong(), orderProduct.isFreeOngkir))
 
-        shippingParam.weightInKilograms = orderProduct.quantity!!.orderQuantity * orderProduct.weight / 1000.0
+//        shippingParam.weightInKilograms = orderProduct.quantity!!.orderQuantity * orderProduct.weight / 1000.0
+        shippingParam.weightInKilograms = 75.0
         shippingParam.productInsurance = orderShop.cartResponse.product.productFinsurance
         var productPrice = orderProduct.productPrice.toLong()
         if (orderProduct.wholesalePrice.isNotEmpty()) {
@@ -261,9 +262,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     fun generateListShopShipment(): List<ShopShipment> {
         return orderShop.shopShipment
-//        val element = ShopShipment()
-//        element.shipProds =
-//        return listOf(element)
     }
 
     private fun getCourierDatabySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
@@ -442,7 +440,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         if (shippingRecommendationData != null && curShip != null && shipping != null) {
             val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
             for (shippingDurationViewModel in shippingDurationViewModels) {
-                if (shippingDurationViewModel.serviceData.serviceId == curShip.serviceId) {
+                if (shippingDurationViewModel.serviceData.serviceId == shipping.serviceId) {
                     val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
                     var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
                     for (shippingCourierUiModel in shippingCourierViewModelList) {
@@ -470,6 +468,59 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     fun setInsuranceCheck(checked: Boolean) {
         if (_orderPreference != null && _orderPreference?.shipping != null) {
             _orderPreference = _orderPreference?.copy(shipping = _orderPreference?.shipping?.copy(isCheckInsurance = checked))
+            calculateTotal()
+        }
+    }
+
+    fun chooseDuration(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+        val value = _orderPreference
+        val shippingRecommendationData = value?.shipping?.shippingRecommendationData
+        val curShip = value?.preference?.shipment
+        val shipping = value?.shipping
+        if (shippingRecommendationData != null && curShip != null && shipping != null) {
+            val shippingDurationViewModels = shippingRecommendationData.shippingDurationViewModels
+            var selectedShippingDurationViewModel = shippingDurationViewModels[0]
+            for (shippingDurationViewModel in shippingDurationViewModels) {
+                if (shippingDurationViewModel.serviceData.serviceId == selectedServiceId) {
+                    shippingDurationViewModel.isSelected = true
+                    selectedShippingDurationViewModel = shippingDurationViewModel
+//                    val shippingCourierViewModelList = shippingDurationViewModel.shippingCourierViewModelList
+//                    var selectedShippingCourierUiModel: ShippingCourierUiModel? = null
+//                    for (shippingCourierUiModel in shippingCourierViewModelList) {
+//                        if (shippingCourierUiModel.productData.shipperProductId == selectedShippingCourierUiModel.productData.shipperProductId) {
+//                            shippingCourierUiModel.isSelected = true
+//                            selectedShippingCourierUiModel = shippingCourierUiModel
+//                        } else {
+//                            shippingCourierUiModel.isSelected = false
+//                        }
+//                    }
+//                    if (selectedShippingCourierUiModel != null) {
+//                        selectedShippingCourierUiModel.isSelected = true
+//                        _orderPreference = _orderPreference?.copy(shipping = shipping.copy(
+//                                shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+//                                shipperName = selectedShippingCourierUiModel.productData.shipperName,
+//                                insuranceData = selectedShippingCourierUiModel.productData.insurance,
+//                                shippingPrice = selectedShippingCourierUiModel.productData.price.price))
+//                        orderPreference.value = OccState.Success(_orderPreference!!)
+//                        calculateTotal()
+//                    }
+                } else {
+                    shippingDurationViewModel.isSelected = false
+                }
+            }
+            _orderPreference = _orderPreference?.copy(shipping = shipping.copy(
+                    serviceErrorMessage = null,
+                    needPinpoint = flagNeedToSetPinpoint,
+                    isServicePickerEnable = true,
+                    serviceId = selectedShippingDurationViewModel.serviceData.serviceId,
+                    serviceDuration = selectedShippingDurationViewModel.serviceData.texts.textEtd,
+                    serviceName = selectedShippingDurationViewModel.serviceData.serviceName,
+                    shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                    shipperName = selectedShippingCourierUiModel.productData.shipperName,
+                    insuranceData = selectedShippingCourierUiModel.productData.insurance,
+                    shippingPrice = selectedShippingCourierUiModel.productData.price.price,
+                    shippingRecommendationData = shippingRecommendationData))
+            orderPreference.value = OccState.Success(_orderPreference!!)
             calculateTotal()
         }
     }

@@ -1,12 +1,9 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,16 +15,23 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Tooltip
 import com.tokopedia.design.utils.CurrencyFormatUtil
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
+import com.tokopedia.logisticdata.data.constant.LogisticConstant
+import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OccInfoBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.PreferenceListBottomSheet
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderPreferenceCard
@@ -42,6 +46,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderProductCardListener {
@@ -70,6 +77,19 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 //        if (requestCode == REQUEST_CREATE_PREFERENCE || requestCode == REQUEST_EDIT_PREFERENCE) {
 //            showPreferenceListBottomSheet()
 //        }
+        if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
+            onResultFromCourierPinpoint(resultCode, data)
+        }
+    }
+
+    private fun onResultFromCourierPinpoint(resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK && data?.extras != null) {
+            val locationPass: LocationPass? = data.extras?.getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION)
+            if (locationPass != null) {
+                //update
+            }
+        }
+        // show error
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -88,23 +108,23 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         viewModel.orderPreference.observe(this, Observer {
             if (it is OccState.FirstLoad) {
                 swipe_refresh_layout.isRefreshing = false
+                global_error.gone()
                 main_content.visible()
                 view?.let { v ->
                     Toaster.make(v, "success first")
 //                    if (viewModel.orderProduct.quantity != null) {
-                        orderProductCard.setProduct(viewModel.orderProduct)
-                        orderProductCard.setShop(viewModel.orderShop)
-                        orderProductCard.initView()
-                        showMessage(it.data.preference)
-                        if (it.data.preference.address.addressId > 0) {
-                            orderPreferenceCard.setPreference(it.data)
-                        }
+                    orderProductCard.setProduct(viewModel.orderProduct)
+                    orderProductCard.setShop(viewModel.orderShop)
+                    orderProductCard.initView()
+                    showMessage(it.data.preference)
+                    if (it.data.preference.address.addressId > 0) {
+                        orderPreferenceCard.setPreference(it.data)
+                    }
 //                    }
 
 //                    setupInsurance(it)
                 }
-            }
-            else if (it is OccState.Success) {
+            } else if (it is OccState.Success) {
                 swipe_refresh_layout.isRefreshing = false
                 main_content.visible()
                 view?.let { v ->
@@ -114,19 +134,22 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 //                        orderProductCard.setShop(viewModel.orderShop)
 //                        orderProductCard.initView()
 //                        showMessage(it.data.preference)
-                        if (it.data.preference.address.addressId > 0) {
-                            orderPreferenceCard.setPreference(it.data)
-                        }
+                    if (it.data.preference.address.addressId > 0) {
+                        orderPreferenceCard.setPreference(it.data)
+                    }
 //                    }
 
                     setupInsurance(it)
+                    if (it.data.shipping?.needPinpoint == true) {
+                        goToPinpoint(it.data.preference.address)
+                    }
                 }
             } else if (it is OccState.Loading) {
                 swipe_refresh_layout.isRefreshing = true
-            } else {
+            } else if (it is OccState.Fail) {
                 swipe_refresh_layout.isRefreshing = false
-                view?.let {
-                    Toaster.make(it, "Error", type = Toaster.TYPE_ERROR)
+                if (it.throwable != null) {
+                    handleError(it.throwable)
                 }
             }
         })
@@ -136,6 +159,18 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (viewModel.orderProduct.parentId == 0) {
             viewModel.getOccCart()
         }
+    }
+
+    private fun goToPinpoint(address: Address) {
+        val locationPass = LocationPass()
+        locationPass.cityName = address.cityName
+        locationPass.districtName = address.districtName
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+        val bundle = Bundle()
+        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
     }
 
     private fun setupInsurance(it: OccState.Success<OrderPreference>) {
@@ -189,36 +224,47 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     private fun setupButtonBayar(orderTotal: OrderTotal) {
-        if (orderTotal.buttonState == ButtonBayarState.LOADING) {
-            btn_pay.isLoading = true
-            btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-        } else if (orderTotal.isButtonChoosePayment) {
+        if (orderTotal.isButtonChoosePayment) {
             if (orderTotal.buttonState == ButtonBayarState.NORMAL) {
                 btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
+                btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 btn_pay.setText(R.string.label_choose_payment)
                 btn_pay.isLoading = false
                 btn_pay.isEnabled = true
                 btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-            } else {
+            } else if (orderTotal.buttonState == ButtonBayarState.DISABLE) {
                 btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
+                btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 btn_pay.setText(R.string.label_choose_payment)
                 btn_pay.isLoading = false
                 btn_pay.isEnabled = false
                 btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            } else {
+                btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
+                btn_pay.layoutParams.height = convertDpToPixel(48f, context!!)
+                btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                btn_pay.isLoading = true
             }
         } else {
             if (orderTotal.buttonState == ButtonBayarState.NORMAL) {
                 btn_pay.setText(R.string.pay)
                 btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
+                btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
                 btn_pay.isLoading = false
                 btn_pay.isEnabled = true
-            } else {
+            } else if (orderTotal.buttonState == ButtonBayarState.DISABLE) {
                 btn_pay.setText(R.string.pay)
                 btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
+                btn_pay.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
                 btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
                 btn_pay.isLoading = false
                 btn_pay.isEnabled = false
+            } else {
+                btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
+                btn_pay.layoutParams.height = convertDpToPixel(48f, context!!)
+                btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+                btn_pay.isLoading = true
             }
         }
 
@@ -229,7 +275,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         btn_order_detail.setOnClickListener {
-            OrderPriceSummaryBottomSheet().show(this, orderTotal.orderCost)
+            if (orderTotal.orderCost.totalPrice > 0.0) {
+                OrderPriceSummaryBottomSheet().show(this, orderTotal.orderCost)
+            }
         }
     }
 
@@ -239,19 +287,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tv_header_2.text = "Pengiriman dan Pembayaran"
             tv_subheader.gone()
         } else {
-            tv_header_2.text = "Hai!"
-            val spannableString = SpannableString(preference.onboardingHeaderMessage + " Info")
-            spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#03AC0E")), preference.onboardingHeaderMessage.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-            tv_subheader.text = spannableString
-            tv_subheader.setOnClickListener {
-                //show bottomsheet
+            tv_header_2.gone()
+            iv_subheader.visible()
+            tv_subheader.text = preference.onboardingHeaderMessage
+            tv_subheader_action.setOnClickListener {
+                OccInfoBottomSheet().show(this, preference.onboardingComponent)
             }
+            tv_subheader_action.visible()
+            tv_subheader.visible()
         }
     }
 
     private fun initViews(view: View) {
         orderProductCard = OrderProductCard(view, this)
-        orderPreferenceCard = OrderPreferenceCard(view, this, getOrderPreferenceCardListener())
+        orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener())
 //        orderPreferenceCard.initView()
 
 //        btn_pay.isEnabled = true
@@ -290,9 +339,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             showPreferenceListBottomSheet()
         }
 
-//        override fun onCourierChange() {
-//            viewModel.updateCourier()
-//        }
+        override fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel) {
+            viewModel.chooseCourier(shippingCourierViewModel)
+        }
+
+        override fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+            viewModel.chooseDuration(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+        }
+
+        override fun chooseCourier() {
+            if (viewModel.orderTotal.value?.buttonState != ButtonBayarState.LOADING) {
+                orderPreferenceCard.showCourierBottomSheet(this@OrderSummaryPageFragment)
+            }
+        }
+
+        override fun chooseDuration() {
+            if (viewModel.orderTotal.value?.buttonState != ButtonBayarState.LOADING) {
+                orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
+            }
+        }
     }
 
     fun showPreferenceListBottomSheet() {
@@ -330,17 +395,52 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         viewModel.updateProduct(product, shouldReloadRates)
     }
 
-    fun isLoading(): Boolean {
-        return viewModel.orderTotal.value?.buttonState == ButtonBayarState.LOADING
+    private fun handleError(throwable: Throwable) {
+        when (throwable) {
+            is SocketTimeoutException, is UnknownHostException, is ConnectException -> {
+                view?.let {
+                    showGlobalError(GlobalError.NO_CONNECTION)
+                }
+            }
+            is RuntimeException -> {
+                when (throwable.localizedMessage.toIntOrNull()) {
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
+                    ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
+                    else -> {
+                        view?.let {
+                            showGlobalError(GlobalError.SERVER_ERROR)
+                            Toaster.make(it, "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                        }
+                    }
+                }
+            }
+            else -> {
+                view?.let {
+                    showGlobalError(GlobalError.SERVER_ERROR)
+                    Toaster.make(it, throwable.message
+                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi", type = Toaster.TYPE_ERROR)
+                }
+            }
+        }
+//        viewModel.consumePreferenceListFail()
     }
 
-    fun onChooseCourier(shippingCourierViewModel: ShippingCourierUiModel) {
-        viewModel.chooseCourier(shippingCourierViewModel)
+    private fun showGlobalError(type: Int) {
+        global_error.setType(type)
+        global_error.setActionClickListener {
+            swipe_refresh_layout.isRefreshing = true
+            viewModel.getOccCart()
+        }
+        main_content.gone()
+        global_error.visible()
     }
 
     companion object {
 
         const val REQUEST_EDIT_PREFERENCE = 11
         const val REQUEST_CREATE_PREFERENCE = 12
+
+        const val REQUEST_CODE_COURIER_PINPOINT = 13
     }
 }

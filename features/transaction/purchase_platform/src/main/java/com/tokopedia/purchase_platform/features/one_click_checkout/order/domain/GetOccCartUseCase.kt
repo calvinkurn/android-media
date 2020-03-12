@@ -8,7 +8,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.isNullOrEmpty
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShipProd
-import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Shop
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.ShopShipment
 import com.tokopedia.purchase_platform.features.express_checkout.data.constant.MAX_QUANTITY
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.*
@@ -31,7 +30,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 val orderProduct = generateOrderProduct(cart.product)
                 orderCart.product = orderProduct
                 val orderShop = generateOrderShop(cart.shop)
-                generateShopShipment(orderShop, cart.shopShipments)
+                generateShopShipment(orderShop, cart.shop.shopShipments)
                 orderShop.cartResponse = cart
                 orderCart.shop = orderShop
                 return OrderData(orderCart, response.response.data.profileResponse)
@@ -79,29 +78,29 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         }
     }
 
-    private fun generateOrderShop(shop: Shop): OrderShop {
+    private fun generateOrderShop(shop: ShopDataResponse): OrderShop {
         return OrderShop().apply {
             shopId = shop.shopId
             userId = shop.userId
-            shopName = shop.shopName
-            shopImage = shop.shopImage
-            shopUrl = shop.shopUrl
+            shopName = shop.shopName ?: ""
+            shopImage = shop.shopImage ?: ""
+            shopUrl = shop.shopUrl ?: ""
             shopStatus = shop.shopStatus
             isGold = shop.isGold
             isGoldBadge = shop.isGoldBadge
             isOfficial = shop.isOfficial
             isFreeReturns = shop.isFreeReturns
             addressId = shop.addressId
-            postalCode = shop.postalCode
-            latitude = shop.latitude
-            longitude = shop.longitude
+            postalCode = shop.postalCode ?: ""
+            latitude = shop.latitude ?: ""
+            longitude = shop.longitude ?: ""
             districtId = shop.districtId
-            districtName = shop.districtName
+            districtName = shop.districtName ?: ""
             origin = shop.origin
-            addressStreet = shop.addressStreet
+            addressStreet = shop.addressStreet ?: ""
             provinceId = shop.provinceId
             cityId = shop.cityId
-            cityName = shop.cityName
+            cityName = shop.cityName ?: ""
         }
     }
 

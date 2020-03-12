@@ -6,8 +6,6 @@ import com.tokopedia.purchase_platform.features.checkout.data.model.response.shi
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.Warehouse
 
 data class CartDataResponse(
-        @SerializedName("shop_shipments")
-        val shopShipments: List<ShopShipment> = emptyList(),
         @SerializedName("errors")
         val errors: List<String> = emptyList(),
         @SerializedName("cart_id")
@@ -15,7 +13,7 @@ data class CartDataResponse(
         @SerializedName("product")
         val product: ProductDataResponse = ProductDataResponse(),
         @SerializedName("shop")
-        val shop: Shop = Shop(),
+        val shop: ShopDataResponse = ShopDataResponse(),
         @SerializedName("warehouse")
         val warehouse: Warehouse = Warehouse()
 )

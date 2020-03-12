@@ -87,7 +87,7 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
         val shippingParam = generateShippingParam()
         val ratesParamBuilder = RatesParam.Builder(generateListShopShipment(), shippingParam)
         val ratesParam = ratesParamBuilder.build()
-        ratesParam.occ = 1
+        ratesParam.occ = "1"
         useCaseRates.execute(ratesParam)
                 .subscribe(object : Observer<ShippingRecommendationData> {
                     override fun onError(e: Throwable?) {

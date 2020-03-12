@@ -20,6 +20,7 @@ class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private v
     companion object {
         const val REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST = "REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST"
 
+        private const val PARAM = "param"
         private const val PARAM_PRODUCT_ID = "product_id"
         private const val PARAM_SHOP_ID = "shop_id"
         private const val PARAM_QUANTITY = "quantity"
@@ -45,15 +46,17 @@ class AddToCartOccUseCase @Inject constructor(@Named(MUTATION_ATC_OCC) private v
 
     private fun getParams(addToCartRequest: AddToCartOccRequestParams): Map<String, Any> {
         return mapOf(
-                PARAM_PRODUCT_ID to addToCartRequest.productId,
-                PARAM_SHOP_ID to addToCartRequest.shopId,
-                PARAM_QUANTITY to addToCartRequest.quantity,
-                PARAM_WAREHOUSE_ID to addToCartRequest.warehouseId,
-                PARAM_LANG to addToCartRequest.lang,
-                PARAM_IS_SCP to addToCartRequest.isScp,
-                PARAM_ATTRIBUTION to addToCartRequest.attribution,
-                PARAM_UC_PARAMS to addToCartRequest.ucParam,
-                PARAM_LIST_TRACKER to addToCartRequest.listTracker
+                PARAM to mapOf(
+                        PARAM_PRODUCT_ID to addToCartRequest.productId,
+                        PARAM_SHOP_ID to addToCartRequest.shopId,
+                        PARAM_QUANTITY to addToCartRequest.quantity,
+                        PARAM_WAREHOUSE_ID to addToCartRequest.warehouseId,
+                        PARAM_LANG to addToCartRequest.lang,
+                        PARAM_IS_SCP to addToCartRequest.isScp,
+                        PARAM_ATTRIBUTION to addToCartRequest.attribution,
+                        PARAM_UC_PARAMS to addToCartRequest.ucParam,
+                        PARAM_LIST_TRACKER to addToCartRequest.listTracker
+                )
         )
     }
 

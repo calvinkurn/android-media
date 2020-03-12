@@ -5,21 +5,6 @@ query get_occ_cart_page($dummy: String){
         data{
             errors
             cart_list{
-              shop_shipments {
-              	  ship_id
-              	  ship_name
-              	  ship_code
-              	  ship_logo
-              	  is_dropship_enabled
-                  ship_prods {
-                    ship_prod_id
-                    ship_prod_name
-                    ship_group_name
-                    ship_group_id
-                    minimum_weight
-                    additional_fee
-                  }
-              	}
                 errors
                 cart_id
                 product{
@@ -218,6 +203,21 @@ query get_occ_cart_page($dummy: String){
                     country_name
                     is_allow_manage
                     shop_domain
+                    shop_shipments {
+                      ship_id
+                      ship_name
+                      ship_code
+                      ship_logo
+                      is_dropship_enabled
+                      ship_prods {
+                        ship_prod_id
+                        ship_prod_name
+                        ship_group_name
+                        ship_group_id
+                        minimum_weight
+                        additional_fee
+                      }
+                    }
                 }
                 warehouse{
                     warehouse_id

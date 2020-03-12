@@ -1814,19 +1814,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun goToAtcExpress() {
         activity?.let {
             try {
-//                val productInfo = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-//                val warehouseId: Int = viewModel.multiOrigin.id.toIntOrZero()
-//                val qty = if (userInputQuantity == 0) productInfo.basic.minOrder else userInputQuantity
-//                val atcRequestParam = AddToCartOccRequestParams(productInfo.basic.getProductId(), productInfo.basic.getShopId(), qty)
-//                atcRequestParam.warehouseId = warehouseId
-//                atcRequestParam.attribution = trackerAttribution ?: ""
-//                atcRequestParam.listTracker = trackerListName ?: ""
-//
-//                viewModel.atcOcc(atcRequestParam, { throwable: Throwable ->
-//
-//                }, { addToCartDataModel: AddToCartDataModel ->
-//                    if (addToCartDataModel.status.equals("OK", true)) {
-//                        if (addToCartDataModel.data.success == 1) {
+                val productInfo = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
+                val warehouseId: Int = viewModel.multiOrigin.id.toIntOrZero()
+                val qty = if (userInputQuantity == 0) productInfo.basic.minOrder else userInputQuantity
+                val atcRequestParam = AddToCartOccRequestParams(productInfo.basic.getProductId(), productInfo.basic.getShopId(), qty)
+                atcRequestParam.warehouseId = warehouseId
+                atcRequestParam.attribution = trackerAttribution ?: ""
+                atcRequestParam.listTracker = trackerListName ?: ""
+
+                viewModel.atcOcc(atcRequestParam, { throwable: Throwable ->
+
+                }, { addToCartDataModel: AddToCartDataModel ->
+                    if (addToCartDataModel.status.equals("OK", true)) {
+                        if (addToCartDataModel.data.success == 1) {
                             val expressCheckoutUriString = ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
                             val intent = RouteManager.getIntent(it, expressCheckoutUriString)
                             intent?.run {
@@ -1836,21 +1836,21 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                                 startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS)
                                 it.overridePendingTransition(R.anim.pull_up, 0)
                             }
-//                        } else {
-//                            if (addToCartDataModel.data.message.isNotEmpty()) {
-//                                view?.let {
-//                                    Toaster.make(it, addToCartDataModel.data.message[0], type = Toaster.TYPE_ERROR)
-//                                }
-//                            }
-//                        }
-//                    } else {
-//                        if (addToCartDataModel.errorMessage.isNotEmpty()) {
-//                            view?.let {
-//                                Toaster.make(it, addToCartDataModel.errorMessage[0], type = Toaster.TYPE_ERROR)
-//                            }
-//                        }
-//                    }
-//                })
+                        } else {
+                            if (addToCartDataModel.data.message.isNotEmpty()) {
+                                view?.let {
+                                    Toaster.make(it, addToCartDataModel.data.message[0], type = Toaster.TYPE_ERROR)
+                                }
+                            }
+                        }
+                    } else {
+                        if (addToCartDataModel.errorMessage.isNotEmpty()) {
+                            view?.let {
+                                Toaster.make(it, addToCartDataModel.errorMessage[0], type = Toaster.TYPE_ERROR)
+                            }
+                        }
+                    }
+                })
 
             } catch (e: Exception) {
 

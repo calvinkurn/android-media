@@ -5,7 +5,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.android.synthetic.main.bottomsheet_shipping_occ.view.*
@@ -41,7 +44,28 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
     }
 
     override fun onShippingDurationChoosen(shippingCourierViewModelList: MutableList<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {
-
+        var flagNeedToSetPinpoint = false
+        var selectedServiceId = 0
+        var selectedShippingCourierUiModel = shippingCourierViewModelList[0]
+        for (shippingCourierUiModel in shippingCourierViewModelList) {
+            val recommend = shippingCourierUiModel.productData.isRecommend
+            if (recommend) {
+                selectedShippingCourierUiModel = shippingCourierUiModel
+            }
+            shippingCourierUiModel.isSelected = recommend
+            selectedServiceId = shippingCourierUiModel.serviceData.serviceId
+            if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                flagNeedToSetPinpoint = true
+//                shippingCourierUiModel.serviceData.texts.textRangePrice = shippingCourierUiModel.productData.error.errorMessage
+            }
+        }
+            listener.onDurationChosen(serviceData, selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+        bottomSheetUnify.dismiss()
+//            try {
+//                dismiss()
+//            } catch (e: IllegalStateException) {
+//                e.printStackTrace()
+//            }
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {

@@ -8,13 +8,16 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingCourierOccBottomSheetListener
+import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
+import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.model.*
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.Preference
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
+import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderPreference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import kotlinx.android.synthetic.main.card_order_preference.view.*
 
-class OrderPreferenceCard(private val view: View, private val fragment: OrderSummaryPageFragment, private val listener: OrderPreferenceCardListener) {
+class OrderPreferenceCard(private val view: View, private val listener: OrderPreferenceCardListener) {
 
     private lateinit var preference: OrderPreference
 
@@ -38,10 +41,10 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
 
     private fun showShipping() {
         val shipmentModel = preference.preference.shipment
-        view.tv_shipping_name.text = shipmentModel.serviceName
-        view.tv_shipping_duration.text = shipmentModel.serviceDuration
 
         val shipping = preference.shipping
+        view.tv_shipping_name.text = shipping?.serviceName ?: shipmentModel.serviceName
+        view.tv_shipping_duration.text = shipping?.serviceDuration ?: shipmentModel.serviceDuration
 
         if (shipping == null) {
             view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
@@ -50,13 +53,49 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
         } else {
             if (shipping.serviceErrorMessage == null || shipping.serviceErrorMessage.isBlank()) {
                 if (!shipping.isServicePickerEnable) {
-                    view.tv_shipping_duration.text = "${shipmentModel.serviceDuration} - ${shipping.shipperName}"
+                    view.tv_shipping_duration.text = "${shipping.serviceDuration} - ${shipping.shipperName}"
+                    view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
+                    view.tv_shipping_duration.setOnClickListener { }
                     view.tv_shipping_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
                             ?: 0, false)
                     view.tv_shipping_price.setOnClickListener {
-                        chooseCourier()
+                        listener.chooseCourier()
                     }
                     view.tv_shipping_price.visible()
+                    view.tv_shipping_slash_price.gone()
+                    view.tv_shipping_courier.gone()
+                    view.tv_shipping_courier_lbl.gone()
+                    view.tv_shipping_message.gone()
+                    view.tv_shipping_change_duration.gone()
+                } else {
+                    view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, R.drawable.ic_keyboard_arrow_down_grey_24dp, 0)
+                    view.tv_shipping_duration.setOnClickListener {
+                        listener.chooseDuration()
+                    }
+                    view.tv_shipping_price.gone()
+                    view.tv_shipping_slash_price.gone()
+                    view.tv_shipping_message.gone()
+                    view.tv_shipping_change_duration.gone()
+                    view.tv_shipping_courier_lbl.visible()
+                    view.tv_shipping_courier.text = "${shipping.shipperName} - ${CurrencyFormatUtil.convertPriceValueToIdrFormat(shipping.shippingPrice
+                            ?: 0, false)}"
+                    view.tv_shipping_courier.setOnClickListener {
+                        listener.chooseCourier()
+                    }
+                    view.tv_shipping_courier.visible()
+                }
+            } else {
+                if (!shipping.isServicePickerEnable) {
+                    view.tv_shipping_courier.gone()
+                    view.tv_shipping_courier.gone()
+                    view.tv_shipping_price.gone()
+                    view.tv_shipping_slash_price.gone()
+                    view.tv_shipping_message.text = shipping.serviceErrorMessage
+                    view.tv_shipping_change_duration.setOnClickListener {
+                        listener.chooseDuration()
+                    }
+                    view.tv_shipping_change_duration.visible()
+                    view.tv_shipping_message.visible()
                 }
             }
         }
@@ -104,27 +143,38 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
 //        view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, com.tokopedia.design.R.drawable.ic_arrow_drop_down_grey_checkout_module, 0)
     }
 
-    private fun chooseCourier() {
-        if (!fragment.isLoading()) {
-            val shippingRecommendationData = preference.shipping?.shippingRecommendationData
-            if (shippingRecommendationData != null) {
-                val list: ArrayList<RatesViewModelType> = ArrayList()
-                for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
-                    if (shippingDurationViewModel.isSelected) {
-                        list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
-                        break
-                    }
+    fun showCourierBottomSheet(fragment: OrderSummaryPageFragment) {
+//        if (!listener.isLoading()) {
+        val shippingRecommendationData = preference.shipping?.shippingRecommendationData
+        if (shippingRecommendationData != null) {
+            val list: ArrayList<RatesViewModelType> = ArrayList()
+            for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
+                if (shippingDurationViewModel.isSelected) {
+                    list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
+                    break
                 }
-                ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
-                    override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
-                        fragment.onChooseCourier(shippingCourierViewModel)
-                    }
-
-                    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-
-                    }
-                })
             }
+            ShippingCourierOccBottomSheet().showBottomSheet(fragment, list, object : ShippingCourierOccBottomSheetListener {
+                override fun onCourierChosen(shippingCourierViewModel: ShippingCourierUiModel) {
+                    listener.onCourierChange(shippingCourierViewModel)
+                }
+
+                override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+
+                }
+            })
+        }
+//        }
+    }
+
+    fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {
+        val shippingRecommendationData = preference.shipping?.shippingRecommendationData
+        if (shippingRecommendationData != null) {
+            ShippingDurationOccBottomSheet().showBottomSheet(fragment, shippingRecommendationData.shippingDurationViewModels, object : ShippingDurationOccBottomSheetListener {
+                override fun onDurationChosen(serviceData: ServiceData, selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean) {
+                    listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
+                }
+            })
         }
     }
 
@@ -132,6 +182,14 @@ class OrderPreferenceCard(private val view: View, private val fragment: OrderSum
 
         fun onChangePreferenceClicked()
 
-//        fun onCourierChange()
+        fun onCourierChange(shippingCourierViewModel: ShippingCourierUiModel)
+
+        fun onDurationChange(selectedServiceId: Int, selectedShippingCourierUiModel: ShippingCourierUiModel, flagNeedToSetPinpoint: Boolean)
+
+//        fun isLoading(): Boolean
+
+        fun chooseCourier()
+
+        fun chooseDuration()
     }
 }

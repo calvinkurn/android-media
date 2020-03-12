@@ -14,9 +14,9 @@ class ErrorCheckoutBottomSheet{
                 showHeader = true
 
                 val child = View.inflate(view.context, R.layout.bottom_sheet_error_checkout, null)
-                view.view?.height?.div(2)?.let { height ->
-                    customPeekHeight = height
-                }
+//                view.view?.height?.div(2)?.let { height ->
+//                    customPeekHeight = height
+//                }
                 setChild(child)
                 show(it, null)
             }

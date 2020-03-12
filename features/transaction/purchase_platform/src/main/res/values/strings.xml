@@ -291,7 +291,7 @@
     <string name="activity_subtitle_shipping_address">Langkah 2 dari 3</string>
     <string name="ticker_label_text">Perkiraan tiba dihitung sejak pesanan dikirim</string>
 
-    <string name="one_click_checkout">Express Checkout</string>
+    <string name="one_click_checkout">Beli Langsung</string>
     <string name="pay">Bayar</string>
     <string name="preference_number">Pilihan %1d</string>
 

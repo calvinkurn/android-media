@@ -167,11 +167,12 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_shipping_duration"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_18"
             android:ellipsize="end"
+            android:gravity="center_vertical"
             android:lines="1"
             android:textColor="@color/Neutral_N700_68"
-            app:drawableRightCompat="@drawable/ic_arrow_drop_down_grey_checkout_module"
+            app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_grey_24dp"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_name"
             app:typographyType="body_3"
@@ -179,15 +180,31 @@
             tools:text="durasi 3 jam - Gojek" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_shipping_courier"
+            android:id="@+id/tv_shipping_courier_lbl"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/dp_18"
+            android:layout_marginTop="@dimen/dp_8"
             android:ellipsize="end"
             android:lines="1"
+            android:text="Kurir"
+            android:textColor="@color/Neutral_N700_96"
             android:visibility="gone"
-            android:textColor="@color/Neutral_N700_68"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_duration"
+            app:typographyType="body_3"
+            app:typographyWeight="bold" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tv_shipping_courier"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dp_18"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textColor="@color/Neutral_N700_68"
+            android:visibility="gone"
+            app:drawableRightCompat="@drawable/ic_keyboard_arrow_down_grey_24dp"
+            app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier_lbl"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
             tools:text="Gojek" />
@@ -199,8 +216,8 @@
             android:layout_marginTop="@dimen/dp_4"
             android:ellipsize="end"
             android:lines="1"
-            android:visibility="gone"
             android:textColor="@color/Red_R600"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/tv_shipping_change_duration"
             app:layout_constraintStart_toStartOf="@+id/tv_shipping_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_shipping_courier"
@@ -220,8 +237,8 @@
             android:paddingLeft="@dimen/dp_8"
             android:paddingEnd="@dimen/dp_24"
             android:paddingRight="@dimen/dp_24"
-            android:visibility="gone"
             android:textColor="@color/Neutral_N700_68"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/tv_shipping_price"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ticker_shipping_promo"
@@ -259,17 +276,18 @@
             android:layout_marginRight="@dimen/dp_16"
             android:gravity="center_vertical"
             android:lines="1"
-            android:visibility="gone"
             android:paddingStart="@dimen/dp_16"
             android:paddingLeft="@dimen/dp_16"
             android:paddingEnd="@dimen/dp_0"
             android:paddingRight="@dimen/dp_0"
+            android:text="Ubah"
             android:textColor="@color/Green_G500"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/divider2"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tv_shipping_message"
+            app:layout_constraintTop_toBottomOf="@+id/ticker_shipping_promo"
             app:typographyType="body_3"
-            app:typographyWeight="bold"
-            tools:text="Ubah" />
+            app:typographyWeight="bold" />
 
         <View
             android:id="@+id/divider2"
@@ -335,12 +353,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_4"
             android:textColor="@color/Red_R600"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/tv_payment_name"
             app:layout_constraintStart_toStartOf="@+id/iv_payment"
             app:layout_constraintTop_toBottomOf="@+id/tv_payment_detail"
             app:typographyType="body_3"
             app:typographyWeight="reguler"
-            android:visibility="gone"
             tools:text="pembayaran ini sedang tidak dapat digunakan, silahkan pilih preferensi lainnya" />
 
         <View

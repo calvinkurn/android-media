@@ -11,11 +11,13 @@ import android.view.ViewGroup
 import android.webkit.*
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 import rx.subscriptions.CompositeSubscription
@@ -96,7 +98,8 @@ class PaymentMethodFragment : BaseDaggerFragment() {
         }
         val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=${userSession.userId}&customer_name=${userSession.name.trim()}&customer_email=${userSession.email}&customer_msisdn=&address_id=${addressId}&callback_url=https%3A%2F%2Fpay-staging.tokopedia.com%2Fdummy%2Fpayment%2Flisting"
 //        val data = "merchant_code=tokopediatest&profile_code=EXPRESS_SAVE&user_id=5511791&customer_name=Davin+Kurniawan&customer_email=davin.kurniawan%40tokopedia.com&customer_msisdn=&address_id=4653430&callback_url=https%3A%2F%2Fpay-staging.tokopedia.com%2Fdummy%2Fpayment%2Flisting"
-        web_view.postUrl("https://pay-staging.tokopedia.com/v2/payment/register/listing", data.toByteArray())
+        val url = "${TokopediaUrl.getInstance().PAY}/v2/payment/register/listing"
+        web_view.postUrl(url, data.toByteArray())
 //        web_view.loadUrl("https://pay-staging.tokopedia.com/dummy/payment/listing")
     }
 

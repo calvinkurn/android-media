@@ -25,6 +25,7 @@ data class Shipment(
         val serviceDuration: String? = null,
         val serviceErrorMessage: String? = null,
         val isServicePickerEnable: Boolean = false,
+        val needPinpoint: Boolean = false,
         val shipperName: String? = null,
         val shipperProductId: Int? = null,
         val shippingPrice: Int? = null,
@@ -68,7 +69,8 @@ data class Insurance(
 data class OrderTotal(
         val orderCost: OrderCost = OrderCost(),
         val buttonState: ButtonBayarState = ButtonBayarState.DISABLE,
-        val isButtonChoosePayment: Boolean = false
+        val isButtonChoosePayment: Boolean = false,
+        val paymentErrorMessage: String? = null
 )
 
 data class OrderCost(
