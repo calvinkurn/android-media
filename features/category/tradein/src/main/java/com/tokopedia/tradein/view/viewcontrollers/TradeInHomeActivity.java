@@ -161,6 +161,9 @@ public class TradeInHomeActivity extends BaseTradeInActivity<TradeInHomeViewMode
             tncUrl = TRADEIN_TNC_URL;
         }
         mTvGoToProductDetails.setText(closeButtonText);
+        mTvGoToProductDetails.setOnClickListener(v -> {
+            finish();
+        });
         typographyImeiHelp.setOnClickListener(v -> {
             TradeInImeiHelpBottomSheet tradeInImeiHelpBottomSheet = TradeInImeiHelpBottomSheet.Companion.newInstance();
             tradeInImeiHelpBottomSheet.show(getSupportFragmentManager(), "");
