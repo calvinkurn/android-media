@@ -10,6 +10,8 @@ import com.tokopedia.exploreCategory.R
 import com.tokopedia.exploreCategory.adapter.ECServiceAdapter
 import com.tokopedia.exploreCategory.adapter.ECServiceAdapterFactory
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECAccordionVHViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
@@ -51,10 +53,10 @@ class ECAccordionViewHolder(itemView: View,
     private fun handleAccordion(isOpen: Boolean?) {
         if (isOpen == false) {
             ecIconChevron?.rotation = 0f
-            ecRecyclerView?.visibility = View.GONE
+            ecRecyclerView?.hide()
         } else {
             ecIconChevron?.rotation = 180f
-            ecRecyclerView?.visibility = View.VISIBLE
+            ecRecyclerView?.show()
         }
     }
 
