@@ -38,6 +38,8 @@ public class TopChatAnalytics {
     public static final String FPM_DETAIL_CHAT = "mp_detail_chat";
     public static final String FPM_CHAT_LIST = "mp_chat_list";
 
+    public static final String SELLERAPP_PUSH_NOTIF = "sellerapp_push_notif";
+
     public interface Category {
         public static final String PRODUCT_PAGE = "product page";
         public static final String SEND_MESSAGE_PAGE = "send message page";
@@ -490,7 +492,7 @@ public class TopChatAnalytics {
         payload.put(EVENT_ACTION, Action.CLICK_REPLY_BUTTON);
         payload.put(EVENT_LABEL, "");
         payload.put("userId", userId);
-        payload.put("source", "sellerapp_push_notif");
+        payload.put("source", SELLERAPP_PUSH_NOTIF);
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(payload);
     }
