@@ -88,7 +88,7 @@ ext {
     unifyDatePickerVersion = '1.0.2'
     unifyEmptyStateVersion = '1.0.2'
     unifyGlobalErrorVersion = '1.0.6'
-    unifyHeaderVersion = '1.0.0'
+    unifyHeaderVersion = '1.1.0'
     unifySortFilterVersion = '1.0.1'
 
     gradlePlugin = [
