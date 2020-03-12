@@ -177,12 +177,15 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun showAllLoadingShimmering() {
-        if (!generalShopInfoIsAlreadyLoaded)
+        if (!generalShopInfoIsAlreadyLoaded) {
             showGeneralShopInfoLoading()
-        if (!shopBadgeIsAlreadyLoaded)
+        }
+        if (!shopBadgeIsAlreadyLoaded) {
             showShopBadgeLoading()
-        if (!totalFollowersIsAlreadyLoaded)
+        }
+        if (!totalFollowersIsAlreadyLoaded) {
             showTotalFollowingLoading()
+        }
     }
 
     private fun showGeneralShopInfoSuccess(generalShopInfoUiModel: GeneralShopInfoUiModel) {
@@ -215,16 +218,19 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         throwable.message?.let { view?.showToasterError(it) }
         when(errorType) {
             is SettingErrorType.GENERAL_INFO_ERROR -> {
-                if (!generalShopInfoIsAlreadyLoaded)
+                if (!generalShopInfoIsAlreadyLoaded) {
                     otherMenuViewHolder?.onErrorGetShopGeneralInfoData()
+                }
             }
             is SettingErrorType.BADGES_ERROR -> {
-                if (!shopBadgeIsAlreadyLoaded)
+                if (!shopBadgeIsAlreadyLoaded) {
                     otherMenuViewHolder?.onErrorGetShopBadge()
+                }
             }
             is SettingErrorType.FOLLOWERS_ERROR -> {
-                if (!totalFollowersIsAlreadyLoaded)
+                if (!totalFollowersIsAlreadyLoaded) {
                     otherMenuViewHolder?.onErrorGetTotalFollowing()
+                }
             }
         }
     }

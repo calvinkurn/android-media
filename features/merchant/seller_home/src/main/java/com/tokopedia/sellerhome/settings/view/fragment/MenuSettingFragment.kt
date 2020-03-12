@@ -56,7 +56,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val CHAT_DAN_NOTIFIKASI = "Chat & Notifikasi"
         private const val BAGIKAN_APLIKASI = "Bagikan Aplikasi"
         private const val REVIEW_APLIKASI = "Review Aplikasi"
-        private const val DEVELOPER_OPTION = "Developer Option"
+        private const val DEVELOPER_OPTION = "Developer Options"
 
         private const val REQUEST_CHANGE_PASSWORD = 123
         private const val REQUEST_ADD_PASSWORD = 1234
@@ -68,6 +68,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private var MOBILE_DOMAIN = getInstance().MOBILEWEB
 
+        private const val DEVELOPER_OPTION_INDEX = 23
 
         @JvmStatic
         fun createInstance(): MenuSettingFragment = MenuSettingFragment()
@@ -136,7 +137,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 DividerUiModel(DividerType.THIN_INDENTED)
         )
         if (GlobalConfig.isAllowDebuggingTools())
-            settingList.add(23, MenuItemUiModel(DEVELOPER_OPTION) {
+            settingList.add(DEVELOPER_OPTION_INDEX, MenuItemUiModel(DEVELOPER_OPTION) {
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             })
         adapter.data.addAll(settingList)
