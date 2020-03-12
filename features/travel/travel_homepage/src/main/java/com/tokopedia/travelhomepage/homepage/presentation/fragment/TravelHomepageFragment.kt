@@ -7,12 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
@@ -24,7 +22,6 @@ import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
 import com.tokopedia.travelhomepage.homepage.data.*
 import com.tokopedia.travelhomepage.homepage.di.TravelHomepageComponent
-import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageAdapter
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
@@ -77,19 +74,13 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         calculateToolbarView(0)
 
         (getRecyclerView(view) as VerticalRecyclerView).clearItemDecoration()
+        (getRecyclerView(view) as VerticalRecyclerView).isNestedScrollingEnabled = false
         getRecyclerView(view).addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 calculateToolbarView(getRecyclerView(view).computeVerticalScrollOffset())
             }
         })
-    }
-
-    override fun createAdapterInstance(): BaseListAdapter<TravelHomepageItemModel, TravelHomepageTypeFactory> {
-        val baseListAdapter = TravelHomepageAdapter(adapterTypeFactory)
-        baseListAdapter.setOnAdapterInteractionListener(this)
-        baseListAdapter.setHasStableIds(true)
-        return baseListAdapter
     }
 
     private fun hideStatusBar() {
@@ -159,7 +150,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun onItemClicked(t: TravelHomepageItemModel) {
         // do nothing
-        Toast.makeText(context, t.layoutData.widgetType, Toast.LENGTH_SHORT).show()
     }
 
     override fun loadData(page: Int) {
