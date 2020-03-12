@@ -372,10 +372,10 @@ public class DeveloperOptionActivity extends BaseActivity {
             notificationManagerCompat.notify(777,notifReview);
                 });
 
-        toggleApplinkNotif.setChecked(ApplinkLogger.getInstance(this).isNotificationEnabled());
-        toggleApplinkNotif.setOnCheckedChangeListener((compoundButton, state) -> ApplinkLogger.getInstance(this).enableNotification(state));
+        toggleApplinkNotif.setChecked(ApplinkLogger.Companion.getInstance(this).isNotificationEnabled());
+        toggleApplinkNotif.setOnCheckedChangeListener((compoundButton, state) -> ApplinkLogger.Companion.getInstance(this).enableNotification(state));
 
-        vGoToApplinkDebugger.setOnClickListener(v -> ApplinkLogger.getInstance(this).openActivity());
+        vGoToApplinkDebugger.setOnClickListener(v -> ApplinkLogger.Companion.getInstance(this).openActivity());
 
         toggleFpmNotif.setChecked(FpmLogger.getInstance().isNotificationEnabled());
         toggleFpmNotif.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableNotification(state));
@@ -394,21 +394,21 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         vGoToFpm.setOnClickListener(v -> FpmLogger.getInstance().openActivity());
 
-        toggleAnalytics.setChecked(GtmLogger.getInstance(this).isNotificationEnabled());
+        toggleAnalytics.setChecked(GtmLogger.Companion.getInstance(this).isNotificationEnabled());
 
-        toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.getInstance(this).enableNotification(state));
+        toggleAnalytics.setOnCheckedChangeListener((compoundButton, state) -> GtmLogger.Companion.getInstance(this).enableNotification(state));
 
-        vGoToAnalytics.setOnClickListener(v -> GtmLogger.getInstance(DeveloperOptionActivity.this).openActivity());
+        vGoToAnalytics.setOnClickListener(v -> GtmLogger.Companion.getInstance(DeveloperOptionActivity.this).openActivity());
         vGoToAnalyticsError.setOnClickListener(v -> {
-            GtmLogger.getInstance(DeveloperOptionActivity.this).openErrorActivity();
+            GtmLogger.Companion.getInstance(DeveloperOptionActivity.this).openErrorActivity();
         });
 
         vGoToIrisSaveLogDB.setOnClickListener(v -> {
-            IrisLogger.getInstance(DeveloperOptionActivity.this).openSaveActivity();
+            IrisLogger.Companion.getInstance(DeveloperOptionActivity.this).openSaveActivity();
         });
 
         vGoToIrisSendLogDB.setOnClickListener(v -> {
-            IrisLogger.getInstance(DeveloperOptionActivity.this).openSendActivity();
+            IrisLogger.Companion.getInstance(DeveloperOptionActivity.this).openSendActivity();
         });
 
         SharedPreferences uiBlockDebuggerPref = getSharedPreferences("UI_BLOCK_DEBUGGER");

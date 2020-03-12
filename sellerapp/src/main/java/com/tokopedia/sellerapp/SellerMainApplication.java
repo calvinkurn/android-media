@@ -131,7 +131,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Mo
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
-        FpmLogger.init(this);
+        FpmLogger.Companion.init(this);
         TokopediaUrl.Companion.init(this);
         generateSellerAppNetworkKeys();
 

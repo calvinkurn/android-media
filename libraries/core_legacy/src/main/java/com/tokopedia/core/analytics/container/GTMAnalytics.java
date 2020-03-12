@@ -114,7 +114,7 @@ public class GTMAnalytics extends ContextAnalytics {
                 return;
             pushEECommerceInternal(keyEvent, factoryBundle(bruteForceCastToString(value.get("event")), clone(value)));
         } catch (Exception e) {
-            GtmLogger.getInstance(context).saveError(stacktrace.toString());
+            GtmLogger.Companion.getInstance(context).saveError(stacktrace.toString());
             if (e != null && !TextUtils.isEmpty(e.getMessage())) {
                 Timber.e("P2#GTM_ANALYTIC_ERROR#%s %s", e.getMessage(), stacktrace.toString());
             }
@@ -823,7 +823,7 @@ public class GTMAnalytics extends ContextAnalytics {
     private void log(Context context, String eventName, Map<String, Object> values, boolean isGtmV5) {
         String name = eventName == null ? (String) values.get("event") : eventName;
         if (isGtmV5) name += " (v5)";
-        GtmLogger.getInstance(context).save(name, values);
+        GtmLogger.Companion.getInstance(context).save(name, values);
         if (tetraDebugger != null) {
             tetraDebugger.send(values);
         }
