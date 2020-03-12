@@ -61,9 +61,9 @@ class ChangeNameFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (oldName.isNotEmpty()) {
-            changeNameTextName?.setText(oldName)
-            changeNameTextName?.text?.length?.let {
-                changeNameTextName?.setSelection(it)
+            changeNameTextName?.textFieldInput?.setText(oldName)
+            changeNameTextName?.textFieldInput?.text?.length?.let {
+                changeNameTextName?.textFieldInput?.setSelection(it)
             }
         }
 
@@ -76,7 +76,7 @@ class ChangeNameFragment : BaseDaggerFragment() {
     }
 
     private fun initListener() {
-        changeNameTextName?.addTextChangedListener(object : TextWatcher {
+        changeNameTextName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -120,10 +120,10 @@ class ChangeNameFragment : BaseDaggerFragment() {
         })
 
         changeNameButtonSave?.setOnClickListener {
-            val fullName = changeNameTextName?.text
+            val fullName = changeNameTextName?.textFieldInput?.text
             if (fullName != null) {
                 showLoading()
-                viewModel.changePublicName(changeNameTextName?.text.toString())
+                viewModel.changePublicName(changeNameTextName?.textFieldInput?.text.toString())
             } else {
                 onErrorChangeName(Throwable(resources.getString(R.string.error_name_too_short)))
             }
