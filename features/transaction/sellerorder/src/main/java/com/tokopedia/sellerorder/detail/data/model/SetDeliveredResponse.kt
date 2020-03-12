@@ -3,7 +3,7 @@ package com.tokopedia.sellerorder.detail.data.model
 import com.google.gson.annotations.SerializedName
 
 
-data class SomSetDelivered(
+data class SetDeliveredResponse(
         @SerializedName("set_delivered")
         var setDelivered: SetDelivered = SetDelivered()
 )
