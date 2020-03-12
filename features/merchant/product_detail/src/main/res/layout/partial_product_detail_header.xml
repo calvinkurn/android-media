@@ -290,7 +290,8 @@
             android:visibility="gone"
             app:layout_constraintTop_toTopOf="@id/stock_bar_sold_product"
             app:layout_constraintBottom_toBottomOf="@id/stock_bar_sold_product"
-            app:layout_constraintLeft_toRightOf="@id/stock_bar_sold_product" />
+            app:layout_constraintLeft_toRightOf="@id/stock_bar_sold_product"
+            app:layout_constraintRight_toRightOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
