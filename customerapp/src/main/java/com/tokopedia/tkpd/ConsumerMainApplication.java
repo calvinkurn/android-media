@@ -368,13 +368,16 @@ public class ConsumerMainApplication extends ConsumerRouterApplication implement
     }
 
     private void initializeSdk() {
-        Bugsnag.beforeNotify(error -> {
-            UserSessionInterface userSession = new UserSession(this);
-            if (!TextUtils.isEmpty(userSession.getUserId())) {
-                error.addToTab("account", "userId", userSession.getUserId());
-                error.addToTab("account", "deviceId", userSession.getDeviceId());
-            }
-            return false;
+        Bugsnag.beforeNotify(new BeforeNotify() {
+                @Override
+                public boolean run(Error error) { {
+                    UserSessionInterface userSession = new UserSession(this);
+                    if (!TextUtils.isEmpty(userSession.getUserId())) {
+                        error.addToTab("account", "userId", userSession.getUserId());
+                        error.addToTab("account", "deviceId", userSession.getDeviceId());
+                    }
+                    return false;
+                }
         });
         try {
             FirebaseApp.initializeApp(this);
