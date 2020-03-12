@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.widget_header.view.*
 
 class FilterViewHolder(view: View,
                        private val seeAllListener: SeeAllListener,
-                       private val chipClickListener: ChipClickListener,
+                       private val chipClickListener: ChipsAdapter.ChipClickListener,
                        private val showChipsListener: ShowChipsListener) : AbstractViewHolder<FilterViewModel>(view) {
 
     companion object {

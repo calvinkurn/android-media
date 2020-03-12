@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.unifycomponents.ChipsUnify
 
 class ChipsAdapter(private val listener: ChipClickListener, private val canSelectMany: Boolean, private val title: String = "") : RecyclerView.Adapter<ChipsAdapter.ItemViewHolder>() {
     private var data: MutableList<FilterDataViewModel> = mutableListOf()
@@ -47,11 +48,25 @@ class ChipsAdapter(private val listener: ChipClickListener, private val canSelec
     }
 
     inner class ItemViewHolder(itemView: View,
-                               private val clickListener: ChipClickListener) : RecyclerView.ViewHolder(itemView) {
-        private var chips: ChipWidget =  itemView.findViewById(com.tokopedia.product.manage.R.id.chipsItem)
+                               private val chipClickListener: ChipClickListener) : RecyclerView.ViewHolder(itemView) {
+        private var chips: ChipsUnify =  itemView.findViewById(com.tokopedia.product.manage.R.id.chipsItem)
 
         fun bind(element: FilterDataViewModel) {
-            chips.bind(element, clickListener, canSelectMany, title)
+            chips.centerText = true
+            chips.chipText = element.name
+            chips.chipSize = ChipsUnify.SIZE_MEDIUM
+            chips.chipType = if(element.select) {
+                ChipsUnify.TYPE_SELECTED
+            } else {
+                ChipsUnify.TYPE_NORMAL
+            }
+            chips.setOnClickListener {
+                chipClickListener.onChipClicked(element, canSelectMany, title)
+            }
         }
+    }
+
+    interface ChipClickListener {
+        fun onChipClicked(element: FilterDataViewModel, canSelectMany: Boolean, title: String)
     }
 }

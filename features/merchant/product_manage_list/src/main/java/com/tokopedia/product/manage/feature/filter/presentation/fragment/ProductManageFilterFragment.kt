@@ -21,7 +21,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipClickListener
+import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 class ProductManageFilterFragment : BottomSheetUnify(),
         HasComponent<ProductManageFilterComponent>,
-        SeeAllListener, ChipClickListener, ShowChipsListener {
+        SeeAllListener, ChipsAdapter.ChipClickListener, ShowChipsListener {
 
     companion object {
         const val ACTIVITY_EXPAND_FLAG = "expand_type"
