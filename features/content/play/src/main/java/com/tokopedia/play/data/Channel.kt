@@ -70,8 +70,8 @@ data class Channel(
         @SerializedName("pinned_message")
         val pinnedMessage: PinnedMessage = PinnedMessage(),
 
-        @SerializedName("product_tagging")
-        val productTagging: ProductTagging = ProductTagging(), // TODO("please make sure with backend")
+        @SerializedName("pinned_product")
+        val pinnedProduct: PinnedProduct = PinnedProduct(),
 
         @SerializedName("quick_reply")
         val quickReply: List<String> = emptyList(),
@@ -88,11 +88,14 @@ data class Channel(
         @SerializedName("freeze_channel_state")
         val freezeChannelState: FreezeChannelState = FreezeChannelState(),
 
-        @SerializedName("is_show_cart")
-        val isShowCart: Boolean = true, // TODO("please make sure with backend")
-
         @SerializedName("channel_type")
-        val channelType: String = "ecommerce" // TODO("please make sure with backend")
+        val channelType: Int = 0,
+
+        @SerializedName("is_show_cart")
+        var isShowCart: Boolean = false,
+
+        @SerializedName("is_show_product_tagging")
+        var isShowProductTagging: Boolean = false
 
 ) {
 
