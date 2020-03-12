@@ -99,8 +99,10 @@
             <com.tkpd.remoteresourcerequest.view.DeferredImageView
                 android:id="@+id/point_1_img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_200"
                 android:layout_marginTop="@dimen/dp_16"
+                android:scaleType="fitCenter"
+                app:layout_constraintDimensionRatio="H,3:4"
                 app:layout_constraintTop_toBottomOf="@id/point_1_txt"
                 app:remoteFileName="tradein_help_one.png" />
 
@@ -135,8 +137,10 @@
             <com.tkpd.remoteresourcerequest.view.DeferredImageView
                 android:id="@+id/point_2_img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_200"
                 android:layout_marginTop="@dimen/dp_16"
+                android:scaleType="fitCenter"
+                app:layout_constraintDimensionRatio="H,3:4"
                 app:layout_constraintTop_toBottomOf="@id/point_2_txt"
                 app:remoteFileName="tradein_help_two.png"/>
 
@@ -171,8 +175,10 @@
             <com.tkpd.remoteresourcerequest.view.DeferredImageView
                 android:id="@+id/point_3_img"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/dp_200"
                 android:layout_marginTop="@dimen/dp_16"
+                android:scaleType="fitCenter"
+                app:layout_constraintDimensionRatio="H,3:4"
                 app:layout_constraintTop_toBottomOf="@id/point_3_txt"
                 app:remoteFileName="tradein_help_three.png"/>
 
