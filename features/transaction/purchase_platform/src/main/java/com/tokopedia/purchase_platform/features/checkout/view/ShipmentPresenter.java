@@ -114,7 +114,9 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentBu
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUsePromoRevampUseCase;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ClashingInfoDetailUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoCheckoutVoucherOrdersItemUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoClashOptionUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -970,6 +972,20 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                        @Override
                                        public void onNext(ValidateUsePromoRevampUiModel responseGetPromoStack) {
                                            setCouponStateChanged(true);
+
+                                           ClashingInfoDetailUiModel clashingInfoDetailUiModel = responseGetPromoStack.getPromoUiModel().getClashingInfoDetailUiModel();
+                                           if (clashingInfoDetailUiModel.getClashMessage().length() > 0 ||
+                                                   clashingInfoDetailUiModel.getClashReason().length() > 0 ||
+                                                   clashingInfoDetailUiModel.getOptions().size() > 0) {
+
+                                               // Todo : clarify whick promo need to be cleared
+//                                               List<String> clashPromoCodes = new ArrayList<>();
+//                                               for (PromoClashOptionUiModel promoClashOptionUiModel : clashingInfoDetailUiModel.getOptions()) {
+//                                                   clashPromoCodes.add(promoClashOptionUiModel.getVoucherOrders().get)
+//                                               }
+
+                                           }
+
                                            if (!TextUtils.isEmpty(responseGetPromoStack.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
                                                if (tickerAnnouncementHolderData == null) {
                                                    setTickerAnnouncementHolderData(
