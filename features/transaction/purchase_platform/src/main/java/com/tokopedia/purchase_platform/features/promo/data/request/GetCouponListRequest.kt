@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CouponListRecommendationRequest(
         @SerializedName("promo")
-        val promoRequest: PromoRequest = PromoRequest()
+        var promoRequest: PromoRequest = PromoRequest()
 ) : Parcelable {
     constructor(parcel: Parcel) : this(parcel.readParcelable(PromoRequest::class.java.classLoader)
             ?: PromoRequest()) {

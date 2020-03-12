@@ -6,10 +6,10 @@ import android.os.Parcelable
 /**
  * Created by fwidjaja on 11/03/20.
  */
-data class EmptyCartInfo (
-        val imgUrl: String = "",
-        val message: String = "",
-        val detail: String = ""
+data class LastApplyEmptyCartInfoUiModel (
+        var imgUrl: String = "",
+        var message: String = "",
+        var detail: String = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
@@ -26,12 +26,12 @@ data class EmptyCartInfo (
         return 0
     }
 
-    companion object CREATOR : Parcelable.Creator<EmptyCartInfo> {
-        override fun createFromParcel(parcel: Parcel): EmptyCartInfo {
-            return EmptyCartInfo(parcel)
+    companion object CREATOR : Parcelable.Creator<LastApplyEmptyCartInfoUiModel> {
+        override fun createFromParcel(parcel: Parcel): LastApplyEmptyCartInfoUiModel {
+            return LastApplyEmptyCartInfoUiModel(parcel)
         }
 
-        override fun newArray(size: Int): Array<EmptyCartInfo?> {
+        override fun newArray(size: Int): Array<LastApplyEmptyCartInfoUiModel?> {
             return arrayOfNulls(size)
         }
     }

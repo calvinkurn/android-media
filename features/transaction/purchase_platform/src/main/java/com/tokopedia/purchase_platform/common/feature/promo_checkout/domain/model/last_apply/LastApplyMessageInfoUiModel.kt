@@ -3,9 +3,9 @@ package com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.mod
 import android.os.Parcel
 import android.os.Parcelable
 
-data class MessageInfo(
-	val detail: String = "",
-	val message: String = ""
+data class LastApplyMessageInfoUiModel(
+	var detail: String = "",
+	var message: String = ""
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readString() ?: "",
@@ -21,12 +21,12 @@ data class MessageInfo(
 		return 0
 	}
 
-	companion object CREATOR : Parcelable.Creator<MessageInfo> {
-		override fun createFromParcel(parcel: Parcel): MessageInfo {
-			return MessageInfo(parcel)
+	companion object CREATOR : Parcelable.Creator<LastApplyMessageInfoUiModel> {
+		override fun createFromParcel(parcel: Parcel): LastApplyMessageInfoUiModel {
+			return LastApplyMessageInfoUiModel(parcel)
 		}
 
-		override fun newArray(size: Int): Array<MessageInfo?> {
+		override fun newArray(size: Int): Array<LastApplyMessageInfoUiModel?> {
 			return arrayOfNulls(size)
 		}
 	}

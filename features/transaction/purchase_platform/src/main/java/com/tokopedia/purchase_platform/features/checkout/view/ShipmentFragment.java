@@ -93,6 +93,7 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
+import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceActionField;
 import com.tokopedia.purchase_platform.common.base.BaseCheckoutFragment;
 import com.tokopedia.purchase_platform.common.constant.CartConstant;
@@ -112,6 +113,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
@@ -138,6 +140,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligibl
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
+import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest;
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem;
@@ -249,7 +252,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     ShipmentDonationModel savedShipmentDonationModel;
     BenefitSummaryInfoUiModel benefitSummaryInfoUiModel;
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
-    LastApplyData savedLastApplyData;
+    LastApplyUiModel savedLastApplyData;
 
     private HashSet<ShipmentSelectionStateData> shipmentSelectionStateDataHashSet = new HashSet<>();
     private boolean hasInsurance = false;
@@ -1044,33 +1047,29 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void setLastApplyData(LastApplyData lastApplyData) {
+    public void setLastApplyData(LastApplyUiModel lastApplyData) {
         PromoCheckoutData.Builder builder = new PromoCheckoutData.Builder();
 
-        if (!lastApplyData.getErrorDetailMsg().isEmpty() && !lastApplyData.getErrorDetailDesc().isEmpty()) {
-            builder.setState(ButtonPromoCheckoutView.State.INACTIVE);
-            builder.promoLabel(lastApplyData.getErrorDetailMsg());
-            builder.promoUsageInfo(lastApplyData.getErrorDetailDesc());
+        String label = getString(R.string.promo_funnel_label);
+        if (!lastApplyData.getAdditionalInfo().getMessageInfo().getMessage().isEmpty())
+            label = lastApplyData.getAdditionalInfo().getMessageInfo().getMessage();
 
-        } else {
-            String label = getString(R.string.promo_funnel_label);
-            if (!lastApplyData.getAdditionalInfoMsg().isEmpty())
-                label = lastApplyData.getAdditionalInfoMsg();
+        String usageInfo = getString(R.string.promo_benefit_info);
+        if (!lastApplyData.getAdditionalInfo().getMessageInfo().getDetail().isEmpty())
+            usageInfo = lastApplyData.getAdditionalInfo().getMessageInfo().getDetail();
 
-            String usageInfo = getString(R.string.promo_benefit_info);
-            if (!lastApplyData.getAdditionalInfoDetailMsg().isEmpty())
-                usageInfo = lastApplyData.getAdditionalInfoDetailMsg();
-
-            ArrayList<String> listCodes = new ArrayList<>();
-            listCodes.add(lastApplyData.getCode());
-
-            builder.setState(ButtonPromoCheckoutView.State.ACTIVE);
-            builder.promoLabel(label);
-            builder.promoUsageInfo(usageInfo);
-            builder.codes(listCodes);
-            builder.totalBenefitLabel(lastApplyData.getFinalBenefitText());
-            builder.totalBenefitAmountStr(lastApplyData.getFinalBenefitAmount());
+        ArrayList<String> listCodes = new ArrayList<>();
+        for (int i=0; i<lastApplyData.getCodes().size(); i++) {
+            listCodes.add(lastApplyData.getCodes().get(i));
         }
+
+        builder.setState(ButtonPromoCheckoutView.State.ACTIVE);
+        builder.promoLabel(label);
+        builder.promoUsageInfo(usageInfo);
+        builder.codes(listCodes);
+        // TODO: set with new structure of benefit!
+        builder.totalBenefitLabel("");
+        builder.totalBenefitAmountStr("");
         shipmentAdapter.addPromoCheckoutData(builder.build());
 
         if (shipmentAdapter.getShipmentCartItemModelList() != null) {
@@ -2761,6 +2760,56 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         return validateUsePromoRequest;
     }
 
+    @Override
+    public PromoRequest generateCouponListRecommendationRequest() {
+        PromoRequest promoRequest = new PromoRequest();
+        ArrayList<com.tokopedia.purchase_platform.features.promo.data.request.Order> listOrderItem = new ArrayList<>();
+
+        List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
+        if (shipmentCartItemModelList != null) {
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                com.tokopedia.purchase_platform.features.promo.data.request.Order ordersItem = new com.tokopedia.purchase_platform.features.promo.data.request.Order();
+                ArrayList<com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail> productDetailsItems = new ArrayList<>();
+                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                    if (!cartItemModel.isError()) {
+                        com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail productDetail = new com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail();
+                        productDetail.setProductId(cartItemModel.getProductId());
+                        productDetail.setQuantity(cartItemModel.getQuantity());
+                        productDetailsItems.add(productDetail);
+                    }
+                }
+                ordersItem.setProduct_details(productDetailsItems);
+
+                ArrayList<String> listCodes = new ArrayList<>();
+                for (String code: shipmentCartItemModel.getListPromoCodes()) {
+                    listCodes.add(code);
+                }
+                ordersItem.setCodes(listCodes);
+                ordersItem.setUniqueId(shipmentCartItemModel.getCartString());
+                ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                        shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                }
+                listOrderItem.add(ordersItem);
+            }
+        }
+        promoRequest.setOrders(listOrderItem);
+        promoRequest.setState(PARAM_CHECKOUT);
+        promoRequest.setCartType(PARAM_DEFAULT);
+
+        PromoCheckoutData promoCheckoutData = shipmentAdapter.getPromoCheckoutData();
+        if (promoCheckoutData != null) {
+            ArrayList<String> globalPromoCodes = new ArrayList<>();
+            if (promoCheckoutData.getCodes().size() > 0) {
+                for (int i=0; i<promoCheckoutData.getCodes().size(); i++) {
+                    globalPromoCodes.add(promoCheckoutData.getCodes().get(i));
+                }
+            }
+            promoRequest.setCodes(globalPromoCodes);
+        }
+        return promoRequest;
+    }
+
     @NonNull
     @Override
     public Promo generateCheckPromoFirstStepParam() {
@@ -3044,6 +3093,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         promoNotEligibleBottomsheet.setCheckoutType(requestCode);
         promoNotEligibleBottomsheet.show(getFragmentManager(), "");
         checkoutAnalyticsCourierSelection.eventViewPopupErrorPromoConfirmation();
+        PromoRevampAnalytics.INSTANCE.eventCheckoutViewBottomsheetPromoError();
     }
 
     @Override
@@ -3239,6 +3289,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         promoRequest.setState(CheckoutConstant.CHECKOUT);
         promoRequest.setCodes(new ArrayList<>(promoCheckoutData.getCodes()));
         //TODO: intent to coupon list page with promoRequest
+
+        // TODO: LANJUT DI SINI
+        // PromoRevampAnalytics.INSTANCE.eventCheckoutClickPromoSection();
     }
 
     @Override

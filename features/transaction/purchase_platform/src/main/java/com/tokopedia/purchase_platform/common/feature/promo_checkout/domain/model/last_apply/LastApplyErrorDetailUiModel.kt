@@ -3,8 +3,8 @@ package com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.mod
 import android.os.Parcel
 import android.os.Parcelable
 
-data class ErrorDetail(
-	val message: String = ""
+data class LastApplyErrorDetailUiModel(
+	var message: String = ""
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(parcel.readString() ?: "") {
 	}
@@ -17,12 +17,12 @@ data class ErrorDetail(
 		return 0
 	}
 
-	companion object CREATOR : Parcelable.Creator<ErrorDetail> {
-		override fun createFromParcel(parcel: Parcel): ErrorDetail {
-			return ErrorDetail(parcel)
+	companion object CREATOR : Parcelable.Creator<LastApplyErrorDetailUiModel> {
+		override fun createFromParcel(parcel: Parcel): LastApplyErrorDetailUiModel {
+			return LastApplyErrorDetailUiModel(parcel)
 		}
 
-		override fun newArray(size: Int): Array<ErrorDetail?> {
+		override fun newArray(size: Int): Array<LastApplyErrorDetailUiModel?> {
 			return arrayOfNulls(size)
 		}
 	}

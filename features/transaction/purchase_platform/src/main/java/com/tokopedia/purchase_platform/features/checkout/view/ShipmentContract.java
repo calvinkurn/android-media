@@ -30,7 +30,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.model.PriceValidationData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.features.checkout.data.model.request.DataChangeAddressRequest;
@@ -41,6 +41,7 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttri
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligiblePromoHolderdata;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest;
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
@@ -142,7 +143,7 @@ public interface ShipmentContract {
 
         void setPromoStackingData(CartShipmentAddressFormData cartShipmentAddressFormData);
 
-        void setLastApplyData(LastApplyData lastApplyData);
+        void setLastApplyData(LastApplyUiModel lastApplyData);
 
         void showToastFailedTickerPromo(String text);
 
@@ -159,6 +160,8 @@ public interface ShipmentContract {
         Promo generateCheckPromoFirstStepParam();
 
         ValidateUsePromoRequest generateValidateUsePromoRequest();
+
+        PromoRequest generateCouponListRecommendationRequest();
 
         void onClashCheckPromo(ClashingInfoDetailUiModel clashingInfoDetailUiModel, String type);
 
@@ -400,9 +403,9 @@ public interface ShipmentContract {
 
         ShipmentDataConverter getShipmentDataConverter();
 
-        void setLastApplyData(LastApplyData lastApplyData);
+        void setLastApplyData(LastApplyUiModel lastApplyData);
 
-        LastApplyData getLastApplyData();
+        LastApplyUiModel getLastApplyData();
 
         ValidateUsePromoRevampUiModel getValidateUsePromoRevampUiModel();
     }

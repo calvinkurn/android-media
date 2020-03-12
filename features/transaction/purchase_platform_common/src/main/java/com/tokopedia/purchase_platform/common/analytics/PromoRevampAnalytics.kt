@@ -7,10 +7,13 @@ import com.tokopedia.track.TrackAppUtils
 /**
  * Created by fwidjaja on 11/03/20.
  */
-object PromoCheckoutAnalytics {
+object PromoRevampAnalytics {
     private const val VIEW_ATC_IRIS = "viewATCIris"
+    private const val VIEW_COURIER_IRIS = "viewCourierIris"
     private const val CLICK_ATC = "clickATC"
+    private const val CLICK_COURIER = "clickCourier"
     private const val CATEGORY_CART = "cart"
+    private const val CATEGORY_COURIER_SELECTION = "courier selection"
     private const val EMPTY_CART_PROMO_APPLIED = "empty cart - promo already applied"
     private const val CLICK_PROMO_SECTION_WITH_PROMO = "click promo section with promo"
     private const val APPLIED = "applied"
@@ -21,6 +24,11 @@ object PromoCheckoutAnalytics {
     private const val AFTER_ADJUST_ITEM = " after adjust item"
     private const val VIEW_PROMO_ALREADY_APPLIED_IN_CART_LIST = "view promo already applied in cart list"
     private const val VIEW_PROMO_MESSAGE = "view promo message"
+    private const val VIEW_PROMO_ALREADY_APPLIED_IN_CHECKOUT_LIST = "view promo already applied in checkout list"
+    private const val VIEW_BOTTOMSHEET_PROMO_ERROR = "view bottom sheet promo error"
+    private const val CLICK_LANJUT_BAYAR_ON_BOTTOMSHEET_PROMO_ERROR = "click lanjut bayar on bottom sheet promo error"
+    private const val CLICK_PILIH_PROMO_LAIN_ON_BOTTOMSHEET_PROMO_ERROR = "click pilih promo lain on bottom sheet promo error"
+
 
     private fun sendEventCategoryAction(event: String, eventCategory: String,
                                         eventAction: String) {
@@ -33,7 +41,7 @@ object PromoCheckoutAnalytics {
                 event, eventCategory, eventAction, eventLabel))
     }
 
-    fun eventEmptyCartPromoApplied(listPromoCodes: List<String>) {
+    fun eventCartEmptyPromoApplied(listPromoCodes: List<String>) {
         var promo = ""
         listPromoCodes.forEach {
             if (promo.isNotEmpty()) promo += ", "
@@ -42,7 +50,7 @@ object PromoCheckoutAnalytics {
         sendEventCategoryActionLabel(VIEW_ATC_IRIS, CATEGORY_CART, EMPTY_CART_PROMO_APPLIED, promo)
     }
 
-    fun eventClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean) {
+    fun eventCartClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean) {
         var eventAction = CLICK_PROMO_SECTION_WITH_PROMO
         eventAction += if (isApplied) APPLIED
         else NOT_APPLIED
@@ -55,7 +63,7 @@ object PromoCheckoutAnalytics {
         sendEventCategoryActionLabel(CLICK_ATC, CATEGORY_CART, CLICK_PROMO_SECTION_WITH_PROMO, promo)
     }
 
-    fun eventViewPromoAfterAdjustItem(isDecreased: Boolean) {
+    fun eventCartViewPromoAfterAdjustItem(isDecreased: Boolean) {
         var eventAction = VIEW_PROMO
         eventAction += if (isDecreased) eventAction += " $DECREASED"
         else eventAction += " $RELEASED"
@@ -63,11 +71,44 @@ object PromoCheckoutAnalytics {
         sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, AFTER_ADJUST_ITEM)
     }
 
-    fun eventViewPromoAlreadyAppliedInCart() {
+    fun eventCartViewPromoAlreadyApplied() {
         sendEventCategoryAction(VIEW_ATC_IRIS, CATEGORY_CART, VIEW_PROMO_ALREADY_APPLIED_IN_CART_LIST)
     }
 
-    fun eventViewPromoMessage(promoMessage: String) {
+    fun eventCartViewPromoMessage(promoMessage: String) {
         sendEventCategoryActionLabel(VIEW_ATC_IRIS, CATEGORY_CART, VIEW_PROMO_MESSAGE, promoMessage)
+    }
+
+    fun eventCheckoutClickPromoSection(listPromoCodes: List<String>, isApplied: Boolean) {
+        var eventAction = CLICK_PROMO_SECTION_WITH_PROMO
+        eventAction += if (isApplied) APPLIED
+        else NOT_APPLIED
+
+        var promo = ""
+        listPromoCodes.forEach {
+            if (promo.isNotEmpty()) promo += ", "
+            promo += it
+        }
+        sendEventCategoryActionLabel(CLICK_COURIER, CATEGORY_COURIER_SELECTION, CLICK_PROMO_SECTION_WITH_PROMO, promo)
+    }
+
+    fun eventCheckoutVIewPromoAlreadyApplied() {
+        sendEventCategoryAction(VIEW_COURIER_IRIS, CATEGORY_COURIER_SELECTION, VIEW_PROMO_ALREADY_APPLIED_IN_CHECKOUT_LIST)
+    }
+
+    fun eventCheckoutViewPromoMessage(promoMessage: String) {
+        sendEventCategoryActionLabel(VIEW_COURIER_IRIS, CATEGORY_COURIER_SELECTION, VIEW_PROMO_MESSAGE, promoMessage)
+    }
+
+    fun eventCheckoutViewBottomsheetPromoError() {
+        sendEventCategoryAction(VIEW_COURIER_IRIS, CATEGORY_COURIER_SELECTION, VIEW_BOTTOMSHEET_PROMO_ERROR)
+    }
+
+    fun eventCheckoutClickLanjutBayarOnBottomsheetPromoError() {
+        sendEventCategoryAction(CLICK_COURIER, CATEGORY_COURIER_SELECTION, CLICK_LANJUT_BAYAR_ON_BOTTOMSHEET_PROMO_ERROR)
+    }
+
+    fun eventCheckoutClickPilihPromoLainOnBottomsheetPromoError() {
+        sendEventCategoryAction(CLICK_COURIER, CATEGORY_COURIER_SELECTION, CLICK_PILIH_PROMO_LAIN_ON_BOTTOMSHEET_PROMO_ERROR)
     }
 }

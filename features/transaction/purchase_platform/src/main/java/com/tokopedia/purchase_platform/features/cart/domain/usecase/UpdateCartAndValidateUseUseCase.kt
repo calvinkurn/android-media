@@ -36,7 +36,7 @@ class UpdateCartAndValidateUseUseCase @Inject constructor(private val updateCart
                 .flatMap { updateAndValidateUseData ->
                     validateUseUseCase.createObservable(requestParamValidateUse)
                             .map { validateUseRevampUiModel ->
-                                updateAndValidateUseData.additionalInfoUiModel = validateUseRevampUiModel.promoUiModel?.additionalInfoUiModel
+                                updateAndValidateUseData.additionalInfoUiModel = validateUseRevampUiModel.promoUiModel.additionalInfoUiModel
                                 updateAndValidateUseData
                             }
                 }

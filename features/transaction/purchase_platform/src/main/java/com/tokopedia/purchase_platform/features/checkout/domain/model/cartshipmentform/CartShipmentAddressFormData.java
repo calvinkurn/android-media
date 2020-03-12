@@ -8,6 +8,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PotentialGainedPointsData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.EgoldAttributeModel;
@@ -45,7 +46,7 @@ public class CartShipmentAddressFormData implements Parcelable {
     private TickerData tickerData;
     private AddressesData addressesData;
     private DisabledFeaturesDetailData disabledFeaturesDetailData;
-    private LastApplyData lastApplyData;
+    private LastApplyUiModel lastApplyData;
     private PotentialGainedPointsData potentialGainedPointsData;
     private PromoCheckoutErrorDefault promoCheckoutErrorDefault;
 
@@ -249,9 +250,9 @@ public class CartShipmentAddressFormData implements Parcelable {
         this.disabledFeaturesDetailData = disabledFeaturesDetailData;
     }
 
-    public LastApplyData getLastApplyData() { return lastApplyData; }
+    public LastApplyUiModel getLastApplyData() { return lastApplyData; }
 
-    public void setLastApplyData(LastApplyData lastApplyData) { this.lastApplyData = lastApplyData; }
+    public void setLastApplyData(LastApplyUiModel lastApplyUIModel) { this.lastApplyData = lastApplyUIModel; }
 
     public PotentialGainedPointsData getPotentialGainedPointsData() { return potentialGainedPointsData; }
 

@@ -72,6 +72,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.domain.model.CheckoutData;
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase;
@@ -196,7 +197,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private String PARAM_LOGISTIC = "logistic";
     private String statusOK = "OK";
     private RatesResponseStateConverter stateConverter;
-    private LastApplyData lastApplyData;
+    private LastApplyUiModel lastApplyData;
 
     @Inject
     public ShipmentPresenter(CheckPromoStackingCodeFinalUseCase checkPromoStackingCodeFinalUseCase,
@@ -2071,12 +2072,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void setLastApplyData(LastApplyData lastApplyData) {
+    public void setLastApplyData(LastApplyUiModel lastApplyData) {
         this.lastApplyData = lastApplyData;
     }
 
     @Override
-    public LastApplyData getLastApplyData() {
+    public LastApplyUiModel getLastApplyData() {
         return lastApplyData;
     }
 

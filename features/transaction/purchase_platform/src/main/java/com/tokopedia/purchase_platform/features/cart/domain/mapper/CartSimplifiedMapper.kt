@@ -535,8 +535,8 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
                 listRedPromos = mapCreateListRedPromos(lastApplyPromo.lastApplyPromoData))
     }
 
-    private fun mapLastApplySimplified(lastApplyPromoData: LastApplyPromoData): LastApplyShopGroupSimplifiedData {
-        return LastApplyShopGroupSimplifiedData(
+    private fun mapLastApplySimplified(lastApplyPromoData: LastApplyPromoData): LastApplyUiModel {
+        return LastApplyUiModel(
                 codes = lastApplyPromoData.codes,
                 voucherOrders = mapListVoucherOrders(lastApplyPromoData.listVoucherOrders),
                 additionalInfo = mapAdditionalInfo(lastApplyPromoData.additionalInfo),
@@ -545,50 +545,50 @@ class CartSimplifiedMapper @Inject constructor(@ApplicationContext val context: 
         )
     }
 
-    private fun mapListVoucherOrders(listVoucherOrdersItem: List<VoucherOrders>): List<VoucherOrdersItem> {
-        val listVoucherOrders: ArrayList<VoucherOrdersItem> = arrayListOf()
+    private fun mapListVoucherOrders(listVoucherOrdersItem: List<VoucherOrders>): List<LastApplyVoucherOrdersItemUiModel> {
+        val listVoucherOrders: ArrayList<LastApplyVoucherOrdersItemUiModel> = arrayListOf()
         listVoucherOrdersItem.forEach {
             listVoucherOrders.add(mapVoucherOrders(it))
         }
         return listVoucherOrders
     }
 
-    private fun mapVoucherOrders(voucherOrders: VoucherOrders): VoucherOrdersItem {
-        return VoucherOrdersItem(
+    private fun mapVoucherOrders(voucherOrders: VoucherOrders): LastApplyVoucherOrdersItemUiModel {
+        return LastApplyVoucherOrdersItemUiModel(
                 code = voucherOrders.code,
                 message = mapMessage(voucherOrders.message)
         )
     }
 
-    private fun mapMessage(message: MessageVoucherOrders): com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.Message {
-        return Message(
+    private fun mapMessage(message: MessageVoucherOrders): LastApplyMessageUiModel {
+        return LastApplyMessageUiModel(
                 color = message.color,
                 state = message.state,
                 text = message.text)
     }
 
-    private fun mapMessageGlobalPromo(message: MessageGlobalPromo): com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.Message {
-        return Message(
+    private fun mapMessageGlobalPromo(message: MessageGlobalPromo): LastApplyMessageUiModel {
+        return LastApplyMessageUiModel(
                 color = message.color,
                 state = message.state,
                 text = message.text)
     }
 
-    private fun mapAdditionalInfo(promoAdditionalInfo: PromoAdditionalInfo): AdditionalInfo {
-        return AdditionalInfo(
+    private fun mapAdditionalInfo(promoAdditionalInfo: PromoAdditionalInfo): LastApplyAdditionalInfoUiModel {
+        return LastApplyAdditionalInfoUiModel(
                 messageInfo = mapMessageInfo(promoAdditionalInfo.messageInfo),
                 errorDetail = mapErrorDetail(promoAdditionalInfo.errorDetail)
         )
     }
 
-    private fun mapMessageInfo(promoMessageInfo: PromoMessageInfo): MessageInfo {
-        return MessageInfo(
+    private fun mapMessageInfo(promoMessageInfo: PromoMessageInfo): LastApplyMessageInfoUiModel {
+        return LastApplyMessageInfoUiModel(
                 detail = promoMessageInfo.detail,
                 message = promoMessageInfo.message)
     }
 
-    private fun mapErrorDetail(promoErrorDetail: PromoErrorDetail): ErrorDetail {
-        return ErrorDetail(
+    private fun mapErrorDetail(promoErrorDetail: PromoErrorDetail): LastApplyErrorDetailUiModel {
+        return LastApplyErrorDetailUiModel(
                 message = promoErrorDetail.message)
     }
 

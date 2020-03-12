@@ -5,7 +5,7 @@ import android.os.Parcelable
 
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyShopGroupSimplifiedData
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo_global.domain.model.GlobalCouponAttrData
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerData
 
@@ -31,7 +31,7 @@ data class CartListData(
         var promoBenefitInfo: String? = null,
         var promoUsageInfo: String? = null,
         var errorDefault: PromoCheckoutErrorDefault? = null,
-        var lastApplyShopGroupSimplifiedData: LastApplyShopGroupSimplifiedData? = null
+        var lastApplyShopGroupSimplifiedData: LastApplyUiModel? = null
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -50,7 +50,7 @@ data class CartListData(
             parcel.readString(),
             parcel.readString(),
             parcel.readParcelable(CartTickerErrorData::class.java.classLoader),
-            parcel.readParcelable(LastApplyShopGroupSimplifiedData::class.java.classLoader)) {
+            parcel.readParcelable(LastApplyUiModel::class.java.classLoader)) {
     }
 
     override fun equals(obj: Any?): Boolean {
