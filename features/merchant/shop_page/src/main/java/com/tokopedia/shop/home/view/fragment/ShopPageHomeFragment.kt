@@ -347,6 +347,23 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
     override fun onCarouselProductItemWishlist(parentPosition: Int, itemPosition: Int, shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?, shopHomeProductViewModel: ShopHomeProductViewModel?) {
     }
 
+    override fun onCtaClicked(shopHomeCarouselProductUiModel: ShopHomeCarousellProductUiModel?) {
+
+        shopPageHomeTracking.clickCta(
+                layoutId = shopPageHomeLayoutUiModel?.layoutId.toString(),
+                widgetName = shopHomeCarouselProductUiModel?.name.toString(),
+                widgetId = shopHomeCarouselProductUiModel?.widgetId.toString(),
+                appLink = shopHomeCarouselProductUiModel?.header?.ctaLink.toString(),
+                shopId = shopId,
+                shopType = customDimensionShopPage.shopType,
+                isOwner = isOwner
+        )
+
+        context?.let {
+            RouteManager.route(it, shopHomeCarouselProductUiModel?.header?.ctaText)
+        }
+    }
+
     private fun goToPDP(productId: String, attribution: String?, listNameOfProduct: String) {
         context?.let {
             val bundle = Bundle()
