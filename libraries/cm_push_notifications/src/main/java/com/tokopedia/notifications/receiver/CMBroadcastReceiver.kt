@@ -35,7 +35,6 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
             val notificationId = intent.getIntExtra(CMConstant.EXTRA_NOTIFICATION_ID, 0)
             val baseNotificationModel: BaseNotificationModel? = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
             if (action != null) {
-                AttributionManager.post(context, baseNotificationModel) //post notification attribution
                 when (action) {
                     CMConstant.ReceiverAction.ACTION_ON_NOTIFICATION_DISMISS -> {
                         NotificationManagerCompat.from(context).cancel(notificationId)
@@ -50,6 +49,9 @@ class CMBroadcastReceiver : BroadcastReceiver(), CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_NOTIFICATION_CLICK -> {
                         handleNotificationClick(context, intent, notificationId)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
+
+                        //post notification attribution
+                        AttributionManager.post(context, baseNotificationModel)
                     }
 
                     CMConstant.ReceiverAction.ACTION_BUTTON -> {
