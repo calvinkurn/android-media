@@ -33,7 +33,7 @@ data class CampaignModular(
         @SerializedName("stock")
         val stock: Int = 0,
         @SerializedName("stockSoldPercentage")
-        val stockSoldPercentage: Double = 0.0
+        val stockSoldPercentage: Int = 0
 ) {
     val activeAndHasId
         get() = isActive && (campaignID.toIntOrNull() ?: 0) > 0

@@ -203,8 +203,7 @@ class PartialSnapshotView(private val view: View,
 
     private fun setProgressStockBar(campaign: CampaignModular) {
         try {
-            val progress: Int = (campaign.stockSoldPercentage * 100).toInt()
-            view.stock_bar_sold_product.progress = progress
+            view.stock_bar_sold_product.progress = campaign.stockSoldPercentage
             view.stock_bar_sold_product.visible()
         } catch (ex: Exception) {
             view.stock_bar_sold_product.visibility = View.GONE
