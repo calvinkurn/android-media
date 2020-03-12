@@ -69,6 +69,7 @@ class ECServiceViewModel @Inject constructor(private val useCase: ECDynamicHomeI
         notifyAdapter.value = categoryIndex
 
         ECAnalytics.trackEventClickFeature(newCurrentCG, categoryIndex)
+        ECAnalytics.trackEventClickAccordion(newCurrentCG?.title)
     }
 
     fun fireOnIconClickEvent(categoryTitle: String?, categoryId: Int?, categoryRow: CategoryGroup.CategoryRow?, position: Int) {

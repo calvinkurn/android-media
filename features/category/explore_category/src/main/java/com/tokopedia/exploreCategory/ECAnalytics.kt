@@ -14,6 +14,7 @@ class ECAnalytics {
         private const val EVENT_VIEW = "promoView"
         private const val EVENT_CATEGORY = "semua kategori page"
         private const val EVENT_ACTION_CLICK_BACK = "click back button"
+        private const val EVENT_ACTION_CLICK_ACCORDION = "click accordion"
         private const val PROMO_SLOT_NAME = "promo slot name"
 
         private const val KEY_EVENT = "event"
@@ -85,6 +86,17 @@ class ECAnalytics {
         }
 
         //3
+        fun trackEventClickAccordion(tabName: String?) {
+            val tracker = TrackApp.getInstance().gtm
+            val map = DataLayer.mapOf(
+                    KEY_EVENT, EVENT_CLICK_CATEGORY,
+                    KEY_EVENT_CATEGORY, EVENT_CATEGORY,
+                    KEY_EVENT_ACTION, EVENT_ACTION_CLICK_ACCORDION,
+                    KEY_EVENT_LABEL, tabName?.toLowerCase(Locale.getDefault()) ?: "")
+            tracker.sendEnhanceEcommerceEvent(map)
+        }
+
+        //4
         @JvmStatic
         fun trackEventClickIcon(categoryTitle: String?, categoryId: String?, icon: CategoryGroup.CategoryRow?, position: Int) {
             val tracker = TrackApp.getInstance().gtm
@@ -110,7 +122,7 @@ class ECAnalytics {
             tracker.sendEnhanceEcommerceEvent(map)
         }
 
-        //4
+        //5
         @JvmStatic
         fun trackEventImpressionIcon(categoryGroup: CategoryGroup?, trackingQueue: TrackingQueue?) {
             if (categoryGroup?.categoryRows?.isNullOrEmpty() == false) {
@@ -145,14 +157,16 @@ class ECAnalytics {
             }
         }
 
-        //5
+        //6
         @JvmStatic
         fun trackEventClickBack() {
-            val tracker = TrackApp.getInstance().gtm.sendGeneralEvent(
-                    EVENT_CLICK_CATEGORY,
-                    EVENT_CATEGORY,
-                    EVENT_ACTION_CLICK_BACK,
-                    "")
+            val tracker = TrackApp.getInstance().gtm
+            val map = DataLayer.mapOf(
+                    KEY_EVENT, EVENT_CLICK_CATEGORY,
+                    KEY_EVENT_CATEGORY, EVENT_CATEGORY,
+                    KEY_EVENT_ACTION, EVENT_ACTION_CLICK_BACK,
+                    KEY_EVENT_LABEL, "")
+            tracker.sendEnhanceEcommerceEvent(map)
         }
     }
 }
