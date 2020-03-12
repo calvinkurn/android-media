@@ -11,8 +11,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
  * @author by yoasfs on 2020-03-05
  */
 class MixLeftAdapter (items: List<Visitable<*>>,
-                      typeFactory: FlashSaleCardTypeFactory,
-                      val homeCategoryListener: HomeCategoryListener)
+                      typeFactory: FlashSaleCardTypeFactory)
     :BaseAdapter<FlashSaleCardTypeFactory>(typeFactory, items){
 
     val data: List<Visitable<*>>

@@ -73,6 +73,7 @@ import com.tokopedia.home.beranda.listener.HomeFeedsListener;
 import com.tokopedia.home.beranda.listener.HomeInspirationListener;
 import com.tokopedia.home.beranda.listener.HomeReviewListener;
 import com.tokopedia.home.beranda.listener.HomeTabFeedListener;
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener;
 import com.tokopedia.home.beranda.presentation.viewModel.HomeViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter;
@@ -1385,14 +1386,21 @@ public class HomeFragment extends BaseDaggerFragment implements
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickItem(channel, position, keyword));
     }
 
-    @Override
-    public void onSetTrackerClickSeeMore() {
 
+    @Override
+    public void onMixLeftSeeMoreClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel) {
+        RouteManager.route(getContext(), applink);
+        TrackApp.getInstance().getGTM().sendGeneralEvent(HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftClickLoadMore(channel));
     }
 
     @Override
-    public void onSetTrackerProductClick(int position) {
+    public void onFlashSaleCardImpressed(int position, @NotNull DynamicHomeChannel.Channels channel) {
+        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductView(channel));
+    }
 
+    @Override
+    public void onFlashSaleCardClicked(int position, @NotNull DynamicHomeChannel.Channels channel, @NonNull DynamicHomeChannel.Grid grid) {
+        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductClick(channel, grid, position - 1));
     }
 
     protected void registerBroadcastReceiverTokoCash() {

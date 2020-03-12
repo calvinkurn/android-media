@@ -7,18 +7,21 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.home.R
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 
-class SeeMorePdpViewHolder(view: View, private val listener: FlashSaleCardListener) : AbstractViewHolder<SeeMorePdpDataModel>(view){
+class SeeMorePdpViewHolder(view: View,
+                           private val listener: FlashSaleCardListener,
+                           private val channels: DynamicHomeChannel.Channels)
+    : AbstractViewHolder<SeeMorePdpDataModel>(view){
 
     private val container: View by lazy { view.findViewById<View>(R.id.container_banner_mix_more) }
     private val bannerBackgroundImage: ImageView by lazy { view.findViewById<ImageView>(R.id.background_banner_mix_more)}
 
     override fun bind(element: SeeMorePdpDataModel) {
         bannerBackgroundImage.setOnClickListener {
-            RouteManager.route(itemView.context, element.applink)
-            listener.onSetTrackerClickSeeMore()
+            listener.onMixLeftSeeMoreClicked(applink = element.applink, channel = channels)
         }
         Glide.with(itemView.context)
                 .load(element.backgroundImage)
@@ -26,8 +29,7 @@ class SeeMorePdpViewHolder(view: View, private val listener: FlashSaleCardListen
                 .centerCrop()
                 .into(bannerBackgroundImage)
         container.setOnClickListener {
-            RouteManager.route(itemView.context, element.applink)
-            listener.onSetTrackerClickSeeMore()
+            listener.onMixLeftSeeMoreClicked(applink = element.applink, channel = channels)
         }
     }
 

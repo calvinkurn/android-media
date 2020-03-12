@@ -71,7 +71,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        
+        flashSaleCardListener.onMixLeftSeeMoreClicked(applink, channel)
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
@@ -87,8 +87,8 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
-        listData.add(SeeMorePdpDataModel())
-        adapter = MixLeftAdapter(listData,typeFactoryImpl, homeCategoryListener)
+        listData.add(SeeMorePdpDataModel(applink = channel.header.applink))
+        adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
         launch {
@@ -144,7 +144,8 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             stockBarLabel = element.label,
                             stockBarPercentage = element.soldPercentage
                     ),
-                    blankSpaceConfig = BlankSpaceConfig()
+                    blankSpaceConfig = BlankSpaceConfig(),
+                    grid = element
             ))
         }
         return list

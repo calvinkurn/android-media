@@ -3,6 +3,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.EmptyDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
@@ -15,7 +16,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
  * @author by yoasfs on 2020-03-07
  */
 
-class FlashSaleCardViewTypeFactoryImpl(private val listener: FlashSaleCardListener) :
+class FlashSaleCardViewTypeFactoryImpl(private val listener: FlashSaleCardListener,
+                                       private val channels: DynamicHomeChannel.Channels) :
         BaseAdapterTypeFactory(),FlashSaleCardTypeFactory {
 
     override fun type(dataModel: EmptyDataModel): Int {
@@ -33,9 +35,9 @@ class FlashSaleCardViewTypeFactoryImpl(private val listener: FlashSaleCardListen
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         val viewHolder: AbstractViewHolder<*>
         if (type == FlashSaleViewHolder.LAYOUT) {
-            viewHolder = FlashSaleViewHolder(parent, listener)
+            viewHolder = FlashSaleViewHolder(parent, listener, channels)
         } else if (type == SeeMorePdpViewHolder.LAYOUT) {
-            viewHolder = SeeMorePdpViewHolder(parent, listener)
+            viewHolder = SeeMorePdpViewHolder(parent, listener, channels)
         } else if (type == EmptyCardViewHolder.LAYOUT) {
             viewHolder = EmptyCardViewHolder(parent, listener)
         } else {
