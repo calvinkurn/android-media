@@ -7,7 +7,6 @@ include "features:category:tradein"
 include "features:common:developer_options"
 include "features:common:nps"
 include "features:common:resources_common"
-include "features:common:common_tradein"
 
 include "features:home:navigation-common"
 
@@ -51,8 +50,6 @@ include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
 include "features:logistic:tracking"
 include "features:logistic:logisticcart"
-
-include "features:category:tradein"
 
 include "features:merchant:gold_merchant"
 include "features:merchant:gold_merchant_common"
@@ -148,11 +145,10 @@ include "features:user:vote"
 include "features:user:profilecompletion"
 include "features:user:stickylogin"
 include "features:user:seamless_login"
+include "features:user:kyc_centralized"
 
 include "features:category:age_restriction"
 include "features:category:basemvvm"
-include "features:category:tradein"
-include "features:category:tradein_common"
 include "features:common:common_tradein"
 include "features:fintech:merchant_lending_widget"
 

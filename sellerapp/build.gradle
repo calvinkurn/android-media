@@ -1,6 +1,14 @@
 apply plugin: 'com.android.application'
+if (project.hasProperty("apply-patch")) {
+    apply plugin: 'auto-patch-plugin'
+}
+if (project.hasProperty("robust")) {
+    apply plugin: 'robust'
+}
 apply plugin: 'io.fabric'
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'android'
+apply plugin: 'newrelic'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
 
@@ -254,6 +262,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.trackingOptimizer)
     implementation project(rootProject.ext.libraries.coreNetwork)
+    implementation project(rootProject.ext.libraries.tokofix)
     implementation project(rootProject.ext.libraries.commonNetwork)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.dynamicFeatures)
@@ -323,6 +332,7 @@ dependencies {
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.opportunity)
+    implementation project(rootProject.ext.features.notifCenter)
 
     implementation project(rootProject.ext.features.shopCommon)
     implementation project(rootProject.ext.features.commonDigital)
@@ -339,6 +349,7 @@ dependencies {
     implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.features.profileCompletion)
     implementation project(rootProject.ext.features.agerestriction)
+    implementation project(rootProject.ext.features.kyccentralized)
 
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
@@ -367,7 +378,9 @@ dependencies {
 
     implementation(rootProject.ext.analyticsDependencies.moengage) 
 
+    implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
+    
     implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.firebase.config
     implementation rootProject.ext.firebase.messaging
@@ -414,13 +427,15 @@ dependencies {
         exclude group: "com.android.support"
     }
 
-    
+
 
     implementation('de.hdodenhof:circleimageview:2.1.0') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
 
     debugImplementation project.ext.debugToolsDependencies.leakCanary
+
+    implementation rootProject.ext.analyticsDependencies.newRelic
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     annotationProcessor rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
@@ -429,4 +444,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation rootProject.ext.testDependencies.junit
+    
+    implementation rootProject.ext.miscDependencies.robust
 }
