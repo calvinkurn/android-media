@@ -20,6 +20,7 @@ import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.cacheapi.domain.interactor.CacheApiClearAllUseCase
 import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.config.GlobalConfig
@@ -163,7 +164,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
         if (isReturnToHome) {
             if (GlobalConfig.isSellerApp()) {
-                RouteManager.route(this, ApplinkConst.SellerApp.SELLER_APP_HOME)
+                RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
             } else {
                 RouteManager.route(this, ApplinkConst.HOME)
             }
