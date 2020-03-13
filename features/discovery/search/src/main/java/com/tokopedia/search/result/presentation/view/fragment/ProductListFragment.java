@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
@@ -54,6 +53,8 @@ import com.tokopedia.filter.newdynamicfilter.view.BottomSheetListener;
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
+import com.tokopedia.remoteconfig.RemoteConfig;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
 import com.tokopedia.search.R;
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel;
 import com.tokopedia.search.analytics.RecommendationTracking;
@@ -105,8 +106,6 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
@@ -668,7 +667,7 @@ public class ProductListFragment
         }
         if (getActivity() != null) {
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
-            ProductCardOptionsManager.handleActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
+            ProductCardOptionsManager.handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
         }
     }
 
@@ -705,38 +704,7 @@ public class ProductListFragment
     }
 
     private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
-        if (productCardOptionsModel == null || productCardOptionsModel.getWishlistResult() == null)
-            return;
-
-        if (productCardOptionsModel.getWishlistResult().isSuccess()) {
-            handleSuccessWishlistAction(productCardOptionsModel);
-        } else {
-            handleFailedWishlistAction(productCardOptionsModel);
-        }
-    }
-
-    private void handleSuccessWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
-        if (productCardOptionsModel.getWishlistResult() == null) return;
-
-        boolean isAddWishlist = productCardOptionsModel.getWishlistResult().isAddWishlist();
-
-        adapter.updateWishlistStatus(productCardOptionsModel.getProductId(), isAddWishlist);
-
-        if (isAddWishlist) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
-        }
-    }
-
-    private void handleFailedWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
-        if (productCardOptionsModel.getWishlistResult() == null) return;
-
-        if (productCardOptionsModel.getWishlistResult().isAddWishlist()) {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist_failed));
-        } else {
-            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
-        }
+        presenter.handleWishlistAction(productCardOptionsModel);
     }
 
     @Override
@@ -873,14 +841,29 @@ public class ProductListFragment
         }
     }
 
-    @Override
     public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
-        presenter.handleWishlistButtonClicked(item);
-        if (presenter.isUserLoggedIn()) {
-            RecommendationTracking.Companion.eventUserClickProductToWishlistForUserLogin(!isAddWishlist);
-        } else {
-            RecommendationTracking.Companion.eventUserClickProductToWishlistForNonLogin();
-        }
+        // Unused
+    }
+
+    @Override
+    public void onThreeDotsClick(@NotNull RecommendationItem item, @NotNull int... position) {
+        if (getSearchParameter() == null || getActivity() == null) return;
+
+        ProductCardOptionsManager.showProductCardOptions(this, createProductCardOptionsModel(item));
+    }
+
+    private ProductCardOptionsModel createProductCardOptionsModel(RecommendationItem item) {
+        ProductCardOptionsModel productCardOptionsModel = new ProductCardOptionsModel();
+
+        productCardOptionsModel.setHasWishlist(true);
+        productCardOptionsModel.setWishlisted(item.isWishlist());
+        productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
+        productCardOptionsModel.setProductId(String.valueOf(item.getProductId()));
+        productCardOptionsModel.setTopAds(item.isTopAds());
+        productCardOptionsModel.setTopAdsWishlistUrl(item.getWishlistUrl());
+        productCardOptionsModel.setRecommendation(true);
+
+        return productCardOptionsModel;
     }
 
     private Intent getProductIntent(String productId, String warehouseId) {
@@ -896,7 +879,7 @@ public class ProductListFragment
     }
 
     @Override
-    public void onLongClick(ProductItemViewModel item, int adapterPosition) {
+    public void onThreeDotsClick(ProductItemViewModel item, int adapterPosition) {
         if (getSearchParameter() == null || getActivity() == null) return;
 
         SearchTracking.trackEventProductLongPress(getSearchParameter().getSearchQuery(), item.getProductID());
@@ -910,17 +893,14 @@ public class ProductListFragment
         productCardOptionsModel.setHasSimilarSearch(true);
         productCardOptionsModel.setWishlisted(item.isWishlisted());
         productCardOptionsModel.setKeyword(getSearchParameter().getSearchQuery());
-        productCardOptionsModel.setProductId(item.getProductID());
+        productCardOptionsModel.setProductId(item.getProductID() == null ? "" : item.getProductID());
         productCardOptionsModel.setTopAds(item.isTopAds());
+        productCardOptionsModel.setTopAdsWishlistUrl(item.getTopadsWishlistUrl() == null ? "" : item.getTopadsWishlistUrl());
+        productCardOptionsModel.setRecommendation(false);
         productCardOptionsModel.setScreenName(SearchEventTracking.Category.SEARCH_RESULT);
         productCardOptionsModel.setSeeSimilarProductEvent(SearchTracking.EVENT_CLICK_SEARCH_RESULT);
 
         return productCardOptionsModel;
-    }
-
-    @Override
-    public void onWishlistButtonClicked(final ProductItemViewModel productItem) {
-        presenter.handleWishlistButtonClicked(productItem);
     }
 
     @Override
@@ -1617,10 +1597,7 @@ public class ProductListFragment
     }
 
     public String getRegistrationId() {
-        if (getActivity() == null || getActivity().getApplicationContext() == null) return "";
-
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
+        return presenter != null ? presenter.getDeviceId() : "";
     }
 
     public void onBottomSheetHide() {
@@ -1670,5 +1647,48 @@ public class ProductListFragment
             }
         }
         SearchTracking.trackImpressionInspirationCarousel(getQueryKey(), products);
+    }
+
+    @Override
+    public RemoteConfig getABTestRemoteConfig() {
+        return RemoteConfigInstance.getInstance().getABTestPlatform();
+    }
+
+    @Override
+    public void trackWishlistRecommendationProductLoginUser(boolean isAddWishlist) {
+        RecommendationTracking.Companion.eventUserClickProductToWishlistForUserLogin(isAddWishlist);
+    }
+
+    @Override
+    public void trackWishlistRecommendationProductNonLoginUser() {
+        RecommendationTracking.Companion.eventUserClickProductToWishlistForNonLogin();
+    }
+
+    @Override
+    public void trackWishlistProduct(WishlistTrackingModel wishlistTrackingModel) {
+        SearchTracking.eventSuccessWishlistSearchResultProduct(wishlistTrackingModel);
+    }
+
+    @Override
+    public void updateWishlistStatus(String productId, boolean isWishlisted) {
+        adapter.updateWishlistStatus(productId, isWishlisted);
+    }
+
+    @Override
+    public void showMessageSuccessWishlistAction(boolean isWishlisted) {
+        if (isWishlisted) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist));
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist));
+        }
+    }
+
+    @Override
+    public void showMessageFailedWishlistAction(boolean isWishlisited) {
+        if (isWishlisited) {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_add_wishlist_failed));
+        } else {
+            NetworkErrorHelper.showSnackbar(getActivity(), getString(R.string.msg_remove_wishlist_failed));
+        }
     }
 }
