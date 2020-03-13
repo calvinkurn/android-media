@@ -2829,6 +2829,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             promoRequest.setCodes(globalPromoCodes);
         }
         return promoRequest;
+        // Todo : Add `is_trade_in` and `is_trade_in_drop_off` param. Waiting for API contract
     }
 
     @NonNull
