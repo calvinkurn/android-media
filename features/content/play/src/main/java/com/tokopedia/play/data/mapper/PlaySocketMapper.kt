@@ -40,6 +40,12 @@ class PlaySocketMapper(
             PlaySocketType.EventFreeze.value -> {
                 return mapToBannedFreeze()
             }
+            PlaySocketType.ProductTag.value -> {
+                return mapToProductTag()
+            }
+            PlaySocketType.MerchantVoucher.value -> {
+                return mapToMerchantVoucher()
+            }
         }
         return null
     }
@@ -73,5 +79,13 @@ class PlaySocketMapper(
 
     private fun mapToBannedFreeze(): BannedFreeze {
         return gson.fromJson(webSocketResponse.jsonObject, BannedFreeze::class.java)
+    }
+
+    private fun mapToProductTag(): ProductTag {
+        return gson.fromJson(webSocketResponse.jsonObject, ProductTag::class.java)
+    }
+
+    private fun mapToMerchantVoucher(): MerchantVoucher {
+        return gson.fromJson(webSocketResponse.jsonObject, MerchantVoucher::class.java)
     }
 }

@@ -214,8 +214,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                     .collect {
                         when (it) {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
-                            is ProductSheetInteractionEvent.OnBuyProduct -> openVariantSheet(it.product, ProductAction.Buy)
-                            is ProductSheetInteractionEvent.OnAtcProduct -> openVariantSheet(it.product, ProductAction.AddToCart)
+                            is ProductSheetInteractionEvent.OnBuyProduct -> checkProductVariant(it.product, ProductAction.Buy)
+                            is ProductSheetInteractionEvent.OnAtcProduct -> checkProductVariant(it.product, ProductAction.AddToCart)
                         }
                     }
         }
@@ -245,6 +245,17 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun closeProductSheet() {
         playViewModel.onHideProductSheet()
+    }
+
+    private fun checkProductVariant(product: ProductLineUiModel, action: ProductAction) {
+        if (product.isVariantAvailable) {
+            openVariantSheet(product, action)
+        } else {
+            when(action) {
+                ProductAction.Buy -> shouldBuyProduct(product.id)
+                ProductAction.AddToCart -> shouldAtcProduct(product.id)
+            }
+        }
     }
 
     private fun openVariantSheet(product: ProductLineUiModel, action: ProductAction) {

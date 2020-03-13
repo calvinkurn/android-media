@@ -176,8 +176,10 @@ class VariantSheetView(
                         imageUrl = selectedProduct.picture?.original?:"",
                         title = selectedProduct.name,
                         stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
+                        isVariantAvailable = true,
                         price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull())
                 )
+                variantSheetUiModel?.stockWording = selectedProduct.stock?.stockWordingHTML
                 variantSheetUiModel?.product = product
                 setProduct(product)
             }
@@ -194,8 +196,7 @@ class VariantSheetView(
         return  if (variantSheetUiModel?.isPartialySelected() == true) {
             ""
         } else {
-//            variantSheetUiModel?.product?.stock?:container.context.getString(R.string.play_stock_available)
-            "Stock available"
+            variantSheetUiModel?.stockWording?:container.context.getString(R.string.play_stock_available)
         }
     }
 
