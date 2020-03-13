@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -25,7 +25,7 @@
             android:layout_height="match_parent"
             android:gravity="center_vertical"
             android:textColor="@color/setting_black_text"
-            app:typographyType="body_1"
+            app:typographyType="body_2"
             app:typographyWeight="bold"
             app:layout_constraintEnd_toEndOf="@id/guidelineVerticalRight"/>
 

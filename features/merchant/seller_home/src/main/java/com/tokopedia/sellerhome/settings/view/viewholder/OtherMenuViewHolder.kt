@@ -8,6 +8,8 @@ import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
@@ -25,14 +27,15 @@ class OtherMenuViewHolder(private val itemView: View,
 
     companion object {
         private val SHIMMER_STATUS_LAYOUT = R.layout.setting_shop_status_shimmer
-        private val GREEN_TIP = R.drawable.setting_pm_green_tip
+        private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
         private val GREEN_TEXT_COLOR = R.color.setting_green
-        private val GREY_TIP = R.drawable.setting_pm_grey_tip
+        private val GREY_TIP = R.drawable.setting_tip_bar_disabled
         private val GREY_TEXT_COLOR = R.color.setting_grey_text
         private val RED_TEXT_COLOR = R.color.setting_red_text
         private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
         private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
 
+        private const val REGULAR_MERCHANT = "Regular Merchant"
         private const val FOLLOWERS = "Followers"
         private const val UPDATE = "Update"
         private const val VERIFIKASI = "Verifikasi"
@@ -62,14 +65,16 @@ class OtherMenuViewHolder(private val itemView: View,
 
     fun onSuccessGetShopBadge(shopBadgeUrl: String) {
         ImageHandler.LoadImage(itemView.shopInfoLayout.shopBadges, shopBadgeUrl)
+        itemView.shopInfoLayout.dot.visibility = View.VISIBLE
         itemView.shopInfoLayout.shopBadges.visibility = View.VISIBLE
+        itemView.shopInfoLayout.shimmerBadge.visibility = View.GONE
     }
 
     @SuppressLint("SetTextI18n")
     fun onSuccessGetTotalFollowing(totalFollowing: Int) {
         itemView.shopInfoLayout.shopFollowers.text = "$totalFollowing $FOLLOWERS"
         itemView.shopInfoLayout.shopBadges.visibility = View.VISIBLE
-        itemView.shimmerFollowers.visibility = View.GONE
+        itemView.shopInfoLayout.shimmerFollowers.visibility = View.GONE
     }
 
     fun onLoadingGetShopGeneralInfoData() {
@@ -83,13 +88,31 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     fun onLoadingGetShopBadge() {
-//        itemView.shopInfoLayout.shopBadges.urlSrc = ""
+        itemView.shopInfoLayout.dot.visibility = View.GONE
         itemView.shopInfoLayout.shopBadges.visibility = View.GONE
+        itemView.shopInfoLayout.shimmerBadge.visibility = View.VISIBLE
     }
 
     fun onLoadingGetTotalFollowing() {
         itemView.shopInfoLayout.shopFollowers.text = ""
         itemView.shimmerFollowers.visibility = View.VISIBLE
+    }
+
+    fun onErrorGetShopGeneralInfoData() {
+        itemView.run {
+            shopInfoLayout.shopName.text = null
+            shopInfoLayout.shopImage.urlSrc = ""
+            saldoBalance.balanceValue.text = null
+            topAdsBalance.balanceValue.text = null
+        }
+    }
+
+    fun onErrorGetShopBadge() {
+        itemView.shopInfoLayout.shopBadges.visibility = View.GONE
+    }
+
+    fun onErrorGetTotalFollowing() {
+        itemView.shopInfoLayout.shopFollowers.text = ""
     }
 
     private fun setShopName(shopName: String) {
@@ -131,11 +154,15 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
-        regularMerchantStatus.text =
-                when(regularMerchant) {
-                    is RegularMerchant.NeedUpdate -> UPDATE
-                    is RegularMerchant.OnVerification -> VERIFIKASI
-                }
+        regularMerchantStatus.run {
+            text = when(regularMerchant) {
+                is RegularMerchant.NeedUpdate -> UPDATE
+                is RegularMerchant.OnVerification -> VERIFIKASI
+            }
+            setOnClickListener {
+                RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+            }
+        }
         return this
     }
 
@@ -153,19 +180,24 @@ class OtherMenuViewHolder(private val itemView: View,
             is PowerMerchantStatus.NotActive -> {
                 statusText = TIDAK_AKTIF
                 textColor = RED_TEXT_COLOR }
-            is PowerMerchantStatus.OnVerification -> { }
+            is PowerMerchantStatus.OnVerification -> {
+                powerMerchantText.text = REGULAR_MERCHANT
+            }
         }
         powerMerchantStatusText.text = statusText
         powerMerchantStatusText.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
         powerMerchantLeftStatus.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
         powerMerchantIcon.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
+        setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+        }
         return this
     }
 
     private fun View.showGeneralInfoDataShimmer() {
         shopInfoLayout.shimmerShopName.visibility = View.VISIBLE
         val statusShimmerLayout = LayoutInflater.from(context).inflate(SHIMMER_STATUS_LAYOUT, null, false)
-        (shopStatus as LinearLayout).run {
+        shopStatus?.run {
             removeAllViews()
             addView(statusShimmerLayout)
         }
@@ -179,15 +211,19 @@ class OtherMenuViewHolder(private val itemView: View,
         topAdsBalance.shimmeringBalanceValue.visibility = View.GONE
     }
 
-    fun View.setOnClickAction() {
-        shopInfoLayout.settingShopNext.setOnClickListener { listener.onShopNextClicked() }
-        shopInfoLayout.shopFollowers.setOnClickListener { listener.onFollowersCountClicked() }
+    private fun View.setOnClickAction() {
+        shopInfoLayout?.run {
+            shopImage.setOnClickListener { listener.onShopInfoClicked() }
+            shopName.setOnClickListener { listener.onShopInfoClicked() }
+            settingShopNext.setOnClickListener { listener.onShopInfoClicked() }
+            shopFollowers.setOnClickListener { listener.onFollowersCountClicked() }
+        }
         saldoBalance.setOnClickListener { listener.onSaldoClicked() }
         topAdsBalance.setOnClickListener { listener.onKreditTopadsClicked() }
     }
 
     interface Listener {
-        fun onShopNextClicked()
+        fun onShopInfoClicked()
         fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onKreditTopadsClicked()

@@ -46,6 +46,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val TAMBAH_DAN_LOKASI_TOKO = "Tambah dan lokasi toko"
         private const val ATUR_LAYANAN_PENGIRIMAN = "Atur layanan pengiriman"
         private const val FITUR_EKSKLUSIF = "FITUR EKSKLUSIF"
+        private const val LAYANAN_BAYAR_DI_TEMPAT = "Layanan bayar di tempat"
+        private const val ORDER_PRIORITAS = "Order prioritas"
         private const val PENGATURAN_AKUN = "Pengaturan Akun"
         private const val PROFIL_DIRI = "Profil Diri"
         private const val REKENING_BANK = "Rekening Bank"
@@ -54,6 +56,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         private const val CHAT_DAN_NOTIFIKASI = "Chat & Notifikasi"
         private const val BAGIKAN_APLIKASI = "Bagikan Aplikasi"
         private const val REVIEW_APLIKASI = "Review Aplikasi"
+        private const val DEVELOPER_OPTION = "Developer Options"
 
         private const val REQUEST_CHANGE_PASSWORD = 123
         private const val REQUEST_ADD_PASSWORD = 1234
@@ -65,6 +68,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
         private var MOBILE_DOMAIN = getInstance().MOBILEWEB
 
+        private const val DEVELOPER_OPTION_INDEX = 23
 
         @JvmStatic
         fun createInstance(): MenuSettingFragment = MenuSettingFragment()
@@ -106,8 +110,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
 
     private fun setupView() {
         recycler_view.layoutManager = LinearLayoutManager(context)
-        val settingList = listOf(
-                SettingTitleMenuUiModel(PENGATURAN_TOKO, R.drawable.ic_seller_edu),
+        val settingList = mutableListOf(
+                SettingTitleMenuUiModel(PENGATURAN_TOKO, R.drawable.ic_pengaturan_toko),
                 IndentedSettingTitleUiModel(PROFIL_TOKO),
                 MenuItemUiModel(INFORMASI_DASAR, clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO),
                 MenuItemUiModel(CATATAN_TOKO, clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES),
@@ -118,8 +122,8 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 MenuItemUiModel(ATUR_LAYANAN_PENGIRIMAN, clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR),
                 DividerUiModel(DividerType.THIN_INDENTED),
                 IndentedSettingTitleUiModel(FITUR_EKSKLUSIF),
-                MenuItemUiModel(TAMBAH_DAN_LOKASI_TOKO, clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
-                MenuItemUiModel(ATUR_LAYANAN_PENGIRIMAN, clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR),
+                MenuItemUiModel(LAYANAN_BAYAR_DI_TEMPAT, clickApplink = ApplinkConstInternalMarketplace.COD),
+                MenuItemUiModel(ORDER_PRIORITAS),
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(PENGATURAN_AKUN, R.drawable.ic_account),
                 MenuItemUiModel(PROFIL_DIRI, clickApplink = ApplinkConst.SETTING_PROFILE),
@@ -132,6 +136,10 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 MenuItemUiModel(REVIEW_APLIKASI) { reviewApplication() },
                 DividerUiModel(DividerType.THIN_INDENTED)
         )
+        if (GlobalConfig.isAllowDebuggingTools())
+            settingList.add(DEVELOPER_OPTION_INDEX, MenuItemUiModel(DEVELOPER_OPTION) {
+                RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
+            })
         adapter.data.addAll(settingList)
         adapter.notifyDataSetChanged()
         renderList(settingList)
@@ -182,14 +190,14 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         context?.let { dialogBuilder = AlertDialog.Builder(it) }
         dialogBuilder?.apply {
             setIcon(logoutIconDrawable)
-            setTitle(context.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_logout_title))
-            setMessage(context.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_logout_confirm))
-            setPositiveButton(context.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_logout_button)) { dialogInterface, _ ->
+            setTitle(context.getString(R.string.seller_home_logout_title))
+            setMessage(context.getString(R.string.seller_home_logout_confirm))
+            setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
                 showProgressDialog()
                 dialogInterface.dismiss()
                 RouteManager.route(context, ApplinkConstInternalGlobal.LOGOUT)
             }
-            setNegativeButton(context.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_cancel)) {
+            setNegativeButton(context.getString(R.string.seller_home_cancel)) {
                 dialogInterface, _ -> dialogInterface.dismiss()
             }
             show()
@@ -199,7 +207,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun showProgressDialog() {
         val progressDialog = ProgressDialog(context)
         progressDialog.apply {
-            setMessage(resources.getString(com.tokopedia.sellerhomedrawer.R.string.seller_home_loading))
+            setMessage(resources.getString(R.string.seller_home_loading))
             setTitle("")
             setCancelable(false)
             show()

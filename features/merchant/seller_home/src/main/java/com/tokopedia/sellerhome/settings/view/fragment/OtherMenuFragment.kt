@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -27,9 +28,11 @@ import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
+import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingErrorType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,8 +67,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
+    private var generalShopInfoIsAlreadyLoaded = false
+    private var shopBadgeIsAlreadyLoaded = false
+    private var totalFollowersIsAlreadyLoaded = false
 
-    private val otherSettingViewModel by lazy {
+    private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
     }
 
@@ -86,11 +92,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun getAdapterTypeFactory(): OtherMenuAdapterTypeFactory = OtherMenuAdapterTypeFactory()
 
-    override fun onItemClicked(settingUiModel: SettingUiModel) {
-        settingUiModel.onClickApplink?.let {
-            RouteManager.route(context, it)
-        }
-    }
+    override fun onItemClicked(settingUiModel: SettingUiModel) {}
 
     override fun getScreenName(): String = ""
 
@@ -106,32 +108,40 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun observeLiveData() {
-        with(otherSettingViewModel) {
+        with(otherMenuViewModel) {
             generalShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
                     is Success -> showGeneralShopInfoSuccess(result.data)
-                    is Fail -> showGeneralShopInfoError()
+                    is Fail -> showError(result.throwable, SettingErrorType.GENERAL_INFO_ERROR)
                 }
             })
             shopBadgeLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
                     is Success -> showShopBadgeSuccess(result.data)
-                    is Fail -> showShopBadgeError()
+                    is Fail -> showError(result.throwable, SettingErrorType.BADGES_ERROR)
                 }
             })
             totalFollowersLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
                     is Success -> showTotalFollowingSuccess(result.data)
-                    is Fail -> showTotalFollowingError()
+                    is Fail -> showError(result.throwable, SettingErrorType.FOLLOWERS_ERROR)
                 }
             })
+            isGeneralShopInfoAlreadyLoaded.observe(viewLifecycleOwner, Observer {
+                generalShopInfoIsAlreadyLoaded = it
+            })
+            isShopBadgeAlreadyLoadedLiveData.observe(viewLifecycleOwner, Observer {
+                shopBadgeIsAlreadyLoaded = it
+            })
+            isTotalFollowersAlreadyLoadedLiveData.observe(viewLifecycleOwner, Observer {
+                totalFollowersIsAlreadyLoaded = it
+            })
+
         }
     }
 
     private fun populateAdapterData() {
         val settingList = mutableListOf(
-                DividerUiModel(DividerType.THIN_FULL),
-                DividerUiModel(),
                 SettingTitleUiModel(TINGKATKAN_PENJUALAN),
                 MenuItemUiModel(STATISTIK_TOKO, R.drawable.ic_statistic_setting, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
                 MenuItemUiModel(IKLAN_DAN_PROMOSI_TOKO, R.drawable.ic_ads_promotion, ApplinkConstInternalMarketplace.CENTRALIZED_PROMO),
@@ -147,7 +157,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 MenuItemUiModel(LAYANAN_KEUANGAN, R.drawable.ic_finance),
                 MenuItemUiModel(PUSAT_EDUKASI_SELLER, R.drawable.ic_seller_edu) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
-                    intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.SELLER_EDU)
+                    intent.putExtra(URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_EDU)
                     context?.startActivity(intent)
                 },
                 MenuItemUiModel(TOKOPEDIA_CARE, R.drawable.ic_tokopedia_care, ApplinkConst.CONTACT_US_NATIVE),
@@ -163,13 +173,19 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun getAllShopInfoData() {
         showAllLoadingShimmering()
-        otherSettingViewModel.getAllSettingShopInfo()
+        otherMenuViewModel.getAllSettingShopInfo()
     }
 
     private fun showAllLoadingShimmering() {
-        showGeneralShopInfoLoading()
-        showShopBadgeLoading()
-        showTotalFollowingLoading()
+        if (!generalShopInfoIsAlreadyLoaded) {
+            showGeneralShopInfoLoading()
+        }
+        if (!shopBadgeIsAlreadyLoaded) {
+            showShopBadgeLoading()
+        }
+        if (!totalFollowersIsAlreadyLoaded) {
+            showTotalFollowingLoading()
+        }
     }
 
     private fun showGeneralShopInfoSuccess(generalShopInfoUiModel: GeneralShopInfoUiModel) {
@@ -198,16 +214,40 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewHolder?.onLoadingGetTotalFollowing()
     }
 
-    private fun showGeneralShopInfoError() {
-
+    private fun showError(throwable: Throwable, errorType: SettingErrorType) {
+        throwable.message?.let { view?.showToasterError(it) }
+        when(errorType) {
+            is SettingErrorType.GENERAL_INFO_ERROR -> {
+                if (!generalShopInfoIsAlreadyLoaded) {
+                    otherMenuViewHolder?.onErrorGetShopGeneralInfoData()
+                }
+            }
+            is SettingErrorType.BADGES_ERROR -> {
+                if (!shopBadgeIsAlreadyLoaded) {
+                    otherMenuViewHolder?.onErrorGetShopBadge()
+                }
+            }
+            is SettingErrorType.FOLLOWERS_ERROR -> {
+                if (!totalFollowersIsAlreadyLoaded) {
+                    otherMenuViewHolder?.onErrorGetTotalFollowing()
+                }
+            }
+        }
     }
 
-    private fun showShopBadgeError() {
-
+    private fun retryFetchAfterError() {
+        otherMenuViewModel.getAllSettingShopInfo()
     }
 
-    private fun showTotalFollowingError() {
-
+    private fun View.showToasterError(errorMessage: String) {
+        Toaster.make(this,
+                errorMessage,
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                resources.getString(R.string.setting_error_retry),
+                View.OnClickListener {
+                    retryFetchAfterError()
+                })
     }
 
     private fun setupView(view: View) {
@@ -217,7 +257,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         otherMenuViewHolder?.initBindView()
     }
 
-    override fun onShopNextClicked() {
+    override fun onShopInfoClicked() {
         RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
     }
 
@@ -235,6 +275,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     override fun onKreditTopadsClicked() {
-
+        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
     }
 }

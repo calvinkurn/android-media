@@ -50,6 +50,7 @@ object ApplinkConstInternalMarketplace {
     // ProductDetailActivity
     @JvmField
     val PRODUCT_ADD_ITEM = "$INTERNAL_MARKETPLACE/product-add-item"
+    // CategoryPickerActivity
     @JvmField
     val PRODUCT_CATEGORY_PICKER = "$INTERNAL_MARKETPLACE/product-category-picker/{id}/"
     @JvmField
@@ -72,6 +73,10 @@ object ApplinkConstInternalMarketplace {
     // ReviewProductActivity, "x_prd_nm" = productName
     @JvmField
     val PRODUCT_REVIEW = "$INTERNAL_MARKETPLACE/product/{id}/review"
+
+    // StockReminderActivity
+    @JvmField
+    val STOCK_REMINDER = "$INTERNAL_MARKETPLACE/stock-reminder/{productId}/{productName}/"
 
     // CreateReviewActivity
     @JvmField
@@ -237,6 +242,21 @@ object ApplinkConstInternalMarketplace {
     //SellerHomeActivity
     @JvmField
     val SELLER_HOME = "$INTERNAL_MARKETPLACE/sellerhome"
+
+    @JvmField
+    val SELLER_HOME_PRODUCT = "$INTERNAL_MARKETPLACE/sellerhome-product"
+
+    @JvmField
+    val SELLER_HOME_CHAT = "$INTERNAL_MARKETPLACE/sellerhome-chat"
+
+    @JvmField
+    val SELLER_HOME_SOM_ALL = "$INTERNAL_MARKETPLACE/sellerhome-som-allorder"
+
+    @JvmField
+    val SELLER_HOME_SOM_NEW_ORDER = "$INTERNAL_MARKETPLACE/sellerhome-som-neworder"
+
+    @JvmField
+    val SELLER_HOME_SOM_READY_TO_SHIP = "$INTERNAL_MARKETPLACE/sellerhome-som-readytoship"
 
     //CentralizedPromoActivity
     @JvmField
