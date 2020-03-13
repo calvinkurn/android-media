@@ -5,30 +5,47 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.product.addedit.shipment.di.AddEditProductShipmentComponent
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_GRAM
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MAX_WEIGHT_KILOGRAM
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.MIN_WEIGHT
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_GRAM
+import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
+import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify
-import kotlin.collections.ArrayList
+import javax.inject.Inject
 
 class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
-    private var selectedWeightPosition: Int = -1
-    private var selectedWeightText = ""
+    private var selectedWeightPosition: Int = 0
+    private lateinit var viewModel: AddEditProductViewModel
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     companion object {
         fun createInstance(): Fragment {
             return AddEditProductShipmentFragment()
         }
 
-        const val GRAM = "Gram"
-        const val KILOGRAM = "Kilogram"
-        const val MIN_WEIGHT = 1
-        const val MAX_WEIGHT_GRAM = 500000
-        const val MAX_WEIGHT_KILOGRAM = 500
+        fun getWeightTypeTitle(type: Int) =
+                when (type) {
+                    UNIT_GRAM ->  R.string.label_weight_gram
+                    UNIT_KILOGRAM ->  R.string.label_weight_kilogram
+                    else -> -1
+                }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -42,7 +59,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
         tfWeightUnit?.apply {
-            textFieldInput.setText(GRAM)
+            textFieldInput.setText(getWeightTypeTitle(0))
             textFieldInput.isFocusable = false // disable focus
             textFieldInput.isActivated = false // disable focus
             textFieldInput.setOnClickListener {
@@ -50,7 +67,14 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             }
         }
         tfWeightAmount?.textFieldInput?.afterTextChanged{
-            isWeightValid()
+            validateInputWeight(it)
+        }
+    }
+
+    private fun initViewModel() {
+        activity?.run {
+            viewModel = ViewModelProviders.of(this, viewModelFactory)
+                    .get(AddEditProductViewModel::class.java)
         }
     }
 
@@ -59,8 +83,8 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
             val optionPicker = OptionPicker()
             val title = getString(R.string.label_weight)
             val options: ArrayList<String> = ArrayList()
-            options.add(GRAM)
-            options.add(KILOGRAM)
+            options.add(getString(getWeightTypeTitle(UNIT_GRAM)))
+            options.add(getString(getWeightTypeTitle(UNIT_KILOGRAM)))
 
             optionPicker.apply {
                 setSelectedPosition(selectedWeightPosition)
@@ -72,26 +96,30 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
             optionPicker.setOnItemClickListener{ selectedText: String, selectedPosition: Int ->
                 tfWeightUnit?.textFieldInput?.setText(selectedText)
-                tfWeightAmount?.textFieldInput?.setText("")
                 selectedWeightPosition = selectedPosition
-                selectedWeightText = selectedText
+                resetTfWeightAmount()
             }
         }
     }
 
-    private fun getWeight() = tfWeightAmount?.textFieldInput?.text.toString().toIntOrZero()
-
-    private fun isWeightValid(): Boolean {
-        var isValid = true
-        val minWeight = MIN_WEIGHT
-        val maxWeight = if (selectedWeightText == KILOGRAM) MAX_WEIGHT_KILOGRAM else MAX_WEIGHT_GRAM
-        val errorMessage = getString(R.string.error_weight_not_valid, minWeight, maxWeight)
-        if (minWeight > getWeight() || getWeight() > maxWeight) {
-            isValid = false
+    private fun validateInputWeight(inputText: String) {
+        val errorMessage: String
+        val isValid = viewModel.isWeightValid(inputText, selectedWeightPosition, MIN_WEIGHT)
+        if (selectedWeightPosition == UNIT_GRAM) {
+            errorMessage = getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_GRAM)
+        } else {
+            errorMessage = getString(R.string.error_weight_not_valid, MIN_WEIGHT, MAX_WEIGHT_KILOGRAM)
         }
         tfWeightAmount?.setError(!isValid)
         tfWeightAmount?.setMessage(if (isValid) "" else errorMessage)
-        return isValid
+    }
+
+    private fun resetTfWeightAmount() {
+        tfWeightAmount?.apply {
+            textFieldInput.setText("")
+            setError(false)
+            setMessage("")
+        }
     }
 
     override fun getScreenName(): String {
@@ -99,7 +127,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-
+        getComponent(AddEditProductShipmentComponent::class.java).inject(this)
     }
 
 }
