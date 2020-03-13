@@ -29,8 +29,13 @@ data class ThanksPageData(
         @SerializedName("how_to_pay")
         val howToPay: String,
         @SerializedName("whitelisted_rba")
-        val whitelistedRBA: String
-
+        val whitelistedRBA: String,
+        @SerializedName("payment_type")
+        val paymentType: String,
+        @SerializedName("expire_time_str")
+        val expireTimeStr: String,
+        @SerializedName("page_type")
+        val pageType: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
@@ -42,6 +47,9 @@ data class ThanksPageData(
             parcel.createTypedArrayList(OrderList) ?: arrayListOf(),
             parcel.readParcelable(AdditionalInfo::class.java.classLoader),
             parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.readString() ?: "")
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -51,9 +59,13 @@ data class ThanksPageData(
         parcel.writeLong(expireTimeUnix)
         parcel.writeLong(amount)
         parcel.writeString(amountStr)
+        parcel.writeTypedList(orderList)
         parcel.writeParcelable(additionalInfo, flags)
         parcel.writeString(howToPay)
         parcel.writeString(whitelistedRBA)
+        parcel.writeString(paymentType)
+        parcel.writeString(expireTimeStr)
+        parcel.writeString(pageType)
     }
 
     override fun describeContents(): Int {

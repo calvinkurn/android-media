@@ -49,9 +49,11 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             is PaymentWaiting -> {
                 DeferredPaymentFragment.getFragmentInstance(thanksPageData)
             }
-            /*is PaymentExpired -> {
+            is PaymentExpired -> {
+
             }
             is PaymentActive -> {
+
             }
             is PaymentCancelled -> {
             }
@@ -60,7 +62,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
             is PaymentPreAuth -> {
             }
             is PaymentWaitingCOD -> {
-            }*/
+            }
             else -> null
         }
 

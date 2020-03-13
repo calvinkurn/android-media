@@ -16,4 +16,10 @@
     <string name="thank_total_amount_label">Total Pembayaran</string>
     <string name="thank_see_detail">Lihat Detail</string>
     <string name="thank_see_payment_methods">Lihat Cara Pembayaran</string>
+
+
+    <string name="thank_virtual_account_tag">Nomor Virtual Account</string>
+    <string name="thank_payment_code">Kode Pembayaran</string>
+    <string name="thank_phone_number">Nomor Ponsel</string>
+    <string name="thank_account_number">Nomor Rekening</string>
 </resources>

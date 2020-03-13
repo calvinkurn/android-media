@@ -11,7 +11,7 @@ object InstantPayment : PaymentType()
 object HomeCredit : PaymentType()
 object Kredivo : PaymentType()
 
-class PaymentTypeMapper {
+object PaymentTypeMapper {
 
     fun getPaymentTypeByStr(paymentTypeStr: String): PaymentType? {
         return when (paymentTypeStr) {
