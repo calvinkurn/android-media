@@ -37,7 +37,9 @@ public abstract class TkpdAnalyticsDatabase extends RoomDatabase {
                 r = instance;
                 if (r == null) {
                     r = Room.databaseBuilder(context,
-                            TkpdAnalyticsDatabase.class, DATABASE_NAME).build();
+                            TkpdAnalyticsDatabase.class, DATABASE_NAME)
+                            .fallbackToDestructiveMigration()
+                            .build();
                     instance = r;
                 }
             }
