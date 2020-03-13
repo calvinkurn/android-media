@@ -49,6 +49,8 @@ class VariantSheetView(
             .findViewById(R.id.cl_variant_sheet)
 
     private val clVariantContent: ConstraintLayout = view.findViewById(R.id.cl_variant_content)
+    private val clProductVariant: ConstraintLayout = view.findViewById(R.id.cl_product_variant)
+    private val clProductVariantPlaceholder: ConstraintLayout = view.findViewById(R.id.cl_product_variant_placeholder)
     private val tvSheetTitle: TextView = view.findViewById(R.id.tv_sheet_title)
     private val rvVariantList: RecyclerView = view.findViewById(R.id.rv_variant_list)
     private val btnAction: UnifyButton = view.findViewById(R.id.btn_action)
@@ -139,6 +141,18 @@ class VariantSheetView(
         btnAction.setOnClickListener {
             if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.product.id)
             else listener.onAddToCartClicked(this, model.product.id)
+        }
+
+        showPlaceholder(false)
+    }
+
+    internal fun showPlaceholder(isShow: Boolean) {
+        if (isShow) {
+            clProductVariantPlaceholder.visible()
+            clProductVariant.gone()
+        } else {
+            clProductVariantPlaceholder.gone()
+            clProductVariant.visible()
         }
     }
 

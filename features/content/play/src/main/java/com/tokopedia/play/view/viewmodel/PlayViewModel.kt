@@ -633,21 +633,21 @@ class PlayViewModel @Inject constructor(
                             VoucherPlaceholderUiModel
                         },
                         productList = List(5) {
-//                            ProductLineUiModel(
-//                                    id = it.toString(),
-//                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-//                                    title = "Product $it",
-//                                    price = if (it % 2 == 0) {
-//                                        OriginalPrice("Rp20$it.000")
-//                                    } else {
-//                                        DiscountedPrice(
-//                                                originalPrice = "Rp20$it.000",
-//                                                discountPercent = it * 10,
-//                                                discountedPrice = "Rp2$it.000"
-//                                        )
-//                                    }
-//                            )
-                            ProductPlaceholderUiModel
+                            ProductLineUiModel(
+                                    id = "689413405",
+                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
+                                    title = "Product $it",
+                                    price = if (it % 2 == 0) {
+                                        OriginalPrice("Rp20$it.000")
+                                    } else {
+                                        DiscountedPrice(
+                                                originalPrice = "Rp20$it.000",
+                                                discountPercent = it * 10,
+                                                discountedPrice = "Rp2$it.000"
+                                        )
+                                    }
+                            )
+//                            ProductPlaceholderUiModel
                         }
                 )
             }
