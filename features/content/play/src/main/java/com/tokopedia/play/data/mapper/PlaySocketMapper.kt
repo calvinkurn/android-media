@@ -11,8 +11,7 @@ import com.tokopedia.websocket.WebSocketResponse
  */
 
 class PlaySocketMapper(
-        private val webSocketResponse: WebSocketResponse,
-        private val amountStringStepArray: Array<String>
+        private val webSocketResponse: WebSocketResponse
 ) {
 
     private val gson = Gson()
@@ -59,10 +58,7 @@ class PlaySocketMapper(
     }
 
     private fun mapToTotalView(): TotalView {
-        val totalView = gson.fromJson(webSocketResponse.jsonObject, TotalView::class.java)
-        if (totalView.totalViewFormatted.isNullOrEmpty())
-            totalView.totalViewFormatted = totalView.totalView.toAmountString(amountStringStepArray, separator = ".")
-        return totalView
+        return gson.fromJson(webSocketResponse.jsonObject, TotalView::class.java)
     }
 
     private fun mapToIncomingChat(): PlayChat {
