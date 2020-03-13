@@ -126,7 +126,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
         button_apply_promo.setOnClickListener {
             setButtonLoading(button_apply_promo, true)
-            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
+            val promoParam = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
+            viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), promoParam)
         }
         button_apply_no_promo.setOnClickListener {
             setButtonLoading(button_apply_no_promo, true)
@@ -510,7 +511,8 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 setPrimaryCTAClickListener {
                     viewModel.sendAnalyticsClickSimpanPromoBaru()
                     if (viewModel.isHasAnySelectedPromoItem()) {
-                        viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp))
+                        val promoParam = arguments?.getParcelable(ARGS_PROMO_REQUEST) as PromoRequest
+                        viewModel.applyPromo(GraphqlHelper.loadRawString(it.resources, R.raw.mutation_validate_use_promo_revamp), promoParam)
                     } else {
                         viewModel.clearPromo(GraphqlHelper.loadRawString(it.resources, R.raw.clear_promo))
                     }

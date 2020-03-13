@@ -5,9 +5,9 @@ import android.os.Parcelable
 
 data class ClashingInfoDetailUiModel(
 		var isClashedPromos: Boolean? = false,
-		var options: List<PromoClashOptionUiModel?>? = listOf(),
-		var clashReason: String? = "",
-		var clashMessage: String? = ""
+		var options: List<PromoClashOptionUiModel> = emptyList(),
+		var clashReason: String = "",
+		var clashMessage: String = ""
 ) : Parcelable {
 	constructor(parcel: Parcel) : this(
 			parcel.readValue(Boolean::class.java.classLoader) as? Boolean,

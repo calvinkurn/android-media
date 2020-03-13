@@ -9,7 +9,7 @@ data class PromoCheckoutVoucherOrdersItemUiModel(
         var titleDescription: String? = "",
         var isPo: Int? = -1,
         var type: String? = "",
-        var messageUiModel: MessageUiModel? = MessageUiModel(),
+        var messageUiModel: MessageUiModel = MessageUiModel(),
         var duration: String? = "",
         var cartId: Int? = -1,
         var shopId: Int? = -1,

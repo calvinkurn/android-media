@@ -101,20 +101,29 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
     private suspend fun getCouponRecommendation(mutation: String, promoRequest: PromoRequest, promoCode: String) {
         launchCatchError(block = {
-            // Set param
-            if (promoCode.isNotBlank() && !promoRequest.codes.contains(promoCode)) {
-                promoRequest.codes.add(promoCode)
+            // Set param manual input
+            if (promoCode.isNotBlank()) {
+                promoRequest.attemptedCodes.clear()
+                promoRequest.attemptedCodes.add(promoCode)
             }
 
             promoRequest.orders.forEach { order ->
                 order.codes.clear()
                 promoListUiModel.value?.forEach {
-                    if (it is PromoListItemUiModel && it.uiState.isSelected && it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
-                        order.codes.add(it.uiData.promoCode)
+                    if (it is PromoListItemUiModel && it.uiState.isSelected) {
+                        if (it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
+                            order.codes.add(it.uiData.promoCode)
+                        } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(promoCode)) {
+                            promoRequest.codes.add(promoCode)
+                        }
                     } else if (it is PromoListHeaderUiModel && it.uiData.tmpPromoItemList.isNotEmpty()) {
                         it.uiData.tmpPromoItemList.forEach {
-                            if (it.uiState.isSelected && it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
-                                order.codes.add(it.uiData.promoCode)
+                            if (it.uiState.isSelected) {
+                                if (it.uiData.uniqueId == order.uniqueId && !order.codes.contains(it.uiData.promoCode)) {
+                                    order.codes.add(it.uiData.promoCode)
+                                } else if (it.uiData.shopId == 0 && !promoRequest.codes.contains(promoCode)) {
+                                    promoRequest.codes.add(promoCode)
+                                }
                             }
                         }
                     }
@@ -244,11 +253,11 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         }
     }
 
-    fun applyPromo(mutation: String) {
-        launch { doApplyPromo(mutation) }
+    fun applyPromo(mutation: String, requestParam: PromoRequest) {
+        launch { doApplyPromo(mutation, requestParam) }
     }
 
-    private suspend fun doApplyPromo(mutation: String) {
+    private suspend fun doApplyPromo(mutation: String, requestParam: PromoRequest) {
         launchCatchError(block = {
             // Initialize response action state
             if (applyPromoResponse.value == null) {

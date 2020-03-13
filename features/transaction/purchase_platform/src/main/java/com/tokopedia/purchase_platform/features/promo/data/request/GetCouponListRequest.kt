@@ -35,6 +35,8 @@ data class CouponListRecommendationRequest(
 data class PromoRequest(
         @SerializedName("codes")
         var codes: ArrayList<String> = ArrayList(),
+        @SerializedName("attempted_codes")
+        val attemptedCodes: ArrayList<String> = ArrayList(),
         @SerializedName("skip_apply")
         var skipApply: Int = 1,
         @SerializedName("is_suggested")
@@ -49,6 +51,7 @@ data class PromoRequest(
 
     constructor(parcel: Parcel) : this(
             parcel.createStringArrayList() ?: ArrayList(),
+            parcel.createStringArrayList() ?: ArrayList(),
             parcel.readInt(),
             parcel.readInt(),
             parcel.readString() ?: "",
@@ -58,6 +61,7 @@ data class PromoRequest(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeStringList(codes)
+        parcel.writeStringList(attemptedCodes)
         parcel.writeInt(skipApply)
         parcel.writeInt(isSuggested)
         parcel.writeString(cartType)
