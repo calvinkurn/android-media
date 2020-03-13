@@ -894,7 +894,7 @@ class UmrahTrackingAnalytics {
 
     fun umrahTravelListClickBack(){
         val map = mutableMapOf<String, Any?>()
-        map[TrackAppUtils.EVENT] = ""
+        map[TrackAppUtils.EVENT] = UMRAH_EVENT_CLICK_UMROH
         map[TrackAppUtils.EVENT_CATEGORY] = UMRAH_TRAVEL_LIST_UMROH
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_BACK
         map[TrackAppUtils.EVENT_LABEL] = ""

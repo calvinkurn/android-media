@@ -30,7 +30,7 @@ class UmrahTravelListViewModel @Inject constructor(private val umrahTravelAgents
 
     companion object{
         const val FLAGS_TRAVEL = "TRAVEL_AGENT_FEATURED_ON_LIST"
-        const val LIMIT = 10
+        const val LIMIT = 20
     }
 
 }
