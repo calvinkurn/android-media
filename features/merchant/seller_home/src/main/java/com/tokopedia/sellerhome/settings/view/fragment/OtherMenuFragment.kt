@@ -1,16 +1,16 @@
 package com.tokopedia.sellerhome.settings.view.fragment
 
-import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -19,6 +19,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
@@ -35,15 +37,16 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingErrorType
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
+import com.tokopedia.sellerhome.view.StatusBarCallback
+import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_other_menu.*
-import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import javax.inject.Inject
 
-class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener{
+class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(), OtherMenuViewHolder.Listener, StatusBarCallback{
 
     companion object {
         const val URL_KEY = "url"
@@ -59,6 +62,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         private const val LAYANAN_KEUANGAN = "Layanan Keuangan"
         private const val PUSAT_EDUKASI_SELLER = "Pusat Edukasi Seller"
         private const val TOKOPEDIA_CARE = "Tokopedia Care"
+
+        private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
+        private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
+        private const val MAXIMUM_ALPHA = 255f
+        private const val ALPHA_CHANGE_THRESHOLD = 150
         @JvmStatic
         fun createInstance(): OtherMenuFragment = OtherMenuFragment()
     }
@@ -78,6 +86,8 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     private var startToTransitionOffset = 0
     private var statusInfoTransitionOffset = 0
 
+    private var isLightStatusBar = false
+
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
     }
@@ -87,17 +97,10 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         getAllShopInfoData()
     }
 
-    @SuppressLint("ResourceType")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        activity?.theme?.let {
-            val tv = TypedValue()
-            if (it.resolveAttribute(R.attr.actionBarSize, tv, true)) {
-                startToTransitionOffset = TypedValue.complexToDimensionPixelSize(tv.data, resources.displayMetrics)
-            }
-        }
-        statusInfoTransitionOffset = resources.getDimensionPixelSize(R.dimen.setting_shop_info_height)
+        (activity as? SellerHomeActivity)?.attachCallback(this)
+        setupOffset()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -125,6 +128,35 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun loadData(page: Int) {
 
+    override fun onFollowersCountClicked() {
+        //No op for now. Will discuss with PM
+    }
+
+    override fun onSaldoClicked() {
+        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
+            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
+        else {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
+            context?.startActivity(intent)
+        }
+    }
+
+    override fun onKreditTopadsClicked() {
+        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
+    }
+
+    override fun setStatusBar() {
+        (activity as? Activity)?.run {
+            if (isLightStatusBar) {
+                requestStatusBarLight()
+            } else {
+                requestStatusBarDark()
+            }
+        }
+    }
+
+    private fun setStatusBarState(isLight: Boolean) {
+        isLightStatusBar = isLight
     }
 
     private fun observeLiveData() {
@@ -275,7 +307,17 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this)}
         otherMenuViewHolder?.initBindView()
-        view.observeRecyclerViewScrollListener()
+        observeRecyclerViewScrollListener()
+    }
+
+    private fun setupOffset() {
+        activity?.theme?.let {
+            val tv = TypedValue()
+            if (it.resolveAttribute(R.attr.actionBarSize, tv, true)) {
+                startToTransitionOffset = START_OFFSET
+            }
+        }
+        statusInfoTransitionOffset = HEIGHT_OFFSET
     }
 
     override fun onShopInfoClicked() {
@@ -293,6 +335,18 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
             context?.startActivity(intent)
         }
+    }
+
+    private fun setLightStatusBar() {
+        setStatusBarState(true)
+        activity?.requestStatusBarLight()
+        statusBarBackground.visibility = View.INVISIBLE
+    }
+
+    private fun setDarkStatusBar() {
+        setStatusBarState(false)
+        activity?.requestStatusBarDark()
+        statusBarBackground.visibility = View.VISIBLE
     }
 
     override fun onKreditTopadsClicked() {

@@ -31,12 +31,30 @@ fun Activity.setTransparentStatusBar() {
 }
 
 fun Activity.setOpaqueStatusBar(color: Int = Color.WHITE) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window?.decorView?.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         window?.setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
         window?.statusBarColor = color
     }
-    setLightStatusBar(true)
+}
+
+fun Activity.requestStatusBarLight() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window?.decorView?.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window?.setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+        window?.statusBarColor = Color.TRANSPARENT
+    }
+}
+
+fun Activity.requestStatusBarDark() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        window?.decorView?.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        window?.setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+        window?.statusBarColor = Color.TRANSPARENT
+    }
 }
 
 fun Window.setWindowFlag(bits: Int, on: Boolean) {

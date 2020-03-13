@@ -12,6 +12,7 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setOpaqueStatusBar
 import com.tokopedia.kotlin.extensions.view.setTransparentStatusBar
 import com.tokopedia.kotlin.extensions.view.setupStatusBarUnderMarshmallow
@@ -22,6 +23,7 @@ import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
+import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
@@ -53,6 +55,8 @@ class SellerHomeActivity : BaseActivity() {
     private var hasAttachSettingsFragment = false
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
 
+    private var statusBarCallback: StatusBarCallback? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
@@ -64,23 +68,7 @@ class SellerHomeActivity : BaseActivity() {
         observeNotificationsLiveData()
         observeShopInfoLiveData()
         observeCurrentSelectedPageLiveData()
-        setupStatusBar()
-    }
-
-    private fun setupStatusBar(isOpaque: Boolean = true) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isOpaque) {
-                this.setOpaqueStatusBar()
-            } else {
-                this.setTransparentStatusBar()
-            }
-        }
-        else {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-                sahContainer.requestApplyInsets()
-            }
-            this.setupStatusBarUnderMarshmallow()
-        }
+        initStatusBar()
     }
 
     override fun onResume() {
@@ -94,6 +82,10 @@ class SellerHomeActivity : BaseActivity() {
             lastSomTab = page
             sharedViewModel.setCurrentSelectedPage(page)
         }
+    }
+
+    fun attachCallback(callback: StatusBarCallback) {
+        statusBarCallback = callback
     }
 
     private fun initInjector() {
@@ -129,8 +121,7 @@ class SellerHomeActivity : BaseActivity() {
     }
 
     private fun showOtherSettingsFragment() {
-        setupStatusBar(false)
-
+        setupOtherMenuStatusBar()
         val type = FragmentType.OTHER
         if (sahBottomNav.currentItem == type) return
 
@@ -201,5 +192,31 @@ class SellerHomeActivity : BaseActivity() {
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
         val notificationCount = orderStatus.newOrder.plus(orderStatus.readyToShip)
         sahBottomNav.setNotification(notificationCount, FragmentType.ORDER)
+    }
+
+    private fun setupStatusBar(isOpaque: Boolean = true) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (isOpaque) {
+                this.setLightStatusBar()
+            } else {
+                this.setTransparentStatusBar()
+            }
+        }
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                sahContainer.requestApplyInsets()
+            }
+            this.setupStatusBarUnderMarshmallow()
+        }
+    }
+
+    private fun setupOtherMenuStatusBar() {
+        setupStatusBar(false)
+        statusBarCallback?.setStatusBar()
+    }
+
+    private fun initStatusBar() {
+        setOpaqueStatusBar()
+        setupStatusBar()
     }
 }
