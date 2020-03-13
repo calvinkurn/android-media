@@ -1,24 +1,25 @@
 task("configDebugTools") {
-    if (allowDistributionLocal() == "true") {
-        rootProject.ext.debugToolsEnabled = true
-        println("Debug tools set true based on buildType Parameter")
-        return
-    }
-    def taskNames = project.gradle.startParameter.taskNames
-    if (taskNames==null || taskNames.size() == 0) {
-        rootProject.ext.debugToolsEnabled = true
-        println("Debug tools set true. No task is defined")
-    } else {
-        rootProject.ext.debugToolsEnabled = false
-        for ( taskName in taskNames ) {
-            if ( taskName.toLowerCase().contains("debug") ||
-                    taskName.toLowerCase().contains("dev") ) {
-                rootProject.ext.debugToolsEnabled = true
-                println("Debug tools set true. Task is debug or dev")
-                break
-            }
-        }
-    }
+    rootProject.ext.debugToolsEnabled = false
+//    if (allowDistributionLocal() == "true") {
+//        rootProject.ext.debugToolsEnabled = true
+//        println("Debug tools set true based on buildType Parameter")
+//        return
+//    }
+//    def taskNames = project.gradle.startParameter.taskNames
+//    if (taskNames==null || taskNames.size() == 0) {
+//        rootProject.ext.debugToolsEnabled = true
+//        println("Debug tools set true. No task is defined")
+//    } else {
+//        rootProject.ext.debugToolsEnabled = false
+//        for ( taskName in taskNames ) {
+//            if ( taskName.toLowerCase().contains("debug") ||
+//                    taskName.toLowerCase().contains("dev") ) {
+//                rootProject.ext.debugToolsEnabled = true
+//                println("Debug tools set true. Task is debug or dev")
+//                break
+//            }
+//        }
+//    }
 }
 
 def allowDistributionLocal() {
