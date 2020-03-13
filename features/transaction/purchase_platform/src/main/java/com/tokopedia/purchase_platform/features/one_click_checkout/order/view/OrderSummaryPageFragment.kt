@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.design.component.Tooltip
@@ -43,6 +44,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.mo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.card_order_empty_preference.*
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -125,7 +127,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     orderProductCard.initView()
                     showMessage(it.data.preference)
                     if (it.data.preference.address.addressId > 0) {
+                        showPreferenceCard()
                         orderPreferenceCard.setPreference(it.data)
+                    } else {
+                        showEmptyPreferenceCard()
                     }
 //                    }
 
@@ -195,6 +200,35 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         })
         if (viewModel.orderProduct.parentId == 0) {
             refresh()
+        }
+    }
+
+    private fun showPreferenceCard(){
+        empty_preference_card.gone()
+        preference_card.visible()
+        preference_card.visible()
+        tv_total_payment_label.visible()
+        tv_total_payment_value.visible()
+        btn_order_detail.visible()
+        btn_pay.visible()
+    }
+
+    private fun showEmptyPreferenceCard()
+    {
+        ImageHandler.LoadImage(image_empty_profile, EMPTY_STATE_PICT_URL)
+        empty_preference_card.visible()
+        preference_card.gone()
+        tv_total_payment_label.gone()
+        tv_total_payment_value.gone()
+        btn_order_detail.gone()
+        btn_pay.gone()
+
+        button_atur_pilihan.setOnClickListener {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+            intent.apply {
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, 1)
+            }
+            startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
     }
 
@@ -503,5 +537,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         const val REQUEST_CREATE_PREFERENCE = 12
 
         const val REQUEST_CODE_COURIER_PINPOINT = 13
+        private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
     }
 }
