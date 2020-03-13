@@ -390,6 +390,7 @@ dependencies {
     implementation project(rootProject.ext.features.brandlist)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.playCommon)
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
