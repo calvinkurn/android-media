@@ -15,6 +15,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.onboarding.R
+import com.tokopedia.onboarding.analytics.OnboardingAnalytics
 import com.tokopedia.onboarding.common.IOnBackPressed
 import com.tokopedia.onboarding.di.DaggerOnboardingComponent
 import com.tokopedia.onboarding.di.module.DynamicOnboardingQueryModule
@@ -23,6 +24,7 @@ import com.tokopedia.onboarding.domain.model.ConfigDataModel
 import com.tokopedia.onboarding.view.fragment.DynamicOnboardingFragment
 import com.tokopedia.onboarding.view.fragment.OnboardingFragment
 import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel
+import com.tokopedia.onboarding.view.viewmodel.DynamicOnboardingViewModel.Companion.JOB_WAS_CANCELED
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -34,6 +36,9 @@ import javax.inject.Inject
  */
 
 class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponent> {
+
+    @Inject
+    lateinit var onboardingAnalytics: OnboardingAnalytics
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -105,8 +110,17 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     private fun initObserver() {
         viewModel.configData.observe(this, Observer { result ->
             when(result) {
-                is Success -> { onGetDynamicOnboardingSuccess(result.data) }
-                is Fail -> { onGetDynamicOnboardingFailed(result.throwable) }
+                is Success -> {
+                    onboardingAnalytics.trackOnboardingPage(true)
+                    onGetDynamicOnboardingSuccess(result.data)
+                }
+                is Fail -> {
+                    if (result.throwable.message == JOB_WAS_CANCELED) {
+                        onboardingAnalytics.trackOnboardingPage(false)
+                    }
+
+                    onGetDynamicOnboardingFailed(result.throwable)
+                }
             }
         })
     }

@@ -19,6 +19,10 @@ class OnboardingAnalytics {
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName)
     }
 
+    fun trackOnboardingPage(isDynamic: Boolean) {
+        Timber.w("P2#DYNAMIC_OBOARDING_PAGE#$isDynamic")
+    }
+
     fun trackMoengage() {
         val value = HashMap<String, Any>()
         value.set("partner_source", "source_apk")
