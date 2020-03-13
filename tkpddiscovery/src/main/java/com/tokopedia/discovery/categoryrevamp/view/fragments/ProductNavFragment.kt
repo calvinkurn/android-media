@@ -42,7 +42,7 @@ import com.tokopedia.discovery.categoryrevamp.view.interfaces.SubCategoryListene
 import com.tokopedia.discovery.categoryrevamp.viewmodel.ProductNavViewModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
-import com.tokopedia.discovery.common.manager.handleActivityResult
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.filter.common.data.Filter
@@ -519,7 +519,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        handleActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
+        handleProductCardOptionsActivityResult(requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
             override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                 handleWishlistAction(productCardOptionsModel)
             }
@@ -549,7 +549,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             onSuccessAddWishlist(productCardOptionsModel.productId)
         }
         else {
-            onErrorAddWishList(getString(R.string.msg_add_wishlist_failed), productCardOptionsModel.productId)
+            onErrorAddWishList(getString(com.tokopedia.wishlist.common.R.string.msg_error_add_wishlist), productCardOptionsModel.productId)
         }
     }
 
@@ -558,7 +558,7 @@ open class ProductNavFragment : BaseBannedProductFragment(),
             onSuccessRemoveWishlist(productCardOptionsModel.productId)
         }
         else {
-            onErrorRemoveWishlist(getString(R.string.msg_remove_wishlist_failed), productCardOptionsModel.productId)
+            onErrorRemoveWishlist(getString(com.tokopedia.wishlist.common.R.string.msg_error_remove_wishlist), productCardOptionsModel.productId)
         }
     }
 

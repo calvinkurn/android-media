@@ -1,0 +1,20 @@
+query SearchProfile($params: String) {
+  aceSearchProfile(params: $params) {
+    profiles {
+      id
+      name
+      avatar
+      username
+      bio
+      thumbnails
+      followed
+      following
+      followers
+      isaffiliate
+      iskol
+    }
+    query
+    has_next
+    count
+  }
+}

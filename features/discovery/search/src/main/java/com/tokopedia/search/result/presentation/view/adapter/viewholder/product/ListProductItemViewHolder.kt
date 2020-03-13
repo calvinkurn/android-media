@@ -29,6 +29,11 @@ class ListProductItemViewHolder(
             productListener.onThreeDotsClick(productItem, adapterPosition)
         }
 
+        itemView.productCardView?.setOnLongClickListener {
+            productListener.onThreeDotsClick(productItem, adapterPosition)
+            true
+        }
+
         itemView.productCardView?.setOnClickListener {
             productListener.onItemClicked(productItem, adapterPosition)
         }

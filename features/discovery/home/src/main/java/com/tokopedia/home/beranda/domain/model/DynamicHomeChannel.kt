@@ -534,6 +534,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_LIST_CAROUSEL: String = "list_carousel"
             const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"
             const val LAYOUT_MIX_LEFT: String = "left_carousel"
+            const val LAYOUT_MIX_TOP: String = "top_carousel"
             const val channelId: String = "channelId"
         }
     }
@@ -620,6 +621,9 @@ data class DynamicHomeChannel(
             @Expose
             @SerializedName("name")
             val name: String = "",
+            @Expose
+            @SerializedName("subtitle")
+            val subtitle: String = "",
             @Expose
             @SerializedName("expiredTime")
             val expiredTime: String = "",

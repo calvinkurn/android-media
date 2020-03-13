@@ -53,9 +53,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function2;
-
 public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFactory>, HomeFeedTypeFactory>
         implements HomeFeedContract.View {
 
@@ -140,6 +137,11 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
         getRecyclerView(getView()).addItemDecoration(
                 new HomeFeedItemDecoration(getResources().getDimensionPixelSize(R.dimen.dp_4))
         );
+        if (homeCategoryListener.getHomeJankyFramesUtil() != null) {
+            homeCategoryListener.getHomeJankyFramesUtil().recordRecyclerViewScrollPerformance(
+                    getRecyclerView(getView()),
+                    "home", "feed");
+        }
         if (parentPool != null) {
             parentPool.setMaxRecycledViews(
                     HomeFeedViewHolder.Companion.getLAYOUT(),
@@ -430,7 +432,7 @@ public class HomeFeedFragment extends BaseListFragment<Visitable<HomeFeedTypeFac
             updateWishlist(id, wishlistStatusFromPdp, position);
         }
 
-        ProductCardOptionsManager.handleActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
+        ProductCardOptionsManager.handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
     }
 
     private void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {

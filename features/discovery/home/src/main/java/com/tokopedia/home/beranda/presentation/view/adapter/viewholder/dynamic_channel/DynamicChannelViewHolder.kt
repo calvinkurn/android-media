@@ -30,6 +30,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
     var countDownView: CountDownView? = null
     var seeAllButton: TextView? = null
     var channelTitle: Typography? = null
+    var channelSubtitle: TextView? = null
     var seeAllButtonUnify: UnifyButton? = null
     /**
      * List of possible layout from backend
@@ -40,11 +41,12 @@ abstract class DynamicChannelViewHolder(itemView: View,
         const val TYPE_ORGANIC = 2
         const val TYPE_SIX_GRID_LEGO = 3
         const val TYPE_THREE_GRID_LEGO = 4
-        const val TYPE_FOUR_GRID_LEGO = 9
         const val TYPE_CURATED = 5
         const val TYPE_BANNER = 6
         const val TYPE_BANNER_CAROUSEL = 7
         const val TYPE_GIF_BANNER = 8
+        const val TYPE_FOUR_GRID_LEGO = 9
+        const val TYPE_MIX_TOP = 10
         const val TYPE_MIX_LEFT = 20
 
         fun getLayoutType(channels: DynamicHomeChannel.Channels): Int {
@@ -58,6 +60,7 @@ abstract class DynamicChannelViewHolder(itemView: View,
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_CAROUSEL -> return TYPE_BANNER_CAROUSEL
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_ORGANIC -> return TYPE_BANNER
                 DynamicHomeChannel.Channels.LAYOUT_BANNER_GIF -> return TYPE_GIF_BANNER
+                DynamicHomeChannel.Channels.LAYOUT_MIX_TOP -> return TYPE_MIX_TOP
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> return TYPE_MIX_LEFT
 
             }
@@ -69,12 +72,14 @@ abstract class DynamicChannelViewHolder(itemView: View,
         try {
             val channelTitleContainer: View? = itemView.findViewById(R.id.channel_title_container)
             val stubChannelTitle: View? = itemView.findViewById(R.id.channel_title)
+            val stubChannelSubtitle: View? = itemView.findViewById(R.id.channel_subtitle)
             val stubCountDownView: View? = itemView.findViewById(R.id.count_down)
             val stubSeeAllButton: View? = itemView.findViewById(R.id.see_all_button)
             val stubSeeAllButtonUnify: View? = itemView.findViewById(R.id.see_all_button_unify)
 
             val channel = element.channel
             val channelHeaderName = element.channel?.header?.name
+            val channelSubtitleName = element.channel?.header?.subtitle
 
             channel?.let {
                 channelTitleContainer?.let {
@@ -99,6 +104,28 @@ abstract class DynamicChannelViewHolder(itemView: View,
                         )
                     } else {
                         channelTitleContainer.visibility = View.GONE
+                    }
+
+                    /**
+                     * Requirement:
+                     * Only show channel subtitle when it is exist
+                     */
+                    if (channelSubtitleName?.isNotEmpty() == true) {
+                        channelSubtitle = if (stubChannelSubtitle is ViewStub &&
+                                !isViewStubHasBeenInflated(stubChannelSubtitle)) {
+                            val stubChannelView = stubChannelSubtitle.inflate()
+                            stubChannelView?.findViewById(R.id.channel_subtitle)
+                        } else {
+                            itemView.findViewById(R.id.channel_subtitle)
+                        }
+                        channelSubtitle?.text = channelSubtitleName
+                        channelSubtitle?.visibility = View.VISIBLE
+                        channelSubtitle?.setTextColor(
+                                if(channel.header.textColor.isNotEmpty()) Color.parseColor(channel.header.textColor)
+                                else ContextCompat.getColor(context, R.color.Neutral_N700)
+                        )
+                    } else {
+                        channelSubtitle?.visibility = View.GONE
                     }
 
                     /**

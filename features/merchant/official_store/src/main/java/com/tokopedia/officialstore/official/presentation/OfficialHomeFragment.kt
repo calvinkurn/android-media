@@ -1,5 +1,6 @@
 package com.tokopedia.officialstore.official.presentation
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -21,11 +22,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
-import com.tokopedia.discovery.common.manager.handleActivityResult
+import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
-import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
+import com.tokopedia.navigation_common.listener.JankyFramesMonitoringListener
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
@@ -72,10 +73,13 @@ class OfficialHomeFragment :
         private const val PDP_EXTRA_PRODUCT_ID = "product_id"
         private const val WIHSLIST_STATUS_IS_WISHLIST = "isWishlist"
         private const val SLUG_CONST = "{slug}"
+        private const val PERFORMANCE_OS_PAGE_NAME = "OS"
+
         @JvmStatic
         fun newInstance(bundle: Bundle?) = OfficialHomeFragment().apply { arguments = bundle }
     }
 
+    private var jankyFramesMonitoringListener: JankyFramesMonitoringListener? = null
     private val sentDynamicChannelTrackers = mutableSetOf<String>()
 
     @Inject
@@ -141,7 +145,13 @@ class OfficialHomeFragment :
         adapter = OfficialHomeAdapter(adapterTypeFactory)
         recyclerView?.adapter = adapter
 
+        recyclerView?.let { jankyFramesMonitoringListener?.mainJankyFrameMonitoringUtil?.recordRecyclerViewScrollPerformance(it, pageName = PERFORMANCE_OS_PAGE_NAME) }
         return view
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        jankyFramesMonitoringListener = castContextToJankyFramesMonitoring(context)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -159,6 +169,12 @@ class OfficialHomeFragment :
     override fun onPause() {
         super.onPause()
         tracking?.sendAll()
+    }
+
+    private fun castContextToJankyFramesMonitoring(context: Context): JankyFramesMonitoringListener? {
+        return if (context is JankyFramesMonitoringListener) {
+            context
+        } else null
     }
 
     private fun resetData() {
@@ -380,8 +396,7 @@ class OfficialHomeFragment :
             lastParentPosition = null
         }
 
-        // ProductCardOptionsManager
-        handleActivityResult(
+        handleProductCardOptionsActivityResult(
                 requestCode, resultCode, data, object: ProductCardOptionsWishlistCallback {
                     override fun onReceiveWishlistResult(productCardOptionsModel: ProductCardOptionsModel) {
                         handleWishlistAction(productCardOptionsModel)
@@ -424,24 +439,31 @@ class OfficialHomeFragment :
     }
 
     private fun showSuccessAddWishlist() {
-        val rootView = view?.findViewById<View>(android.R.id.content) ?: return
-        val message = getString(R.string.msg_success_add_wishlist)
+        activity?.let { activity ->
+            val view = activity.findViewById<View>(android.R.id.content) ?: return
+            val message = getString(R.string.msg_success_add_wishlist)
 
-        Snackbar.make(rootView, message, Snackbar.LENGTH_LONG)
-                .setAction("Lihat Wishlist") { RouteManager.route(rootView.context, ApplinkConst.WISHLIST) }
-                .show()
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                    .setAction("Lihat Wishlist") { RouteManager.route(activity, ApplinkConst.WISHLIST) }
+                    .show()
+
+        }
     }
 
     private fun showSuccessRemoveWishlist() {
-        val rootView = view?.findViewById<View>(android.R.id.content) ?: return
-        val message = getString(R.string.msg_success_remove_wishlist)
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content) ?: return
+            val message = getString(R.string.msg_success_remove_wishlist)
 
-        Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
+        }
     }
 
     private fun showErrorWishlist() {
-        val rootView = view?.findViewById<View>(android.R.id.content) ?: return
-        Toaster.showError(rootView, ErrorHandler.getErrorMessage(rootView.context, null), Snackbar.LENGTH_LONG)
+        activity?.let {
+            val view = it.findViewById<View>(android.R.id.content) ?: return
+            Toaster.showError(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG)
+        }
     }
 
     private fun goToPDP(item: RecommendationItem, position: Int) {

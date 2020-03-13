@@ -106,8 +106,6 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_ID;
-import static com.tokopedia.discovery.common.constants.SearchConstant.GCM.GCM_STORAGE;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
@@ -669,7 +667,7 @@ public class ProductListFragment
         }
         if (getActivity() != null) {
             AdultManager.handleActivityResult(getActivity(), requestCode, resultCode, data);
-            ProductCardOptionsManager.handleActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
+            ProductCardOptionsManager.handleProductCardOptionsActivityResult(requestCode, resultCode, data, this::handleWishlistAction);
         }
     }
 
@@ -844,12 +842,7 @@ public class ProductListFragment
     }
 
     public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
-        presenter.handleWishlistButtonClicked(item);
-        if (presenter.isUserLoggedIn()) {
-            RecommendationTracking.Companion.eventUserClickProductToWishlistForUserLogin(!isAddWishlist);
-        } else {
-            RecommendationTracking.Companion.eventUserClickProductToWishlistForNonLogin();
-        }
+        // Unused
     }
 
     @Override
@@ -1604,10 +1597,7 @@ public class ProductListFragment
     }
 
     public String getRegistrationId() {
-        if (getActivity() == null || getActivity().getApplicationContext() == null) return "";
-
-        LocalCacheHandler cache = new LocalCacheHandler(getActivity().getApplicationContext(), GCM_STORAGE);
-        return cache.getString(GCM_ID, "");
+        return presenter != null ? presenter.getDeviceId() : "";
     }
 
     public void onBottomSheetHide() {

@@ -1,9 +1,11 @@
 package com.tokopedia.home.analytics.v2
 
+import android.annotation.SuppressLint
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.kotlin.model.ImpressHolder
 
+@SuppressLint("VisibleForTests")
 abstract class BaseTracking {
     protected object Event{
         const val NONE = ""
@@ -12,6 +14,7 @@ abstract class BaseTracking {
         const val IMPRESSION = "impression"
         const val PROMO_VIEW = "promoView"
         const val PRODUCT_VIEW = "productView"
+        const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val PROMO_CLICK = "promoClick"
         const val PRODUCT_CLICK = "productClick"
         const val PROMO_VIEW_IRIS = "promoViewIris"
@@ -26,9 +29,9 @@ abstract class BaseTracking {
     protected object Action{
         const val KEY = "eventAction"
         const val IMPRESSION = "%s impression"
-        const val IMPRESSION_ON = "impression on \"%s"
+        const val IMPRESSION_ON = "impression on %s"
         const val CLICK = "%s click"
-        const val CLICK_ON = "click on \"%s"
+        const val CLICK_ON = "click on %s"
     }
 
     protected object Label{
@@ -42,13 +45,20 @@ abstract class BaseTracking {
         const val FORMAT_2_ITEMS = "%s - %s"
     }
 
+    protected object ChannelId{
+        const val KEY = "channelId"
+    }
+
     protected object Value{
         const val NONE_OTHER = "none / other"
-        const val LIST = "/ - p%s - %s - %s"
+        const val LIST_WITH_HEADER = "/ - p%s - %s - %s"
+        const val LIST = "/ - p%s - %s"
+        const val EMPTY = ""
+
         fun getFreeOngkirValue(grid: DynamicHomeChannel.Grid) = if (grid.freeOngkir.isActive)"bebas ongkir" else "none / other"
     }
 
-    protected object Ecommerce {
+    object Ecommerce {
         const val KEY = "ecommerce"
         const val PROMOTION_NAME = "/ - p%s - %s - %s"
         private const val PRODUCT_VIEW = "productView"
@@ -150,11 +160,11 @@ abstract class BaseTracking {
             val map = HashMap<String, String>()
             map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
-            map[KEY_BRAND] = product.brand
-            map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice.toString()
-            map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition.toString()
+            map[KEY_BRAND] = if(product.brand.isNotBlank()) product.brand else NONE
+            map[KEY_VARIANT] = if(product.variant.isNotBlank()) product.variant else NONE
+            map[KEY_PRICE] = product.productPrice
+            map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
+            map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (list.isNotEmpty()) map[KEY_LIST] = list

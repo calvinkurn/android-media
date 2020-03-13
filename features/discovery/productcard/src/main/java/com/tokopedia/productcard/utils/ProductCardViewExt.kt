@@ -2,12 +2,18 @@ package com.tokopedia.productcard.utils
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Rect
+import android.graphics.drawable.GradientDrawable
+import android.os.Build
+import android.view.TouchDelegate
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -170,11 +176,30 @@ private fun String?.toUnifyLabelType(): Int {
 }
 
 private fun Label.setCustomLabelType(labelGroupType: String) {
-    unlockFeature = true
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        val drawable = ContextCompat.getDrawable(context, com.tokopedia.unifycomponents.R.drawable.label_bg)
+        setBackgroundDrawable(drawable)
 
-    when(labelGroupType) {
-        TRANSPARENT_BLACK -> setLabelType(COLOR_LABEL_TRANSPARENT_BLACK)
-        else -> setLabelType(COLOR_LABEL_DEFAULT)
+        val gradientDrawable = background as? GradientDrawable
+        gradientDrawable?.setColor(safeContextGetColor(context, labelGroupType.toUnifyLabelColor()))
+    }
+}
+
+private fun safeContextGetColor(context: Context, @ColorRes colorRes: Int): Int {
+    return try {
+        ContextCompat.getColor(context, colorRes)
+    }
+    catch (throwable: Throwable) {
+        throwable.printStackTrace()
+        0
+    }
+}
+
+@ColorRes
+private fun String?.toUnifyLabelColor(): Int {
+    return when(this) {
+        TRANSPARENT_BLACK -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
+        else -> com.tokopedia.unifyprinciples.R.color.Neutral_N700_68
     }
 }
 
@@ -219,5 +244,21 @@ private fun safeParseColor(color: String): Int {
     catch (throwable: Throwable) {
         throwable.printStackTrace()
         0
+    }
+}
+
+internal fun View.expandTouchArea(left: Int, top: Int, right: Int, bottom: Int) {
+    val parent = parent
+
+    if (parent is View) {
+        val hitRect = Rect()
+        getHitRect(hitRect)
+
+        hitRect.left -= left
+        hitRect.top -= top
+        hitRect.right += right
+        hitRect.bottom += bottom
+
+        parent.touchDelegate = TouchDelegate(hitRect, this)
     }
 }

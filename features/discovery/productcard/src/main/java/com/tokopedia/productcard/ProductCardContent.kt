@@ -78,10 +78,16 @@ private fun View.renderTextShopLocation(productCardModel: ProductCardModel) {
 
 private fun View.renderRating(productCardModel: ProductCardModel) {
     when {
+        !productCardModel.willShowRatingAndReviewCount() -> hideRating()
         productCardModel.ratingString.isNotEmpty() -> renderRatingFloat(productCardModel)
         productCardModel.ratingCount > 0 -> renderRatingStars(productCardModel)
-        else -> hideRating()
     }
+}
+
+private fun View.hideRating() {
+    imageRatingString?.gone()
+    textViewRatingString?.gone()
+    linearLayoutImageRating?.gone()
 }
 
 private fun View.renderRatingFloat(productCardModel: ProductCardModel) {
@@ -114,14 +120,8 @@ private fun getRatingDrawable(isActive: Boolean): Int {
     else R.drawable.product_card_ic_rating_default
 }
 
-private fun View.hideRating() {
-    imageRatingString?.gone()
-    textViewRatingString?.gone()
-    linearLayoutImageRating?.gone()
-}
-
 private fun View.renderTextReview(productCardModel: ProductCardModel) {
-    textViewReviewCount?.shouldShowWithAction(productCardModel.reviewCount > 0) {
+    textViewReviewCount?.shouldShowWithAction(productCardModel.willShowRatingAndReviewCount()) {
         it.text = String.format(context.getString(R.string.product_card_review_count_format), productCardModel.reviewCount)
     }
 }

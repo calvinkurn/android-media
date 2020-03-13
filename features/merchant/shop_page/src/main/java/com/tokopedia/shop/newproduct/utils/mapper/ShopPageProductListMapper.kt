@@ -147,7 +147,7 @@ object ShopPageProductListMapper {
             "${shopProductViewModel.discountPercentage}%"
         }
 
-        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon!!)
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopProductViewModel.isShowFreeOngkir, shopProductViewModel.freeOngkirPromoIcon ?: "")
 
         return ProductCardModel(
                 productImageUrl = shopProductViewModel.imageUrl ?: "",
@@ -160,7 +160,8 @@ object ShopPageProductListMapper {
                 freeOngkir = freeOngkirObject,
                 labelGroupList = shopProductViewModel.labelGroupList.map {
                     mapToProductCardLabelGroup(it)
-                }
+                },
+                hasThreeDots = true
         )
     }
 

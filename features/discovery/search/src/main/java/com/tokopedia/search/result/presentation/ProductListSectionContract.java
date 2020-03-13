@@ -174,10 +174,6 @@ public interface ProductListSectionContract {
 
         void loadData(Map<String, Object> searchParameter);
 
-        void handleWishlistButtonClicked(final ProductItemViewModel productItem);
-
-        void handleWishlistButtonClicked(final RecommendationItem recommendationItem);
-
         void onBannedProductsGoToBrowserClick(String url);
 
         boolean isUsingBottomSheetFilter();
@@ -185,6 +181,8 @@ public interface ProductListSectionContract {
         String getUserId();
 
         boolean isUserLoggedIn();
+
+        String getDeviceId();
 
         void onPriceFilterTickerDismissed();
 

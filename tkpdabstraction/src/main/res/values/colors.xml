@@ -5,5 +5,14 @@
     <color name="black_twenty_percent">#1F000000</color>
     <color name="tkpd_dark_red">#FF0000</color>
     <color name="tkpdabstraction_green_600">#0a8f08</color>
-
+    <color name="white">#FFFFFF</color>
+    <color name="tkpd_main_green">#42b549</color>
+    <color name="font_black_primary_70">#B3000000</color>
+    <color name="red_500">#e51c23</color>
+    <color name="black">#000000</color>
+    <color name="red_50">#fdebec</color>
+    <color name="font_black_disabled_38">#61000000</color>
+    <color name="green_500">#259b24</color>
+    <color name="light_green">#F3FEF3</color>
+    <color name="green_300">#42bd41</color>
 </resources>

@@ -35,6 +35,7 @@ import com.airbnb.deeplinkdispatch.DeepLink;
 import com.chuckerteam.chucker.api.Chucker;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
+import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analyticsdebugger.debugger.GtmLogger;
 import com.tokopedia.analyticsdebugger.debugger.IrisLogger;
@@ -98,15 +99,20 @@ public class DeveloperOptionActivity extends BaseActivity {
     private View sendTimberButton;
     private EditText editTextTimberMessage;
 
+    private View routeManagerButton;
+    private EditText editTextRouteManager;
+
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
+    private TextView vGoToApplinkDebugger;
     private TextView vGoToFpm;
     private TextView vGoToAnalytics;
     private TextView vGoToAnalyticsError;
     private TextView vGoToIrisSaveLogDB;
     private TextView vGoToIrisSendLogDB;
     private CheckBox toggleAnalytics;
+    private CheckBox toggleApplinkNotif;
     private CheckBox toggleFpmNotif;
     private CheckBox toggleFpmAutoLogFile;
 
@@ -187,6 +193,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoTochuck = findViewById(R.id.goto_chuck);
         toggleChuck = findViewById(R.id.toggle_chuck);
 
+        vGoToApplinkDebugger = findViewById(R.id.goto_applink_debugger);
         vGoToFpm = findViewById(R.id.goto_fpm);
         vGoToAnalytics = findViewById(R.id.goto_analytics);
         vGoToAnalyticsError = findViewById(R.id.goto_analytics_error);
@@ -194,6 +201,7 @@ public class DeveloperOptionActivity extends BaseActivity {
         vGoToIrisSendLogDB = findViewById(R.id.goto_iris_send_log);
 
         toggleAnalytics = findViewById(R.id.toggle_analytics);
+        toggleApplinkNotif = findViewById(R.id.toggle_applink_debugger_notif);
         toggleFpmNotif = findViewById(R.id.toggle_fpm_notif);
         toggleFpmAutoLogFile = findViewById(R.id.toggle_fpm_auto_file_log);
 
@@ -216,6 +224,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
+
+        editTextRouteManager = findViewById(R.id.et_route_manager);
+        routeManagerButton = findViewById(R.id.btn_route_manager);
 
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
@@ -295,18 +306,6 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         toggleTimberDevOption.setOnCheckedChangeListener((compoundButton, isChecked) -> {
             if (isChecked) {
-                Timber.uprootAll();
-                Timber.plant(new Timber.DebugTree() {
-                    @Override
-                    protected String createStackElementTag(@NotNull StackTraceElement element) {
-                        return String.format("[%s:%s:%s]",
-                                super.createStackElementTag(element),
-                                element.getMethodName(),
-                                element.getLineNumber());
-                    }
-                });
-                Toast.makeText(this, "Timber is disabled", Toast.LENGTH_SHORT).show();
-            } else {
                 RemoteConfig remoteConfig = new FirebaseRemoteConfigImpl(this);
                 String remoteConfigStringKey;
                 if (GlobalConfig.isSellerApp()) {
@@ -328,6 +327,18 @@ public class DeveloperOptionActivity extends BaseActivity {
                     }
                 }
                 Toast.makeText(this, "Timber is enabled", Toast.LENGTH_SHORT).show();
+            } else {
+                Timber.uprootAll();
+                Timber.plant(new Timber.DebugTree() {
+                    @Override
+                    protected String createStackElementTag(@NotNull StackTraceElement element) {
+                        return String.format("[%s:%s:%s]",
+                                super.createStackElementTag(element),
+                                element.getMethodName(),
+                                element.getLineNumber());
+                    }
+                });
+                Toast.makeText(this, "Timber is disabled", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -340,6 +351,21 @@ public class DeveloperOptionActivity extends BaseActivity {
                             "Timber message should not empty", Toast.LENGTH_SHORT).show();
                 } else {
                     Timber.w(timberMessage);
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            timberMessage + " has been sent" , Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        routeManagerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String routeManagerString = editTextRouteManager.getText().toString();
+                if (TextUtils.isEmpty(routeManagerString)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Route Manager String should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    RouteManager.route(DeveloperOptionActivity.this, routeManagerString);
                 }
             }
         });
@@ -364,6 +390,11 @@ public class DeveloperOptionActivity extends BaseActivity {
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(getApplicationContext());
             notificationManagerCompat.notify(777,notifReview);
                 });
+
+        toggleApplinkNotif.setChecked(ApplinkLogger.getInstance(this).isNotificationEnabled());
+        toggleApplinkNotif.setOnCheckedChangeListener((compoundButton, state) -> ApplinkLogger.getInstance(this).enableNotification(state));
+
+        vGoToApplinkDebugger.setOnClickListener(v -> ApplinkLogger.getInstance(this).openActivity());
 
         toggleFpmNotif.setChecked(FpmLogger.getInstance().isNotificationEnabled());
         toggleFpmNotif.setOnCheckedChangeListener((compoundButton, state) -> FpmLogger.getInstance().enableNotification(state));

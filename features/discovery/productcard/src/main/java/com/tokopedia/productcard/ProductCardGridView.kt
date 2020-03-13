@@ -8,9 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.productcard.utils.glideClear
-import com.tokopedia.productcard.utils.initLabelGroup
-import com.tokopedia.productcard.utils.loadImage
+import com.tokopedia.productcard.utils.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.product_card_content_layout.view.*
 import kotlinx.android.synthetic.main.product_card_grid_layout.view.*
@@ -45,6 +43,15 @@ class ProductCardGridView: BaseCustomView, IProductCardView {
         imageThreeDots?.showWithCondition(productCardModel.hasThreeDots)
 
         buttonAddToCart?.showWithCondition(productCardModel.hasAddToCartButton)
+
+        constraintLayoutProductCard?.post {
+            imageThreeDots?.expandTouchArea(
+                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16),
+                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_8),
+                getDimensionPixelSize(com.tokopedia.design.R.dimen.dp_16)
+            )
+        }
     }
 
     fun setImageProductViewHintListener(impressHolder: ImpressHolder, viewHintListener: ViewHintListener) {

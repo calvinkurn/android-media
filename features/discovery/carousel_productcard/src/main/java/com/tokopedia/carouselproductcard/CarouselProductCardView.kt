@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.carouselproductcard.CarouselProductCardListener.*
 import com.tokopedia.carouselproductcard.helper.StartSnapHelper
 import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.productcard.ProductCardModel
@@ -18,7 +19,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
 
     private var carouselLayoutManager: RecyclerView.LayoutManager? = null
     private val defaultRecyclerViewDecorator = CarouselProductCardDefaultDecorator()
-    private var carouselProductCardAdapterInterface: CarouselProductCardAdapterInterface? = null
+    private var carouselProductCardAdapter: CarouselProductCardAdapter? = null
     private val carouselProductCardListenerInfo = CarouselProductCardListenerInfo()
     private val snapHelper = StartSnapHelper()
     private var isUseDefaultItemDecorator = true
@@ -73,11 +74,12 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
 
     fun bindCarouselProductCardViewGrid(
             productCardModelList: List<ProductCardModel>,
-            carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
-            carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
-            carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
-            scrollToPosition: Int = 0
+            scrollToPosition: Int = 0,
+            carouselProductCardOnItemClickListener: OnItemClickListener? = null,
+            carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
+            carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
+            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null
     ) {
         if (productCardModelList.isEmpty()) return
 
@@ -85,6 +87,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
                 carouselProductCardOnItemClickListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemThreeDotsClickListener,
                 true
         )
 
@@ -99,14 +102,18 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     }
 
     private fun initBindCarousel(
-            carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener?,
-            carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener?,
-            carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener?,
+            carouselProductCardOnItemClickListener: OnItemClickListener? = null,
+            carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
+            carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
+            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
             isGrid: Boolean
     ) {
-        carouselProductCardListenerInfo.onItemClickListener = carouselProductCardOnItemClickListener
-        carouselProductCardListenerInfo.onItemImpressedListener = carouselProductCardOnItemImpressedListener
-        carouselProductCardListenerInfo.onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+        setCarouselProductCardListeners(
+                carouselProductCardOnItemClickListener,
+                carouselProductCardOnItemImpressedListener,
+                carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemThreeDotsClickListener
+        )
 
         initLayoutManager()
 
@@ -114,16 +121,30 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         else initListAdapter()
     }
 
+    fun setCarouselProductCardListeners(
+            carouselProductCardOnItemClickListener: OnItemClickListener? = null,
+            carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
+            carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
+            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null
+    ) {
+        carouselProductCardListenerInfo.run {
+            onItemClickListener = carouselProductCardOnItemClickListener
+            onItemImpressedListener = carouselProductCardOnItemImpressedListener
+            onItemAddToCartListener = carouselProductCardOnItemAddToCartListener
+            onItemThreeDotsClickListener = carouselProductCardOnItemThreeDotsClickListener
+        }
+    }
+
     private fun initLayoutManager() {
         carouselLayoutManager = createProductCardCarouselLayoutManager()
     }
 
     private fun initGridAdapter() {
-        carouselProductCardAdapterInterface = CarouselProductCardGridAdapter()
+        carouselProductCardAdapter = CarouselProductCardGridAdapter(carouselProductCardListenerInfo)
     }
 
     private fun initListAdapter() {
-        carouselProductCardAdapterInterface = CarouselProductCardListAdapter()
+        carouselProductCardAdapter = CarouselProductCardListAdapter(carouselProductCardListenerInfo)
     }
 
     private suspend fun tryBindCarousel(
@@ -149,7 +170,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
         carouselProductCardRecyclerView?.layoutManager = carouselLayoutManager
         carouselProductCardRecyclerView?.itemAnimator = null
         carouselProductCardRecyclerView?.setHasFixedSize(true)
-        carouselProductCardRecyclerView?.adapter = carouselProductCardAdapterInterface?.asRecyclerViewAdapter()
+        carouselProductCardRecyclerView?.adapter = carouselProductCardAdapter?.asRecyclerViewAdapter()
         carouselProductCardRecyclerView?.setHeightBasedOnProductCardMaxHeight(productCardModelList, isGrid)
 
         recyclerViewPool?.let { carouselProductCardRecyclerView?.setRecycledViewPool(it) }
@@ -181,7 +202,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
     }
 
     private fun submitList(productCardModelList: List<ProductCardModel>) {
-        carouselProductCardAdapterInterface?.submitCarouselProductCardModelList(productCardModelList.map {
+        carouselProductCardAdapter?.submitCarouselProductCardModelList(productCardModelList.map {
             CarouselProductCardModel(
                     productCardModel = it,
                     carouselProductCardListenerInfo = carouselProductCardListenerInfo
@@ -203,9 +224,10 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
 
     fun bindCarouselProductCardViewList(
             productCardModelList: List<ProductCardModel>,
-            carouselProductCardOnItemClickListener: CarouselProductCardListener.OnItemClickListener? = null,
-            carouselProductCardOnItemImpressedListener: CarouselProductCardListener.OnItemImpressedListener? = null,
-            carouselProductCardOnItemAddToCartListener: CarouselProductCardListener.OnItemAddToCartListener? = null,
+            carouselProductCardOnItemClickListener: OnItemClickListener? = null,
+            carouselProductCardOnItemImpressedListener: OnItemImpressedListener? = null,
+            carouselProductCardOnItemAddToCartListener: OnItemAddToCartListener? = null,
+            carouselProductCardOnItemThreeDotsClickListener: OnItemThreeDotsClickListener? = null,
             recyclerViewPool: RecyclerView.RecycledViewPool? = null,
             scrollToPosition: Int = 0
     ) {
@@ -215,6 +237,7 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
                 carouselProductCardOnItemClickListener,
                 carouselProductCardOnItemImpressedListener,
                 carouselProductCardOnItemAddToCartListener,
+                carouselProductCardOnItemThreeDotsClickListener,
                 false
         )
 
@@ -230,11 +253,11 @@ class CarouselProductCardView : BaseCustomView, CoroutineScope {
 
     fun recycle() {
         cancelJobs()
-        carouselProductCardAdapterInterface?.submitCarouselProductCardModelList(null)
+        carouselProductCardAdapter?.submitCarouselProductCardModelList(null)
     }
 
     private fun cancelJobs() {
-        if (isActive && !masterJob.isCancelled){
+        if (isActive && !masterJob.isCancelled) {
             masterJob.children.map { it.cancel() }
         }
     }

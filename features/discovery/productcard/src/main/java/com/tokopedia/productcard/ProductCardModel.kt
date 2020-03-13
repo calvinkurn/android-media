@@ -88,4 +88,8 @@ data class ProductCardModel (
     fun getLabelShipping(): LabelGroup? {
         return findLabelGroup(LABEL_SHIPPING)
     }
+
+    fun willShowRatingAndReviewCount(): Boolean {
+        return (ratingString.isNotEmpty() || ratingCount > 0) && reviewCount > 0
+    }
 }

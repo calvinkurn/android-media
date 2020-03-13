@@ -88,8 +88,39 @@ class ShopProductCarouselViewHolder(itemView: View, deviceWidth: Int,
                     override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
                         return shopProductViewModelList.getOrNull(carouselProductCardPosition)
                     }
+                },
+                carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
+                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopProductViewModelList.getOrNull(carouselProductCardPosition) ?: return
+
+                        shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
+                    }
                 }
         )
+    }
+
+    override fun bind(visitable: Visitable<*>, payloads: MutableList<Any>) {
+        if (payloads.getOrNull(0) !is Boolean) return
+
+        val shopProductViewModelList = getShopProductViewModelListFromVisitable(visitable)
+
+        recyclerView?.setCarouselProductCardListeners(
+                carouselProductCardOnItemThreeDotsClickListener = object: CarouselProductCardListener.OnItemThreeDotsClickListener {
+                    override fun onItemThreeDotsClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val shopProductViewModel = shopProductViewModelList.getOrNull(carouselProductCardPosition) ?: return
+
+                        shopProductClickedListener?.onThreeDotsClicked(shopProductViewModel, shopTrackType)
+                    }
+                }
+        )
+    }
+
+    private fun getShopProductViewModelListFromVisitable(visitable: Visitable<*>): List<ShopProductViewModel> {
+        return when (visitable) {
+            is ShopProductFeaturedViewModel -> visitable.shopProductFeaturedViewModelList
+            is EtalaseHighlightCarouselViewModel -> visitable.shopProductViewModelList
+            else -> listOf()
+        }
     }
 
     private fun findViews(view: View) {

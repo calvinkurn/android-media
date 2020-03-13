@@ -119,12 +119,6 @@ public interface SearchConstant {
         String CART_LOCAL_CACHE = "CART_LOCAL_CACHE";
     }
 
-    interface GCM {
-        String GCM_ID = "gcm_id";
-        String GCM_STORAGE = "GCM_STORAGE";
-        String GCM_LOCAL_CACHE = "GCM_LOCAL_CACHE";
-    }
-
     interface ActiveTab {
         String PRODUCT = "product";
         String SHOP = "shop";

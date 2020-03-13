@@ -2,9 +2,9 @@ package com.tokopedia.productcard.test.utils
 
 import android.graphics.Rect
 import android.view.View
-import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.tokopedia.productcard.IProductCardView
 import kotlin.math.cos
 import kotlin.math.roundToInt
 
@@ -28,9 +28,9 @@ internal class ProductCardItemDecoration(private val spacing: Int): RecyclerView
     }
 
     private fun getVerticalCardViewOffset(view: View): Int {
-        if (view is CardView) {
-            val maxElevation = view.maxCardElevation
-            val radius = view.radius
+        if (view is IProductCardView) {
+            val maxElevation = view.getCardMaxElevation()
+            val radius = view.getCardRadius()
             return (maxElevation * 1.5 + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
         }
 
@@ -38,9 +38,9 @@ internal class ProductCardItemDecoration(private val spacing: Int): RecyclerView
     }
 
     private fun getHorizontalCardViewOffset(view: View): Int {
-        if (view is CardView) {
-            val maxElevation = view.maxCardElevation
-            val radius = view.radius
+        if (view is IProductCardView) {
+            val maxElevation = view.getCardMaxElevation()
+            val radius = view.getCardRadius()
             return (maxElevation + (1 - cos(45.0)) * radius).toFloat().roundToInt() / 2
         }
 
