@@ -17,3 +17,15 @@ data class ProductTagging(
                 val playGetTagsItem: ProductTagging = ProductTagging()
         )
 }
+
+data class ProductTag(
+        @SerializedName("is_show_product_tagging")
+        var isShowProductTagging: Boolean = false,
+        @SerializedName("products")
+        val listOfProducts: List<Product> = emptyList()
+)
+
+data class MerchantVoucher(
+        @SerializedName("vouchers")
+        val listOfVouchers: List<Voucher> = emptyList()
+)

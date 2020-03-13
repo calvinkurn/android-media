@@ -547,6 +547,16 @@ class PlayViewModel @Inject constructor(
                                             && result.userId.equals(userSession.userId, true))
                         }
                     }
+                    is ProductTag -> {
+                        _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                                productList = PlayUiMapper.mapItemProducts(result.listOfProducts)
+                        )
+                    }
+                    is MerchantVoucher -> {
+                        _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                                voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers)
+                        )
+                    }
                 }
             }
         }, onReconnect = {

@@ -82,7 +82,7 @@ object PlayUiMapper {
         )
     }
 
-    private fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
+    fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
         val productsUiModel = mutableListOf<ProductLineUiModel>()
         products.forEach {
             if (it.isAvailable) {
@@ -106,7 +106,7 @@ object PlayUiMapper {
         return productsUiModel
     }
 
-    private fun mapItemVouchers(vouchers: List<Voucher>): List<MerchantVoucherUiModel> {
+    fun mapItemVouchers(vouchers: List<Voucher>): List<MerchantVoucherUiModel> {
         val merchantVouchersUiModel = mutableListOf<MerchantVoucherUiModel>()
         vouchers.forEach {
             merchantVouchersUiModel.add(
