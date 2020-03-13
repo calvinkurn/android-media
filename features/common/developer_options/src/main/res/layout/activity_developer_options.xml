@@ -119,6 +119,27 @@
             android:text="Device ID: 1213124" />
 
         <CheckBox
+            android:id="@+id/toggle_applink_debugger_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Applink Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_applink_debugger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View Applink Log"
+            android:textColor="@color/white" />
+
+        <CheckBox
             android:id="@+id/toggle_fpm_auto_file_log"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

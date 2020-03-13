@@ -70,11 +70,15 @@ class GqlAkamaiBotInterceptor : Interceptor {
                             }else if (functionName.equals("pdpGetLayout") ){
                                 newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
                                         ?: "")
-                                newRequest.addHeader("X-TKPD-AKAMAI","pdp")
+                                newRequest.addHeader("X-TKPD-AKAMAI","pdpGetLayout")
                             }else if (functionName.equals("checkout_general") ) {
                                 newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
                                         ?: "")
                                 newRequest.addHeader("X-TKPD-AKAMAI", "checkout")
+                            }else if (functionName.equals("atcOCS") ) {
+                                newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
+                                        ?: "")
+                                newRequest.addHeader("X-TKPD-AKAMAI", "atconeclickshipment")
                             }else if (functionName.equals("getPDPInfo") ) {
                                 newRequest.addHeader("X-acf-sensor-data", CYFMonitor.getSensorData()
                                         ?: "")
