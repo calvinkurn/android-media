@@ -711,6 +711,6 @@ public class FlightDashboardFragment extends BaseDaggerFragment implements Fligh
     public void onResume() {
         super.onResume();
         KeyboardHandler.hideSoftKeyboard(getActivity());
-        presenter.initialize();
+        presenter.initializeOnResume();
     }
 }
