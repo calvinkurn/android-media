@@ -454,7 +454,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onSendButtonClicked() {
-        val sendMessage = view?.findViewById<EditText>(com.tokopedia.chat_common.R.id.new_comment)?.text.toString()
+        val sendMessage = view?.findViewById<EditText>(R.id.new_comment)?.text.toString()
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndMessage(
                 messageId,
