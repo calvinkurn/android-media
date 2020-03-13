@@ -648,9 +648,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun renderClientNumber(favNumber: TopupBillsFavNumberItem) {
         with (favNumber) {
-            this@RechargeGeneralFragment.operatorId = operatorId.toIntOrNull() ?: 0
+            operatorId.toIntOrNull()?.let { oprId -> this@RechargeGeneralFragment.operatorId = oprId }
             inputData[PARAM_CLIENT_NUMBER] = clientNumber
-            selectedProduct = RechargeGeneralProductSelectData(productId)
+            if (productId.isNotEmpty()) selectedProduct = RechargeGeneralProductSelectData(productId)
 
             if (adapter.data.isNotEmpty()) {
                 val clientNumberInput: RechargeGeneralProductInput? = adapter.data.find { it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER } as? RechargeGeneralProductInput
