@@ -80,6 +80,50 @@ class ProductManageFilterMapper {
             return FilterOptionWrapper(sortOption, filterOptions)
         }
 
+        fun mapFilterOptionWrapperToSelectedSort(filterOptionWrapper: FilterOptionWrapper): FilterDataViewModel? {
+            filterOptionWrapper.sortOption?.let {
+                return FilterDataViewModel(id = it.id.name,
+                        value = it.option.name,
+                        select = false)
+            }
+            return null
+        }
+
+        fun mapFilterOptionWrapperToSelectedEtalase(filterOptionWrapper: FilterOptionWrapper): FilterDataViewModel? {
+            filterOptionWrapper.filterOptions.forEach {
+                if (it is FilterOption.FilterByMenu) {
+                    return FilterDataViewModel(it.menuIds.first(), select = false)
+                }
+            }
+            return null
+        }
+
+        fun mapFilterOptionWrapperToSelectedCategories(filterOptionWrapper: FilterOptionWrapper): List<FilterDataViewModel> {
+            val selectedCategories = mutableListOf<FilterDataViewModel>()
+            filterOptionWrapper.filterOptions.forEach {
+                if (it is FilterOption.FilterByCategory) {
+                    it.categoryIds.forEach { category ->
+                        selectedCategories.add(
+                                FilterDataViewModel(category, select = false)
+                        )
+                    }
+                }
+            }
+            return selectedCategories
+        }
+
+        fun mapFilterOptionWrapperToSelectedOtherFilters(filterOptionWrapper: FilterOptionWrapper): List<FilterDataViewModel> {
+            val selectedOtherFilters = mutableListOf<FilterDataViewModel>()
+            filterOptionWrapper.filterOptions.forEach {
+                if (it is FilterOption.FilterByCondition) {
+                    selectedOtherFilters.add(
+                            FilterDataViewModel(it.id, select = false)
+                    )
+                }
+            }
+            return selectedOtherFilters
+        }
+
         private fun mapSortToSortOptions(filterViewModel: FilterViewModel): SortOption {
             var selectedData: FilterDataViewModel? = null
             filterViewModel.data.forEach {

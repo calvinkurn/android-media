@@ -4,6 +4,6 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.shop.common.data.source.cloud.query.param.option.SortOption
 
 data class FilterOptionWrapper (
-        val sortOption: SortOption,
+        val sortOption: SortOption?,
         val filterOptions: List<FilterOption>
 )

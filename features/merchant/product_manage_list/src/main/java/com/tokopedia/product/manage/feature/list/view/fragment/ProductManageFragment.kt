@@ -334,7 +334,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun showFilterBottomSheet() {
-        filterProductBottomSheet = context?.let { ProductManageFilterFragment.createInstance(it, this) }
+        filterProductBottomSheet = context?.let {
+            ProductManageFilterFragment.createInstance(it, viewModel.selectedFilterAndSort.value,this)
+        }
         this.childFragmentManager.let { filterProductBottomSheet?.show(it,"BottomSheetTag") }
     }
 
