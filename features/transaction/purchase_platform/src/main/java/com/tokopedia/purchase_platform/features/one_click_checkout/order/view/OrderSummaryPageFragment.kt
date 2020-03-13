@@ -135,7 +135,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         showPreferenceCard()
                         orderPreferenceCard.setPreference(it.data)
                     } else {
-                        showEmptyCard()
+                        showEmptyPreferenceCard()
                     }
 //                    }
 
@@ -219,7 +219,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         btn_pay.visible()
     }
 
-    private fun showEmptyCard()
+    private fun showEmptyPreferenceCard()
     {
         ImageHandler.LoadImage(image_empty_profile, EMPTY_STATE_PICT_URL)
         empty_preference_card.visible()
@@ -228,6 +228,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         tv_total_payment_value.gone()
         btn_order_detail.gone()
         btn_pay.gone()
+
+        button_atur_pilihan.setOnClickListener {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+            intent.apply {
+                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, 1)
+            }
+            startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
+        }
     }
 
     private fun goToPinpoint(address: Address) {
