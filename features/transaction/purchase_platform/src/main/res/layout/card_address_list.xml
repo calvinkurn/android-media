@@ -95,9 +95,9 @@
             android:gravity="center_vertical"
             android:text="Sudah Pin Point"
             app:typographyType="body_3"
-            android:textColor="@color/black"
             android:layout_marginLeft="@dimen/dp_8"
             android:layout_marginStart="@dimen/dp_8" />
+
 
         <RadioButton
             android:id="@+id/item_address_radio"
