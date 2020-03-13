@@ -87,9 +87,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
-        if (channel.header.applink.isNotEmpty()) {
-            listData.add(SeeMorePdpDataModel(applink = channel.header.applink))
-        }
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
