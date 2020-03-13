@@ -107,7 +107,7 @@ object GqlQueryConstant {
 object WidgetType {
     const val DISPLAY = "display"
     const val PRODUCT = "product"
-    const val VOUCHER = "voucher"
+    const val VOUCHER = "promo"
 }
 
 object WidgetName {
