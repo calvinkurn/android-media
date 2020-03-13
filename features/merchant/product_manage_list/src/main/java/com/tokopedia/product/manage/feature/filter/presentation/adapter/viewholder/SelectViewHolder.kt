@@ -14,7 +14,7 @@ class SelectViewHolder(view: View, private val selectClickListener: SelectClickL
         val LAYOUT = R.layout.item_select
     }
 
-    private val selectWidget: SelectWidget = itemView.select_widget
+    private val selectWidget: SelectWidget = itemView.selectWidget
 
     override fun bind(element: SelectViewModel) {
         selectWidget.bind(element, selectClickListener)

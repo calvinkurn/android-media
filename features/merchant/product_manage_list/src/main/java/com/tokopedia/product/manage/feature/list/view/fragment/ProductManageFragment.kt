@@ -653,7 +653,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 dialog.setCancelable(false)
                 dialog.setContentView(R.layout.dialog_product_add)
 
-                val btnSubmit: Button = dialog.findViewById(R.id.btn_submit)
+                val btnSubmit: Button = dialog.findViewById(R.id.filterSubmitButton)
                 val btnGoToPdp: Button = dialog.findViewById(R.id.btn_product_list)
                 val txtTipsTrick: TextView = dialog.findViewById(R.id.txt_tips_trick)
 

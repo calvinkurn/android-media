@@ -26,13 +26,11 @@ class ProductManageFilterExpandSelectViewModel @Inject constructor(): ViewModel(
         if(selectedElement != null) {
             val selectIndex = currentData?.indexOf(selectedElement!!)
             val selected = selectIndex?.let { currentData[it] }
+            if(selected == element) {
+                return needSort
+            }
             selected?.let {
                 it.isSelected = !it.isSelected
-            }
-            if(selected == element) {
-                selectedElement = null
-                _selectData.postValue(currentData)
-                return needSort
             }
         }
         val index = currentData?.indexOf(element)

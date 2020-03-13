@@ -16,7 +16,7 @@ class SetCashbackViewHolder(view: View, private val selectClickListener: SelectC
     }
 
     override fun bind(element: SetCashbackViewModel) {
-        val selectWidget: SelectWidget = itemView.select_widget
+        val selectWidget: SelectWidget = itemView.selectWidget
         val selectViewModel = SelectViewModel(name = element.description, value =  element.cashback.toString(),
                 isSelected = element.isSelected)
         selectWidget.bind(selectViewModel, selectClickListener)

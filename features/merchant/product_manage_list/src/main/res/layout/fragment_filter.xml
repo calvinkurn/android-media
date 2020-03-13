@@ -19,22 +19,24 @@
             app:layout_constraintTop_toTopOf="parent"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/filter_recycler_view"
+            android:id="@+id/filterRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/layout_lvl2"
+            android:paddingLeft="@dimen/layout_lvl2"
+            android:paddingRight="@dimen/layout_lvl2"
             app:layout_constraintBottom_toTopOf="@id/bottomsheet_button_divider"
             app:layout_constraintTop_toBottomOf="@id/bottomsheet_title_divider" />
 
         <RelativeLayout
-            android:id="@+id/filter_loader"
+            android:id="@+id/filterLoadingSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/product_manage_white"
             app:layout_constraintTop_toBottomOf="@id/bottomsheet_title_divider"
             app:layout_constraintBottom_toTopOf="@id/bottomsheet_button_divider">
 
-            <ImageView
+            <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/filter_loader_image"
                 android:layout_width="@dimen/layout_lvl4"
                 android:layout_height="@dimen/layout_lvl4"
@@ -49,10 +51,10 @@
             android:layout_marginLeft="@dimen/dp_negative_8"
             android:layout_marginRight="@dimen/dp_negative_8"
             android:layout_marginBottom="@dimen/layout_lvl2"
-            app:layout_constraintBottom_toTopOf="@id/btn_close_bottom_sheet" />
+            app:layout_constraintBottom_toTopOf="@id/buttonCloseBottomSheet" />
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_close_bottom_sheet"
+            android:id="@+id/buttonCloseBottomSheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/filter_button"

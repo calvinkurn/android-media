@@ -3,9 +3,8 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_select.view.*
 
 class SelectWidget : BaseCustomView {
@@ -29,7 +28,7 @@ class SelectWidget : BaseCustomView {
     }
 
     fun bind(element: SelectViewModel, selectClickListener: SelectClickListener) {
-        this.tv_header.text = element.name
+        this.title.text = element.name
         if(element.isSelected) {
             this.check.visibility = View.VISIBLE
             isVisible = true

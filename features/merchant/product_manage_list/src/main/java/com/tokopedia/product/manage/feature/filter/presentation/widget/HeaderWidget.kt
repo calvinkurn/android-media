@@ -3,8 +3,8 @@ package com.tokopedia.product.manage.feature.filter.presentation.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_header.view.*
 
 class HeaderWidget : BaseCustomView {
@@ -25,8 +25,8 @@ class HeaderWidget : BaseCustomView {
         View.inflate(context, com.tokopedia.product.manage.R.layout.widget_header, this)
     }
 
-    fun bind(title: String) {
-        tv_header.text = title
+    fun bind(headerText: String) {
+        title.text = headerText
     }
 }
 

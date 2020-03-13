@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.header.HeaderUnify
-        android:id="@+id/set_cashback_header"
+        android:id="@+id/setCashbackHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,10 +20,10 @@
         app:closeButtonVisibility="gone"
         app:titleText="@string/product_manage_set_cashback_ticker_title"
         app:descriptionText="@string/product_manage_set_cashback_ticker_info"
-        app:layout_constraintTop_toBottomOf="@id/set_cashback_header" />
+        app:layout_constraintTop_toBottomOf="@id/setCashbackHeader" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/set_cashback_recycler_view"
+        android:id="@+id/setCashbackRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/set_cashback_ticker" />
@@ -44,7 +44,7 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/btn_submit_cashback"
+            android:id="@+id/submitCashbackButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/filter_expand_save_button"
