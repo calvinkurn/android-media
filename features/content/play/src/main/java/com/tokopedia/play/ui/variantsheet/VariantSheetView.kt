@@ -1,12 +1,9 @@
 package com.tokopedia.play.ui.variantsheet
 
-import android.graphics.Outline
-import android.graphics.Rect
 import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewOutlineProvider
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -18,18 +15,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.loadImageRounded
-import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.variant_common.model.ProductVariantCommon
@@ -132,7 +123,7 @@ class VariantSheetView(
         }
 
         btnAction.text = view.context.getString(
-                if (model.action == ProductAction.Buy) R.string.play_buy
+                if (model.action == ProductAction.Buy) R.string.play_product_buy
                 else R.string.play_add_to_card
         )
 
@@ -178,11 +169,13 @@ class VariantSheetView(
             val selectedProduct = VariantCommonMapper.selectedProductData(
                     variantSheetUiModel?.parentVariant?: ProductVariantCommon())
             if (selectedProduct != null) {
+                val stock = selectedProduct.stock
+
                 val product = ProductLineUiModel(
                         id = selectedProduct.productId.toString(),
                         imageUrl = selectedProduct.picture?.original?:"",
                         title = selectedProduct.name,
-                        stock = selectedProduct.stock?.stockWordingHTML?:"",
+                        stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
                         price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull())
                 )
                 variantSheetUiModel?.product = product
@@ -201,7 +194,8 @@ class VariantSheetView(
         return  if (variantSheetUiModel?.isPartialySelected() == true) {
             ""
         } else {
-            variantSheetUiModel?.product?.stock?:container.context.getString(R.string.play_stock_available)
+//            variantSheetUiModel?.product?.stock?:container.context.getString(R.string.play_stock_available)
+            "Stock available"
         }
     }
 
