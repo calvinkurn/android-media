@@ -82,7 +82,7 @@
         app:typographyWeight="bold"
         tools:background="@drawable/cashback_text_background"
         tools:text="Cashback 100%"
-        tools:textColor="@color/tkpd_green_60"
+        tools:textColor="@color/feed_color_green_60"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -118,7 +118,7 @@
         android:gravity="bottom"
         android:paddingLeft="@dimen/dp_4"
         android:paddingRight="@dimen/dp_4"
-        android:textColor="@color/black_68"
+        android:textColor="@color/feed_color_black_68"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="parent"

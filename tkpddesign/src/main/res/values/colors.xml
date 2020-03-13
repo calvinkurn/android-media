@@ -27,7 +27,6 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="black_68">#31353b</color>
     <color name="pin_normal">#6B767E</color>
     <color name="transparent">#00000000</color>
     <color name="countdown_background">#ff3b30</color>
@@ -89,10 +88,7 @@
     <color name="greyish_bg">#ededed</color>
 
     <color name="bg_corner_red">#f9bcc0</color>
-    <color name="discount_bg_red">#ffccd9</color>
-    <color name="cashback_bg_green">#d6ffde</color>
     <color name="tkpd_green_30">#4D42b549</color>
-    <color name="tkpd_green_60">#10b11b</color>
     <color name="bright_red">#eb3c0d</color>
     <color name="bg_corner_yellow">#ffc107</color>
 
