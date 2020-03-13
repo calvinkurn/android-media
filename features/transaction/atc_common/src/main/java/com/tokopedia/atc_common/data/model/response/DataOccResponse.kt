@@ -12,7 +12,7 @@ data class DataOccResponse(
         @Expose
         val message: ArrayList<String> = arrayListOf(),
 
-        @SerializedName("detail")
+        @SerializedName("data")
         @Expose
         val detail: DetailOccResponse = DetailOccResponse()
 )

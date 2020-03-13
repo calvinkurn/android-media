@@ -5,7 +5,7 @@ mutation add_to_cart_occ($param: OneClickCheckoutATCParam) {
         data {
             message
             success
-            detail {
+            data {
                 cart_id
                 customer_id
                 is_scp
