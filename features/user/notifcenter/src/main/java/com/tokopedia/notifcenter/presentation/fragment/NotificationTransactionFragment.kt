@@ -142,6 +142,11 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadInitialData()
+    }
+
     override fun onPause() {
         trackScrollListToBottom()
         super.onPause()
