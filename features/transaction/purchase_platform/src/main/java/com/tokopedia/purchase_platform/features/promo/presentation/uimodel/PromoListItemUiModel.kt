@@ -32,6 +32,7 @@ data class PromoListItemUiModel(
 
     data class UiData(
             var uniqueId: String = "",
+            var shopId: Int = 0,
             var title: String = "",
             var subTitle: String = "",
             var errorMessage: String = "",
