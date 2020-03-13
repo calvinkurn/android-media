@@ -214,11 +214,15 @@ public class RouteManager {
     }
 
     private static void logErrorOpenDeeplink(Context context, String uriString){
-        String activityName = "-";
-        if (context instanceof Activity) {
-            activityName = ((Activity) context).getClass().getCanonicalName();
+        try {
+            String activityName = "-";
+            if (context instanceof Activity) {
+                activityName = ((Activity) context).getClass().getCanonicalName();
+            }
+            Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'", activityName, uriString);
+        } catch (Exception e) {
+            
         }
-        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'", activityName, uriString);
     }
 
     public static Bundle getBundleFromAppLinkQueryParams(String mappedDeeplink) {
