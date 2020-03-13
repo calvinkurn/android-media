@@ -101,8 +101,7 @@ class StockReminderFragment: BaseDaggerFragment() {
         swStockReminder.setOnCheckedChangeListener { _, isChecked ->
             if(isChecked) {
                 containerStockReminder.visibility = View.VISIBLE
-            }
-            else {
+            } else {
                 containerStockReminder.visibility = View.GONE
             }
         }
@@ -110,8 +109,7 @@ class StockReminderFragment: BaseDaggerFragment() {
         btnSaveReminder.setOnClickListener {
             if(qeStock.getValue() == 0) {
                 qeStock.setValue(1)
-            }
-            else if(qeStock.getValue() > 100) {
+            } else if(qeStock.getValue() > 100) {
                 qeStock.setValue(100)
             }
 
