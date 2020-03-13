@@ -223,5 +223,6 @@
     <string name="product_manage_etalase_picker_empty_title">Etalase belum tersedia</string>
     <string name="product_manage_etalase_picker_empty_description">Masukkan produk sesuai kategori ke dalam etalase agar mudah dicari calon pembeli</string>
     <string name="product_manage_add_etalase">Tambah Etalase</string>
+    <string name="product_manage_etalase_search_hint">Cari nama etalase</string>
 
 </resources>
