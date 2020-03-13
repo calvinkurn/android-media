@@ -32,6 +32,9 @@ public class RouteManager {
     public static final String QUERY_PARAM = "QUERY_PARAM";
     private static final String LINK = ".link";
 
+    public static final String BRANCH = "branch";
+    public static final String BRANCH_FORCE_NEW_SESSION = "branch_force_new_session";
+
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
      */
@@ -45,8 +48,8 @@ public class RouteManager {
         intent.addCategory(Intent.CATEGORY_BROWSABLE);
         String host = uri.getHost();
         if (host != null && host.contains(LINK)) {
-            intent.putExtra("branch", deeplink);
-            intent.putExtra("branch_force_new_session", true);
+            intent.putExtra(BRANCH, deeplink);
+            intent.putExtra(BRANCH_FORCE_NEW_SESSION, true);
         }
         ApplinkLogger.getInstance(context).appendTrace("Implicit intent result:\n" + intent.toString());
         return intent;
