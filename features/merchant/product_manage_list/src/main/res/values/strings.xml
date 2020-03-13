@@ -138,6 +138,7 @@
     <string name="product_manage_set_promo_ads_menu">TopAds</string>
 
     <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
+    <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>
     <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
     <string name="product_stock_reminder_toaster_action_text">Coba Lagi</string>
     <string name="product_stock_reminder_loading_content_desc">Loading Stock Reminder</string>

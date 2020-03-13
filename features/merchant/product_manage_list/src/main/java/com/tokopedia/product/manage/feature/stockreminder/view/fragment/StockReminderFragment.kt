@@ -24,6 +24,7 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import com.tokopedia.product.manage.feature.stockreminder.di.DaggerStockReminderComponent
 import com.tokopedia.product.manage.feature.stockreminder.view.viewmodel.StockReminderViewModel
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
+import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -98,22 +99,24 @@ class StockReminderFragment: BaseDaggerFragment() {
         getStockReminder()
 
         swStockReminder.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked) {
-                containerStockReminder.visibility = View.VISIBLE
-            } else {
-                containerStockReminder.visibility = View.GONE
-            }
+            if(isChecked) containerStockReminder.visibility = View.VISIBLE
+            else containerStockReminder.visibility = View.GONE
         }
 
         btnSaveReminder.setOnClickListener {
             if(qeStock.getValue() == 0) qeStock.setValue(1)
             else if(qeStock.getValue() > 100) qeStock.setValue(100)
 
-            if (threshold == 0) {
-                threshold = qeStock.getValue()
-                createStockReminder()
+            if (swStockReminder.isChecked) {
+                if (threshold == 0) {
+                    threshold = qeStock.getValue()
+                    createStockReminder()
+                } else {
+                    threshold = qeStock.getValue()
+                    updateStockReminder()
+                }
             } else {
-                threshold = qeStock.getValue()
+                threshold = 0
                 updateStockReminder()
             }
         }
@@ -142,6 +145,7 @@ class StockReminderFragment: BaseDaggerFragment() {
     private fun doResultIntent() {
         val resultIntent = Intent()
         resultIntent.putExtra(EXTRA_PRODUCT_NAME, productName)
+        resultIntent.putExtra(EXTRA_THRESHOLD, threshold)
         activity?.setResult(Activity.RESULT_OK, resultIntent)
         activity?.finish()
     }
