@@ -34,6 +34,10 @@ class EtalaseViewHolder(
         return radioButtonEtalase.isChecked
     }
 
+    fun uncheckEtalase() {
+        radioButtonEtalase.isChecked = false
+    }
+
     interface OnClickListener {
         fun onClickEtalase(isChecked: Boolean, etalase: EtalaseViewModel)
     }
