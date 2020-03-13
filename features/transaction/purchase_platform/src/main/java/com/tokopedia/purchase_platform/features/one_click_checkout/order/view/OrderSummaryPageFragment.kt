@@ -80,10 +80,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-//        if (requestCode == REQUEST_CREATE_PREFERENCE || requestCode == REQUEST_EDIT_PREFERENCE) {
-//            showPreferenceListBottomSheet()
-//        }
-        if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
+        if (requestCode == REQUEST_CREATE_PREFERENCE || requestCode == REQUEST_EDIT_PREFERENCE) {
+            swipe_refresh_layout.isRefreshing = true
+            main_content.gone()
+            global_error.gone()
+            viewModel.getOccCart()
+        } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
             onResultFromCourierPinpoint(resultCode, data)
         }
     }
@@ -410,7 +412,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (profileId > 0) {
             PreferenceListBottomSheet(useCase = viewModel.getPreferenceListUseCase, listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                 override fun onChangePreference(preference: ProfilesItemModel) {
-                    viewModel.updatePreference(preference)
+                    swipe_refresh_layout.isRefreshing = true
+                    viewModel.getOccCart()
+//                    viewModel.updatePreference(preference)
                 }
 
                 override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
@@ -430,6 +434,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
                 override fun onAddPreference() {
                     val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+
                     startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
                 }
             }).show(this@OrderSummaryPageFragment, profileId)
@@ -479,6 +484,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
         main_content.gone()
         global_error.visible()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
     }
 
     companion object {

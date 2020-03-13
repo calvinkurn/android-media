@@ -630,8 +630,4 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     private fun generateAuthParam(): MutableMap<String, String> {
         return AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
     }
-
-    fun updatePreference(preference: ProfilesItemModel) {
-
-    }
 }
