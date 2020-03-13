@@ -6,11 +6,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.tokopedia.analyticsdebugger.debugger.ApplinkLogger;
 import com.tokopedia.config.GlobalConfig;
@@ -18,6 +19,8 @@ import com.tokopedia.config.GlobalConfig;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import timber.log.Timber;
 
 /**
  * @author ricoharisin .
@@ -187,11 +190,21 @@ public class RouteManager {
             ApplinkLogger.getInstance(context).save();
             context.startActivity(intent);
             return true;
+        } else {
+            logErrorOpenDeeplink(context, uriString);
         }
 
         ApplinkLogger.getInstance(context).appendTrace("Error: No destination activity found");
         ApplinkLogger.getInstance(context).save();
         return false;
+    }
+
+    private static void logErrorOpenDeeplink(Context context, String uriString){
+        String activityName = "";
+        if (context instanceof Activity) {
+            activityName = ((Activity) context).getClass().getCanonicalName();
+        }
+        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri=%s", activityName, uriString);
     }
 
     public static Bundle getBundleFromAppLinkQueryParams(String mappedDeeplink) {
@@ -239,6 +252,7 @@ public class RouteManager {
         // set fallback for implicit intent
 
         if (intent == null || intent.resolveActivity(context.getPackageManager()) == null) {
+            logErrorOpenDeeplink(context, deeplink);
             intent = getHomeIntent(context);
             intent.setData(Uri.parse(deeplink));
             intent.putExtra(EXTRA_APPLINK_UNSUPPORTED, true);
