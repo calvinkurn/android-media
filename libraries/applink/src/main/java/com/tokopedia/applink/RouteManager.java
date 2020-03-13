@@ -214,7 +214,7 @@ public class RouteManager {
     }
 
     private static void logErrorOpenDeeplink(Context context, String uriString){
-        String activityName = "";
+        String activityName = "-";
         if (context instanceof Activity) {
             activityName = ((Activity) context).getClass().getCanonicalName();
         }
