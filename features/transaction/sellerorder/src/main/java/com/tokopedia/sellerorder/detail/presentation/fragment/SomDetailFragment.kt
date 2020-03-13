@@ -2,6 +2,7 @@ package com.tokopedia.sellerorder.detail.presentation.fragment
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.ProgressDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -14,10 +15,12 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.StyleSpan
 import android.view.*
+import android.widget.ProgressBar
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.textfield.TextInputEditText
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
@@ -68,15 +71,13 @@ import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_ORDER_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SELLER
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SHOP_ID
 import com.tokopedia.sellerorder.common.util.SomConsts.PARAM_SOURCE_ASK_BUYER
-import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_COLON
-import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_END
-import com.tokopedia.sellerorder.common.util.SomConsts.RECEIVER_NOTES_START
 import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_CUST_NAME
 import com.tokopedia.sellerorder.common.util.SomConsts.REPLACE_INVOICE_NO
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_ACCEPT_ORDER
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_CONFIRM_SHIPPING
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_PROCESS_REQ_PICKUP
 import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_REJECT_ORDER
+import com.tokopedia.sellerorder.common.util.SomConsts.RESULT_SET_DELIVERED
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_ATUR_TOKO_TUTUP
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_BATALKAN_PESANAN_PENALTY
 import com.tokopedia.sellerorder.common.util.SomConsts.TITLE_COURIER_PROBLEM
@@ -122,7 +123,6 @@ import kotlinx.android.synthetic.main.bottomsheet_shop_closed.view.*
 import kotlinx.android.synthetic.main.dialog_accept_order_free_shipping_som.view.*
 import kotlinx.android.synthetic.main.fragment_som_detail.*
 import kotlinx.android.synthetic.main.fragment_som_detail.btn_primary
-import kotlinx.android.synthetic.main.fragment_som_detail.swipe_refresh_layout
 import kotlinx.android.synthetic.main.partial_info_layout.view.*
 import java.util.*
 import javax.inject.Inject
@@ -178,6 +178,9 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     private val coachMarkItems: ArrayList<CoachMarkItem> = arrayListOf()
 
+    private var secondaryBottomSheet: BottomSheetUnify? = null
+    private lateinit var progressBar: ProgressBar
+
     private val somDetailViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[SomDetailViewModel::class.java]
     }
@@ -232,12 +235,14 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        progressBar = view.findViewById(R.id.progress_bar)
         prepareLayout()
         observingDetail()
         observingAcceptOrder()
         observingRejectReasons()
         observingRejectOrder()
         observingEditAwb()
+        observingSetDelivered()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -311,7 +316,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                         showToasterError(acceptOrderResponse.listMessage.first(), view)
                     }
                 }
-                is Fail -> {}
+                is Fail -> {
+                }
             }
         })
     }
@@ -337,6 +343,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                                         SomAnalytics.eventClickSeeMoreOnTicker()
                                     }
+
                                     override fun onDismiss() {}
                                 })
                             }
@@ -365,6 +372,30 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         })
     }
 
+    private fun observingSetDelivered() {
+        somDetailViewModel.setDelivered.observe(this, Observer {
+            setLoadingIndicator(false)
+            when (it) {
+                is Success -> {
+                    view?.let { v ->
+                        val message = it.data.setDelivered.message.joinToString()
+                        activity?.setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra(RESULT_SET_DELIVERED, message)
+                        })
+                        activity?.finish()
+                    }
+                }
+                is Fail -> {
+                    view?.let { v ->
+                        val msg = it.throwable.message
+                        val msgProcessed = if (msg.isNullOrBlank()) "Terjadi Kesalahan" else msg
+                        Toaster.make(v, msgProcessed, type = TYPE_ERROR)
+                    }
+                }
+            }
+        })
+    }
+
     private fun renderDetail() {
         refreshHandler?.finishRefresh()
         listDetailData = arrayListOf()
@@ -379,8 +410,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         somDetailAdapter.notifyDataSetChanged()
     }
 
-    private fun addedCoachMark(){
-        if(detailResponse.button.isNotEmpty()){
+    private fun addedCoachMark() {
+        if (detailResponse.button.isNotEmpty()) {
             coachMarkItems.add(coachMarkEdit)
             coachMarkItems.add(coachMarkAccept)
             showCoachMark()
@@ -389,8 +420,8 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
     }
 
-    private fun showCoachMark(){
-        if(!coachMark.hasShown(activity, TAG_COACHMARK_DETAIL)){
+    private fun showCoachMark() {
+        if (!coachMark.hasShown(activity, TAG_COACHMARK_DETAIL)) {
             coachMark.show(activity, TAG_COACHMARK_DETAIL, coachMarkItems)
         }
     }
@@ -522,8 +553,41 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         }
     }
 
-    private fun setDelivered() {
-        somDetailViewModel.setDelivered()
+    private fun showSetDeliveredDialog() {
+        secondaryBottomSheet?.dismiss()
+        context?.let { ctx ->
+            val dialog = DialogUnify(ctx, HORIZONTAL_ACTION, NO_IMAGE)
+            val gqlQuery = GraphqlHelper.loadRawString(resources, R.raw.som_set_delivered)
+
+            val dialogView = View.inflate(ctx, R.layout.dialog_set_delivered, null).apply {
+                val receiverEditText = findViewById<TextInputEditText>(R.id.et_receiver)
+                findViewById<View>(R.id.btn_cancel).setOnClickListener { dialog.dismiss() }
+                findViewById<View>(R.id.btn_ok).setOnClickListener {
+                    val name = receiverEditText.text.toString()
+                    if (name.isBlank()) {
+                        receiverEditText.error = ctx.getString(R.string.et_empty_error)
+                    } else {
+                        dialog.dismiss()
+                        setLoadingIndicator(true)
+                        somDetailViewModel.setDelivered(gqlQuery, orderId, receiverEditText.text.toString())
+                    }
+                }
+            }
+
+            with(dialog) {
+                setUnlockVersion()
+                setChild(dialogView)
+                show()
+            }
+        }
+    }
+
+    private fun setLoadingIndicator(active: Boolean) {
+        if (active) {
+            progressBar.visibility = View.VISIBLE
+        } else {
+            progressBar.visibility = View.GONE
+        }
     }
 
     private fun showFreeShippingAcceptOrderDialog(buttonResp: SomDetailOrder.Data.GetSomDetail.Button) {
@@ -630,14 +694,14 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             tf_extra_notes?.visibility = View.GONE
         }
 
-        val bottomSheetText = BottomSheetUnify().apply {
+        secondaryBottomSheet = BottomSheetUnify().apply {
             setChild(viewBottomSheet)
             clearClose(true)
             clearHeader(true)
             setCloseClickListener { dismiss() }
         }
 
-        fragmentManager?.let { bottomSheetText.show(it, getString(R.string.show_bottomsheet))}
+        fragmentManager?.let { secondaryBottomSheet?.show(it, getString(R.string.show_bottomsheet)) }
     }
 
     override fun onBottomSheetItemClick(key: String) {
@@ -651,7 +715,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     key.equals(KEY_UPLOAD_AWB, true) -> setActionUploadAwb(key)
                     key.equals(KEY_CHANGE_COURIER, true) -> setActionChangeCourier()
                     key.equals(KEY_ACCEPT_ORDER, true) -> setActionAcceptOrder(it)
-                    key.equals(KEY_SET_DELIVERED, true) -> setDelivered()
+                    key.equals(KEY_SET_DELIVERED, true) -> showSetDeliveredDialog()
                 }
             }
         }
@@ -710,6 +774,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
+
                     override fun onDismiss() {}
                 })
             }
@@ -768,7 +833,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
             setCloseClickListener { dismiss() }
             setChild(viewBottomSheetUbahResi)
         }
-        fragmentManager?.let{
+        fragmentManager?.let {
             bottomSheetUbahResi.show(it, getString(R.string.show_bottomsheet))
         }
     }

@@ -29,7 +29,7 @@
             android:id="@+id/et_receiver"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailSubject"
+            android:inputType="textPersonName"
             android:hint="@string/dialog_receiver_name"
             android:textSize="18sp" />
     </com.google.android.material.textfield.TextInputLayout>
