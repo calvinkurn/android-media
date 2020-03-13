@@ -20,7 +20,7 @@ class SelectAdapter(
     }
 
     fun updateChecklistData(checklistViewModels: List<ChecklistViewModel>) {
-        val diffUtilCallback = SelectDiffUtil(visitables as List<ChecklistViewModel>, checklistViewModels)
+        val diffUtilCallback = SelectDiffUtil(visitables.filterIsInstance(ChecklistViewModel::class.java), checklistViewModels)
         val result = DiffUtil.calculateDiff(diffUtilCallback)
         visitables.clear()
         visitables.addAll(checklistViewModels)
@@ -28,9 +28,9 @@ class SelectAdapter(
     }
 
     fun reset() {
-        visitables.forEachIndexed { index, visitable ->
-            (visitable as? ChecklistViewModel)?.isSelected = false
-            notifyItemChanged(index)
+        visitables.forEach {
+            (it as? ChecklistViewModel)?.isSelected = false
         }
+        notifyDataSetChanged()
     }
 }
