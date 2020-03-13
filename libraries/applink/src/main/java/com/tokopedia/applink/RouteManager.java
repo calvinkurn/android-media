@@ -218,7 +218,7 @@ public class RouteManager {
         if (context instanceof Activity) {
             activityName = ((Activity) context).getClass().getCanonicalName();
         }
-        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri=%s", activityName, uriString);
+        Timber.w("P1#APPLINK_OPEN_ERROR#%s;uri='%s'", activityName, uriString);
     }
 
     public static Bundle getBundleFromAppLinkQueryParams(String mappedDeeplink) {
