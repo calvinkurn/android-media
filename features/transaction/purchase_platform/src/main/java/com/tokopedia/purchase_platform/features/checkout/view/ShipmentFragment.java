@@ -2682,8 +2682,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         promo.setSkipApply(0);
         promo.setSuggested(0);
-        int isTradeIn = isTradeIn() ? 1 : 0;
-        if (isTradeIn == 1) {
+        if (isTradeIn()) {
             promo.setTradeIn(1);
             promo.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
         }
