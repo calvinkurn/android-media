@@ -144,6 +144,7 @@ class NotificationTransactionFragment : BaseListFragment<Visitable<*>, BaseAdapt
 
     override fun onResume() {
         super.onResume()
+        fetchUpdateFilter(hashMapOf())
         loadInitialData()
     }
 
