@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.URLUtil;
@@ -28,6 +30,10 @@ public class RouteManager {
 
     private static final String EXTRA_APPLINK_UNSUPPORTED = "EXTRA_APPLINK_UNSUPPORTED";
     public static final String QUERY_PARAM = "QUERY_PARAM";
+    private static final String LINK = ".link";
+
+    public static final String BRANCH = "branch";
+    public static final String BRANCH_FORCE_NEW_SESSION = "branch_force_new_session";
 
     /**
      * will create implicit internal Intent ACTION_VIEW correspond to deeplink
@@ -40,6 +46,11 @@ public class RouteManager {
         intent.setPackage(context.getPackageName());
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         intent.addCategory(Intent.CATEGORY_BROWSABLE);
+        String host = uri.getHost();
+        if (host != null && host.contains(LINK)) {
+            intent.putExtra(BRANCH, deeplink);
+            intent.putExtra(BRANCH_FORCE_NEW_SESSION, true);
+        }
         ApplinkLogger.getInstance(context).appendTrace("Implicit intent result:\n" + intent.toString());
         return intent;
     }
@@ -110,6 +121,7 @@ public class RouteManager {
     /**
      * route to the activity corresponds to the given applink.
      * Will do nothing if applink is not supported.
+     *
      * @return true if successfully routing to activity
      */
     public static boolean route(Context context, String applinkPattern, String... parameter) {
