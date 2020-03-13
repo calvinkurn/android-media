@@ -135,9 +135,10 @@
         android:src="@drawable/ic_pdp_view"
         android:layout_marginLeft="@dimen/dp_2"
         android:layout_marginTop="@dimen/product_card_flashsale_label_margintop"
+        android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/ivPdpView"
-        app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="small"
+        app:layout_constraintTop_toBottomOf="@+id/progressBar"
+        app:typographyType="heading_6"
         android:textColor="@color/charcoal_grey_68"
         tools:text="989jt orang"/>
 
