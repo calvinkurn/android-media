@@ -25,7 +25,6 @@ import com.tokopedia.core2.R;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenter;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterImpl;
 import com.tokopedia.seller.selling.presenter.PeopleTxCenterView;
-import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 
 import java.util.ArrayList;
 
@@ -201,9 +200,6 @@ public class FragmentSellingTxCenter extends BaseFragment<PeopleTxCenter> implem
 
     @Override
     public void loadData() {
-        if (GlobalConfig.isSellerApp()) {
-            SellerDrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
-        }
         try {
             MenuCount.clear();
             MenuCount.add(cache.getInt(DrawerNotification.CACHE_SELLING_NEW_ORDER, 0));

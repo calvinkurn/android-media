@@ -124,6 +124,7 @@
             android:name=".product.draft.view.activity.ProductDraftListActivity"
             android:exported="true"
             android:label="@string/title_activity_draft_product"
+            android:theme="@style/Theme.White"
             android:screenOrientation="portrait" />
 
         <activity

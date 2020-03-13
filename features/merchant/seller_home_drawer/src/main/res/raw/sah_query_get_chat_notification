@@ -1,9 +1,0 @@
-query get_chat_notif() {
- notifications {
-     chat {
-       unreads
-       unreadsSeller
-       unreadsUser
-     }
-   }
-}

@@ -33,7 +33,6 @@ import com.tokopedia.seller.selling.presenter.NewOrderView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.OrderViewHolder;
-import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 import com.tokopedia.track.TrackApp;
 
 import java.util.List;
@@ -403,9 +402,6 @@ public class FragmentSellingNewOrder extends BaseFragment<NewOrder> implements N
         return new RefreshHandler.OnRefreshHandlerListener() {
             @Override
             public void onRefresh(View view) {
-                if (GlobalConfig.isSellerApp()) {
-                    SellerDrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
-                }
                 presenter.onRefreshView();
             }
         };
