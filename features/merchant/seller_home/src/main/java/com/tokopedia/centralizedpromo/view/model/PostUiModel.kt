@@ -1,7 +1,7 @@
 package com.tokopedia.centralizedpromo.view.model
 
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class PostListUiModel(
         override val items: List<PostUiModel>,
@@ -13,8 +13,9 @@ data class PostUiModel(
         val applink: String,
         val url: String,
         val featuredMediaUrl: String,
-        val subtitle: String
-) : Visitable<CentralizedPromoAdapterTypeFactory> {
+        val subtitle: String,
+        override val impressHolder: ImpressHolder = ImpressHolder()
+) : BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }

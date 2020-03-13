@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.PostUiModel
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
@@ -21,7 +22,7 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
         with(itemView) {
             tvPromotionPostTitle.text = element.title.parseAsHtml()
             tvPromotionPostTitleDescription.text = element.subtitle.parseAsHtml()
-            setOnClickListener { openAppLink(element.applink) }
+            setOnClickListener { openAppLink(element.applink, element.title) }
             loadImage(element.featuredMediaUrl)
         }
     }
@@ -34,9 +35,11 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
         }
     }
 
-    private fun openAppLink(url: String) {
+    private fun openAppLink(url: String, title: String) {
         with(itemView) {
-            RouteManager.route(context, url)
+            if (RouteManager.route(context, url)) {
+                CentralizedPromoTracking.sendClickArticleItem(title)
+            }
         }
     }
 }

@@ -3,11 +3,13 @@ package com.tokopedia.centralizedpromo.view.fragment.partialview
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.PostListUiModel
 import com.tokopedia.centralizedpromo.view.model.PostUiModel
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -67,6 +69,10 @@ class PartialCentralizedPromoPostView(
         layoutCentralizedPromoPostListShimmering.hide()
         layoutCentralizedPromoPostListError?.hide()
         layoutCentralizedPromoPostListSuccess.show()
+
+        addOnImpressionListener(impressHolder) {
+            CentralizedPromoTracking.sendImpressionArticle()
+        }
     }
 
     override fun shouldShowCoachMark(): Boolean = false

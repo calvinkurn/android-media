@@ -5,6 +5,7 @@ import androidx.annotation.CallSuper
 import com.tokopedia.centralizedpromo.view.fragment.CoachMarkListener
 import com.tokopedia.centralizedpromo.view.model.BaseUiModel
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.kotlin.model.ImpressHolder
 
 abstract class BasePartialView<T : BaseUiModel>(
         private val coachMarkListener: CoachMarkListener,
@@ -14,6 +15,8 @@ abstract class BasePartialView<T : BaseUiModel>(
     var readyToShowCoachMark: Boolean = false
 
     var impressionEventSent: Boolean = false
+
+    val impressHolder: ImpressHolder = ImpressHolder()
 
     abstract fun bindSuccessData(data: T)
     abstract fun renderLoading()

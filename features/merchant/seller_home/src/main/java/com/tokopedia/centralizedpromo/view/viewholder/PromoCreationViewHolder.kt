@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
@@ -32,13 +34,19 @@ class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiM
                 icRecommendedPromoExtra.gone()
             }
 
-            setOnClickListener { openApplink(element.applink) }
+            addOnImpressionListener(element.impressHolder) {
+                CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+            }
+
+            setOnClickListener { openApplink(element.applink, element.title) }
         }
     }
 
-    private fun openApplink(url: String) {
+    private fun openApplink(url: String, title: String) {
         with(itemView) {
-            RouteManager.route(context, url)
+            if (RouteManager.route(context, url)) {
+                CentralizedPromoTracking.sendClickPromoCreation(title)
+            }
         }
     }
 

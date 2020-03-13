@@ -1,17 +1,19 @@
 package com.tokopedia.centralizedpromo.analytic
 
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_CLICK
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_EDUCATION_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_ON_GOING_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_PROMO_CREATION_CLICK
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_ACTION_PROMO_CREATION_IMPRESSION
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_CATEGORY_ADS_AND_PROMO
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_ON_GOING_CLICK
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_ON_GOING_IMPRESSION
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_PROMO_CREATION_CLICK
-import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_PROMO_CREATION_IMPRESSION
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_CLICK
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoConstant.EVENT_NAME_IMPRESSION
 import com.tokopedia.sellerhome.analytic.TrackingConstant
+import com.tokopedia.track.TrackApp
 
 object CentralizedPromoTracking {
+    @Suppress("SameParameterValue")
     private fun createMap(event: String, category: String, action: String, label: String): MutableMap<String, Any> {
         return mutableMapOf(
                 TrackingConstant.EVENT to event,
@@ -23,46 +25,78 @@ object CentralizedPromoTracking {
 
     fun sendImpressionOnGoingPromoStatus(widgetName: String, value: Int, state: String) {
         val data = createMap(
-                event = EVENT_NAME_ON_GOING_IMPRESSION,
+                event = EVENT_NAME_IMPRESSION,
                 category = EVENT_CATEGORY_ADS_AND_PROMO,
                 action = arrayOf(EVENT_ACTION_ON_GOING_IMPRESSION, widgetName, state).joinToString(" - "),
                 label = value.toString()
         )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     fun sendClickOnGoingPromoStatus(widgetName: String, value: Int, state: String) {
         val data = createMap(
-                event = EVENT_NAME_ON_GOING_CLICK,
+                event = EVENT_NAME_CLICK,
                 category = EVENT_CATEGORY_ADS_AND_PROMO,
                 action = arrayOf(EVENT_ACTION_ON_GOING_CLICK, widgetName, state).joinToString(" - "),
                 label = value.toString()
         )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     fun sendClickOnGoingPromoFooter(widgetName: String, footerText: String) {
         val data = createMap(
-                event = EVENT_NAME_ON_GOING_CLICK,
+                event = EVENT_NAME_CLICK,
                 category = EVENT_CATEGORY_ADS_AND_PROMO,
                 action = arrayOf(EVENT_ACTION_ON_GOING_CLICK, widgetName, footerText).joinToString(" - "),
                 label = ""
         )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     fun sendImpressionPromoCreation(widgetName: String) {
         val data = createMap(
-                event = EVENT_NAME_PROMO_CREATION_IMPRESSION,
+                event = EVENT_NAME_IMPRESSION,
                 category = EVENT_CATEGORY_ADS_AND_PROMO,
                 action = arrayOf(EVENT_ACTION_PROMO_CREATION_IMPRESSION, widgetName).joinToString(" - "),
                 label = ""
         )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     fun sendClickPromoCreation(widgetName: String) {
         val data = createMap(
-                event = EVENT_NAME_PROMO_CREATION_CLICK,
+                event = EVENT_NAME_CLICK,
                 category = EVENT_CATEGORY_ADS_AND_PROMO,
                 action = arrayOf(EVENT_ACTION_PROMO_CREATION_CLICK, widgetName).joinToString(" - "),
                 label = ""
         )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendImpressionArticle() {
+        val data = createMap(
+                event = EVENT_NAME_IMPRESSION,
+                category = EVENT_CATEGORY_ADS_AND_PROMO,
+                action = arrayOf(EVENT_ACTION_EDUCATION_IMPRESSION, "Tips & Trick").joinToString(" - "),
+                label = ""
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun sendClickArticleItem(title: String) {
+        val data = createMap(
+                event = EVENT_NAME_CLICK,
+                category = EVENT_CATEGORY_ADS_AND_PROMO,
+                action = arrayOf(EVENT_ACTION_EDUCATION_CLICK, "Tips & Trick", title).joinToString(" - "),
+                label = ""
+        )
+
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 }

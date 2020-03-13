@@ -1,8 +1,8 @@
 package com.tokopedia.centralizedpromo.view.model
 
 import androidx.annotation.DrawableRes
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.centralizedpromo.view.adapter.CentralizedPromoAdapterTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 data class PromoCreationListUiModel(
         override val items: List<PromoCreationUiModel>,
@@ -14,8 +14,9 @@ data class PromoCreationUiModel(
         val title: String,
         val description: String,
         val extra: String,
-        val applink: String
-): Visitable<CentralizedPromoAdapterTypeFactory> {
+        val applink: String,
+        override val impressHolder: ImpressHolder = ImpressHolder()
+): BaseUiListItemModel<CentralizedPromoAdapterTypeFactory> {
     override fun type(typeFactory: CentralizedPromoAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
