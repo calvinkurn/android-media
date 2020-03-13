@@ -191,49 +191,15 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    // Todo FU : action not valid, row 30
-
-    // Todo FU : error code from backend, row 34
-    fun eventClickPakaiPromoFailedExpired(page: Int) {
+    fun eventClickPakaiPromoFailed(page: Int, errorMessage: String) {
         sendEventByPage(
                 page,
                 EVENT_NAME_CLICK,
                 EventAction.CLICK_PAKAI_PROMO,
-                EventLabel.FAILED_EXPIRED_PROMO_CODES
+                errorMessage
         )
     }
 
-    // Todo FU : error code from backend, row 36
-    fun eventClickPakaiPromoFailedOutOfStock(page: Int) {
-        sendEventByPage(
-                page,
-                EVENT_NAME_CLICK,
-                EventAction.CLICK_PAKAI_PROMO,
-                EventLabel.FAILED_OUT_OF_STOCK_PROMO_CODES
-        )
-    }
-
-    // Todo FU : error code from backend, row 37
-    fun eventClickPakaiPromoFailedTerjadiKesalahanServer(page: Int) {
-        sendEventByPage(
-                page,
-                EVENT_NAME_CLICK,
-                EventAction.CLICK_PAKAI_PROMO,
-                EventLabel.FAILED_TERJADI_KESALAHAN_SERVER
-        )
-    }
-
-    // Todo FU : Error code from backend, row 38
-    fun eventClickPakaiPromoFailedUsedPromoCodes(page: Int) {
-        sendEventByPage(
-                page,
-                EVENT_NAME_CLICK,
-                EventAction.CLICK_PAKAI_PROMO,
-                EventLabel.FAILED_USED_PROMO_CODES
-        )
-    }
-
-    // Todo FU : UI not valid, row 39
     fun eventViewErrorPopup(page: Int) {
         sendEventByPage(
                 page,
@@ -243,7 +209,6 @@ class PromoCheckoutAnalytics @Inject constructor() : TransactionAnalytics() {
         )
     }
 
-    // Todo FU : UI not valid, row 40
     fun eventClickCobaLagi(page: Int) {
         sendEventByPage(
                 page,
