@@ -26,9 +26,10 @@ class TopchatProductAttachmentViewHolder(
         private val listener: ProductAttachmentListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
-    override fun alwaysShowTime(): Boolean {
-        return true
-    }
+    private val white = "#ffffff"
+    private val white2 = "#fff"
+
+    override fun alwaysShowTime(): Boolean = true
 
     override fun bind(product: ProductAttachmentViewModel?) {
         if (product == null) return
@@ -120,7 +121,7 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun isWhiteColor(hexColor: String): Boolean {
-        return hexColor == "#ffffff" || hexColor == "#fff"
+        return hexColor == white || hexColor == white2
     }
 
     private fun bindCampaign(product: ProductAttachmentViewModel) {
