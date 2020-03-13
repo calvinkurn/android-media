@@ -61,6 +61,10 @@ import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT
+import com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity
+import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_ID
+import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.EXTRA_ETALASE_NAME
+import com.tokopedia.product.manage.feature.etalase.view.fragment.EtalasePickerFragment.Companion.REQUEST_CODE_PICK_ETALASE
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
@@ -98,9 +102,7 @@ import com.tokopedia.product.manage.item.main.add.view.activity.ProductAddNameCa
 import com.tokopedia.product.manage.item.main.base.view.activity.BaseProductAddEditFragment.Companion.EXTRA_STOCK
 import com.tokopedia.product.manage.item.main.duplicate.activity.ProductDuplicateActivity
 import com.tokopedia.product.manage.item.main.edit.view.activity.ProductEditActivity
-import com.tokopedia.product.manage.item.utils.constant.ProductExtraConstant
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant
-import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.ETALASE_PICKER_REQUEST_CODE
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_FILTER_SELECTED
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_SORT_SELECTED
@@ -169,7 +171,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private val checkedPositionList: HashSet<Int> = hashSetOf()
 
     private val allProductList: MutableList<ProductViewModel> = mutableListOf()
-    private var etalaseType = BulkBottomSheetType.EtalaseType("", 0)
     private var stockType = BulkBottomSheetType.StockType()
     private var itemsChecked: MutableList<ProductViewModel> = mutableListOf()
 
@@ -266,7 +267,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun editMultipleProductsEtalase() {
-        // TO DO
+        goToEtalasePicker()
     }
 
     override fun editMultipleProductsInActive() {
@@ -715,16 +716,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     private fun retryMultiEditProducts(result: MultiEditResult) {
-        when(result) {
-            is EditByStatus -> {
-                val productIds = result.failed.map { it.productID }
-                viewModel.editProductsByStatus(productIds, result.status)
-            }
-            is EditByMenu -> {
-                //TO DO
-            }
-        }
+        val productIds = result.failed.map { it.productID }
 
+        when(result) {
+            is EditByStatus -> viewModel.editProductsByStatus(productIds, result.status)
+            is EditByMenu -> viewModel.editProductsEtalase(productIds, result.menuId, result.menuName)
+        }
     }
 
     private fun updateEditProductList(result: MultiEditResult) {
@@ -736,9 +733,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 showProductList(allProductList)
                 showTabFilters()
             }
-            is EditByMenu -> {
-                //TO DO
-            }
+            is EditByMenu -> viewModel.toggleMultiSelect()
         }
     }
 
@@ -1051,10 +1046,9 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         }
     }
 
-    private fun goToEtalasePicker(etalaseId: Int) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_ETALASE_PICKER,
-            etalaseId.toString())
-        startActivityForResult(intent, ETALASE_PICKER_REQUEST_CODE)
+    private fun goToEtalasePicker() {
+        val intent = Intent(activity, EtalasePickerActivity::class.java)
+        startActivityForResult(intent, REQUEST_CODE_PICK_ETALASE)
     }
 
     override fun onItemClicked(t: ProductViewModel?) {
@@ -1117,11 +1111,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     loadInitialData()
                     ProductManageTracking.trackingFilter(productManageFilterModel)
                 }
-                ETALASE_PICKER_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
-                    val etalaseId = it.getIntExtra(ProductExtraConstant.EXTRA_ETALASE_ID, -1)
-                    val etalaseNameString = it.getStringExtra(ProductExtraConstant.EXTRA_ETALASE_NAME)
-                    etalaseType.etalaseId = etalaseId
-                    etalaseType.etalaseValue = etalaseNameString
+                REQUEST_CODE_PICK_ETALASE -> if (resultCode == Activity.RESULT_OK) {
+                    val productIds = itemsChecked.map{ product -> product.id }
+                    val etalaseId = it.getStringExtra(EXTRA_ETALASE_ID)
+                    val etalaseName = it.getStringExtra(EXTRA_ETALASE_NAME)
+
+                    viewModel.editProductsEtalase(productIds, etalaseId, etalaseName)
                 }
                 STOCK_EDIT_REQUEST_CODE -> if (resultCode == Activity.RESULT_OK) {
                     val isActive = it.getBooleanExtra(EXTRA_STOCK, false)
