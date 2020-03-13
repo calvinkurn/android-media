@@ -3,8 +3,8 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.common.domai
 import com.tokopedia.purchase_platform.features.checkout.data.model.response.checkout.Data
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.Services
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.ShippingNoPriceResponse
-import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ServicesItemModelNoPrice
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModelNoPrice
 import javax.inject.Inject
 
 class ShippingDurationModelMapper @Inject constructor() : ShippingDurationDataMapper{

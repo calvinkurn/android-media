@@ -15,12 +15,15 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.fragment_payment_method.*
 import rx.subscriptions.CompositeSubscription
+import javax.inject.Inject
 
 class PaymentMethodFragment : BaseDaggerFragment() {
 
@@ -36,6 +39,9 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             return paymentMethodFragment
         }
     }
+
+    @Inject
+    lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val compositeSubscription = CompositeSubscription()
 
@@ -108,6 +114,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
     }
 
     override fun initInjector() {
+        getComponent(PreferenceEditComponent::class.java).inject(this)
     }
 
     override fun onStart() {
@@ -136,6 +143,7 @@ class PaymentMethodFragment : BaseDaggerFragment() {
             if (isSuccess != null && isSuccess.equals("true", true)) {
                 val gatewayCode = uri.getQueryParameter("gateway_code")
                 if (gatewayCode != null) {
+                    preferenceListAnalytics.eventClickPaymentMethodOptionInPilihMetodePembayaranPage(gatewayCode)
                     goToNextStep(gatewayCode, generateMetadata(uri))
                 }
             }

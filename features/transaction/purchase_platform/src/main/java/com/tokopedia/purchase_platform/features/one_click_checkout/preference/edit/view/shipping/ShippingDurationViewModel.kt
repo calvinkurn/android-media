@@ -15,6 +15,8 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.mapper.ShippingDurationModelWithPriceMapper
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingnoprice.ShippingListModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItemModelNoPrice
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ShippingDataModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +54,11 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
             withContext(Dispatchers.Default){
                 val shippingList = shippingDurationModel.services
                 for (item in shippingList){
-                    item.isSelected = item.serviceId == selectedId
+                    if(item is ServicesItemModelNoPrice) {
+                        item.isSelected = item.serviceId == selectedId
+                    } else if (item is ServicesItemModel) {
+                        item.isSelected = item.servicesId == selectedId
+                    }
                 }
                 shippingDurationModel.services = shippingList
             }
@@ -83,86 +89,32 @@ class ShippingDurationViewModel @Inject constructor(val useCase: GetShippingDura
 
 
     /*With Price*/
-    fun getRates(){
-        val shippingParam = generateShippingParam()
-        val ratesParamBuilder = RatesParam.Builder(generateListShopShipment(), shippingParam)
-        val ratesParam = ratesParamBuilder.build()
-        ratesParam.occ = "1"
-        useCaseRates.execute(ratesParam)
+    fun getRates(listShopShipment: ArrayList<ShopShipment>?, shippingParam: ShippingParam?){
+        _shippingDuration.value = OccState.Loading
+        val ratesParamBuilder = shippingParam?.let { listShopShipment?.let { list -> RatesParam.Builder(list, it) } }
+        val ratesParam = ratesParamBuilder?.build()
+        ratesParam?.occ = "1"
+        ratesParam?.let {
+            useCaseRates.execute(it)
                 .subscribe(object : Observer<ShippingRecommendationData> {
                     override fun onError(e: Throwable?) {
                     }
 
                     override fun onNext(shippingRecomendationData: ShippingRecommendationData) {
-                        logicSelectionPrice(mapTomodelPrice(shippingRecomendationData))
-//                        _shippingDuration.value = mapTomodelPrice(shippingRecomendationData)
-                       /* val value = _shippingDuration.value
-                        if(value != null) {
-                            val current = _shippingDuration.value
-                        }
-*/
-
-//                        logicSelectionPrice(mapTomodelPrice(shippingRecomendationData))
-
-/*
-                        val shippingDataModel = shippingRecomendationData.shippingDurationViewModels
-                        var selectedShippingData: ShippingDurationUiModel? = null
-                        for(shippingData in shippingDataModel) {
-                            shippingData.isSelected = true
-                            selectedShippingData = shippingData
-                        }*/
+                        logicSelection(mapTomodelPrice(shippingRecomendationData))
 
                     }
 
                     override fun onCompleted() {
                     }
                 })
+        }
     }
 
     private fun mapTomodelPrice(responses: ShippingRecommendationData): ShippingListModel{
         return mapperPrice.convertToDomainModelWithPrice(responses)
     }
 
-    fun logicSelectionPrice(shippingDurationModel: ShippingListModel) {
-        launch {
-            withContext(Dispatchers.Default){
-                val shippingList = shippingDurationModel.servicesPrice
-                for (item in shippingList){
-                    item.isSelected = item.servicesId == selectedId
-                }
-                shippingDurationModel.servicesPrice = shippingList
-            }
-            this@ShippingDurationViewModel.shippingDurationModel = shippingDurationModel
-            _shippingDuration.value = OccState.Success(shippingDurationModel)
-        }
-    }
-
-
-    fun generateShippingParam(): ShippingParam {
-        val shippingParam = ShippingParam()
-        shippingParam.originDistrictId = ""
-        shippingParam.originPostalCode = ""
-        shippingParam.originLatitude = ""
-        shippingParam.originLongitude = ""
-        shippingParam.destinationDistrictId = ""
-        shippingParam.destinationPostalCode = ""
-        shippingParam.destinationLatitude = ""
-        shippingParam.destinationLongitude = ""
-        shippingParam.shopId = ""
-        shippingParam.token = ""
-        shippingParam.ut = ""
-        shippingParam.insurance = 1
-        shippingParam.categoryIds = ""
-
-        shippingParam.weightInKilograms = 1 * 0 / 1000.0
-        shippingParam.productInsurance = 0
-        shippingParam.orderValue = 5000 * 1
-        return shippingParam
-    }
-
-    fun generateListShopShipment(): ArrayList<ShopShipment> {
-        return arrayListOf()
-    }
 }
 
 

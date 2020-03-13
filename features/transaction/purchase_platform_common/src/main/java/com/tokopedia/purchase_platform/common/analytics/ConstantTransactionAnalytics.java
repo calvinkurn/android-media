@@ -53,6 +53,7 @@ public interface ConstantTransactionAnalytics {
         String VIEW_REGISTER = "viewRegister";
         String CLICK_CHECKOUT_EXPRESS = "clickCheckoutExpress";
         String VIEW_CHECKOUT_EXPRESS = "viewCheckoutExpress";
+        String VIEW_CHECKOUT_EXPRESS_IRIS = "viewCheckoutExpressIris";
         String VIEW_SOM = "viewSOM";
         String CLICK_RECOMMENDATION = "clickRecommendation";
         String VIEW_COURIER_IRIS = "viewCourierIris";
@@ -80,6 +81,10 @@ public interface ConstantTransactionAnalytics {
         String TRACK_SOM = "track seller order management";
         String FIN_INSURANCE_CART = "fin - cart page";
         String FIN_INSURANCE_CHECKOUT = "fin - mp checkout";
+
+        //OCC
+        String PURCHASE_SETTING = "purchase setting";
+        String ORDER_SUMMARY = "order summary";
     }
 
     interface EventAction {
@@ -364,6 +369,52 @@ public interface ConstantTransactionAnalytics {
         String FIN_INSURANCE_CLICK_BUY = "ins - click buy";
         String FIN_INSURANCE_CHECKOUT = "ins - click pilih pembayaran";
         String FIN_INSURANCE_CHECKOUT_IMPRESSION = "ins - impression insurance box in checkout page";
+
+        //OCC
+        String ADD_PREFERENCE_OCC = "click tambah preferensi from tambah pilihan";
+        String CLICK_TRASH_ICON_OCC = "click trash bin on edit preference";
+        String CLICK_HAPUS_ON_TRASH_ICON_OCC = "click hapus preferensi from trash bin";
+        String CLICK_PILIH_DURASI_PENGIRIMAN_IN_ANA_OCC = "click pilih durasi pengiriman in add new address step";
+        String CLICK_DURASI_OPTION_IN_DURASI_PAGE = "click duration option in duration step";
+        String CLICK_PILIH_METODE_PEMBAYARAN_IN_DURATION_PAGE = "click pilih metode pembayaran in duration step";
+        String CLICK_PAYMENT_METHOD_OPTION_IN_PAYMENT_METHOD_PAGE = "click payment method option in payment method step";
+        String CLICK_UBAH_ADDRESS_IN_PREFERENCE_SETTING_PAGE = "click ubah in address section on edit preference";
+        String CLICK_UBAH_SHIPPING_IN_PREFERENCE_SETTING_PAGE = "click ubah in duration section on edit preference";
+        String CLICK_UBAH_PAYMENT_IN_PREFERENCE_SETTING_PAGE = "click ubah in payment section on edit preference";
+        String CLICK_ADDRESS_OPTION_IN_PILIH_ALAMAT_PAGE = "click available address option";
+        String CLICK_SIMPAN_ALAMAT_IN_PILIH_ALAMAT_PAGE = "click simpan alamat on pilih alamat pengiriman";
+        String CLICK_GEAR_LOGO_IN_PREFERENCE_LIST_PAGE = "click gear logo from tambah pilihan";
+        String CLICK_JADIKAN_PILIHAN_UTAMA = "click button jadikan pilihan utama from tambah pilihan";
+        String CLICK_BACK_ARROW_IN_EDIT_PREFERENCE = "click back in edit preference";
+        String CLICK_BACK_ARROW_IN_PILIH_ALAMAT = "click back in pilih alamat";
+        String CLICK_BACK_ARROW_IN_PILIH_DURASI = "click back in pilih durasi";
+        String CLICK_BACK_ARROW_IN_PILIH_METHOD_PAYMENT = "click back in pilih metode pembayaran";
+
+        String EDIT_QUANTITY_INCRESE = "product - click button plus";
+        String EDIT_QUANTITY_DECREASE = "product - click button minus";
+        String CLICK_VARIANT_COLOUR = "product - click variant colour";
+        String CLICK_VARIANT_SIZE = "product - click variant size";
+        String EDIT_SELLER_NOTES = "product - click tulis catatan";
+        String FIND_SIMILAR_PRODUCT = "product - click cari barang serupa";
+        String ONBOARDING_USER_SAVES_PREFERENCE = "preference - click simpan dan lanjutkan preference new occ";
+        String ONBOARDING_USER_EDITS_PREFERENCE = "preference - click atur on preference edit occ";
+        String USER_CHANGE_COURIER_OSP = "courier - click arrow to change courier option";
+        String CLICK_ON_INSURANCE = "courier - click on asuransi pengiriman";
+        String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
+        String VIEW_ERROR_ON_OSP = "view error messagge";
+        String CLICK_ATUR_PREFERENSI_FROM_OSP = "preference - click tambah pilihan from ganti pilihan";
+        String USER_CHANGES_PROFILE = "preference - click ganti pilihan on order summary";
+        String USER_SETS_FIRST_PREFERENCE = "preference - click atur preferensi for new buyer";
+        String CHOOSE_BBO_AS_DURATION = "courier - click pilih on tersedia bebas ongkir";
+        String CHOOSE_COURIER_FROM_COURIER_SELECTION_OSP = "courier - click selected courier option";
+        String CLICK_RINGKASAN_BELANJA_OSP = "click arrow on ringkasan belanja";
+        String CLICK_GEAR_LOGO_IN_PREFERENCE_FROM_GANTI_PILIHAN_OSP = "preference - click gear logo from ganti pilihan";
+        String GUNAKAN_PILIHAN_INI_FROM_GANTI_PILIHAN_OSP  = "preference -  click gunakan pilihan ini from ganti pilihan";
+        String CLICK_TAMBAH_PILIHAN_FROM_GANTI_PILIHAN_OSP  = "preference -  click tambah pilihan from ganti pilihan";
+        String CLICK_BACK_FROM_OSP = "click back in order summary page";
+
+
+
     }
 
     interface EventLabel {
