@@ -1,10 +1,10 @@
 package com.tokopedia.atc_common.data.model.request
 
 data class AddToCartOccRequestParams(
-        var productId: Int,
-        var shopId: Int,
-        var quantity: Int,
-        var warehouseId: Int = 0,
+        var productId: String,
+        var shopId: String,
+        var quantity: String,
+        var warehouseId: String = "",
         var lang: String = "",
         var isScp: Boolean = false,
         var ucParam: String = "",

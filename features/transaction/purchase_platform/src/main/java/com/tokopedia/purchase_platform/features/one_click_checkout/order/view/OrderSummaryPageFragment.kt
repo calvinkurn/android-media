@@ -410,7 +410,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         if (profileId > 0) {
             PreferenceListBottomSheet(useCase = viewModel.getPreferenceListUseCase, listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                 override fun onChangePreference(preference: ProfilesItemModel) {
-//                viewModel.updatePreference(preference)
+                    viewModel.updatePreference(preference)
                 }
 
                 override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {

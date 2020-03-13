@@ -15,6 +15,7 @@ import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddr
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.GetOccCartUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.usecase.RequestParams
@@ -55,7 +56,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             orderProduct = orderData.cart.product
             orderShop = orderData.cart.shop
             var preference = orderData.preference
-            preference = preference.copy(shipment = preference.shipment.copy(serviceId = 1000))
+//            preference = preference.copy(shipment = preference.shipment.copy(serviceId = 1000))
             _orderPreference = OrderPreference(preference)
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
@@ -125,6 +126,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                         }.subscribe(object : Observer<ShippingRecommendationData> {
                             override fun onError(e: Throwable) {
                                 e.printStackTrace()
+                                orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.DISABLE)
                             }
 
                             override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
@@ -627,5 +629,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private fun generateAuthParam(): MutableMap<String, String> {
         return AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
+    }
+
+    fun updatePreference(preference: ProfilesItemModel) {
+
     }
 }

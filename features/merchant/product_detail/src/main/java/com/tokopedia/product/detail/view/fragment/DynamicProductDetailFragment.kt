@@ -1817,8 +1817,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 val productInfo = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
                 val warehouseId: Int = viewModel.multiOrigin.id.toIntOrZero()
                 val qty = if (userInputQuantity == 0) productInfo.basic.minOrder else userInputQuantity
-                val atcRequestParam = AddToCartOccRequestParams(productInfo.basic.getProductId(), productInfo.basic.getShopId(), qty)
-                atcRequestParam.warehouseId = warehouseId
+                val atcRequestParam = AddToCartOccRequestParams(productInfo.basic.getProductId().toString(), productInfo.basic.getShopId().toString(), qty.toString())
+                atcRequestParam.warehouseId = warehouseId.toString()
                 atcRequestParam.attribution = trackerAttribution ?: ""
                 atcRequestParam.listTracker = trackerListName ?: ""
 
@@ -1830,9 +1830,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             val expressCheckoutUriString = ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
                             val intent = RouteManager.getIntent(it, expressCheckoutUriString)
                             intent?.run {
-                                //                    putExtra(Constant.EXTRA_ATC_REQUEST, atcRequestParam)
-//                    putExtra(Constant.TRACKER_ATTRIBUTION, trackerAttribution)
-//                    putExtra(Constant.TRACKER_LIST_NAME, trackerListName)
                                 startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS)
                                 it.overridePendingTransition(R.anim.pull_up, 0)
                             }
