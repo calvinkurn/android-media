@@ -99,13 +99,21 @@ class StockReminderFragment: BaseDaggerFragment() {
         getStockReminder()
 
         swStockReminder.setOnCheckedChangeListener { _, isChecked ->
-            if(isChecked) containerStockReminder.visibility = View.VISIBLE
-            else containerStockReminder.visibility = View.GONE
+            if(isChecked) {
+                containerStockReminder.visibility = View.VISIBLE
+            }
+            else {
+                containerStockReminder.visibility = View.GONE
+            }
         }
 
         btnSaveReminder.setOnClickListener {
-            if(qeStock.getValue() == 0) qeStock.setValue(1)
-            else if(qeStock.getValue() > 100) qeStock.setValue(100)
+            if(qeStock.getValue() == 0) {
+                qeStock.setValue(1)
+            }
+            else if(qeStock.getValue() > 100) {
+                qeStock.setValue(100)
+            }
 
             if (swStockReminder.isChecked) {
                 if (threshold == 0) {
@@ -153,7 +161,6 @@ class StockReminderFragment: BaseDaggerFragment() {
     private fun getStockReminder() {
         showLoading()
         productId?.let { viewModel.getStockReminder(it) }
-
     }
 
     private fun createStockReminder() {
@@ -182,7 +189,9 @@ class StockReminderFragment: BaseDaggerFragment() {
                 threshold = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.threshold
 
                 threshold?.let { qeStock.setValue(it) }
-                if (threshold != 0) swStockReminder.isChecked = true
+                if (threshold != 0) {
+                    swStockReminder.isChecked = true
+                }
             }
             is Fail -> {
                 globalErrorStockReminder.visibility = View.VISIBLE

@@ -1164,8 +1164,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 REQUEST_CODE_STOCK_REMINDER -> if(resultCode == Activity.RESULT_OK) {
                     val productName = it.getStringExtra(EXTRA_PRODUCT_NAME)
                     val threshold = it.getIntExtra(EXTRA_THRESHOLD, 0)
-                    if(threshold > 0) Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-                    else Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    if(threshold > 0) {
+                        Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    }
+                    else {
+                        Toaster.make(coordinatorLayout, getString(R.string.product_stock_reminder_toaster_success_remove_desc, productName), Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+                    }
                 }
                 SET_CASHBACK_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
                     val cacheManagerId = it.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
