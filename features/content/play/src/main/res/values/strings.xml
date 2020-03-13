@@ -18,7 +18,8 @@
     </plurals>
 
     <string name="play_title_variant">Detail Produk</string>
-    <string name="play_buy">Beli</string>
+    <string name="play_product_buy">Beli</string>
+    <string name="play_product_empty">Kosong</string>
     <string name="play_add_to_card">Tambah ke Keranjang</string>
     <string name="play_discount_percent">%d%%</string>
     <string name="play_stock_available">Stok Tersedia</string>
