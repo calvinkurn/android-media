@@ -202,9 +202,9 @@ class PlayViewModel @Inject constructor(
 //        startMockFreeze()
 //        setMockProductSocket()
 //        setMockVoucherSocket()
-//        setMockProductSheetContent()
+        setMockProductSheetContent()
 //        setMockVariantSheetContent()
-        setMockProductPinned()
+//        setMockProductPinned()
     }
 
     // lifecycle region
@@ -364,6 +364,10 @@ class PlayViewModel @Inject constructor(
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
 
+            // TODO("testing")
+            channel.isShowCart = true
+            channel.isShowProductTagging = true
+
             launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
             launch { getBadgeCart(channel.isShowCart) }
@@ -377,10 +381,6 @@ class PlayViewModel @Inject constructor(
                 startWebSocket(channelId, channel.gcToken, channel.settings)
 
             playVideoStream(channel)
-
-            // TODO("testing")
-            channel.isShowCart = true
-            channel.isShowProductTagging = true
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
 
@@ -694,7 +694,7 @@ class PlayViewModel @Inject constructor(
                         },
                         productList = List(5) {
                             ProductLineUiModel(
-                                    id = it.toString(),
+                                    id = if (it % 2 == 0) { "728073530" } else "689413405",
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",
                                     isVariantAvailable = true,
@@ -707,11 +707,12 @@ class PlayViewModel @Inject constructor(
                                                 discountedPrice = "Rp2$it.000"
                                         )
                                     },
-                                    stock = if (it % 2 == 0) {
-                                        OutOfStock
-                                    } else {
-                                        StockAvailable(it * 10)
-                                    }
+                                    stock = StockAvailable(it * 10)
+//                                    stock = if (it % 2 == 0) {
+//                                        OutOfStock
+//                                    } else {
+//                                        StockAvailable(it * 10)
+//                                    }
                             )
                         }
                 )
