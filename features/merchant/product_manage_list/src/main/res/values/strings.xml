@@ -216,5 +216,12 @@
     <string name="product_manage_set_cashback_dialog_desc">Maksimalkan penjualanmu dengan upgrade jadi Power Merchant agar lebih bebas menggunakan promo cashback.</string>
     <string name="product_manage_set_cashback_dialog_upgrade_button">Upgrade Tokomu</string>
     <string name="product_manage_set_cashback_dialog_see_cashback_products_button">Lihat Produk Cashback</string>
+    <string name="product_manage_etalase_picker_title">Pindah Etalase</string>
+    <string name="product_manage_edit_products_etalase_retry">%1$d produk berhasil dipindahkan, %2$d gagal dipindahkan.</string>
+    <string name="product_manage_edit_products_etalase_success">%1$d produk berhasil dipindahkan.</string>
+    <string name="product_manage_save">Simpan</string>
+    <string name="product_manage_etalase_picker_empty_title">Etalase belum tersedia</string>
+    <string name="product_manage_etalase_picker_empty_description">Masukkan produk sesuai kategori ke dalam etalase agar mudah dicari calon pembeli</string>
+    <string name="product_manage_add_etalase">Tambah Etalase</string>
 
 </resources>
