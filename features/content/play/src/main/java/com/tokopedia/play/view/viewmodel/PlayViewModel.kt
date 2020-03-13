@@ -204,7 +204,7 @@ class PlayViewModel @Inject constructor(
 //        startMockFreeze()
 //        setMockProductSocket()
 //        setMockVoucherSocket()
-        setMockProductSheetContent()
+//        setMockProductSheetContent()
 //        setMockVariantSheetContent()
 //        setMockProductPinned()
     }
@@ -710,12 +710,11 @@ class PlayViewModel @Inject constructor(
                                                 discountedPrice = "Rp2$it.000"
                                         )
                                     },
-                                    stock = StockAvailable(it * 10)
-//                                    stock = if (it % 2 == 0) {
-//                                        OutOfStock
-//                                    } else {
-//                                        StockAvailable(it * 10)
-//                                    }
+                                    stock = if (it % 2 == 0) {
+                                        OutOfStock
+                                    } else {
+                                        StockAvailable(it * 10)
+                                    }
                             )
 //                            ProductPlaceholderUiModel
                         }
