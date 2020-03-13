@@ -254,7 +254,6 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
 
     private fun observeFragmentUiModel() {
         viewModel.fragmentUiModel.observe(this, Observer {
-            hideLoading()
             renderFragmentState(it)
         })
     }
@@ -359,6 +358,12 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     private fun renderFragmentState(fragmentUiModel: FragmentUiModel) {
+        if (fragmentUiModel.uiState.isLoading) {
+            showLoading()
+        } else {
+            hideLoading()
+        }
+
         if (!fragmentUiModel.uiState.hasFailedToLoad) {
             if (fragmentUiModel.uiState.hasAnyPromoSelected) {
                 toolbar?.enableResetButton()

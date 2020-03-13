@@ -213,12 +213,23 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                     }
 
                     calculateAndRenderTotalBenefit()
+
+                    fragmentUiModel.value?.let {
+                        it.uiState.isLoading = false
+                        _fragmentUiModel.value = it
+                    }
+
                 } else {
                     if (response.couponListRecommendation.data.emptyState.title.isEmpty() &&
                             response.couponListRecommendation.data.emptyState.description.isEmpty() &&
                             response.couponListRecommendation.data.emptyState.imageUrl.isEmpty()) {
                         throw MessageErrorException()
                     } else {
+                        fragmentUiModel.value?.let {
+                            it.uiState.isLoading = false
+                            _fragmentUiModel.value = it
+                        }
+
                         val emptyState = uiModelMapper.mapEmptyState(response.couponListRecommendation)
                         emptyState.uiData.emptyStateStatus = response.couponListRecommendation.data.resultStatus.code
                         when {
@@ -246,6 +257,7 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
 
         }) { throwable ->
             fragmentUiModel.value?.let {
+                it.uiState.isLoading = false
                 it.uiState.hasFailedToLoad = true
                 it.uiData.exception = throwable
                 _fragmentUiModel.value = it
