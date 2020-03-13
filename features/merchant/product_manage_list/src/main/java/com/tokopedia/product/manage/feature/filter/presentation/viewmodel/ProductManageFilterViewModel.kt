@@ -67,7 +67,9 @@ class ProductManageFilterViewModel @Inject constructor(
         val dataToSelect = getDataFromList(currentData?.slice(ITEM_CATEGORIES_INDEX..ITEM_OTHER_FILTER_INDEX), filterData)
         dataToSelect?.let {
             it.third.select = !filterData.select
-            if(it.first) currentData?.get(dataToSelect.second)?.data?.sortByDescending { it.select }
+            if(it.first) {
+                currentData?.get(dataToSelect.second)?.data?.sortByDescending { data -> data.select }
+            }
         }
         _filterData.value = currentData
     }
@@ -90,7 +92,9 @@ class ProductManageFilterViewModel @Inject constructor(
             dataToSelect?.let {
                 it.second.select = !filterData.select
                 selectedSort = it.second
-                if(it.first) currentData?.get(ITEM_SORT_INDEX)?.data?.sortByDescending { data -> data.select }
+                if(it.first) {
+                    currentData?.get(ITEM_SORT_INDEX)?.data?.sortByDescending { data -> data.select }
+                }
             }
         } else {
             if (selectedEtalase != null) {
@@ -108,7 +112,9 @@ class ProductManageFilterViewModel @Inject constructor(
             dataToSelect?.let {
                 it.third.select = !filterData.select
                 selectedEtalase = it.third
-                if(it.first) currentData?.get(ITEM_ETALASE_INDEX)?.data?.sortByDescending { data -> data.select }
+                if(it.first) {
+                    currentData?.get(ITEM_ETALASE_INDEX)?.data?.sortByDescending { data -> data.select }
+                }
             }
         }
         _filterData.value = currentData
