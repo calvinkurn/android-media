@@ -16,7 +16,6 @@ import com.tokopedia.unifyprinciples.Typography
 import java.util.*
 
 class ECAccordionViewHolder(itemView: View,
-                            iconListener: ECImageIconViewHolder.IconListener?,
                             private val accordionListener: AccordionListener?)
     : AbstractViewHolder<ECAccordionVHViewModel>(itemView) {
 
@@ -28,7 +27,7 @@ class ECAccordionViewHolder(itemView: View,
         const val COLUMN_COUNT = 4
     }
 
-    private val adapter: ECServiceAdapter = ECServiceAdapter(ECServiceAdapterFactory(iconListener, null))
+    private val adapter: ECServiceAdapter = ECServiceAdapter(ECServiceAdapterFactory(null))
 
     private var ecTypographyTitle = itemView.findViewById<Typography>(R.id.ec_typography_title)
     private var ecRecyclerView = itemView.findViewById<RecyclerView>(R.id.ec_icons_recycler_view)

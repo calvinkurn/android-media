@@ -21,12 +21,6 @@ abstract class ECViewModelModule {
     @Binds
     @IntoMap
     @ECScope
-    @ViewModelKey(ECHomeViewModel::class)
-    internal abstract fun ecHomeViewModel(viewModel: ECHomeViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ECScope
     @ViewModelKey(ECServiceViewModel::class)
     internal abstract fun ecServiceViewModel(viewModel: ECServiceViewModel): ViewModel
 

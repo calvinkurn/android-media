@@ -124,7 +124,7 @@ class ECAnalytics {
 
         //5
         @JvmStatic
-        fun trackEventImpressionIcon(categoryGroup: CategoryGroup?, trackingQueue: TrackingQueue?) {
+        fun trackEventImpressionIcon(categoryGroup: CategoryGroup?, trackingQueue: TrackingQueue) {
             if (categoryGroup?.categoryRows?.isNullOrEmpty() == false) {
                 val list = ArrayList<Map<String, Any>>()
                 for (icon in categoryGroup.categoryRows) {
@@ -153,7 +153,7 @@ class ECAnalytics {
                         KEY_EVENT_ACTION, "impression - ${categoryGroup.title?.toLowerCase(Locale.getDefault())}",
                         KEY_EVENT_LABEL, categoryGroup.id,
                         KEY_ECOMMERCE, ecommerce)
-                trackingQueue?.putEETracking(map as HashMap<String, Any>)
+                trackingQueue.putEETracking(map as HashMap<String, Any>)
             }
         }
 

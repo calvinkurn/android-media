@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableStringBuilder
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -23,25 +23,13 @@ import com.tokopedia.exploreCategory.ui.fragment.ECServiceFragment
 import com.tokopedia.exploreCategory.viewmodel.ECHomeViewModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
-import javax.inject.Inject
 
-class ECHomeActivity : BaseECActivity<ECHomeViewModel>() {
+class ECHomeActivity : BaseViewModelActivity<ECHomeViewModel>() {
 
     private var fragmentDigital: Fragment? = null
 
     private lateinit var ecHomeHomeViewModel: ECHomeViewModel
     private lateinit var title: String
-
-    @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
-
-    override fun getVMFactory(): ViewModelProvider.Factory? {
-        return viewModelProvider
-    }
-
-    override fun initInject() {
-        getComponent().inject(this)
-    }
 
     override fun getViewModelType(): Class<ECHomeViewModel> {
         return ECHomeViewModel::class.java

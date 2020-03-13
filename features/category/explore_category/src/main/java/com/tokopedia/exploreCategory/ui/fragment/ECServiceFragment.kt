@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.exploreCategory.R
@@ -19,22 +18,19 @@ import com.tokopedia.exploreCategory.adapter.ECServiceAdapter
 import com.tokopedia.exploreCategory.adapter.ECServiceAdapterFactory
 import com.tokopedia.exploreCategory.di.DaggerECComponent
 import com.tokopedia.exploreCategory.di.ECComponent
-import com.tokopedia.exploreCategory.model.ECDynamicHomeIconData
 import com.tokopedia.exploreCategory.ui.viewholder.ECAccordionViewHolder
-import com.tokopedia.exploreCategory.ui.viewholder.ECImageIconViewHolder
 import com.tokopedia.exploreCategory.viewmodel.ECServiceViewModel
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.ec_service_fragment_layout.*
 import java.util.*
 import javax.inject.Inject
 
-class ECServiceFragment : BaseViewModelFragment<ECServiceViewModel>(), ECImageIconViewHolder.IconListener, ECAccordionViewHolder.AccordionListener {
+class ECServiceFragment : BaseViewModelFragment<ECServiceViewModel>(), ECAccordionViewHolder.AccordionListener {
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
 
     private lateinit var ecServiceViewModel: ECServiceViewModel
-    private val adapter: ECServiceAdapter = ECServiceAdapter(ECServiceAdapterFactory(this, this))
+    private val adapter: ECServiceAdapter = ECServiceAdapter(ECServiceAdapterFactory(this))
 
     override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
@@ -42,16 +38,13 @@ class ECServiceFragment : BaseViewModelFragment<ECServiceViewModel>(), ECImageIc
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        activity?.let {
-            ecServiceViewModel.trackingQueue = TrackingQueue(it)
-        }
         setObservers()
         handleBundle()
     }
 
     private fun handleBundle() {
         if (arguments?.containsKey(EXTRA_CATEGORY_ID) == true) {
-            ecServiceViewModel.defaultCategory = arguments!!.getInt(EXTRA_CATEGORY_ID, 1) - 1
+            ecServiceViewModel.currentActiveCategory = arguments?.getInt(EXTRA_CATEGORY_ID, 1)?.minus(1) ?: 0
         }
     }
 
@@ -61,7 +54,6 @@ class ECServiceFragment : BaseViewModelFragment<ECServiceViewModel>(), ECImageIc
     }
 
     private fun afterViewCreated() {
-        ecServiceViewModel.getHomeIconData()
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter.setVisitables(ArrayList())
         ec_service_recycler_view.layoutManager = layoutManager
@@ -105,20 +97,7 @@ class ECServiceFragment : BaseViewModelFragment<ECServiceViewModel>(), ECImageIc
     }
 
     override fun onAccordionClick(categoryIndex: Int) {
-        ecServiceViewModel.setNewOpenCategory(categoryIndex)
-    }
-
-    override fun onIconClick(appLink: String?, url: String?) {
-        val intent = RouteManager.getIntentNoFallback(context, appLink)
-        if (appLink != null && intent != null) {
-            startActivity(intent)
-        } else {
-            RouteManager.route(context, url)
-        }
-    }
-
-    override fun onIconClickEvent(categoryTitle: String?, categoryId: Int?, categoryRow: ECDynamicHomeIconData.DynamicHomeIcon.CategoryGroup.CategoryRow?, position: Int) {
-        ecServiceViewModel.fireOnIconClickEvent(categoryTitle, categoryId, categoryRow, position)
+        ecServiceViewModel.onAccordionClicked(categoryIndex)
     }
 
     override fun getViewModelType(): Class<ECServiceViewModel> {

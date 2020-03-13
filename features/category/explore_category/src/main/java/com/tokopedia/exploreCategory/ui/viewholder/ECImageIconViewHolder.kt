@@ -6,12 +6,13 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatTextView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.exploreCategory.ECAnalytics
 import com.tokopedia.exploreCategory.R
-import com.tokopedia.exploreCategory.model.ECDynamicHomeIconData.DynamicHomeIcon.CategoryGroup.CategoryRow
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECImageIconVHViewModel
 import com.tokopedia.unifyprinciples.Typography
 
-class ECImageIconViewHolder(itemView: View, private val iconListener: IconListener?) : AbstractViewHolder<ECImageIconVHViewModel>(itemView) {
+class ECImageIconViewHolder(itemView: View) : AbstractViewHolder<ECImageIconVHViewModel>(itemView) {
     companion object {
         @JvmField
         @LayoutRes
@@ -29,15 +30,9 @@ class ECImageIconViewHolder(itemView: View, private val iconListener: IconListen
         ImageHandler.loadImageWithoutPlaceholder(ecImageBg, element?.categoryRow?.imageUrl,
                 R.drawable.status_no_result)
         itemView.setOnClickListener {
-            iconListener?.onIconClick(element?.categoryRow?.applinks, element?.categoryRow?.url)
-            iconListener?.onIconClickEvent(element?.categoryTitle, element?.categoryId, element?.categoryRow, adapterPosition)
+            ECAnalytics.trackEventClickIcon(element?.categoryTitle, element?.categoryId?.toString(), element?.categoryRow, adapterPosition)
+            RouteManager.routeNoFallbackCheck(itemView.context, element?.categoryRow?.applinks, element?.categoryRow?.url)
         }
         tvNewLabel?.visibility = if (element?.categoryRow?.categoryLabel == NEW_CATEGORY) View.VISIBLE else View.GONE
-    }
-
-    interface IconListener {
-        fun onIconClick(appLink: String?, url: String?)
-
-        fun onIconClickEvent(categoryTitle: String?, categoryId: Int?, categoryRow: CategoryRow?, position: Int)
     }
 }

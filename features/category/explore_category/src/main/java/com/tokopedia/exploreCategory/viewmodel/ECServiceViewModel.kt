@@ -11,16 +11,21 @@ import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class ECServiceViewModel @Inject constructor(private val useCase: ECDynamicHomeIconUseCase) : BaseECViewModel() {
+class ECServiceViewModel @Inject constructor(
+        private val useCase: ECDynamicHomeIconUseCase,
+        private val trackingQueue: TrackingQueue) : BaseECViewModel() {
 
-    var trackingQueue: TrackingQueue? = null
-    var defaultCategory: Int = 0
     val categories = MutableLiveData<ArrayList<Visitable<*>>>()
     val notifyAdapter = MutableLiveData<Int>()
     val visitable = ArrayList<Visitable<*>>()
-    var currentOpenCategory = 0
+    var currentActiveCategory = 0
 
-    fun getHomeIconData() {
+    override fun doOnCreate() {
+        super.doOnCreate()
+        getHomeIconData()
+    }
+
+    private fun getHomeIconData() {
         shimmerVisibility.value = true
         launchCatchError(block = {
             val response = useCase.getHomeIconData()
@@ -37,11 +42,10 @@ class ECServiceViewModel @Inject constructor(private val useCase: ECDynamicHomeI
         if (categoryGroup.isNullOrEmpty()) {
             errorMessage.value = "Empty Response"
         } else {
-            if ((defaultCategory) < categoryGroup.size) {
-                categoryGroup[defaultCategory]?.isOpen = true
-                currentOpenCategory = defaultCategory
+            if ((currentActiveCategory) < categoryGroup.size) {
+                categoryGroup[currentActiveCategory]?.isOpen = true
             }
-            categoryGroup[defaultCategory]?.let {
+            categoryGroup[currentActiveCategory]?.let {
                 ECAnalytics.trackEventImpressionFeature(categoryGroup, it.title, it.id)
                 ECAnalytics.trackEventImpressionIcon(it, trackingQueue)
             }
@@ -52,16 +56,16 @@ class ECServiceViewModel @Inject constructor(private val useCase: ECDynamicHomeI
         }
     }
 
-    fun setNewOpenCategory(categoryIndex: Int) {
+    fun onAccordionClicked(categoryIndex: Int) {
         val newCurrentCG = (visitable[categoryIndex] as ECAccordionVHViewModel).categoryGroup
         if (newCurrentCG?.isOpen == false)
             ECAnalytics.trackEventImpressionIcon(newCurrentCG, trackingQueue)
 
-        notifyAdapter.value = currentOpenCategory
-        if (categoryIndex != currentOpenCategory) {
-            (visitable[currentOpenCategory] as ECAccordionVHViewModel).categoryGroup?.isOpen = false
+        notifyAdapter.value = currentActiveCategory
+        if (categoryIndex != currentActiveCategory) {
+            (visitable[currentActiveCategory] as ECAccordionVHViewModel).categoryGroup?.isOpen = false
             (visitable[categoryIndex] as ECAccordionVHViewModel).categoryGroup?.isOpen = true
-            currentOpenCategory = categoryIndex
+            currentActiveCategory = categoryIndex
         } else {
             (visitable[categoryIndex] as ECAccordionVHViewModel).categoryGroup?.isOpen = !(newCurrentCG?.isOpen
                     ?: false)
@@ -72,16 +76,10 @@ class ECServiceViewModel @Inject constructor(private val useCase: ECDynamicHomeI
         ECAnalytics.trackEventClickAccordion(newCurrentCG?.title)
     }
 
-    fun fireOnIconClickEvent(categoryTitle: String?, categoryId: Int?, categoryRow: CategoryGroup.CategoryRow?, position: Int) {
-        ECAnalytics.trackEventClickIcon(categoryTitle,
-                categoryId?.toString(),
-                categoryRow,
-                position)
-    }
 
     override fun doOnPause() {
         super.doOnPause()
-        trackingQueue?.sendAll()
+        trackingQueue.sendAll()
     }
 
 }

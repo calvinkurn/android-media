@@ -352,5 +352,14 @@ public class RouteManager {
         return attributionApplink;
     }
 
+    public static void routeNoFallbackCheck(Context context, String applink, String url) {
+        Intent intent = getIntentNoFallback(context, applink);
+        if (applink != null && intent != null) {
+            context.startActivity(intent);
+        } else {
+            route(context, url);
+        }
+    }
+
 
 }

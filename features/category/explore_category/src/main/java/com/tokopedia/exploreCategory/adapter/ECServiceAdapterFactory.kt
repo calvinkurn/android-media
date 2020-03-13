@@ -11,15 +11,14 @@ import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECAccordionVHViewMo
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECImageIconVHViewModel
 import com.tokopedia.exploreCategory.ui.viewholder.viewmodel.ECShimmerVHViewModel
 
-class ECServiceAdapterFactory(private val iconListener: ECImageIconViewHolder.IconListener?,
-                              private val accordionListener: ECAccordionViewHolder.AccordionListener?)
+class ECServiceAdapterFactory(private val accordionListener: ECAccordionViewHolder.AccordionListener?)
     : BaseAdapterTypeFactory(), ECServiceTypeFactory {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ECShimmeringViewHolder.LAYOUT -> ECShimmeringViewHolder(parent)
-            ECAccordionViewHolder.LAYOUT -> ECAccordionViewHolder(parent, iconListener, accordionListener)
-            ECImageIconViewHolder.LAYOUT -> ECImageIconViewHolder(parent, iconListener)
+            ECAccordionViewHolder.LAYOUT -> ECAccordionViewHolder(parent, accordionListener)
+            ECImageIconViewHolder.LAYOUT -> ECImageIconViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
