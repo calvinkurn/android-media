@@ -122,9 +122,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
 
-    private val abNewThumbnailKey = "Topchat Product Thumbnail"
-    private val variantNewThumbnail = "New Thumbnail"
-
     override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
@@ -1002,6 +999,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     companion object {
+        private const val abNewThumbnailKey = "Topchat Product Thumbnail"
+        private const val variantNewThumbnail = "New Thumbnail"
+
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle
