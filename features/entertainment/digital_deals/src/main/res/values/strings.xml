@@ -130,4 +130,6 @@
     <string name="detect_current_location">Gunakan lokasi saya saat ini</string>
     <string name="ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
 
+    <string name="how_to_redeem_error">Cara untuk redeem voucher belum dapat ditemukan, silakan coba lagi nanti.</string>
+
 </resources>

@@ -178,6 +178,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
 
     fun setAdapter(adapter: CircularViewPagerAdapter) {
         this.adapter = adapter
+        this.adapter?.setIsInfinite(this.isInfinite)
         viewPager.adapter = this.adapter
         if (isInfinite && adapter.listCount > 0) viewPager.setCurrentItem(1, false)
     }
@@ -284,7 +285,7 @@ open class CircularViewPager : FrameLayout, CoroutineScope{
 
     private fun setImpression(position: Int){
         val realCount = adapter?.listCount ?: 0
-        if (position != -1 && realCount != 0 && position < realCount && !impressionStatusList[position]) {
+        if (position != -1 && realCount != 0 && position < realCount && impressionStatusList.size > position && !impressionStatusList[position]) {
             impressionStatusList[position] = true
             listener?.onPageScrolled(position)
         }
