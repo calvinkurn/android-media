@@ -168,10 +168,11 @@ class PlayViewModel @Inject constructor(
         }
     }
 
-    // helper
+    //region helper
     private val hasWordsOrDotsRegex = Regex("(\\.+|[a-z]+)")
     private val amountStringStepArray = arrayOf("k", "m")
     private fun String.trimMultipleNewlines() = trim().replace(Regex("(\\n+)"), "\n")
+    //endregion
 
     /**
      * DO NOT CHANGE THIS TO LAMBDA
@@ -207,7 +208,7 @@ class PlayViewModel @Inject constructor(
 //        setMockProductPinned()
     }
 
-    // lifecycle region
+    //region lifecycle
     fun resumeWithChannelId(channelId: String) {
         getChannelInfo(channelId)
     }
@@ -221,7 +222,7 @@ class PlayViewModel @Inject constructor(
         stopPlayer()
         super.onCleared()
     }
-    // end region
+    //endregion
 
     //region bottom insets
     fun onKeyboardShown(estimatedKeyboardHeight: Int) {
@@ -609,7 +610,7 @@ class PlayViewModel @Inject constructor(
         stopPlayer()
         onKeyboardHidden()
     }
-    // end region
+    //endregion
 
     companion object {
         private const val MAX_RETRY_CHANNEL_INFO = 3
@@ -618,7 +619,7 @@ class PlayViewModel @Inject constructor(
     }
 
 
-    // mock region
+    //region mock
     private fun startMockFreeze() {
         launch(dispatchers.io) {
             delay(10000)
@@ -751,5 +752,5 @@ class PlayViewModel @Inject constructor(
             }
         }
     }
-    // end region
+    //endregion
 }
