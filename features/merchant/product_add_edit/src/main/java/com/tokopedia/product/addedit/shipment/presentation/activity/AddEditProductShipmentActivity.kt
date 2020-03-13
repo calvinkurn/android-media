@@ -8,7 +8,7 @@ import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProdu
 
 class AddEditProductShipmentActivity : BaseSimpleActivity() {
 
-    override fun getNewFragment(): Fragment = AddEditProductShipmentFragment()
+    override fun getNewFragment(): Fragment = AddEditProductShipmentFragment.createInstance()
 
     companion object {
         fun createInstance(context: Context?) = Intent(context, AddEditProductShipmentActivity::class.java)

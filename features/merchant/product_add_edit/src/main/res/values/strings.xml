@@ -47,4 +47,6 @@
     <string name="label_shipment_description">Pastikan berat produk dan pengiriman sesuai</string>
     <string name="label_unit">Satuan</string>
     <string name="label_weight">Berat</string>
+    <string name="error_weight_not_valid">Berat harus diisi antara %1$d &#8212; %2$d</string>
+    <string name="action_end_button">Selesai</string>
 </resources>

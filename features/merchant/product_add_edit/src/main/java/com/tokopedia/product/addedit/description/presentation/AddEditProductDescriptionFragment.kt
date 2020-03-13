@@ -12,11 +12,13 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.description.adapter.VideoLinkTypeFactory
 import com.tokopedia.product.addedit.description.model.VideoLinkModel
+import com.tokopedia.product.addedit.shipment.presentation.activity.AddEditProductShipmentActivity
 import com.tokopedia.product.addedit.tooltip.model.NumericTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import kotlinx.android.synthetic.main.add_edit_product_description_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_variant_input_layout.*
 import kotlinx.android.synthetic.main.add_edit_product_video_input_layout.*
+import kotlinx.android.synthetic.main.fragment_add_edit_product_description.*
 
 class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, VideoLinkTypeFactory>(),
         VideoLinkTypeFactory.VideoLinkListener {
@@ -74,6 +76,10 @@ class AddEditProductDescriptionFragment : BaseListFragment<VideoLinkModel, Video
 
         tvAddVariant.setOnClickListener {
             showVariantDialog()
+        }
+
+        btnNext.setOnClickListener {
+            startActivity(AddEditProductShipmentActivity.createInstance(context))
         }
     }
 

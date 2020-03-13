@@ -6,19 +6,29 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.addedit.R
-import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
-import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product.addedit.optionpicker.OptionPicker
+import com.tokopedia.unifycomponents.TextFieldUnify
+import kotlin.collections.ArrayList
 
 class AddEditProductShipmentFragment : BaseDaggerFragment() {
+    private var tfWeightAmount: TextFieldUnify? = null
+    private var tfWeightUnit: TextFieldUnify? = null
+    private var selectedWeightPosition: Int = -1
+    private var selectedWeightText = ""
 
     companion object {
         fun createInstance(): Fragment {
             return AddEditProductShipmentFragment()
         }
 
-        // TODO faisalramd
-        const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
+        const val GRAM = "Gram"
+        const val KILOGRAM = "Kilogram"
+        const val MIN_WEIGHT = 1
+        const val MAX_WEIGHT_GRAM = 500000
+        const val MAX_WEIGHT_KILOGRAM = 500
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -29,27 +39,59 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val tvWeightUnit: ViewGroup = view.findViewById(R.id.tv_weight_unit)
-        tvWeightUnit.setOnClickListener {
-            showPhotoTips()
+        tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
+        tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
+        tfWeightUnit?.apply {
+            textFieldInput.setText(GRAM)
+            textFieldInput.isFocusable = false // disable focus
+            textFieldInput.isActivated = false // disable focus
+            textFieldInput.setOnClickListener {
+                showUnitWeightOption()
+            }
+        }
+        tfWeightAmount?.textFieldInput?.afterTextChanged{
+            isWeightValid()
         }
     }
 
-    private fun showPhotoTips() {
+    private fun showUnitWeightOption() {
         fragmentManager?.let {
-            val tooltipBottomSheet = TooltipBottomSheet()
-            val tips: ArrayList<ImageTooltipModel> = ArrayList()
-            val tooltipTitle = getString(R.string.title_tooltip_photo_tips)
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), TEST_IMAGE_URL))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), TEST_IMAGE_URL))
-            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), TEST_IMAGE_URL))
+            val optionPicker = OptionPicker()
+            val title = getString(R.string.label_weight)
+            val options: ArrayList<String> = ArrayList()
+            options.add(GRAM)
+            options.add(KILOGRAM)
 
-            tooltipBottomSheet.apply {
-                setTitle(tooltipTitle)
-                setItemMenuList(tips)
+            optionPicker.apply {
+                setSelectedPosition(selectedWeightPosition)
+                setDividerVisible(true)
+                setTitle(title)
+                setItemMenuList(options)
                 show(it, null)
             }
+
+            optionPicker.setOnItemClickListener{ selectedText: String, selectedPosition: Int ->
+                tfWeightUnit?.textFieldInput?.setText(selectedText)
+                tfWeightAmount?.textFieldInput?.setText("")
+                selectedWeightPosition = selectedPosition
+                selectedWeightText = selectedText
+            }
         }
+    }
+
+    private fun getWeight() = tfWeightAmount?.textFieldInput?.text.toString().toIntOrZero()
+
+    private fun isWeightValid(): Boolean {
+        var isValid = true
+        val minWeight = MIN_WEIGHT
+        val maxWeight = if (selectedWeightText == KILOGRAM) MAX_WEIGHT_KILOGRAM else MAX_WEIGHT_GRAM
+        val errorMessage = getString(R.string.error_weight_not_valid, minWeight, maxWeight)
+        if (minWeight > getWeight() || getWeight() > maxWeight) {
+            isValid = false
+        }
+        tfWeightAmount?.setError(!isValid)
+        tfWeightAmount?.setMessage(if (isValid) "" else errorMessage)
+        return isValid
     }
 
     override fun getScreenName(): String {
