@@ -32,10 +32,14 @@ class InstallReferral {
                             // Connection established.
 
                             referrerClient?.let {
-                                val response: ReferrerDetails = it.installReferrer
+                                val response: ReferrerDetails? = it.installReferrer
 
-                                trackIfFromCampaignUrl(response.installReferrer)
-                                sendToGA(context, response.installReferrer)
+                                if (response != null) {
+                                    response.installReferrer?.let { installReferrer ->
+                                        trackIfFromCampaignUrl(installReferrer)
+                                        sendToGA(context, installReferrer)
+                                    }
+                                }
                                 InstallUtils.sendIrisInstallEvent(context)
                                 updateReferralCache()
 

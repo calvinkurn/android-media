@@ -20,14 +20,14 @@ import javax.inject.Inject
 
 class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    fun createRequestParam(hotelRoomListPageModel: HotelRoomListPageModel): RoomListParam {
+    private fun createRequestParam(hotelRoomListPageModel: HotelRoomListPageModel): RoomListParam {
         val roomListParam = RoomListParam()
         roomListParam.propertyId = hotelRoomListPageModel.propertyId
         roomListParam.checkIn = hotelRoomListPageModel.checkIn
         roomListParam.checkOut = hotelRoomListPageModel.checkOut
         roomListParam.guest.adult = hotelRoomListPageModel.adult
         var childAge = IntArray(hotelRoomListPageModel.child)
-        for (i in 0 until hotelRoomListPageModel.child){
+        for (i in 0 until hotelRoomListPageModel.child) {
             childAge[i] = 4
         }
         roomListParam.guest.childAge = childAge.toList()
@@ -56,11 +56,11 @@ class GetHotelRoomListUseCase @Inject constructor(val useCase: MultiRequestGraph
         }
     }
 
-    fun mappingObjects(hotelRoomData: HotelRoomData, hotelName: String): MutableList<HotelRoom> {
+    private fun mappingObjects(hotelRoomData: HotelRoomData, hotelName: String): MutableList<HotelRoom> {
         val propertyInfo: HotelRoom.AdditionalPropertyInfo =
                 HotelRoom.AdditionalPropertyInfo(hotelRoomData.propertyId, hotelRoomData.isAddressRequired,
                         hotelRoomData.isCvCRequired, hotelRoomData.isDirectPayment, hotelRoomData.isEnabled,
-                        hotelName)
+                        hotelName, hotelRoomData.deals.tagging)
         for (room in hotelRoomData.rooms) {
             room.additionalPropertyInfo = propertyInfo
         }

@@ -1,0 +1,10 @@
+query getRealURL($name:String!, $key:String!)
+{
+  bymeGetRealURL(affiliateName: $name, urlKey: $key) {
+    realURL
+    error {
+      type
+      code
+    }
+  }
+}

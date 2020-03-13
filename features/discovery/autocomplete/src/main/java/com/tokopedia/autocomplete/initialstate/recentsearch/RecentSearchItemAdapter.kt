@@ -20,7 +20,7 @@ class RecentSearchItemAdapter(private val listener: InitialStateItemClickListene
 
     fun setData(data: List<BaseItemInitialStateSearch>) {
         this.data = data
-        notifyItemRangeInserted(0, data.size)
+        notifyDataSetChanged()
     }
 
     override fun getItemViewType(position: Int): Int {

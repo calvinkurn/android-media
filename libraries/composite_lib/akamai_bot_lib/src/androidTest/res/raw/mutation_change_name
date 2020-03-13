@@ -1,0 +1,7 @@
+mutation change_name($name: String!) {
+  userProfileUpdate(fullname: $name) {
+    isSuccess
+    completionScore
+    errors
+  }
+}

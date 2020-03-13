@@ -816,7 +816,7 @@ class UmrahTrackingAnalytics {
 
     private fun getTravelAgentImpression(listAgent:List<TravelAgent>): List<Any>{
         val list = ArrayList<Map<String, Any>>()
-        val size = list.size-1
+        val size = listAgent.size-1
         for(position in 0..size) {
             val map = HashMap<String, Any>()
             map[ID] = listAgent[position].id
@@ -836,7 +836,7 @@ class UmrahTrackingAnalytics {
         map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_TRAVEL_AGENT
         map[TrackAppUtils.EVENT_LABEL] = headerTitle
         map[ECOMMERCE_LABEL] = DataLayer.mapOf(
-                UMRAH_EVENT_PROMO_VIEW, DataLayer.mapOf(
+                UMRAH_EVENT_PROMO_CLICK, DataLayer.mapOf(
                 PROMOTIONS_LABEL, getTravelAgentImpression(listOf(travelAgent))))
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
@@ -847,7 +847,7 @@ class UmrahTrackingAnalytics {
         val map = mutableMapOf<String, Any?>()
         map[TrackAppUtils.EVENT] = UMRAH_EVENT_CLICK_UMROH
         map[TrackAppUtils.EVENT_CATEGORY] = PRODUCT_DETAIL_PAGE_UMROH
-        map[TrackAppUtils.EVENT_ACTION] = UMRAH_TRAVEL_CLICK_ACTION_THREE_DOTS
+        map[TrackAppUtils.EVENT_ACTION] = UMRAH_CLICK_TRAVEL_AGENT
         map[TrackAppUtils.EVENT_LABEL] = ""
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(map)
