@@ -110,6 +110,10 @@
     <string name="filter_expand_save_button">Simpan</string>
     <string name="filter_expand_reset">Reset</string>
     <string name="filter_expand_category_not_found">Oops, kategori yang kamu cari tidak ditemukan.</string>
+    <string name="product_manage_filter_sort_select_title">Urutkan</string>
+    <string name="product_manage_filter_etalase_select_title">Etalase</string>
+    <string name="product_manage_filter_all_categories_title">Semua Kategori</string>
+    <string name="product_manage_filter_other_filters_title">Filter Lainnya</string>
 
     <string name="product_manage_menu_edit_price">Ubah Harga</string>
     <string name="product_manage_menu_edit_stock">Ubah Stok</string>

@@ -89,8 +89,8 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        set_cashback_recycler_view.adapter = adapter
-        set_cashback_recycler_view.layoutManager = LinearLayoutManager(this.context)
+        setCashbackRecyclerView.adapter = adapter
+        setCashbackRecyclerView.layoutManager = LinearLayoutManager(this.context)
         initView()
         observeProduct()
     }
@@ -110,17 +110,17 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
     private fun initHeader() {
         context?.let {
-            set_cashback_header.title = it.resources.getString(R.string.product_manage_set_cashback_header_title)
+            setCashbackHeader.title = it.resources.getString(R.string.product_manage_set_cashback_header_title)
         }
-        set_cashback_header.isShowBackButton = true
-        set_cashback_header.setNavigationOnClickListener {
+        setCashbackHeader.isShowBackButton = true
+        setCashbackHeader.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
-        set_cashback_header.isShowShadow = false
+        setCashbackHeader.isShowShadow = false
     }
 
     private fun initButton() {
-        btn_submit_cashback.setOnClickListener {
+        submitCashbackButton.setOnClickListener {
             val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
             cacheManager?.let {
                 val cacheManagerId = it.id
@@ -168,7 +168,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     private fun updateView(product: ProductViewModel) {
-        set_cashback_header.subtitle = product.title.toString()
+        setCashbackHeader.subtitle = product.title.toString()
         initSetCashbackList(product)
     }
 

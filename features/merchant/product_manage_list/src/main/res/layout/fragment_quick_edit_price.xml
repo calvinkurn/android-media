@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/quick_edit_price"
+        android:id="@+id/quickEditPriceTextField"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -17,10 +17,10 @@
         android:background="@color/product_manage_white"
         android:paddingTop="@dimen/layout_lvl4"
         android:paddingBottom="@dimen/layout_lvl3"
-        app:layout_constraintTop_toBottomOf="@id/quick_edit_price">
+        app:layout_constraintTop_toBottomOf="@id/quickEditPriceTextField">
 
         <com.tokopedia.unifycomponents.UnifyButton
-            android:id="@+id/quick_edit_save_button"
+            android:id="@+id/quickEditPriceSaveButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/filter_expand_save_button"

@@ -7,7 +7,7 @@
     android:layout_marginBottom="@dimen/layout_lvl3">
 
     <com.tokopedia.product.manage.feature.filter.presentation.widget.HeaderWidget
-        android:id="@+id/filter_header"
+        android:id="@+id/filterHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -17,10 +17,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/chips"
-        app:layout_constraintTop_toBottomOf="@id/filter_header" />
+        app:layout_constraintTop_toBottomOf="@id/filterHeader" />
 
     <com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllWidget
-        android:id="@+id/filter_see_all"
+        android:id="@+id/filterSeeAll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/layout_lvl2"
