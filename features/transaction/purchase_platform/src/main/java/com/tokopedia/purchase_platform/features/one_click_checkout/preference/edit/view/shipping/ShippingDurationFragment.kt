@@ -16,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.shippingprice.ServicesItem
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
@@ -42,6 +43,8 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: ShippingDurationViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[ShippingDurationViewModel::class.java]
@@ -60,6 +63,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
     }
 
     override fun onSelect(selection: Int) {
+        preferenceListAnalytics.eventClickOnDurasiOptionInPilihDurasiPengirimanPage(selection.toString())
         viewModel.setSelectedShipping(selection)
     }
 
@@ -81,6 +85,7 @@ class ShippingDurationFragment : BaseDaggerFragment(), ShippingDurationItemAdapt
                     btn_save_duration.setOnClickListener {
                         val selectedId = viewModel.selectedId
                         if (selectedId > 0 ) {
+                            preferenceListAnalytics.eventClickPilihMetodePembayaranInDuration(selectedId.toString())
                             goToNextStep()
                         }
                         /*if(arguments?.getBoolean(ARG_IS_EDIT) == false) {

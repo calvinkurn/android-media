@@ -11,14 +11,20 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticcart.shipping.model.ShippingParam
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.DaggerPreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.address.AddressListFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.payment.PaymentMethodFragment
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.summary.PreferenceSummaryFragment
 import kotlinx.android.synthetic.main.activity_preference_edit.*
+import javax.inject.Inject
 
 class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditComponent> {
+
+    @Inject
+    lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     var preferenceIndex = -1
     var profileId = 0
@@ -39,10 +45,17 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preference_edit)
         initViews()
+        component.inject(this)
     }
 
     private fun initViews() {
         btn_back.setOnClickListener {
+            val fragments = supportFragmentManager.fragments
+            val lastFragments = fragments[fragments.lastIndex]
+            val checkLastFragment = checkLastFragment(lastFragments)
+            if (!checkLastFragment && fragments.size > 1) {
+                checkLastFragment(fragments[fragments.lastIndex - 1])
+            }
             onBackPressed()
         }
 
@@ -58,6 +71,30 @@ class PreferenceEditActivity : BaseActivity(), HasComponent<PreferenceEditCompon
             supportFragmentManager.beginTransaction().replace(R.id.container, AddressListFragment.newInstance()).commit()
         } else {
             supportFragmentManager.beginTransaction().replace(R.id.container, PreferenceSummaryFragment.newInstance(true)).commit()
+        }
+    }
+
+    private fun checkLastFragment(lastFragments: Fragment): Boolean {
+        when (lastFragments) {
+            is PreferenceSummaryFragment -> {
+                preferenceListAnalytics.eventClickBackArrowInEditPreference()
+                return true
+            }
+            is AddressListFragment -> {
+                preferenceListAnalytics.eventClickBackArrowInPilihAlamat()
+                return true
+            }
+            is ShippingDurationFragment -> {
+                preferenceListAnalytics.eventClickBackArrowInPilihDurasi()
+                return true
+            }
+            is PaymentMethodFragment -> {
+                preferenceListAnalytics.eventClickBackArrowInPilihPembayaran()
+                return true
+            }
+            else -> {
+                return false
+            }
         }
     }
 

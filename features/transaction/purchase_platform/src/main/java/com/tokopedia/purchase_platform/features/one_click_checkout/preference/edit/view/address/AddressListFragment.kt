@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -26,6 +27,7 @@ import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.checkout.subfeature.address_choice.view.CartAddressChoiceActivity.KERO_TOKEN
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.shipping.ShippingDurationFragment
@@ -41,6 +43,8 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: AddressListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[AddressListViewModel::class.java]
@@ -187,6 +191,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         if (parent is PreferenceEditActivity) {
             val selectedId = viewModel.selectedId.toIntOrZero()
             if (selectedId > 0) {
+                preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.addressId = selectedId
                 parent.goBack()
             }
@@ -255,6 +260,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
     }
 
     override fun onSelect(addressId: String) {
+        preferenceListAnalytics.eventClickAddressOptionInPilihAlamatPage()
         viewModel.setSelectedAddress(addressId)
     }
 
@@ -302,6 +308,7 @@ class AddressListFragment : BaseDaggerFragment(), SearchInputView.Listener, Addr
         if (parent is PreferenceEditActivity) {
             val selectedId = viewModel.selectedId.toIntOrZero()
             if (selectedId > 0) {
+                preferenceListAnalytics.eventClickSimpanAlamatInPilihAlamatPage()
                 parent.addressId = selectedId
                 parent.addFragment(ShippingDurationFragment())
             }

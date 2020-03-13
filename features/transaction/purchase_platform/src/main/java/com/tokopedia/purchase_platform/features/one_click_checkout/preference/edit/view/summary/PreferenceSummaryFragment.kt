@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.di.PreferenceEditComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get.model.GetPreferenceData
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
@@ -53,6 +54,8 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var preferenceListAnalytics: PreferenceListAnalytics
 
     private val viewModel: PreferenceSummaryViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PreferenceSummaryViewModel::class.java]
@@ -247,6 +250,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         btn_change_address.setOnClickListener {
             val parent = activity
             if (parent is PreferenceEditActivity) {
+                preferenceListAnalytics.eventClickUbahAddressInPreferenceSettingPage()
                 parent.addFragment(AddressListFragment.newInstance(true))
             }
         }
@@ -254,6 +258,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         btn_change_duration.setOnClickListener {
             val parent = activity
             if (parent is PreferenceEditActivity) {
+                preferenceListAnalytics.eventClickUbahShippingInPreferenceSettingPage()
                 parent.addFragment(ShippingDurationFragment.newInstance(true))
             }
         }
@@ -261,6 +266,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
         btn_change_payment.setOnClickListener {
             val parent = activity
             if (parent is PreferenceEditActivity) {
+                preferenceListAnalytics.eventClickUbahPaymentInPreferenceSettingPage()
                 parent.addFragment(PaymentMethodFragment.newInstance(true))
             }
         }
@@ -286,6 +292,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
             if (arguments?.getBoolean(ARG_IS_EDIT) == true && parent.profileId > -1) {
                 parent.showDeleteButton()
                 parent.setDeleteButtonOnClickListener {
+                    preferenceListAnalytics.eventClickTrashBinInEditPreference()
                     context?.let {
                         if (viewModel.preference.value is OccState.Success) {
                             DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
@@ -294,6 +301,7 @@ class PreferenceSummaryFragment : BaseDaggerFragment() {
                                 setPrimaryCTAText(getString(R.string.lbl_delete_preference_ok))
                                 setSecondaryCTAText(getString(R.string.text_button_negative))
                                 setPrimaryCTAClickListener {
+                                    preferenceListAnalytics.eventClickDeletePreferenceFromTrashBin()
                                     dismiss()
                                     viewModel.deletePreference()
                                 }

@@ -24,8 +24,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.purchase_platform.R
+import com.tokopedia.purchase_platform.common.analytics.TransactionAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.list.di.PreferenceListComponent
 import com.tokopedia.unifycomponents.Toaster
@@ -39,6 +41,8 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var preferencelistAnalytics: PreferenceListAnalytics
 
     private val viewModel: PreferenceListViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[PreferenceListViewModel::class.java]
@@ -198,6 +202,7 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
 
     private fun initViews() {
         btn_preference_list_action.setOnClickListener {
+            preferencelistAnalytics.eventAddPreferenceFromPurchaseSetting()
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
             intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapter.itemCount + 1)
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
@@ -221,10 +226,12 @@ class PreferenceListFragment : BaseDaggerFragment(), PreferenceListAdapter.Prefe
     }
 
     override fun onPreferenceSelected(preference: ProfilesItemModel) {
+        preferencelistAnalytics.eventClickJadikanPilihanUtama()
         viewModel.changeDefaultPreference(preference)
     }
 
     override fun onPreferenceEditClicked(preference: ProfilesItemModel, position: Int) {
+        preferencelistAnalytics.eventClickSettingPreferenceGearInPreferenceListPage()
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
         intent.apply {
             putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, position)

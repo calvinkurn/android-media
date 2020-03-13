@@ -5,14 +5,13 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
-import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceEditUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetShippingDurationUseCase
+import com.tokopedia.purchase_platform.features.one_click_checkout.preference.analytics.PreferenceListAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.create.CreatePreferenceUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.create.model.CreatePreferenceGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.delete.DeletePreferenceUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.delete.model.DeletePreferenceGqlResponse
-import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get.GetPreferenceByIdUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.get.model.GetPreferenceByIdGqlResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.update.UpdatePreferenceUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.domain.update.model.UpdatePreferenceGqlResponse
@@ -105,5 +104,11 @@ class PreferenceEditModule {
     @Provides
     fun provideRatesGraphqlUseCase(): com.tokopedia.graphql.domain.GraphqlUseCase {
         return com.tokopedia.graphql.domain.GraphqlUseCase()
+    }
+
+    @PreferenceEditScope
+    @Provides
+    internal fun providePreferenceListAnalytics(): PreferenceListAnalytics {
+        return PreferenceListAnalytics()
     }
 }
