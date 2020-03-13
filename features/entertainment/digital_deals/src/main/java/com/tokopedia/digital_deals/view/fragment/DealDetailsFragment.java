@@ -152,11 +152,11 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
     private DealsCategoryAdapter dealsAdapter;
     private UserSession userSession;
 
-    private final int SALAM_VALUE = 32768;
-    private final int SALAM_INDICATOR = 0;
-    private final String SALAM_REGEX_PATTERN = "<a(?:[^>]+)?>(.*?)<\\/a>";
-    private final int URL_GROUP = 1;
-    private final int FIRST_VALUE = 0;
+    private static final int SALAM_VALUE = 32768;
+    private static final int SALAM_INDICATOR = 0;
+    private static final String SALAM_REGEX_PATTERN = "<a(?:[^>]+)?>(.*?)<\\/a>";
+    private static final int URL_GROUP = 1;
+    private static final int FIRST_VALUE = 0;
 
     public static Fragment createInstance(Bundle bundle) {
         Fragment fragment = new DealDetailsFragment();

@@ -72,7 +72,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
     private static final int SALAM_INDICATOR = 0;
     private static final int SALAM_VALUE = 131072;
-    private String typeId = "4";
+    private static final String typeId = "4";
 
     @Inject
     public DealDetailsPresenter(GetDealDetailsUseCase getDealDetailsUseCase,

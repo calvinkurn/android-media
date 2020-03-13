@@ -326,6 +326,17 @@ open class HomeViewModel @Inject constructor(
         return homeDataModel
     }
 
+    fun getPlayBanner(position: Int){
+        val playBanner =
+            if (position < _homeLiveData.value?.list?.size ?: -1
+                    && _homeLiveData.value?.list?.get(position) is PlayCardViewModel)
+                _homeLiveData.value?.list?.getOrNull(position) as PlayCardViewModel
+            else _homeLiveData.value?.list?.find { it is PlayCardViewModel }
+        playBanner?.let {
+            loadPlayBannerFromNetwork(playBanner as PlayCardViewModel)
+        }
+    }
+
     // Logic detect play banner should load data from API
     private fun getPlayBanner(){
         // Check the current index is play card view model
