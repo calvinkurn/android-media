@@ -140,7 +140,7 @@ abstract class BaseAnalyticsDebuggerFragment : BaseSearchListFragment<Visitable<
     }
 
     private fun openDetail(viewModel: AnalyticsDebuggerViewModel) {
-        startActivity(AnalyticsDebuggerDetailActivity.newInstance(context, viewModel))
+        startActivity(AnalyticsDebuggerDetailActivity.newInstance(requireContext(), viewModel))
     }
 
     companion object {
