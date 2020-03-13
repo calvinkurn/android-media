@@ -103,6 +103,7 @@ import com.tokopedia.purchase_platform.features.cart.view.mapper.RecentViewMappe
 import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.purchase_platform.features.checkout.domain.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
 import com.tokopedia.purchase_platform.features.promo.data.request.Order
 import com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail
@@ -2768,7 +2769,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
-        doRenderPromoCheckoutButton(mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
+        doRenderPromoCheckoutButton(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
     }
 
     private fun showToaster(msg: String) {
@@ -2803,67 +2804,5 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onCartShopNameChecked(isCheckedAll: Boolean) {
         dPresenter.doUpdateCartAndValidateUse(generateParamValidateUsePromoRevamp(isCheckedAll, -1, false))
-    }
-
-    private fun mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel: PromoUiModel): LastApplyUiModel {
-        return LastApplyUiModel(
-                codes = promoUiModel.codes,
-                voucherOrders = mapVoucherOrders(promoUiModel.voucherOrderUiModels),
-                additionalInfo = mapAdditionalInfo(promoUiModel.additionalInfoUiModel),
-                message = mapMessageUiModel(promoUiModel.messageUiModel)
-        )
-    }
-
-    private fun mapVoucherOrders(voucherOrderUiModels: List<PromoCheckoutVoucherOrdersItemUiModel?>): List<LastApplyVoucherOrdersItemUiModel> {
-        val listLastApplyVoucherOrders = arrayListOf<LastApplyVoucherOrdersItemUiModel>()
-        voucherOrderUiModels.forEach {
-            it?.let { it1 -> mapVoucherOrdersItem(it1) }
-        }
-        return listLastApplyVoucherOrders
-    }
-
-    private fun mapVoucherOrdersItem(promoCheckoutVoucherOrdersItemUiModel: PromoCheckoutVoucherOrdersItemUiModel): LastApplyVoucherOrdersItemUiModel {
-        var code = ""
-        promoCheckoutVoucherOrdersItemUiModel.code?.let { code = it }
-
-        return LastApplyVoucherOrdersItemUiModel(
-                    code = code,
-                    message = mapMessageUiModel(promoCheckoutVoucherOrdersItemUiModel.messageUiModel)
-            )
-    }
-
-    private fun mapMessageUiModel(messageUiModel: MessageUiModel): LastApplyMessageUiModel {
-        return LastApplyMessageUiModel(
-                color = messageUiModel.color,
-                state = messageUiModel.state,
-                text = messageUiModel.text
-        )
-    }
-
-    private fun mapAdditionalInfo(additionalInfoUiModel: AdditionalInfoUiModel): LastApplyAdditionalInfoUiModel {
-        return LastApplyAdditionalInfoUiModel(
-                messageInfo = mapMessageInfo(additionalInfoUiModel.messageInfoUiModel),
-                errorDetail = mapErrorInfo(additionalInfoUiModel.errorDetailUiModel),
-                emptyCartInfo = mapEmptyCartInfo(additionalInfoUiModel.emptyCartInfoUiModel)
-        )
-    }
-
-    private fun mapMessageInfo(messageInfoUiModel: MessageInfoUiModel): LastApplyMessageInfoUiModel {
-        return LastApplyMessageInfoUiModel(
-                detail = messageInfoUiModel.detail,
-                message = messageInfoUiModel.message)
-    }
-
-    private fun mapErrorInfo(errorDetailUiModel: ErrorDetailUiModel): LastApplyErrorDetailUiModel {
-        return LastApplyErrorDetailUiModel(
-                message = errorDetailUiModel.message)
-    }
-
-    private fun mapEmptyCartInfo(emptyCartInfo: EmptyCartInfoUiModel): LastApplyEmptyCartInfoUiModel {
-        return LastApplyEmptyCartInfoUiModel(
-                imgUrl = emptyCartInfo.imgUrl,
-                message = emptyCartInfo.message,
-                detail = emptyCartInfo.detail
-        )
     }
 }
