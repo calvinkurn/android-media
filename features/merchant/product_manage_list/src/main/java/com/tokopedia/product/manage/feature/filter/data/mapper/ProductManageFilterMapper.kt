@@ -124,7 +124,7 @@ class ProductManageFilterMapper {
             return selectedOtherFilters
         }
 
-        private fun mapSortToSortOptions(filterViewModel: FilterViewModel): SortOption {
+        private fun mapSortToSortOptions(filterViewModel: FilterViewModel): SortOption? {
             var selectedData: FilterDataViewModel? = null
             filterViewModel.data.forEach {
                 if(it.select) {
@@ -140,7 +140,8 @@ class ProductManageFilterMapper {
                 SortOption.SortId.UPDATE_TIME.name -> SortOption.SortByUpdateTime(sortOrderOption)
                 SortOption.SortId.SOLD.name -> SortOption.SortBySold(sortOrderOption)
                 SortOption.SortId.PRICE.name -> SortOption.SortByPrice(sortOrderOption)
-                else -> SortOption.SortByDefault(sortOrderOption)
+                SortOption.SortId.DEFAULT.name -> SortOption.SortByDefault(sortOrderOption)
+                else -> null
             }
         }
 

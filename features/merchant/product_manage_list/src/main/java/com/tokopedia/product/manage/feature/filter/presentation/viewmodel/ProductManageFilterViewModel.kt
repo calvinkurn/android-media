@@ -65,10 +65,10 @@ class ProductManageFilterViewModel @Inject constructor(
     fun updateSelect(filterData: FilterDataViewModel) {
         val currentData = _filterData.value?.toMutableList()
         val dataToSelect = getDataFromList(currentData?.slice(ITEM_CATEGORIES_INDEX..ITEM_OTHER_FILTER_INDEX), filterData)
-        dataToSelect.third?.let {
-            it.select = !filterData.select
+        dataToSelect?.let {
+            it.third.select = !filterData.select
+            if(it.first) currentData?.get(dataToSelect.second)?.data?.sortByDescending { it.select }
         }
-        if(dataToSelect.first) currentData?.get(dataToSelect.second)?.data?.sortByDescending { it.select }
         _filterData.value = currentData
     }
 
@@ -77,39 +77,39 @@ class ProductManageFilterViewModel @Inject constructor(
         if (title == ProductManageFilterMapper.SORT_HEADER) {
             if (selectedSort != null) {
                 val selectedPair = getSortFromList(currentData?.get(ITEM_SORT_INDEX), selectedSort!!)
-                selectedPair.second?.let {
-                    it.select = !it.select
-                }
-                if (selectedPair.second == filterData) {
-                    selectedSort = null
-                    _filterData.value = currentData
-                    return
+                selectedPair?.let {
+                    it.second.select = !it.second.select
+                    if (it.second == filterData) {
+                        selectedSort = null
+                        _filterData.value = currentData
+                        return
+                    }
                 }
             }
             val dataToSelect = getSortFromList(currentData?.get(ITEM_SORT_INDEX), filterData)
-            dataToSelect.second?.let {
-                it.select = !filterData.select
+            dataToSelect?.let {
+                it.second.select = !filterData.select
+                selectedSort = it.second
+                if(it.first) currentData?.get(ITEM_SORT_INDEX)?.data?.sortByDescending { data -> data.select }
             }
-            selectedSort = dataToSelect.second
-            if(dataToSelect.first) currentData?.get(ITEM_SORT_INDEX)?.data?.sortByDescending { it.select }
         } else {
             if (selectedEtalase != null) {
                 val selectedPair = getDataFromList(currentData?.subList(ITEM_ETALASE_INDEX, ITEM_CATEGORIES_INDEX), selectedEtalase!!)
-                selectedPair.third?.let {
-                    it.select = !it.select
-                }
-                if (selectedPair.third == filterData) {
-                    selectedEtalase = null
-                    _filterData.value = currentData
-                    return
+                selectedPair?.let {
+                    it.third.select = !it.third.select
+                    if (it.third == filterData) {
+                        selectedEtalase = null
+                        _filterData.value = currentData
+                        return
+                    }
                 }
             }
             val dataToSelect = getDataFromList(currentData?.subList(ITEM_ETALASE_INDEX, ITEM_CATEGORIES_INDEX), filterData)
-            dataToSelect.third?.let {
-                it.select = !filterData.select
+            dataToSelect?.let {
+                it.third.select = !filterData.select
+                selectedEtalase = it.third
+                if(it.first) currentData?.get(ITEM_ETALASE_INDEX)?.data?.sortByDescending { data -> data.select }
             }
-            selectedEtalase = dataToSelect.third
-            if(dataToSelect.first) currentData?.get(ITEM_ETALASE_INDEX)?.data?.sortByDescending { it.select }
         }
         _filterData.value = currentData
     }
@@ -137,33 +137,25 @@ class ProductManageFilterViewModel @Inject constructor(
 
     private fun isMyShop(shopId: String) = userSession.shopId == shopId
 
-    private fun getDataFromList(currentData: List<FilterViewModel>?, data: FilterDataViewModel): Triple<Boolean, Int, FilterDataViewModel?> {
-        var filterIndexOfData = 0
-        var dataIndexOfData = 0
-        var needSort = false
+    private fun getDataFromList(currentData: List<FilterViewModel>?, data: FilterDataViewModel): Triple<Boolean, Int, FilterDataViewModel>? {
         currentData?.forEachIndexed { index, filterViewModel ->
             filterViewModel.data.forEach { filterData ->
                 if (filterData.id == data.id) {
-                    dataIndexOfData = filterViewModel.data.indexOf(filterData)
-                    filterIndexOfData = index
-                    needSort = dataIndexOfData > MAXIMUM_CHIPS - 1
+                    val needSort = filterViewModel.data.indexOf(filterData) > MAXIMUM_CHIPS - 1
+                    return Triple(needSort, index + ITEM_CATEGORIES_INDEX, filterData)
                 }
             }
         }
-        if(dataIndexOfData > (MAXIMUM_CHIPS - 1)) needSort = true
-        return Triple(needSort, filterIndexOfData, currentData?.get(filterIndexOfData)?.data?.get(dataIndexOfData))
+        return null
     }
 
-    private fun getSortFromList(sortData: FilterViewModel?, data: FilterDataViewModel): Pair<Boolean, FilterDataViewModel?> {
-        var dataIndexOfData = 0
-        var needSort = false
+    private fun getSortFromList(sortData: FilterViewModel?, data: FilterDataViewModel): Pair<Boolean, FilterDataViewModel>? {
         sortData?.data?.forEach {
             if (it.id == data.id && it.value == data.value) {
-                dataIndexOfData = sortData.data.indexOf(it)
-                needSort = dataIndexOfData > MAXIMUM_CHIPS - 1
+                val needSort = sortData.data.indexOf(it) > MAXIMUM_CHIPS - 1
+                return Pair(needSort, it)
             }
         }
-        if(dataIndexOfData > (MAXIMUM_CHIPS - 1)) needSort = true
-        return Pair(needSort, sortData?.data?.get(dataIndexOfData))
+        return null
     }
 }
