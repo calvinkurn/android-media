@@ -9,12 +9,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.di.DaggerProductManageSetCashbackComponent
 import com.tokopedia.product.manage.feature.cashback.di.ProductManageSetCashbackComponent
 import com.tokopedia.product.manage.feature.cashback.di.ProductManageSetCashbackModule
@@ -24,7 +30,13 @@ import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmo
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
+import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
+import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOption
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
+import kotlinx.android.synthetic.main.fragment_product_manage.*
 import kotlinx.android.synthetic.main.fragment_product_manage_set_cashback.*
 import javax.inject.Inject
 
@@ -35,6 +47,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
         const val SET_CASHBACK_CACHE_MANAGER_KEY = "set_cashback_cache_id"
         const val SET_CASHBACK_PRODUCT = "set_cashback_product"
+        const val SET_CASHBACK_RESULT = "set_cashback_result"
         const val ZERO_CASHBACK = 0
         const val THREE_PERCENT_CASHBACK = 3
         const val FOUR_PERCENT_CASHBACK = 4
@@ -93,6 +106,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         setCashbackRecyclerView.layoutManager = LinearLayoutManager(this.context)
         initView()
         observeProduct()
+        observeSetCashback()
     }
 
     override fun onSelectClick(element: SelectViewModel) {
@@ -121,12 +135,8 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
     private fun initButton() {
         submitCashbackButton.setOnClickListener {
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            cacheManager?.let {
-                val cacheManagerId = it.id
-                it.put(SET_CASHBACK_PRODUCT, viewModel.product.value)
-                this.activity?.setResult(Activity.RESULT_OK, Intent().putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, cacheManagerId))
-                this.activity?.finish()
+            viewModel.product.value?.let {
+                it.title?.let { title -> viewModel.setCashback(it.id, title, it.cashBack) }
             }
         }
     }
@@ -174,6 +184,34 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
 
     private fun getCashbackPrice(price: String, cashback : Int): String {
         return (price.toIntOrZero()*cashback/ PERCENT).getCurrencyFormatted()
+    }
+
+    private fun observeSetCashback() {
+        observe(viewModel.setCashbackResult) {
+            when (it) {
+                is Success -> {
+                    val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
+                    cacheManager?.let { manager ->
+                        val cacheManagerId = manager.id
+                        manager.put(SET_CASHBACK_RESULT, viewModel.product.value)
+                        this.activity?.setResult(Activity.RESULT_OK, Intent().putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, cacheManagerId))
+                        this.activity?.finish()
+                    }
+                }
+                is Fail -> {
+                    onErrorSetCashback(it.throwable as SetCashbackResult)
+                }
+            }
+        }
+    }
+
+    private fun onErrorSetCashback(setCashbackResult: SetCashbackResult) {
+        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
+                View.OnClickListener {
+                    viewModel.setCashback(productId = setCashbackResult.productId,
+                            productName = setCashbackResult.productName, cashback = setCashbackResult.cashback)
+                })
     }
 
 

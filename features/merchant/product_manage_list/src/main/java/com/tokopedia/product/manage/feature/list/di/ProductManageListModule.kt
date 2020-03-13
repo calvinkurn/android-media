@@ -133,11 +133,6 @@ class ProductManageListModule {
 
     @ProductManageListScope
     @Provides
-    fun provideSetCashbackUseCase(multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase) =
-            SetCashbackUseCase(multiRequestGraphqlUseCase)
-
-    @ProductManageListScope
-    @Provides
     @Named(ProductManageListConstant.GQL_POPUP_NAME)
     fun requestQuery(): String {
         return """

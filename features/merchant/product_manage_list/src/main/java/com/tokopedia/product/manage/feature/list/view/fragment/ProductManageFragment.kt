@@ -61,6 +61,7 @@ import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT
+import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_RESULT
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
@@ -210,7 +211,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         observeEditPrice()
         observeEditStock()
         observeMultiEdit()
-        observeSetCashback()
         observeGetFreeClaim()
         observeGetPopUpInfo()
 
@@ -486,35 +486,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 })
     }
 
-    private fun onErrorSetCashback(setCashbackResult: SetCashbackResult) {
-        if(setCashbackResult.limitExceeded) {
-            context?.let {
-                DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
-                    setTitle(it.resources.getString(R.string.product_manage_set_cashback_dialog_title))
-                    setDescription(it.resources.getString(R.string.product_manage_set_cashback_dialog_desc))
-                    setPrimaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_upgrade_button))
-                    setSecondaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_see_cashback_products_button))
-                    setPrimaryCTAClickListener {
-                        dismiss()
-                        RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-                    }
-                    setSecondaryCTAClickListener {
-                        dismiss()
-                        viewModel.getProductList(userSession.shopId, listOf(FilterOption.FilterByCondition.CashBackOnly))
-                    }
-                    setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
-                }.show()
-            }
-            return
-        }
-        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
-                Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
-                View.OnClickListener {
-                     viewModel.setCashback(productId = setCashbackResult.productId,
-                             productName = setCashbackResult.productName, cashback = setCashbackResult.cashback)
-                })
-    }
-
     private fun onSuccessEditPrice(productId: String, price: String, productName: String) {
         Toaster.make(coordinatorLayout, getString(
                 R.string.product_manage_quick_edit_price_success, productName),
@@ -534,6 +505,26 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 R.string.product_manage_set_cashback_success, setCashbackResult.productName),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
         productManageListAdapter.updateCashback(setCashbackResult.productId, setCashbackResult.cashback)
+    }
+
+    private fun onSetCashbackLimitExceeded() {
+        context?.let {
+            DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
+                setTitle(it.resources.getString(R.string.product_manage_set_cashback_dialog_title))
+                setDescription(it.resources.getString(R.string.product_manage_set_cashback_dialog_desc))
+                setPrimaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_upgrade_button))
+                setSecondaryCTAText(it.resources.getString(R.string.product_manage_set_cashback_dialog_see_cashback_products_button))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                }
+                setSecondaryCTAClickListener {
+                    dismiss()
+                    viewModel.getProductList(userSession.shopId, listOf(FilterOption.FilterByCondition.CashBackOnly))
+                }
+                setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
+            }.show()
+        }
     }
 
     private fun showRegularMerchantBottomSheet(featureName: String) {
@@ -1092,7 +1083,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         removeObservers(viewModel.multiEditProductResult)
         removeObservers(viewModel.deleteProductResult)
         removeObservers(viewModel.editPriceResult)
-        removeObservers(viewModel.setCashbackResult)
         removeObservers(viewModel.getFreeClaimResult)
         removeObservers(viewModel.getPopUpResult)
         removeObservers(viewModel.setFeaturedProductResult)
@@ -1138,10 +1128,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 SET_CASHBACK_REQUEST_CODE -> if(resultCode == Activity.RESULT_OK) {
                     val cacheManagerId = it.getStringExtra(SET_CASHBACK_CACHE_MANAGER_KEY)
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, cacheManagerId) }
-                    val product: ProductViewModel? = cacheManager?.get(SET_CASHBACK_PRODUCT, ProductViewModel::class.java)
-                    product?.let { modifiedProduct ->
-                        modifiedProduct.title?.let { title ->
-                            viewModel.setCashback(modifiedProduct.id, title, modifiedProduct.cashBack)
+                    val setCashbackResult: SetCashbackResult? = cacheManager?.get(SET_CASHBACK_RESULT, SetCashbackResult::class.java)
+                    setCashbackResult?.let { cashbackResult ->
+                        if(cashbackResult.limitExceeded) {
+                            onSetCashbackLimitExceeded()
+                        } else {
+                            onSuccessSetCashback(cashbackResult)
                         }
                     }
                 }
@@ -1216,19 +1208,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 is Success -> onSuccessEditStock(it.data.productId, it.data.stock, it.data.productName, it.data.status)
                 is Fail -> {
                     onErrorEditStock(it.throwable as EditStockResult)
-                }
-            }
-        }
-    }
-
-    private fun observeSetCashback() {
-        observe(viewModel.setCashbackResult) {
-            when (it) {
-                is Success -> {
-                    onSuccessSetCashback(it.data)
-                }
-                is Fail -> {
-                    onErrorSetCashback(it.throwable as SetCashbackResult)
                 }
             }
         }

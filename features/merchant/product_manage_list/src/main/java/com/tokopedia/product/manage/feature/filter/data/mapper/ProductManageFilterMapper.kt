@@ -18,6 +18,8 @@ class ProductManageFilterMapper {
         const val ETALASE_HEADER = "Etalase"
         const val CATEGORY_HEADER = "Kategori"
         const val OTHER_FILTER_HEADER = "Filter Lainnya"
+        private const val EMPTY_STOCK_ETALASE_ID = "4"
+        private const val PREORDER_ETALASE_ID = "6"
         private const val SHOW_CHIPS = true
         private const val HIDE_CHIPS = false
 
@@ -201,7 +203,9 @@ class ProductManageFilterMapper {
 
         private fun mapEtalaseResponseToEtalaseOptions(etalaseResponse: ArrayList<ShopEtalaseModel>): FilterViewModel {
             val data = mutableListOf<FilterDataViewModel>()
-            etalaseResponse.filter { it.name.isNotEmpty() }.forEach {
+            etalaseResponse.filter { it.name.isNotEmpty() &&
+                    it.id != EMPTY_STOCK_ETALASE_ID &&
+                    it.id != PREORDER_ETALASE_ID }.forEach {
                 data.add(FilterDataViewModel(it.id,it.name))
             }
             return FilterViewModel(ETALASE_HEADER, data, SHOW_CHIPS)
