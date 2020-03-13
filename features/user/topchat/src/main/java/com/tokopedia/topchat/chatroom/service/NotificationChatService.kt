@@ -9,17 +9,16 @@ import android.os.Build
 import android.os.PersistableBundle
 import androidx.annotation.RequiresApi
 import androidx.core.app.JobIntentService
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.chat_common.data.ReplyChatViewModel
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.domain.usecase.ReplyChatUseCase
-import rx.Subscriber
-import javax.inject.Inject
-import androidx.core.app.NotificationManagerCompat
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
-import java.lang.IllegalStateException
+import rx.Subscriber
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 class NotificationChatService : JobIntentService() {
 
@@ -76,7 +75,7 @@ class NotificationChatService : JobIntentService() {
         val notificationId = intent.getIntExtra(NOTIFICATION_ID, 0)
         val userId = intent.getStringExtra(USER_ID)
 
-        val params = ReplyChatUseCase.generateParam(messageId, message)
+        val params = ReplyChatUseCase.generateParamWithSource(messageId, message, TopChatAnalytics.SELLERAPP_PUSH_NOTIF)
 
         replyChatUseCase.execute(params, object : Subscriber<ReplyChatViewModel>() {
             override fun onNext(response: ReplyChatViewModel) {
