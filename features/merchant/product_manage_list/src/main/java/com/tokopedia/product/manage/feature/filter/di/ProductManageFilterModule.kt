@@ -7,8 +7,6 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.product.manage.feature.filter.domain.GetProductListMetaUseCase
 import com.tokopedia.product.manage.feature.filter.domain.GetProductManageFilterOptionsUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseByShopUseCase
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
@@ -30,12 +28,6 @@ class ProductManageFilterModule {
     @Provides
     fun provideGetShopeEtalaseByShopUseCase(@ApplicationContext context: Context) =
             GetShopEtalaseByShopUseCase(context)
-
-
-    @ProductManageFilterScope
-    @Provides
-    fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface =
-            UserSession(context)
 
     @ProductManageFilterScope
     @Provides
