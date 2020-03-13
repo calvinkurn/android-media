@@ -593,7 +593,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
         shopHomeProductViewModel?.let {
-            showToastSuccess(getString(R.string.msg_success_remove_wishlist))
+            showToastSuccess(getString(R.string.msg_success_add_wishlist))
             shopHomeAdapter.updateWishlistProduct(it.id ?: "", true)
             trackClickWishlist(shopHomeCarousellProductUiModel, shopHomeProductViewModel, true)
         }

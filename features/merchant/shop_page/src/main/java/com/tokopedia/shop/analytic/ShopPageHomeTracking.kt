@@ -33,7 +33,7 @@ class ShopPageHomeTracking(
         )
         eventMap[ECOMMERCE] = mapOf(
                 PROMO_VIEW to mapOf(
-                        PROMOTIONS to listOf(createDisplayWidgetPromotionsItemMap(
+                        PROMOTIONS to mutableListOf(createDisplayWidgetPromotionsItemMap(
                                 widgetId,
                                 positionVertical,
                                 widgetName,
@@ -99,7 +99,7 @@ class ShopPageHomeTracking(
         )
         eventMap[ECOMMERCE] = mapOf(
                 PROMO_CLICK to mapOf(
-                        PROMOTIONS to listOf(createDisplayWidgetPromotionsItemMap(
+                        PROMOTIONS to  mutableListOf(createDisplayWidgetPromotionsItemMap(
                                 widgetId,
                                 positionVertical,
                                 widgetName,
@@ -207,7 +207,7 @@ class ShopPageHomeTracking(
         )
         eventMap[ECOMMERCE] = mapOf(
                 CURRENCY_CODE to IDR,
-                IMPRESSIONS to listOf(createProductItemMap(
+                IMPRESSIONS to mutableListOf(createProductItemMap(
                         productName,
                         productId,
                         productDisplayedPrice,
@@ -293,7 +293,7 @@ class ShopPageHomeTracking(
         eventMap[ECOMMERCE] = mapOf(
                 CLICK to mapOf(
                         ACTION_FIELD to mapOf(LIST to listEventValue),
-                        PRODUCTS to listOf(createProductItemMap(
+                        PRODUCTS to mutableListOf(createProductItemMap(
                                 productName,
                                 productId,
                                 productDisplayedPrice,
@@ -367,7 +367,7 @@ class ShopPageHomeTracking(
         eventMap[ECOMMERCE] = mapOf(
                 CURRENCY_CODE to IDR,
                 ADD to mapOf(
-                        PRODUCTS to listOf(createAddToCartProductItemMap(
+                        PRODUCTS to mutableListOf(createAddToCartProductItemMap(
                                 productName,
                                 productId,
                                 productDisplayedPrice,

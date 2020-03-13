@@ -12,6 +12,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubeThumbnailLoader
 import com.google.android.youtube.player.YouTubeThumbnailView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
@@ -30,9 +31,9 @@ import java.util.regex.Pattern
 
 class ShopHomeVideoViewHolder(
         view: View,
-        private  val listener: ShopHomeDisplayWidgetListener
+        private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
-    YouTubeThumbnailView.OnInitializedListener, View.OnClickListener{
+        YouTubeThumbnailView.OnInitializedListener, View.OnClickListener {
 
     companion object {
         @LayoutRes
@@ -58,24 +59,35 @@ class ShopHomeVideoViewHolder(
         youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
-    override fun bind(element: ShopHomeDisplayWidgetUiModel) {
-        this.youtubVideoModel = element
+    override fun bind(shopHomeDisplayWidgetUiModel: ShopHomeDisplayWidgetUiModel) {
+        this.youtubVideoModel = shopHomeDisplayWidgetUiModel
+        val videoData = shopHomeDisplayWidgetUiModel.data?.first()
         val regex = "v=([^\\s&#]*)"
-        videoUrl = element.data?.first()?.videoUrl ?: ""
+        videoUrl = videoData?.videoUrl ?: ""
         val pattern = Pattern.compile(regex, Pattern.MULTILINE)
         val matcher = pattern.matcher(videoUrl)
-        videoUrl = if(matcher.find()) {
+        videoUrl = if (matcher.find()) {
             matcher.group(1)
-        }else{
+        } else {
             videoUrl
         }
         btnYoutubePlayer?.setOnClickListener(this)
+        videoData?.let {
+            youTubeThumbnailShopPage?.addOnImpressionListener(it) {
+                listener.onDisplayItemImpression(
+                        shopHomeDisplayWidgetUiModel,
+                        it,
+                        adapterPosition,
+                        1
+                )
+            }
+        }
     }
 
     override fun onInitializationSuccess(youTubeThumbnailView: YouTubeThumbnailView?, youTubeThumbnailLoader: YouTubeThumbnailLoader?) {
 
         youTubeThumbnailLoader?.setVideo(videoUrl)
-        youTubeThumbnailLoader?.setOnThumbnailLoadedListener(object: YouTubeThumbnailLoader.OnThumbnailLoadedListener {
+        youTubeThumbnailLoader?.setOnThumbnailLoadedListener(object : YouTubeThumbnailLoader.OnThumbnailLoadedListener {
             override fun onThumbnailLoaded(childYouTubeThumbnailView: YouTubeThumbnailView?, p1: String?) {
                 childYouTubeThumbnailView?.visible()
                 youTubeThumbnailShopPage?.visible()
@@ -94,11 +106,11 @@ class ShopHomeVideoViewHolder(
     }
 
     override fun onClick(view: View?) {
-        when(view?.id) {
+        when (view?.id) {
             R.id.btn_youtube_player -> {
                 view.context?.let {
-                    youtubVideoModel?.data?.let{ videoItemList ->
-                        listener.onDisplayItemClicked(youtubVideoModel, videoItemList.first(),adapterPosition, 0)
+                    youtubVideoModel?.data?.let { videoItemList ->
+                        listener.onDisplayItemClicked(youtubVideoModel, videoItemList.first(), adapterPosition, 0)
                     }
                     if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                             == YouTubeInitializationResult.SUCCESS) {

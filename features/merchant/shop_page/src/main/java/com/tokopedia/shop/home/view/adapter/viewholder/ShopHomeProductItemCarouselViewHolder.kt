@@ -5,6 +5,7 @@ import android.view.View
 
 import androidx.annotation.LayoutRes
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.productcard.v2.ProductCardModel
 
 import com.tokopedia.shop.R
@@ -39,9 +40,30 @@ class ShopHomeProductItemCarouselViewHolder(
         }
         val isAtcFlag = shopHomeCarousellProductUiModel?.header?.isATC ?: 0
         productCard.setAddToCartVisible(isAtcFlag == 1)
+        val totalReview = try {
+            NumberFormat.getInstance().parse(shopHomeProductViewModel.totalReview).toInt()
+        } catch (ignored: ParseException) {
+            0
+        }
+        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon!!)
+        if (shopHomeProductViewModel.rating <= 0 && totalReview <= 0) {
+            productCard.setImageRatingInvisible(true)
+            productCard.setReviewCountInvisible(true)
+        }
+
+        if (!freeOngkirObject.isActive || freeOngkirObject.imageUrl.isEmpty()) {
+            productCard.setFreeOngkirInvisible(true)
+        }
+        if (!shopHomeProductViewModel.isPo && !shopHomeProductViewModel.isWholesale) {
+            productCard.setLabelPreOrderInvisible(true)
+        }
+        if (shopHomeProductViewModel.discountPercentage?.replace("%", "").toIntOrZero() <= 0) {
+            productCard.setlabelDiscountInvisible(true)
+            productCard.setSlashedPriceInvisible(true)
+        }
     }
 
-    override fun setListener(){
+    override fun setListener() {
         productCard.setOnClickListener {
             shopPageHomeProductClickListener?.onCarouselProductItemClicked(
                     parentIndex,
@@ -66,12 +88,12 @@ class ShopHomeProductItemCarouselViewHolder(
 
         productCard.setButtonWishlistOnClickListener {
             shopHomeProductViewModel?.let {
-                    shopPageHomeProductClickListener?.onCarouselProductItemWishlist(
-                            parentIndex,
-                            adapterPosition,
-                            shopHomeCarousellProductUiModel,
-                            shopHomeProductViewModel
-                    )
+                shopPageHomeProductClickListener?.onCarouselProductItemWishlist(
+                        parentIndex,
+                        adapterPosition,
+                        shopHomeCarousellProductUiModel,
+                        shopHomeProductViewModel
+                )
             }
 
         }

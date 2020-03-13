@@ -44,30 +44,7 @@ open class ShopHomeProductViewHolder(
 
     override fun bind(shopHomeProductViewModel: ShopHomeProductViewModel) {
         this.shopHomeProductViewModel = shopHomeProductViewModel
-        val totalReview = try {
-            NumberFormat.getInstance().parse(shopHomeProductViewModel.totalReview).toInt()
-        } catch (ignored: ParseException) {
-            0
-        }
-        val freeOngkirObject = ProductCardModel.FreeOngkir(shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon!!)
         productCard.setProductModel(getProductModel(shopHomeProductViewModel), BlankSpaceConfig())
-        if (shopHomeProductViewModel.isCarousel) {
-            if (shopHomeProductViewModel.rating <= 0 && totalReview <= 0) {
-                productCard.setImageRatingInvisible(true)
-                productCard.setReviewCountInvisible(true)
-            }
-
-            if (!freeOngkirObject.isActive || freeOngkirObject.imageUrl.isEmpty()) {
-                productCard.setFreeOngkirInvisible(true)
-            }
-            if (!shopHomeProductViewModel.isPo && !shopHomeProductViewModel.isWholesale) {
-                productCard.setLabelPreOrderInvisible(true)
-            }
-            if (shopHomeProductViewModel.discountPercentage.toIntOrZero() <= 0) {
-                productCard.setlabelDiscountInvisible(true)
-                productCard.setSlashedPriceInvisible(true)
-            }
-        }
         setListener()
     }
 
