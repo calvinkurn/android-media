@@ -183,6 +183,7 @@ class VariantSheetView(
                         imageUrl = selectedProduct.picture?.original?:"",
                         title = selectedProduct.name,
                         stock = selectedProduct.stock?.stockWordingHTML?:"",
+                        isVariantAvailable = true,
                         price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull())
                 )
                 variantSheetUiModel?.product = product

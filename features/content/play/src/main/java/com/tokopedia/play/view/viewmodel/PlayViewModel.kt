@@ -200,6 +200,8 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
 
 //        startMockFreeze()
+//        setMockProductSocket()
+//        setMockVoucherSocket()
 //        setMockProductSheetContent()
 //        setMockVariantSheetContent()
 //        setMockProductPinned()
@@ -623,6 +625,50 @@ class PlayViewModel @Inject constructor(
             withContext(dispatchers.main) {
                 _observableEvent.value = _observableEvent.value?.copy(
                         isFreeze = true
+                )
+            }
+        }
+    }
+
+    private fun setMockProductSocket() {
+        launch(dispatchers.io) {
+            delay(10000)
+            withContext(dispatchers.main) {
+                _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                        productList = List(5) {
+                            ProductLineUiModel(
+                                    id = it.toString(),
+                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
+                                    title = "Product $it",
+                                    isVariantAvailable = true,
+                                    price = if (it % 2 == 0) {
+                                        OriginalPrice("Rp20$it.000")
+                                    } else {
+                                        DiscountedPrice(
+                                                originalPrice = "Rp20$it.000",
+                                                discountPercent = it * 10,
+                                                discountedPrice = "Rp2$it.000"
+                                        )
+                                    }
+                            )
+                        }
+                )
+            }
+        }
+    }
+
+    private fun setMockVoucherSocket() {
+        launch(dispatchers.io) {
+            delay(15000)
+            withContext(dispatchers.main) {
+                _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                        voucherList = List(5) { voucherIndex ->
+                            MerchantVoucherUiModel(
+                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
+                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
+                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
+                            )
+                        }
                 )
             }
         }

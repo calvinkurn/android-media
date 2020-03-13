@@ -85,23 +85,21 @@ object PlayUiMapper {
     fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
         val productsUiModel = mutableListOf<ProductLineUiModel>()
         products.forEach {
-            if (it.isAvailable) {
-                productsUiModel.add(ProductLineUiModel(
-                        id = it.id.toString(),
-                        imageUrl = it.image,
-                        title = it.name,
-                        isVariantAvailable = it.isVariant,
-                        price = if (it.price != 0) {
-                            DiscountedPrice(
-                                    originalPrice = it.originalPriceFormatted,
-                                    discountedPrice = it.priceFormatted,
-                                    discountPercent = it.discount
-                            )
-                        } else {
-                            OriginalPrice(price = it.originalPriceFormatted)
-                        }
-                ))
-            }
+            productsUiModel.add(ProductLineUiModel(
+                    id = it.id.toString(),
+                    imageUrl = it.image,
+                    title = it.name,
+                    isVariantAvailable = it.isVariant,
+                    price = if (it.price != 0) {
+                        DiscountedPrice(
+                                originalPrice = it.originalPriceFormatted,
+                                discountedPrice = it.priceFormatted,
+                                discountPercent = it.discount
+                        )
+                    } else {
+                        OriginalPrice(price = it.originalPriceFormatted)
+                    }
+            ))
         }
         return productsUiModel
     }
