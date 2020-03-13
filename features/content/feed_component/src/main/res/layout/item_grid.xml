@@ -5,6 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/dp_10"
     android:background="@color/white"
     android:clickable="true"
     android:focusable="true"
@@ -39,22 +40,23 @@
             tools:ignore="ContentDescription"
             tools:src="@tools:sample/avatars" />
 
-        <TextView
+        <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/extraProduct"
             android:layout_width="@dimen/dp_0"
             android:layout_height="@dimen/dp_0"
             android:ellipsize="marquee"
             android:fontFamily="sans-serif-medium"
             android:gravity="center"
+            android:padding="@dimen/dp_8"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_24"
-            android:textStyle="normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintLeft_toLeftOf="@id/productImage"
             app:layout_constraintRight_toRightOf="@id/productImage"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0"
+            app:typographyType="body_3"
+            app:typographyWeight="bold"
             tools:background="@color/black_38"
             tools:text="+220 Produk Lainnya" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -65,7 +67,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/productLayout"
-        android:layout_margin="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_8"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
         android:padding="@dimen/dp_4"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/priceText"
@@ -76,7 +82,7 @@
         app:typographyWeight="bold"
         tools:background="@drawable/cashback_text_background"
         tools:text="Cashback 100%"
-        tools:textColor="@color/bg_button_green_border_outline"
+        tools:textColor="@color/tkpd_green_60"
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
@@ -85,7 +91,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/productLayout"
-        android:layout_margin="@dimen/dp_4"
+        android:layout_marginStart="@dimen/dp_4"
+        android:layout_marginLeft="@dimen/dp_4"
+        android:layout_marginEnd="@dimen/dp_4"
+        android:layout_marginRight="@dimen/dp_4"
         android:layout_toEndOf="@id/tagTypeText"
         android:layout_toRightOf="@id/tagTypeText"
         android:gravity="center_vertical"
@@ -104,7 +113,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/tagTypeText"
-        android:layout_marginTop="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_8"
         android:fontFamily="sans-serif"
         android:gravity="bottom"
         android:paddingLeft="@dimen/dp_4"
