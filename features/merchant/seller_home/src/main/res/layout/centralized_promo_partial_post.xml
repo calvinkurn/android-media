@@ -4,9 +4,12 @@
     android:id="@+id/layoutCentralizedPromoPostList"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/layout_lvl2"
-    android:layout_marginTop="@dimen/spacing_lvl1"
-    android:layout_marginBottom="@dimen/spacing_lvl1"
+    android:layout_marginLeft="14dp"
+    android:layout_marginStart="14dp"
+    android:layout_marginRight="14dp"
+    android:layout_marginEnd="14dp"
+    android:layout_marginTop="@dimen/layout_lvl2"
+    android:layout_marginBottom="@dimen/layout_lvl1"
     android:descendantFocusability="blocksDescendants"
     app:cardCornerRadius="@dimen/layout_lvl1">
 

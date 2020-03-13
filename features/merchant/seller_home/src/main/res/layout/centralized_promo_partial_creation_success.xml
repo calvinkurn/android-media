@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/layout_lvl1"
     android:visibility="gone">
 
     <com.tokopedia.unifyprinciples.Typography

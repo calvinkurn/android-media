@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="@dimen/layout_lvl2"
-    android:paddingBottom="@dimen/layout_lvl2">
+    android:paddingBottom="@dimen/layout_lvl2"
+    android:clipToPadding="false">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOnGoingPromo"

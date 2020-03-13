@@ -50,7 +50,7 @@ class PartialCentralizedPromoCreationView(
     override fun shouldShowCoachMark(): Boolean = showCoachMark && view.partialSuccess.isShown
 
     override fun getCoachMarkItem() = with(view) {
-        CoachMarkItem(layoutCentralizedPromoCreation,
+        CoachMarkItem(partialSuccess,
                 context.getString(R.string.sh_coachmark_title_promo_creation),
                 context.getString(R.string.sh_coachmark_desc_promo_creation))
     }
