@@ -31,8 +31,6 @@ class LongClickMenu : BottomSheetUnify() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         changeCloseButtonColour()
-        removeContainerPadding()
-        addMarginCloseButton()
     }
 
     private fun changeCloseButtonColour() {
@@ -42,17 +40,6 @@ class LongClickMenu : BottomSheetUnify() {
                 mutate()
                 setColorFilter(color, PorterDuff.Mode.SRC_ATOP)
             }
-        }
-    }
-
-    private fun removeContainerPadding() {
-        bottomSheetWrapper.setPadding(0,0,0,0)
-    }
-
-    private fun addMarginCloseButton() {
-        val horizontalMargin = 16.toPx()
-        (bottomSheetClose.layoutParams as RelativeLayout.LayoutParams).apply {
-            setMargins(horizontalMargin, 0, horizontalMargin, 0)
         }
     }
 
