@@ -140,7 +140,7 @@
         android:textSize="@dimen/sp_10"
         app:layout_constraintStart_toEndOf="@+id/ivPdpView"
         app:layout_constraintTop_toBottomOf="@+id/progressBar"
-        app:typographyType="heading_6"
+        app:typographyType="small"
         tools:text="989jt orang"/>
 
 
