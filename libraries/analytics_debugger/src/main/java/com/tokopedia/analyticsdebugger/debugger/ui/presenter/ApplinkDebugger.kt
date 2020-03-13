@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 interface ApplinkDebugger {
     interface View : CustomerView {
 
-        val context: Context
         fun onLoadMoreCompleted(visitables: List<Visitable<*>>)
 
         fun onReloadCompleted(visitables: List<Visitable<*>>)
