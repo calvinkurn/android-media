@@ -308,4 +308,5 @@
     <string name="lbl_delete_preference_title">Hapus pilihan ini?</string>
     <string name="lbl_delete_preference_desc">Pengaturan Beli Langsung yang sudah dihapus tidak bisa dipakai untuk belanja.</string>
     <string name="lbl_delete_preference_ok">Ya, Hapus</string>
+    <string name="atur_pilihan">Atur Pilihan</string>
 </resources>
