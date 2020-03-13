@@ -28,6 +28,7 @@ data class Shipment(
         val needPinpoint: Boolean = false,
 //        val shippingErrorMessage: String? = null,
         val shipperName: String? = null,
+        val shipperId: Int? = null,
         val shipperProductId: Int? = null,
         val shippingPrice: Int? = null,
         val logisticPromoTickerMessage: String? = null,

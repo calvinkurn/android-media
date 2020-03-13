@@ -294,6 +294,9 @@ query get_occ_cart_page($dummy: String){
                     service_name
                 }
             }
+            kero_token
+            kero_discom_token
+            kero_unix_time
         }
     }
 }

@@ -20,7 +20,6 @@ import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
@@ -44,7 +43,6 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.mo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.unifycomponents.Toaster
-import io.hansel.a.v
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -81,10 +79,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == REQUEST_CREATE_PREFERENCE || requestCode == REQUEST_EDIT_PREFERENCE) {
-            swipe_refresh_layout.isRefreshing = true
-            main_content.gone()
-            global_error.gone()
-            viewModel.getOccCart()
+            refresh()
         } else if (requestCode == REQUEST_CODE_COURIER_PINPOINT) {
             onResultFromCourierPinpoint(resultCode, data)
         }
@@ -140,7 +135,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 swipe_refresh_layout.isRefreshing = false
                 main_content.visible()
                 view?.let { v ->
-                    Toaster.make(v, "success")
+                    //                    Toaster.make(v, "success")
 //                    if (viewModel.orderProduct.quantity != null) {
 //                        orderProductCard.setProduct(viewModel.orderProduct)
 //                        orderProductCard.setShop(viewModel.orderShop)
@@ -179,13 +174,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     }
                     progressDialog?.show()
                 }
-                is Nothing -> {
+                is OccGlobalEvent.Normal -> {
                     progressDialog?.dismiss()
                 }
                 is OccGlobalEvent.TriggerRefresh -> {
                     progressDialog?.dismiss()
-                    swipe_refresh_layout.isRefreshing = true
-                    viewModel.getOccCart()
+                    refresh(false)
                 }
                 is OccGlobalEvent.Error -> {
                     progressDialog?.dismiss()
@@ -200,7 +194,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
         if (viewModel.orderProduct.parentId == 0) {
-            viewModel.getOccCart()
+            refresh()
         }
     }
 
@@ -408,36 +402,40 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     }
 
     fun showPreferenceListBottomSheet() {
+        viewModel.updateCart()
         val profileId = viewModel._orderPreference?.preference?.profileId ?: 0
-        if (profileId > 0) {
-            PreferenceListBottomSheet(useCase = viewModel.getPreferenceListUseCase, listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
-                override fun onChangePreference(preference: ProfilesItemModel) {
-                    swipe_refresh_layout.isRefreshing = true
-                    viewModel.getOccCart()
-//                    viewModel.updatePreference(preference)
-                }
+        val updateCartParam = viewModel.generateUpdateCartParam()
+        if (profileId > 0 && updateCartParam != null) {
+            PreferenceListBottomSheet(viewModel = viewModel,
+                    getPreferenceListUseCase = viewModel.getPreferenceListUseCase,
+                    updateCartOccUseCase = viewModel.updateCartOccUseCase,
+                    updateCartOccRequest = updateCartParam,
+                    listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
+                        override fun onChangePreference(preference: ProfilesItemModel) {
+                            refresh()
+                        }
 
-                override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-                    intent.apply {
-                        putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapterPosition)
-                        putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
-                        putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
-                        putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
-                        putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode
-                                ?: "")
-                        putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
-                        putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
-                    }
-                    startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
-                }
+                        override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+                            intent.apply {
+                                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapterPosition)
+                                putExtra(PreferenceEditActivity.EXTRA_PROFILE_ID, preference.profileId)
+                                putExtra(PreferenceEditActivity.EXTRA_ADDRESS_ID, preference.addressModel?.addressId)
+                                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_ID, preference.shipmentModel?.serviceId)
+                                putExtra(PreferenceEditActivity.EXTRA_GATEWAY_CODE, preference.paymentModel?.gatewayCode
+                                        ?: "")
+                                putExtra(PreferenceEditActivity.EXTRA_SHIPPING_PARAM, viewModel.generateShippingParam())
+                                putParcelableArrayListExtra(PreferenceEditActivity.EXTRA_LIST_SHOP_SHIPMENT, ArrayList(viewModel.generateListShopShipment()))
+                            }
+                            startActivityForResult(intent, REQUEST_EDIT_PREFERENCE)
+                        }
 
-                override fun onAddPreference() {
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-
-                    startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
-                }
-            }).show(this@OrderSummaryPageFragment, profileId)
+                        override fun onAddPreference(itemCount: Int) {
+                            val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
+                            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, itemCount + 1)
+                            startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
+                        }
+                    }).show(this@OrderSummaryPageFragment, profileId)
         }
     }
 
@@ -479,16 +477,24 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun showGlobalError(type: Int) {
         global_error.setType(type)
         global_error.setActionClickListener {
-            swipe_refresh_layout.isRefreshing = true
-            viewModel.getOccCart()
+            refresh(false)
         }
         main_content.gone()
         global_error.visible()
     }
 
+    private fun refresh(shouldHideAll: Boolean = true) {
+        swipe_refresh_layout.isRefreshing = true
+        if (shouldHideAll) {
+            main_content.gone()
+            global_error.gone()
+        }
+        viewModel.getOccCart()
+    }
+
     override fun onStop() {
         super.onStop()
-
+        viewModel.updateCart()
     }
 
     companion object {

@@ -33,6 +33,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 generateShopShipment(orderShop, cart.shop.shopShipments)
                 orderShop.cartResponse = cart
                 orderCart.shop = orderShop
+                orderCart.kero = Kero(response.response.data.keroToken, response.response.data.keroDiscomToken, response.response.data.keroUnixTime)
                 return OrderData(orderCart, response.response.data.profileResponse)
             } else if (response.response.data.errors.isNotEmpty()){
                 throw MessageErrorException(response.response.data.errors[0])
@@ -118,6 +119,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             weight = product.productWeight
             isFreeOngkir = product.freeShipping.eligible
             freeOngkirImg = product.freeShipping.badgeUrl
+            productResponse = product
         }
         mapVariant(orderProduct, product)
         mapQuantity(orderProduct, product)

@@ -1,9 +1,6 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card
 
-import android.text.Editable
-import android.text.InputFilter
-import android.text.TextUtils
-import android.text.TextWatcher
+import android.text.*
 import android.view.View
 import android.widget.EditText
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.QuantityTextWatcher
+import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.purchase_platform.features.express_checkout.view.variant.viewholder.QuantityViewHolder
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.MAX_QUANTITY
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.variant.adapter.OrderProductVariantAdapter
@@ -119,10 +118,26 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
             })
             etQty.addTextChangedListener(quantityTextWatcher)
             validateQuantity()
+            renderProductPropertiesInvenage()
 //            rvProductVariant.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
 //            initializeAdapter()
 //            rvProductVariant.adapter = adapter
 //            adapter.setList(product.typeVariantList!!)
+        }
+    }
+
+    private fun renderProductPropertiesInvenage() {
+        if (product.productResponse.productInvenageTotal.byUserText.complete.isNotEmpty()) {
+            val completeText = product.productResponse.productInvenageTotal.byUserText.complete
+            val totalInOtherCart = product.productResponse.productInvenageTotal.byUser.inCart
+            val totalRemainingStock = product.productResponse.productInvenageTotal.byUser.lastStockLessThan
+            val invenageText = completeText.replace(view.context?.getString(R.string.product_invenage_remaining_stock)
+                    ?: "", "" + totalRemainingStock)
+                    .replace(view.context?.getString(R.string.product_invenage_in_other_cart)
+                            ?: "", "" + totalInOtherCart)
+            view.tv_quantity_stock_available.text = Html.fromHtml(invenageText)
+        } else {
+            view.tv_quantity_stock_available.text = ""
         }
     }
 

@@ -3,11 +3,19 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.m
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.CartDataResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProductDataResponse
 
 
 data class OrderCart(
         var product: OrderProduct = OrderProduct(),
-        var shop: OrderShop = OrderShop()
+        var shop: OrderShop = OrderShop(),
+        var kero: Kero = Kero()
+)
+
+data class Kero(
+        var keroToken: String = "",
+        var keroDiscomToken: String = "",
+        var keroUT: String = ""
 )
 
 data class OrderShop(
@@ -54,7 +62,8 @@ data class OrderProduct(
         var weight: Int = 0,
         var quantity: QuantityUiModel? = null,
         var notes: String = "",
-        var typeVariantList: ArrayList<VariantUiModel>? = null)
+        var typeVariantList: ArrayList<VariantUiModel>? = null,
+        var productResponse: ProductDataResponse = ProductDataResponse())
 
 data class OrderProductChild(
         var productId: Int = 0,

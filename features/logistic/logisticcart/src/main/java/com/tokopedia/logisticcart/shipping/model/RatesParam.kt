@@ -94,8 +94,7 @@ data class RatesParam(
 
     class Builder(val shopShipments: List<ShopShipment>, val shipping: ShippingParam) {
 
-//        var spids: String = RatesParamHelper.generateSpIds(shopShipments)
-        var spids: String = "1,6,2,16,3,10,8,44,18,13,28,37"
+        var spids: String = RatesParamHelper.generateSpIds(shopShipments)
             private set
         var origin: String = RatesParamHelper.generateOrigin(shipping)
             private set

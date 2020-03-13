@@ -16,7 +16,12 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccCartRequest
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccGqlResponse
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccProfileRequest
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.UpdateCartOccRequest
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.GetOccCartUseCase
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.UpdateCartOccUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,12 +38,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     private val getOccCartUseCase: GetOccCartUseCase,
                                                     private val ratesUseCase: GetRatesUseCase,
                                                     val getPreferenceListUseCase: GetPreferenceListUseCase,
+                                                    val updateCartOccUseCase: UpdateCartOccUseCase,
                                                     private val ratesResponseStateConverter: RatesResponseStateConverter,
                                                     private val editAddressUseCase: EditAddressUseCase,
                                                     private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     var orderProduct: OrderProduct = OrderProduct()
     var orderShop: OrderShop = OrderShop()
+    var kero: Kero = Kero()
     var _orderPreference: OrderPreference? = null
 
     var orderPreference: MutableLiveData<OccState<OrderPreference>> = MutableLiveData(OccState.Loading)
@@ -55,6 +62,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         getOccCartUseCase.execute({ orderData: OrderData ->
             orderProduct = orderData.cart.product
             orderShop = orderData.cart.shop
+            kero = orderData.cart.kero
             var preference = orderData.preference
 //            preference = preference.copy(shipment = preference.shipment.copy(serviceId = 1000))
             _orderPreference = OrderPreference(preference)
@@ -155,7 +163,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 //                                                    selectedShippingCourierUiModel = shippingCourierViewModelList[0]
 //                                                }
                                                 if (selectedShippingCourierUiModel != null) {
-                                                    shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                                    shipping = shipping.copy(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                                            shipperId = selectedShippingCourierUiModel.productData.shipperId,
                                                             shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                                             insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                             serviceId = shippingDurationViewModel.serviceData.serviceId,
@@ -210,6 +219,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                             }
                                                         }
                                                         shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                                                shipperId = selectedShippingCourierUiModel.productData.shipperId,
                                                                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                                                 needPinpoint = flagNeedToSetPinpoint,
                                                                 serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
@@ -254,8 +264,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.destinationLatitude = _orderPreference?.preference?.address?.latitude
         shippingParam.destinationLongitude = _orderPreference?.preference?.address?.longitude
         shippingParam.shopId = orderShop.shopId.toString()
-        shippingParam.token = "Tokopedia+Kero:LKlL31rEgWx6r0eJBx+GXVrJ+7Q\\u003d"
-        shippingParam.ut = "1583825797"
+        shippingParam.token = kero.keroToken
+        shippingParam.ut = kero.keroUT
         shippingParam.insurance = 1
         shippingParam.isPreorder = orderShop.cartResponse.product.isPreorder != 0
         shippingParam.categoryIds = orderShop.cartResponse.product.categoryId.toString()
@@ -263,8 +273,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         shippingParam.addressId = _orderPreference?.preference?.address?.addressId ?: 0
         shippingParam.products = listOf(Product(orderProduct.productId.toLong(), orderProduct.isFreeOngkir))
 
-//        shippingParam.weightInKilograms = orderProduct.quantity!!.orderQuantity * orderProduct.weight / 1000.0
-        shippingParam.weightInKilograms = 75.0
+        shippingParam.weightInKilograms = orderProduct.quantity!!.orderQuantity * orderProduct.weight / 1000.0
         shippingParam.productInsurance = orderShop.cartResponse.product.productFinsurance
         var productPrice = orderProduct.productPrice.toLong()
         if (orderProduct.wholesalePrice.isNotEmpty()) {
@@ -473,6 +482,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                         selectedShippingCourierUiModel.isSelected = true
                         _orderPreference = _orderPreference?.copy(shipping = shipping.copy(
                                 shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                                shipperId = selectedShippingCourierUiModel.productData.shipperId,
                                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                 insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                 shippingPrice = selectedShippingCourierUiModel.productData.price.price))
@@ -542,6 +552,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     serviceDuration = selectedShippingDurationViewModel.serviceData.texts.textEtd,
                     serviceName = selectedShippingDurationViewModel.serviceData.serviceName,
                     shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
+                    shipperId = selectedShippingCourierUiModel.productData.shipperId,
                     shipperName = selectedShippingCourierUiModel.productData.shipperName,
                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
@@ -629,5 +640,41 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private fun generateAuthParam(): MutableMap<String, String> {
         return AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
+    }
+
+    fun updateCart() {
+        val param = generateUpdateCartParam()
+        if (param != null) {
+            updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
+                //do nothing
+            }, { throwable: Throwable ->
+                throwable.printStackTrace()
+            })
+        }
+    }
+
+    fun generateUpdateCartParam(): UpdateCartOccRequest? {
+        val op = orderProduct
+        val quantity = op.quantity
+        val pref = _orderPreference
+        if (quantity != null && pref?.shipping?.shipperProductId != null) {
+            val cart = UpdateCartOccCartRequest(
+                    orderShop.cartResponse.cartId.toString(),
+                    quantity.orderQuantity,
+                    op.notes,
+                    op.productId.toString(),
+                    pref.shipping.shipperId.toString(),
+                    pref.shipping.shipperProductId.toString()
+            )
+            val profile = UpdateCartOccProfileRequest(
+                    pref.preference.profileId.toString(),
+                    pref.preference.payment.gatewayCode,
+                    "",
+                    pref.preference.shipment.serviceId,
+                    pref.preference.address.addressId.toString()
+            )
+            return UpdateCartOccRequest(arrayListOf(cart), profile)
+        }
+        return null
     }
 }

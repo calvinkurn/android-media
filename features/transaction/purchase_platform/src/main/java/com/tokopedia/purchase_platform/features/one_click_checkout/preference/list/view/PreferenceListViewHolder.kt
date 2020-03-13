@@ -32,9 +32,9 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
     private val tvPaymentName = itemView.tv_payment_name
     private val tvPaymentDetail = itemView.tv_payment_detail
 
-    fun bind(preference: ProfilesItemModel, fromOsp: Boolean) {
+    fun bind(preference: ProfilesItemModel, currentProfileId: Int) {
         tvCardHeader.text = itemView.context.getString(R.string.preference_number, adapterPosition + 1)
-        if (!fromOsp) {
+        if (currentProfileId < 0) {
             tvChosenPreference.gone()
             if (preference.status == 2) {
                 lblMainPreference.visible()
@@ -46,6 +46,10 @@ class PreferenceListViewHolder(itemView: View, private val listener: PreferenceL
         } else {
             if (preference.status == 2) {
                 lblMainPreference.visible()
+            } else {
+                lblMainPreference.gone()
+            }
+            if (preference.profileId == currentProfileId) {
                 tvChoosePreference.gone()
                 tvChosenPreference.visible()
             } else {

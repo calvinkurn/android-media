@@ -8,5 +8,11 @@ data class GetOccCartData(
         @SerializedName("cart_list")
         val cartList: List<CartDataResponse> = emptyList(),
         @SerializedName("profile")
-        val profileResponse: ProfileResponse = ProfileResponse()
+        val profileResponse: ProfileResponse = ProfileResponse(),
+        @SerializedName("kero_token")
+        val keroToken: String = "",
+        @SerializedName("kero_discom_token")
+        val keroDiscomToken: String = "",
+        @SerializedName("kero_unix_time")
+        val keroUnixTime: String = ""
 )
