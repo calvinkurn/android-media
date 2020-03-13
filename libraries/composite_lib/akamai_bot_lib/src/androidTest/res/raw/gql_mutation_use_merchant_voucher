@@ -1,0 +1,3 @@
+mutation UseMerchantVoucher($voucher_id: Int, $voucher_code: String!) {
+useMerchantVoucher( voucher_id:$voucher_id, voucher_code:$voucher_code)
+{ result error_message_title error_message} }

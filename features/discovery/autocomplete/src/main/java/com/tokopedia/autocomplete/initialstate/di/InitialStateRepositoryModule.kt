@@ -1,7 +1,5 @@
 package com.tokopedia.autocomplete.initialstate.di
 
-import com.tokopedia.autocomplete.di.AutoCompleteScope
-import com.tokopedia.autocomplete.di.qualifier.AutoCompleteQualifier
 import com.tokopedia.autocomplete.initialstate.*
 import com.tokopedia.autocomplete.initialstate.data.InitialStateApi
 import com.tokopedia.autocomplete.initialstate.data.InitialStateDataSource
@@ -10,14 +8,14 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import dagger.Module
 import dagger.Provides
 
-@AutoCompleteScope
+@InitialStateScope
 @Module
 class InitialStateRepositoryModule {
 
-    @AutoCompleteScope
+    @InitialStateScope
     @Provides
     internal fun provideInitialStateRepository(
-            @AutoCompleteQualifier initialStateApi: InitialStateApi,
+            @InitialStateQualifier initialStateApi: InitialStateApi,
             initialStateMapper: InitialStateMapper
     ): InitialStateRepository {
         return InitialStateRepositoryImpl(

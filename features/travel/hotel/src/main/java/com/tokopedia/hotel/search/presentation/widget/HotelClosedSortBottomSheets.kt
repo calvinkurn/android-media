@@ -26,7 +26,7 @@ class HotelClosedSortBottomSheets : BottomSheets() {
     override fun getLayoutResourceId(): Int = com.tokopedia.baselist.R.layout.fragment_base_list
 
     override fun initView(view: View?) {
-        val recyclerView = view?.findViewById<RecyclerView>(com.tokopedia.abstraction.R.id.recycler_view)
+        val recyclerView = view?.findViewById<RecyclerView>(com.tokopedia.baselist.R.id.recycler_view)
         val adapter = HotelOptionMenuAdapter(mode, menu)
                 .apply {
                     listener = onMenuSelect

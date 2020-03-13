@@ -47,6 +47,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry;
+import com.tokopedia.analytics.performance.PerformanceMonitoring;
+import com.tokopedia.analytics.performance.util.JankyFrameMonitoringUtil;
+import com.tokopedia.analytics.performance.util.PerformanceData;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalContent;
@@ -58,6 +61,7 @@ import com.tokopedia.design.keyboard.KeyboardHelper;
 import com.tokopedia.home.R;
 import com.tokopedia.home.analytics.HomePageTracking;
 import com.tokopedia.home.analytics.HomePageTrackingV2;
+import com.tokopedia.home.analytics.v2.MixTopTracking;
 import com.tokopedia.home.beranda.di.BerandaComponent;
 import com.tokopedia.home.beranda.di.DaggerBerandaComponent;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
@@ -143,6 +147,7 @@ import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dy
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_GIF_BANNER;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_MIX_TOP;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_ORGANIC;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SPRINT_LEGO;
@@ -176,6 +181,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private static final long SEND_SCREEN_MIN_INTERVAL_MILLIS = 1000;
     private static final String DEFAULT_UTM_SOURCE = "home_notif";
     private static final int REQUEST_CODE_PLAY_ROOM = 256;
+    private static final String PERFORMANCE_PAGE_NAME_HOME = "home";
     @NonNull
     public static Boolean HIDE_TICKER = false;
     private static Boolean HIDE_GEO = false;
@@ -230,6 +236,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     private StickyLoginTickerPojo.TickerDetail tickerDetail;
     private HomePerformanceMonitoringListener homePerformanceMonitoringListener;
     private JankyFramesMonitoringListener jankyFramesMonitoringListener;
+    private JankyFrameMonitoringUtil homeScrollJankyMonitoringUtil;
 
     private boolean isLightThemeStatusBar = true;
     private static final String KEY_IS_LIGHT_THEME_STATUS_BAR = "is_light_theme_status_bar";
@@ -270,7 +277,6 @@ public class HomeFragment extends BaseDaggerFragment implements
         trackingQueue = new TrackingQueue(getActivity());
         irisAnalytics = IrisAnalytics.Companion.getInstance(getActivity());
         remoteConfig = new FirebaseRemoteConfigImpl(getActivity());
-
         searchBarTransitionRange = getResources().getDimensionPixelSize(R.dimen.home_searchbar_transition_range);
         startToTransitionOffset = (getResources().getDimensionPixelSize(R.dimen.banner_background_height)) / 2;
 
@@ -279,6 +285,19 @@ public class HomeFragment extends BaseDaggerFragment implements
         setGeolocationPermission();
         needToShowGeolocationComponent();
         getStickyContent();
+        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().startInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        stopHomeInitPerformanceMonitoring();
+    }
+
+    private void stopHomeInitPerformanceMonitoring() {
+        if (jankyFramesMonitoringListener != null && jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil() != null) {
+            jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().stopInitPerformanceMonitoring(PERFORMANCE_PAGE_NAME_HOME);
+        }
     }
 
     @Override
@@ -362,9 +381,14 @@ public class HomeFragment extends BaseDaggerFragment implements
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     evaluateFloatingTextButtonOnStateChanged();
                     evaluateInheritScrollForHomeRecommendation();
+                } else if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                    stopHomeInitPerformanceMonitoring();
                 }
             }
         });
+        jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil().recordRecyclerViewScrollPerformance(
+                homeRecyclerView,
+                PERFORMANCE_PAGE_NAME_HOME, "");
     }
 
     private void setupStatusBar() {
@@ -654,24 +678,6 @@ public class HomeFragment extends BaseDaggerFragment implements
             }
 
             adapter.submitList(data);
-            if (jankyFramesMonitoringListener != null && !isCache && jankyFramesMonitoringListener.needToSubmitDynamicChannelCount()) {
-                Map<String, Integer> layoutCounter = new HashMap<>();
-                for (Visitable visitable: data) {
-                    if (visitable instanceof DynamicChannelViewModel) {
-                        DynamicChannelViewModel dynamicChannelViewModel = (((DynamicChannelViewModel) visitable));
-                        DynamicHomeChannel.Channels channel = dynamicChannelViewModel.getChannel();
-                        if (channel != null && layoutCounter.get(channel.getLayout()) != null) {
-                            int currentCount = layoutCounter.get(channel.getLayout());
-                            layoutCounter.put(channel.getLayout(), ++currentCount);
-                        } else if (layoutCounter.get(channel.getLayout()) == null) {
-                            layoutCounter.put(channel.getLayout(), 1);
-                        }
-                    }
-                }
-
-                jankyFramesMonitoringListener.submitDynamicChannelCount(layoutCounter);
-            }
-
             if (isDataValid(data)) {
                 removeNetworkError();
             } else {
@@ -1289,6 +1295,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         viewModel.getBusinessUnitData(tabId, position);
     }
 
+    @Override
+    public void getPlayChannel(int position) {
+        viewModel.getPlayBanner(position);
+    }
+
     public void openWebViewURL(String url) {
         openWebViewURL(url, getActivity());
     }
@@ -1312,6 +1323,9 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onPromoScrolled(BannerSlidesModel bannerSlidesModel) {
         if (getUserVisibleHint()) {
             viewModel.hitBannerImpression(bannerSlidesModel);
+        }
+        if (bannerSlidesModel.getPosition() > 1) {
+            stopHomeInitPerformanceMonitoring();
         }
     }
 
@@ -1815,7 +1829,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             case TYPE_FOUR_GRID_LEGO :
                 putEEToIris(
                         (HashMap<String, Object>) HomePageTrackingV2.LegoBanner.INSTANCE.getLegoBannerFourImageImpression(
-                                channel, position, true
+                                channel, position, false
                         )
                 );
                 break;
@@ -1836,6 +1850,8 @@ public class HomeFragment extends BaseDaggerFragment implements
                         HomePageTracking.getIrisEnhanceImpressionBannerChannelMix(channel)
                 );
                 break;
+            case TYPE_MIX_TOP:
+                putEEToIris((HashMap<String, Object>) MixTopTracking.INSTANCE.getMixTopViewIris(MixTopTracking.INSTANCE.mapChannelToProductTracker(channel), channel.getHeader().getName(), String.valueOf(position)));
         }
     }
 
@@ -1852,4 +1868,9 @@ public class HomeFragment extends BaseDaggerFragment implements
         }
     }
 
+    @Override
+    public JankyFrameMonitoringUtil getHomeJankyFramesUtil() {
+        if (jankyFramesMonitoringListener != null) return jankyFramesMonitoringListener.getMainJankyFrameMonitoringUtil();
+        return null;
+    }
 }

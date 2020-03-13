@@ -1,6 +1,7 @@
 package com.tokopedia.basemvvm.viewcontrollers
 
 import android.os.Bundle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.basemvvm.BaseActivityFragmentInterface
@@ -23,11 +24,14 @@ abstract class BaseViewModelFragment< T : BaseViewModel>: TkpdBaseV4Fragment(),B
     }
 
     private fun setViewModel() {
-        bVM = ViewModelProviders.of(this).get(getViewModelType())
+        bVM = ViewModelProviders.of(this, getVMFactory()).get(getViewModelType())
         setViewModel(bVM)
         lifecycle.addObserver(getLifeCycleObserver(bVM))
     }
 
+    protected open fun getVMFactory(): ViewModelProvider.Factory? {
+        return ViewModelProvider.AndroidViewModelFactory(this.activity?.application!!)
+    }
 
     private fun getLifeCycleObserver(viewModel: BaseViewModel): BaseLifeCycleObserver {
         return BaseLifeCycleObserver(viewModel)

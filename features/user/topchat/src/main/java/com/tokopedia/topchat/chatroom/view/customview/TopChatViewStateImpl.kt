@@ -85,6 +85,14 @@ class TopChatViewStateImpl(
     override fun getRootViewId() = R.id.main
     override fun getAttachmentMenuContainer() = R.id.rv_attachment_menu_container
 
+    override fun getInterlocutorName(headerName: CharSequence): CharSequence {
+        var name = headerName
+        if (name.length > 12) {
+            name = name.substring(0, 12) + "..."
+        }
+        return name
+    }
+
     init {
         initView()
     }
