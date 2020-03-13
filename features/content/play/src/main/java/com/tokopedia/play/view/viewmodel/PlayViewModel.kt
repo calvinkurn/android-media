@@ -200,9 +200,9 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
 
 //        startMockFreeze()
-//        setMockProductSheetContent()
+        setMockProductSheetContent()
 //        setMockVariantSheetContent()
-//        setMockProductPinned()
+        setMockProductPinned()
     }
 
     // lifecycle region
@@ -625,27 +625,29 @@ class PlayViewModel @Inject constructor(
                 _observableProductSheetContent.value = ProductSheetUiModel(
                         title = "Barang & Promo Pilihan",
                         voucherList = List(5) { voucherIndex ->
-                            MerchantVoucherUiModel(
-                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
-                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
-                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
-                            )
+//                            MerchantVoucherUiModel(
+//                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
+//                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
+//                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
+//                            )
+                            VoucherPlaceholderUiModel
                         },
                         productList = List(5) {
-                            ProductLineUiModel(
-                                    id = it.toString(),
-                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-                                    title = "Product $it",
-                                    price = if (it % 2 == 0) {
-                                        OriginalPrice("Rp20$it.000")
-                                    } else {
-                                        DiscountedPrice(
-                                                originalPrice = "Rp20$it.000",
-                                                discountPercent = it * 10,
-                                                discountedPrice = "Rp2$it.000"
-                                        )
-                                    }
-                            )
+//                            ProductLineUiModel(
+//                                    id = it.toString(),
+//                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
+//                                    title = "Product $it",
+//                                    price = if (it % 2 == 0) {
+//                                        OriginalPrice("Rp20$it.000")
+//                                    } else {
+//                                        DiscountedPrice(
+//                                                originalPrice = "Rp20$it.000",
+//                                                discountPercent = it * 10,
+//                                                discountedPrice = "Rp2$it.000"
+//                                        )
+//                                    }
+//                            )
+                            ProductPlaceholderUiModel
                         }
                 )
             }
