@@ -145,6 +145,9 @@
                       android:layout_marginRight="@dimen/dp_16"
                       android:clipToPadding="false"
                       app:isInfinite="true"
+                      app:activePageTransformer="true"
+                      app:pageMargin="@dimen/dp_10"
+                      app:offset="@dimen/dp_20"
                       android:nestedScrollingEnabled="false"
                       app:layout_constraintTop_toTopOf="parent"/>
 
