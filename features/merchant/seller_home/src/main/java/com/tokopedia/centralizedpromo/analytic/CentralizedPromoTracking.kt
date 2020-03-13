@@ -82,7 +82,7 @@ object CentralizedPromoTracking {
         val data = createMap(
                 event = EVENT_NAME_IMPRESSION,
                 category = EVENT_CATEGORY_ADS_AND_PROMO,
-                action = arrayOf(EVENT_ACTION_EDUCATION_IMPRESSION, "Tips & Trick").joinToString(" - "),
+                action = EVENT_ACTION_EDUCATION_IMPRESSION,
                 label = ""
         )
 
@@ -93,7 +93,7 @@ object CentralizedPromoTracking {
         val data = createMap(
                 event = EVENT_NAME_CLICK,
                 category = EVENT_CATEGORY_ADS_AND_PROMO,
-                action = arrayOf(EVENT_ACTION_EDUCATION_CLICK, "Tips & Trick", title).joinToString(" - "),
+                action = arrayOf(EVENT_ACTION_EDUCATION_CLICK, title).joinToString(" - "),
                 label = ""
         )
 
