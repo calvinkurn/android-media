@@ -18,7 +18,7 @@ class ClearShipmentCacheAutoApplyAfterClashSubscriber(val view: ShipmentContract
     }
 
     override fun onNext(response: ClearCacheAutoApplyStackResponse) {
-        view?.showToastNormal("Ada perubahan pada promo yang kamu gunakan")
+        view?.showToastNormal("Ada perubahan pada promo yang kamu pakai")
     }
 
 }

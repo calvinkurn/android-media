@@ -15,6 +15,7 @@ class PromoCheckoutUiModelMapper @Inject constructor() {
                     usedPromoCount = 0
                 },
                 uiState = FragmentUiModel.UiState().apply {
+                    isLoading = true
                     hasPreAppliedPromo = false
                     hasAnyPromoSelected = false
                     hasFailedToLoad = false

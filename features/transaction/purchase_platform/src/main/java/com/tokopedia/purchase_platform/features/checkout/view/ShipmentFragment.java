@@ -1065,12 +1065,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             usageInfo = lastApplyData.getAdditionalInfo().getMessageInfo().getDetail();
 
         ArrayList<String> listCodes = new ArrayList<>();
-        for (int i=0; i<lastApplyData.getCodes().size(); i++) {
+        for (int i = 0; i < lastApplyData.getCodes().size(); i++) {
             listCodes.add(lastApplyData.getCodes().get(i));
         }
 
         ArrayList<String> listAllPromoCodes = new ArrayList<>();
-        for (int i=0; i<lastApplyData.getCodes().size(); i++) {
+        for (int i = 0; i < lastApplyData.getCodes().size(); i++) {
             listAllPromoCodes.add(lastApplyData.getCodes().get(i));
         }
         for (LastApplyVoucherOrdersItemUiModel voucherOrdersItemUiModel : lastApplyData.getVoucherOrders()) {
@@ -1401,13 +1401,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         } else if (requestCode == LogisticConstant.REQUEST_CODE_PICK_DROP_OFF_TRADE_IN) {
             onResultFromSetTradeInPinpoint(data);
         } else if (requestCode == REQUEST_CODE_PROMO) {
-
+            onResultFromPromo();
         }
     }
 
     private void onResultFromPromo() {
-        // Todo : hit validate use and render data
-//        shipmentPresenter.doValidateuseLogisticPromo();
+        ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
+        shipmentPresenter.checkPromoCheckoutFinalShipment(validateUsePromoRequest);
     }
 
     public void onResultFromEditAddress() {
@@ -2797,7 +2797,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 ordersItem.setProduct_details(productDetailsItems);
 
                 ArrayList<String> listCodes = new ArrayList<>();
-                for (String code: shipmentCartItemModel.getListPromoCodes()) {
+                for (String code : shipmentCartItemModel.getListPromoCodes()) {
                     listCodes.add(code);
                 }
                 ordersItem.setCodes(listCodes);
@@ -2817,7 +2817,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (promoCheckoutData != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
             if (promoCheckoutData.getCodes().size() > 0) {
-                for (int i=0; i<promoCheckoutData.getCodes().size(); i++) {
+                for (int i = 0; i < promoCheckoutData.getCodes().size(); i++) {
                     globalPromoCodes.add(promoCheckoutData.getCodes().get(i));
                 }
             }
@@ -3121,6 +3121,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void onButtonChooseOtherPromo() {
+        ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
+        PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
+        intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
+        intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam);
+        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
+
+        startActivityForResult(intent, REQUEST_CODE_PROMO);
+    }
+
+    @Override
     public void onShow() {
         if (promoNotEligibleBottomsheet != null) {
             BottomSheetBehavior bottomSheetBehavior = promoNotEligibleBottomsheet.getBottomSheetBehavior();
@@ -3303,12 +3315,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         promoRequest.setState(CheckoutConstant.CHECKOUT);
         promoRequest.setCodes(new ArrayList<>(promoCheckoutData.getCodes()));
 
-        ValidateUsePromoRequest validateUseRequest = generateValidateUsePromoRequest();
-
+        ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
+        PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
         intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.getPAGE_CHECKOUT());
-        intent.putExtra(ARGS_PROMO_REQUEST, generateCouponListRecommendationRequest());
-        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest);
+        intent.putExtra(ARGS_PROMO_REQUEST, promoRequestParam);
+        intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequestParam);
 
         startActivityForResult(intent, REQUEST_CODE_PROMO);
     }
