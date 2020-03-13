@@ -3,17 +3,28 @@ package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.authentication.AuthHelper
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.network.utils.TKPDMapParam
+import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
+import com.tokopedia.purchase_platform.features.checkout.domain.usecase.EditAddressUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.GetPreferenceListUseCase
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.domain.GetOccCartUseCase
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
+import com.tokopedia.usecase.RequestParams
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
+import org.json.JSONException
+import org.json.JSONObject
 import rx.Observer
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
 
@@ -21,7 +32,9 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                     private val getOccCartUseCase: GetOccCartUseCase,
                                                     private val ratesUseCase: GetRatesUseCase,
                                                     val getPreferenceListUseCase: GetPreferenceListUseCase,
-                                                    private val ratesResponseStateConverter: RatesResponseStateConverter) : BaseViewModel(dispatcher) {
+                                                    private val ratesResponseStateConverter: RatesResponseStateConverter,
+                                                    private val editAddressUseCase: EditAddressUseCase,
+                                                    private val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher) {
 
     var orderProduct: OrderProduct = OrderProduct()
     var orderShop: OrderShop = OrderShop()
@@ -30,6 +43,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
     var orderPreference: MutableLiveData<OccState<OrderPreference>> = MutableLiveData(OccState.Loading)
 
     var orderTotal: MutableLiveData<OrderTotal> = MutableLiveData(OrderTotal())
+
+    var globalEvent: MutableLiveData<OccGlobalEvent> = MutableLiveData(OccGlobalEvent.Normal)
 
     private var compositeSubscription = CompositeSubscription()
 
@@ -109,7 +124,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                             return@map data
                         }.subscribe(object : Observer<ShippingRecommendationData> {
                             override fun onError(e: Throwable) {
-
+                                e.printStackTrace()
                             }
 
                             override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
@@ -168,6 +183,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                             serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                             serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
                                                             serviceName = shippingDurationViewModel.serviceData.serviceName,
+                                                            needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
                                                             serviceErrorMessage = durationError.errorMessage,
                                                             shippingRecommendationData = shippingRecommendationData)
                                                 } else {
@@ -194,7 +210,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                         shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                                                                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                                                 needPinpoint = flagNeedToSetPinpoint,
-                                                                shippingErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
+                                                                serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
                                                                 insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                                 serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
@@ -213,7 +229,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                     }
                                     _orderPreference = value.copy(shipping = shipping)
                                     orderPreference.value = OccState.Success(_orderPreference!!)
-                                    orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.NORMAL)
+                                    orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping?.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
                                     calculateTotal()
                                 }
                             }
@@ -509,11 +525,17 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     shippingDurationViewModel.isSelected = false
                 }
             }
-            _orderPreference = _orderPreference?.copy(shipping = shipping.copy(
-                    serviceErrorMessage = null,
+//            if (flagNeedToSetPinpoint) {
+//                _orderPreference = _orderPreference?.copy(shipping = shipping.copy(
+//                        needPinpoint = flagNeedToSetPinpoint,
+//                        serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
+//                        shippingRecommendationData = shippingRecommendationData))
+//                orderPreference.value = OccState.Success(_orderPreference!!)
+//            } else {
+            val shipping1 = shipping.copy(
                     needPinpoint = flagNeedToSetPinpoint,
-                    shippingErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
-                    isServicePickerEnable = true,
+                    serviceErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
+                    isServicePickerEnable = !flagNeedToSetPinpoint,
                     serviceId = selectedShippingDurationViewModel.serviceData.serviceId,
                     serviceDuration = selectedShippingDurationViewModel.serviceData.texts.textEtd,
                     serviceName = selectedShippingDurationViewModel.serviceData.serviceName,
@@ -521,9 +543,12 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     shipperName = selectedShippingCourierUiModel.productData.shipperName,
                     insuranceData = selectedShippingCourierUiModel.productData.insurance,
                     shippingPrice = selectedShippingCourierUiModel.productData.price.price,
-                    shippingRecommendationData = shippingRecommendationData))
+                    shippingRecommendationData = shippingRecommendationData)
+            _orderPreference = _orderPreference?.copy(shipping = shipping1)
             orderPreference.value = OccState.Success(_orderPreference!!)
+            orderTotal.value = orderTotal.value?.copy(buttonState = if (shipping1.serviceErrorMessage.isNullOrEmpty()) ButtonBayarState.NORMAL else ButtonBayarState.DISABLE)
             calculateTotal()
+//            }
         }
     }
 
@@ -532,5 +557,75 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         if (op?.shipping != null) {
             orderPreference.value = OccState.Success(op.copy(shipping = op.shipping.copy(needPinpoint = false)))
         }
+    }
+
+    fun savePinpoint(longitude: String, latitude: String) {
+        val params = generateAuthParam()
+        val op = _orderPreference
+        if (op != null) {
+            params[EditAddressParam.ADDRESS_ID] = op.preference.address.addressId.toString()
+            params[EditAddressParam.ADDRESS_NAME] = op.preference.address.addressName
+            params[EditAddressParam.ADDRESS_STREET] = op.preference.address.addressStreet
+            params[EditAddressParam.POSTAL_CODE] = op.preference.address.postalCode
+            params[EditAddressParam.DISTRICT_ID] = op.preference.address.districtId.toString()
+            params[EditAddressParam.CITY_ID] = op.preference.address.cityId.toString()
+            params[EditAddressParam.PROVINCE_ID] = op.preference.address.provinceId.toString()
+            params[EditAddressParam.LATITUDE] = latitude
+            params[EditAddressParam.LONGITUDE] = longitude
+            params[EditAddressParam.RECEIVER_NAME] = op.preference.address.receiverName
+            params[EditAddressParam.RECEIVER_PHONE] = op.preference.address.phone
+
+            val requestParams = RequestParams.create()
+            requestParams.putAllString(params)
+
+            //loading
+            globalEvent.value = OccGlobalEvent.Loading
+            editAddressUseCase.createObservable(requestParams)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .unsubscribeOn(Schedulers.io())
+                    .subscribe(object : Observer<String> {
+                        override fun onError(e: Throwable) {
+                            e.printStackTrace()
+                            globalEvent.value = OccGlobalEvent.Error(e)
+                        }
+
+                        override fun onNext(stringResponse: String) {
+                            var response: JSONObject? = null
+                            var messageError: String? = null
+                            var statusSuccess: Boolean
+                            try {
+                                response = JSONObject(stringResponse)
+                                val statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
+                                        .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS)
+                                statusSuccess = statusCode == 1
+                                if (!statusSuccess) {
+                                    messageError = response.getJSONArray("message_error").getString(0)
+                                }
+                            } catch (e: JSONException) {
+                                e.printStackTrace()
+                                statusSuccess = false
+                            }
+
+                            if (response != null && statusSuccess) {
+                                // trigger refresh
+                                globalEvent.value = OccGlobalEvent.TriggerRefresh
+                            } else {
+                                //show error
+                                if (messageError.isNullOrBlank()) {
+                                    messageError = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+                                }
+                                globalEvent.value = OccGlobalEvent.Error(errorMessage = messageError)
+                            }
+                        }
+
+                        override fun onCompleted() {
+                        }
+                    })
+        }
+    }
+
+    private fun generateAuthParam(): MutableMap<String, String> {
+        return AuthHelper.generateParamsNetwork(userSessionInterface.userId, userSessionInterface.deviceId, TKPDMapParam())
     }
 }

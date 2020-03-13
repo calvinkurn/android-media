@@ -6,3 +6,10 @@ sealed class OccState<out T: Any> {
     object Loading : OccState<Nothing>()
     data class Fail(var isConsumed: Boolean, val throwable: Throwable?, val errorMessage: String): OccState<Nothing>()
 }
+
+sealed class OccGlobalEvent {
+    object Normal : OccGlobalEvent()
+    object Loading : OccGlobalEvent()
+    data class Error(val throwable: Throwable? = null, val errorMessage: String = "") : OccGlobalEvent()
+    object TriggerRefresh : OccGlobalEvent()
+}

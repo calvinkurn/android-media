@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -24,9 +25,11 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.model.response.preference.Address
+import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
@@ -41,6 +44,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.mo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.unifycomponents.Toaster
+import io.hansel.a.v
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -62,6 +66,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private lateinit var orderProductCard: OrderProductCard
     private lateinit var orderPreferenceCard: OrderPreferenceCard
+
+    private var progressDialog: AlertDialog? = null
 
     override fun getScreenName(): String {
         return this::class.java.simpleName
@@ -87,9 +93,13 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             val locationPass: LocationPass? = data.extras?.getParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION)
             if (locationPass != null) {
                 //update
+                viewModel.savePinpoint(locationPass.longitude, locationPass.latitude)
             }
         }
         // show error
+//        view?.let {
+//            Toaster.make(it, "Pinpoint lokasi untuk melanjutkan dengan durasi/kurir sebelumnya")
+//        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -156,6 +166,37 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         viewModel.orderTotal.observe(this, Observer {
             setupButtonBayar(it)
         })
+        viewModel.globalEvent.observe(this, Observer {
+            when (it) {
+                is OccGlobalEvent.Loading -> {
+                    if (progressDialog == null) {
+                        progressDialog = AlertDialog.Builder(context!!)
+                                .setView(R.layout.purchase_platform_progress_dialog_view)
+                                .setCancelable(false)
+                                .create()
+                    }
+                    progressDialog?.show()
+                }
+                is Nothing -> {
+                    progressDialog?.dismiss()
+                }
+                is OccGlobalEvent.TriggerRefresh -> {
+                    progressDialog?.dismiss()
+                    swipe_refresh_layout.isRefreshing = true
+                    viewModel.getOccCart()
+                }
+                is OccGlobalEvent.Error -> {
+                    progressDialog?.dismiss()
+                    view?.let { v ->
+                        var message = it.errorMessage
+                        if (it.throwable != null) {
+                            message = ErrorHandler.getErrorMessage(context, it.throwable)
+                        }
+                        Toaster.make(v, message, type = Toaster.TYPE_ERROR)
+                    }
+                }
+            }
+        })
         if (viewModel.orderProduct.parentId == 0) {
             viewModel.getOccCart()
         }
@@ -196,6 +237,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 tv_insurance.setText(R.string.label_must_insurance)
                 cb_insurance.isChecked = true
                 cb_insurance.isEnabled = false
+                viewModel.setInsuranceCheck(true)
                 group_insurance.visible()
             } else if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_NO) {
                 group_insurance.gone()
@@ -204,8 +246,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 cb_insurance.isEnabled = true
                 if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_YES) {
                     cb_insurance.isChecked = true
+                    viewModel.setInsuranceCheck(true)
                 } else if (insuranceData.insuranceUsedDefault == InsuranceConstant.INSURANCE_USED_DEFAULT_NO) {
                     cb_insurance.isChecked = false
+                    viewModel.setInsuranceCheck(false)
                 }
                 group_insurance.visible()
             }

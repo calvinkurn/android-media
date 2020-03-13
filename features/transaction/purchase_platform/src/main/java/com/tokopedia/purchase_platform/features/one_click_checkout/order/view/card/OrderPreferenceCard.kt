@@ -86,8 +86,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                 }
             } else {
                 if (!shipping.isServicePickerEnable) {
+                    view.tv_shipping_courier_lbl.gone()
                     view.tv_shipping_courier.gone()
-                    view.tv_shipping_courier.gone()
+                    view.tv_shipping_duration.setCompoundDrawablesRelativeWithIntrinsicBounds(0, 0, 0, 0)
                     view.tv_shipping_price.gone()
                     view.tv_shipping_slash_price.gone()
                     view.tv_shipping_message.text = shipping.serviceErrorMessage
