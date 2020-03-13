@@ -194,6 +194,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                                                         shipping = Shipment(shipperProductId = selectedShippingCourierUiModel.productData.shipperProductId,
                                                                 shipperName = selectedShippingCourierUiModel.productData.shipperName,
                                                                 needPinpoint = flagNeedToSetPinpoint,
+                                                                shippingErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
                                                                 insuranceData = selectedShippingCourierUiModel.productData.insurance,
                                                                 serviceId = shippingDurationViewModel.serviceData.serviceId,
                                                                 serviceDuration = shippingDurationViewModel.serviceData.texts.textEtd,
@@ -511,6 +512,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             _orderPreference = _orderPreference?.copy(shipping = shipping.copy(
                     serviceErrorMessage = null,
                     needPinpoint = flagNeedToSetPinpoint,
+                    shippingErrorMessage = if (flagNeedToSetPinpoint) "Butuh pinpoint lokasi" else null,
                     isServicePickerEnable = true,
                     serviceId = selectedShippingDurationViewModel.serviceData.serviceId,
                     serviceDuration = selectedShippingDurationViewModel.serviceData.texts.textEtd,
@@ -522,6 +524,13 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     shippingRecommendationData = shippingRecommendationData))
             orderPreference.value = OccState.Success(_orderPreference!!)
             calculateTotal()
+        }
+    }
+
+    fun changePinpoint() {
+        val op = _orderPreference
+        if (op?.shipping != null) {
+            orderPreference.value = OccState.Success(op.copy(shipping = op.shipping.copy(needPinpoint = false)))
         }
     }
 }

@@ -26,6 +26,7 @@ data class Shipment(
         val serviceErrorMessage: String? = null,
         val isServicePickerEnable: Boolean = false,
         val needPinpoint: Boolean = false,
+        val shippingErrorMessage: String? = null,
         val shipperName: String? = null,
         val shipperProductId: Int? = null,
         val shippingPrice: Int? = null,

@@ -171,6 +171,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
         intent.putExtras(bundle)
         startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT)
+        viewModel.changePinpoint()
     }
 
     private fun setupInsurance(it: OccState.Success<OrderPreference>) {
