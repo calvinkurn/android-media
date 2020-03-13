@@ -102,7 +102,7 @@ class ProductCheckoutViewHolder(
         btnCheckout.setOnClickListener {
             notificationItemMarkedClick(element)
             listener.getAnalytic().trackAtcOnSingleProductClick(notification = element)
-            listener.addProductToCheckout(element.userInfo, element.getAtcProduct())
+            listener.addProductToCheckout(element.userInfo, element)
         }
     }
 
