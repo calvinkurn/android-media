@@ -64,8 +64,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         renderTripView()
 
         if (flightDashboardCache.departureDate.isNotEmpty() &&
-                FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate)
-                        .after(FlightDateUtil.getCurrentDate())) {
+                !FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate)
+                        .before(FlightDateUtil.getCurrentDate())) {
             setDepartureDate(FlightDateUtil.stringToDate(
                     FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.departureDate))
         } else {
@@ -73,8 +73,8 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
         }
 
         if (flightDashboardCache.returnDate.isNotEmpty() &&
-                FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate)
-                        .after(FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 1))) {
+                !FlightDateUtil.stringToDate(FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate)
+                        .before(FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 1))) {
             setReturnDate(FlightDateUtil.stringToDate(
                     FlightDateUtil.DEFAULT_FORMAT, flightDashboardCache.returnDate))
         } else {
@@ -351,7 +351,7 @@ class FlightSearchFormView @JvmOverloads constructor(context: Context, attrs: At
     }
 
     private fun generateDefaultDepartureDate(): Date =
-            FlightDateUtil.addTimeToCurrentDate(Calendar.DATE, 1)
+            FlightDateUtil.getCurrentDate()
 
     private fun generateDefaultReturnDate(departureDate: Date): Date =
             FlightDateUtil.addDate(departureDate, 1)
