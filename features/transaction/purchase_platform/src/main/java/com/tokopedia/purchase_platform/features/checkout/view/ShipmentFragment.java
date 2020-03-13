@@ -3090,8 +3090,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                            @NotNull ArrayList<ClashingVoucherOrderUiModel> newPromoList,
                                            @NotNull String type
     ) {
-        shipmentPresenter.cancelAutoApplyPromoStackAfterClash(oldPromoList, newPromoList,
-                true, isOneClickShipment(), isTradeIn(), getCornerId(), getDeviceId(), type);
     }
 
     @Override

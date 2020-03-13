@@ -118,6 +118,7 @@ import com.tokopedia.purchase_platform.features.promo.domain.usecase.ValidateUse
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ClashingInfoDetailUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoClashOptionUiModel;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoClashVoucherOrdersUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -973,20 +974,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                        @Override
                                        public void onNext(ValidateUsePromoRevampUiModel responseGetPromoStack) {
                                            setCouponStateChanged(true);
-
-                                           ClashingInfoDetailUiModel clashingInfoDetailUiModel = responseGetPromoStack.getPromoUiModel().getClashingInfoDetailUiModel();
-                                           if (clashingInfoDetailUiModel.getClashMessage().length() > 0 ||
-                                                   clashingInfoDetailUiModel.getClashReason().length() > 0 ||
-                                                   clashingInfoDetailUiModel.getOptions().size() > 0) {
-
-                                               // Todo : clarify whick promo need to be cleared
-//                                               List<String> clashPromoCodes = new ArrayList<>();
-//                                               for (PromoClashOptionUiModel promoClashOptionUiModel : clashingInfoDetailUiModel.getOptions()) {
-//                                                   clashPromoCodes.add(promoClashOptionUiModel.getVoucherOrders().get)
-//                                               }
-
-                                           }
-
                                            if (!TextUtils.isEmpty(responseGetPromoStack.getPromoUiModel().getTickerInfoUiModel().getMessage())) {
                                                if (tickerAnnouncementHolderData == null) {
                                                    setTickerAnnouncementHolderData(
@@ -1025,6 +1012,22 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                }
                                            }
 
+                                           ClashingInfoDetailUiModel clashingInfoDetailUiModel = responseGetPromoStack.getPromoUiModel().getClashingInfoDetailUiModel();
+                                           if (clashingInfoDetailUiModel.getClashMessage().length() > 0 ||
+                                                   clashingInfoDetailUiModel.getClashReason().length() > 0 ||
+                                                   clashingInfoDetailUiModel.getOptions().size() > 0) {
+
+                                               ArrayList<String> clashPromoCodes = new ArrayList<>();
+                                               for (PromoClashOptionUiModel promoClashOptionUiModel : clashingInfoDetailUiModel.getOptions()) {
+                                                   if (promoClashOptionUiModel != null && promoClashOptionUiModel.getVoucherOrders() != null) {
+                                                       for (PromoClashVoucherOrdersUiModel promoClashVoucherOrdersUiModel : promoClashOptionUiModel.getVoucherOrders()) {
+                                                           clashPromoCodes.add(promoClashVoucherOrdersUiModel.getCode());
+                                                       }
+                                                   }
+                                               }
+
+                                               cancelAutoApplyPromoStackAfterClash(clashPromoCodes);
+                                           }
                                        }
                                    }
                         )
@@ -1797,19 +1800,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> oldPromoList, ArrayList<ClashingVoucherOrderUiModel> newPromoList,
-                                                    boolean isFromMultipleAddress, boolean isOneClickShipment, boolean isTradeIn,
-                                                    @Nullable String cornerId, String deviceId, String type) {
-        String corner = "";
-        if (cornerId != null) {
-            corner = cornerId;
-        }
+    public void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared) {
         getView().showLoading();
-        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), oldPromoList);
+        clearCacheAutoApplyStackUseCase.setParams(ClearCacheAutoApplyStackUseCase.Companion.getPARAM_VALUE_MARKETPLACE(), promoCodesToBeCleared);
         compositeSubscription.add(
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe(
-                        new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this,
-                                newPromoList, isFromMultipleAddress, isOneClickShipment, corner, isTradeIn, deviceId, type)
+                        new ClearShipmentCacheAutoApplyAfterClashSubscriber(getView(), this)
                 )
         );
     }
