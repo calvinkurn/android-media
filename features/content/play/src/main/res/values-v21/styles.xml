@@ -18,4 +18,9 @@
         <item name="android:windowSharedElementReturnTransition">@transition/anim_play_shared_return</item>
 
     </style>
+
+    <style name="PlayPlaceholder">
+        <item name="android:background">@drawable/bg_play_placeholder</item>
+        <item name="android:elevation">@dimen/play_placeholder_elevation</item>
+    </style>
 </resources>

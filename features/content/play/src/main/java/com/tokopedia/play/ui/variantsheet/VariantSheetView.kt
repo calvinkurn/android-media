@@ -4,7 +4,6 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -40,10 +39,13 @@ class VariantSheetView(
             .findViewById(R.id.cl_variant_sheet)
 
     private val clVariantContent: ConstraintLayout = view.findViewById(R.id.cl_variant_content)
+    private val clProductVariant: ConstraintLayout = view.findViewById(R.id.cl_product_variant)
+    private val phProductVariant: ConstraintLayout = view.findViewById(R.id.ph_product_variant)
     private val tvSheetTitle: TextView = view.findViewById(R.id.tv_sheet_title)
     private val rvVariantList: RecyclerView = view.findViewById(R.id.rv_variant_list)
     private val btnAction: UnifyButton = view.findViewById(R.id.btn_action)
-    private val btnContainer: FrameLayout = view.findViewById(R.id.btn_container)
+    private val phBtnAction: View = view.findViewById(R.id.ph_btn_action)
+    private val btnContainer: ConstraintLayout = view.findViewById(R.id.btn_container)
     private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
     private val ivProductImage: ImageView = view.findViewById(R.id.iv_product_image)
     private val tvProductTitle: TextView = view.findViewById(R.id.tv_product_title)
@@ -124,12 +126,30 @@ class VariantSheetView(
 
         btnAction.text = view.context.getString(
                 if (model.action == ProductAction.Buy) R.string.play_product_buy
-                else R.string.play_add_to_card
+                else R.string.play_product_add_to_card
         )
 
         btnAction.setOnClickListener {
             if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.product.id)
             else listener.onAddToCartClicked(this, model.product.id)
+        }
+
+        showPlaceholder(false)
+    }
+
+    internal fun showPlaceholder(isShow: Boolean) {
+        if (isShow) {
+            phProductVariant.visible()
+            phBtnAction.visible()
+
+            btnAction.gone()
+            clProductVariant.gone()
+        } else {
+            phProductVariant.gone()
+            phBtnAction.gone()
+
+            btnAction.visible()
+            clProductVariant.visible()
         }
     }
 
