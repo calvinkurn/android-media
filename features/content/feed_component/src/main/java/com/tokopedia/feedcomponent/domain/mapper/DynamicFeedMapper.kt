@@ -43,8 +43,6 @@ import javax.inject.Inject
  */
 class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFeedDomainModel> {
 
-    var count = 1
-
     companion object {
         private const val TYPE_CARDRECOM = "cardrecom"
         private const val TYPE_CARDPOST = "cardpost"
