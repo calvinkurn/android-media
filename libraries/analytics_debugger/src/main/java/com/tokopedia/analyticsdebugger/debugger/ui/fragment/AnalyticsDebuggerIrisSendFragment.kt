@@ -12,7 +12,7 @@ class AnalyticsDebuggerIrisSendFragment : BaseAnalyticsDebuggerFragment(), Analy
     }
 
     companion object {
-
+        val TAG = AnalyticsDebuggerIrisSendFragment::class.java.canonicalName
         fun newInstance(): Fragment {
             return AnalyticsDebuggerIrisSendFragment()
         }
