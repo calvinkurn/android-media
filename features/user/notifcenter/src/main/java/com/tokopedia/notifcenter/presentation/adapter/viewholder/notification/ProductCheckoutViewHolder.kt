@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
@@ -56,14 +57,9 @@ class ProductCheckoutViewHolder(
     }
 
     private fun productCardItemView(element: NotificationItemViewBean) {
-        if (element.totalProduct == SINGLE_PRODUCT) {
-            cardContainer.visibility = View.VISIBLE
-            lstProduct.visibility = View.GONE
-            listener.getAnalytic().trackProductListImpression(
-                    notification = element
-            )
-        } else {
-            cardContainer.visibility = View.GONE
+        if (element.products.size > SINGLE_PRODUCT) {
+            cardContainer.hide()
+            lstProduct.show()
             listener.getAnalytic().trackProductListImpression(
                     location = LABEL_BOTTOM_SHEET_LOCATION,
                     notification = element
@@ -77,12 +73,18 @@ class ProductCheckoutViewHolder(
                         multipleProductCardFactory = factory,
                         isResizable = true
                 )
-                lstProduct.adapter = multiProductAdapter
-                multiProductAdapter?.removeAllItem()
-                multiProductAdapter?.insertData(
-                        MultipleProductCardMapper.map(element)
-                )
             }
+            lstProduct.adapter = multiProductAdapter
+            multiProductAdapter?.removeAllItem()
+            multiProductAdapter?.insertData(
+                    MultipleProductCardMapper.map(element)
+            )
+        } else if (element.products.size == SINGLE_PRODUCT) {
+            cardContainer.show()
+            lstProduct.hide()
+            listener.getAnalytic().trackProductListImpression(
+                    notification = element
+            )
         }
     }
 
