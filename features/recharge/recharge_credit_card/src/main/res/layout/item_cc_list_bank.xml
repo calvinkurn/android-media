@@ -13,5 +13,5 @@
     android:paddingRight="@dimen/cc_space_12"
     android:paddingBottom="@dimen/cc_space_4"
     android:textColor="@color/label_text_color"
-    app:typographyType="heading_5"
+    app:typographyType="body_2"
     tools:text="Bank BCA" />

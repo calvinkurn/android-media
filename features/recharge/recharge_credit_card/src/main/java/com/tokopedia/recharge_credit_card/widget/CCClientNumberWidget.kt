@@ -5,10 +5,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
-import com.tokopedia.design.base.BaseCustomView
 import com.tokopedia.recharge_credit_card.R
-import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
 import com.tokopedia.recharge_credit_card.getColorFromResources
+import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
+import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.android.synthetic.main.widget_cc_number.view.*
 import org.jetbrains.annotations.NotNull
 
@@ -22,11 +22,17 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
     init {
         View.inflate(context, R.layout.widget_cc_number, this)
 
-        cc_input_number.clearFocus()
-        cc_input_number.addTextChangedListener(object : TextWatcher {
+        cc_text_input.textFieldInput.clearFocus()
+        cc_text_input.textFiedlLabelText.text = context.getString(R.string.cc_label_input_number)
+        cc_text_input.setFirstIcon(R.drawable.unify_clear_ic)
+        cc_text_input.textFieldIcon1.visibility = View.GONE
+
+        cc_text_input.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(input: Editable?) {
                 input?.let {
                     if (it.length <= TOTAL_SYMBOLS) {
+                        cc_text_input.setError(false)
+                        cc_text_input.setMessage("")
                         if (!RechargeCCUtil.isInputCorrect(it, TOTAL_SYMBOLS, DIVIDER_MODULO, DIVIDER)) {
                             it.replace(0, it.length, RechargeCCUtil.concatString(
                                     RechargeCCUtil.getDigitArray(input, TOTAL_DIGITS), DIVIDER_POSITION, DIVIDER))
@@ -35,11 +41,11 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                         if (it.length == TOTAL_SYMBOLS) {
                             val inputDigit = it.toString().replace(" ", "")
                             if (!RechargeCCUtil.isCreditCardValid(inputDigit)) {
-                                cc_error_input_number.visibility = View.VISIBLE
-                                cc_error_input_number.text = "Mohon Periksa kembali nomer CC Anda"
+                                cc_text_input.setError(true)
+                                cc_text_input.setMessage(context.getString(R.string.cc_error_invalid_number))
                                 disableBtnNext()
                             } else {
-                                cc_error_input_number.visibility = View.GONE
+                                cc_text_input.setError(false)
                                 enableBtnNext()
                             }
                         } else {
@@ -56,30 +62,34 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
             override fun onTextChanged(input: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 input?.let {
                     if (it.isEmpty()) {
-                        cc_btn_clear_input_number.visibility = View.GONE
+                        cc_text_input.textFieldIcon1.visibility = View.GONE
                     } else {
-                        cc_btn_clear_input_number.visibility = View.VISIBLE
+                        cc_text_input.textFieldIcon1.visibility = View.VISIBLE
                     }
                 }
             }
         })
 
-        cc_btn_clear_input_number.setOnClickListener {
-            cc_input_number.setText("")
-            cc_error_input_number.visibility = View.GONE
+        cc_text_input.textFieldIcon1.setOnClickListener {
+            cc_text_input.textFieldInput.setText("")
+            cc_text_input.setError(false)
         }
 
-        cc_input_number.setOnClickListener {
-            cc_input_number.requestFocus()
+        cc_text_input.textFieldInput.setOnClickListener {
+            cc_text_input.textFieldInput.requestFocus()
         }
 
         cc_button_next.setOnClickListener {
-            listener.onClickNextButton(cc_input_number.text.toString())
+            listener.onClickNextButton(cc_text_input.textFieldInput.text.toString())
         }
     }
 
+    fun setImageIcon(urlImg: String) {
+        cc_text_input.setSecondIcon(urlImg)
+    }
+
     fun getClientNumber(): String {
-        return cc_input_number.text.toString().replace(" ", "")
+        return cc_text_input.textFieldInput.text.toString().replace(" ", "")
     }
 
     fun setListener(actionListener: ActionListener) {

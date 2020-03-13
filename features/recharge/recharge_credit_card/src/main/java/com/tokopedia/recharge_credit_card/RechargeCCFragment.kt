@@ -106,14 +106,12 @@ class RechargeCCFragment : BaseDaggerFragment() {
     private fun submitCreditCard(categoryId: String, operatorId: String, productId: String, clientNumber: String) {
         showLoading()
         if (userSession.isLoggedIn) {
-            rechargeSubmitCCViewModel.postCreditCard(clientNumber, operatorId, productId, "8785147",
-                    "1f5492f7c5d8c6badfa82f082fdd479e4dd82909")
-//            rechargeCCViewModel.getSignatureCreditCard(GraphqlHelper.loadRawString(resources, R.raw.query_cc_signature), 26)
+            rechargeCCViewModel.getSignatureCreditCard(GraphqlHelper.loadRawString(resources, R.raw.query_cc_signature), 26)
 
             rechargeCCViewModel.signature.observe(this, Observer {
                 //rechargeSubmitCCViewModel.postCreditCard(it)
-//                rechargeSubmitCCViewModel.postCreditCard(clientNumber, operatorId, productId, "8785147",
-//                        "1f5492f7c5d8c6badfa82f082fdd479e4dd82909")
+                rechargeSubmitCCViewModel.postCreditCard(clientNumber, operatorId, productId, "8785147",
+                    "1f5492f7c5d8c6badfa82f082fdd479e4dd82909")
             })
             rechargeCCViewModel.errorSignature.observe(this, Observer {
                 hideLoading()
@@ -123,7 +121,6 @@ class RechargeCCFragment : BaseDaggerFragment() {
             })
 
             rechargeSubmitCCViewModel.redirectUrl.observe(this, Observer {
-                hideLoading()
                 val passData = DigitalCheckoutPassData.Builder()
                         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                         .categoryId(categoryId)
@@ -184,11 +181,11 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 }
             }
             REQUEST_CODE_LOGIN -> {
-//                if (userSession.isLoggedIn) {
+                if (userSession.isLoggedIn) {
 //                    val intent = RouteManager.getIntent(activity, ApplinkConsInternalDigital.CART_DIGITAL)
 //                    intent.putExtra(DigitalExtraParam.EXTRA_PASS_DIGITAL_CART_DATA, digitalCheckoutPassDataState)
 //                    startActivityForResult(intent, REQUEST_CODE_CART_DIGITAL)
-//                }
+                }
             }
         }
     }
