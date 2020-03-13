@@ -20,12 +20,16 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
+import com.tokopedia.shop.open.shop_open_revamp.common.ExitDialog
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant.FINISH_SPLASH_SCREEN_PAGE
 import com.tokopedia.shop.open.shop_open_revamp.di.DaggerShopOpenRevampComponent
 import com.tokopedia.shop.open.shop_open_revamp.di.ShopOpenRevampComponent
@@ -353,8 +357,36 @@ class ShopOpenRevampQuisionerFragment :
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
                 if (isNeedLocation)  {
-                    activity?.finish()
+                    activity?.let {
+                        if (GlobalConfig.isSellerApp()) {
+                            showExitOrPickLocationDialog()
+                        } else {
+                            it.finish()
+                        }
+                    }
                 }
+            }
+        }
+    }
+
+    private fun showExitOrPickLocationDialog() {
+        activity?.let {
+            val exitDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            exitDialog.apply {
+                setTitle(ExitDialog.TITLE)
+                setDescription(ExitDialog.DESCRIPTION)
+                setPrimaryCTAText(getString(R.string.open_shop_cancel))
+                setPrimaryCTAClickListener {
+                    gotoPickLocation()
+                }
+                setSecondaryCTAText(getString(R.string.open_shop_logout_button))
+                setSecondaryCTAClickListener {
+                    if (GlobalConfig.isSellerApp()) {
+                        RouteManager.route(exitDialog.context, ApplinkConstInternalGlobal.LOGOUT)
+                    }
+                    it.finish()
+                }
+                show()
             }
         }
     }
