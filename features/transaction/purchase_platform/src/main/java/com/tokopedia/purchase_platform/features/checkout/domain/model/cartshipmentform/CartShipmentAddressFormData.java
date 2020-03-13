@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.tokopedia.logisticcart.shipping.model.CodModel;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PotentialGainedPointsData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
@@ -294,7 +293,7 @@ public class CartShipmentAddressFormData implements Parcelable {
         tickerData = in.readParcelable(TickerData.class.getClassLoader());
         addressesData = in.readParcelable(AddressesData.class.getClassLoader());
         disabledFeaturesDetailData = in.readParcelable(DisabledFeaturesDetailData.class.getClassLoader());
-        lastApplyData = in.readParcelable(LastApplyData.class.getClassLoader());
+        lastApplyData = in.readParcelable(LastApplyUiModel.class.getClassLoader());
         potentialGainedPointsData = in.readParcelable(PotentialGainedPointsData.class.getClassLoader());
         promoCheckoutErrorDefault = in.readParcelable(PromoCheckoutErrorDefault.class.getClassLoader());
     }

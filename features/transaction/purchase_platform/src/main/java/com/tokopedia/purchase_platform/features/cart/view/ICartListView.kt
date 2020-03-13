@@ -8,6 +8,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
 import com.tokopedia.purchase_platform.features.cart.data.model.response.recentview.RecentView
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
@@ -15,6 +16,7 @@ import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopG
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.CartShopHolderData
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
@@ -127,7 +129,7 @@ interface ICartListView : CustomerView {
 
     fun updateListRedPromos(validateUsePromoRevampUiModel: ValidateUsePromoRevampUiModel)
 
-    fun updatePromoCheckoutStickyButton(additionalInfoUiModel: AdditionalInfoUiModel)
+    fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel)
 
     fun showPromoCheckoutStickyButtonInactive()
 

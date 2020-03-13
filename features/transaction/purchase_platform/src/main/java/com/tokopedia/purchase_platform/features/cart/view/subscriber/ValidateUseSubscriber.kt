@@ -16,7 +16,7 @@ class ValidateUseSubscriber(private val view: ICartListView?) : Subscriber<Valid
     }
 
     override fun onNext(t: ValidateUsePromoRevampUiModel?) {
-        t?.promoUiModel?.additionalInfoUiModel?.let {
+        t?.promoUiModel?.let {
             view?.updateListRedPromos(t)
             view?.updatePromoCheckoutStickyButton(it) }
     }

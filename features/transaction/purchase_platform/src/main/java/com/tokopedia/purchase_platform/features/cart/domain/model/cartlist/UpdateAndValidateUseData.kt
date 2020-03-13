@@ -1,21 +1,22 @@
 package com.tokopedia.purchase_platform.features.cart.domain.model.cartlist
 
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
 import android.os.Parcel
 import android.os.Parcelable
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
 
 
 data class UpdateAndValidateUseData(
         var updateCartData: UpdateCartData? = null,
-        var additionalInfoUiModel: AdditionalInfoUiModel? = null
+        var promoUiModel: PromoUiModel? = null
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readParcelable(UpdateCartData::class.java.classLoader),
-            parcel.readParcelable(AdditionalInfoUiModel::class.java.classLoader))
+            parcel.readParcelable(PromoUiModel::class.java.classLoader))
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(updateCartData, flags)
-        parcel.writeParcelable(additionalInfoUiModel, flags)
+        parcel.writeParcelable(promoUiModel, flags)
     }
 
     override fun describeContents(): Int {

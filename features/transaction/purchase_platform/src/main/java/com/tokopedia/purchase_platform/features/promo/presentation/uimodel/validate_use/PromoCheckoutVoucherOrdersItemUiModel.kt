@@ -1,5 +1,9 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
+@Parcelize
 data class PromoCheckoutVoucherOrdersItemUiModel(
         var code: String? = "",
         var uniqueId: String? = "",
@@ -18,4 +22,4 @@ data class PromoCheckoutVoucherOrdersItemUiModel(
         var invoiceDescription: String? = "",
         var orderId: Int? = -1,
         var warehouseId: Int? = -1
-)
+): Parcelable

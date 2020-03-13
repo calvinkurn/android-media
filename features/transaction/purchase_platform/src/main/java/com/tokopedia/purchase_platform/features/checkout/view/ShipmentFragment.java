@@ -112,7 +112,6 @@ import com.tokopedia.purchase_platform.common.domain.model.TrackerData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.AutoApplyStackData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
@@ -320,7 +319,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 savedShipmentButtonPaymentModel = saveInstanceCacheManager.get(ShipmentButtonPaymentModel.class.getSimpleName(), ShipmentButtonPaymentModel.class);
                 savedPromoStackingData = saveInstanceCacheManager.get(PromoStackingData.class.getSimpleName(), PromoStackingData.class);
                 // savedPromoCheckoutData = saveInstanceCacheManager.get(PromoCheckoutData.class.getSimpleName(), PromoCheckoutData.class);
-                savedLastApplyData = saveInstanceCacheManager.get(LastApplyData.class.getSimpleName(), LastApplyData.class);
+                savedLastApplyData = saveInstanceCacheManager.get(LastApplyUiModel.class.getSimpleName(), LastApplyUiModel.class);
             }
             ArrayList<ShipmentSelectionStateData> shipmentSelectionStateData =
                     saveInstanceCacheManager.get(EXTRA_STATE_SHIPMENT_SELECTION,

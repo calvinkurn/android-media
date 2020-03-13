@@ -14,7 +14,6 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.*
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.PromoCheckoutErrorDefault
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.*
 import com.tokopedia.purchase_platform.common.feature.promo_global.data.model.response.GlobalCouponAttr
