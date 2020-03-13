@@ -3122,6 +3122,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void onButtonChooseOtherPromo() {
+        PromoRevampAnalytics.INSTANCE.eventCheckoutClickPilihPromoLainOnBottomsheetPromoError();
         ValidateUsePromoRequest validateUseRequestParam = generateValidateUsePromoRequest();
         PromoRequest promoRequestParam = generateCouponListRecommendationRequest();
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE);
