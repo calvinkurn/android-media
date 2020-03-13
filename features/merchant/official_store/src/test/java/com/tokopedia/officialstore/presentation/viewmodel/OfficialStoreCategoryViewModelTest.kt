@@ -48,17 +48,17 @@ class OfficialStoreCategoryViewModelTest {
         assertTrue(viewModelStore.officialStoreCategoriesResult.value is Success)
     }
 
-    @Test
-    fun testGetOfficialStoreCategoriesError() {
-        coEvery {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
-        } throws Throwable()
-        viewModelStore.getOfficialStoreCategories()
-        coVerify {
-            getOfficialStoreCategoriesUseCase.executeOnBackground()
-        }
-        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
-    }
+//    @Test
+//    fun testGetOfficialStoreCategoriesError() {
+//        coEvery {
+//            getOfficialStoreCategoriesUseCase.executeOnBackground()
+//        } throws Throwable()
+//        viewModelStore.getOfficialStoreCategories()
+//        coVerify {
+//            getOfficialStoreCategoriesUseCase.executeOnBackground()
+//        }
+//        assertTrue(viewModelStore.officialStoreCategoriesResult.value is Fail)
+//    }
 
 }
 
