@@ -187,6 +187,7 @@
     <string name="ic_checklist_desc">ic_checklist</string>
     <string name="action_batal">Batal</string>
     <string name="action_terima">Terima</string>
+    <string name="action_ubah">Ubah Status</string>
 
     <string name="title_dialog_cancel_order">Batalkan Pesanan</string>
 
