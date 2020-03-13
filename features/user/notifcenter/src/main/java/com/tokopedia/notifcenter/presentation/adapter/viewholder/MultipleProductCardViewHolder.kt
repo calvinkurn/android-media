@@ -14,7 +14,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.notifcenter.R
 import com.tokopedia.notifcenter.analytics.NotificationUpdateAnalytics.Companion.LABEL_BOTTOM_SHEET_LOCATION
 import com.tokopedia.notifcenter.data.entity.ProductData
-import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper
+import com.tokopedia.notifcenter.data.mapper.MultipleProductCardMapper as Mapper
 import com.tokopedia.notifcenter.data.state.SourceMultipleProductView
 import com.tokopedia.notifcenter.data.viewbean.MultipleProductCardViewBean
 import com.tokopedia.notifcenter.listener.NotificationItemListener
@@ -77,7 +77,7 @@ class MultipleProductCardViewHolder(
     }
 
     private fun productCheckoutClicked(element: MultipleProductCardViewBean) {
-        val notification = MultipleProductCardMapper.map(element)
+        val notification = Mapper.map(element)
         productContainer.setOnClickListener {
             listener.itemClicked(notification, adapterPosition)
             when(sourceView) {
@@ -115,7 +115,7 @@ class MultipleProductCardViewHolder(
                 }
             }
             listener.itemClicked(notification, adapterPosition)
-            listener.addProductToCheckout(element.userInfo, element.product)
+            listener.addProductToCheckout(element.userInfo, Mapper.map(element))
         }
     }
 
