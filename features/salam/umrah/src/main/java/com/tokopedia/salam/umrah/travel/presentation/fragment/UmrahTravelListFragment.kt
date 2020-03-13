@@ -18,6 +18,7 @@ import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.TravelAgent
 import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsInput
 import com.tokopedia.salam.umrah.travel.di.UmrahTravelComponent
 import com.tokopedia.salam.umrah.travel.presentation.activity.UmrahTravelListActivity
 import com.tokopedia.salam.umrah.travel.presentation.adapter.UmrahTravelListAdapterTypeFactory
@@ -37,6 +38,8 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
     lateinit var umrahTrackingAnalytics: UmrahTrackingAnalytics
 
     var travelList : List<TravelAgent> = listOf()
+
+    var umrahTravelListInput = UmrahTravelAgentsInput()
 
     override fun getAdapterTypeFactory(): UmrahTravelListAdapterTypeFactory = UmrahTravelListAdapterTypeFactory(this)
 
@@ -105,7 +108,7 @@ class UmrahTravelListFragment : BaseListFragment<TravelAgent, UmrahTravelListAda
                 }
             })
         }
-        renderList(data.umrahTravelAgents, data.umrahTravelAgents.size >= 10)
+        renderList(data.umrahTravelAgents, data.umrahTravelAgents.size >= umrahTravelListInput.limit)
     }
 
     private fun trackImpression(startIndex: Int, lastIndex: Int, data: MutableList<out Any>) {
