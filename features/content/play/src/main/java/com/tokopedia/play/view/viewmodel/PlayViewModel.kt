@@ -200,9 +200,11 @@ class PlayViewModel @Inject constructor(
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
 
 //        startMockFreeze()
-        setMockProductSheetContent()
+//        setMockProductSocket()
+//        setMockVoucherSocket()
+//        setMockProductSheetContent()
 //        setMockVariantSheetContent()
-        setMockProductPinned()
+//        setMockProductPinned()
     }
 
     // lifecycle region
@@ -547,6 +549,16 @@ class PlayViewModel @Inject constructor(
                                             && result.userId.equals(userSession.userId, true))
                         }
                     }
+                    is ProductTag -> {
+                        _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                                productList = PlayUiMapper.mapItemProducts(result.listOfProducts)
+                        )
+                    }
+                    is MerchantVoucher -> {
+                        _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                                voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers)
+                        )
+                    }
                 }
             }
         }, onReconnect = {
@@ -618,6 +630,55 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    private fun setMockProductSocket() {
+        launch(dispatchers.io) {
+            delay(10000)
+            withContext(dispatchers.main) {
+                _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                        productList = List(5) {
+                            ProductLineUiModel(
+                                    id = it.toString(),
+                                    imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
+                                    title = "Product $it",
+                                    isVariantAvailable = true,
+                                    price = if (it % 2 == 0) {
+                                        OriginalPrice("Rp20$it.000")
+                                    } else {
+                                        DiscountedPrice(
+                                                originalPrice = "Rp20$it.000",
+                                                discountPercent = it * 10,
+                                                discountedPrice = "Rp2$it.000"
+                                        )
+                                    },
+                                    stock = if (it % 2 == 0) {
+                                        OutOfStock
+                                    } else {
+                                        StockAvailable(it * 10)
+                                    }
+                            )
+                        }
+                )
+            }
+        }
+    }
+
+    private fun setMockVoucherSocket() {
+        launch(dispatchers.io) {
+            delay(15000)
+            withContext(dispatchers.main) {
+                _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                        voucherList = List(5) { voucherIndex ->
+                            MerchantVoucherUiModel(
+                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
+                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
+                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
+                            )
+                        }
+                )
+            }
+        }
+    }
+
     private fun setMockProductSheetContent() {
         launch(dispatchers.io) {
             delay(3000)
@@ -637,6 +698,7 @@ class PlayViewModel @Inject constructor(
                                     id = "689413405",
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",
+                                    isVariantAvailable = true,
                                     price = if (it % 2 == 0) {
                                         OriginalPrice("Rp20$it.000")
                                     } else {
@@ -645,6 +707,11 @@ class PlayViewModel @Inject constructor(
                                                 discountPercent = it * 10,
                                                 discountedPrice = "Rp2$it.000"
                                         )
+                                    },
+                                    stock = if (it % 2 == 0) {
+                                        OutOfStock
+                                    } else {
+                                        StockAvailable(it * 10)
                                     }
                             )
 //                            ProductPlaceholderUiModel
@@ -660,11 +727,13 @@ class PlayViewModel @Inject constructor(
                         id = "123",
                         imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                         title = "Product Value",
+                        isVariantAvailable = true,
                         price = DiscountedPrice(
                                 originalPrice = "Rp20.000",
                                 discountPercent = 10,
                                 discountedPrice = "Rp20.000"
-                        )
+                        ),
+                        stock = OutOfStock
                 ),
                 action = action
         )
