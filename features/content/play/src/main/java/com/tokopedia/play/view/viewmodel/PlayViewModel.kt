@@ -114,6 +114,9 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
+    private val isProductSheetInitialized: Boolean
+        get() = _observableProductSheetContent.value != null
+
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
@@ -497,6 +500,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun getProductTagItems(channel: Channel) {
+        if (!isProductSheetInitialized) showProductSheetPlaceholder()
+
         launchCatchError(block = {
             val productTagsItems = withContext(dispatchers.io) {
                 getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
@@ -612,7 +617,19 @@ class PlayViewModel @Inject constructor(
     }
     //endregion
 
+    //region placeholder
+    private fun showProductSheetPlaceholder() {
+        _observableProductSheetContent.value = ProductSheetUiModel(
+                title = "",
+                voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
+                productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
+        )
+    }
+    //endregion
+
     companion object {
+        private const val PLACEHOLDER_COUNT = 5
+
         private const val MAX_RETRY_CHANNEL_INFO = 3
 
         private const val MS_PER_SECOND = 1000
