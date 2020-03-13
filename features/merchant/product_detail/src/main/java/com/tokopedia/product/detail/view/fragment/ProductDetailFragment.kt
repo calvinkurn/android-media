@@ -1678,7 +1678,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val mediaViewModel = data.media.map {
             ProductMediaDataModel(it.type, it.url300, it.urlOriginal, it.urlThumbnail, it.mediaDescription, it.videoUrl, it.isAutoPlay)
         }
-        varPictureImage.renderData(mediaViewModel, this::onPictureProductClicked, this::onSwipePicture, childFragmentManager)
+        varPictureImage.renderData(mediaViewModel, this::onPictureProductClicked, this::onSwipePicture, childFragmentManager, lifecycle = lifecycle)
         productStatsView.renderData(data.stats.countReview, data.stats.countTalk, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data.stats.countView, data.txStats)

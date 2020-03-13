@@ -13,11 +13,10 @@ import com.tokopedia.variant_common.view.holder.VariantContainerViewHolder
  */
 class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerView.Adapter<VariantContainerViewHolder>() {
 
-    private var variantContainerData: List<VariantCategory> = listOf()
+    var variantContainerData: List<VariantCategory> = listOf()
 
     fun setData(data: List<VariantCategory>) {
         variantContainerData = data
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VariantContainerViewHolder {
@@ -28,6 +27,11 @@ class VariantContainerAdapter(val listener: ProductVariantListener) : RecyclerVi
 
     override fun onBindViewHolder(holder: VariantContainerViewHolder, position: Int) {
         holder.bind(variantContainerData[position])
+    }
+
+    override fun onBindViewHolder(holder: VariantContainerViewHolder, position: Int, payloads: MutableList<Any>) {
+        super.onBindViewHolder(holder, position, payloads)
+        holder.bind(variantContainerData[position], true)
     }
 
     override fun getItemCount(): Int = variantContainerData.size

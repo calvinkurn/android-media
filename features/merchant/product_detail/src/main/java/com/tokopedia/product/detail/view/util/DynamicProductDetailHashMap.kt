@@ -271,7 +271,6 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
     fun updateImageAfterClickVariant(it: MutableList<Media>) {
         snapShotMap?.run {
             media = DynamicProductDetailMapper.convertMediaToDataModel(it)
-            shouldReinitVideoPicture = true
         }
     }
 

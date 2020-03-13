@@ -19,11 +19,11 @@ data class ProductSnapshotDataModel(
         var dynamicProductInfoP1: DynamicProductInfoP1? = null,
         var shouldShowCod: Boolean = false,
         var shouldShowTradein: Boolean = false,
-        var shouldReinitVideoPicture: Boolean = true,
 
         //MultiOrigin
         var nearestWarehouseDataModel: NearestWarehouseDataModel? = null,
 
+        var shouldRefreshViewPager: Boolean = true,
         var statusTitle: String = "",
         var statusMessage: String = "",
         var shopStatus: Int = SHOP_STATUS_ACTIVE
@@ -47,6 +47,9 @@ data class ProductSnapshotDataModel(
 
     override fun type(typeFactory: DynamicProductDetailAdapterFactory): Int = typeFactory.type(this)
 
-    fun getCampaignModular() : CampaignModular = dynamicProductInfoP1?.data?.campaign ?: CampaignModular()
-    fun getNearestWarehouse(): NearestWarehouseDataModel = nearestWarehouseDataModel ?: NearestWarehouseDataModel()
+    fun getCampaignModular(): CampaignModular = dynamicProductInfoP1?.data?.campaign
+            ?: CampaignModular()
+
+    fun getNearestWarehouse(): NearestWarehouseDataModel = nearestWarehouseDataModel
+            ?: NearestWarehouseDataModel()
 }

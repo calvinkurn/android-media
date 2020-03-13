@@ -35,4 +35,10 @@ class ProductVariantViewHolder(val view: View,
             }
         }
     }
+
+    override fun bind(element: VariantDataModel, payloads: MutableList<Any>) {
+        super.bind(element, payloads)
+        containerAdapter?.variantContainerData = element.listOfVariantCategory!!
+        containerAdapter?.notifyItemRangeChanged(0,element.listOfVariantCategory!!.size,1)
+    }
 }

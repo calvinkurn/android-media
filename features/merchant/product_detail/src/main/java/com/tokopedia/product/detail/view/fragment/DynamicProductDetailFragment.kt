@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -449,7 +450,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
                 }
-
                 shouldRenderSticky = true
                 updateStickyContent()
             }
@@ -493,6 +493,8 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.moveToWarehouseResult.removeObservers(this)
         viewModel.moveToEtalaseResult.removeObservers(this)
         viewModel.updatedImageVariant.removeObservers(this)
+        viewModel.initialVariantData.removeObservers(this)
+        viewModel.onVariantClickedData.removeObservers(this)
         viewModel.flush()
         super.onDestroy()
     }
@@ -515,6 +517,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     override fun getApplicationContext(): Application? {
         return activity?.application
+    }
+
+    override fun getLifecycleFragment(): Lifecycle {
+        return lifecycle
     }
 
     private val onViewClickListener = View.OnClickListener {
@@ -986,12 +992,53 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         observeImageVariantPartialyChanged()
         observeAddToCart()
         observeInitialVariantData()
+        observeonVariantClickedData()
+    }
+
+    private fun observeImageVariantPartialyChanged() {
+        viewModel.updatedImageVariant.observe(viewLifecycleOwner, Observer {
+            val mediaList = it.second.toMutableList()
+            val processedVariant = it.first
+            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = processedVariant
+
+            if (it.second.isNotEmpty()) {
+                pdpHashMapUtil?.updateImageAfterClickVariant(mediaList)
+                viewModel.getDynamicProductInfoP1 = VariantMapper.updateMediaToCurrentP1Data(viewModel.getDynamicProductInfoP1, mediaList)
+                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+                dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_VARIANT_SELECTED)
+            } else {
+                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+            }
+        })
+    }
+
+    private fun observeonVariantClickedData() {
+        viewModel.onVariantClickedData.observe(viewLifecycleOwner, Observer {
+            val selectedChild = VariantCommonMapper.selectedProductData(viewModel.variantData
+                    ?: ProductVariantCommon())
+            val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
+
+            pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
+            viewModel.multiOrigin[selectedChild?.productId.toString()]?.let {
+                viewModel.selectedMultiOrigin = it
+                pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(it.warehouseInfo.id, it.price, it.stockWording)
+            }
+
+            productId = updatedDynamicProductInfo?.basic?.productID
+            viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
+            val payload: Int? = if (selectedChild?.hasPicture == true &&
+                    updatedDynamicProductInfo?.data?.media?.firstOrNull()?.uRLOriginal != pdpHashMapUtil?.snapShotMap?.media?.firstOrNull()?.urlOriginal) ProductDetailConstant.PAYLOAD_VARIANT_SELECTED else null
+            pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
+
+            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, payload)
+            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
+        })
     }
 
     private fun observeInitialVariantData() {
         viewModel.initialVariantData.observe(viewLifecycleOwner, Observer {
             pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
-            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel)
+            dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, null)
         })
     }
 
@@ -1030,7 +1077,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 }
             }
             ProductDetailConstant.ATC_BUTTON -> {
-                showAddToCartDoneBottomSheet("")
+                showAddToCartDoneBottomSheet()
             }
             ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE -> {
                 goToCheckout(ShipmentFormRequest.BundleBuilder()
@@ -1055,14 +1102,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             putExtra(ApplinkConst.Transaction.EXTRA_CART_ID, cartId)
             startActivity(intent)
         }
-    }
-
-    private fun observeImageVariantPartialyChanged() {
-        viewModel.updatedImageVariant.observe(viewLifecycleOwner, Observer {
-            pdpHashMapUtil?.updateImageAfterClickVariant(it)
-            viewModel.getDynamicProductInfoP1 = VariantMapper.updateMediaToCurrentP1Data(viewModel.getDynamicProductInfoP1, it)
-            adapter.notifyDataSetChanged()
-        })
     }
 
     private fun observeP1() {
@@ -1297,7 +1336,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
         pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(nearestWarehouse.warehouseInfo.id, nearestWarehouse.price, nearestWarehouse.stockWording)
         pdpHashMapUtil?.snapShotMap?.shouldShowCod = shouldShowCodP1 && shouldShowCodP3
-
         dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_P3)
     }
 
@@ -1363,36 +1401,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         pdpHashMapUtil?.productNewVariantDataModel?.let {
             it.mapOfSelectedVariant[variantOptions.variantOptionIdentifier] = variantOptions.variantId
         }
-
         val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
                 ?: false
-
-        val variantData = VariantCommonMapper.processVariant(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, variantOptions.level, isPartialySelected)
-        pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = variantData
-
-        if (isPartialySelected) {
-            //If user select partialy and its colour type, only update image in snapshot
-            if (variantOptions.variantOptionIdentifier == "colour" && variantOptions.imageOriginal.isNotBlank()) {
-                viewModel.addPartialImage(variantOptions.imageOriginal)
-            } else {
-                dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel)
-            }
-        } else {
-            val selectedChild = VariantCommonMapper.selectedProductData(viewModel.variantData
-                    ?: ProductVariantCommon())
-            val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
-            if (selectedChild?.hasPicture == true &&
-                    updatedDynamicProductInfo?.data?.media?.firstOrNull()?.uRLOriginal != pdpHashMapUtil?.snapShotMap?.media?.firstOrNull()?.urlOriginal) pdpHashMapUtil?.snapShotMap?.shouldReinitVideoPicture = true
-            pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
-
-            viewModel.multiOrigin[selectedChild?.productId.toString()]?.let {
-                viewModel.selectedMultiOrigin = it
-                pdpHashMapUtil?.snapShotMap?.nearestWarehouseDataModel = ProductSnapshotDataModel.NearestWarehouseDataModel(it.warehouseInfo.id, it.price, it.stockWording)
-            }
-            productId = updatedDynamicProductInfo?.basic?.productID
-            viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
-            adapter.notifyDataSetChanged()
-        }
+        viewModel.onVariantClicked(viewModel.variantData, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant, isPartialySelected, variantOptions.level,
+                variantOptions.imageOriginal)
     }
 
     private fun onSuccessGetProductVariantInfo(data: ProductVariantCommon?) {
@@ -1404,7 +1416,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         viewModel.processVariant(data, pdpHashMapUtil?.productNewVariantDataModel?.mapOfSelectedVariant)
     }
 
-    private fun showAddToCartDoneBottomSheet(successMessage: String) {
+    private fun showAddToCartDoneBottomSheet() {
         viewModel.getDynamicProductInfoP1?.let {
             val addToCartDoneBottomSheet = AddToCartDoneBottomSheet()
             val productName = it.getProductName
@@ -2487,5 +2499,4 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             productDetailTracking.eventViewHelpPopUpWhenAtc()
         }
     }
-
 }

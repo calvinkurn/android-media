@@ -21,10 +21,14 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int) {
+    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int?) {
         snapshotData?.let {
             val indexOfSnapshot = list.indexOf(it)
-            notifyItemChanged(indexOfSnapshot, payload)
+            if (payload != null) {
+                notifyItemChanged(indexOfSnapshot, payload)
+            } else {
+                notifyItemChanged(indexOfSnapshot)
+            }
         }
     }
 
@@ -96,10 +100,14 @@ class DynamicProductDetailAdapter(
 
     fun getVariantPosition(data: VariantDataModel?): Int = if (data != null) list.indexOf(data) else 0
 
-    fun notifyVariantSection(data: VariantDataModel?) {
+    fun notifyVariantSection(data: VariantDataModel?, payload: Int?) {
         data?.let {
-            val indexOfSnapshot = list.indexOf(it)
-            notifyItemChanged(indexOfSnapshot)
+            val indexOfVariant = list.indexOf(it)
+            if (payload != null) {
+                notifyItemChanged(indexOfVariant, payload)
+            } else {
+                notifyItemChanged(indexOfVariant)
+            }
         }
     }
 

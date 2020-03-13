@@ -128,17 +128,21 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val toggleFavoriteResult: LiveData<Result<Boolean>>
         get() = _toggleFavoriteResult
 
-    private val _updatedImageVariant = MutableLiveData<MutableList<Media>>()
-    val updatedImageVariant: LiveData<MutableList<Media>>
+    private val _updatedImageVariant = MutableLiveData<Pair<List<VariantCategory>?, List<Media>>>()
+    val updatedImageVariant: LiveData<Pair<List<VariantCategory>?, List<Media>>>
         get() = _updatedImageVariant
 
     private val _addToCartLiveData = MutableLiveData<Result<AddToCartDataModel>>()
     val addToCartLiveData: LiveData<Result<AddToCartDataModel>>
         get() = _addToCartLiveData
 
-    private val _initialVariantData = MutableLiveData<List<VariantCategory>?>()
-    val initialVariantData: LiveData<List<VariantCategory>?>
+    private val _initialVariantData = MutableLiveData<List<VariantCategory>>()
+    val initialVariantData: LiveData<List<VariantCategory>>
         get() = _initialVariantData
+
+    private val _onVariantClickedData = MutableLiveData<List<VariantCategory>?>()
+    val onVariantClickedData: LiveData<List<VariantCategory>?>
+        get() = _onVariantClickedData
 
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
@@ -183,14 +187,44 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         addToCartOcsUseCase.unsubscribe()
     }
 
-    fun addPartialImage(imageUrl: String) {
+    fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
+        launch {
+            withContext(dispatcher.io()) {
+                _initialVariantData.postValue(VariantCommonMapper.processVariant(data, mapOfSelectedVariant))
+            }
+        }
+    }
+
+    fun onVariantClicked(data: ProductVariantCommon?, mapOfSelectedVariant: MutableMap<String, Int>?,
+                         isPartialySelected: Boolean, variantLevel: Int, imageVariant: String) {
+        launch {
+            withContext(dispatcher.io()) {
+                val processedVariant = VariantCommonMapper.processVariant(data, mapOfSelectedVariant, variantLevel, isPartialySelected)
+
+                if (isPartialySelected) {
+                    //It means user only select one of two variant available
+                    if (imageVariant.isNotBlank()) {
+                        _updatedImageVariant.postValue(Pair(processedVariant, addPartialImage(imageVariant)))
+                    } else {
+                        _updatedImageVariant.postValue(Pair(processedVariant, listOf()))
+                    }
+                    return@withContext
+                } else {
+                    _onVariantClickedData.postValue(processedVariant)
+                }
+            }
+        }
+    }
+
+    private fun addPartialImage(imageUrl: String): List<Media> {
         listOfParentMedia?.let {
             if (imageUrl.isEmpty() && imageUrl == it.firstOrNull()?.uRLOriginal) return@let
 
             val listOfUpdateImage = it.toMutableList()
             listOfUpdateImage.add(0, Media(type = "image", uRL300 = imageUrl, uRLOriginal = imageUrl, uRLThumbnail = imageUrl))
-            _updatedImageVariant.value = listOfUpdateImage
+            return listOfUpdateImage
         }
+        return listOf()
     }
 
     fun getStickyLoginContent(onSuccess: (StickyLoginTickerPojo.TickerDetail) -> Unit, onError: ((Throwable) -> Unit)?) {
@@ -243,25 +277,30 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             when (atcParams) {
                 is AddToCartRequestParams -> {
                     withContext(dispatcher.io()) {
-                        _addToCartLiveData.postValue(Success(addToCartUseCase.createObservable(requestParams).toBlocking().single()))
+                        val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
+
+                        if (result.data.success == 0) {
+                            _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
+                                    ?: "")))
+                        } else {
+                            _addToCartLiveData.postValue(Success(result))
+                        }
                     }
                 }
                 is AddToCartOcsRequestParams -> {
                     withContext(dispatcher.io()) {
-                        _addToCartLiveData.postValue(Success(addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()))
+                        val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
+                        if (result.data.success == 0) {
+                            _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
+                                    ?: "")))
+                        } else {
+                            _addToCartLiveData.postValue(Success(result))
+                        }
                     }
                 }
             }
         }) {
             _addToCartLiveData.value = Fail(it)
-        }
-    }
-
-    fun processVariant(data: ProductVariantCommon, mapOfSelectedVariant: MutableMap<String, Int>?) {
-        launch {
-            withContext(dispatcher.io()) {
-                _initialVariantData.postValue(VariantCommonMapper.processVariant(data, mapOfSelectedVariant))
-            }
         }
     }
 
@@ -384,6 +423,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         val isTradein = getDynamicProductInfoP1?.data?.isTradeIn == true
         val hasWholesale = getDynamicProductInfoP1?.data?.hasWholesale == true
         val isOfficialStore = getDynamicProductInfoP1?.data?.isOS == true
+        val isVariant = getDynamicProductInfoP1?.data?.variant?.isVariant == true
 
         val removedData = initialLayoutData.map {
             if (!isTradein && it.name() == ProductDetailConstant.TRADE_IN) {
@@ -395,6 +435,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
             } else if (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO && !isUserSessionActive) {
                 it
             } else if (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) {
+                it
+            } else if (it.name() == ProductDetailConstant.VARIANT && !isVariant) {
                 it
             } else {
                 null
