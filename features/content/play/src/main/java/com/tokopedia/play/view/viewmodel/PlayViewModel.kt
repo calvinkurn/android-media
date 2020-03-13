@@ -204,7 +204,7 @@ class PlayViewModel @Inject constructor(
 //        setMockVoucherSocket()
 //        setMockProductSheetContent()
 //        setMockVariantSheetContent()
-//        setMockProductPinned()
+        setMockProductPinned()
     }
 
     // lifecycle region
@@ -649,6 +649,11 @@ class PlayViewModel @Inject constructor(
                                                 discountPercent = it * 10,
                                                 discountedPrice = "Rp2$it.000"
                                         )
+                                    },
+                                    stock = if (it % 2 == 0) {
+                                        OutOfStock
+                                    } else {
+                                        StockAvailable(it * 10)
                                     }
                             )
                         }
@@ -701,6 +706,11 @@ class PlayViewModel @Inject constructor(
                                                 discountPercent = it * 10,
                                                 discountedPrice = "Rp2$it.000"
                                         )
+                                    },
+                                    stock = if (it % 2 == 0) {
+                                        OutOfStock
+                                    } else {
+                                        StockAvailable(it * 10)
                                     }
                             )
                         }
@@ -720,7 +730,8 @@ class PlayViewModel @Inject constructor(
                                 originalPrice = "Rp20.000",
                                 discountPercent = 10,
                                 discountedPrice = "Rp20.000"
-                        )
+                        ),
+                        stock = OutOfStock
                 ),
                 action = action
         )

@@ -83,13 +83,11 @@ object PlayUiMapper {
     }
 
     fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
-        val productsUiModel = mutableListOf<ProductLineUiModel>()
-        products.forEach {
-            productsUiModel.add(ProductLineUiModel(
+        return products.map {
+            ProductLineUiModel(
                     id = it.id.toString(),
                     imageUrl = it.image,
                     title = it.name,
-                    isVariantAvailable = it.isVariant,
                     price = if (it.price != 0) {
                         DiscountedPrice(
                                 originalPrice = it.originalPriceFormatted,
@@ -98,10 +96,11 @@ object PlayUiMapper {
                         )
                     } else {
                         OriginalPrice(price = it.originalPriceFormatted)
-                    }
-            ))
+                    },
+                    isVariantAvailable = it.isVariant,
+                    stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock
+            )
         }
-        return productsUiModel
     }
 
     fun mapItemVouchers(vouchers: List<Voucher>): List<MerchantVoucherUiModel> {

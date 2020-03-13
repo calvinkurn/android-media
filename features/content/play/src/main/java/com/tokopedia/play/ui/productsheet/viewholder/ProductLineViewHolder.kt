@@ -5,15 +5,14 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.core.graphics.drawable.DrawableCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
-import com.tokopedia.play.view.type.DiscountedPrice
-import com.tokopedia.play.view.type.OriginalPrice
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.type.*
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**
@@ -34,11 +33,30 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Ba
 
     init {
         tvOriginalPrice.paintFlags = tvOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+
+        ivProductAtc.drawable.mutate()
     }
 
     fun bind(item: ProductLineUiModel) {
         ivProductImage.loadImageRounded(item.imageUrl, imageRadius)
         tvProductTitle.text = item.title
+
+        when (item.stock) {
+            OutOfStock -> {
+                btnProductBuy.isEnabled = false
+                ivProductAtc.isEnabled = false
+                btnProductBuy.text = getString(R.string.play_product_empty)
+
+                DrawableCompat.setTint(ivProductAtc.drawable, MethodChecker.getColor(itemView.context, R.color.play_atc_image_disabled))
+            }
+            is StockAvailable -> {
+                btnProductBuy.isEnabled = true
+                ivProductAtc.isEnabled = true
+                btnProductBuy.text = getString(R.string.play_product_buy)
+
+                DrawableCompat.setTintList(ivProductAtc.drawable, null)
+            }
+        }
 
         when (item.price) {
             is DiscountedPrice -> {

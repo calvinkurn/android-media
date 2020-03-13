@@ -12,6 +12,7 @@ data class VariantSheetUiModel(
         var product: ProductLineUiModel,
         val action: ProductAction,
         val parentVariant: ProductVariantCommon? = null,
+        var stockWording: String?,
         var listOfVariantCategory: List<VariantCategory> = listOf(),
         var mapOfSelectedVariants: MutableMap<String, Int> = mutableMapOf()
 ) {
