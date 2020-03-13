@@ -106,7 +106,7 @@ abstract class BaseNotificationFragment: BaseListFragment<Visitable<*>,
             val needToRefresh = true
             val minimumOrder = "1"
             startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-                putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.getAtcProduct()?.shop?.id)
+                putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, element.getAtcProduct()?.shop?.id.toString())
                 putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, element.getAtcProduct()?.shop?.name)
                 putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, element.getAtcProduct()?.productId)
                 putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, minimumOrder)
