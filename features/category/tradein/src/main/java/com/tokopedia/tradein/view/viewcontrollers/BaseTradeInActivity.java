@@ -1,9 +1,6 @@
 package com.tokopedia.tradein.view.viewcontrollers;
 
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.content.Context;
@@ -25,6 +22,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.common.utils.GraphqlHelper;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
+import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.tradein.R;
@@ -52,16 +50,15 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
     public static final int TRADEIN_MONEYIN = 2;
     public static final String TRADEIN_EXCHANGE = "exchange";
     public static final String TRADEIN_MONEY_IN = "money-in";
+    public static final String TRADEIN_TNC_URL = "https://www.tokopedia.com/help/article/a-1789";
+    public static final String MONEYIN_TNC_URL = "https://www.tokopedia.com/help/article/st-2135-syarat-dan-ketentuan-langsung-laku";
     protected String TRADEIN_TEST_TYPE = TRADEIN_EXCHANGE;
     protected int TRADEIN_TYPE = TRADEIN_OFFLINE;
-    protected int tncStringId;
+    protected String tncUrl = TRADEIN_TNC_URL;
     protected String clickEvent = TradeInGTMConstants.ACTION_CLICK_TRADEIN;
     protected String viewEvent = TradeInGTMConstants.ACTION_VIEW_TRADEIN;
     protected BaseTradeInViewModel TradeVM;
 
-    abstract protected Fragment getTncFragmentInstance(int TncResId);
-
-    protected boolean isTncShowing = false;
     abstract protected int getMenuRes();
 
     @Inject
@@ -82,6 +79,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
             String event = TradeInGTMConstants.ACTION_CLICK_TRADEIN;
             String category = TradeInGTMConstants.CATEGORY_TRADEIN_START_PAGE;
             if (TRADEIN_TYPE == TRADEIN_MONEYIN) {
+                tncUrl = MONEYIN_TNC_URL;
                 event = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
                 category = TradeInGTMConstants.CATEGORY_MONEYIN_PRICERANGE_PAGE;
             }
@@ -90,7 +88,7 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
                     TradeInGTMConstants.ACTION_CLICK_ICON_TNC,
                     "");
 
-            showTnC(tncStringId);
+            showTnC(tncUrl);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -132,7 +130,6 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
             clickEvent = TradeInGTMConstants.ACTION_CLICK_MONEYIN;
             viewEvent = TradeInGTMConstants.ACTION_VIEW_MONEYIN;
         }
-        setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black);
         }
@@ -197,19 +194,8 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
     }
 
 
-    protected void showTnC(int tncResId) {
-        isTncShowing = true;
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, com.tokopedia.abstraction.R.drawable.ic_close_default));
-            getSupportActionBar().setTitle("Syarat dan Ketentuan");
-        }
-
-        Fragment fragment = getTncFragmentInstance(tncResId);
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.addToBackStack("TNC");
-        transaction.replace(getRootViewId(), fragment);
-        transaction.commit();
+    protected void showTnC(String url) {
+        RouteManager.route(this, url);
     }
 
     public int getRootViewId() {
@@ -259,18 +245,6 @@ public abstract class BaseTradeInActivity<T extends BaseTradeInViewModel> extend
 
     protected String getMeGQlString(int rawResId){
         return GraphqlHelper.loadRawString(getResources(), rawResId);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (isTncShowing) {
-            if (getSupportActionBar() != null) {
-                getSupportActionBar().setHomeAsUpIndicator(com.tokopedia.design.R.drawable.ic_icon_back_black);
-                getSupportActionBar().setTitle(getTitle());
-            }
-            isTncShowing = false;
-        }
-        super.onBackPressed();
     }
 
     @Override

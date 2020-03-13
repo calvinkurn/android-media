@@ -19,7 +19,7 @@ import com.tokopedia.product.detail.data.model.variant.VariantDataModel
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import java.util.*
 import kotlin.collections.ArrayList
@@ -302,24 +302,20 @@ class DynamicProductDetailHashMap(private val context: Context, private val mapO
                     isWishlistVisible = false,
                     isWishlisted = it.isWishlist,
                     shopBadgeList = it.badgesUrl.map {
-                        ProductCardModel.ShopBadge(imageUrl = it ?: "")
+                        ProductCardModel.ShopBadge(imageUrl = it
+                                ?: "")
                     },
                     freeOngkir = ProductCardModel.FreeOngkir(
                             isActive = it.isFreeOngkirActive,
                             imageUrl = it.freeOngkirImageUrl
                     ),
-                    labelPromo = ProductCardModel.Label(
-                            title = it.labelPromo.title,
-                            type = it.labelPromo.type
-                    ),
-                    labelCredibility = ProductCardModel.Label(
-                            title = it.labelCredibility.title,
-                            type = it.labelCredibility.type
-                    ),
-                    labelOffers = ProductCardModel.Label(
-                            title = it.labelOffers.title,
-                            type = it.labelOffers.type
-                    )
+                    labelGroupList = it.labelGroupList.map { recommendationLabel ->
+                        ProductCardModel.LabelGroup(
+                                position = recommendationLabel.position,
+                                title = recommendationLabel.title,
+                                type = recommendationLabel.type
+                        )
+                    }
             )
         }
     }

@@ -13,12 +13,17 @@ import androidx.recyclerview.widget.RecyclerView
  */
 @Suppress("unused")
 @SuppressLint("SyntheticAccessor")
-abstract class CircularViewPagerAdapter(itemList: List<CircularModel>, isInfinite: Boolean, private val circularListener: CircularListener) : RecyclerView.Adapter<CircularViewHolder>() {
+abstract class CircularViewPagerAdapter(itemList: List<CircularModel>, private val circularListener: CircularListener) : RecyclerView.Adapter<CircularViewHolder>() {
     private var itemList: List<CircularModel> = listOf()
     open var viewCache = SparseArray<View>()
     var isInfinite = false
         protected set
     open var canInfinite = true
+
+
+    fun setIsInfinite(isInfinite: Boolean){
+        this.isInfinite = isInfinite
+    }
 
     fun setItemList(newItemList: List<CircularModel>) {
         itemList = newItemList

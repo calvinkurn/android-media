@@ -1662,7 +1662,9 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             productInfo.basic.weightUnit,
                             if (viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment)
                                 viewModel.selectedMultiOrigin.warehouseInfo.origin else null,
-                            productInfo.data.isFreeOngkir.isActive
+                            productInfo.data.isFreeOngkir.isActive,
+                            shopInfo.shopCore.shopID,
+                            productInfo.basic.productID
                     ))
                 }
             }
