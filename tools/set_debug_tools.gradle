@@ -1,5 +1,5 @@
 task("configDebugTools") {
-    rootProject.ext.debugToolsEnabled = false
+    rootProject.ext.debugToolsEnabled = true
 //    if (allowDistributionLocal() == "true") {
 //        rootProject.ext.debugToolsEnabled = true
 //        println("Debug tools set true based on buildType Parameter")
