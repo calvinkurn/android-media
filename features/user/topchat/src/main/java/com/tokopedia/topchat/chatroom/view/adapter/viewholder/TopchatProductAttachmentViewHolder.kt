@@ -60,7 +60,7 @@ class TopchatProductAttachmentViewHolder(
 
     private fun bindName(product: ProductAttachmentViewModel) {
         itemView.tv_product_name?.apply {
-            maxLines = if (product.hasVariant()) { 2 } else { 1 }
+            maxLines = if (product.hasVariant()) 2 else 1
             text = product.productName
         }
     }
