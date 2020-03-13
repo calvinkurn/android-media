@@ -119,10 +119,22 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         }
 
         skipDynamicOnbaording?.apply {
+            visibility = if (dynamicOnboardingDataModel.navigationDataModel.skipButtonDataModel.visibility) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
             setOnClickListener(skipButtonClickListener(dynamicOnboardingDataModel.navigationDataModel.skipButtonDataModel.appLink))
         }
 
         nextDynamicOnbaording?.apply {
+            visibility = if (dynamicOnboardingDataModel.navigationDataModel.nextDataModel.visibility) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
             setOnClickListener(nextButtonClickListener())
         }
 
@@ -193,17 +205,20 @@ class DynamicOnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val taskStackBuilder = TaskStackBuilder.create(it)
             val defferedDeeplinkPath = TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists
             val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
-            var page = RouteManager.getIntent(it, appLink)
+            val page = RouteManager.getIntent(it, appLink)
 
             if (defferedDeeplinkPath.isEmpty()) {
-                taskStackBuilder.addNextIntent(homeIntent)
-                taskStackBuilder.addNextIntent(page)
+                if (appLink != ApplinkConst.HOME) {
+                    taskStackBuilder.addNextIntent(homeIntent)
+                    taskStackBuilder.addNextIntent(page)
+                    taskStackBuilder.startActivities()
+                } else {
+                    it.startActivity(page)
+                }
             } else {
-                page = RouteManager.getIntent(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
-                taskStackBuilder.addNextIntent(page)
+                RouteManager.route(it, TrackApp.getInstance().appsFlyer.defferedDeeplinkPathIfExists)
             }
 
-            taskStackBuilder.startActivities()
             finishOnBoarding()
         }
     }

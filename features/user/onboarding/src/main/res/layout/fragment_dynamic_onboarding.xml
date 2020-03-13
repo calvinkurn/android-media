@@ -33,54 +33,60 @@
       android:layout_marginRight="@dimen/dp_24"
       android:layout_marginBottom="@dimen/dp_12"
       android:text="@string/nav_action_join"
-      android:visibility="gone"
-      app:layout_constraintBottom_toTopOf="@id/skipDynamicOnbaording"
+      android:visibility="visible"
+      app:layout_constraintBottom_toTopOf="@id/layoutNavigation"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintStart_toStartOf="parent"
       app:unifyButtonSize="large" />
   
-    <com.tokopedia.unifyprinciples.Typography
-      android:id="@+id/skipDynamicOnbaording"
-      android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/layoutNavigation"
+      android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:paddingLeft="@dimen/dp_24"
-      android:paddingTop="@dimen/dp_12"
-      android:paddingRight="@dimen/dp_24"
-      android:paddingBottom="@dimen/dp_26"
-      android:text="@string/nav_action_skip"
-      android:textColor="@color/Neutral_N700_44"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintStart_toStartOf="parent"
-      app:typographyType="heading_3"
-      app:typographyWeight="bold" />
-  
-    <com.tokopedia.unifyprinciples.Typography
-      android:id="@+id/nextDynamicOnbaording"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:paddingLeft="@dimen/dp_24"
-      android:paddingTop="@dimen/dp_12"
-      android:paddingRight="@dimen/dp_24"
-      android:paddingBottom="@dimen/dp_26"
-      android:text="@string/nav_action_next"
-      android:textColor="@color/Green_G500"
-      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
-      app:typographyType="heading_3"
-      app:typographyWeight="bold" />
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintBottom_toBottomOf="@id/navigationDynamicOnbaording">
+      
+      <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/skipDynamicOnbaording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_26"
+        android:text="@string/nav_action_skip"
+        android:textColor="@color/Neutral_N700_44"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold" />
+  
+      <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/nextDynamicOnbaording"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dp_24"
+        android:paddingTop="@dimen/dp_12"
+        android:paddingRight="@dimen/dp_24"
+        android:paddingBottom="@dimen/dp_26"
+        android:text="@string/nav_action_next"
+        android:textColor="@color/Green_G500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:typographyType="heading_3"
+        app:typographyWeight="bold" />
+      
+    </androidx.constraintlayout.widget.ConstraintLayout>
     
     <com.tokopedia.onboarding.view.widget.DotIndicatorView
       android:id="@+id/pageDots"
       android:layout_width="match_parent"
-      android:layout_height="@dimen/dp_0"
-      android:paddingLeft="@dimen/dp_24"
-      android:paddingTop="@dimen/dp_12"
-      android:paddingRight="@dimen/dp_24"
-      android:paddingBottom="@dimen/dp_26"
+      android:layout_height="@dimen/dp_32"
+      android:layout_marginBottom="@dimen/dp_22"
       app:layout_constraintLeft_toLeftOf="parent"
       app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintTop_toTopOf="@+id/skipDynamicOnbaording"
-      app:layout_constraintBottom_toBottomOf="@+id/navigationDynamicOnbaording"/>
+      app:layout_constraintBottom_toBottomOf="parent"/>
     
   </androidx.constraintlayout.widget.ConstraintLayout>
   
