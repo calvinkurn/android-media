@@ -21,6 +21,7 @@ object MultipleProductCardMapper {
     fun map(notification: MultipleProductCardViewBean): NotificationItemViewBean {
         return NotificationItemViewBean().apply {
             notificationId = notification.notificationId
+            products = listOf(notification.product)
             templateKey = notification.templateKey
             userInfo = notification.userInfo
         }
