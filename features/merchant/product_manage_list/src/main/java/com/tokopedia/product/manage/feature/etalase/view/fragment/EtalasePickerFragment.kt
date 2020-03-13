@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
@@ -61,6 +62,7 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
         injectDependency()
         setHasOptionsMenu(true)
 
+        setupSearchBar()
         setupEtalaseList()
         setupSaveButton()
         setupEmptyState()
@@ -105,6 +107,42 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
         togglePreviousSelectedEtalase(etalase)
         setCurrentSelectedEtalase(isChecked, etalase)
         btnSave.isEnabled = isChecked
+    }
+
+    private fun setupSearchBar() {
+        searchBar.clearFocus()
+
+        searchBar.searchBarTextField.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                val keyword = searchBar.searchBarTextField.text.toString()
+
+                if(keyword.isNotEmpty()) {
+                    clearSelection()
+                    performSearch(keyword)
+                } else {
+                    resetSearch()
+                }
+
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+
+        searchBar.searchBarIcon.setOnClickListener {
+            resetSearch()
+        }
+    }
+
+    private fun performSearch(keyword: String) {
+        val searchResult = adapter.list.filterIsInstance<EtalaseViewModel>()
+            .filter { it.name.contains(keyword, true) }
+        showEtalaseList(searchResult)
+    }
+
+    private fun resetSearch() {
+        clearSearchBar()
+        clearSelection()
+        getEtalaseList()
     }
 
     private fun setupEtalaseList() {
@@ -152,6 +190,23 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
             viewModel.selectedEtalase = etalase
         } else {
             viewModel.selectedEtalase = null
+        }
+    }
+
+    private fun clearSearchBar() {
+        searchBar.searchBarTextField.text.clear()
+    }
+
+    private fun clearSelection() {
+        uncheckAllEtalase()
+        btnSave.isEnabled = false
+        viewModel.selectedEtalase = null
+    }
+
+    private fun uncheckAllEtalase() {
+        for (i in 0..adapter.itemCount) {
+            val viewHolder = etalaseList.findViewHolderForAdapterPosition(i)
+            (viewHolder as? EtalaseViewHolder)?.uncheckEtalase()
         }
     }
 
