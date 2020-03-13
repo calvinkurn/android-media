@@ -14,6 +14,12 @@ data class ValidateUsePromoRequest(
         @field:SerializedName("is_suggested")
         var isSuggested: Int = 1,
 
+        @field:SerializedName("is_trade_in")
+        var isTradeIn: Int = 1,
+
+        @field:SerializedName("is_trade_in_drop_off")
+        var isTradeInDropOff: Int = 1,
+
         @field:SerializedName("orders")
         var orders: List<OrdersItem?> = listOf(),
 
@@ -29,6 +35,8 @@ data class ValidateUsePromoRequest(
         constructor(parcel: Parcel) : this(
                 parcel.createStringArrayList() ?: emptyList(),
                 parcel.readInt(),
+                parcel.readInt(),
+                parcel.readInt(),
                 parcel.createTypedArrayList(OrdersItem) ?: emptyList(),
                 parcel.readInt(),
                 parcel.readString() ?: "",
@@ -38,6 +46,8 @@ data class ValidateUsePromoRequest(
         override fun writeToParcel(parcel: Parcel, flags: Int) {
                 parcel.writeStringList(codes)
                 parcel.writeInt(isSuggested)
+                parcel.writeInt(isTradeIn)
+                parcel.writeInt(isTradeInDropOff)
                 parcel.writeTypedList(orders)
                 parcel.writeInt(skipApply)
                 parcel.writeString(cartType)
