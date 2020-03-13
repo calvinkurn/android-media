@@ -89,6 +89,12 @@ open class NotificationItemViewBean(
         return product
     }
 
+    fun getAtcEventLabel(): String {
+        return "$SOURCE - $templateKey - $notificationId - ${getAtcProduct()?.productId}"
+    }
+
+    fun getBuyEventAction(): String = BUY_ACTION
+
     companion object {
         const val BUYER_TYPE = 1
         const val SELLER_TYPE = 2
@@ -100,6 +106,7 @@ open class NotificationItemViewBean(
         const val TYPE_BANNER_2X1 = 4
         const val TYPE_PRODUCT_CHECKOUT = 5
 
+        private const val BUY_ACTION = "click on by button"
         const val SOURCE = "notifcenter"
 
         @JvmField
