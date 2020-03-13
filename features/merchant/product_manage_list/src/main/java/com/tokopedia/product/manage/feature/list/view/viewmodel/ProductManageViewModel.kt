@@ -14,7 +14,7 @@ import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrappe
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
@@ -22,6 +22,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
+import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
@@ -152,6 +153,34 @@ class ProductManageViewModel @Inject constructor(
             val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
 
             _multiEditProductResult.value = Success(EditByStatus(status, success, failed))
+            hideProgressDialog()
+        }, onError = {
+            _multiEditProductResult.value = Fail(it)
+            hideProgressDialog()
+        })
+    }
+
+    fun editProductsEtalase(productIds: List<String>, menuId: String, menuName: String) {
+        launchCatchError(block = {
+            showProgressDialog()
+
+            val response = withContext(Dispatchers.IO) {
+                val shopParam = ShopParam(userSessionInterface.shopId)
+                val menuParam = MenuParam(menuId, menuName)
+
+                val params = productIds.map { productId ->
+                    ProductParam(productId = productId, shop = shopParam, menu = menuParam)
+                }
+
+                val requestParams = MultiEditProductUseCase.createRequestParam(params)
+                multiEditProductUseCase.execute(requestParams)
+            }
+
+            val success = response.results?.filter { it.isSuccess() }.orEmpty()
+            val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
+
+            val result = EditByMenu(menuId, menuName, success, failed)
+            _multiEditProductResult.value = Success(result)
             hideProgressDialog()
         }, onError = {
             _multiEditProductResult.value = Fail(it)
