@@ -38,13 +38,21 @@
 
     </FrameLayout>
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_continue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dp_8"
         android:text="@string/label_button_continue"
-        app:buttonCompatSize="medium"
-        app:buttonCompatType="primary" />
+        app:unifyButtonSize="medium" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_choose_other_promo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dp_8"
+        android:text="@string/label_button_continue"
+        app:unifyButtonInvers="true"
+        app:unifyButtonSize="medium" />
 
 </LinearLayout>
