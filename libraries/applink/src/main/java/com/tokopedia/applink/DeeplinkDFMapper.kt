@@ -202,6 +202,8 @@ object DeeplinkDFMapper {
             add(DFP({ it.startsWith(DETAIL_TALK_BASE) }, DFM_BASE, R.string.talk_title))
             add(DFP({ it.startsWith(ADD_TALK) }, DFM_BASE, R.string.talk_title))
 
+            add(DFP({ it.startsWith(ADD_FINGERPRINT_ONBOARDING) }, DFM_BASE, R.string.fingerprint_onboarding))
+
             add(DFP({ it.startsWith(SALAM_UMRAH_HOME_PAGE) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(SALAM_ORDER_DETAIL) }, DFM_BASE, R.string.title_salam))
             add(DFP({ it.startsWith(NOTIFICATION) }, DFM_BASE, R.string.title_notification_center))

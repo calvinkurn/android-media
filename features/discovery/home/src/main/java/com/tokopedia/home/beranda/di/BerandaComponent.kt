@@ -4,10 +4,8 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.home.beranda.di.module.HomeModule
 import com.tokopedia.home.beranda.di.module.ViewModelModule
 import com.tokopedia.home.beranda.presentation.presenter.HomeFeedPresenter
-import com.tokopedia.home.beranda.presentation.view.fragment.BusinessUnitItemFragment
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFeedFragment
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeFragment
-import com.tokopedia.home.beranda.presentation.view.fragment.TabBusinessFragment
 import com.tokopedia.home.common.ApiModule
 import dagger.Component
 
@@ -18,6 +16,4 @@ interface BerandaComponent {
     fun inject(homeFragment: HomeFragment?)
     fun inject(homeFeedFragment: HomeFeedFragment?)
     fun inject(homeFeedPresenter: HomeFeedPresenter?)
-    fun inject(fragment: TabBusinessFragment?)
-    fun inject(fragment: BusinessUnitItemFragment?)
 }

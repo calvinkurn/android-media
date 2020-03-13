@@ -1,0 +1,12 @@
+query {
+  TravelGetAllCountries() {
+    countries {
+      id
+      attributes {
+        name
+        currency
+        phoneCode
+      }
+    }
+  }
+}

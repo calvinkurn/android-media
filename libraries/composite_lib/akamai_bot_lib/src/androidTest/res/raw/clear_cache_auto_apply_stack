@@ -1,0 +1,8 @@
+mutation {
+ clearCacheAutoApplyStack(
+    serviceID: "#serviceId",
+    promoCode: #promoCode) {
+        Success
+        ticker_message
+ }
+}

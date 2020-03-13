@@ -283,4 +283,9 @@
     <string name="umrah_travel_share_desc">Paket perjalanan umroh %s terlengkap di Tokopedia Salam. Cek daftar paket umroh dari %s sekarang:</string>
 
 
+
+    <string name="umrah_search_empty_state_sub_title">Ubah detail pencarianmu dan cari sekali lagi.</string>
+    <string name="umrah_search_empty_state_title">Paket yang dicari belum tersedia</string>
+    <string name="umrah_search_empty_state_button">Cari Paket Umroh Lainnya</string>
+    <string name="umrah_search_empty_state_text">Pilihan paket terbaik untukmu</string>
 </resources>
