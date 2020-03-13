@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -28,6 +27,7 @@ import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.merchantvoucher.voucherDetail.MerchantVoucherDetailActivity
 import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListActivity
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
@@ -209,7 +209,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?
     ) {
         view?.let { view ->
-            Toaster.make(view, "Success", Snackbar.LENGTH_SHORT, Toaster.TYPE_NORMAL)
+            NetworkErrorHelper.showGreenCloseSnackbar(view, dataModelAtc.message.first())
         }
         shopPageHomeTracking.addToCart(
                 isOwner,
@@ -224,10 +224,19 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
                 shopName,
                 parentPosition + 1,
                 shopHomeCarousellProductUiModel?.widgetId ?: "",
-                shopHomeCarousellProductUiModel?.name ?: "",
+                shopHomeCarousellProductUiModel?.header?.title ?: "",
                 shopHomeCarousellProductUiModel?.header?.isATC ?: 0,
                 customDimensionShopPage
         )
+    }
+
+    private fun onErrorAddToCart(
+            exception: Throwable
+    ) {
+        view?.let { view ->
+            val errorMessage = ErrorHandler.getErrorMessage(context, exception)
+            NetworkErrorHelper.showRedCloseSnackbar(view, errorMessage)
+        }
     }
 
     private fun onErrorGetShopHomeLayoutData(throwable: Throwable) {
@@ -610,14 +619,16 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
             shopHomeProductViewModel: ShopHomeProductViewModel?
     ) {
         if (isLogin) {
-            viewModel.addProductToCart(shopHomeProductViewModel?.id ?: "", shopId) {
-                onSuccessAddToCart(
-                        it,
-                        shopHomeProductViewModel,
-                        parentPosition,
-                        shopHomeCarousellProductUiModel
-                )
-            }
+            viewModel.addProductToCart(
+                    shopHomeProductViewModel?.id ?: "",
+                    shopId,
+                    {
+                        onSuccessAddToCart(it, shopHomeProductViewModel, parentPosition, shopHomeCarousellProductUiModel)
+                    },
+                    {
+                        onErrorAddToCart(it)
+                    }
+            )
         } else {
             redirectToLoginPage()
         }
@@ -640,7 +651,7 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
         }
     }
 
-    fun clearCache(){
+    fun clearCache() {
         viewModel.clearCache()
 
     }

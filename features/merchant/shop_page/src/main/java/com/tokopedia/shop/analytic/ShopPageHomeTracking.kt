@@ -172,10 +172,9 @@ class ShopPageHomeTracking(
         return mutableMapOf(
                 ID to voucherData.voucherId,
                 NAME to PROMO_SLOT_NAME,
-                CREATIVE to "",
+                CREATIVE to (voucherData.voucherName ?: ""),
                 CREATIVE_URL to (voucherData.bannerUrl ?: ""),
                 POSITION to (index + 1),
-                CATEGORY to "",
                 PROMO_ID to voucherData.voucherId,
                 PROMO_CODE to voucherData.voucherCode
         )
@@ -249,8 +248,8 @@ class ShopPageHomeTracking(
                 ID to productId,
                 PRICE to formatPrice(productDisplayedPrice),
                 BRAND to shopName,
-                CATEGORY to "",
-                VARIANT to "",
+                CATEGORY to NONE,
+                VARIANT to NONE,
                 LIST to listEventValue,
                 POSITION to horizontalPosition,
                 DIMENSION_81 to customDimensionShopPage.shopType,
@@ -415,8 +414,8 @@ class ShopPageHomeTracking(
                 ID to productId,
                 PRICE to formatPrice(productDisplayedPrice),
                 BRAND to shopName,
-                CATEGORY to "",
-                VARIANT to "",
+                CATEGORY to NONE,
+                VARIANT to NONE,
                 QUANTITY to productQuantity,
                 DIMENSION_80 to shopName,
                 DIMENSION_82 to "",

@@ -8,6 +8,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel.Compani
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
@@ -108,15 +109,20 @@ class ShopHomeViewModel @Inject constructor(
     fun addProductToCart(
             productId: String,
             shopId: String,
-            onSuccessAddToCart: (dataModelAtc: DataModel) -> Unit
+            onSuccessAddToCart: (dataModelAtc: DataModel) -> Unit,
+            onErrorAddToCart: (exception: Throwable) -> Unit
     ) {
         launchCatchError(block = {
             val addToCartSubmitData = withContext(dispatcherProvider.io()) {
                 submitAddProductToCart(shopId, productId)
             }
-            if (addToCartSubmitData.status == STATUS_OK)
+            if (addToCartSubmitData.data.success == 1)
                 onSuccessAddToCart(addToCartSubmitData.data)
-        }) {}
+            else
+                onErrorAddToCart(MessageErrorException(addToCartSubmitData.data.message.first()))
+        }) {
+            onErrorAddToCart(it)
+        }
     }
 
     fun clearGetShopProductUseCase() {
