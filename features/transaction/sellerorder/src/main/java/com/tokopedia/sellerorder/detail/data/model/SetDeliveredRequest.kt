@@ -8,7 +8,7 @@ data class SetDeliveredRequest(
         @SerializedName("received_by")
         var receivedBy: String,
         @SerializedName("user_id")
-        var userId: String,
+        var userId: String = "",
         @SerializedName("mobile")
         var mobile: String = "",
         @SerializedName("lang")
