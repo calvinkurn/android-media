@@ -34,7 +34,6 @@ import com.tokopedia.core.analytics.AppScreen;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.app.MainApplication;
 import com.tokopedia.core.customwidget.SwipeToRefresh;
-import com.tokopedia.core.drawer2.service.DrawerGetNotificationService;
 import com.tokopedia.core.network.NetworkErrorHelper;
 import com.tokopedia.core.session.baseFragment.BaseFragment;
 import com.tokopedia.core.util.GlobalConfig;
@@ -50,6 +49,7 @@ import com.tokopedia.seller.selling.presenter.SellingStatusTransactionView;
 import com.tokopedia.seller.selling.presenter.adapter.BaseSellingAdapter;
 import com.tokopedia.seller.selling.view.viewHolder.BaseSellingViewHolder;
 import com.tokopedia.seller.selling.view.viewHolder.StatusViewHolder;
+import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 import com.tokopedia.transaction.common.TransactionRouter;
 
 import org.jetbrains.annotations.NotNull;
@@ -272,7 +272,7 @@ public class FragmentSellingStatus extends BaseFragment<SellingStatusTransaction
             @Override
             public void onRefresh(View view) {
                 if (GlobalConfig.isSellerApp()) {
-                    DrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
+                    SellerDrawerGetNotificationService.startService(MainApplication.getAppContext(), true, true);
                 }
                 presenter.onRefreshView();
             }
