@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.R
@@ -121,6 +122,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         observeProductSheetContent()
         observeVariantSheetContent()
         observeBottomInsetsState()
+        observeBuyEvent()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -186,9 +188,30 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         viewModel.observableLoggedInInteractionEvent.observe(viewLifecycleOwner, EventObserver(::handleLoginInteractionEvent))
     }
 
-    private fun setupView(view: View) {
-
+    private fun observeBuyEvent() {
+        viewModel.observableAddtoCart.observe(viewLifecycleOwner, Observer {
+            hideLoadingView()
+            if (it.isSuccess) {
+                playViewModel.updateBadgeCart()
+                when(it.action) {
+                    ProductAction.Buy -> {
+                        RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                    }
+                    ProductAction.AddToCart ->
+                        Toaster.make(requireView(),
+                                getString(R.string.play_add_to_cart_message_success),
+                                Snackbar.LENGTH_LONG,
+                                actionText = getString(R.string.play_add_to_cart_action_success),
+                                clickListener = View.OnClickListener {
+                                    RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                                })
+                }
+                closeVariantSheet()
+            }
+            else Toaster.make(requireView(), it.errorMessage, Snackbar.LENGTH_LONG, type = Toaster.TYPE_ERROR)
+        })
     }
+    private fun setupView(view: View) {}
 
     private fun initComponents(container: ViewGroup) {
         productSheetComponent = initProductSheetComponent(container)
@@ -267,6 +290,14 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         playViewModel.onHideVariantSheet()
     }
 
+    private fun showLoadingView() {
+        //TODO("create loading view")
+    }
+
+    private fun hideLoadingView() {
+        //TODO("create loading view")
+    }
+
     private fun shouldBuyProduct(productId: String) {
         viewModel.doInteractionEvent(InteractionEvent.BuyProduct(productId))
     }
@@ -295,13 +326,13 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun doAtcProduct(productId: String) {
-        Toaster.make(requireView(), "Product added to cart for id: $productId", Snackbar.LENGTH_SHORT)
-        closeVariantSheet()
+        showLoadingView()
+        viewModel.addToCart(productId, playViewModel.partnerId.toString(), action = ProductAction.AddToCart)
     }
 
     private fun doBuyProduct(productId: String) {
-        Toaster.make(requireView(), "Product bought for id: $productId", Snackbar.LENGTH_SHORT)
-        closeVariantSheet()
+        showLoadingView()
+        viewModel.addToCart(productId, playViewModel.partnerId.toString(), action = ProductAction.Buy)
     }
 
     private fun openLoginPage() {

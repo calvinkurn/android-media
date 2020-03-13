@@ -111,6 +111,8 @@ class PlayViewModel @Inject constructor(
             0
         }
     }
+    val partnerId: Long?
+        get() = _observablePartnerInfo.value?.id
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
@@ -365,6 +367,10 @@ class PlayViewModel @Inject constructor(
                 return@withContext getChannelInfoUseCase.executeOnBackground()
             }
 
+            // TODO("testing")
+            channel.isShowCart = true
+            channel.isShowProductTagging = true
+
             launch { getTotalLikes(channel.contentId, channel.contentType, channel.likeType) }
             launch { getIsLike(channel.contentId, channel.contentType) }
             launch { getBadgeCart(channel.isShowCart) }
@@ -378,10 +384,6 @@ class PlayViewModel @Inject constructor(
                 startWebSocket(channelId, channel.gcToken, channel.settings)
 
             playVideoStream(channel)
-
-            // TODO("testing")
-            channel.isShowCart = true
-            channel.isShowProductTagging = true
 
             val completeInfoUiModel = createCompleteInfoModel(channel)
 
@@ -508,7 +510,7 @@ class PlayViewModel @Inject constructor(
         }) {}
     }
 
-    fun udpateBadgetCart() {
+    fun updateBadgeCart() {
         val channelInfo = _observableGetChannelInfo.value
         if (channelInfo != null && channelInfo is Success) {
             launch { getBadgeCart(channelInfo.data.isShowCart) }
