@@ -686,15 +686,16 @@ class PlayViewModel @Inject constructor(
                 _observableProductSheetContent.value = ProductSheetUiModel(
                         title = "Barang & Promo Pilihan",
                         voucherList = List(5) { voucherIndex ->
-                            MerchantVoucherUiModel(
-                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
-                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
-                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
-                            )
+//                            MerchantVoucherUiModel(
+//                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
+//                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
+//                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
+//                            )
+                            VoucherPlaceholderUiModel
                         },
                         productList = List(5) {
                             ProductLineUiModel(
-                                    id = if (it % 2 == 0) { "728073530" } else "689413405",
+                                    id = "689413405",
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",
                                     isVariantAvailable = true,
@@ -714,6 +715,7 @@ class PlayViewModel @Inject constructor(
 //                                        StockAvailable(it * 10)
 //                                    }
                             )
+//                            ProductPlaceholderUiModel
                         }
                 )
             }

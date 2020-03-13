@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ph_product_variant"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/ll_header"
+        >
+
+        <View
+            android:id="@+id/ph_product_image"
+            style="@style/PlayPlaceholder"
+            android:layout_width="@dimen/play_product_variant_image_size"
+            android:layout_height="@dimen/play_product_variant_image_size"
+            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/avatars" />
+
+        <View
+            android:id="@+id/ph_product_desc_1"
+            style="@style/PlayPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/layout_lvl2"
+            android:layout_marginStart="@dimen/play_product_line_title_image_margin"
+            android:layout_marginLeft="@dimen/play_product_line_title_image_margin"
+            android:layout_marginRight="@dimen/play_product_line_title_image_margin"
+            android:layout_marginEnd="@dimen/play_product_line_title_image_margin"
+            app:layout_constraintVertical_chainStyle="spread_inside"
+            app:layout_constraintStart_toEndOf="@id/ph_product_image"
+            app:layout_constraintTop_toTopOf="@id/ph_product_image"
+            app:layout_constraintBottom_toTopOf="@id/ph_product_desc_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Alyssa Suede Flats"
+            />
+
+        <View
+            android:id="@+id/ph_product_desc_2"
+            style="@style/PlayPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/layout_lvl2"
+            app:layout_constraintStart_toStartOf="@id/ph_product_desc_1"
+            app:layout_constraintTop_toBottomOf="@id/ph_product_desc_1"
+            app:layout_constraintBottom_toTopOf="@id/ph_product_desc_3"
+            app:layout_constraintWidth_percent="0.4"
+            tools:text="Alyssa Suede Flats"
+            />
+
+        <View
+            android:id="@+id/ph_product_desc_3"
+            style="@style/PlayPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/layout_lvl2"
+            app:layout_constraintStart_toStartOf="@id/ph_product_desc_2"
+            app:layout_constraintTop_toBottomOf="@id/ph_product_desc_2"
+            app:layout_constraintBottom_toTopOf="@id/ph_product_desc_4"
+            app:layout_constraintWidth_percent="0.2"
+            tools:text="Alyssa Suede Flats"
+            />
+
+        <View
+            android:id="@+id/ph_product_desc_4"
+            style="@style/PlayPlaceholder"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/layout_lvl2"
+            app:layout_constraintStart_toStartOf="@id/ph_product_desc_3"
+            app:layout_constraintTop_toBottomOf="@id/ph_product_desc_3"
+            app:layout_constraintBottom_toBottomOf="@id/ph_product_image"
+            app:layout_constraintWidth_percent="0.35"
+            tools:text="Alyssa Suede Flats"
+            />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</merge>
