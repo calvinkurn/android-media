@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.autocomplete.R
 import com.tokopedia.autocomplete.suggestion.SuggestionClickListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import kotlinx.android.synthetic.main.layout_autocomplete_single_line_item.view.*
 import java.util.*
 
@@ -58,8 +59,8 @@ class SuggestionSingleLineViewHolder(
     }
 
     private fun bindShortcutButton(item: SuggestionSingleLineViewModel){
-        itemView.actionShortcutButton?.let {
-            ImageHandler.loadImage2(it, item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
+        itemView.actionShortcutButton?.shouldShowWithAction(item.shortcutImage.isNotEmpty()) {
+            ImageHandler.loadImage2(itemView.actionShortcutButton, item.shortcutImage, R.drawable.autocomplete_ic_copy_to_search_bar)
         }
     }
 
