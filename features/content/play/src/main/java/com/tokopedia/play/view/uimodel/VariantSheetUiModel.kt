@@ -8,7 +8,7 @@ import com.tokopedia.variant_common.model.VariantCategory
 /**
  * Created by jegul on 06/03/20
  */
-data class VariantSheetUiModel(
+class VariantSheetUiModel(
         var product: ProductLineUiModel,
         val action: ProductAction,
         val parentVariant: ProductVariantCommon? = null,
