@@ -40,7 +40,8 @@ abstract class TkpdAnalyticsDatabase : RoomDatabase() {
                     r = instance
                     if (r == null) {
                         r = Room.databaseBuilder(context,
-                                TkpdAnalyticsDatabase::class.java, DATABASE_NAME).build()
+                            TkpdAnalyticsDatabase::class.java, DATABASE_NAME)
+                            .fallbackToDestructiveMigration().build()
                         instance = r
                     }
                 }
