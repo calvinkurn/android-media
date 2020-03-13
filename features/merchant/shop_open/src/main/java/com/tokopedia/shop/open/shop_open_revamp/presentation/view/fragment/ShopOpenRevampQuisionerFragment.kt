@@ -356,14 +356,10 @@ class ShopOpenRevampQuisionerFragment :
                     }
                 }
             } else if (resultCode == Activity.RESULT_CANCELED) {
-                if (isNeedLocation)  {
-                    activity?.let {
-                        if (GlobalConfig.isSellerApp()) {
-                            showExitOrPickLocationDialog()
-                        } else {
-                            it.finish()
-                        }
-                    }
+                if (isNeedLocation) {
+                    activity?.finish()
+                } else {
+                    showExitOrPickLocationDialog()
                 }
             }
         }
