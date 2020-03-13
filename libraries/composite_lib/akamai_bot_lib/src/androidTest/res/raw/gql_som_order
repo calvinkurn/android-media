@@ -1,0 +1,29 @@
+query OrderList($input: OrderListArgs!) {
+  orderList(input: $input) {
+    cursor_order_id
+    list {
+      order_id
+      status
+      status_color
+      order_status_id
+      order_resi
+      order_date
+      order_label {
+        flag_name
+        flag_color
+        flag_background
+      }
+      buyer_name
+      deadline_text
+      deadline_color
+      order_product {
+        picture
+        product_name
+      }
+      cancel_request
+      cancel_request_note
+      cancel_request_time
+      cancel_request_origin_note
+    }
+  }
+}

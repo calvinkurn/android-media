@@ -119,6 +119,57 @@
             android:text="Device ID: 1213124" />
 
         <CheckBox
+            android:id="@+id/toggle_applink_debugger_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable Applink Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_applink_debugger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View Applink Log"
+            android:textColor="@color/white" />
+
+        <CheckBox
+            android:id="@+id/toggle_fpm_auto_file_log"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable FPM Log on File (Download/fpm-auto-log.txt)" />
+
+        <CheckBox
+            android:id="@+id/toggle_fpm_notif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:padding="@dimen/margin_small"
+            android:text="Enable FPM Log on Notification" />
+
+        <TextView
+            android:id="@+id/goto_fpm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_small"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/margin_small"
+            android:text="View FPM Log"
+            android:textColor="@color/white" />
+
+        <CheckBox
             android:id="@+id/toggle_analytics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -290,7 +341,48 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </TableRow>
+
+            <TableRow>
+                <TextView
+                    android:text="Enable Timber Logging To Server"
+                    android:paddingRight="25dip"
+                    style="@style/TextView.Title.Bold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <ToggleButton
+                    android:id="@+id/toggle_timber_dev_options"
+                    android:background="@drawable/btn_share"
+                    android:textColor="@color/white"
+                    android:layout_marginRight="1dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </TableRow>
         </TableLayout>
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_timber_send"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:textSize="@dimen/fontSize_lvl4"
+            android:lines="1"
+            android:gravity="center_vertical"
+            android:inputType="text"
+            android:hint="Pno#TAG#message (required Server Logging ON)"
+            app:backgroundTint="@color/Green_G500" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_send_timber"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:layout_marginBottom="@dimen/spacing_lvl4"
+            android:background="@drawable/btn_share"
+            android:gravity="center"
+            android:padding="@dimen/spacing_lvl3"
+            android:text="Send Log to Server"
+            android:textColor="@color/Neutral_N0" />
 
         <LinearLayout
             android:layout_width="match_parent"

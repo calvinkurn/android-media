@@ -38,20 +38,8 @@ internal fun FeatureBody.createTestInstance() {
         mockk<UseCase<SearchProductModel>>(relaxed = true)
     }
 
-    val productWishlistUrlUseCase by memoized {
-        mockk<UseCase<Boolean>>(relaxed = true)
-    }
-
     val recommendationUseCase by memoized {
         mockk<GetRecommendationUseCase>(relaxed = true)
-    }
-
-    val addWishlistActionUseCase by memoized {
-        mockk<AddWishListUseCase>(relaxed = true)
-    }
-
-    val removeWishlistActionUseCase by memoized {
-        mockk<RemoveWishListUseCase>(relaxed = true)
     }
 
     val seamlessLoginUseCase by memoized {
@@ -77,10 +65,7 @@ internal fun TestBody.createProductListPresenter(): ProductListPresenter {
     val searchLocalCacheHandler by memoized<SearchLocalCacheHandler>()
     val searchProductFirstPageUseCase by memoized<UseCase<SearchProductModel>>()
     val searchProductLoadMoreUseCase by memoized<UseCase<SearchProductModel>>()
-    val productWishlistUrlUseCase by memoized<UseCase<Boolean>>()
     val recommendationUseCase by memoized<GetRecommendationUseCase>()
-    val addWishlistActionUseCase by memoized<AddWishListUseCase>()
-    val removeWishlistActionUseCase by memoized<RemoveWishListUseCase>()
     val seamlessLoginUseCase by memoized<SeamlessLoginUsecase>()
     val userSession by memoized<UserSessionInterface>()
     val remoteConfig by memoized<RemoteConfig>()
@@ -92,10 +77,7 @@ internal fun TestBody.createProductListPresenter(): ProductListPresenter {
         it.searchLocalCacheHandler = searchLocalCacheHandler
         it.searchProductFirstPageUseCase = searchProductFirstPageUseCase
         it.searchProductLoadMoreUseCase = searchProductLoadMoreUseCase
-        it.productWishlistUrlUseCase = productWishlistUrlUseCase
         it.recommendationUseCase = recommendationUseCase
-        it.addWishlistActionUseCase = addWishlistActionUseCase
-        it.removeWishlistActionUseCase = removeWishlistActionUseCase
         it.seamlessLoginUsecase = seamlessLoginUseCase
         it.userSession = userSession
         it.remoteConfig = remoteConfig

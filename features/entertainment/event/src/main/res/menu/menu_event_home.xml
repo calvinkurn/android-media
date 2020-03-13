@@ -26,7 +26,7 @@
     <item
         android:id="@+id/action_faq"
         android:orderInCategory="50"
-        android:title="@string/bantuan"
+        android:title="@string/tokopedia_care"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_promo"

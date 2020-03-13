@@ -58,8 +58,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     lateinit var onboardingAnalytics: OnboardingAnalytics
     @Inject
     lateinit var remoteConfig: RemoteConfig
-    @Inject
-    lateinit var remoteConfigInstance: RemoteConfigInstance
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
 
@@ -96,7 +94,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     }
 
     private fun getAbTestVariant(): String =
-            remoteConfigInstance.abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(ONBOARD_BUTTON_AB_TESTING_KEY, "")
 
     private fun setViewByAbTestVariant() {
         when (abTestVariant) {
@@ -125,10 +123,12 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val listItem = generateListAllButton()
 
             onboardingViewPagerAdapter = OnboardingViewPagerAdapter(it, listItem)
-            screenViewpager.adapter = onboardingViewPagerAdapter
+            if (::screenViewpager.isInitialized) {
+                screenViewpager.adapter = onboardingViewPagerAdapter
+                if(onboardingViewPagerAdapter.count > 1)
+                    screenViewpager.offscreenPageLimit = onboardingViewPagerAdapter.count - 1
+            }
             tabIndicator.setupWithViewPager(screenViewpager)
-
-            screenViewpager.offscreenPageLimit = 2
 
             skipAction.setOnClickListener(skipActionClickListener())
             nextAction.setOnClickListener(nextActionClickListener())
@@ -241,11 +241,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             val taskStackBuilder = TaskStackBuilder.create(it)
             val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
             taskStackBuilder.addNextIntent(homeIntent)
-            val intent = when(abTestVariant) {
-                ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
-                ONBOARD_BUTTON_AB_TESTING_VARIANT_ALL_BUTTON_REGISTER -> RouteManager.getIntent(it, ApplinkConst.REGISTER)
-                else -> RouteManager.getIntent(it, ApplinkConst.LOGIN)
-            }
+            val intent = RouteManager.getIntent(it, ApplinkConst.REGISTER)
             taskStackBuilder.addNextIntent(intent)
             taskStackBuilder.startActivities()
         }
@@ -275,7 +271,6 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     private fun finishOnBoarding() {
         activity?.let {
             userSession.setFirstTimeUserOnboarding(false)
-            DFInstaller().uninstallOnBackground(it.application, listOf(DeeplinkDFMapper.DFM_ONBOARDING))
             it.finish()
         }
     }

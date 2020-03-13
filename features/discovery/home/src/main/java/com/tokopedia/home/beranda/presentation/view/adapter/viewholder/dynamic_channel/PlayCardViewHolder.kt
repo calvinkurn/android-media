@@ -63,13 +63,22 @@ class PlayCardViewHolder(
     override fun bind(element: PlayCardViewModel?) {
         if(element?.playCardHome == null){
             container.hide()
+            listener.getPlayChannel(adapterPosition)
         } else {
-            playCardViewModel = element
-            playCardViewModel?.let{ playCardViewModel ->
-                if (container.visibility == View.GONE) container.show()
-                initView(playCardViewModel)
-                initAutoPlayVideo(playCardViewModel)
-            }
+            onBind(element)
+        }
+    }
+
+    override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
+        onBind(element)
+    }
+
+    private fun onBind(element: PlayCardViewModel?) {
+        playCardViewModel = element
+        playCardViewModel?.let { playCardViewModel ->
+            if (container.visibility == View.GONE) container.show()
+            initView(playCardViewModel)
+            initAutoPlayVideo(playCardViewModel)
         }
     }
 
@@ -80,15 +89,6 @@ class PlayCardViewHolder(
             if (helper?.isAutoPlay == true && videoStream.config.streamUrl.isNotEmpty()) {
                 playChannel(videoStream.config.streamUrl)
             }
-        }
-    }
-
-    override fun bind(element: PlayCardViewModel?, payloads: MutableList<Any>) {
-        playCardViewModel = element
-        if(playCardViewModel != null && element?.playCardHome != null) {
-            if (container.visibility == View.GONE) container.show()
-            initView(playCardViewModel!!)
-            playCardViewModel!!.playCardHome?.videoStream?.config?.streamUrl?.let { playChannel(it) }
         }
     }
 
@@ -103,7 +103,7 @@ class PlayCardViewHolder(
             broadcasterName.text = playChannel.moderatorName
             titlePlay.text = playChannel.title
 
-            if(playChannel.totalView.isNotEmpty()){
+            if(playChannel.totalView.isNotEmpty() && playChannel.isShowTotalView){
                 viewer.text = playChannel.totalView
                 viewer.show()
                 imageViewer.show()

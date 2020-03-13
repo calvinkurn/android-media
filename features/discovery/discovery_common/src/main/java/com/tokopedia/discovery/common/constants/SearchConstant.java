@@ -147,4 +147,10 @@ public interface SearchConstant {
         String ADVERTISING_LOCAL_CACHE = "ADVERTISING_LOCAL_CACHE";
         String APP_CLIENT_ID = "appClientId";
     }
+
+    interface ABTestRemoteConfigKey {
+        String AB_TEST_KEY_COMMA_VS_FULL_STAR = "Comma vs Full Star";
+        String AB_TEST_VARIANT_FULL_STAR = "Full Star";
+        String AB_TEST_VARIANT_COMMA_STAR = "Comma Star";
+    }
 }
