@@ -144,6 +144,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 id
                 text
                 price
+                priceOriginal
                 type
                 appLink
                 webLink
@@ -169,6 +170,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               text
               tags {
                 linkType
+                text
+                type
               }
               tracking {
                 clickURL
@@ -194,6 +197,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 id
                 text
                 price
+                priceOriginal
                 type
                 appLink
                 webLink
@@ -215,6 +219,7 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                 tags {
                   linkType
                   text
+                  type
                   textColor {
                     hex
                     opacity
@@ -238,6 +243,8 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
               text
               tags {
                 linkType
+                text
+                type
               }
               tracking {
                 clickURL

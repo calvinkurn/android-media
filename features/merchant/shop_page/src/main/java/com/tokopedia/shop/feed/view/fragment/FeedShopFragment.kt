@@ -490,13 +490,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
-    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, iamgeUrl: String) {
+    override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String, url: String, imageUrl: String) {
         activity?.let {
             ShareBottomSheets.newInstance(object : ShareBottomSheets.OnShareItemClickListener {
                 override fun onShareItemClicked(packageName: String) {
 
                 }
-            },"", iamgeUrl, url, description, title)
+            },"", imageUrl, url, description, title)
         }.also {
             fragmentManager?.run {
                 it?.show(this)

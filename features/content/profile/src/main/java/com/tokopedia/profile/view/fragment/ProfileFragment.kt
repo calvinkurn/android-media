@@ -867,7 +867,7 @@ class ProfileFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>()
     }
 
     override fun onShareClick(positionInFeed: Int, id: Int, title: String, description: String,
-                              url: String, iamgeUrl: String) {
+                              url: String, imageUrl: String) {
         activity?.let {
             profileAnalytics.eventClickSharePostIni(isOwner, userId.toString())
             isShareProfile = false
