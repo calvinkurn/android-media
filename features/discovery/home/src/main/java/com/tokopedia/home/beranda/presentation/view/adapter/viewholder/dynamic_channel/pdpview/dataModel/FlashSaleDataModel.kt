@@ -11,7 +11,8 @@ class FlashSaleDataModel (
         val productModel: ProductCardFlashSaleModel,
         val blankSpaceConfig: BlankSpaceConfig,
         val grid: DynamicHomeChannel.Grid,
-        val impressHolder: ImpressHolder = ImpressHolder()
+        val impressHolder: ImpressHolder = ImpressHolder(),
+        val applink: String = ""
 ): Visitable<FlashSaleCardTypeFactory>{
     override fun type(typeFactory: FlashSaleCardTypeFactory): Int {
         return typeFactory.type(this)

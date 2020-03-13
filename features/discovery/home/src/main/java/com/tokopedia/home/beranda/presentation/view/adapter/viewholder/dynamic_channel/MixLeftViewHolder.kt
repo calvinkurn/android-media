@@ -87,7 +87,9 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
-        listData.add(SeeMorePdpDataModel(applink = channel.header.applink))
+        if (channel.header.applink.isNotEmpty()) {
+            listData.add(SeeMorePdpDataModel(applink = channel.header.applink))
+        }
         adapter = MixLeftAdapter(listData,typeFactoryImpl)
         recyclerView.adapter = adapter
         recyclerView.setHasFixedSize(true)
@@ -145,7 +147,8 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                             stockBarPercentage = element.soldPercentage
                     ),
                     blankSpaceConfig = BlankSpaceConfig(),
-                    grid = element
+                    grid = element,
+                    applink = element.applink
             ))
         }
         return list

@@ -1399,7 +1399,8 @@ public class HomeFragment extends BaseDaggerFragment implements
     }
 
     @Override
-    public void onFlashSaleCardClicked(int position, @NotNull DynamicHomeChannel.Channels channel, @NonNull DynamicHomeChannel.Grid grid) {
+    public void onFlashSaleCardClicked(int position, @NotNull DynamicHomeChannel.Channels channel, @NonNull DynamicHomeChannel.Grid grid, String applink) {
+        RouteManager.route(getContext(), applink);
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductClick(channel, grid, position - 1));
     }
 

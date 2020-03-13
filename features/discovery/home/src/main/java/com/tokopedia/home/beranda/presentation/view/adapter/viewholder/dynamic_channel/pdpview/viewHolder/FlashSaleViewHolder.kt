@@ -36,7 +36,7 @@ class FlashSaleViewHolder (view: View, private val listener: FlashSaleCardListen
                 listener.onFlashSaleCardImpressed(adapterPosition, channels)
             }
             setOnClickListener {
-                listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid)
+                listener.onFlashSaleCardClicked(adapterPosition, channels, element.grid, element.applink)
             }
         }
     }

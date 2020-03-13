@@ -167,7 +167,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 event = Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT,
-                eventLabel = Label.NONE,
+                eventLabel = channel.header.name,
                 products = channel.grids.mapIndexed { index, grid ->
                     Product(
                             name = grid.name,
@@ -192,7 +192,7 @@ object HomePageTrackingV2 : BaseTracking() {
                 event = Event.PRODUCT_CLICK,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = CLICK_MIX_LEFT,
-                eventLabel = grid.attribution,
+                eventLabel = channel.header.name,
                 channelId = channel.id,
                 products = listOf(
                         Product(
