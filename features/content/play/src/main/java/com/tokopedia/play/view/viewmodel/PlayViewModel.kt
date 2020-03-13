@@ -111,6 +111,8 @@ class PlayViewModel @Inject constructor(
             0
         }
     }
+    val partnerId: Long?
+        get() = _observablePartnerInfo.value?.id
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
@@ -507,7 +509,7 @@ class PlayViewModel @Inject constructor(
         }) {}
     }
 
-    fun udpateBadgetCart() {
+    fun updateBadgeCart() {
         val channelInfo = _observableGetChannelInfo.value
         if (channelInfo != null && channelInfo is Success) {
             launch { getBadgeCart(channelInfo.data.isShowCart) }

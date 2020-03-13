@@ -20,7 +20,7 @@ class PostAddtoCartUseCase @Inject constructor(
     var parameters: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): AddToCartDataModel {
-        require(parameters.paramsAllValueInString.isNotEmpty()) { "Please provide add to cart params" }
+        require(parameters.paramsAllValueInString.isEmpty()) { "Please provide add to cart params" }
         return addToCartUseCase.createObservable(parameters)
                 .toBlocking()
                 .single()

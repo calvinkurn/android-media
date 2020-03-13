@@ -23,6 +23,8 @@
     <string name="play_product_add_to_card">Tambah ke Keranjang</string>
     <string name="play_discount_percent">%d%%</string>
     <string name="play_stock_available">Stok Tersedia</string>
+    <string name="play_add_to_cart_message_success">Produk berhasil ditambahkan ke keranjang</string>
+    <string name="play_add_to_cart_action_success">Lihat</string>
 
     <!--mock-->
     <string name="play_mock_view">2k</string>

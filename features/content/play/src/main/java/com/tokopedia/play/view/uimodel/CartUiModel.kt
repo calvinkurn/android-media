@@ -1,5 +1,7 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.play.view.type.ProductAction
+
 
 /**
  * Created by mzennis on 2020-03-05.
@@ -12,5 +14,5 @@ data class CartUiModel(
 data class CartFeedbackUiModel(
         val isSuccess: Boolean = false,
         val errorMessage: String = "",
-        val isAtcOnly: Boolean = true
+        val action: ProductAction
 )
