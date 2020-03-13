@@ -1222,7 +1222,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                                        String eventLabel) {
         String sessionId = "";
         Context context = getContext();
-        if(context != null){
+        if (context != null) {
             IrisSession irisSession = new IrisSession(context);
             sessionId = irisSession.getSessionId();
 
@@ -2019,7 +2019,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         CheckPromoParam checkPromoParam = new CheckPromoParam();
         checkPromoParam.setPromo(generateCheckPromoFirstStepParam());
 
-        if(hasInsurance) {
+        if (hasInsurance) {
             mTrackerMacroInsurance.eventClickPaymentMethodWithInsurance(shipmentAdapter.getInsuranceProductId(),
                     shipmentAdapter.getInsuranceTitle());
         }
@@ -2682,6 +2682,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         promo.setSkipApply(0);
         promo.setSuggested(0);
+        int isTradeIn = isTradeIn() ? 1 : 0;
+        if (isTradeIn == 1) {
+            promo.setTradeIn(1);
+            promo.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
+        }
         return promo;
     }
 
