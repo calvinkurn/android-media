@@ -9,11 +9,12 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.model.ShopInfoLocation
 import com.tokopedia.usecase.RequestParams
+import javax.inject.Inject
 
 /**
  * @author by milhamj on 2020-03-13.
  */
-class GetShopLocationUseCase(
+class GetShopLocationUseCase @Inject constructor(
         private val gqlRepository: GraphqlRepository
 ) : BaseGqlUseCase<ShippingLoc>() {
 

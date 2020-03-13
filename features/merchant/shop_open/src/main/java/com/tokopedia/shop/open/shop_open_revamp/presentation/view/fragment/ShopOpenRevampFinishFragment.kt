@@ -14,7 +14,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
-import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant
 import com.tokopedia.shop.open.shop_open_revamp.listener.FragmentNavigationInterface
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSession
@@ -24,9 +23,9 @@ import kotlinx.android.synthetic.main.fragment_shop_open_revamp_finish.*
 class ShopOpenRevampFinishFragment : Fragment() {
 
     private val handler = Handler()
-    lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var lottieAnimationView: LottieAnimationView
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
+    private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private lateinit var loading: LoaderUnify
 
 

@@ -88,7 +88,7 @@ class ShopOpenRevampViewModel @Inject constructor(
                     _checkShopNameResponse.postValue(Success(validateShopNameResult))
                 }
             }
-        }) {
+         }) {
             _checkShopNameResponse.value = Fail(it)
         }
     }

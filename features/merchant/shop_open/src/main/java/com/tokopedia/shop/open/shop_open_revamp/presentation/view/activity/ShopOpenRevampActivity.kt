@@ -65,15 +65,7 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
         showExitDialog()
     }
 
-    private fun navigateToOtherFragment(fragment: Fragment, tag: String?) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction
-                .replace(R.id.shop_open_container, fragment)
-                .addToBackStack(tag)
-                .commit()
-    }
-
-    private fun showExitDialog() {
+    override fun showExitDialog() {
         var exitDialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
         exitDialog.apply {
             setTitle(ExitDialog.TITLE)
@@ -91,6 +83,14 @@ class ShopOpenRevampActivity : BaseActivity(), FragmentNavigationInterface {
             }
             show()
         }
+    }
+
+    private fun navigateToOtherFragment(fragment: Fragment, tag: String?) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction
+                .replace(R.id.shop_open_container, fragment)
+                .addToBackStack(tag)
+                .commit()
     }
 
     private fun setupStatusBar(){

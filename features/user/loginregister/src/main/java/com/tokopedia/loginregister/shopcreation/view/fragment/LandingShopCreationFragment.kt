@@ -120,6 +120,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
 
     override fun onBackPressed(): Boolean {
         shopCreationAnalytics.eventClickBackLanding()
+
         return true
     }
 

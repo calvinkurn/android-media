@@ -22,12 +22,10 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticdata.data.entity.address.SaveAddressDataModel
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.open.R
 import com.tokopedia.shop.open.shop_open_revamp.analytic.ShopOpenRevampTracking
-import com.tokopedia.shop.open.shop_open_revamp.common.ExitDialog
 import com.tokopedia.shop.open.shop_open_revamp.common.PageNameConstant.FINISH_SPLASH_SCREEN_PAGE
 import com.tokopedia.shop.open.shop_open_revamp.di.DaggerShopOpenRevampComponent
 import com.tokopedia.shop.open.shop_open_revamp.di.ShopOpenRevampComponent
@@ -52,7 +50,6 @@ class ShopOpenRevampQuisionerFragment :
 
     @Inject
     lateinit var viewModel: ShopOpenRevampViewModel
-    lateinit var fragmentNavigationInterface: FragmentNavigationInterface
     private lateinit var btnNext: UnifyButton
     private lateinit var btnBack: ImageView
     private lateinit var btnSkip: TextView
@@ -62,6 +59,7 @@ class ShopOpenRevampQuisionerFragment :
     private var layoutManager: LinearLayoutManager? = null
     private var adapter: ShopOpenRevampQuisionerAdapter? = null
     private var shopOpenRevampTracking: ShopOpenRevampTracking? = null
+    private var fragmentNavigationInterface: FragmentNavigationInterface? = null
     private var isNeedLocation = false
     private lateinit var loading: LoaderUnify
     private lateinit var toolbar: Toolbar
@@ -120,7 +118,7 @@ class ShopOpenRevampQuisionerFragment :
 
         btnBack.setOnClickListener {
             shopOpenRevampTracking?.clickBackButtonFromSurveyPage()
-            showExitDialog()
+            fragmentNavigationInterface?.showExitDialog()
         }
 
         btnSkip.setOnClickListener {
@@ -237,7 +235,7 @@ class ShopOpenRevampQuisionerFragment :
                     val isSuccess = it.data.ongkirOpenShopShipmentLocation.dataSuccessResponse.success
                     if (isSuccess) {
                         showLoader()
-                        fragmentNavigationInterface.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
+                        fragmentNavigationInterface?.navigateToNextPage(FINISH_SPLASH_SCREEN_PAGE, THREE_FRAGMENT_TAG)
                     } else {
                         showLoader()
                         gotoPickLocation()
@@ -279,26 +277,6 @@ class ShopOpenRevampQuisionerFragment :
                         retry.invoke()
                     }
             )
-        }
-    }
-
-    private fun showExitDialog() {
-        activity?.also {
-            var exitDialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            exitDialog.apply {
-                setTitle(ExitDialog.TITLE)
-                setDescription(ExitDialog.DESCRIPTION)
-                setPrimaryCTAText("Batal")
-                setPrimaryCTAClickListener {
-                    this.dismiss()
-                }
-                setSecondaryCTAText("Keluar")
-                setSecondaryCTAClickListener {
-                    this.dismiss()
-                    activity?.finish()
-                }
-                show()
-            }
         }
     }
 
