@@ -31,8 +31,8 @@ class EtalasePickerViewModel @Inject constructor(
             val etalaseList = withContext(Dispatchers.IO) {
                 val requestParams = GetShopEtalaseByShopUseCase.createRequestParams(
                     shopId = shopId,
-                    hideNoCount = true,
-                    hideShowCaseGroup = false,
+                    hideNoCount = false,
+                    hideShowCaseGroup = true,
                     isOwner = true
                 )
                 getEtalaseUseCase.createObservable(requestParams)
