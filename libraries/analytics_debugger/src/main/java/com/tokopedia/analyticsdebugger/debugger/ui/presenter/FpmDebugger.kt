@@ -10,7 +10,8 @@ import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 interface FpmDebugger {
     interface View : CustomerView {
 
-        val context: Context
+        fun getViewContext(): Context
+
         fun onLoadMoreCompleted(visitables: List<Visitable<*>>)
 
         fun onReloadCompleted(visitables: List<Visitable<*>>)

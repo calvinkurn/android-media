@@ -1,7 +1,6 @@
 package com.tokopedia.autocomplete.initialstate.data
 
 import com.tokopedia.autocomplete.initialstate.InitialStateData
-import com.tokopedia.autocomplete.initialstate.InitialStateItem
 import com.tokopedia.autocomplete.initialstate.InitialStateRepository
 import retrofit2.Response
 import rx.Observable
