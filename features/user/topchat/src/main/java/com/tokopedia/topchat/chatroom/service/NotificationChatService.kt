@@ -96,7 +96,7 @@ class NotificationChatService : JobIntentService() {
 
             override fun onError(e: Throwable?) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    setRetryJob(messageId, message, notificationId)
+                    setRetryJob(messageId, message, notificationId, userId)
                 }
             }
         })
@@ -105,12 +105,14 @@ class NotificationChatService : JobIntentService() {
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private fun setRetryJob(messageId: String,
                             message: String,
-                            notificationId: Int) {
+                            notificationId: Int,
+                            userId: String) {
 
         val bundle = PersistableBundle()
         bundle.putString(MESSAGE_ID, messageId)
         bundle.putString(REPLY_KEY, message)
         bundle.putInt(NOTIFICATION_ID, notificationId)
+        bundle.putString(USER_ID, userId)
         val minDelay = TimeUnit.SECONDS.toMillis(3)
         val maxDelay = TimeUnit.MINUTES.toMillis(2)
 
