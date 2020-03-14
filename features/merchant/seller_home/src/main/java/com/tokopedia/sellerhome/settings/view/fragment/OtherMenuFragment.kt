@@ -126,7 +126,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 .inject(this)
     }
 
-    override fun loadData(page: Int) {
+    override fun loadData(page: Int) {}
+
+    override fun onShopInfoClicked() {
+        RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
+    }
 
     override fun onFollowersCountClicked() {
         //No op for now. Will discuss with PM
@@ -320,20 +324,23 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         statusInfoTransitionOffset = HEIGHT_OFFSET
     }
 
-    override fun onShopInfoClicked() {
-        RouteManager.route(context, ApplinkConst.SHOP, userSession.shopId)
+    private fun observeRecyclerViewScrollListener() {
+        this.otherMenuScrollView.setOnScrollChangeListener(NestedScrollView.OnScrollChangeListener { scrollView, _, _, _, _ ->
+            calculateSearchBarView(scrollView.scrollY)
+        })
     }
 
-    override fun onFollowersCountClicked() {
+    private fun calculateSearchBarView(offset: Int) {
+        val endToTransitionOffset = startToTransitionOffset + statusInfoTransitionOffset
+        val maxTransitionOffset = endToTransitionOffset - startToTransitionOffset
 
-    }
-
-    override fun onSaldoClicked() {
-        if (remoteConfig.getBoolean(RemoteConfigKey.APP_ENABLE_SALDO_SPLIT_FOR_SELLER_APP, false))
-            RouteManager.route(context, ApplinkConstInternalGlobal.SALDO_DEPOSIT)
-        else {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
-            context?.startActivity(intent)
+        //Offset Alpha is not actually needed for changing the status bar color (only needed the offset),
+        //but we will preserve the variable in case the stakeholders need to change the status bar alpha according to the scroll position
+        val offsetAlpha = (MAXIMUM_ALPHA/maxTransitionOffset).times(offset - startToTransitionOffset)
+        if (offsetAlpha >= ALPHA_CHANGE_THRESHOLD) {
+            if (isLightStatusBar) setDarkStatusBar()
+        } else {
+            if (!isLightStatusBar) setLightStatusBar()
         }
     }
 
@@ -349,7 +356,4 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         statusBarBackground.visibility = View.VISIBLE
     }
 
-    override fun onKreditTopadsClicked() {
-        RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
-    }
 }
