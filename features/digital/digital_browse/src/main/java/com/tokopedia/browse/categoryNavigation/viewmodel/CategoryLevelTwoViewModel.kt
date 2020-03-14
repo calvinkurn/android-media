@@ -55,11 +55,12 @@ class CategoryLevelTwoViewModel @Inject constructor(private var allCategoryQuery
                                         Constants.ProductView
                                     }
 
-                                    val pos = 1
+                                    var pos = 0
                                     for (childItem in levelTwoChildItem) {
                                         lateinit var item: CategoryChildItem
                                         if (type == Constants.ProductView) {
-                                            item = createChildItem(type, childItem, pos)
+                                            pos++
+                                            item = createChildItem(type, childItem, pos,levelTwoChildItem.size)
                                             item.isSeringKamuLihat = true
                                         } else {
                                             item = createChildItem(type, childItem)
