@@ -51,18 +51,6 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     companion object {
         const val URL_KEY = "url"
 
-        private const val PENGATURAN = "Pengaturan"
-        private const val TINGKATKAN_PENJUALAN = "TINGKATKAN PENJUALAN"
-        private const val STATISTIK_TOKO = "Statistik Toko"
-        private const val IKLAN_DAN_PROMOSI_TOKO = "Iklan & Promosi Toko"
-        private const val KABAR_PEMBELI = "KABAR PEMBELI"
-        private const val ULASAN = "Ulasan"
-        private const val DISKUSI = "Diskusi"
-        private const val KOMPLAIN = "Komplain"
-        private const val LAYANAN_KEUANGAN = "Layanan Keuangan"
-        private const val PUSAT_EDUKASI_SELLER = "Pusat Edukasi Seller"
-        private const val TOKOPEDIA_CARE = "Tokopedia Care"
-
         private const val START_OFFSET = 56 // Pixels when scrolled past toolbar height
         private const val HEIGHT_OFFSET = 24 // Pixels of status bar height, the view that could be affected by scroll change
         private const val MAXIMUM_ALPHA = 255f
@@ -198,27 +186,27 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     private fun populateAdapterData() {
         val settingList = mutableListOf(
-                SettingTitleUiModel(TINGKATKAN_PENJUALAN),
-                MenuItemUiModel(STATISTIK_TOKO, R.drawable.ic_statistic_setting, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
-                MenuItemUiModel(IKLAN_DAN_PROMOSI_TOKO, R.drawable.ic_ads_promotion, ApplinkConstInternalMarketplace.CENTRALIZED_PROMO),
-                SettingTitleUiModel(KABAR_PEMBELI),
-                MenuItemUiModel(ULASAN, R.drawable.ic_star_setting, ApplinkConst.REPUTATION),
-                MenuItemUiModel(DISKUSI, R.drawable.ic_setting_discussion, ApplinkConst.TALK),
-                MenuItemUiModel(KOMPLAIN, R.drawable.ic_complaint, null) {
+                SettingTitleUiModel(resources.getString(R.string.setting_menu_improve_sales)),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_shop_statistic), R.drawable.ic_statistic_setting, ApplinkConstInternalMarketplace.GOLD_MERCHANT_STATISTIC_DASHBOARD),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_ads_and_shop_promotion), R.drawable.ic_ads_promotion, ApplinkConstInternalMarketplace.CENTRALIZED_PROMO),
+                SettingTitleUiModel(resources.getString(R.string.setting_menu_buyer_info)),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_review), R.drawable.ic_star_setting, ApplinkConst.REPUTATION),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_discussion), R.drawable.ic_setting_discussion, ApplinkConst.TALK),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_complaint), R.drawable.ic_complaint, null) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.SellerApp.WEBVIEW)
                     intent.putExtra(URL_KEY, SellerBaseUrl.HOSTNAME + SellerBaseUrl.RESO_INBOX_SELLER)
                     context?.startActivity(intent)
                 },
                 DividerUiModel(),
-                MenuItemUiModel(LAYANAN_KEUANGAN, R.drawable.ic_finance),
-                MenuItemUiModel(PUSAT_EDUKASI_SELLER, R.drawable.ic_seller_edu) {
+                MenuItemUiModel(resources.getString(R.string.setting_menu_finance_service), R.drawable.ic_finance),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_seller_education_center), R.drawable.ic_seller_edu) {
                     val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
                     intent.putExtra(URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_EDU)
                     context?.startActivity(intent)
                 },
-                MenuItemUiModel(TOKOPEDIA_CARE, R.drawable.ic_tokopedia_care, ApplinkConst.CONTACT_US_NATIVE),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_tokopedia_care), R.drawable.ic_tokopedia_care, ApplinkConst.CONTACT_US_NATIVE),
                 DividerUiModel(DividerType.THIN_PARTIAL),
-                MenuItemUiModel(PENGATURAN, R.drawable.ic_setting, null) {
+                MenuItemUiModel(resources.getString(R.string.setting_menu_setting), R.drawable.ic_setting, null) {
                     startActivity(Intent(context, MenuSettingActivity::class.java))
                 }
         )
