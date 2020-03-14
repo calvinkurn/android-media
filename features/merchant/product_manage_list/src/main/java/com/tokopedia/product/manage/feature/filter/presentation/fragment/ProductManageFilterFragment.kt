@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
@@ -22,11 +22,12 @@ import com.tokopedia.product.manage.feature.filter.presentation.adapter.factory.
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterDataViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.FilterViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterViewModel
-import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipClickListener
+import com.tokopedia.product.manage.feature.filter.presentation.widget.ChipsAdapter
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SeeAllListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ShowChipsListener
 import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -35,7 +36,7 @@ import javax.inject.Inject
 
 class ProductManageFilterFragment : BottomSheetUnify(),
         HasComponent<ProductManageFilterComponent>,
-        SeeAllListener, ChipClickListener, ShowChipsListener {
+        SeeAllListener, ChipsAdapter.ChipClickListener, ShowChipsListener {
 
     companion object {
         const val ACTIVITY_EXPAND_FLAG = "expand_type"
@@ -92,8 +93,6 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
         val savedInstanceManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
         //TODO use this cache manager to get filters from product list page
-
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -102,8 +101,8 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         layoutManager = LinearLayoutManager(this.context)
         val adapterTypeFactory = FilterAdapterTypeFactory(this, this, this)
         filterAdapter = FilterAdapter(adapterTypeFactory)
-        filter_recycler_view.layoutManager = layoutManager
-        filter_recycler_view.adapter = filterAdapter
+        filterRecyclerView.layoutManager = layoutManager
+        filterRecyclerView.adapter = filterAdapter
         observeCombinedResponse()
         observeFilterData()
         initView()
@@ -221,7 +220,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     }
 
     private fun initView() {
-        btn_close_bottom_sheet.setOnClickListener {
+        buttonCloseBottomSheet.setOnClickListener {
             isResultReady = true
             productManageFilterViewModel.filterData.value?.let { data ->
                 context?.let {
@@ -236,6 +235,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
             super.dismiss()
             ProductManageTracking.eventFilter()
         }
+        adjustBottomSheetPadding()
         initBottomSheetReset()
     }
 
@@ -261,23 +261,28 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
     private fun initBottomSheetReset() {
         bottomSheetAction.visibility = View.GONE
-        bottomSheetAction.text = REST_BUTTON_TEXT
+        context?.let {
+            bottomSheetAction.text = it.resources.getString(R.string.filter_expand_reset)
+        }
         bottomSheetAction.setOnClickListener {
             productManageFilterViewModel.clearSelected()
         }
     }
 
     private fun showLoading() {
-        btn_close_bottom_sheet.isEnabled = false
-        filter_recycler_view.visibility= View.INVISIBLE
-        filter_loader.visibility = View.VISIBLE
-        ImageHandler.loadGif(filter_loader_image, R.drawable.ic_loading_indeterminate, R.drawable.ic_loading_indeterminate)
+        buttonCloseBottomSheet.isEnabled = false
+        filterRecyclerView.visibility= View.INVISIBLE
+        filterLoadingSpinner.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        filter_loader.visibility = View.GONE
-        btn_close_bottom_sheet.isEnabled = true
-        filter_recycler_view.visibility= View.VISIBLE
-        ImageHandler.clearImage(filter_loader_image)
+        filterLoadingSpinner.visibility = View.GONE
+        buttonCloseBottomSheet.isEnabled = true
+        filterRecyclerView.visibility= View.VISIBLE
+    }
+
+    private fun adjustBottomSheetPadding() {
+        bottomSheetWrapper.setPadding(0,0,0,0)
+        (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(16.toPx(),16.toPx(),16.toPx(),16.toPx())
     }
 }

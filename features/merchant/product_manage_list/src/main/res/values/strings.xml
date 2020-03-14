@@ -110,6 +110,10 @@
     <string name="filter_expand_save_button">Simpan</string>
     <string name="filter_expand_reset">Reset</string>
     <string name="filter_expand_category_not_found">Oops, kategori yang kamu cari tidak ditemukan.</string>
+    <string name="product_manage_filter_sort_select_title">Urutkan</string>
+    <string name="product_manage_filter_etalase_select_title">Etalase</string>
+    <string name="product_manage_filter_all_categories_title">Semua Kategori</string>
+    <string name="product_manage_filter_other_filters_title">Filter Lainnya</string>
 
     <string name="product_manage_menu_edit_price">Ubah Harga</string>
     <string name="product_manage_menu_edit_stock">Ubah Stok</string>
@@ -138,6 +142,7 @@
     <string name="product_manage_set_promo_ads_menu">TopAds</string>
 
     <string name="product_stock_reminder_toaster_success_desc">Pengingat stok \"%1$s\" berhasil dipasang.</string>
+    <string name="product_stock_reminder_toaster_success_remove_desc">Pengingat stok \"%1$s\" berhasil dinonaktifkan.</string>
     <string name="product_stock_reminder_toaster_failed_desc">Oops, permintaan kamu tidak dapat diproses.</string>
     <string name="product_stock_reminder_toaster_action_text">Coba Lagi</string>
     <string name="product_stock_reminder_loading_content_desc">Loading Stock Reminder</string>
@@ -146,6 +151,9 @@
     <string name="product_stock_reminder_typography_desc">Pengingat akan aktif jika stok produk kurang dari"</string>
     <string name="product_stock_reminder_button">Simpan</string>
     <string name="product_manage_search_hint">Cari produk atau SKU</string>
+    <string name="product_manage_cancel_multiple_select">Batalkan</string>
+    <string name="product_manage_edit_etalase">Pindah Etalase</string>
+    <string name="product_manage_edit_product_non_active">Nonaktifkan Produk</string>
 
     <string name="product_featured_add_dialog_title">Tambah Product Unggulan</string>
     <string name="product_featured_add_dialog_desc">Produk Unggulan tampil di posisi teratas tokomu untuk lebih menarik perhatian pembeli.</string>
@@ -183,6 +191,31 @@
 
     <string name="product_manage_snack_bar_retry">Coba lagi</string>
     <string name="product_manage_snack_bar_fail">Oops, permintaan kamu tidak dapat diproses.</string>
+    <string name="product_manage_button_multi_edit">Atur Sekaligus</string>
+    <string name="product_manage_dialog_delete_products_title">Hapus %d Produk?</string>
+    <string name="product_manage_dialog_edit_products_inactive_title">Nonaktifkan %d Produk?</string>
+    <string name="product_manage_edit_products_inactive_button">Ya, Nonaktifkan</string>
+    <string name="product_manage_edit_products_inactive_success">%d produk berhasil dinonaktifkan.</string>
+    <string name="product_manage_delete_products_success">%d produk berhasil dihapus.</string>
+    <string name="product_manage_delete_products_retry">%1$d produk berhasil dihapus, %2$d gagal dihapus.</string>
+    <string name="product_manage_edit_products_inactive_retry">%1$d produk berhasil dinonaktifkan, %2$d gagal dinonaktifkan.</string>
+    <string name="product_manage_edit_products_retry">%1$d produk berhasil diubah, %2$d gagal diubah.</string>
+    <string name="product_manage_edit_products_success">%1$d produk berhasil diubah.</string>
+    <string name="product_manage_edit_products_inactive_description">Produk yang dinonaktifkan tidak dapat dilihat calon pembeli.</string>
+
+    <string name="product_manage_set_cashback">Cashback</string>
+    <string name="product_manage_set_cashback_success">Pengaturan Cashback untuk \"%1$s\" berhasil.</string>
+    <string name="product_manage_set_cashback_header_title">Atur Cashback</string>
+    <string name="product_manage_set_cashback_ticker_title">Info Cashback</string>
+    <string name="product_manage_set_cashback_ticker_info">Cashback akan otomatis dikurangi dari harga produkmu.</string>
+    <string name="product_manage_set_cashback_no_cashback">Tidak ada cashback</string>
+    <string name="product_manage_set_cashback_three_percent">3%% cashback %1$s </string>
+    <string name="product_manage_set_cashback_four_percent">4%% cashback %1$s </string>
+    <string name="product_manage_set_cashback_five_percent">5%% cashback %1$s </string>
+    <string name="product_manage_set_cashback_dialog_title">Promo cashback maksimum 5 produk</string>
+    <string name="product_manage_set_cashback_dialog_desc">Maksimalkan penjualanmu dengan upgrade jadi Power Merchant agar lebih bebas menggunakan promo cashback.</string>
+    <string name="product_manage_set_cashback_dialog_upgrade_button">Upgrade Tokomu</string>
+    <string name="product_manage_set_cashback_dialog_see_cashback_products_button">Lihat Produk Cashback</string>
 
     <string name="add_product_text_description">Tambah Produk</string>
     <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>

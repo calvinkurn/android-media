@@ -1,4 +1,4 @@
-package com.tokopedia.product.manage.feature.list.view.ui
+package com.tokopedia.product.manage.feature.list.view.ui.tab
 
 import android.content.Context
 import android.util.AttributeSet

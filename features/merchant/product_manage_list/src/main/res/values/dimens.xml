@@ -17,4 +17,5 @@
     <dimen name="product_manage_container_spacing">17dp</dimen>
     <dimen name="product_manage_horizontal_spacing">14dp</dimen>
     <dimen name="dp_negative_8">-8dp</dimen>
+    <dimen name="product_manage_edit_item_vertical_spacing">18.5dp</dimen>
 </resources>

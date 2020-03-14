@@ -38,8 +38,6 @@ class ProductManageFilterExpandChecklistFragment :
         HasComponent<ProductManageFilterComponent> {
 
     companion object {
-        const val CATEGORIES_TITLE = "Semua Kategori"
-        const val OTHER_FILTER_TITLE = "Filter Lainnya"
         fun createInstance(flag: String, cacheManagerId: String): ProductManageFilterExpandChecklistFragment {
             return ProductManageFilterExpandChecklistFragment().apply {
                 arguments = Bundle().apply {
@@ -83,18 +81,14 @@ class ProductManageFilterExpandChecklistFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        filter_search_recycler_view.adapter = adapter
-        filter_search_recycler_view.layoutManager = LinearLayoutManager(this.context)
+        filterCheckListRecyclerView.adapter = adapter
+        filterCheckListRecyclerView.layoutManager = LinearLayoutManager(this.context)
         observeDataLength()
         observeChecklistData()
         initView()
     }
 
     override fun onChecklistClick(element: ChecklistViewModel) {
-        if(flag == OTHER_FILTER_CACHE_MANAGER_KEY) {
-            if(!element.isSelected) ProductManageTracking.eventMoreOthersFilter(element.name, getString(R.string.product_manage_stock_reminder_active))
-            else ProductManageTracking.eventMoreOthersFilter(element.name, getString(R.string.product_manage_stock_reminder_not_active))
-        }
         productManageFilterExpandChecklistViewModel.updateSelectedItem(element)
     }
 
@@ -117,32 +111,37 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun initView() {
-        initTitle()
         configToolbar()
-        filter_search_recycler_view.setOnTouchListener { _, _ ->
-            filter_category_search?.hideKeyboard()
-            btn_submit.visibility = View.VISIBLE
+        filterCheckListRecyclerView.setOnTouchListener { _, _ ->
+            filterSearchBar?.hideKeyboard()
+            filterSubmitButton.visibility = View.VISIBLE
             false
         }
         initButtons()
     }
 
     private fun configToolbar() {
-        checklist_toolbar?.setNavigationIcon(R.drawable.product_manage_arrow_back)
-        activity?.let {
-            (it as? AppCompatActivity)?.let { appCompatActivity ->
-                appCompatActivity.setSupportActionBar(checklist_toolbar)
-                appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
-                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        filterSearchHeader.isShowShadow = false
+        filterSearchHeader.isShowBackButton = true
+        filterSearchHeader.setNavigationOnClickListener {
+            activity?.onBackPressed()
+        }
+        context?.let {
+            if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
+                filterSearchHeader.title = it.resources.getString(R.string.product_manage_filter_all_categories_title)
+                initSearchView()
+            } else {
+                filterSearchHeader.title = it.resources.getString(R.string.product_manage_filter_other_filters_title)
             }
+            filterSearchHeader.actionText = it.resources.getString(R.string.filter_expand_reset)
         }
     }
 
     private fun initSearchView() {
-        filter_category_search.setDelayTextChanged(250)
-        filter_category_search.setListener(object : SearchInputView.Listener {
+        filterSearchBar.setDelayTextChanged(250)
+        filterSearchBar.setListener(object : SearchInputView.Listener {
             override fun onSearchSubmitted(text: String?) {
-                filter_category_search.hideKeyboard()
+                filterSearchBar.hideKeyboard()
             }
             override fun onSearchTextChanged(text: String?) {
                 hideError()
@@ -163,12 +162,12 @@ class ProductManageFilterExpandChecklistFragment :
                 }
             }
         })
-        filter_category_search.visibility = View.VISIBLE
-        filter_category_search.setFocusChangeListener {
-            if(btn_submit.visibility == View.VISIBLE) {
-                btn_submit.visibility = View.GONE
+        filterSearchBar.visibility = View.VISIBLE
+        filterSearchBar.setFocusChangeListener {
+            if(filterSubmitButton.visibility == View.VISIBLE) {
+                filterSubmitButton.visibility = View.GONE
             } else {
-                btn_submit.visibility = View.VISIBLE
+                filterSubmitButton.visibility = View.VISIBLE
             }
         }
     }
@@ -190,17 +189,17 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showButtons() {
-        btn_submit.isEnabled = true
-        reset_checklist.visibility = View.VISIBLE
+        filterSubmitButton.isEnabled = true
+        filterSearchHeader.actionTextView?.visibility = View.VISIBLE
     }
 
     private fun hideButtons() {
-        btn_submit.isEnabled = false
-        reset_checklist.visibility = View.GONE
+        filterSubmitButton.isEnabled = false
+        filterSearchHeader.actionTextView?.visibility = View.GONE
     }
 
     private fun initButtons() {
-        btn_submit.setOnClickListener {
+        filterSubmitButton.setOnClickListener {
             val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
             val cacheManagerId = cacheManager?.id
             productManageFilterExpandChecklistViewModel.checklistData.value?.sortByDescending { it.isSelected }
@@ -227,17 +226,9 @@ class ProductManageFilterExpandChecklistFragment :
             this.activity?.finish()
             ProductManageTracking.eventMoreOthersFilterSave()
         }
-        reset_checklist.setOnClickListener {
+        filterSearchHeader.actionTextView?.setOnClickListener {
+            adapter?.reset()
             productManageFilterExpandChecklistViewModel.clearAllChecklist()
-        }
-    }
-
-    private fun initTitle() {
-        if(flag == CATEGORIES_CACHE_MANAGER_KEY) {
-            page_title.text = CATEGORIES_TITLE
-            initSearchView()
-        } else {
-            page_title.text = OTHER_FILTER_TITLE
         }
     }
 
@@ -252,15 +243,15 @@ class ProductManageFilterExpandChecklistFragment :
     }
 
     private fun showError() {
-        filter_search_recycler_view.visibility = View.GONE
-        filter_search_error_img.visibility = View.VISIBLE
-        filter_search_error_text.visibility = View.VISIBLE
+        filterCheckListRecyclerView.visibility = View.GONE
+        filterSearchErrorImage.visibility = View.VISIBLE
+        filterSearchErrorText.visibility = View.VISIBLE
     }
 
     private fun hideError() {
-        filter_search_recycler_view.visibility = View.VISIBLE
-        filter_search_error_img?.visibility = View.GONE
-        filter_search_error_text.visibility = View.GONE
+        filterCheckListRecyclerView.visibility = View.VISIBLE
+        filterSearchErrorImage?.visibility = View.GONE
+        filterSearchErrorText.visibility = View.GONE
     }
 
 

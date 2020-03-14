@@ -85,14 +85,14 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
     }
 
     private fun initView() {
-        quick_edit_stock_quantity_editor.apply {
+        quickEditStockQuantityEditor.apply {
             maxValue = MAXIMUM_STOCK
             minValue = MINIMUM_STOCK
             (editText as EditText).setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
-                    quick_edit_stock_quantity_editor.clearFocus()
+                    quickEditStockQuantityEditor.clearFocus()
                     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.hideSoftInputFromWindow(quick_edit_stock_quantity_editor.editText.windowToken, 0)
+                    imm.hideSoftInputFromWindow(quickEditStockQuantityEditor.editText.windowToken, 0)
                 }
                 true
             }
@@ -101,7 +101,7 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
             }
         }
 
-        quick_edit_stock_save_button.setOnClickListener {
+        quickEditStockSaveButton.setOnClickListener {
             val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
             cacheManager?.let {
                 cacheManagerId = it.id
@@ -111,7 +111,7 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
             super.dismiss()
             ProductManageTracking.eventEditStockSave(productId)
         }
-        quick_edit_stock_activate_switch.setOnCheckedChangeListener { _, isChecked ->
+        quickEditStockActivateSwitch.setOnCheckedChangeListener { _, isChecked ->
             checked = isChecked
             if (isChecked) {
                 viewModel.updateStatus(ProductStatus.ACTIVE)
@@ -119,16 +119,10 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
                 viewModel.updateStatus(ProductStatus.INACTIVE)
             }
         }
-
-        quick_edit_stock_activate_switch.setOnClickListener {
-            if(checked) ProductManageTracking.eventEditStockToggle(getString(R.string.product_manage_stock_reminder_active),productId)
-            else ProductManageTracking.eventEditStockToggle(getString(R.string.product_manage_stock_reminder_not_active), productId)
-        }
-
         product?.let {
-            quick_edit_stock_activate_switch.isChecked = it.isActive()
+            quickEditStockActivateSwitch.isChecked = it.isActive()
             it.stock?.let { stock ->
-                quick_edit_stock_quantity_editor.setValue(stock)
+                quickEditStockQuantityEditor.setValue(stock)
                 viewModel.updateStock(stock)
             }
             it.status?.let { status ->
@@ -137,7 +131,7 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
         }
         observeStatus()
         observeStock()
-        quick_edit_stock_quantity_editor.editText.requestFocus()
+        quickEditStockQuantityEditor.editText.requestFocus()
     }
 
     private fun observeStock() {
@@ -148,7 +142,7 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
 
     private fun observeStatus() {
         viewModel.status.observe(this, Observer {
-            quick_edit_stock_activate_switch.isChecked = it == ProductStatus.ACTIVE
+            quickEditStockActivateSwitch.isChecked = it == ProductStatus.ACTIVE
             product = product?.copy(status = it)
         })
     }

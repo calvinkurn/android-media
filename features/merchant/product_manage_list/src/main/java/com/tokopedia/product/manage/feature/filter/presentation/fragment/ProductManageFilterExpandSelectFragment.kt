@@ -38,8 +38,6 @@ class ProductManageFilterExpandSelectFragment :
         HasComponent<ProductManageFilterComponent> {
 
     companion object {
-        const val SORT_TITLE = "Urutkan"
-        const val ETALASE_TITLE = "Etalase"
         fun createInstance(flag: String, cacheManagerId: String): ProductManageFilterExpandSelectFragment {
             return ProductManageFilterExpandSelectFragment().apply {
                 arguments = Bundle().apply {
@@ -84,8 +82,8 @@ class ProductManageFilterExpandSelectFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        select_recycler_view.adapter = adapter
-        select_recycler_view.layoutManager = LinearLayoutManager(this.context)
+        filterSelectRecyclerView.adapter = adapter
+        filterSelectRecyclerView.layoutManager = LinearLayoutManager(this.context)
         initView()
     }
 
@@ -138,19 +136,16 @@ class ProductManageFilterExpandSelectFragment :
     }
 
     private fun configToolbar() {
-        select_toolbar.setNavigationIcon(R.drawable.ic_back)
-        flag.let {
-            if(it == SORT_CACHE_MANAGER_KEY) {
-                page_title.text = SORT_TITLE
-            } else {
-                page_title.text = ETALASE_TITLE
-            }
+        filterSelectHeader.isShowBackButton = true
+        filterSelectHeader.isShowShadow = false
+        filterSelectHeader.setNavigationOnClickListener {
+            activity?.onBackPressed()
         }
-        activity?.let {
-            (it as? AppCompatActivity)?.let { appCompatActivity ->
-                appCompatActivity.setSupportActionBar(select_toolbar)
-                appCompatActivity.supportActionBar?.setDisplayShowTitleEnabled(false)
-                appCompatActivity.supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        context?.let {
+            if(flag == SORT_CACHE_MANAGER_KEY) {
+                filterSelectHeader.title = it.resources.getString(R.string.product_manage_filter_sort_select_title)
+            } else {
+                filterSelectHeader.title = it.resources.getString(R.string.product_manage_filter_etalase_select_title)
             }
         }
     }

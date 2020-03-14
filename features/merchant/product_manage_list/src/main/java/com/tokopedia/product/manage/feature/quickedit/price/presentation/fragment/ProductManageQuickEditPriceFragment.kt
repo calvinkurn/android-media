@@ -2,14 +2,11 @@ package com.tokopedia.product.manage.feature.quickedit.price.presentation.fragme
 
 import android.content.Context
 import android.os.Bundle
-import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
-import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -18,11 +15,7 @@ import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
-import com.tokopedia.utils.text.currency.StringUtils
 import kotlinx.android.synthetic.main.fragment_quick_edit_price.*
-import kotlinx.android.synthetic.main.fragment_quick_edit_stock.*
-import java.text.NumberFormat
-import java.util.*
 
 class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
 
@@ -65,15 +58,15 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
 
     private fun initView(currentPrice: String) {
         context?.let {
-            quick_edit_price.prependText(it.resources.getString(R.string.product_manage_quick_edit_currency))
+            quickEditPriceTextField.prependText(it.resources.getString(R.string.product_manage_quick_edit_currency))
         }
-        quick_edit_price.apply {
+        quickEditPriceTextField.apply {
             textFieldInput.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_STRING_LENGTH))
             textFieldInput.setText(CurrencyFormatHelper.removeCurrencyPrefix(CurrencyFormatHelper.convertToRupiah(currentPrice)))
             setFirstIcon(com.tokopedia.unifyicon.R.drawable.ic_system_action_close_normal_24)
             setInputType(InputType.TYPE_CLASS_NUMBER)
             getFirstIcon().setOnClickListener {
-                quick_edit_price.textFieldInput.text.clear()
+                quickEditPriceTextField.textFieldInput.text.clear()
                 hideError()
             }
             textFieldInput.setOnEditorActionListener { _, actionId, _ ->
@@ -98,8 +91,8 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
                 }
             }
         }
-        quick_edit_price.requestFocus()
-        quick_edit_save_button.setOnClickListener {
+        quickEditPriceTextField.requestFocus()
+        quickEditPriceSaveButton.setOnClickListener {
             isPriceValid()
             ProductManageTracking.eventEditPriceSave(id)
         }
@@ -116,22 +109,22 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
     }
 
     private fun showErrorPriceTooLow() {
-        quick_edit_price.setError(true)
-        context?.getString(R.string.product_manage_quick_edit_min_price_error)?.let { quick_edit_price.setMessage(it) }
+        quickEditPriceTextField.setError(true)
+        context?.getString(R.string.product_manage_quick_edit_min_price_error)?.let { quickEditPriceTextField.setMessage(it) }
     }
 
     private fun showErrorPriceTooHigh() {
-        quick_edit_price.setError(true)
-        context?.getString(R.string.product_manage_quick_edit_max_price_error)?.let { quick_edit_price.setMessage(it) }
+        quickEditPriceTextField.setError(true)
+        context?.getString(R.string.product_manage_quick_edit_max_price_error)?.let { quickEditPriceTextField.setMessage(it) }
     }
 
     private fun hideError() {
-        quick_edit_price.setError(false)
-        quick_edit_price.setMessage("")
+        quickEditPriceTextField.setError(false)
+        quickEditPriceTextField.setMessage("")
     }
 
     private fun isPriceValid() {
-        price = CurrencyFormatHelper.convertRupiahToInt(quick_edit_price.textFieldInput.text.toString()).toString()
+        price = CurrencyFormatHelper.convertRupiahToInt(quickEditPriceTextField.textFieldInput.text.toString()).toString()
         when {
             isPriceTooLow() -> {
                 showErrorPriceTooLow()
