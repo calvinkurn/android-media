@@ -193,7 +193,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                     val cacheManager = context?.let { context -> SaveInstanceCacheManager(context, true) }
                     cacheManager?.let { manager ->
                         val cacheManagerId = manager.id
-                        manager.put(SET_CASHBACK_RESULT, viewModel.product.value)
+                        manager.put(SET_CASHBACK_RESULT, it.data)
                         this.activity?.setResult(Activity.RESULT_OK, Intent().putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, cacheManagerId))
                         this.activity?.finish()
                     }

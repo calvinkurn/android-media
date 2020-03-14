@@ -521,7 +521,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 }
                 setSecondaryCTAClickListener {
                     dismiss()
-                    viewModel.getProductList(userSession.shopId, listOf(FilterOption.FilterByCondition.CashBackOnly))
+                    viewModel.getProductList(shopId = userSession.shopId, filterOptions = listOf(FilterOption.FilterByCondition.CashBackOnly), isRefresh = true)
                 }
                 setImageUrl(ProductManageUrl.ILLUSTRATION_SET_CASHBACK_LIMIT_REACHED)
             }.show()
