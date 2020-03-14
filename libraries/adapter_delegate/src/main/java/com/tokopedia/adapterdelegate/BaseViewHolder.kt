@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 /**
  * Created by jegul on 2019-10-09.
  */
-abstract class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+open class BaseViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     open fun onViewRecycled() {}
 

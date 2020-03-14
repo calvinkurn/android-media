@@ -498,7 +498,6 @@ class PlayViewModel @Inject constructor(
         if (!isProductSheetInitialized) showProductSheetPlaceholder()
 
         launchCatchError(block = {
-            delay(5000)
             val productTagsItems = withContext(dispatchers.io) {
                 getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
                 getProductTagItemsUseCase.executeOnBackground()

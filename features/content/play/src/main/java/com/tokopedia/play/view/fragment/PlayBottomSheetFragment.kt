@@ -33,7 +33,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent

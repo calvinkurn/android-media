@@ -12,8 +12,9 @@ import com.tokopedia.play.util.event.Event
 import com.tokopedia.play.view.type.DiscountedPrice
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
+import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
@@ -50,10 +51,9 @@ class PlayBottomSheetViewModel @Inject constructor(
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
 
     fun getProductVariant(product: ProductLineUiModel, action: ProductAction) {
-        _observableProductVariant.value = PlayResult.Loading(true)
+        showVariantSheetPlaceholder()
 
         launchCatchError(block = {
-            delay(5000)
             val variantSheetUiModel = withContext(dispatchers.io) {
                 getProductVariantUseCase.params = getProductVariantUseCase.createParams(product.id)
                 val response = getProductVariantUseCase.executeOnBackground()
@@ -98,9 +98,23 @@ class PlayBottomSheetViewModel @Inject constructor(
                     action = action
             )
 
+    private fun showVariantSheetPlaceholder() {
+        _observableProductVariant.value = PlayResult.Loading(
+                true,
+                List(PLACEHOLDER_VARIANT_CATEGORY_COUNT) { VariantPlaceholderUiModel.Category(
+                        List(PLACEHOLDER_VARIANT_OPTION_COUNT) { VariantPlaceholderUiModel.Option }
+                ) }
+        )
+    }
+
     override fun onCleared() {
         super.onCleared()
         job.cancelChildren()
+    }
+
+    companion object {
+        private const val PLACEHOLDER_VARIANT_CATEGORY_COUNT = 2
+        private const val PLACEHOLDER_VARIANT_OPTION_COUNT = 7
     }
 
     private fun setMockVariantSheetContent(action: ProductAction) {

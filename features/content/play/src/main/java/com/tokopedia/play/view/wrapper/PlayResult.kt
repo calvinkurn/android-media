@@ -6,6 +6,6 @@ package com.tokopedia.play.view.wrapper
 sealed class PlayResult<T> {
 
     data class Success<T>(val data: T) : PlayResult<T>()
-    data class Loading<T>(val showPlaceholder: Boolean) : PlayResult<T>()
+    data class Loading<T>(val showPlaceholder: Boolean, val placeholderList: List<Any> = emptyList()) : PlayResult<T>()
     data class Failure<T>(val error: Throwable) : PlayResult<T>()
 }

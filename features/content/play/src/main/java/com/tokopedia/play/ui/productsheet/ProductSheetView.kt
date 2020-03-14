@@ -19,7 +19,7 @@ import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**

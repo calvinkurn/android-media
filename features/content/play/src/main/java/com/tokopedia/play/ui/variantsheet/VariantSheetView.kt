@@ -18,8 +18,10 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.variantsheet.adapter.VariantAdapter
+import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantPlaceholderItemDecoration
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.variant_common.model.ProductVariantCommon
@@ -79,11 +81,7 @@ class VariantSheetView(
         rvVariantList.apply {
             layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
             adapter = variantAdapter
-            itemAnimator = object: DefaultItemAnimator() {
-                override fun canReuseUpdatedViewHolder(viewHolder: RecyclerView.ViewHolder, payloads: MutableList<Any>): Boolean {
-                    return true
-                }
-            }
+            addItemDecoration(VariantPlaceholderItemDecoration(context))
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -119,7 +117,6 @@ class VariantSheetView(
 
         setProduct(model.product)
 
-        rvVariantList.adapter = variantAdapter
         if (model.listOfVariantCategory.isNotEmpty()) {
             variantAdapter.setItemsAndAnimateChanges(model.listOfVariantCategory)
         }
@@ -137,10 +134,11 @@ class VariantSheetView(
         showPlaceholder(false)
     }
 
-    internal fun showPlaceholder(isShow: Boolean) {
+    internal fun showPlaceholder(isShow: Boolean, placeholderList: List<Any> = emptyList()) {
         if (isShow) {
             phProductVariant.visible()
             phBtnAction.visible()
+            variantAdapter.setItemsAndAnimateChanges(placeholderList)
 
             btnAction.gone()
             clProductVariant.gone()
@@ -193,7 +191,7 @@ class VariantSheetView(
 
                 val product = ProductLineUiModel(
                         id = selectedProduct.productId.toString(),
-                        imageUrl = selectedProduct.picture?.original?:"",
+                        imageUrl = selectedProduct.picture?.original ?: "",
                         title = selectedProduct.name,
                         stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
                         isVariantAvailable = true,

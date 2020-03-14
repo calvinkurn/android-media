@@ -4,8 +4,8 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductLineAdapterDelegate
 import com.tokopedia.play.ui.productsheet.adapter.delegate.ProductPlaceholderAdapterDelegate
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
-import com.tokopedia.play.view.type.PlayProductUiModel
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 
 /**
  * Created by jegul on 03/03/20

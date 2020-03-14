@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.loadImageRounded
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.view.type.*
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 
 /**

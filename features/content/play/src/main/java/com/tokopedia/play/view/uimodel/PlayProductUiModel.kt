@@ -1,4 +1,7 @@
-package com.tokopedia.play.view.type
+package com.tokopedia.play.view.uimodel
+
+import com.tokopedia.play.view.type.ProductPrice
+import com.tokopedia.play.view.type.ProductStock
 
 /**
  * Created by jegul on 03/03/20
