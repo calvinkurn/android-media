@@ -206,7 +206,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     }
 
     private fun onErrorSetCashback(setCashbackResult: SetCashbackResult) {
-        Toaster.make(coordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
+        Toaster.make(setCashbackCoordinatorLayout, getString(R.string.product_manage_snack_bar_fail),
                 Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.product_manage_snack_bar_retry),
                 View.OnClickListener {
                     viewModel.setCashback(productId = setCashbackResult.productId,
