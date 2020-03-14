@@ -35,7 +35,7 @@
             android:id="@+id/btnNext"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/label_next_button"/>
+            android:text="@string/action_next_button"/>
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
