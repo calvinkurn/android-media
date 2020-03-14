@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationAdapterListener
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
@@ -38,9 +39,11 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
 
     private fun setupChild(child: View, list: List<RatesViewModelType>) {
         val rvShipping = child.rv_shipping
+        val mutableList = list.toMutableList()
+        mutableList.add(0, NotifierModel())
 
         rvShipping.layoutManager = LinearLayoutManager(child.context, LinearLayoutManager.VERTICAL, false)
-        rvShipping.adapter = ShippingDurationOccAdapter(list, this)
+        rvShipping.adapter = ShippingDurationOccAdapter(mutableList, this)
     }
 
     override fun onShippingDurationChoosen(shippingCourierViewModelList: MutableList<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {

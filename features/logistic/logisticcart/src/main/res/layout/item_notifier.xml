@@ -6,6 +6,7 @@
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_notifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_8"

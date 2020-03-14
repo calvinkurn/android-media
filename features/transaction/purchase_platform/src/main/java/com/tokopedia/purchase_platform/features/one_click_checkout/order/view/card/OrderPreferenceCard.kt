@@ -11,6 +11,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingcourierocc.ShippingC
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheet
 import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.ShippingDurationOccBottomSheetListener
 import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticdata.data.constant.CourierConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderPreference
@@ -151,6 +152,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             val list: ArrayList<RatesViewModelType> = ArrayList()
             for (shippingDurationViewModel in shippingRecommendationData.shippingDurationViewModels) {
                 if (shippingDurationViewModel.isSelected) {
+                    if(shippingDurationViewModel.shippingCourierViewModelList.isNotEmpty() && isCourierInstantOrSameday(shippingDurationViewModel.shippingCourierViewModelList[0].productData.shipperId)) {
+                        list.add(NotifierModel())
+                    }
                     list.addAll(shippingDurationViewModel.shippingCourierViewModelList)
                     break
                 }
@@ -166,6 +170,14 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
             })
         }
 //        }
+    }
+
+    private fun isCourierInstantOrSameday(shipperId: Int): Boolean {
+        val ids = CourierConstant.INSTANT_SAMEDAY_COURIER
+        for (id in ids) {
+            if (shipperId == id) return true
+        }
+        return false
     }
 
     fun showDurationBottomSheet(fragment: OrderSummaryPageFragment) {

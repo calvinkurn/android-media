@@ -18,5 +18,5 @@
     <string name="title_term_and_condition">Syarat dan Ketentuan</string>
     <string name="cod_brand_tag">Bayar di Tempat</string>
     <string name="duration_header_ticker">Perkiraan tiba dihitung sejak pesanan dikirim</string>
-
+    <string name="label_hardcoded_courier_ticker_logistic">Pembelian dengan Instan dan Same Day diatas pk 14:00 berpotensi dikirim hari berikutnya.</string>
 </resources>

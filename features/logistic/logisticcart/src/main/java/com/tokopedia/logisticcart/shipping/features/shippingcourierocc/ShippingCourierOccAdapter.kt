@@ -29,6 +29,7 @@ class ShippingCourierOccAdapter(val list: List<RatesViewModelType>, val shipping
         when (holder) {
             is ShippingCourierViewHolder -> holder.bindData(list[position] as ShippingCourierUiModel, shippingCourierAdapterListener)
             is ArmyViewHolder -> holder.bindData(list[position] as LogisticPromoUiModel, shippingDurationAdapterListener)
+            is NotifierViewHolder -> holder.bindInstantOrSamedayCourier()
         }
     }
 
