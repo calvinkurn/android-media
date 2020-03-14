@@ -24,6 +24,7 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import com.tokopedia.product.manage.feature.stockreminder.di.DaggerStockReminderComponent
 import com.tokopedia.product.manage.feature.stockreminder.view.viewmodel.StockReminderViewModel
 import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_PRODUCT_NAME
+import com.tokopedia.product.manage.oldlist.constant.ProductManageListConstant.EXTRA_THRESHOLD
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -106,14 +107,22 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
 
         btnSaveReminder.setOnClickListener {
-            if(qeStock.getValue() == 0) qeStock.setValue(1)
-            else if(qeStock.getValue() > 100) qeStock.setValue(100)
+            if(qeStock.getValue() == 0) {
+                qeStock.setValue(1)
+            } else if(qeStock.getValue() > 100) {
+                qeStock.setValue(100)
+            }
 
-            if (threshold == 0) {
-                threshold = qeStock.getValue()
-                createStockReminder()
+            if (swStockReminder.isChecked) {
+                if (threshold == 0) {
+                    threshold = qeStock.getValue()
+                    createStockReminder()
+                } else {
+                    threshold = qeStock.getValue()
+                    updateStockReminder()
+                }
             } else {
-                threshold = qeStock.getValue()
+                threshold = 0
                 updateStockReminder()
             }
         }
@@ -142,6 +151,7 @@ class StockReminderFragment: BaseDaggerFragment() {
     private fun doResultIntent() {
         val resultIntent = Intent()
         resultIntent.putExtra(EXTRA_PRODUCT_NAME, productName)
+        resultIntent.putExtra(EXTRA_THRESHOLD, threshold)
         activity?.setResult(Activity.RESULT_OK, resultIntent)
         activity?.finish()
     }
@@ -149,7 +159,6 @@ class StockReminderFragment: BaseDaggerFragment() {
     private fun getStockReminder() {
         showLoading()
         productId?.let { viewModel.getStockReminder(it) }
-
     }
 
     private fun createStockReminder() {
@@ -178,7 +187,9 @@ class StockReminderFragment: BaseDaggerFragment() {
                 threshold = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.threshold
 
                 threshold?.let { qeStock.setValue(it) }
-                if (threshold != 0) swStockReminder.isChecked = true
+                if (threshold != 0) {
+                    swStockReminder.isChecked = true
+                }
             }
             is Fail -> {
                 globalErrorStockReminder.visibility = View.VISIBLE

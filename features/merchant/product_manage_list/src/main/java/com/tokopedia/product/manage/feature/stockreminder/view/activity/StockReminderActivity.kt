@@ -20,6 +20,7 @@ class StockReminderActivity : BaseSimpleActivity() {
         header.setNavigationOnClickListener {
             onBackPressed()
         }
+        header.headerTitle = getString(R.string.product_stock_reminder_header_title)
         header.headerSubTitle = productName
     }
 
