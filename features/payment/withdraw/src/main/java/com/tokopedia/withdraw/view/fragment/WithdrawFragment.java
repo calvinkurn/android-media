@@ -294,14 +294,14 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
 
         withdrawButton.setOnClickListener(v -> {
             KeyboardHandler.hideSoftKeyboard(getActivity());
-            float balance;
+            long balance;
             if (currentState == SELLER_STATE) {
                 balance = sellerSaldoBalance;
             } else {
                 balance = buyerSaldoBalance;
             }
             presenter.doWithdraw(
-                    String.valueOf((int) balance),
+                    String.valueOf(balance),
                     totalWithdrawal.getText().toString(),
                     bankAdapter.getSelectedBank()
             );
@@ -309,7 +309,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
         });
 
 
-        float displayBalance;
+        long displayBalance;
         if (buyerSaldoBalance == 0 || buyerSaldoBalance < DEFAULT_MIN_FOR_SELECTED_BANK) {
             displayBalance = sellerSaldoBalance;
             saldoTitleTV.setText(getString(R.string.saldo_seller));
@@ -473,7 +473,7 @@ public class WithdrawFragment extends BaseDaggerFragment implements WithdrawCont
                 long withdrawal = (long) StringUtils.convertToNumeric(text, false);
                 long min = getMinTransferForCurrentBank();
                 long max = getMaxTransferForCurrentBank();
-                float deposit;
+                long deposit;
                 if (currentState == SELLER_STATE) {
                     deposit = sellerSaldoBalance;
                 } else {
