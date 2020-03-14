@@ -12,9 +12,9 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setOpaqueStatusBar
-import com.tokopedia.kotlin.extensions.view.setTransparentStatusBar
 import com.tokopedia.kotlin.extensions.view.setupStatusBarUnderMarshmallow
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.DeepLinkHandler
@@ -199,7 +199,7 @@ class SellerHomeActivity : BaseActivity() {
             if (isOpaque) {
                 this.setLightStatusBar()
             } else {
-                this.setTransparentStatusBar()
+                this.requestStatusBarLight()
             }
         }
         else {
