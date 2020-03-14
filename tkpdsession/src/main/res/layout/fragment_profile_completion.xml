@@ -32,13 +32,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_below="@id/header"
-            android:layout_above="@id/footer">
+            android:orientation="vertical">
         </LinearLayout>
 
         <include
-            android:id="@id/footer"
+            android:id="@+id/footer"
             layout="@layout/fragment_profile_completion_footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

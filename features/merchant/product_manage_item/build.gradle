@@ -51,7 +51,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.networkDependencies.glide
-
+    implementation rootProject.ext.miscDependencies.cameraView
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }
@@ -63,6 +63,7 @@ dependencies {
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.cameraView
     implementation (rootProject.ext.serviceDependencies.crashlytics) {
         transitive = true
     }

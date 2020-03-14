@@ -42,7 +42,12 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.cameraView
+    implementation (rootProject.ext.miscDependencies.ucrop){
+        exclude group: 'com.android.support'
+    }
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -62,7 +67,7 @@ project.ext {
     artifactId = 'recharge-ocr'
     groupId = 'com.tokopedia.rechargeocr'
     versionName = "0.0.2"
-    artifactName ="recharge-ocr-release"
+    artifactName ="rechargeocr-release"
 }
 
 apply from: '../../../publish_local.gradle'

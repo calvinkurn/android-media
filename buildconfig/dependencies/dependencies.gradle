@@ -180,7 +180,7 @@ ext {
     ]
 
     miscDependencies = [
-            scannerZxing          : "com.journeyapps:zxing-android-embedded:3.5.0",
+            scannerZxing          : "com.journeyapps:zxing-android-embedded:3.6.0",
             facebook              : "com.facebook.android:facebook-android-sdk:4.26.0",
             parcelerApi           : "org.parceler:parceler-api:1.1.12",
             parceler              : "org.parceler:parceler:1.1.12",

@@ -36,6 +36,10 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
 
+    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.supportLibDependencies.constraintLayout
+    implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.multiDex
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
@@ -49,7 +53,7 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'travel'
+    artifactId = 'passenger'
     groupId = 'com.tokopedia.travel'
     versionName = "0.0.2"
     artifactName = "travel_passenger-release"

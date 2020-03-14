@@ -48,7 +48,7 @@ dependencies {
 project.ext {
     artifactId = 'interest-pick-common'
     groupId = 'com.tokopedia.content'
-    versionName = "1.0.0"
+    versionName = "0.0.2"
     artifactName = "interest_pick_common-release"
 }
 

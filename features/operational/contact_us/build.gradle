@@ -41,6 +41,7 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.cameraView
     implementation (rootProject.ext.miscDependencies.ucrop){
         exclude group: 'com.android.support'
     }

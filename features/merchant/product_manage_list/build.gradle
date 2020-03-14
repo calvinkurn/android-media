@@ -62,6 +62,7 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.exifinterface
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.cameraView
     implementation rootProject.ext.miscDependencies.scannerZxing
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.playServicesDependencies.maps

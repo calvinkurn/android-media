@@ -23,6 +23,7 @@ dependencies {
     implementation project(rootProject.ext.features.sessioncommon)
 
     implementation project(rootProject.ext.libraries.cmPushNotifications)
+    implementation project(rootProject.ext.libraries.tkpddesign)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.analytics)
@@ -48,6 +49,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.rxKotlin
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
