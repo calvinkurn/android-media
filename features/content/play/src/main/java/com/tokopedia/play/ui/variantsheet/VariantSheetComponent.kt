@@ -8,6 +8,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.wrapper.PlayResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
@@ -32,7 +33,10 @@ class VariantSheetComponent(
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet]?.let(::handleShowHideVariantSheet) }
-                            is ScreenStateEvent.SetVariantSheet -> uiView.setVariantSheet(it.variantSheetModel)
+                            is ScreenStateEvent.SetVariantSheet -> when (it.variantResult) {
+                                is PlayResult.Loading -> if (it.variantResult.showPlaceholder) uiView.showPlaceholder(true)
+                                is PlayResult.Success -> uiView.setVariantSheet(it.variantResult.data)
+                            }
                         }
                     }
         }

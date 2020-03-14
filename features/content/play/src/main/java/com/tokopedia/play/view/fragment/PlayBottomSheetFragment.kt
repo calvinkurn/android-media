@@ -145,16 +145,6 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeVariantSheetContent() {
-        playViewModel.observableVariantSheetContent.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetVariantSheet(it)
-                        )
-            }
-        })
-
         viewModel.observableProductVariant.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -189,7 +179,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeBuyEvent() {
-        viewModel.observableAddtoCart.observe(viewLifecycleOwner, Observer {
+        viewModel.observableAddToCart.observe(viewLifecycleOwner, Observer {
             hideLoadingView()
             if (it.isSuccess) {
                 playViewModel.updateBadgeCart()
