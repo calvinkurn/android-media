@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.carousel.CarouselUnify
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/carousel_shop_page"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="-12dp"
-    android:layout_marginRight="-12dp"
-    android:layout_marginBottom="@dimen/spacing_lvl3"/>
+    android:orientation="vertical">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_12"
+        android:textColor="@color/clr_f531353b"
+        android:visibility="gone"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        tools:text="Title"
+        tools:visibility="visible" />
+
+    <com.tokopedia.carousel.CarouselUnify xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/carousel_shop_page"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="-12dp"
+        android:layout_marginRight="-12dp"
+        android:layout_marginBottom="@dimen/spacing_lvl3" />
+
+</LinearLayout>

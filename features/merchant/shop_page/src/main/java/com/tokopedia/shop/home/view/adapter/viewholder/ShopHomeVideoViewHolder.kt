@@ -12,10 +12,7 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubeThumbnailLoader
 import com.google.android.youtube.player.YouTubeThumbnailView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
@@ -23,6 +20,7 @@ import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
+import kotlinx.android.synthetic.main.widget_shop_page_video_youtube.view.*
 import java.util.regex.Pattern
 
 /**
@@ -59,9 +57,9 @@ class ShopHomeVideoViewHolder(
         youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
-    override fun bind(shopHomeDisplayWidgetUiModel: ShopHomeDisplayWidgetUiModel) {
-        this.youtubVideoModel = shopHomeDisplayWidgetUiModel
-        val videoData = shopHomeDisplayWidgetUiModel.data?.first()
+    override fun bind(model: ShopHomeDisplayWidgetUiModel) {
+        this.youtubVideoModel = model
+        val videoData = model.data?.first()
         val regex = "v=([^\\s&#]*)"
         videoUrl = videoData?.videoUrl ?: ""
         val pattern = Pattern.compile(regex, Pattern.MULTILINE)
@@ -75,11 +73,19 @@ class ShopHomeVideoViewHolder(
         videoData?.let {
             youTubeThumbnailShopPage?.addOnImpressionListener(it) {
                 listener.onDisplayItemImpression(
-                        shopHomeDisplayWidgetUiModel,
+                        model,
                         it,
                         adapterPosition,
                         1
                 )
+            }
+        }
+        itemView.textViewTitle?.apply {
+            if (model.header.title.isEmpty()) {
+                hide()
+            } else {
+                text = model.header.title
+                show()
             }
         }
     }

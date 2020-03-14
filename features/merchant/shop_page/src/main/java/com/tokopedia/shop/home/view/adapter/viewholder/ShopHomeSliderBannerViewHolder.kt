@@ -4,11 +4,14 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.setImage
+import kotlinx.android.synthetic.main.viewmodel_slider_banner.view.*
 import java.util.ArrayList
 
 /**
@@ -48,6 +51,14 @@ class ShopHomeSliderBannerViewHolder(
             infinite = true
 
             addItems(R.layout.widget_slider_banner_item, carouselData, itemCarousel)
+        }
+        itemView.textViewTitle?.apply {
+            if (element.header.title.isEmpty()) {
+                hide()
+            } else {
+                text = element.header.title
+                show()
+            }
         }
     }
 

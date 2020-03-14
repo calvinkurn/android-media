@@ -31,8 +31,8 @@ class ShopPageHomeTracking(
                 eventLabel,
                 customDimensionShopPage
         )
-        eventMap[ECOMMERCE] = mapOf(
-                PROMO_VIEW to mapOf(
+        eventMap[ECOMMERCE] = mutableMapOf(
+                PROMO_VIEW to mutableMapOf(
                         PROMOTIONS to mutableListOf(createDisplayWidgetPromotionsItemMap(
                                 widgetId,
                                 positionVertical,
@@ -97,8 +97,8 @@ class ShopPageHomeTracking(
                 eventLabel,
                 customDimensionShopPage
         )
-        eventMap[ECOMMERCE] = mapOf(
-                PROMO_CLICK to mapOf(
+        eventMap[ECOMMERCE] = mutableMapOf(
+                PROMO_CLICK to mutableMapOf(
                         PROMOTIONS to  mutableListOf(createDisplayWidgetPromotionsItemMap(
                                 widgetId,
                                 positionVertical,
@@ -150,8 +150,8 @@ class ShopPageHomeTracking(
                 IMPRESSION_OF_USE_VOUCHER,
                 customDimensionShopPage
         )
-        eventMap[ECOMMERCE] = mapOf(
-                PROMO_VIEW to mapOf(
+        eventMap[ECOMMERCE] = mutableMapOf(
+                PROMO_VIEW to mutableMapOf(
                         PROMOTIONS to createVoucherListMap(
                                 listVoucher
                         )))
@@ -204,7 +204,7 @@ class ShopPageHomeTracking(
                 "",
                 customDimensionShopPage
         )
-        eventMap[ECOMMERCE] = mapOf(
+        eventMap[ECOMMERCE] = mutableMapOf(
                 CURRENCY_CODE to IDR,
                 IMPRESSIONS to mutableListOf(createProductItemMap(
                         productName,
@@ -243,7 +243,7 @@ class ShopPageHomeTracking(
                 widgetOption,
                 customDimensionShopPage
         )
-        return mapOf(
+        return mutableMapOf(
                 NAME to productName,
                 ID to productId,
                 PRICE to formatPrice(productDisplayedPrice),
@@ -289,9 +289,9 @@ class ShopPageHomeTracking(
                 productId,
                 customDimensionShopPage
         )
-        eventMap[ECOMMERCE] = mapOf(
-                CLICK to mapOf(
-                        ACTION_FIELD to mapOf(LIST to listEventValue),
+        eventMap[ECOMMERCE] = mutableMapOf(
+                CLICK to mutableMapOf(
+                        ACTION_FIELD to mutableMapOf(LIST to listEventValue),
                         PRODUCTS to mutableListOf(createProductItemMap(
                                 productName,
                                 productId,
@@ -363,9 +363,9 @@ class ShopPageHomeTracking(
                 productId,
                 customDimensionShopPage
         )
-        eventMap[ECOMMERCE] = mapOf(
+        eventMap[ECOMMERCE] = mutableMapOf(
                 CURRENCY_CODE to IDR,
-                ADD to mapOf(
+                ADD to mutableMapOf(
                         PRODUCTS to mutableListOf(createAddToCartProductItemMap(
                                 productName,
                                 productId,
@@ -409,7 +409,7 @@ class ShopPageHomeTracking(
                 widgetOption,
                 customDimensionShopPage
         )
-        return mapOf(
+        return mutableMapOf(
                 NAME to productName,
                 ID to productId,
                 PRICE to formatPrice(productDisplayedPrice),

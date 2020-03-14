@@ -6,8 +6,25 @@
     android:layout_height="wrap_content"
     android:layout_marginLeft="-12dp"
     android:layout_marginRight="-12dp"
-    android:layout_marginBottom="@dimen/dp_8"
-    android:orientation="vertical">
+    android:layout_marginBottom="@dimen/dp_8">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginBottom="@dimen/dp_12"
+        android:textColor="@color/clr_f531353b"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/youtube_home_shop_page"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:typographyType="body_1"
+        app:typographyWeight="bold"
+        tools:text="Title"
+        tools:visibility="visible" />
 
     <com.google.android.youtube.player.YouTubeThumbnailView
         android:id="@+id/youtube_home_shop_page"
@@ -15,8 +32,10 @@
         android:layout_height="@dimen/dp_180"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_video_error_placeholder"
@@ -24,8 +43,10 @@
         android:layout_height="@dimen/dp_180"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/loaderVideoYoutube"
@@ -33,8 +54,10 @@
         android:layout_height="@dimen/dp_180"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/btn_youtube_player"
@@ -42,10 +65,10 @@
         android:layout_height="@dimen/dp_40"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/youtube_home_shop_page"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/youtube_home_shop_page"
         app:srcCompat="@drawable/ic_play_play_round" />
 
     <com.tokopedia.unifyprinciples.Typography

@@ -653,6 +653,5 @@ class ShopPageHomeFragment : BaseListFragment<Visitable<*>, ShopHomeAdapterTypeF
 
     fun clearCache() {
         viewModel.clearCache()
-
     }
 }
