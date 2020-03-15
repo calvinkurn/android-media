@@ -145,7 +145,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
 
     override fun setStatusBar() {
         (activity as? Activity)?.run {
-            if (isInitialStatusBar) {
+            if (isInitialStatusBar && !isDefaultDarkStatusBar) {
                 requestStatusBarLight()
             } else {
                 requestStatusBarDark()
