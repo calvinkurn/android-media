@@ -227,7 +227,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
             }
             is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
             is SettingResponseState.SettingError -> {
-                view?.showToasterError(resources.getString(R.string.setting_ticker_error_message))
+                view?.showToasterError(resources.getString(R.string.setting_toaster_error_message))
                 otherMenuViewHolder?.onErrorGetSettingShopInfoData()
             }
         }
@@ -242,7 +242,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 errorMessage,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                resources.getString(R.string.setting_ticker_error_retry),
+                resources.getString(R.string.setting_toaster_error_retry),
                 View.OnClickListener {
                     retryFetchAfterError()
                 })

@@ -6,7 +6,7 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 
 class SettingShopInfoUiModel(val shopName: String = "",
                              val shopAvatar: String = "",
-                             val shopType: ShopType = RegularMerchant.NeedUpdate,
+                             val shopType: ShopType = RegularMerchant.NeedUpgrade,
                              val saldoBalance: String = "",
                              val kreditTopAdsBalance: String = "",
                              val shopBadges: String = "",

@@ -37,15 +37,6 @@ class OtherMenuViewHolder(private val itemView: View,
         private val GREY_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant_inactive
         private val GREEN_POWER_MERCHANT_ICON = R.drawable.ic_power_merchant
 
-        private const val REGULAR_MERCHANT = "Regular Merchant"
-        private const val FOLLOWERS = "Followers"
-        private const val UPDATE = "Update"
-        private const val VERIFIKASI = "Verifikasi"
-        private const val AKTIF = "Aktif"
-        private const val TIDAK_AKTIF = "Tidak Aktif"
-        private const val SEDANG_DIVERIFIKASI = "Sedang Diverifikasi"
-        private const val SALDO = "Saldo"
-        private const val KREDIT_TOPADS = "Kredit TopAds"
     }
 
     fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
@@ -64,8 +55,8 @@ class OtherMenuViewHolder(private val itemView: View,
             onSuccessGetShopBadge(shopBadges)
             onSuccessGetTotalFollowers(shopFollowers)
         }
-        itemView.shopInfoLayout.saldoBalance.balanceTitle.text = SALDO
-        itemView.shopInfoLayout.topAdsBalance.balanceTitle.text = KREDIT_TOPADS
+        itemView.shopInfoLayout.saldoBalance.balanceTitle.text = context.resources.getString(R.string.setting_balance)
+        itemView.shopInfoLayout.topAdsBalance.balanceTitle.text = context.resources.getString(R.string.setting_topads_credits)
     }
 
     fun onLoadingGetSettingShopInfoData() {
@@ -99,7 +90,7 @@ class OtherMenuViewHolder(private val itemView: View,
 
     @SuppressLint("SetTextI18n")
     fun onSuccessGetTotalFollowers(totalFollowing: Int) {
-        itemView.shopInfoLayout.shopFollowers?.text = "$totalFollowing $FOLLOWERS"
+        itemView.shopInfoLayout.shopFollowers?.text = "$totalFollowing ${context.resources.getString(R.string.setting_followers)}"
     }
 
     private fun setShopName(shopName: String) {
@@ -148,8 +139,8 @@ class OtherMenuViewHolder(private val itemView: View,
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
         regularMerchantStatus.run {
             text = when(regularMerchant) {
-                is RegularMerchant.NeedUpdate -> UPDATE
-                is RegularMerchant.OnVerification -> VERIFIKASI
+                is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
+                is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)
             }
             setOnClickListener {
                 RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
@@ -159,21 +150,21 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun View.setPowerMerchantShopStatus(powerMerchantStatus: PowerMerchantStatus) : View {
-        var statusText = SEDANG_DIVERIFIKASI
+        var statusText = context.resources.getString(R.string.setting_on_verification)
         var textColor = GREY_TEXT_COLOR
         var statusDrawable = GREY_TIP
         var powerMerchantDrawableIcon = GREY_POWER_MERCHANT_ICON
         when(powerMerchantStatus) {
             is PowerMerchantStatus.Active -> {
-                statusText = AKTIF
+                statusText = context.resources.getString(R.string.setting_active)
                 textColor = GREEN_TEXT_COLOR
                 powerMerchantDrawableIcon = GREEN_POWER_MERCHANT_ICON
                 statusDrawable = GREEN_TIP }
             is PowerMerchantStatus.NotActive -> {
-                statusText = TIDAK_AKTIF
+                statusText = context.resources.getString(R.string.setting_not_active)
                 textColor = RED_TEXT_COLOR }
             is PowerMerchantStatus.OnVerification -> {
-                powerMerchantText?.text = REGULAR_MERCHANT
+                powerMerchantText?.text = context.resources.getString(R.string.regular_merchant)
             }
         }
         powerMerchantStatusText?.text = statusText

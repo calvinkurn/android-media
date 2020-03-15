@@ -19,14 +19,14 @@ fun Owner.getShopStatusType(): ShopType {
     isGoldMerchant?.let {
         return if (it) ShopType.OfficialStore
         else when(pmStatus) {
-            Owner.STATUS_INACTIVE -> RegularMerchant.NeedUpdate
+            Owner.STATUS_INACTIVE -> RegularMerchant.NeedUpgrade
             Owner.STATUS_ACTIVE -> PowerMerchantStatus.Active
             Owner.STATUS_IDLE -> PowerMerchantStatus.NotActive
             Owner.STATUS_PENDING -> PowerMerchantStatus.OnVerification
-            else -> RegularMerchant.OnVerification
+            else -> RegularMerchant.NeedVerification
         }
     }
-    return RegularMerchant.NeedUpdate
+    return RegularMerchant.NeedUpgrade
 }
 
 fun Any?.toDecimalRupiahCurrency(): String {

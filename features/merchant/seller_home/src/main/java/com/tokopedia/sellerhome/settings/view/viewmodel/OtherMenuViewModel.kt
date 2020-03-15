@@ -75,7 +75,7 @@ class OtherMenuViewModel @Inject constructor(
             return SettingShopInfoUiModel(
                     info?.shopName.toEmptyStringIfNull(),
                     info?.shopAvatar.toEmptyStringIfNull(),
-                    owner?.getShopStatusType()?: RegularMerchant.NeedUpdate,
+                    owner?.getShopStatusType()?: RegularMerchant.NeedUpgrade,
                     shopInfo.balance?.sellerBalance.toDecimalRupiahCurrency(),
                     shopInfo.topadsDeposit.topadsAmount.toDecimalRupiahCurrency(),
                     shopBadge,
