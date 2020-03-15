@@ -13,6 +13,7 @@ ext {
             agerestriction                  : ":features:category:age_restriction",
             tradeIn                         : ":features:category:tradein",
             basemvvm                        : ":features:category:basemvvm",
+            exploreCategory                 : ":features:category:explore_category",
 
             broadcastMessage                : ":features:communication:broadcast_message",
 //            broadcastMessage                : ":features:communication:broadcast_message_no_op", // toggle for no op

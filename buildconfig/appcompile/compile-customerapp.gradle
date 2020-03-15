@@ -25,6 +25,7 @@ include "features:content:interest_pick_common"
 include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:age_restriction"
+include "features:category:explore_category"
 
 include "features:recharge:common_digital"
 include "features:recharge:digitalproduct"

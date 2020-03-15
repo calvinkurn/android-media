@@ -1295,6 +1295,11 @@ public class HomeFragment extends BaseDaggerFragment implements
         viewModel.getBusinessUnitData(tabId, position);
     }
 
+    @Override
+    public void getPlayChannel(int position) {
+        viewModel.getPlayBanner(position);
+    }
+
     public void openWebViewURL(String url) {
         openWebViewURL(url, getActivity());
     }
