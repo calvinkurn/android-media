@@ -11,12 +11,15 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
-import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.sellerhome.settings.view.uimodel.base.RegularMerchant
 import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
+import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
+import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
+import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
 import kotlinx.android.synthetic.main.setting_shop_info_layout.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
@@ -26,7 +29,6 @@ class OtherMenuViewHolder(private val itemView: View,
                           private val listener: Listener) {
 
     companion object {
-        private val SHIMMER_STATUS_LAYOUT = R.layout.setting_shop_status_shimmer
         private val GREEN_TIP = R.drawable.setting_tip_bar_enabled
         private val GREEN_TEXT_COLOR = R.color.setting_green
         private val GREY_TIP = R.drawable.setting_tip_bar_disabled
@@ -46,89 +48,74 @@ class OtherMenuViewHolder(private val itemView: View,
         private const val KREDIT_TOPADS = "Kredit TopAds"
     }
 
-    fun initBindView() {
-        itemView.saldoBalance.balanceTitle.text = SALDO
-        itemView.topAdsBalance.balanceTitle.text = KREDIT_TOPADS
-        itemView.setOnClickAction()
-    }
-
-    fun onSuccessGetShopGeneralInfoData(uiModel: GeneralShopInfoUiModel) {
+    fun onSuccessGetSettingShopInfoData(uiModel: SettingShopInfoUiModel) {
+        val successLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_success, null, false)
+        (itemView.shopInfoLayout as? LinearLayout)?.run {
+            removeAllViews()
+            addView(successLayout)
+            setOnClickAction()
+        }
         uiModel.run {
             setShopName(shopName)
-            setShopAvatar(shopAvatarUrl)
+            setShopAvatar(shopAvatar)
             setShopStatusType(shopType)
             setSaldoBalance(saldoBalance)
             setKreditTopadsBalance(kreditTopAdsBalance)
+            onSuccessGetShopBadge(shopBadges)
+            onSuccessGetTotalFollowers(shopFollowers)
         }
-        itemView.removeGeneralInfoDataShimmer()
+        itemView.shopInfoLayout.saldoBalance.balanceTitle.text = SALDO
+        itemView.shopInfoLayout.topAdsBalance.balanceTitle.text = KREDIT_TOPADS
     }
 
-    fun onSuccessGetShopBadge(shopBadgeUrl: String) {
-        ImageHandler.LoadImage(itemView.shopInfoLayout.shopBadges, shopBadgeUrl)
-        itemView.shopInfoLayout.dot.visibility = View.VISIBLE
-        itemView.shopInfoLayout.shopBadges.visibility = View.VISIBLE
-        itemView.shopInfoLayout.shimmerBadge.visibility = View.GONE
+    fun onLoadingGetSettingShopInfoData() {
+        val loadingLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_loading, null, false)
+        (itemView.shopInfoLayout as? LinearLayout)?.run {
+            removeAllViews()
+            addView(loadingLayout)
+        }
+    }
+
+    fun onErrorGetSettingShopInfoData() {
+        val errorLayout = LayoutInflater.from(context).inflate(R.layout.setting_partial_shop_info_error, null, false)
+        errorLayout?.settingLocalLoad?.run {
+            title?.text = context.resources.getString(R.string.setting_error_message)
+            description?.text = context.resources.getString(R.string.setting_error_description)
+            refreshBtn?.setOnClickListener {
+                listener.onRefreshShopInfo()
+            }
+        }
+        (itemView.shopInfoLayout as? LinearLayout)?.run {
+            removeAllViews()
+            addView(errorLayout)
+        }
+    }
+
+    private fun onSuccessGetShopBadge(shopBadgeUrl: String) {
+        itemView.shopInfoLayout.shopBadges?.let {
+            ImageHandler.LoadImage(it, shopBadgeUrl)
+        }
     }
 
     @SuppressLint("SetTextI18n")
-    fun onSuccessGetTotalFollowing(totalFollowing: Int) {
-        itemView.shopInfoLayout.shopFollowers.text = "$totalFollowing $FOLLOWERS"
-        itemView.shopInfoLayout.shopBadges.visibility = View.VISIBLE
-        itemView.shopInfoLayout.shimmerFollowers.visibility = View.GONE
-    }
-
-    fun onLoadingGetShopGeneralInfoData() {
-        itemView.run {
-            shopInfoLayout.shopName.text = null
-            shopInfoLayout.shopImage.urlSrc = ""
-            saldoBalance.balanceValue.text = null
-            topAdsBalance.balanceValue.text = null
-            showGeneralInfoDataShimmer()
-        }
-    }
-
-    fun onLoadingGetShopBadge() {
-        itemView.shopInfoLayout.dot.visibility = View.GONE
-        itemView.shopInfoLayout.shopBadges.visibility = View.GONE
-        itemView.shopInfoLayout.shimmerBadge.visibility = View.VISIBLE
-    }
-
-    fun onLoadingGetTotalFollowing() {
-        itemView.shopInfoLayout.shopFollowers.text = ""
-        itemView.shimmerFollowers.visibility = View.VISIBLE
-    }
-
-    fun onErrorGetShopGeneralInfoData() {
-        itemView.run {
-            shopInfoLayout.shopName.text = null
-            shopInfoLayout.shopImage.urlSrc = ""
-            saldoBalance.balanceValue.text = null
-            topAdsBalance.balanceValue.text = null
-        }
-    }
-
-    fun onErrorGetShopBadge() {
-        itemView.shopInfoLayout.shopBadges.visibility = View.GONE
-    }
-
-    fun onErrorGetTotalFollowing() {
-        itemView.shopInfoLayout.shopFollowers.text = ""
+    fun onSuccessGetTotalFollowers(totalFollowing: Int) {
+        itemView.shopInfoLayout.shopFollowers?.text = "$totalFollowing $FOLLOWERS"
     }
 
     private fun setShopName(shopName: String) {
-        itemView.shopInfoLayout.shopName.text = shopName
+        itemView.shopInfoLayout.shopName?.text = shopName
     }
 
     private fun setShopAvatar(shopAvatarUrl: String) {
-        itemView.shopInfoLayout.shopImage.urlSrc = shopAvatarUrl
+        itemView.shopInfoLayout.shopImage?.urlSrc = shopAvatarUrl
     }
 
     private fun setSaldoBalance(balance: String) {
-        itemView.saldoBalance.balanceValue.text = balance
+        itemView.saldoBalance.balanceValue?.text = balance
     }
 
     private fun setKreditTopadsBalance(balance: String) {
-        itemView.topAdsBalance.balanceValue.text = balance
+        itemView.topAdsBalance.balanceValue?.text = balance
     }
 
     private fun setShopStatusType(shopType: ShopType) {
@@ -136,12 +123,17 @@ class OtherMenuViewHolder(private val itemView: View,
         val layoutInflater = LayoutInflater.from(context).inflate(shopType.shopTypeLayoutRes, null, false)
         val shopStatusLayout: View = when(shopType) {
             is RegularMerchant -> {
+                listener.onStatusBarNeedDarkColor(true)
                 layoutInflater.setRegularMerchantShopStatus(shopType)
             }
             is PowerMerchantStatus -> {
+                listener.onStatusBarNeedDarkColor(false)
                 layoutInflater.setPowerMerchantShopStatus(shopType)
             }
-            is ShopType.OfficialStore -> layoutInflater
+            is ShopType.OfficialStore -> {
+                listener.onStatusBarNeedDarkColor(false)
+                layoutInflater
+            }
         }
         (itemView.shopStatus as LinearLayout).run {
             removeAllViews()
@@ -150,7 +142,7 @@ class OtherMenuViewHolder(private val itemView: View,
     }
 
     private fun showShopStatusHeader(shopType: ShopType) {
-        itemView.shopStatusHeader.background = ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes)
+        itemView.shopStatusHeader?.background = ContextCompat.getDrawable(context, shopType.shopTypeHeaderRes)
     }
 
     private fun View.setRegularMerchantShopStatus(regularMerchant: RegularMerchant) : View {
@@ -181,34 +173,17 @@ class OtherMenuViewHolder(private val itemView: View,
                 statusText = TIDAK_AKTIF
                 textColor = RED_TEXT_COLOR }
             is PowerMerchantStatus.OnVerification -> {
-                powerMerchantText.text = REGULAR_MERCHANT
+                powerMerchantText?.text = REGULAR_MERCHANT
             }
         }
-        powerMerchantStatusText.text = statusText
-        powerMerchantStatusText.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
-        powerMerchantLeftStatus.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
-        powerMerchantIcon.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
+        powerMerchantStatusText?.text = statusText
+        powerMerchantStatusText?.setTextColor(ResourcesCompat.getColor(resources, textColor, null))
+        powerMerchantLeftStatus?.background = ResourcesCompat.getDrawable(resources, statusDrawable, null)
+        powerMerchantIcon?.setImageDrawable(ResourcesCompat.getDrawable(resources, powerMerchantDrawableIcon, null))
         setOnClickListener {
             RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
         }
         return this
-    }
-
-    private fun View.showGeneralInfoDataShimmer() {
-        shopInfoLayout.shimmerShopName.visibility = View.VISIBLE
-        val statusShimmerLayout = LayoutInflater.from(context).inflate(SHIMMER_STATUS_LAYOUT, null, false)
-        shopStatus?.run {
-            removeAllViews()
-            addView(statusShimmerLayout)
-        }
-        saldoBalance.shimmeringBalanceValue.visibility = View.VISIBLE
-        topAdsBalance.shimmeringBalanceValue.visibility = View.VISIBLE
-    }
-
-    private fun View.removeGeneralInfoDataShimmer() {
-        shopInfoLayout.shimmerShopName.visibility = View.GONE
-        saldoBalance.shimmeringBalanceValue.visibility = View.GONE
-        topAdsBalance.shimmeringBalanceValue.visibility = View.GONE
     }
 
     private fun View.setOnClickAction() {
@@ -227,6 +202,8 @@ class OtherMenuViewHolder(private val itemView: View,
         fun onFollowersCountClicked()
         fun onSaldoClicked()
         fun onKreditTopadsClicked()
+        fun onRefreshShopInfo()
+        fun onStatusBarNeedDarkColor(isDefaultDark: Boolean)
     }
 
 }

@@ -4,6 +4,12 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_status_bar_height"
+        android:background="@color/white"
+        android:elevation="4dp"/>
+
     <com.tokopedia.sellerhome.view.widget.toolbar.SellerHomeToolbar
         android:id="@+id/sahToolbar"
         android:layout_width="match_parent"

@@ -38,10 +38,11 @@
     <string name="setting_tc_divider">|</string>
     <string name="setting_terms_and_condition">Syarat dan Ketentuan</string>
     <string name="setting_privacy_terms">Kebijakan Privasi</string>
-    <string name="setting_error_retry">Coba Lagi</string>
+    <string name="setting_ticker_error_retry">Muat Ulang</string>
+    <string name="setting_ticker_error_message">Oops, informasi gagal ditampilkan</string>
     <string name="msg_share_apps">Sudah punya aplikasi Tokopedia belum? cek disini </string>
     <string name="title_share">Bagikan</string>
-    <string name="setting_menu_setting">PENGATURAN</string>
+    <string name="setting_menu_setting">Pengaturan</string>
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>
     <string name="setting_menu_shop_statistic">Statistik Toko</string>
     <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
@@ -72,6 +73,8 @@
     <string name="setting_menu_share_app">Bagikan Aplikasi</string>
     <string name="setting_menu_review_app">Review Aplikasi</string>
     <string name="setting_menu_developer_options">Developer Options</string>
+    <string name="setting_error_message">Data tidak dapat ditampilkan</string>
+    <string name="setting_error_description">Ketuk icon untuk memuat ulang</string>
 
     <string name="sh_lbl_create_promotion">Buat Promosi</string>
     <string name="sh_lbl_create_promotion_desc">Beragam promosi untuk tingkatkan performa toko.</string>

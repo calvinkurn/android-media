@@ -19,8 +19,10 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhome.R
@@ -29,11 +31,12 @@ import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.activity.MenuSettingActivity
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
-import com.tokopedia.sellerhome.settings.view.uimodel.GeneralShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.MenuItemUiModel
+import com.tokopedia.sellerhome.settings.view.uimodel.SettingShopInfoUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.SettingTitleUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.base.DividerType
-import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingErrorType
+import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingResponseState
+import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingSuccess
 import com.tokopedia.sellerhome.settings.view.uimodel.base.SettingUiModel
 import com.tokopedia.sellerhome.settings.view.viewholder.OtherMenuViewHolder
 import com.tokopedia.sellerhome.settings.view.viewmodel.OtherMenuViewModel
@@ -67,14 +70,12 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     lateinit var remoteConfig: FirebaseRemoteConfigImpl
 
     private var otherMenuViewHolder: OtherMenuViewHolder? = null
-    private var generalShopInfoIsAlreadyLoaded = false
-    private var shopBadgeIsAlreadyLoaded = false
-    private var totalFollowersIsAlreadyLoaded = false
 
     private var startToTransitionOffset = 0
     private var statusInfoTransitionOffset = 0
 
-    private var isLightStatusBar = false
+    private var isInitialStatusBar = false
+    private var isDefaultDarkStatusBar = true
 
     private val otherMenuViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(OtherMenuViewModel::class.java)
@@ -137,9 +138,14 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_DASHBOARD)
     }
 
+    override fun onRefreshShopInfo() {
+        showAllLoadingShimmering()
+        otherMenuViewModel.getAllSettingShopInfo()
+    }
+
     override fun setStatusBar() {
         (activity as? Activity)?.run {
-            if (isLightStatusBar) {
+            if (isInitialStatusBar) {
                 requestStatusBarLight()
             } else {
                 requestStatusBarDark()
@@ -147,38 +153,26 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         }
     }
 
-    private fun setStatusBarState(isLight: Boolean) {
-        isLightStatusBar = isLight
+    override fun onStatusBarNeedDarkColor(isDefaultDark: Boolean) {
+        isDefaultDarkStatusBar = isDefaultDark
+        setStatusBarStateInitialIsLight(!isDefaultDark)
+        if (otherMenuViewModel.isStatusBarInitialState.value == false && !isDefaultDark) {
+            setStatusBarStateInitialIsLight(isDefaultDark)
+        }
+        setStatusBar()
+    }
+
+    private fun setStatusBarStateInitialIsLight(isLight: Boolean) {
+        isInitialStatusBar = isLight
     }
 
     private fun observeLiveData() {
         with(otherMenuViewModel) {
-            generalShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
+            settingShopInfoLiveData.observe(viewLifecycleOwner, Observer { result ->
                 when(result) {
-                    is Success -> showGeneralShopInfoSuccess(result.data)
-                    is Fail -> showError(result.throwable, SettingErrorType.GENERAL_INFO_ERROR)
+                    is Success -> showSettingShopInfoState(result.data)
+                    is Fail -> showSettingShopInfoState(SettingResponseState.SettingError)
                 }
-            })
-            shopBadgeLiveData.observe(viewLifecycleOwner, Observer { result ->
-                when(result) {
-                    is Success -> showShopBadgeSuccess(result.data)
-                    is Fail -> showError(result.throwable, SettingErrorType.BADGES_ERROR)
-                }
-            })
-            totalFollowersLiveData.observe(viewLifecycleOwner, Observer { result ->
-                when(result) {
-                    is Success -> showTotalFollowingSuccess(result.data)
-                    is Fail -> showError(result.throwable, SettingErrorType.FOLLOWERS_ERROR)
-                }
-            })
-            isGeneralShopInfoAlreadyLoaded.observe(viewLifecycleOwner, Observer {
-                generalShopInfoIsAlreadyLoaded = it
-            })
-            isShopBadgeAlreadyLoadedLiveData.observe(viewLifecycleOwner, Observer {
-                shopBadgeIsAlreadyLoaded = it
-            })
-            isTotalFollowersAlreadyLoadedLiveData.observe(viewLifecycleOwner, Observer {
-                totalFollowersIsAlreadyLoaded = it
             })
 
         }
@@ -221,60 +215,20 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
     }
 
     private fun showAllLoadingShimmering() {
-        if (!generalShopInfoIsAlreadyLoaded) {
-            showGeneralShopInfoLoading()
-        }
-        if (!shopBadgeIsAlreadyLoaded) {
-            showShopBadgeLoading()
-        }
-        if (!totalFollowersIsAlreadyLoaded) {
-            showTotalFollowingLoading()
-        }
+        showSettingShopInfoState(SettingResponseState.SettingLoading)
     }
 
-    private fun showGeneralShopInfoSuccess(generalShopInfoUiModel: GeneralShopInfoUiModel) {
-        generalShopInfoUiModel.run {
-            otherMenuViewHolder?.onSuccessGetShopGeneralInfoData(this)
-        }
-    }
-
-    private fun showShopBadgeSuccess(shopBadgeUrl: String) {
-        otherMenuViewHolder?.onSuccessGetShopBadge(shopBadgeUrl)
-    }
-
-    private fun showTotalFollowingSuccess(totalFollowers: Int) {
-        otherMenuViewHolder?.onSuccessGetTotalFollowing(totalFollowers)
-    }
-
-    private fun showGeneralShopInfoLoading() {
-        otherMenuViewHolder?.onLoadingGetShopGeneralInfoData()
-    }
-
-    private fun showShopBadgeLoading() {
-        otherMenuViewHolder?.onLoadingGetShopBadge()
-    }
-
-    private fun showTotalFollowingLoading() {
-        otherMenuViewHolder?.onLoadingGetTotalFollowing()
-    }
-
-    private fun showError(throwable: Throwable, errorType: SettingErrorType) {
-        throwable.message?.let { view?.showToasterError(it) }
-        when(errorType) {
-            is SettingErrorType.GENERAL_INFO_ERROR -> {
-                if (!generalShopInfoIsAlreadyLoaded) {
-                    otherMenuViewHolder?.onErrorGetShopGeneralInfoData()
+    private fun showSettingShopInfoState(settingResponseState: SettingResponseState) {
+        when(settingResponseState) {
+            is SettingSuccess -> {
+                if (settingResponseState is SettingShopInfoUiModel) {
+                    otherMenuViewHolder?.onSuccessGetSettingShopInfoData(settingResponseState)
                 }
             }
-            is SettingErrorType.BADGES_ERROR -> {
-                if (!shopBadgeIsAlreadyLoaded) {
-                    otherMenuViewHolder?.onErrorGetShopBadge()
-                }
-            }
-            is SettingErrorType.FOLLOWERS_ERROR -> {
-                if (!totalFollowersIsAlreadyLoaded) {
-                    otherMenuViewHolder?.onErrorGetTotalFollowing()
-                }
+            is SettingResponseState.SettingLoading -> otherMenuViewHolder?.onLoadingGetSettingShopInfoData()
+            is SettingResponseState.SettingError -> {
+                view?.showToasterError(resources.getString(R.string.setting_ticker_error_message))
+                otherMenuViewHolder?.onErrorGetSettingShopInfoData()
             }
         }
     }
@@ -288,7 +242,7 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
                 errorMessage,
                 Snackbar.LENGTH_LONG,
                 Toaster.TYPE_ERROR,
-                resources.getString(R.string.setting_error_retry),
+                resources.getString(R.string.setting_ticker_error_retry),
                 View.OnClickListener {
                     retryFetchAfterError()
                 })
@@ -298,7 +252,11 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         populateAdapterData()
         recycler_view.layoutManager = LinearLayoutManager(context)
         context?.let { otherMenuViewHolder = OtherMenuViewHolder(view, it, this)}
-        otherMenuViewHolder?.initBindView()
+        if (isDefaultDarkStatusBar) {
+            activity?.requestStatusBarDark()
+        } else {
+            activity?.requestStatusBarLight()
+        }
         observeRecyclerViewScrollListener()
     }
 
@@ -326,22 +284,30 @@ class OtherMenuFragment: BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFa
         //but we will preserve the variable in case the stakeholders need to change the status bar alpha according to the scroll position
         val offsetAlpha = (MAXIMUM_ALPHA/maxTransitionOffset).times(offset - startToTransitionOffset)
         if (offsetAlpha >= ALPHA_CHANGE_THRESHOLD) {
-            if (isLightStatusBar) setDarkStatusBar()
+            if (isInitialStatusBar) {
+                setDarkStatusBar()
+                otherMenuViewModel.setIsStatusBarInitialState(false)
+            }
         } else {
-            if (!isLightStatusBar) setLightStatusBar()
+            if (!isInitialStatusBar) {
+                setLightStatusBar()
+                otherMenuViewModel.setIsStatusBarInitialState(true)
+            }
         }
     }
 
     private fun setLightStatusBar() {
-        setStatusBarState(true)
-        activity?.requestStatusBarLight()
-        statusBarBackground.visibility = View.INVISIBLE
+        if (!isDefaultDarkStatusBar){
+            activity?.requestStatusBarLight()
+        }
+        setStatusBarStateInitialIsLight(true)
+        statusBarBackground?.hide()
     }
 
     private fun setDarkStatusBar() {
-        setStatusBarState(false)
+        setStatusBarStateInitialIsLight(false)
         activity?.requestStatusBarDark()
-        statusBarBackground.visibility = View.VISIBLE
+        statusBarBackground?.show()
     }
 
 }

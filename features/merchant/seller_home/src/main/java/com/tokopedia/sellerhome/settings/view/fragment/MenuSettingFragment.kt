@@ -150,7 +150,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.msg_share_apps).toString() + "\n" + urlPlayStore)
         sendIntent.type = "text/plain"
-        activity!!.startActivity(Intent.createChooser(sendIntent, resources.getText(R.string.title_share)))
+        activity?.startActivity(Intent.createChooser(sendIntent, resources.getText(R.string.title_share)))
     }
 
     private fun reviewApplication() {

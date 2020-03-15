@@ -12,9 +12,7 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.kotlin.extensions.view.requestStatusBarLight
-import com.tokopedia.kotlin.extensions.view.setLightStatusBar
-import com.tokopedia.kotlin.extensions.view.setOpaqueStatusBar
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
 import com.tokopedia.kotlin.extensions.view.setupStatusBarUnderMarshmallow
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.DeepLinkHandler
@@ -68,7 +66,7 @@ class SellerHomeActivity : BaseActivity() {
         observeNotificationsLiveData()
         observeShopInfoLiveData()
         observeCurrentSelectedPageLiveData()
-        initStatusBar()
+        setupStatusBar()
     }
 
     override fun onResume() {
@@ -121,7 +119,7 @@ class SellerHomeActivity : BaseActivity() {
     }
 
     private fun showOtherSettingsFragment() {
-        setupOtherMenuStatusBar()
+        statusBarCallback?.setStatusBar()
         val type = FragmentType.OTHER
         if (sahBottomNav.currentItem == type) return
 
@@ -194,13 +192,9 @@ class SellerHomeActivity : BaseActivity() {
         sahBottomNav.setNotification(notificationCount, FragmentType.ORDER)
     }
 
-    private fun setupStatusBar(isOpaque: Boolean = true) {
+    private fun setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (isOpaque) {
-                this.setLightStatusBar()
-            } else {
-                this.requestStatusBarLight()
-            }
+            this.requestStatusBarDark()
         }
         else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
@@ -208,15 +202,5 @@ class SellerHomeActivity : BaseActivity() {
             }
             this.setupStatusBarUnderMarshmallow()
         }
-    }
-
-    private fun setupOtherMenuStatusBar() {
-        setupStatusBar(false)
-        statusBarCallback?.setStatusBar()
-    }
-
-    private fun initStatusBar() {
-        setOpaqueStatusBar()
-        setupStatusBar()
     }
 }

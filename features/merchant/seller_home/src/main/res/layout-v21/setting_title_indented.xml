@@ -12,7 +12,7 @@
         android:layout_marginTop="@dimen/setting_title_indented_margin_top"
         android:layout_marginBottom="@dimen/setting_title_indented_margin_bottom"
         android:textColor="@color/setting_black_text"
-        android:letterSpacing="@dimen/setting_title_letter_spacing"
+        android:letterSpacing="@integer/setting_title_letter_spacing"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@id/guideline"
         app:typographyType="body_3"
