@@ -24,8 +24,7 @@ internal class SearchShopViewModelFactory(
         private val shopTotalCountViewModelMapper: Mapper<SearchShopModel, ShopTotalCountViewModel>,
         private val shopViewModelMapper: Mapper<SearchShopModel, ShopViewModel>,
         private val searchLocalCacheHandler: SearchLocalCacheHandler,
-        private val userSession: UserSessionInterface,
-        private val localCacheHandler: LocalCacheHandler
+        private val userSession: UserSessionInterface
 ): ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -48,8 +47,7 @@ internal class SearchShopViewModelFactory(
                 shopTotalCountViewModelMapper,
                 shopViewModelMapper,
                 searchLocalCacheHandler,
-                userSession,
-                localCacheHandler
+                userSession
         )
     }
 }

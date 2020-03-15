@@ -62,6 +62,7 @@ class PlayCardViewHolder(
     override fun bind(element: PlayCardViewModel?) {
         if(element?.playCardHome == null){
             container.hide()
+            listener.getPlayChannel(adapterPosition)
         } else {
             onBind(element)
         }
