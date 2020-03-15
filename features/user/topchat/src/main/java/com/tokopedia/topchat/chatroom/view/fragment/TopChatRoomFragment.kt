@@ -119,12 +119,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
+    private var composeArea: EditText? = null
 
     override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false)
+        return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
+            bindView(it)
+        }
+    }
+
+    private fun bindView(view: View?) {
+        composeArea = view?.findViewById(R.id.new_comment)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -454,7 +461,7 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     override fun onSendButtonClicked() {
-        val sendMessage = view?.findViewById<EditText>(R.id.new_comment)?.text.toString()
+        val sendMessage = composeArea?.text.toString()
         val startTime = SendableViewModel.generateStartTime()
         presenter.sendAttachmentsAndMessage(
                 messageId,
