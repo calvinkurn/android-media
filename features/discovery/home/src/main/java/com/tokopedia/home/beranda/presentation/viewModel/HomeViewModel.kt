@@ -824,7 +824,7 @@ open class HomeViewModel @Inject constructor(
                     when (data.action) {
                         ACTION_ADD -> newList.add(homeVisitable)
                         ACTION_UPDATE -> {
-                            if (newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
+                            if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
                                 newList[data.position] = homeVisitable
                             } else {
                                 newList.withIndex().find { it::class.java == homeVisitable::class.java }?.let {
