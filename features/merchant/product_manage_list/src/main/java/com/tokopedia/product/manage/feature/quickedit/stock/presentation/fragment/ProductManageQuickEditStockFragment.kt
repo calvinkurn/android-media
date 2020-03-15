@@ -50,9 +50,9 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
     lateinit var viewModel: ProductManageQuickEditStockViewModel
 
     var editStockSuccess = false
+    private var firstStateChecked = false
     var cacheManagerId: String? = ""
     var productId: String = ""
-    var checked: Boolean = false
 
     private var product: ProductViewModel? = null
 
@@ -69,6 +69,11 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        firstStateChecked = true
     }
 
     override fun getComponent(): ProductManageQuickEditStockComponent? {
@@ -111,14 +116,23 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
             super.dismiss()
             ProductManageTracking.eventEditStockSave(productId)
         }
+
         quickEditStockActivateSwitch.setOnCheckedChangeListener { _, isChecked ->
-            checked = isChecked
             if (isChecked) {
                 viewModel.updateStatus(ProductStatus.ACTIVE)
             } else {
                 viewModel.updateStatus(ProductStatus.INACTIVE)
             }
+
+            if(firstStateChecked) {
+                if(isChecked) {
+                    ProductManageTracking.eventEditStockToggle(getString(R.string.product_manage_tracking_active), productId)
+                } else {
+                    ProductManageTracking.eventEditStockToggle(getString(R.string.product_manage_tracking_not_active), productId)
+                }
+            }
         }
+
         product?.let {
             quickEditStockActivateSwitch.isChecked = it.isActive()
             it.stock?.let { stock ->

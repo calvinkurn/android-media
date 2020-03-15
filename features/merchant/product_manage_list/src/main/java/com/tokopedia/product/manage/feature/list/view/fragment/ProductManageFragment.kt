@@ -61,6 +61,7 @@ import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT
+import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT_ID
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
@@ -276,15 +277,17 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun editMultipleProductsEtalase() {
-        // TO DO
+        ProductManageTracking.eventBulkSettingsMoveEtalase()
     }
 
     override fun editMultipleProductsInActive() {
         showEditProductsInActiveConfirmationDialog()
+        ProductManageTracking.eventBulkSettingsDeactive()
     }
 
     override fun deleteMultipleProducts() {
         showDeleteProductsConfirmationDialog()
+        ProductManageTracking.eventBulkSettingsDeleteBulk()
     }
 
     private fun setupSearchBar() {
@@ -305,10 +308,12 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun setupMultiSelect() {
         textMultipleSelect.setOnClickListener {
             viewModel.toggleMultiSelect()
+            ProductManageTracking.eventMultipleSelect()
         }
 
         btnMultiEdit.setOnClickListener {
             multiEditBottomSheet?.show()
+            ProductManageTracking.eventBulkSettings()
         }
     }
 
@@ -505,6 +510,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                     setPrimaryCTAClickListener {
                         dismiss()
                         RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
+                        ProductManageTracking.eventCashbackSettingsPopUp()
                     }
                     setSecondaryCTAClickListener {
                         dismiss()
@@ -867,6 +873,14 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         ProductManageTracking.eventEditStock(product.id)
     }
 
+    override fun onClickEditVariantButton(product: ProductViewModel) {
+        ProductManageTracking.eventEditVariants(product.id)
+    }
+
+    override fun onClickContactCsButton(product: ProductViewModel) {
+        ProductManageTracking.eventContactCs(product.id)
+    }
+
     override fun onClickMoreOptionsButton(product: ProductViewModel) {
         hideSoftKeyboard()
 
@@ -1037,6 +1051,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             val intent = Intent(this.activity,ProductManageSetCashbackActivity::class.java)
             it.put(SET_CASHBACK_PRODUCT, productManageViewModel)
             intent.putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, it.id)
+            intent.putExtra(SET_CASHBACK_PRODUCT_ID, productManageViewModel.id)
             startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
         }
     }

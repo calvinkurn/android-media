@@ -24,6 +24,7 @@ import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmo
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import kotlinx.android.synthetic.main.fragment_product_manage_set_cashback.*
 import javax.inject.Inject
@@ -32,8 +33,8 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         HasComponent<ProductManageSetCashbackComponent> {
 
     companion object {
-
         const val SET_CASHBACK_CACHE_MANAGER_KEY = "set_cashback_cache_id"
+        const val SET_CASHBACK_PRODUCT_ID = "set_cashback_product_id"
         const val SET_CASHBACK_PRODUCT = "set_cashback_product"
         const val ZERO_CASHBACK = 0
         const val THREE_PERCENT_CASHBACK = 3
@@ -41,10 +42,11 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         const val FIVE_PERCENT_CASHBACK = 5
         const val PERCENT = 100
 
-        fun createInstance(cacheManagerId: String): ProductManageSetCashbackFragment{
+        fun createInstance(cacheManagerId: String, productId: String): ProductManageSetCashbackFragment{
             return ProductManageSetCashbackFragment().apply {
                 arguments = Bundle().apply {
                     putString(SET_CASHBACK_CACHE_MANAGER_KEY, cacheManagerId)
+                    putString(SET_CASHBACK_PRODUCT_ID, productId)
                 }
             }
         }
@@ -54,6 +56,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     lateinit var viewModel: ProductManageSetCashbackViewModel
 
     private var adapter: SetCashbackAdapter? = null
+    private var productId: String = ""
 
     override fun getComponent(): ProductManageSetCashbackComponent? {
         return activity?.run {
@@ -71,6 +74,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         var cacheManagerId = ""
         arguments?.let {
             cacheManagerId = it.getString(SET_CASHBACK_CACHE_MANAGER_KEY) ?: ""
+            productId = it.getString(SET_CASHBACK_PRODUCT_ID) ?: ""
         }
         val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
         val cacheManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
@@ -128,6 +132,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
                 this.activity?.setResult(Activity.RESULT_OK, Intent().putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, cacheManagerId))
                 this.activity?.finish()
             }
+            ProductManageTracking.eventCashbackSettingsSave(productId)
         }
     }
 

@@ -46,8 +46,6 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         const val CATEGORIES_CACHE_MANAGER_KEY = "categories"
         const val OTHER_FILTER_CACHE_MANAGER_KEY = "filter"
         const val BOTTOMSHEET_TITLE = "Filter"
-        const val REST_BUTTON_TEXT = "Reset"
-        const val TAB_NAME = "tab_name"
         const val EXPAND_FILTER_REQUEST = 1
         const val UPDATE_SORT_SUCCESS_RESPONSE = 200
         const val UPDATE_ETALASE_SUCCESS_RESPONSE = 300
@@ -80,7 +78,6 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     private var layoutManager: LinearLayoutManager? = null
 
     var isResultReady: Boolean = false
-    var resultCacheManagerId: String = ""
     var selectedFilterOptions: FilterOptionWrapper? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -187,11 +184,19 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     override fun onChipClicked(data: FilterDataViewModel, canSelectMany: Boolean, title: String) {
         if(canSelectMany) {
             productManageFilterViewModel.updateSelect(data)
-            if(title == ProductManageFilterMapper.OTHER_FILTER_HEADER) ProductManageTracking.eventOthersFilterName(data.name)
+            if(title == ProductManageFilterMapper.OTHER_FILTER_HEADER) {
+                ProductManageTracking.eventOthersFilterName(data.name)
+            }
         } else {
             productManageFilterViewModel.updateSelect(data, title)
-            if(title == ProductManageFilterMapper.ETALASE_HEADER) ProductManageTracking.eventEtalaseFilter(data.name)
-            else ProductManageTracking.eventSortingFilterName(data.name)
+            if(title == ProductManageFilterMapper.ETALASE_HEADER) {
+                if(data.name == getString(R.string.product_manage_filter_all_products) || data.name == getString(R.string.product_manage_filter_product_sold)) {
+                    ProductManageTracking.eventEtalaseFilter(data.name)
+                }
+            }
+            else {
+                ProductManageTracking.eventSortingFilterName(data.name)
+            }
         }
     }
 

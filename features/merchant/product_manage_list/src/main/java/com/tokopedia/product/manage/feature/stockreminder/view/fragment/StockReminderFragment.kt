@@ -50,11 +50,12 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
     }
 
+    private var firstStateChecked: Boolean? = null
+    private var toggleStateChecked: Boolean? = null
     private var productId: String? = null
     private var productName: String? = null
     private var warehouseId: String? = null
     private var threshold: Int? = null
-    private var checked: Boolean? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -101,15 +102,23 @@ class StockReminderFragment: BaseDaggerFragment() {
         getStockReminder()
 
         swStockReminder.setOnCheckedChangeListener { _, isChecked ->
-            checked = isChecked
-            if(isChecked) containerStockReminder.visibility = View.VISIBLE
-            else containerStockReminder.visibility = View.GONE
-        }
+            toggleStateChecked = isChecked
+            toggleStateChecked?.let { state ->
+                if(state) {
+                    containerStockReminder.visibility = View.VISIBLE
+                } else {
+                    containerStockReminder.visibility = View.GONE
+                }
+            }
 
-        swStockReminder.setOnClickListener {
-            checked?.let {
-                if (it) ProductManageTracking.eventToggleReminder(getString(R.string.product_manage_stock_reminder_active))
-                else ProductManageTracking.eventToggleReminder(getString(R.string.product_manage_stock_reminder_not_active))
+            firstStateChecked?.let { state ->
+                if(state) {
+                    if(isChecked) {
+                        ProductManageTracking.eventToggleReminder(getString(R.string.product_manage_tracking_active))
+                    } else {
+                        ProductManageTracking.eventToggleReminder(getString(R.string.product_manage_tracking_not_active))
+                    }
+                }
             }
         }
 
@@ -119,7 +128,6 @@ class StockReminderFragment: BaseDaggerFragment() {
             } else if(qeStock.getValue() > 100) {
                 qeStock.setValue(100)
             }
-
             if (swStockReminder.isChecked) {
                 if (threshold == 0) {
                     threshold = qeStock.getValue()
@@ -132,11 +140,20 @@ class StockReminderFragment: BaseDaggerFragment() {
                 threshold = 0
                 updateStockReminder()
             }
-            checked?.let {
-                if (it) ProductManageTracking.eventToggleReminderSave(getString(R.string.product_manage_stock_reminder_active))
-                else ProductManageTracking.eventToggleReminderSave(getString(R.string.product_manage_stock_reminder_not_active))
+
+            toggleStateChecked?.let { state ->
+                if (state) {
+                    ProductManageTracking.eventToggleReminderSave(getString(R.string.product_manage_tracking_active))
+                } else {
+                    ProductManageTracking.eventToggleReminderSave(getString(R.string.product_manage_tracking_not_active))
+                }
             }
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        firstStateChecked = true
     }
 
     private fun checkLogin() {
@@ -234,5 +251,4 @@ class StockReminderFragment: BaseDaggerFragment() {
             }
         }
     }
-
 }

@@ -94,7 +94,7 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_FEATURED_PRODUCT_POP_UP_MORE, "")
     }
 
-    fun eventCashbackSettings(label: String) {
+    fun eventCashbackSettingsSave(label: String) {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_CASHBACK_SETTINGS, label)
     }
 
@@ -170,7 +170,7 @@ object ProductManageTracking {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_ON_EDIT_STOCK_SAVE, label)
     }
 
-    fun eventContactUs(label: String) {
+    fun eventContactCs(label: String) {
         eventProductManage(ProductManageDataLayer.EVENT_ACTION_CLICK_CONTACT_CS, label)
     }
 

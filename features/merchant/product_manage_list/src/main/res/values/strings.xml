@@ -53,6 +53,8 @@
     <string name="product_manage_filter_free_returns">Free Returns</string>
     <string name="product_manage_filter_preorder">Preorder</string>
     <string name="product_manage_filter_all_showcase">Semua Etalase</string>
+    <string name="product_manage_filter_all_products">Semua Produk</string>
+    <string name="product_manage_filter_product_sold">Produk Terjual</string>
     <string name="product_manage_stock_empty">Kosong</string>
     <string name="product_manage_stock_nonactive">Nonaktif</string>
     <string name="product_manage_label_change_search">Ubah pencarian produk Anda</string>
@@ -220,8 +222,8 @@
     <string name="add_product_text_description">Tambah Produk</string>
     <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>
 
-    <string name="product_manage_stock_reminder_active">active</string>
-    <string name="product_manage_stock_reminder_not_active">not active</string>
+    <string name="product_manage_tracking_active">active</string>
+    <string name="product_manage_tracking_not_active">not active</string>
 
 
 </resources>

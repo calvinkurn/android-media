@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -90,6 +89,11 @@ class ProductManageFilterExpandChecklistFragment :
 
     override fun onChecklistClick(element: ChecklistViewModel) {
         productManageFilterExpandChecklistViewModel.updateSelectedItem(element)
+        if(element.isSelected) {
+            ProductManageTracking.eventMoreOthersFilter(element.name, getString(R.string.product_manage_tracking_active))
+        } else {
+            ProductManageTracking.eventMoreOthersFilter(element.name, getString(R.string.product_manage_tracking_not_active))
+        }
     }
 
     override fun onSelectClick(element: SelectViewModel) {
