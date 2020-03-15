@@ -8,17 +8,17 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
 import androidx.core.content.ContextCompat
-import androidx.core.widget.TextViewCompat.setTextAppearance
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
-
 
 
 class PartialButtonActionView private constructor(private val view: View,
@@ -57,9 +57,9 @@ class PartialButtonActionView private constructor(private val view: View,
     init {
         with(view) {
             pb_buy_now.indeterminateDrawable
-                .setColorFilter(ContextCompat.getColor(context, R.color.orange_red), PorterDuff.Mode.SRC_IN)
+                    .setColorFilter(ContextCompat.getColor(context, R.color.orange_red), PorterDuff.Mode.SRC_IN)
             pb_add_to_cart.indeterminateDrawable
-                .setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN)
+                    .setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN)
         }
     }
 
@@ -76,7 +76,7 @@ class PartialButtonActionView private constructor(private val view: View,
         renderButton()
     }
 
-    private fun renderButton(){
+    private fun renderButton() {
         if (isWarehouseProduct) {
             showNoStockButton()
         } else if (hasShopAuthority) {
@@ -88,29 +88,29 @@ class PartialButtonActionView private constructor(private val view: View,
 
     private fun showNewCheckoutButton(preOrder: PreOrder?) {
         with(view) {
-            btn_buy.visibility = View.GONE
-            container_btn_promote_topads.visibility = View.GONE
+            hideButtonEmptyAndTopAds()
+
             btn_topchat.visibility = View.VISIBLE
             bindAbTestChatButton(btn_topchat)
             tv_buy_now.text = context.getString(
-                if (preOrder?.isPreOrderActive() == true) {
-                    R.string.action_preorder
-                } else {
-                    if (isExpressCheckout) {
-                        R.string.buy_now
+                    if (preOrder?.isPreOrderActive() == true) {
+                        R.string.action_preorder
                     } else {
-                        R.string.buy
-                    }
-                })
+                        if (isExpressCheckout) {
+                            R.string.buy_now
+                        } else {
+                            R.string.buy
+                        }
+                    })
             btn_buy_now.visibility = View.VISIBLE
             btn_add_to_cart.visible()
-            if(isLeasing){
-                btn_apply_leasing.visibility  = View.VISIBLE
+            if (isLeasing) {
+                btn_apply_leasing.visibility = View.VISIBLE
                 btn_add_to_cart.visibility = View.GONE
                 btn_buy_now.visibility = View.GONE
                 changeTopChatLayoutParamsToHandleLeasingLayout()
-            }else{
-                btn_apply_leasing.visibility  = View.GONE
+            } else {
+                btn_apply_leasing.visibility = View.GONE
                 resetTopChatLayoutParams()
             }
             btn_buy_now.setOnClickListener {
@@ -145,7 +145,7 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun resetTopChatLayoutParams() {
-        with(view){
+        with(view) {
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
             topChatParams.startToEnd = btn_byme.id
             topChatParams.startToStart = UNSET
@@ -156,7 +156,7 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun changeTopChatLayoutParamsToHandleLeasingLayout() {
-        with(view){
+        with(view) {
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
             topChatParams.startToEnd = UNSET
             topChatParams.startToStart = PARENT_ID
@@ -164,43 +164,32 @@ class PartialButtonActionView private constructor(private val view: View,
             topChatParams.endToStart = btn_apply_leasing.id
             btn_topchat.layoutParams = topChatParams
         }
+    }
 
+    private fun hideButtonEmptyAndTopAds() = with(view) {
+        btn_empty_stock.hide()
+        btn_top_ads.hide()
     }
 
     private fun showShopManageButton() {
         with(view) {
-            btn_buy.visibility = View.GONE
-            container_btn_promote_topads.visibility = View.VISIBLE
-            btn_byme.visibility = View.GONE
-            btn_topchat.visibility = View.GONE
-            btn_buy_now.visibility = View.GONE
-            btn_add_to_cart.visibility = View.GONE
+            btn_empty_stock.hide()
+            btn_top_ads.show()
             if (hasTopAdsActive) {
-                btn_promote_topads.setOnClickListener { rincianTopAdsClick?.invoke() }
-                btn_promote_topads.text = context.getString(R.string.rincian_topads)
-                btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_grey_outline)
-                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPRincian)
+                btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
+                btn_top_ads.text = context.getString(R.string.rincian_topads)
+                btn_top_ads.buttonCompatType = ButtonCompat.WHITE_TRANSPARENT
             } else {
-                btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
-                btn_promote_topads.text = context.getString(R.string.promote_topads)
-                btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_green)
-                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPIklankan)
+                btn_top_ads.setOnClickListener { promoTopAdsClick?.invoke() }
+                btn_top_ads.text = context.getString(R.string.promote_topads)
+                btn_top_ads.buttonCompatType = ButtonCompat.PRIMARY
             }
         }
     }
 
     private fun showNoStockButton() {
         with(view) {
-            tv_buy.setTextColor(ContextCompat.getColor(context, R.color.black_38))
-            btn_buy.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300))
-            tv_buy.text = context.getString(R.string.no_stock)
-            btn_buy.isEnabled = false
-            btn_buy.visibility = View.VISIBLE
-            container_btn_promote_topads.visibility = View.GONE
-            btn_byme.visibility = View.GONE
-            btn_topchat.visibility = View.GONE
-            btn_buy_now.visibility = View.GONE
-            btn_add_to_cart.visibility = View.GONE
+            btn_empty_stock.visible()
         }
     }
 

@@ -114,7 +114,9 @@ import com.tokopedia.product.detail.view.widget.SquareHFrameLayout
 import com.tokopedia.product.detail.view.widget.ValuePropositionBottomSheet
 import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
-import com.tokopedia.purchase_platform.common.constant.*
+import com.tokopedia.purchase_platform.common.constant.CartConstant
+import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
+import com.tokopedia.purchase_platform.common.constant.Constant
 import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
@@ -632,7 +634,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
             }
             ProductDetailConstant.PRODUCT_VARIANT_INFO -> {
                 DynamicProductDetailTracking.Click.eventClickVariant(generateVariantString(), viewModel.getDynamicProductInfoP1, componentTrackDataModel)
-                goToNormalCheckout(ATC_AND_BUY)
             }
             ProductDetailConstant.PRODUCT_WHOLESALE_INFO -> {
                 val data = DynamicProductDetailMapper.mapToWholesale(viewModel.getDynamicProductInfoP1?.data?.wholesale)
@@ -1817,67 +1818,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         if (viewModel.isUserSessionActive) {
             performanceMonitoringP2Login = PerformanceMonitoring.start(ProductDetailConstant.PDP_P2_LOGIN_TRACE)
             performanceMonitoringFull = PerformanceMonitoring.start(ProductDetailConstant.PDP_P3_TRACE)
-        }
-    }
-
-    private fun goToNormalCheckout(@ProductAction action: Int = ATC_AND_BUY) {
-        context?.let {
-            val shopInfo = viewModel.shopInfo
-            viewModel.getDynamicProductInfoP1?.let {
-                val isOcsCheckoutType = (viewModel.p2Login.value)?.isOcsCheckoutType
-                        ?: false
-                val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.NORMAL_CHECKOUT).apply {
-                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_TITLE, it.getProductName)
-                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_PRICE, it.data.price.value)
-                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_CONDITION, it.basic.condition)
-                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_ID, it.basic.category.id)
-                    putExtra(ApplinkConst.Transaction.EXTRA_CATEGORY_NAME, it.basic.category.name)
-                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_ID, it.basic.shopID)
-                    putExtra(ApplinkConst.Transaction.EXTRA_PRODUCT_ID, it.parentProductId)
-                    putExtra(ApplinkConst.Transaction.EXTRA_NOTES, userInputNotes)
-                    putExtra(ApplinkConst.Transaction.EXTRA_QUANTITY, userInputQuantity)
-                    putExtra(ApplinkConst.Transaction.EXTRA_SELECTED_VARIANT_ID, it.basic.productID)
-                    putExtra(ApplinkConst.Transaction.EXTRA_ACTION, action)
-                    putExtra(ApplinkConst.Transaction.TRACKER_ATTRIBUTION, trackerAttributionPdp)
-                    putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListNamePdp)
-                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopInfo?.goldOS?.shopTypeString)
-                    putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopInfo?.shopCore?.name)
-                    putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
-                    putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, it.basic.isLeasing)
-                    putExtra(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, it.layoutName)
-                }
-                intent.putExtra(ApplinkConst.Transaction.EXTRA_TRADE_IN_PARAMS, viewModel.tradeInParams)
-                startActivityForResult(intent,
-                        ProductDetailConstant.REQUEST_CODE_NORMAL_CHECKOUT)
-            }
-        }
-    }
-
-    private fun goToAtcExpress() {
-        activity?.let {
-            try {
-                val productInfo = viewModel.getDynamicProductInfoP1 ?: DynamicProductInfoP1()
-                val warehouseId: Int = viewModel.selectedMultiOrigin.warehouseInfo.id.toIntOrZero()
-                val atcRequestParam = AtcRequestParam()
-                atcRequestParam.setShopId(productInfo.basic.getShopId())
-                atcRequestParam.setProductId(productInfo.basic.getProductId())
-                atcRequestParam.setNotes(userInputNotes)
-                val qty = if (userInputQuantity == 0) productInfo.basic.minOrder else userInputQuantity
-                atcRequestParam.setQuantity(qty)
-                atcRequestParam.setWarehouseId(warehouseId)
-
-                val expressCheckoutUriString = ApplinkConstInternalMarketplace.EXPRESS_CHECKOUT
-                val intent = RouteManager.getIntent(it, expressCheckoutUriString)
-                intent?.run {
-                    putExtra(Constant.EXTRA_ATC_REQUEST, atcRequestParam)
-                    putExtra(Constant.TRACKER_ATTRIBUTION, trackerAttributionPdp)
-                    putExtra(Constant.TRACKER_LIST_NAME, trackerListNamePdp)
-                    startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS)
-                    it.overridePendingTransition(R.anim.pull_up, 0)
-                }
-            } catch (e: Exception) {
-
-            }
         }
     }
 
