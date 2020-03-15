@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet
 
 import android.view.View
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.purchase_platform.R
@@ -27,6 +28,7 @@ class OccInfoBottomSheet {
     }
 
     private fun setupChild(child: View, body: OnboardingComponentResponse) {
+        ImageHandler.loadImageFitCenter(child.context, child.iv_body, body.bodyImage)
         child.tv_body.text = body.bodyMessage
         child.tv_action.text = body.infoComponent.text
         child.tv_action.setOnClickListener {

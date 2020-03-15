@@ -25,13 +25,9 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
 
     private val etQty: EditText
     private var quantityTextWatcher: QuantityTextWatcher? = null
-//    private val rvProductVariant: RecyclerView
-
-//    private lateinit var adapter: OrderProductVariantAdapter
 
     init {
         etQty = view.et_qty
-//        rvProductVariant = view.rv_product_variant
     }
 
     fun setProduct(product: OrderProduct) {
@@ -62,22 +58,6 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 etQty.removeTextChangedListener(quantityTextWatcher)
             }
             etQty.setText("${product.quantity!!.orderQuantity}")
-            view.btn_qty_plus.setOnClickListener {
-                if (product.quantity!!.orderQuantity < product.quantity!!.maxOrderQuantity) {
-                    product.quantity!!.orderQuantity++
-                    etQty.setText("${product.quantity!!.orderQuantity}")
-//                    validateQuantity()
-//                    listener.onProductChange(product)
-                }
-            }
-            view.btn_qty_min.setOnClickListener {
-                if (product.quantity!!.orderQuantity > product.quantity!!.minOrderQuantity) {
-                    product.quantity!!.orderQuantity--
-                    etQty.setText("${product.quantity!!.orderQuantity}")
-//                    validateQuantity()
-//                    listener.onProductChange(product)
-                }
-            }
             quantityTextWatcher = QuantityTextWatcher(QuantityTextWatcher.QuantityTextwatcherListener { quantity ->
                 if (quantity.editable.isNotEmpty()) {
                     var zeroCount = 0
@@ -117,12 +97,20 @@ class OrderProductCard(private val view: View, private val listener: OrderProduc
                 listener.onProductChange(product)
             })
             etQty.addTextChangedListener(quantityTextWatcher)
+            view.btn_qty_plus.setOnClickListener {
+                if (product.quantity!!.orderQuantity < product.quantity!!.maxOrderQuantity) {
+                    product.quantity!!.orderQuantity++
+                    etQty.setText("${product.quantity!!.orderQuantity}")
+                }
+            }
+            view.btn_qty_min.setOnClickListener {
+                if (product.quantity!!.orderQuantity > product.quantity!!.minOrderQuantity) {
+                    product.quantity!!.orderQuantity--
+                    etQty.setText("${product.quantity!!.orderQuantity}")
+                }
+            }
             validateQuantity()
             renderProductPropertiesInvenage()
-//            rvProductVariant.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.VERTICAL, false)
-//            initializeAdapter()
-//            rvProductVariant.adapter = adapter
-//            adapter.setList(product.typeVariantList!!)
         }
     }
 

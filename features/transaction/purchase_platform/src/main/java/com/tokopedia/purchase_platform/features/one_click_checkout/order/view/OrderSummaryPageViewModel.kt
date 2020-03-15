@@ -4,10 +4,12 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.TKPDMapParam
 import com.tokopedia.purchase_platform.common.data.model.param.EditAddressParam
 import com.tokopedia.purchase_platform.common.data.model.request.checkout.*
@@ -65,7 +67,11 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             kero = orderData.cart.kero
             var preference = orderData.preference
 //            preference = preference.copy(shipment = preference.shipment.copy(serviceId = 1000))
-            _orderPreference = OrderPreference(preference)
+            if (_orderPreference == null) {
+                _orderPreference = OrderPreference(preference)
+            } else {
+                _orderPreference = _orderPreference?.copy(preference = preference)
+            }
             orderPreference.value = OccState.FirstLoad(_orderPreference!!)
             if (orderProduct.productId > 0 && preference.shipment.serviceId > 0) {
                 orderTotal.value = orderTotal.value?.copy(buttonState = ButtonBayarState.LOADING)
@@ -593,48 +599,50 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
             //loading
             globalEvent.value = OccGlobalEvent.Loading
-            editAddressUseCase.createObservable(requestParams)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .unsubscribeOn(Schedulers.io())
-                    .subscribe(object : Observer<String> {
-                        override fun onError(e: Throwable) {
-                            e.printStackTrace()
-                            globalEvent.value = OccGlobalEvent.Error(e)
-                        }
-
-                        override fun onNext(stringResponse: String) {
-                            var response: JSONObject? = null
-                            var messageError: String? = null
-                            var statusSuccess: Boolean
-                            try {
-                                response = JSONObject(stringResponse)
-                                val statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
-                                        .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS)
-                                statusSuccess = statusCode == 1
-                                if (!statusSuccess) {
-                                    messageError = response.getJSONArray("message_error").getString(0)
+            compositeSubscription.add(
+                    editAddressUseCase.createObservable(requestParams)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .unsubscribeOn(Schedulers.io())
+                            .subscribe(object : Observer<String> {
+                                override fun onError(e: Throwable) {
+                                    e.printStackTrace()
+                                    globalEvent.value = OccGlobalEvent.Error(e)
                                 }
-                            } catch (e: JSONException) {
-                                e.printStackTrace()
-                                statusSuccess = false
-                            }
 
-                            if (response != null && statusSuccess) {
-                                // trigger refresh
-                                globalEvent.value = OccGlobalEvent.TriggerRefresh
-                            } else {
-                                //show error
-                                if (messageError.isNullOrBlank()) {
-                                    messageError = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+                                override fun onNext(stringResponse: String) {
+                                    var response: JSONObject? = null
+                                    var messageError: String? = null
+                                    var statusSuccess: Boolean
+                                    try {
+                                        response = JSONObject(stringResponse)
+                                        val statusCode = response.getJSONObject(EditAddressUseCase.RESPONSE_DATA)
+                                                .getInt(EditAddressUseCase.RESPONSE_IS_SUCCESS)
+                                        statusSuccess = statusCode == 1
+                                        if (!statusSuccess) {
+                                            messageError = response.getJSONArray("message_error").getString(0)
+                                        }
+                                    } catch (e: JSONException) {
+                                        e.printStackTrace()
+                                        statusSuccess = false
+                                    }
+
+                                    if (response != null && statusSuccess) {
+                                        // trigger refresh
+                                        globalEvent.value = OccGlobalEvent.TriggerRefresh
+                                    } else {
+                                        //show error
+                                        if (messageError.isNullOrBlank()) {
+                                            messageError = "Terjadi kesalahan. Ulangi beberapa saat lagi"
+                                        }
+                                        globalEvent.value = OccGlobalEvent.Error(errorMessage = messageError)
+                                    }
                                 }
-                                globalEvent.value = OccGlobalEvent.Error(errorMessage = messageError)
-                            }
-                        }
 
-                        override fun onCompleted() {
-                        }
-                    })
+                                override fun onCompleted() {
+                                }
+                            })
+            )
         }
     }
 
@@ -657,14 +665,14 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val op = orderProduct
         val quantity = op.quantity
         val pref = _orderPreference
-        if (quantity != null && pref?.shipping?.shipperProductId != null) {
+        if (quantity != null && pref != null) {
             val cart = UpdateCartOccCartRequest(
                     orderShop.cartResponse.cartId.toString(),
                     quantity.orderQuantity,
                     op.notes,
                     op.productId.toString(),
-                    pref.shipping.shipperId.toString(),
-                    pref.shipping.shipperProductId.toString()
+                    pref.shipping?.shipperId.toZeroIfNull().toString(),
+                    pref.shipping?.shipperProductId.toZeroIfNull().toString()
             )
             val profile = UpdateCartOccProfileRequest(
                     pref.preference.profileId.toString(),
@@ -676,5 +684,28 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             return UpdateCartOccRequest(arrayListOf(cart), profile)
         }
         return null
+    }
+
+    fun updatePreference(preference: ProfilesItemModel) {
+        var param = generateUpdateCartParam()
+        if (param != null) {
+            param = param.copy(profile = UpdateCartOccProfileRequest(
+                    profileId = preference.profileId.toString(),
+                    addressId = preference.addressModel?.addressId.toString(),
+                    serviceId = preference.shipmentModel?.serviceId ?: 0,
+                    gatewayCode = preference.paymentModel?.gatewayCode ?: ""
+            ))
+            globalEvent.value = OccGlobalEvent.Loading
+            updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
+                globalEvent.value = OccGlobalEvent.TriggerRefresh
+            }, { throwable: Throwable ->
+                throwable.printStackTrace()
+                if (throwable is MessageErrorException && throwable.message != null) {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                } else {
+                    globalEvent.value = OccGlobalEvent.Error(throwable)
+                }
+            })
+        }
     }
 }

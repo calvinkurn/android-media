@@ -5,7 +5,7 @@ data class AddToCartOccRequestParams(
         var shopId: String,
         var quantity: String,
         var warehouseId: String = "",
-        var lang: String = "",
+        var lang: String = "id",
         var isScp: Boolean = false,
         var ucParam: String = "",
         var attribution: String = "",

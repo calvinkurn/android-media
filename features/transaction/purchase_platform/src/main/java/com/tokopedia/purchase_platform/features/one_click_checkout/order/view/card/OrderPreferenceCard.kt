@@ -13,7 +13,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingdurationocc.Shipping
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderPreference
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPreference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import kotlinx.android.synthetic.main.card_order_preference.view.*
 

@@ -1,4 +1,4 @@
-package com.tokopedia.purchase_platform.features.one_click_checkout.order.view
+package com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model
 
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.Shipment
