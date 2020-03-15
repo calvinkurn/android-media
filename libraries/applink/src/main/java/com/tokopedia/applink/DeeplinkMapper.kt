@@ -6,6 +6,7 @@ import chatbot.DeeplinkMapperChatbot.getChatbotDeeplink
 import com.tokopedia.applink.Digital_Deals.DeeplinkMapperDeals.getRegisteredNavigationDeals
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
+import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationExploreCategory
 import com.tokopedia.applink.category.DeeplinkMapperMoneyIn.getRegisteredNavigationMoneyIn
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.content.DeeplinkMapperContent.getRegisteredNavigationContent
@@ -74,6 +75,8 @@ object DeeplinkMapper {
                         getRegisteredNavigationDeals(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.FIND) || deeplink.startsWith(ApplinkConst.AMP_FIND) ->
                         getRegisteredFind(deeplink)
+                    deeplink.startsWithPattern(ApplinkConst.Digital.DIGITAL_BROWSE) ->
+                        getRegisteredNavigationExploreCategory(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.PROFILE) ->
                         getRegisteredNavigationContent(deeplink)
                     deeplink.startsWithPattern(ApplinkConst.PLAY_DETAIL) ->
