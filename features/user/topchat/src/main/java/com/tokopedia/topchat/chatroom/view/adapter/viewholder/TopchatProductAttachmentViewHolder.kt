@@ -60,9 +60,9 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindName(product: ProductAttachmentViewModel) {
-        itemView.tv_product_name?.apply {
-            maxLines = if (product.hasVariant()) 2 else 1
-            text = product.productName
+        itemView.tv_product_name?.let {
+            it.maxLines = if (product.hasVariant()) 2 else 1
+            it.text = product.productName
         }
     }
 
@@ -140,9 +140,9 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindDropPrice(product: ProductAttachmentViewModel) {
-        itemView.tv_campaign_price?.apply {
-            paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-            text = product.priceBefore
+        itemView.tv_campaign_price?.let {
+            it.paintFlags = it.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            it.text = product.priceBefore
         }
     }
 
@@ -176,15 +176,15 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindBuy(product: ProductAttachmentViewModel) {
-        itemView.tv_buy?.apply {
-            show()
+        itemView.tv_buy?.let {
+            it.show()
             if (product.hasEmptyStock()) {
-                isEnabled = false
-                setText(com.tokopedia.chat_common.R.string.action_empty_stock)
+                it.isEnabled = false
+                it.setText(com.tokopedia.chat_common.R.string.action_empty_stock)
             } else {
-                isEnabled = true
-                setText(com.tokopedia.chat_common.R.string.action_buy)
-                setOnClickListener {
+                it.isEnabled = true
+                it.setText(com.tokopedia.chat_common.R.string.action_buy)
+                it.setOnClickListener {
                     listener.onClickBuyFromProductAttachment(product)
                 }
             }
@@ -192,12 +192,12 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindAtc(product: ProductAttachmentViewModel) {
-        itemView.tv_atc?.apply {
+        itemView.tv_atc?.let {
             if (product.hasEmptyStock()) {
-                hide()
+                it.hide()
             } else {
-                show()
-                setOnClickListener {
+                it.show()
+                it.setOnClickListener {
                     listener.onClickATCFromProductAttachment(product)
                 }
             }
@@ -205,14 +205,14 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindWishList(product: ProductAttachmentViewModel) {
-        itemView.tv_wishlist?.apply {
+        itemView.tv_wishlist?.let {
             if (product.hasEmptyStock()) {
-                show()
-                setOnClickListener {
+                it.show()
+                it.setOnClickListener {
                     listener.onClickAddToWishList(product.productId.toString()) { }
                 }
             } else {
-                hide()
+                it.hide()
             }
         }
     }
