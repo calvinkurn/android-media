@@ -112,29 +112,29 @@ public class ShipmentMapper implements IShipmentMapper {
             boolean isDisableEgold = false;
             boolean isDisablePPP = false;
             boolean isDisableDonation = false;
-
-            for (String disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
-                switch (disabledFeature) {
-                    case CheckoutDisabledFeaturesKt.dropshipper:
-                        dataResult.setDropshipperDisable(true);
-                        break;
-                    case CheckoutDisabledFeaturesKt.multiAddress:
-                        dataResult.setMultipleDisable(true);
-                        break;
-                    case CheckoutDisabledFeaturesKt.orderPrioritas:
-                        dataResult.setOrderPrioritasDisable(true);
-                        break;
-                    case CheckoutDisabledFeaturesKt.egold:
-                        isDisableEgold = true;
-                        break;
-                    case CheckoutDisabledFeaturesKt.ppp:
-                        isDisablePPP = true;
-                        break;
-                    case CheckoutDisabledFeaturesKt.donation:
-                        isDisableDonation = true;
-                        break;
+            if (shipmentAddressFormDataResponse.getDisabledFeatures() != null)
+                for (String disabledFeature : shipmentAddressFormDataResponse.getDisabledFeatures()) {
+                    switch (disabledFeature) {
+                        case CheckoutDisabledFeaturesKt.dropshipper:
+                            dataResult.setDropshipperDisable(true);
+                            break;
+                        case CheckoutDisabledFeaturesKt.multiAddress:
+                            dataResult.setMultipleDisable(true);
+                            break;
+                        case CheckoutDisabledFeaturesKt.orderPrioritas:
+                            dataResult.setOrderPrioritasDisable(true);
+                            break;
+                        case CheckoutDisabledFeaturesKt.egold:
+                            isDisableEgold = true;
+                            break;
+                        case CheckoutDisabledFeaturesKt.ppp:
+                            isDisablePPP = true;
+                            break;
+                        case CheckoutDisabledFeaturesKt.donation:
+                            isDisableDonation = true;
+                            break;
+                    }
                 }
-            }
 
             Addresses addresses = shipmentAddressFormDataResponse.getAddresses();
             DataAddressData dataAddressData = new DataAddressData();
@@ -299,7 +299,7 @@ public class ShipmentMapper implements IShipmentMapper {
                     // set voucher orders
                     ArrayList<LastApplyVoucherOrdersItemUiModel> listVoucherOrdersUiModel = new ArrayList<>();
                     if (lastApply.getData().getVoucherOrders() != null) {
-                        for (int i=0; i<lastApply.getData().getVoucherOrders().size(); i++) {
+                        for (int i = 0; i < lastApply.getData().getVoucherOrders().size(); i++) {
                             LastApplyVoucherOrdersItemUiModel lastApplyVoucherOrdersItemUiModel = new LastApplyVoucherOrdersItemUiModel();
                             com.tokopedia.purchase_platform.features.checkout.data.model.response.shipment_address_form.promo_checkout.VoucherOrdersItem voucherOrdersItem = lastApply.getData().getVoucherOrders().get(i);
                             lastApplyVoucherOrdersItemUiModel.setCode(voucherOrdersItem.getCode());
@@ -824,7 +824,7 @@ public class ShipmentMapper implements IShipmentMapper {
         }
 
         if (data.getVoucherOrders() != null && data.getVoucherOrders().size() > 0) {
-            for (int j=0; j<data.getVoucherOrders().size(); j++) {
+            for (int j = 0; j < data.getVoucherOrders().size(); j++) {
                 if (data.getVoucherOrders().get(j) != null) {
                     if (data.getVoucherOrders().get(j).getMessage() != null) {
                         if (Objects.requireNonNull(data.getVoucherOrders().get(j).getMessage()).getState() != null) {
