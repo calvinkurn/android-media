@@ -7,6 +7,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.discovery.common.constants.SearchApiConst;
 import com.tokopedia.discovery.common.constants.SearchConstant;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel;
+import com.tokopedia.discovery.common.model.ProductCardOptionsModel.WishlistResult;
+import com.tokopedia.discovery.common.model.WishlistTrackingModel;
 import com.tokopedia.filter.common.data.DynamicFilterModel;
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
@@ -64,6 +67,9 @@ import javax.inject.Named;
 
 import rx.Subscriber;
 
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_KEY_COMMA_VS_FULL_STAR;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_COMMA_STAR;
+import static com.tokopedia.discovery.common.constants.SearchConstant.ABTestRemoteConfigKey.AB_TEST_VARIANT_FULL_STAR;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.APP_CLIENT_ID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.Advertising.KEY_ADVERTISING_ID;
 import static com.tokopedia.recommendation_widget_common.PARAM_RECOMMENDATIONKt.DEFAULT_VALUE_X_SOURCE;
@@ -84,14 +90,7 @@ final class ProductListPresenter
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
     UseCase<SearchProductModel> searchProductLoadMoreUseCase;
     @Inject
-    @Named(SearchConstant.Wishlist.PRODUCT_WISHLIST_URL_USE_CASE)
-    UseCase<Boolean> productWishlistUrlUseCase;
-    @Inject
     GetRecommendationUseCase recommendationUseCase;
-    @Inject
-    AddWishListUseCase addWishlistActionUseCase;
-    @Inject
-    RemoveWishListUseCase removeWishlistActionUseCase;
     @Inject
     SeamlessLoginUsecase seamlessLoginUsecase;
     @Inject
@@ -116,6 +115,7 @@ final class ProductListPresenter
     private int startFrom = 0;
     private int totalData = 0;
     private boolean hasLoadData = false;
+    private boolean useRatingString = false;
 
     private List<Visitable> productList;
     private List<InspirationCarouselViewModel> inspirationCarouselViewModel;
@@ -132,6 +132,13 @@ final class ProductListPresenter
         enableGlobalNavWidget = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_GLOBAL_NAV_WIDGET, true);
         changeParamRow = remoteConfig.getBoolean(SearchConstant.RemoteConfigKey.APP_CHANGE_PARAMETER_ROW, false);
         isUsingBottomSheetFilter = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_BOTTOM_SHEET_FILTER, true);
+        useRatingString = getIsUseRatingString();
+    }
+
+    private boolean getIsUseRatingString() {
+        return getView().getABTestRemoteConfig()
+                .getString(AB_TEST_KEY_COMMA_VS_FULL_STAR, AB_TEST_VARIANT_FULL_STAR)
+                .equals(AB_TEST_VARIANT_COMMA_STAR);
     }
 
     /**
@@ -160,6 +167,11 @@ final class ProductListPresenter
     @Override
     public boolean isUserLoggedIn() {
         return userSession.isLoggedIn();
+    }
+
+    @Override
+    public String getDeviceId() {
+        return userSession.getDeviceId();
     }
 
     private Map<String, String> getAdditionalParamsMap() {
@@ -258,180 +270,6 @@ final class ProductListPresenter
     private void requestDynamicFilterCheckForNulls() {
         if (getDynamicFilterUseCase == null)
             throw new RuntimeException("UseCase<DynamicFilterModeL> is not injected.");
-    }
-
-    @Override
-    public void handleWishlistButtonClicked(final ProductItemViewModel productItem) {
-        if (isUserLoggedIn()) {
-            WishListActionListener wishlistActionListener = createWishlistActionListener(productItem);
-
-            getView().disableWishlistButton(productItem.getProductID());
-            if (productItem.isWishlisted()) {
-                removeWishlist(productItem, wishlistActionListener);
-            } else if (productItem.isTopAds()) {
-                RequestParams params = RequestParams.create();
-                params.putString(SearchConstant.Wishlist.PRODUCT_WISHLIST_URL, productItem.getTopadsWishlistUrl());
-                productWishlistUrlUseCase.execute(params, getWishlistSubscriber(productItem));
-            } else {
-                addWishlist(productItem, wishlistActionListener);
-            }
-        } else {
-            getView().sendTrackingWishlistNonLogin(productItem);
-            getView().launchLoginActivity(productItem.getProductID());
-        }
-    }
-
-    private WishListActionListener createWishlistActionListener(ProductItemViewModel productItemViewModel) {
-        return new WishListActionListener() {
-            @Override
-            public void onErrorAddWishList(String errorMessage, String productId) {
-                if (getView() == null) return;
-
-                getView().errorAddWishList(errorMessage, productId);
-            }
-
-            @Override
-            public void onSuccessAddWishlist(String productId) {
-                if (getView() == null) return;
-
-                getView().successAddWishlist(productItemViewModel);
-            }
-
-            @Override
-            public void onErrorRemoveWishlist(String errorMessage, String productId) {
-                if (getView() == null) return;
-
-                getView().errorRemoveWishlist(errorMessage, productId);
-            }
-
-            @Override
-            public void onSuccessRemoveWishlist(String productId) {
-                if (getView() == null) return;
-
-                getView().successRemoveWishlist(productItemViewModel);
-            }
-        };
-    }
-
-    private void removeWishlist(ProductItemViewModel productItemViewModel, WishListActionListener wishlistActionListener) {
-        getView().logDebug(this.toString(), "Remove Wishlist " + productItemViewModel.getProductID());
-        removeWishlistActionUseCase.createObservable(productItemViewModel.getProductID(), getUserId(), wishlistActionListener);
-    }
-
-    private void addWishlist(ProductItemViewModel productItemViewModel, WishListActionListener wishlistActionListener) {
-        getView().logDebug(this.toString(), "Add Wishlist " + productItemViewModel.getProductID());
-        addWishlistActionUseCase.createObservable(productItemViewModel.getProductID(), getUserId(), wishlistActionListener);
-    }
-
-    private Subscriber<Boolean> getWishlistSubscriber(final ProductItemViewModel productItem) {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().errorAddWishList(e.getMessage(), productItem.getProductID());
-                    getView().notifyAdapter();
-                }
-            }
-
-            @Override
-            public void onNext(Boolean result) {
-                if (isViewAttached()) {
-                    if (result) {
-                        getView().successAddWishlist(productItem);
-                    } else {
-                        getView().notifyAdapter();
-                    }
-                }
-            }
-        };
-    }
-
-    @Override
-    public void handleWishlistButtonClicked(final RecommendationItem recommendationItem) {
-        if (isUserLoggedIn()) {
-            WishListActionListener recommendationItemWishlistActionListener = createRecommendationItemWishlistActionListener();
-
-            getView().disableWishlistButton(String.valueOf(recommendationItem.getProductId()));
-
-            if (recommendationItem.isWishlist()) {
-                removeWishlistRecommendationItem(recommendationItem, recommendationItemWishlistActionListener);
-            } else if (recommendationItem.isTopAds()) {
-                RequestParams params = RequestParams.create();
-                params.putString(SearchConstant.Wishlist.PRODUCT_WISHLIST_URL, recommendationItem.getWishlistUrl());
-                productWishlistUrlUseCase.execute(params, getWishlistSubscriber(recommendationItem));
-            } else {
-                addWishlistRecommendationItem(recommendationItem, recommendationItemWishlistActionListener);
-            }
-        } else {
-            getView().launchLoginActivity(String.valueOf(recommendationItem.getProductId()));
-        }
-    }
-
-    private WishListActionListener createRecommendationItemWishlistActionListener() {
-        return new WishListActionListener() {
-            @Override
-            public void onErrorAddWishList(String errorMessage, String productId) {
-                getView().errorRecommendationWishlist(errorMessage, productId);
-            }
-
-            @Override
-            public void onSuccessAddWishlist(String productId) {
-                getView().successAddRecommendationWishlist(productId);
-            }
-
-            @Override
-            public void onErrorRemoveWishlist(String errorMessage, String productId) {
-                getView().errorRecommendationWishlist(errorMessage, productId);
-            }
-
-            @Override
-            public void onSuccessRemoveWishlist(String productId) {
-                getView().successRemoveRecommendationWishlist(productId);
-            }
-        };
-    }
-
-    private void removeWishlistRecommendationItem(RecommendationItem recommendationItem, WishListActionListener recommendationItemWishlistActionListener) {
-        getView().logDebug(this.toString(), "Remove Wishlist " + recommendationItem.getProductId());
-        removeWishlistActionUseCase.createObservable(
-                String.valueOf(recommendationItem.getProductId()), getUserId(), recommendationItemWishlistActionListener);
-    }
-
-    private void addWishlistRecommendationItem(RecommendationItem recommendationItem, WishListActionListener recommendationItemWishlistActionListener) {
-        getView().logDebug(this.toString(), "Add Wishlist " + recommendationItem.getProductId());
-        addWishlistActionUseCase.createObservable(
-                String.valueOf(recommendationItem.getProductId()), getUserId(), recommendationItemWishlistActionListener);
-    }
-
-    private Subscriber<Boolean> getWishlistSubscriber(final RecommendationItem recommendationItem) {
-        return new Subscriber<Boolean>() {
-            @Override
-            public void onCompleted() {
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                if (isViewAttached()) {
-                    getView().errorRecommendationWishlist(e.getMessage(), String.valueOf(recommendationItem.getProductId()));
-                    getView().notifyAdapter();
-                }
-            }
-
-            @Override
-            public void onNext(Boolean result) {
-                if (isViewAttached()) {
-                    if (result) {
-                        getView().successAddRecommendationWishlist(String.valueOf(recommendationItem.getProductId()));
-                    } else {
-                        getView().notifyAdapter();
-                    }
-                }
-            }
-        };
     }
 
     @Override
@@ -594,7 +432,7 @@ final class ProductListPresenter
         if (isViewAttached()) {
             int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
+            ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
             saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -624,8 +462,8 @@ final class ProductListPresenter
     }
 
     private void getViewToShowMoreData(ProductViewModel productViewModel) {
-        productList.addAll(convertToListOfVisitable(productViewModel));
         List<Visitable> list = new ArrayList<>(convertToListOfVisitable(productViewModel));
+        productList.addAll(list);
 
         if (inspirationCarouselViewModel.size() > 0) {
             Iterator<InspirationCarouselViewModel> inspirationCarouselViewModelIterator = inspirationCarouselViewModel.iterator();
@@ -673,7 +511,8 @@ final class ProductListPresenter
                     item.setImageUrl(topAds.getProduct().getImage().getS_ecs());
                     item.setImageUrl700(topAds.getProduct().getImage().getM_ecs());
                     item.setWishlisted(topAds.getProduct().isWishlist());
-                    item.setRating(topAds.getProduct().getProductRating());
+                    item.setRatingString(useRatingString ? topAds.getProduct().getProductRatingFormat() : "");
+                    item.setRating(useRatingString ? 0 : topAds.getProduct().getProductRating());
                     item.setCountReview(convertCountReviewFormatToInt(topAds.getProduct().getCountReviewFormat()));
                     item.setBadgesList(mapBadges(topAds.getShop().getBadges()));
                     item.setNew(topAds.getProduct().isProductNewLabel());
@@ -883,7 +722,7 @@ final class ProductListPresenter
 
         int lastProductItemPositionFromCache = getView().getLastProductItemPositionFromCache();
 
-        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel);
+        ProductViewModel productViewModel = new ProductViewModelMapper().convertToProductViewModel(lastProductItemPositionFromCache, searchProductModel, useRatingString);
 
         saveLastProductItemPositionToCache(lastProductItemPositionFromCache, productViewModel.getProductList());
 
@@ -1089,17 +928,6 @@ final class ProductListPresenter
         return false;
     }
 
-    private List<String> getListOfImageUrl(InspirationCarouselViewModel data){
-        List<String> urlImages = new ArrayList<>();
-        for(InspirationCarouselViewModel.Option option : data.getOptions()){
-            for(InspirationCarouselViewModel.Option.Product product : option.getProduct()){
-                urlImages.add(product.getImgUrl());
-            }
-        }
-        return urlImages;
-    }
-
-
     private void getViewToSendTrackingOnFirstTimeLoad(ProductViewModel productViewModel) {
         JSONArray afProdIds = new JSONArray();
         HashMap<String, String> moengageTrackingCategory = new HashMap<>();
@@ -1224,14 +1052,93 @@ final class ProductListPresenter
     }
 
     @Override
+    public void handleWishlistAction(ProductCardOptionsModel productCardOptionsModel) {
+        if (productCardOptionsModel == null) return;
+
+        if (productCardOptionsModel.isRecommendation()) {
+            handleWishlistRecommendationProduct(productCardOptionsModel);
+        }
+        else {
+            handleWishlistNonRecommendationProduct(productCardOptionsModel);
+        }
+    }
+
+    private void handleWishlistRecommendationProduct(ProductCardOptionsModel productCardOptionsModel) {
+        WishlistResult wishlistResult = productCardOptionsModel.getWishlistResult();
+
+        if (wishlistResult.isUserLoggedIn()) {
+            handleWishlistRecommendationProductWithLoggedInUser(productCardOptionsModel);
+        }
+        else {
+            handleWishlistRecommendationProductWithNotLoggedInUser(productCardOptionsModel);
+        }
+    }
+
+    private void handleWishlistRecommendationProductWithLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
+        WishlistResult wishlistResult = productCardOptionsModel.getWishlistResult();
+
+        if (!wishlistResult.isSuccess()) {
+            getView().showMessageFailedWishlistAction(wishlistResult.isAddWishlist());
+        } else {
+            getView().trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted());
+            getView().updateWishlistStatus(productCardOptionsModel.getProductId(), wishlistResult.isAddWishlist());
+            getView().showMessageSuccessWishlistAction(wishlistResult.isAddWishlist());
+        }
+    }
+
+    private void handleWishlistRecommendationProductWithNotLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
+        getView().trackWishlistRecommendationProductNonLoginUser();
+        getView().launchLoginActivity(productCardOptionsModel.getProductId());
+    }
+
+    private void handleWishlistNonRecommendationProduct(ProductCardOptionsModel productCardOptionsModel) {
+        WishlistResult wishlistResult = productCardOptionsModel.getWishlistResult();
+
+        if (wishlistResult.isUserLoggedIn()) {
+            handleWishlistNonRecommendationProductWithLoggedInUser(productCardOptionsModel);
+        }
+        else {
+            handleWishlistNonRecommendationProductWithNotLoggedInUser(productCardOptionsModel);
+        }
+    }
+
+    private void handleWishlistNonRecommendationProductWithLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
+        WishlistResult wishlistResult = productCardOptionsModel.getWishlistResult();
+
+        if (!wishlistResult.isSuccess()) {
+            getView().showMessageFailedWishlistAction(wishlistResult.isAddWishlist());
+        } else {
+            getView().trackWishlistProduct(createWishlistTrackingModel(productCardOptionsModel, productCardOptionsModel.getWishlistResult().isAddWishlist()));
+            getView().updateWishlistStatus(productCardOptionsModel.getProductId(), wishlistResult.isAddWishlist());
+            getView().showMessageSuccessWishlistAction(wishlistResult.isAddWishlist());
+        }
+    }
+
+    private WishlistTrackingModel createWishlistTrackingModel(ProductCardOptionsModel productCardOptionsModel, boolean isAddWishlist) {
+        if (productCardOptionsModel == null) return null;
+
+        WishlistTrackingModel wishlistTrackingModel = new WishlistTrackingModel();
+
+        wishlistTrackingModel.setProductId(productCardOptionsModel.getProductId());
+        wishlistTrackingModel.setTopAds(productCardOptionsModel.isTopAds());
+        wishlistTrackingModel.setKeyword(getView().getQueryKey());
+        wishlistTrackingModel.setUserLoggedIn(productCardOptionsModel.getWishlistResult().isUserLoggedIn());
+        wishlistTrackingModel.setAddWishlist(isAddWishlist);
+
+        return wishlistTrackingModel;
+    }
+
+    private void handleWishlistNonRecommendationProductWithNotLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
+        getView().trackWishlistProduct(createWishlistTrackingModel(productCardOptionsModel, !productCardOptionsModel.isWishlisted()));
+        getView().launchLoginActivity(productCardOptionsModel.getProductId());
+    }
+
+    @Override
     public void detachView() {
         super.detachView();
         if (getDynamicFilterUseCase != null) getDynamicFilterUseCase.unsubscribe();
         if (searchProductFirstPageUseCase != null) searchProductFirstPageUseCase.unsubscribe();
         if (searchProductLoadMoreUseCase != null) searchProductLoadMoreUseCase.unsubscribe();
-        if (productWishlistUrlUseCase != null) productWishlistUrlUseCase.unsubscribe();
-        if (addWishlistActionUseCase != null) addWishlistActionUseCase.unsubscribe();
-        if (removeWishlistActionUseCase != null) removeWishlistActionUseCase.unsubscribe();
         if (recommendationUseCase != null) recommendationUseCase.unsubscribe();
     }
 }

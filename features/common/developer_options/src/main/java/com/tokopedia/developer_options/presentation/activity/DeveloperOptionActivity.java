@@ -99,6 +99,9 @@ public class DeveloperOptionActivity extends BaseActivity {
     private View sendTimberButton;
     private EditText editTextTimberMessage;
 
+    private View routeManagerButton;
+    private EditText editTextRouteManager;
+
     private TextView vGoTochuck;
     private CheckBox toggleChuck;
 
@@ -221,6 +224,9 @@ public class DeveloperOptionActivity extends BaseActivity {
 
         editTextTimberMessage = findViewById(R.id.et_timber_send);
         sendTimberButton = findViewById(R.id.btn_send_timber);
+
+        editTextRouteManager = findViewById(R.id.et_route_manager);
+        routeManagerButton = findViewById(R.id.btn_route_manager);
 
         ipGroupChat = findViewById(R.id.ip_groupchat);
         saveIpGroupChat = findViewById(R.id.ip_groupchat_save);
@@ -347,6 +353,19 @@ public class DeveloperOptionActivity extends BaseActivity {
                     Timber.w(timberMessage);
                     Toast.makeText(DeveloperOptionActivity.this,
                             timberMessage + " has been sent" , Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
+        routeManagerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String routeManagerString = editTextRouteManager.getText().toString();
+                if (TextUtils.isEmpty(routeManagerString)) {
+                    Toast.makeText(DeveloperOptionActivity.this,
+                            "Route Manager String should not be empty", Toast.LENGTH_SHORT).show();
+                } else {
+                    RouteManager.route(DeveloperOptionActivity.this, routeManagerString);
                 }
             }
         });
