@@ -14,5 +14,7 @@ data class CartUiModel(
 data class CartFeedbackUiModel(
         val isSuccess: Boolean = false,
         val errorMessage: String = "",
+        val cartId: String,
+        val product: ProductLineUiModel,
         val action: ProductAction
 )

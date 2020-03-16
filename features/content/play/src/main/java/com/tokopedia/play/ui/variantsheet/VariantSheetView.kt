@@ -193,11 +193,12 @@ class VariantSheetView(
 
                 val product = ProductLineUiModel(
                         id = selectedProduct.productId.toString(),
+                        shopId = "",
                         imageUrl = selectedProduct.picture?.original ?: "",
                         title = selectedProduct.name,
                         stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
                         isVariantAvailable = true,
-                        price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull()),
+                        price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull(), 20000),
                         minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         applink = null
                 )

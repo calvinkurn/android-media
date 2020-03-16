@@ -78,7 +78,7 @@ class PlayViewModel @Inject constructor(
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
-    val isLive: PlayChannelType get() {
+    val channelType: PlayChannelType get() {
         val channelInfo = _observableGetChannelInfo.value
         return if (channelInfo != null && channelInfo is Success) {
             channelInfo.data.channelType
@@ -657,12 +657,13 @@ class PlayViewModel @Inject constructor(
                                     title = "Product $it",
                                     isVariantAvailable = true,
                                     price = if (it % 2 == 0) {
-                                        OriginalPrice("Rp20$it.000")
+                                        OriginalPrice("Rp20$it.000", 20000)
                                     } else {
                                         DiscountedPrice(
                                                 originalPrice = "Rp20$it.000",
                                                 discountPercent = it * 10,
-                                                discountedPrice = "Rp2$it.000"
+                                                discountedPrice = "Rp2$it.000",
+                                                discountedPriceNumber = 20000
                                         )
                                     },
                                     stock = if (it % 2 == 0) {
@@ -719,12 +720,13 @@ class PlayViewModel @Inject constructor(
                                     title = "Product $it",
                                     isVariantAvailable = true,
                                     price = if (it % 2 == 0) {
-                                        OriginalPrice("Rp20$it.000")
+                                        OriginalPrice("Rp20$it.000", 20000)
                                     } else {
                                         DiscountedPrice(
                                                 originalPrice = "Rp20$it.000",
                                                 discountPercent = it * 10,
-                                                discountedPrice = "Rp2$it.000"
+                                                discountedPrice = "Rp2$it.000",
+                                                discountedPriceNumber = 20000
                                         )
                                     },
                                     stock = if (it % 2 == 0) {

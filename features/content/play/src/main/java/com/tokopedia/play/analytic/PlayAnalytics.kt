@@ -1,6 +1,9 @@
 package com.tokopedia.play.analytic
 
+import com.tokopedia.play.view.type.DiscountedPrice
+import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -125,15 +128,6 @@ object PlayAnalytics {
         )
     }
 
-    fun bufferVideo(bufferX: Int, bufferDuration: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_VIEW_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "buffer",
-                "$bufferX - $bufferDuration"
-        )
-    }
-
     fun clickCartIcon(channelId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
@@ -156,6 +150,7 @@ object PlayAnalytics {
                               channelId: String,
                               listOfProducts: List<ProductLineUiModel>,
                               channelType: PlayChannelType) {
+        if (listOfProducts.isNotEmpty())
         trackingQueue.putEETracking(
                 EventModel(
                         "productView",
@@ -163,8 +158,11 @@ object PlayAnalytics {
                         "view product",
                         "$channelId - ${listOfProducts[0].id} - ${channelType.value} - product in bottom sheet"
                 ),
-                hashMapOf(
-
+                hashMapOf<String, Any>(
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "impression" to convertProductsToListOfObject(listOfProducts)
+                        )
                 )
         )
     }
@@ -180,9 +178,33 @@ object PlayAnalytics {
                         KEY_TRACK_CLICK,
                         "$channelId - ${product.id} - ${channelType.value} - product in bottom sheet"
                 ),
-                hashMapOf(
-
+                hashMapOf<String, Any>(
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "impression" to convertProductsToListOfObject(listOf(product))
+                        )
                 )
+        )
+    }
+
+    private fun convertProductsToListOfObject(listOfProducts: List<ProductLineUiModel>): MutableList<HashMap<String, Any>> {
+        val products = mutableListOf<HashMap<String, Any>>()
+        listOfProducts.forEachIndexed { index, product ->
+            products.add(convertProductToHashMapWithList(product, index))
+        }
+        return products
+    }
+
+    private fun convertProductToHashMapWithList(product: ProductLineUiModel, position: Int): HashMap<String, Any> {
+        return hashMapOf(
+                "name" to product.title,
+                "id" to product.id,
+                "price" to when(product.price) {
+                    is DiscountedPrice -> product.price.discountedPriceNumber
+                    is OriginalPrice -> product.price.priceNumber
+                },
+                "list" to "/groupchat - bottom sheet",
+                "position" to position
         )
     }
 
@@ -195,7 +217,15 @@ object PlayAnalytics {
         )
     }
 
-    fun clickBeliButtonProductWithVariant(channelId: String, productId: Int, channelType: PlayChannelType) {
+    fun clickActionProductWithVariant(channelId: String, productId: String, channelType: PlayChannelType, productAction: ProductAction) {
+        when(productAction) {
+            ProductAction.AddToCart -> clickAtcButtonProductWithVariant(channelId, productId, channelType)
+            ProductAction.Buy -> clickBeliButtonProductWithVariant(channelId, productId, channelType)
+            else -> return
+        }
+    }
+
+    private fun clickBeliButtonProductWithVariant(channelId: String, productId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -204,25 +234,7 @@ object PlayAnalytics {
         )
     }
 
-    fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
-                                          channelId: String,
-                                          productLineUiModel: ProductLineUiModel,
-                                          cartId: String,
-                                          channelType: PlayChannelType) {
-        trackingQueue.putEETracking(
-                EventModel(
-                        KEY_TRACK_ADD_TO_CART,
-                        KEY_TRACK_GROUP_CHAT_ROOM,
-                        "$KEY_TRACK_CLICK buy in bottom sheet with variant",
-                        ""
-                ),
-                hashMapOf(
-
-                )
-        )
-    }
-
-    fun clickAtcButtonProductWithVariant(channelId: String, productId: Int, channelType: PlayChannelType) {
+    private fun clickAtcButtonProductWithVariant(channelId: String, productId: String, channelType: PlayChannelType) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
@@ -231,56 +243,128 @@ object PlayAnalytics {
         )
     }
 
-    fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
-                                          channelId: String,
-                                          productLineUiModel: ProductLineUiModel,
-                                          cartId: String,
-                                          channelType: PlayChannelType) {
+    fun clickProductAction(trackingQueue: TrackingQueue,
+                                        channelId: String,
+                                        productLineUiModel: ProductLineUiModel,
+                                        cartId: String,
+                                        channelType: PlayChannelType,
+                                        productAction: ProductAction) {
+        when(productAction) {
+            ProductAction.AddToCart -> clickAtcButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+            ProductAction.AddToCartInVariant -> clickAtcButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+            ProductAction.Buy -> clickBeliButtonProductWithNoVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+            ProductAction.BuyInVariant -> clickBeliButtonInVariant(trackingQueue, channelId, productLineUiModel, cartId, channelType)
+        }
+    }
+
+    private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
+                                                    channelId: String,
+                                                    product: ProductLineUiModel,
+                                                    cartId: String,
+                                                    channelType: PlayChannelType) {
+        trackingQueue.putEETracking(
+                EventModel(
+                        KEY_TRACK_ADD_TO_CART,
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        "$KEY_TRACK_CLICK buy in bottom sheet with variant",
+                        "$channelId - ${product.id} - ${channelType.value}"
+                ),
+                hashMapOf<String, Any>(
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "add" to hashMapOf(
+                                        "products" to convertProductToHashMap(product, cartId, "bottom sheet")
+                                )
+                        )
+                )
+        )
+    }
+
+    private fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
+                                                   channelId: String,
+                                                   product: ProductLineUiModel,
+                                                   cartId: String,
+                                                   channelType: PlayChannelType) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK atc in bottom sheet with variant",
-                        ""
+                        "$channelId - ${product.id} - ${channelType.value}"
                 ),
-                hashMapOf(
-
+                hashMapOf<String, Any>(
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "add" to hashMapOf(
+                                        "products" to convertProductToHashMap(product, cartId, "bottom sheet")
+                                )
+                        )
                 )
         )
     }
 
-    fun clickAtcButtonInVariant(trackingQueue: TrackingQueue,
-                                channelId: String,
-                                productLineUiModel: ProductLineUiModel,
-                                cartId: String,
-                                channelType: PlayChannelType) {
+    private fun clickAtcButtonInVariant(trackingQueue: TrackingQueue,
+                                        channelId: String,
+                                        product: ProductLineUiModel,
+                                        cartId: String,
+                                        channelType: PlayChannelType) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK atc in variant page",
-                        "$channelId - ${productLineUiModel.id} - ${channelType.value}"
+                        "$channelId - ${product.id} - ${channelType.value}"
                 ),
-                hashMapOf(
-
+                hashMapOf<String, Any>(
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "add" to hashMapOf(
+                                        "products" to convertProductToHashMap(product, cartId, "variant page")
+                                )
+                        )
                 )
         )
     }
 
-    fun clickBuyButtonInVariant(trackingQueue: TrackingQueue,
-                                channelId: String,
-                                productLineUiModel: ProductLineUiModel,
-                                cartId: String,
-                                channelType: PlayChannelType) {
+    private fun clickBeliButtonInVariant(trackingQueue: TrackingQueue,
+                                         channelId: String,
+                                         product: ProductLineUiModel,
+                                         cartId: String,
+                                         channelType: PlayChannelType) {
         trackingQueue.putEETracking(
                 EventModel(
                         KEY_TRACK_ADD_TO_CART,
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "$KEY_TRACK_CLICK beli in variant page",
-                        "$channelId - ${productLineUiModel.id} - ${channelType.value}"
+                        "$channelId - ${product.id} - ${channelType.value}"
                 ),
-                hashMapOf(
+                hashMapOf<String, Any>(
+                        "ecommerce" to hashMapOf(
+                                "currencyCode" to "IDR",
+                                "add" to hashMapOf(
+                                        "products" to convertProductToHashMap(product, cartId, "variant page")
+                                )
+                        )
+                )
+        )
+    }
 
+    private fun convertProductToHashMap(product: ProductLineUiModel, cartId: String, page: String): MutableList<HashMap<String, Any>> {
+        return mutableListOf(
+                hashMapOf(
+                        "name" to product.title,
+                        "id" to product.id,
+                        "price" to when(product.price) {
+                            is DiscountedPrice -> product.price.discountedPriceNumber
+                            is OriginalPrice -> product.price.priceNumber
+                        },
+                        "quantity" to product.minQty,
+                        "dimension79" to product.shopId,
+                        "dimension81" to "", // shop type
+                        "dimension80" to "", // shop name
+                        "dimension82" to "", // category child id
+                        "dimension45" to cartId,
+                        "dimension40" to "/groupchat - $page"
                 )
         )
     }

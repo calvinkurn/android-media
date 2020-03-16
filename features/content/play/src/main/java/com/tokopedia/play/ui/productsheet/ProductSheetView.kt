@@ -74,6 +74,18 @@ class ProductSheetView(
             addItemDecoration(MerchantVoucherItemDecoration(view.context))
         }
 
+        rvVoucherList.apply {
+            addOnScrollListener(object: RecyclerView.OnScrollListener(){
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
+                            layoutManager is LinearLayoutManager) {
+                        val llManager = layoutManager as LinearLayoutManager
+                        listener.onVoucherScrolled(llManager.findLastVisibleItemPosition())
+                    }
+                }
+            })
+        }
+
         ViewCompat.setOnApplyWindowInsetsListener(view) { v, insets ->
 
             vBottomOverlay.layoutParams = vBottomOverlay.layoutParams.apply {
@@ -118,5 +130,6 @@ class ProductSheetView(
         fun onBuyButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
         fun onAtcButtonClicked(view: ProductSheetView, product: ProductLineUiModel)
         fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel)
+        fun onVoucherScrolled(lastPositionViewed: Int)
     }
 }

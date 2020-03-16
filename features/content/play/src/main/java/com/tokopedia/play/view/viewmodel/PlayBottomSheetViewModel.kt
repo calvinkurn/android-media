@@ -79,22 +79,24 @@ class PlayBottomSheetViewModel @Inject constructor(
         )
     }
 
-    fun addToCart(productId: String, shopId: String, quantity: Int, notes: String = "", action: ProductAction) {
+    fun addToCart(product: ProductLineUiModel, notes: String = "", action: ProductAction) {
         launchCatchError(block = {
             val responseCart = withContext(dispatchers.io) {
-                postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(productId, shopId, quantity, notes)
+                postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(product.id, product.shopId, product.minQty, notes)
                 postAddToCartUseCase.executeOnBackground()
             }
 
-            _observableAddToCart.value = mappingResponseCart(responseCart, action)
+            _observableAddToCart.value = mappingResponseCart(responseCart, action, product)
         }) { }
     }
 
-    private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel, action: ProductAction) =
+    private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel, action: ProductAction, product: ProductLineUiModel) =
             CartFeedbackUiModel(
                     isSuccess = addToCartDataModel.data.success == 1,
                     errorMessage = if (addToCartDataModel.errorMessage.size > 0)
                         addToCartDataModel.errorMessage.joinToString { "$it " } else "",
+                    cartId = addToCartDataModel.data.cartId.toString(),
+                    product = product,
                     action = action
             )
 

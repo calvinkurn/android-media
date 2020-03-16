@@ -6,11 +6,13 @@ package com.tokopedia.play.view.type
 sealed class ProductPrice
 
 data class OriginalPrice(
-        val price: String
+        val price: String,
+        val priceNumber: Long
 ) : ProductPrice()
 
 data class DiscountedPrice(
         val originalPrice: String,
         val discountPercent: Int,
-        val discountedPrice: String
+        val discountedPrice: String,
+        val discountedPriceNumber: Long
 ) : ProductPrice()

@@ -71,6 +71,12 @@ class ProductSheetComponent(
         }
     }
 
+    override fun onVoucherScrolled(lastPositionViewed: Int) {
+        launch {
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnVoucherScrolled(lastPositionViewed))
+        }
+    }
+
     private fun initView(container: ViewGroup) =
             ProductSheetView(container, this)
 

@@ -12,4 +12,5 @@ sealed class ProductSheetInteractionEvent : ComponentEvent {
     data class OnBuyProduct(val product: ProductLineUiModel) : ProductSheetInteractionEvent()
     data class OnAtcProduct(val product: ProductLineUiModel) : ProductSheetInteractionEvent()
     data class OnProductCardClicked(val product: ProductLineUiModel) : ProductSheetInteractionEvent()
+    data class OnVoucherScrolled(val lastPositionViewed: Int): ProductSheetInteractionEvent()
 }

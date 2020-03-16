@@ -15,11 +15,11 @@ data class Product(
         @SerializedName("shopID")
         val shopId: String = "",
         @SerializedName("original_price")
-        val originalPrice: Int = 0,
+        val originalPrice: Long = 0,
         @SerializedName("original_price_formatted")
         val originalPriceFormatted: String = "",
         @SerializedName("price")
-        val price: Int = 0,
+        val price: Long = 0,
         @SerializedName("price_formatted")
         val priceFormatted: String = "",
         @SerializedName("discount")
