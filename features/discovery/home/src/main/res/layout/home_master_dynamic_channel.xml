@@ -81,6 +81,21 @@
         app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ViewStub
+        android:id="@+id/channel_subtitle"
+        android:inflatedId="@+id/channel_subtitle"
+        android:layout="@layout/view_stub_dc_subtitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_16"
+        android:visibility="gone"
+        tools:visibility="gone"
+        tools:text="Berakhir dalam"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/channel_title"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <ViewStub
             android:id="@+id/see_all_button_unify"
             android:inflatedId="@+id/see_all_button_unify"
             android:layout="@layout/view_stub_see_all_unify"
