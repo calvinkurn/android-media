@@ -86,6 +86,7 @@ object PlayUiMapper {
         return products.map {
             ProductLineUiModel(
                     id = it.id.toString(),
+                    shopId = it.shopId,
                     imageUrl = it.image,
                     title = it.name,
                     price = if (it.price != 0) {

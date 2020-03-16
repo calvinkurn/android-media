@@ -297,11 +297,11 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun shouldBuyProduct(product: ProductLineUiModel) {
-        viewModel.doInteractionEvent(InteractionEvent.BuyProduct(product.id, product.minQty))
+        viewModel.doInteractionEvent(InteractionEvent.BuyProduct(product))
     }
 
     private fun shouldAtcProduct(product: ProductLineUiModel) {
-        viewModel.doInteractionEvent(InteractionEvent.AtcProduct(product.id, product.minQty))
+        viewModel.doInteractionEvent(InteractionEvent.AtcProduct(product))
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
@@ -318,19 +318,19 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
-            is InteractionEvent.AtcProduct -> doAtcProduct(event.productId, event.minQty)
-            is InteractionEvent.BuyProduct -> doBuyProduct(event.productId, event.minQty)
+            is InteractionEvent.AtcProduct -> doAtcProduct(event.product)
+            is InteractionEvent.BuyProduct -> doBuyProduct(event.product)
         }
     }
 
-    private fun doAtcProduct(productId: String, minQty: Int) {
+    private fun doAtcProduct(product: ProductLineUiModel) {
         showLoadingView()
-        viewModel.addToCart(productId, playViewModel.partnerId.toString(), quantity = minQty, action = ProductAction.AddToCart)
+        viewModel.addToCart(product.id, product.shopId, quantity = product.minQty, action = ProductAction.AddToCart)
     }
 
-    private fun doBuyProduct(productId: String, minQty: Int) {
+    private fun doBuyProduct(product: ProductLineUiModel) {
         showLoadingView()
-        viewModel.addToCart(productId, playViewModel.partnerId.toString(), quantity = minQty, action = ProductAction.Buy)
+        viewModel.addToCart(product.id, product.shopId, quantity = product.minQty, action = ProductAction.Buy)
     }
 
     private fun openLoginPage() {

@@ -652,6 +652,7 @@ class PlayViewModel @Inject constructor(
                         productList = List(5) {
                             ProductLineUiModel(
                                     id = it.toString(),
+                                    shopId = "123",
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",
                                     isVariantAvailable = true,
@@ -695,6 +696,7 @@ class PlayViewModel @Inject constructor(
         }
     }
 
+    // TODO("testing")
     private fun setMockProductSheetContent() {
         launch(dispatchers.io) {
             delay(3000)
@@ -712,6 +714,7 @@ class PlayViewModel @Inject constructor(
                         productList = List(5) {
                             ProductLineUiModel(
                                     id = "689413405",
+                                    shopId = "123",
                                     imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
                                     title = "Product $it",
                                     isVariantAvailable = true,
