@@ -15,11 +15,11 @@ class EmptySearchBankViewHolder(val v: View) :
         AbstractViewHolder<EmptySearchBankViewModel>(v) {
 
     companion object {
-        val LAYOUT = com.tokopedia.design.R.layout.empty_search_result
+        val LAYOUT = R.layout.settingbank_empty_search_result
     }
 
-    private val titleText: TextView = itemView.findViewById(com.tokopedia.design.R.id.empty_search_result_title)
-    private val contentText: TextView = itemView.findViewById(com.tokopedia.design.R.id.empty_search_result_content)
+    private val titleText: TextView = itemView.findViewById(R.id.settingbank_empty_search_result_title)
+    private val contentText: TextView = itemView.findViewById(R.id.settingbank_empty_search_result_content)
 
     override fun bind(element: EmptySearchBankViewModel?) {
         if (element != null) {

@@ -48,7 +48,7 @@ include "features:im:referral"
 
 include "features:logistic:logisticaddaddress"
 include "features:logistic:logisticdata"
-include "features:logistic:tracking"
+include "features:logistic:logisticorder"
 include "features:logistic:logisticcart"
 
 include "features:merchant:gold_merchant"

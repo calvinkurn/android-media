@@ -60,18 +60,6 @@ public class CommonUtils {
 
     }
 
-    public static void ShowError(Context context, ArrayList<String> MessageError) {
-        String error = "";
-        for (int i = 0; i < MessageError.size(); i++) {
-            if (i == 0) {
-                error = MessageError.get(i) + "\n";
-            } else {
-                error = MessageError.get(i) + "\n";
-            }
-        }
-        Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-    }
-
     public static boolean EmailValidation(String email) {
         /*String EmailPattern = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
 				+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
@@ -144,11 +132,6 @@ public class CommonUtils {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources().getDisplayMetrics());
     }
 
-    public static Boolean isUrl(String url) {
-        return url.contains("http");
-    }
-
-
     ///////////////////////////////////////////////////////////////////////////////
 
     public static String getDate(long time) {
@@ -166,11 +149,6 @@ public class CommonUtils {
 
     public static void requestBarcodeScanner(androidx.fragment.app.Fragment fragment, Class customClass) {
         IntentIntegrator.forSupportFragment(fragment).setCaptureActivity(customClass).initiateScan();
-    }
-
-    public static void requestBarcodeScanner(Activity activity, Class customClass) {
-        IntentIntegrator intentIntegrator = new IntentIntegrator(activity);
-        intentIntegrator.setCaptureActivity(customClass).initiateScan();
     }
 
     public static String getBarcode(int requestCode, int resultCode, Intent data) {
@@ -207,14 +185,6 @@ public class CommonUtils {
             return false;
         } else {
             return true;
-        }
-    }
-
-    public static <T> boolean checkStringNotNull(T reference) {
-        if (checkNotNull(reference) && (!reference.equals("")) && (!reference.equals("0"))) {
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -257,57 +227,6 @@ public class CommonUtils {
     public static void hideSoftKeyboard(View view) {
         InputMethodManager inputMethodManager = (InputMethodManager) MainApplication.getInstance().getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    /**
-     * I made this class to manage all the generic error message to Bahasa,
-     * feel free to use it and modify this if it is not cover all error
-     *
-     * @param context
-     * @param error   raw message
-     * @return error in bahasa
-     * by Sebast
-     */
-    public static String generateMessageError(Context context, String error) {
-        if (error != null) {
-            if (error.contains("Unable to resolve host")) {
-                return context.getString(R.string.error_connection_problem);
-            }
-            if (error.contains("timeout")) {
-                return context.getString(R.string.error_connection_problem);
-            }
-            if (error.contains("Time-out")) {
-                return context.getString(R.string.error_connection_problem);
-            }
-            if (error.contains("failed to connect")) {
-                return context.getString(R.string.error_connection_problem);
-            }
-            if (error.contains("unexpected end of stream")) {
-                return context.getString(R.string.error_connection_problem);
-            }
-            if (error.contains(String.valueOf(ResponseStatus.SC_REQUEST_TIMEOUT))) {
-                return context.getString(R.string.error_bad_gateway);
-            }
-            if (error.contains(String.valueOf(ResponseStatus.SC_GATEWAY_TIMEOUT))) {
-                return context.getString(R.string.error_bad_gateway);
-            }
-            if (error.contains(String.valueOf(ResponseStatus.SC_INTERNAL_SERVER_ERROR))) {
-                return context.getString(R.string.error_bad_gateway);
-            }
-            if (error.contains(String.valueOf(ResponseStatus.SC_FORBIDDEN))) {
-                return context.getString(R.string.error_bad_gateway);
-            }
-            if (error.contains(String.valueOf(ResponseStatus.SC_BAD_GATEWAY))) {
-                return context.getString(R.string.error_bad_gateway);
-            }
-            if (error.contains(String.valueOf(ResponseStatus.SC_BAD_REQUEST))) {
-                return context.getString(R.string.error_bad_gateway);
-            }
-
-            return error;
-        }
-        return context.getString(R.string.error_unknown);
-
     }
 
     public static double round(double value, int places) {

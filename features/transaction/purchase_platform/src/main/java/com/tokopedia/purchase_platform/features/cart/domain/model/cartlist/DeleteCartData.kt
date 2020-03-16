@@ -9,17 +9,19 @@ import android.os.Parcelable
 
 data class DeleteCartData(
         var isSuccess: Boolean = false,
-        var message: String? = null
+        var message: String? = null,
+        var cartCounter: Int = 0
 ) : Parcelable {
-
     constructor(parcel: Parcel) : this(
             parcel.readByte() != 0.toByte(),
-            parcel.readString()) {
+            parcel.readString(),
+            parcel.readInt()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeByte(if (isSuccess) 1 else 0)
         parcel.writeString(message)
+        parcel.writeInt(cartCounter)
     }
 
     override fun describeContents(): Int {
@@ -35,5 +37,4 @@ data class DeleteCartData(
             return arrayOfNulls(size)
         }
     }
-
 }

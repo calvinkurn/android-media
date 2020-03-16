@@ -4,17 +4,10 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.core.content.ContextCompat;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -35,6 +28,13 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
+
+import com.google.android.material.textfield.TextInputEditText;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
@@ -50,15 +50,13 @@ import com.tokopedia.loginregister.common.di.LoginRegisterComponent;
 import com.tokopedia.loginregister.login.view.activity.LoginActivity;
 import com.tokopedia.loginregister.registerinitial.di.DaggerRegisterInitialComponent;
 import com.tokopedia.loginregister.registerinitial.domain.pojo.RegisterRequestData;
-import com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity;
 import com.tokopedia.loginregister.registerinitial.view.util.RegisterUtil;
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel;
-import com.tokopedia.otp.common.network.ErrorMessageException;
-import com.tokopedia.sessioncommon.ErrorHandlerSession;
+import com.tokopedia.network.exception.MessageErrorException;
+import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.sessioncommon.di.SessionModule;
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity;
 import com.tokopedia.usecase.coroutines.Fail;
-import com.tokopedia.usecase.coroutines.Result;
 import com.tokopedia.usecase.coroutines.Success;
 import com.tokopedia.user.session.UserSessionInterface;
 
@@ -277,25 +275,26 @@ public class RegisterEmailFragment extends BaseDaggerFragment {
             }else if(registerRequestDataResult instanceof Fail){
                 Throwable throwable = ((Fail) registerRequestDataResult).getThrowable();
                 dismissLoadingProgress();
-                if (throwable instanceof ErrorMessageException
-                        && throwable.getLocalizedMessage() != null
-                        && throwable.getLocalizedMessage().contains(ALREADY_REGISTERED)) {
+                if (throwable instanceof MessageErrorException
+                        && throwable.getMessage() != null
+                        && throwable.getMessage().contains(ALREADY_REGISTERED)) {
                     showInfo();
-                } else  if (throwable instanceof ErrorMessageException
-                        && throwable.getLocalizedMessage() != null) {
-                    onErrorRegister(throwable.getLocalizedMessage());
+                } else  if (throwable instanceof MessageErrorException
+                        && throwable.getMessage() != null) {
+                    onErrorRegister(throwable.getMessage());
                 }else {
-                    ErrorHandlerSession.getErrorMessage(new ErrorHandlerSession.ErrorForbiddenListener() {
-                        @Override
-                        public void onForbidden() {
+                    if(getContext() != null)
+                    {
+                        String forbiddenMessage = getContext().getString(
+                                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth);
+                        String errorMessage = ErrorHandler.getErrorMessage(getContext(), throwable);
+                        if (errorMessage.equals(forbiddenMessage)){
                             onForbidden();
-                        }
-
-                        @Override
-                        public void onError(String errorMessage) {
+                        } else {
                             onErrorRegister(errorMessage);
                         }
-                    }, throwable, getContext());
+                    }
+
                 }
             }
         });

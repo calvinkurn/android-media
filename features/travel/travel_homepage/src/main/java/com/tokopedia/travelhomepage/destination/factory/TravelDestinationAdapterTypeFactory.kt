@@ -7,9 +7,12 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.travelhomepage.destination.listener.ActionListener
 import com.tokopedia.travelhomepage.destination.listener.OnViewHolderBindListener
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
 import com.tokopedia.travelhomepage.destination.model.TravelDestinationSummaryModel
-import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.*
+import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.TravelDestinationArticleViewHolder
+import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.TravelDestinationCityRecommendationViewHolder
+import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.TravelDestinationSectionViewHolder
+import com.tokopedia.travelhomepage.destination.presentation.adapter.viewholder.TravelDestinationSummaryViewHolder
 import com.tokopedia.travelhomepage.destination.presentation.viewmodel.TravelDestinationViewModel.Companion.CITY_RECOMMENDATION_ORDER
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelDestinationTypeFactory
 
@@ -31,8 +34,8 @@ open class TravelDestinationAdapterTypeFactory(private val onBindListener: OnVie
     }
 
     override fun type(viewModel: TravelDestinationSummaryModel): Int = TravelDestinationSummaryViewHolder.LAYOUT
-    override fun type(viewModel: TravelDestinationSectionViewModel): Int {
-        return if (viewModel.type == CITY_RECOMMENDATION_ORDER) TravelDestinationCityRecommendationViewHolder.LAYOUT
+    override fun type(model: TravelDestinationSectionModel): Int {
+        return if (model.type == CITY_RECOMMENDATION_ORDER) TravelDestinationCityRecommendationViewHolder.LAYOUT
         else TravelDestinationSectionViewHolder.LAYOUT
     }
 

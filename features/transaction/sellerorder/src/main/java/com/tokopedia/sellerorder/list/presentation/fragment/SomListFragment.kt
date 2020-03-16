@@ -6,7 +6,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -339,7 +338,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     if (filterStatusId != 0) {
                         loadFilterStatusList()
                     } else {
-                        somListItemAdapter.removeAll()
                         nextOrderId = 0
                         loadOrderList(nextOrderId)
                     }
@@ -532,13 +530,11 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         order_list_rv?.visibility = View.VISIBLE
 
         if (!onLoadMore) {
-            somListItemAdapter.somItemList = orderList.orders.toMutableList()
+            somListItemAdapter.addList(orderList.orders)
         } else {
-            somListItemAdapter.addItems(orderList.orders)
+            somListItemAdapter.appendList(orderList.orders)
             scrollListener.updateStateAfterGetData()
         }
-        somListItemAdapter.notifyDataSetChanged()
-
     }
 
     private fun showCoachMarkProducts(){
@@ -612,7 +608,6 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onRefresh(view: View?) {
         addEndlessScrollListener()
         onLoadMore = false
-        somListItemAdapter.removeAll()
         nextOrderId = 0
         loadOrderList(nextOrderId)
         loadFilterList()

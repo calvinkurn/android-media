@@ -5,7 +5,7 @@ import android.os.Build;
 import androidx.collection.ArrayMap;
 import android.util.Base64;
 
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.abstraction.common.utils.MapNulRemover;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.user.session.UserSessionInterface;

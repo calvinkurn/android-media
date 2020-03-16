@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
 import android.text.TextUtils
-import com.tokopedia.logisticcart.shipping.model.LogisticPromoViewModel
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ProductData
@@ -61,7 +61,7 @@ class RatesResponseStateConverter @Inject constructor() {
         return false
     }
 
-    private fun isPromoStackingApplied(logisticPromo: LogisticPromoViewModel?): Boolean =
+    private fun isPromoStackingApplied(logisticPromo: LogisticPromoUiModel?): Boolean =
             when (logisticPromo) {
                 null -> false
                 else -> logisticPromo.isApplied

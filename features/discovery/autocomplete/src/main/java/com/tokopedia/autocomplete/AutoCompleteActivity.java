@@ -84,7 +84,7 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     protected void initView() {
-        searchBarView = findViewById(R.id.search_bar);
+        searchBarView = findViewById(R.id.autocompleteSearchBar);
         mSuggestionView = findViewById(R.id.search_suggestion_container);
         mInitialStateView = findViewById(R.id.search_initial_state_container);
         suggestionFragment = (SuggestionFragment) getSupportFragmentManager().findFragmentById(R.id.search_suggestion);
@@ -226,7 +226,7 @@ public class AutoCompleteActivity extends BaseActivity
     public void onQueryTextChange(@NotNull SearchParameter searchParameter) {
         if (searchParameter.getSearchQuery().isEmpty()) {
             if (initialStateFragment != null) {
-                initialStateFragment.search(searchParameter);
+                initialStateFragment.getInitialStateData(searchParameter);
             }
         } else {
             if (suggestionFragment != null) {
@@ -268,13 +268,5 @@ public class AutoCompleteActivity extends BaseActivity
 
     public void setSearchQuery(String keyword) {
         searchBarView.setQuery(keyword, false, true);
-    }
-
-    public void deleteAllRecentSearch() {
-        initialStateFragment.deleteAllRecentSearch();
-    }
-
-    public void deleteRecentSearch(String keyword) {
-        initialStateFragment.deleteRecentSearch(keyword);
     }
 }
