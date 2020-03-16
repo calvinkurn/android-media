@@ -143,7 +143,6 @@ class DigitalBrowseHomeActivity : DigitalBrowseBaseActivity(), HasComponent<Digi
         lateinit var intent: Intent
 
         @JvmStatic
-        @DeepLink(ApplinkConst.Digital.DIGITAL_BROWSE)
         fun getCallingIntent(context: Context, extras: Bundle): Intent {
             val uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon()
             intent = Intent(context, DigitalBrowseHomeActivity::class.java)

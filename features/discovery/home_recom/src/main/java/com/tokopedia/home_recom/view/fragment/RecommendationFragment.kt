@@ -192,21 +192,6 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         })
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_FROM_PDP) {
-            data?.let {
-                val id = data.getStringExtra(PDP_EXTRA_PRODUCT_ID)
-                val wishlistStatusFromPdp = data.getBooleanExtra(WIHSLIST_STATUS_IS_WISHLIST,
-                        false)
-                val position = data.getIntExtra(PDP_EXTRA_UPDATED_POSITION, -1)
-                updateWishlist(id.toInt(), wishlistStatusFromPdp, position)
-            }
-            lastClickLayoutType = null
-            lastParentPosition = null
-        }
-    }
-
     override fun hasInitialSwipeRefresh(): Boolean {
         return true
     }
@@ -523,40 +508,6 @@ open class RecommendationFragment: BaseListFragment<HomeRecommendationDataModel,
         }
 
         activity?.startActivity(Intent.createChooser(shareIntent, SHARE_PRODUCT_TITLE))
-    }
-
-    /**
-     * Void [updateWishlist]
-     * It handling show intent share
-     * @param id the product id
-     * @param isWishlist the state wishlist or not wishlist
-     * @param position the position of item at adapter
-     */
-    private fun updateWishlist(id: Int, isWishlist: Boolean, position: Int){
-        if(position > -1 && adapter.data != null && adapter.dataSize > position) {
-            if(lastClickLayoutType != null){
-                when(lastClickLayoutType){
-                    TYPE_SCROLL -> {
-                        if(adapter.data[position] is RecommendationItemDataModel){
-                            (adapter.data[position] as RecommendationItemDataModel).productItem.isWishlist = isWishlist
-                            adapter.notifyItemChanged(position)
-                        }
-                    }
-                    TYPE_CAROUSEL, TYPE_CUSTOM_HORIZONTAL -> {
-                        if(lastParentPosition != null && adapter.data[lastParentPosition!!] is RecommendationCarouselDataModel){
-                            (getRecyclerView(view).findViewHolderForAdapterPosition(lastParentPosition!!) as RecommendationCarouselViewHolder)
-                                    .updateWishlist(position, isWishlist)
-                        }else {
-                            adapter.data.withIndex().find{(_, item) ->
-                                item is RecommendationCarouselDataModel && item.contains(id)}?.let { (index, _) ->
-                                (getRecyclerView(view).findViewHolderForAdapterPosition(index) as RecommendationCarouselViewHolder)
-                                        .updateWishlist(position, isWishlist)
-                            }
-                        }
-                    }
-                }
-            }
-        }
     }
 
 }

@@ -3,8 +3,10 @@ package com.tokopedia.productcard.options
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.discovery.common.coroutines.ProductionDispatcherProvider
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.productcard.options.di.TopAdsWishlistUseCaseModule
 import com.tokopedia.productcard.options.di.UserSessionModule
 import com.tokopedia.productcard.options.di.WishlistUseCaseModule
+import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
@@ -15,6 +17,7 @@ import javax.inject.Named
 @ProductCardOptionsScope
 @Module(includes = [
     WishlistUseCaseModule::class,
+    TopAdsWishlistUseCaseModule::class,
     UserSessionModule::class
 ])
 internal class ProductCardOptionsViewModelFactoryModule(
@@ -27,6 +30,7 @@ internal class ProductCardOptionsViewModelFactoryModule(
     fun provideProductCardOptionsViewModelFactory(
             addWishListUseCase: AddWishListUseCase,
             removeWishListUseCase: RemoveWishListUseCase,
+            topAdsWishlistUseCase: UseCase<Boolean>,
             userSession: UserSessionInterface
     ): ViewModelProvider.Factory {
         return ProductCardOptionsViewModelFactory(
@@ -34,6 +38,7 @@ internal class ProductCardOptionsViewModelFactoryModule(
                 productCardOptionsModel,
                 addWishListUseCase,
                 removeWishListUseCase,
+                topAdsWishlistUseCase,
                 userSession
         )
     }
