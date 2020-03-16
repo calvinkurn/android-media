@@ -131,7 +131,10 @@ import kotlin.collections.ArrayList
  * @author anggaprasetiyo on 18/01/18.
  */
 
-class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener, PromoActionListener, RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener, ToolbarRemoveView.ToolbarCartListener, MerchantVoucherListBottomSheetFragment.ActionListener, ClashBottomSheetFragment.ActionListener, InsuranceItemActionListener, TickerAnnouncementActionListener {
+class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
+        PromoActionListener, RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener,
+        ToolbarRemoveView.ToolbarCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
+        InsuranceItemActionListener, TickerAnnouncementActionListener {
 
     lateinit var appBarLayout: AppBarLayout
     lateinit var cartRecyclerView: RecyclerView
@@ -2466,14 +2469,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     override fun onFailedClearPromoStack(ignoreAPIResponse: Boolean) {
         if (!ignoreAPIResponse) {
             showToastMessageRed("")
-        }
-    }
-
-    override fun onSubmitNewPromoAfterClash(oldPromoList: ArrayList<String>,
-                                            newPromoList: ArrayList<ClashingVoucherOrderUiModel>,
-                                            type: String) {
-        cartAdapter.promoStackingGlobalData?.let {
-            dPresenter.processCancelAutoApplyPromoStackAfterClash(it, oldPromoList, newPromoList, type)
         }
     }
 

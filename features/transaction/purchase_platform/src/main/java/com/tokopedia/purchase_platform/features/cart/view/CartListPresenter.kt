@@ -59,7 +59,6 @@ import javax.inject.Inject
 class CartListPresenter @Inject constructor(private val getCartListSimplifiedUseCase: GetCartListSimplifiedUseCase?,
                                             private val deleteCartUseCase: DeleteCartUseCase?,
                                             private val updateCartUseCase: UpdateCartUseCase?,
-                                            private val checkPromoStackingCodeUseCase: CheckPromoStackingCodeUseCase?,
                                             private val compositeSubscription: CompositeSubscription,
                                             private val addWishListUseCase: AddWishListUseCase?,
                                             private val removeWishListUseCase: RemoveWishListUseCase?,
@@ -539,72 +538,12 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                                                             oldPromoList: ArrayList<String>,
                                                             newPromoList: ArrayList<ClashingVoucherOrderUiModel>,
                                                             type: String) {
-        view?.let {
-            it.showProgressLoading()
-            clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, oldPromoList)
-            compositeSubscription.add(
-                    clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
-                            ?.subscribe(ClearCacheAutoApplyAfterClashSubscriber(view, this, promoStackingGlobalData, newPromoList, type))
-            )
-        }
     }
 
     override fun processApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData,
                                                   newPromoList: ArrayList<ClashingVoucherOrderUiModel>,
                                                   type: String) {
 
-        view?.let { view ->
-            val promo = generateCheckPromoFirstStepParam(promoStackingGlobalData)
-            promo.codes = ArrayList()
-            promo.orders?.let {
-                for (order in it) {
-                    order.codes = ArrayList()
-                }
-            }
-
-            // New promo list is array, but it will always be 1 item
-            if (newPromoList.size > 0) {
-                val clashingVoucherOrderUiModel = newPromoList[0]
-                if (clashingVoucherOrderUiModel.uniqueId.isEmpty()) {
-                    // This promo is global promo
-                    val codes = ArrayList<String>()
-                    codes.add(clashingVoucherOrderUiModel.code)
-                    promo.codes = codes
-
-                    val currentApplyCode = CurrentApplyCode()
-                    if (clashingVoucherOrderUiModel.code.isNotEmpty()) {
-                        currentApplyCode.code = clashingVoucherOrderUiModel.code
-                        currentApplyCode.type = PARAM_GLOBAL
-                    }
-                    promo.currentApplyCode = currentApplyCode
-                } else {
-                    // This promo is merchant/logistic promo
-                    promo.orders?.let {
-                        for (order in it) {
-                            if (clashingVoucherOrderUiModel.uniqueId == order.uniqueId) {
-                                val codes = ArrayList<String>()
-                                codes.add(clashingVoucherOrderUiModel.code)
-                                order.codes = codes
-
-                                val currentApplyCode = CurrentApplyCode()
-                                if (clashingVoucherOrderUiModel.code.isNotEmpty()) {
-                                    currentApplyCode.code = clashingVoucherOrderUiModel.code
-                                    currentApplyCode.type = type
-                                }
-                                promo.currentApplyCode = currentApplyCode
-                                break
-                            }
-                        }
-                    }
-                }
-                view.showProgressLoading()
-                checkPromoStackingCodeUseCase?.setParams(promo)
-                compositeSubscription.add(
-                        checkPromoStackingCodeUseCase?.createObservable(RequestParams.create())
-                                ?.subscribe(CheckPromoFirstStepAfterClashSubscriber(this.view, type))
-                )
-            }
-        }
     }
 
     override fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo {
