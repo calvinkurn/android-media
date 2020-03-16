@@ -14,7 +14,6 @@ import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.CartFeedbackUiModel
-import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
@@ -24,10 +23,8 @@ import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-
 
 /**
  * Created by mzennis on 2020-03-06.
@@ -51,7 +48,7 @@ class PlayBottomSheetViewModel @Inject constructor(
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
 
     fun getProductVariant(product: ProductLineUiModel, action: ProductAction) {
-        showVariantSheetPlaceholder()
+        _observableProductVariant.value = PlayResult.Loading(true)
 
         launchCatchError(block = {
             val variantSheetUiModel = withContext(dispatchers.io) {
@@ -69,7 +66,11 @@ class PlayBottomSheetViewModel @Inject constructor(
                 )
             }
             _observableProductVariant.value = PlayResult.Success(variantSheetUiModel)
-        }){}
+        }){
+            _observableProductVariant.value = PlayResult.Failure(it) {
+                getProductVariant(product, action)
+            }
+        }
     }
 
     fun doInteractionEvent(event: InteractionEvent) {
@@ -100,31 +101,15 @@ class PlayBottomSheetViewModel @Inject constructor(
                     action = action
             )
 
-    private fun showVariantSheetPlaceholder() {
-        _observableProductVariant.value = PlayResult.Loading(
-                true,
-                List(PLACEHOLDER_VARIANT_CATEGORY_COUNT) { VariantPlaceholderUiModel.Category(
-                        List(PLACEHOLDER_VARIANT_OPTION_COUNT) { VariantPlaceholderUiModel.Option }
-                ) }
-        )
-    }
-
     override fun onCleared() {
         super.onCleared()
         job.cancelChildren()
     }
 
-    companion object {
-        private const val PLACEHOLDER_VARIANT_CATEGORY_COUNT = 2
-        private const val PLACEHOLDER_VARIANT_OPTION_COUNT = 7
-    }
-
-    // TODO("testing")
 //    private fun setMockVariantSheetContent(action: ProductAction) {
 //        _observableProductVariant.value = PlayResult.Success(VariantSheetUiModel(
 //                product = ProductLineUiModel(
 //                        id = "123",
-//                        shopId = "123",
 //                        imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
 //                        title = "Product Value",
 //                        isVariantAvailable = true,

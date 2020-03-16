@@ -14,6 +14,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.UnknownHostException
 
 /**
  * Created by jegul on 05/03/20
@@ -35,8 +37,12 @@ class VariantSheetComponent(
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet]?.let(::handleShowHideVariantSheet) }
                             is ScreenStateEvent.SetVariantSheet -> when (it.variantResult) {
-                                is PlayResult.Loading -> if (it.variantResult.showPlaceholder) uiView.showPlaceholder(true, it.variantResult.placeholderList)
+                                is PlayResult.Loading -> if (it.variantResult.showPlaceholder) uiView.showPlaceholder()
                                 is PlayResult.Success -> uiView.setVariantSheet(it.variantResult.data)
+                                is PlayResult.Failure -> uiView.showError(
+                                        isConnectionError = it.variantResult.error is ConnectException || it.variantResult.error is UnknownHostException,
+                                        onError = it.variantResult.onRetry
+                                )
                             }
                         }
                     }

@@ -37,10 +37,12 @@ import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
@@ -161,20 +163,24 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                                 ScreenStateEvent::class.java,
                                 ScreenStateEvent.SetProductSheet(it)
                         )
-               sendTrackerImpression(it.productList)
             }
+            sendTrackerImpression(it)
         })
     }
 
-    private fun sendTrackerImpression(productList: List<PlayProductUiModel>) {
-        if (productList.isNotEmpty() && productList[0] is ProductLineUiModel) {
-            with(PlayAnalytics) { impressionProductList(
-                    trackingQueue,
-                    channelId,
-                    productList as List<ProductLineUiModel>,
-                    playViewModel.channelType
-            ) }
+    private fun sendTrackerImpression(playResult: PlayResult<ProductSheetUiModel>) {
+        if (playResult is PlayResult.Success) {
+            if (playResult.data.productList.isNotEmpty()
+                    && playResult.data.productList[0] is ProductLineUiModel) {
+                with(PlayAnalytics) { impressionProductList(
+                        trackingQueue,
+                        channelId,
+                        playResult.data.productList as List<ProductLineUiModel>,
+                        playViewModel.channelType
+                ) }
+            }
         }
+
     }
 
     private fun observeVariantSheetContent() {
