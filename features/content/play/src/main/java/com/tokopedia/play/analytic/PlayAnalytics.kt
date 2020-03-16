@@ -1,7 +1,10 @@
 package com.tokopedia.play.analytic
 
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.trackingoptimizer.model.EventModel
 
 
 /**
@@ -11,6 +14,7 @@ import com.tokopedia.track.TrackApp
 object PlayAnalytics {
 
     private const val KEY_TRACK_CLICK_BACK = "clickBack"
+    private const val KEY_TRACK_ADD_TO_CART = "addToCart"
     private const val KEY_TRACK_CLICK_GROUP_CHAT = "clickGroupChat"
     private const val KEY_TRACK_VIEW_GROUP_CHAT = "viewGroupChat"
 
@@ -117,6 +121,175 @@ object PlayAnalytics {
                 KEY_TRACK_CLICK_GROUP_CHAT,
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "$KEY_TRACK_CLICK on play button video",
+                "$channelId - ${channelType.value}"
+        )
+    }
+
+    fun bufferVideo(bufferX: Int, bufferDuration: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_VIEW_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "buffer",
+                "$bufferX - $bufferDuration"
+        )
+    }
+
+    fun clickCartIcon(channelId: String, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK cart icon",
+                "$channelId - ${channelType.value}"
+        )
+    }
+
+    fun clickPinnedProduct(channelId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK product pinned message",
+                channelId
+        )
+    }
+
+    fun impressionProductList(trackingQueue: TrackingQueue,
+                              channelId: String,
+                              listOfProductLineUiModel: List<ProductLineUiModel>,
+                              channelType: PlayChannelType) {
+        trackingQueue.putEETracking(
+                EventModel(
+                        "productView",
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        "view product",
+                        "$channelId - ${listOfProductLineUiModel[0].id} - ${channelType.value} - product in bottom sheet"
+                ),
+                hashMapOf(
+
+                )
+        )
+    }
+
+    fun clickProduct(trackingQueue: TrackingQueue,
+                              channelId: String,
+                              listOfProductLineUiModel: List<ProductLineUiModel>,
+                              channelType: PlayChannelType) {
+        trackingQueue.putEETracking(
+                EventModel(
+                        "productClick",
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        KEY_TRACK_CLICK,
+                        "$channelId - ${listOfProductLineUiModel[0].id} - ${channelType.value} - product in bottom sheet"
+                ),
+                hashMapOf(
+
+                )
+        )
+    }
+
+    fun scrollMerchantVoucher(channelId: String, lastPositionViewed: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "scroll merchant voucher",
+                "$channelId - $lastPositionViewed"
+        )
+    }
+
+    fun clickBeliButtonProductWithVariant(channelId: String, productId: Int, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK buy in bottom sheet",
+                "$channelId - $productId - ${channelType.value}"
+        )
+    }
+
+    fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
+                                          channelId: String,
+                                          productLineUiModel: ProductLineUiModel,
+                                          cartId: String,
+                                          channelType: PlayChannelType) {
+        trackingQueue.putEETracking(
+                EventModel(
+                        KEY_TRACK_ADD_TO_CART,
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        "$KEY_TRACK_CLICK buy in bottom sheet with variant",
+                        ""
+                ),
+                hashMapOf(
+
+                )
+        )
+    }
+
+    fun clickAtcButtonProductWithVariant(channelId: String, productId: Int, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK atc in bottom sheet",
+                "$channelId - $productId - ${channelType.value}"
+        )
+    }
+
+    fun clickAtcButtonProductWithNoVariant(trackingQueue: TrackingQueue,
+                                          channelId: String,
+                                          productLineUiModel: ProductLineUiModel,
+                                          cartId: String,
+                                          channelType: PlayChannelType) {
+        trackingQueue.putEETracking(
+                EventModel(
+                        KEY_TRACK_ADD_TO_CART,
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        "$KEY_TRACK_CLICK atc in bottom sheet with variant",
+                        ""
+                ),
+                hashMapOf(
+
+                )
+        )
+    }
+
+    fun clickAtcButtonInVariant(trackingQueue: TrackingQueue,
+                                channelId: String,
+                                productLineUiModel: ProductLineUiModel,
+                                cartId: String,
+                                channelType: PlayChannelType) {
+        trackingQueue.putEETracking(
+                EventModel(
+                        KEY_TRACK_ADD_TO_CART,
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        "$KEY_TRACK_CLICK atc in variant page",
+                        "$channelId - ${productLineUiModel.id} - ${channelType.value}"
+                ),
+                hashMapOf(
+
+                )
+        )
+    }
+
+    fun clickBuyButtonInVariant(trackingQueue: TrackingQueue,
+                                channelId: String,
+                                productLineUiModel: ProductLineUiModel,
+                                cartId: String,
+                                channelType: PlayChannelType) {
+        trackingQueue.putEETracking(
+                EventModel(
+                        KEY_TRACK_ADD_TO_CART,
+                        KEY_TRACK_GROUP_CHAT_ROOM,
+                        "$KEY_TRACK_CLICK beli in variant page",
+                        "$channelId - ${productLineUiModel.id} - ${channelType.value}"
+                ),
+                hashMapOf(
+
+                )
+        )
+    }
+
+    fun clickSeeToasterAfterAtc(channelId: String, channelType: PlayChannelType) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+                KEY_TRACK_CLICK_GROUP_CHAT,
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                "$KEY_TRACK_CLICK lihat in message ticket",
                 "$channelId - ${channelType.value}"
         )
     }
