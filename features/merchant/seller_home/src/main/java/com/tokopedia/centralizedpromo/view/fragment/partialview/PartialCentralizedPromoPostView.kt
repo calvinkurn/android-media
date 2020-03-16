@@ -34,7 +34,7 @@ class PartialCentralizedPromoPostView(
     private fun setupPostRecycler() = with(view) {
         rvCentralizedPromoPostList.apply {
             layoutManager = LinearLayoutManager(context)
-            adapter = this@PartialCentralizedPromoPostView.adapter
+            adapter = this@PartialCentralizedPromoPostView.adapter.apply { setHasStableIds(true) }
             isNestedScrollingEnabled = false
         }
     }

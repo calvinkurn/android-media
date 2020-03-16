@@ -29,7 +29,7 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
                 CentralizedPromoTracking.sendImpressionOnGoingPromoStatus(
                         widgetName = element.title,
                         value = element.status.count,
-                        state = "success")
+                        state = element.status.text)
             }
         }
 
@@ -39,13 +39,13 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
     private fun initListeners(element: OnGoingPromoUiModel) {
         with(itemView) {
             tvOnGoingPromoTitle.setOnClickListener {
-                onStatusClicked(element.status.url, element.title, element.status.count)
+                onStatusClicked(element.status.url, element.title, element.status.count, element.status.text)
             }
             tvOnGoingPromoStatus.setOnClickListener {
-                onStatusClicked(element.status.url, element.title, element.status.count)
+                onStatusClicked(element.status.url, element.title, element.status.count, element.status.text)
             }
             tvOnGoingPromoCount.setOnClickListener {
-                onStatusClicked(element.status.url, element.title, element.status.count)
+                onStatusClicked(element.status.url, element.title, element.status.count, element.status.text)
             }
             tvSeePastPromotion.setOnClickListener {
                 onFooterClicked(element.footer.url, element.title, element.footer.text)
@@ -56,12 +56,12 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
         }
     }
 
-    private fun onStatusClicked(appLink: String, title: String, value: Int) {
+    private fun onStatusClicked(appLink: String, title: String, value: Int, state: String) {
         if (openApplink(appLink)) {
             CentralizedPromoTracking.sendClickOnGoingPromoStatus(
                     widgetName = title,
                     value = value,
-                    state = "success")
+                    state = state)
         }
     }
 

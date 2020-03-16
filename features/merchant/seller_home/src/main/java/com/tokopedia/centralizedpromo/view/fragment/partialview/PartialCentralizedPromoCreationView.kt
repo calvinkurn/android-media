@@ -29,7 +29,7 @@ class PartialCentralizedPromoCreationView(
     private fun setupPromoRecommendation() = with(view) {
         rvCentralizedPromoCreation.apply {
             layoutManager = GridLayoutManager(context, 2)
-            adapter = this@PartialCentralizedPromoCreationView.adapter
+            adapter = this@PartialCentralizedPromoCreationView.adapter.apply { setHasStableIds(true) }
             isNestedScrollingEnabled = false
             addItemDecoration(PromoCreationViewHolder.ItemDecoration(context.dpToPx(4).toInt()))
         }
