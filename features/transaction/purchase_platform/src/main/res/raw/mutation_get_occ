@@ -1,5 +1,5 @@
-query get_occ_cart_page($dummy: String){
-    get_occ_cart_page(dummy: $dummy){
+query get_occ_cart_page {
+    get_occ_cart_page {
         error_message
         status
         data{
@@ -254,6 +254,7 @@ query get_occ_cart_page($dummy: String){
                   }
             	}
               	has_preference
+              	is_changed_profile
                 profile_id
                 status
                 address{
@@ -284,6 +285,8 @@ query get_occ_cart_page($dummy: String){
                     fee
                     minimum_amount
                     maximum_amount
+                    wallet_amount
+                    metadata
                     flags{
                         pin
                     }

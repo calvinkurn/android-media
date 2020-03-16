@@ -18,5 +18,7 @@ data class Payment(
         @SerializedName("maximum_amount")
         val maximumAmount: Int = 0,
         @SerializedName("fee")
-        val fee: Int = 0
+        val fee: Int = 0,
+        @SerializedName("wallet_amount")
+        val walletAmount: Int = 0
 )

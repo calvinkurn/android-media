@@ -335,6 +335,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 OrderPriceSummaryBottomSheet().show(this, orderTotal.orderCost)
             }
         }
+
+        btn_pay.setOnClickListener {
+//            viewModel.finalUpdate()
+        }
     }
 
     private fun showMessage(preference: ProfileResponse) {
@@ -355,6 +359,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             tv_subheader_action.visible()
             tv_subheader.visible()
         }
+        ticker_preference_info.visibility = if (preference.isChangedProfile) View.VISIBLE else View.GONE
     }
 
     private fun initViews(view: View) {
