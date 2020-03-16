@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.topchat.R
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.item_topchat_product_attachment.view.*
 
 class TopchatProductAttachmentViewHolder(
@@ -26,6 +27,7 @@ class TopchatProductAttachmentViewHolder(
         private val listener: ProductAttachmentListener
 ) : BaseChatViewHolder<ProductAttachmentViewModel>(itemView) {
 
+    private var wishListBtn: UnifyButton? = null
     private val white = "#ffffff"
     private val white2 = "#fff"
 
@@ -34,6 +36,7 @@ class TopchatProductAttachmentViewHolder(
     override fun bind(product: ProductAttachmentViewModel?) {
         if (product == null) return
         super.bind(product)
+        bindView()
         bindProductClick(product)
         bindImage(product)
         bindName(product)
@@ -44,6 +47,10 @@ class TopchatProductAttachmentViewHolder(
         bindFooter(product)
         bindChatReadStatus(product)
         listener.trackSeenProduct(product)
+    }
+
+    private fun bindView() {
+        wishListBtn = itemView.findViewById(R.id.tv_wishlist)
     }
 
     private fun bindProductClick(product: ProductAttachmentViewModel) {
@@ -205,7 +212,7 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindWishList(product: ProductAttachmentViewModel) {
-        itemView.tv_wishlist?.let {
+        wishListBtn?.let {
             if (product.hasEmptyStock()) {
                 it.show()
                 it.setOnClickListener {
