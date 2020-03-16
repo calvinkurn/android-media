@@ -61,7 +61,6 @@ class DynamicCarouselRecommendationViewHolder(val view: View) : SmartAbstractVie
                 }
             }
         )
-        carouselProductCardView.setSnapHelper(GravitySnapHelper(Gravity.START))
     }
 
     override fun bind(element: RecommendationCarouselDataModel, listener: SmartListener, payloads: List<Any>) {

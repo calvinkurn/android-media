@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerhome.common.utils.DateTimeUtil
+import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.*
 import com.tokopedia.sellerhome.view.model.*
 import com.tokopedia.usecase.coroutines.Fail
@@ -27,6 +28,7 @@ class SellerHomeViewModel @Inject constructor(
         private val userSession: UserSessionInterface,
         private val getTickerUseCase: GetTickerUseCase,
         private val getLayoutUseCase: GetLayoutUseCase,
+        private val getShopLocationUseCase: GetShopLocationUseCase,
         private val getCardDataUseCase: GetCardDataUseCase,
         private val getLineGraphDataUseCase: GetLineGraphDataUseCase,
         private val getProgressDataUseCase: GetProgressDataUseCase,
@@ -51,6 +53,7 @@ class SellerHomeViewModel @Inject constructor(
 
     private val _homeTicker = MutableLiveData<Result<List<TickerUiModel>>>()
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
+    private val _shopLocation = MutableLiveData<Result<ShippingLoc>>()
     private val _cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
     private val _lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
     private val _progressWidgetData = MutableLiveData<Result<List<ProgressDataUiModel>>>()
@@ -61,6 +64,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _homeTicker
     val widgetLayout: LiveData<Result<List<BaseWidgetUiModel<*>>>>
         get() = _widgetLayout
+    val shopLocation: LiveData<Result<ShippingLoc>>
+        get() = _shopLocation
     val cardWidgetData: LiveData<Result<List<CardDataUiModel>>>
         get() = _cardWidgetData
     val lineGraphWidgetData: LiveData<Result<List<LineGraphDataUiModel>>>
@@ -90,6 +95,17 @@ class SellerHomeViewModel @Inject constructor(
             })
         }, onError = {
             _widgetLayout.value = Fail(it)
+        })
+    }
+
+    fun getShopLocation() {
+        launchCatchError(block = {
+            _shopLocation.value = Success(withContext(Dispatchers.IO) {
+                getShopLocationUseCase.params = GetShopLocationUseCase.getRequestParams(shopId)
+                return@withContext getShopLocationUseCase.executeOnBackground()
+            })
+        }, onError = {
+            _shopLocation.value = Fail(it)
         })
     }
 

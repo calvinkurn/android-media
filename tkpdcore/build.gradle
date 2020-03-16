@@ -48,7 +48,6 @@ dependencies {
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.libraries.core_legacy)
     implementation project(rootProject.ext.libraries.track)
-    implementation project(rootProject.ext.libraries.cameraview)
     implementation project(rootProject.ext.libraries.webview)
 
     implementation rootProject.ext.unifyDependencies.components

@@ -1,6 +1,6 @@
 package com.tokopedia.travelhomepage.destination.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.travelhomepage.destination.analytics.TravelDestinationTrackingActionConstant.BLOGSPOT_IMPRESSION
@@ -44,9 +44,8 @@ import com.tokopedia.travelhomepage.destination.analytics.TravelHomepageTracking
 import com.tokopedia.travelhomepage.destination.analytics.TravelHomepageTrackingEEConstant.PRODUCTS
 import com.tokopedia.travelhomepage.destination.analytics.TravelHomepageTrackingEEConstant.PROMOTIONS
 import com.tokopedia.travelhomepage.destination.model.TravelArticleModel
-import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionViewModel
+import com.tokopedia.travelhomepage.destination.model.TravelDestinationSectionModel
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingEventNameConstant.CLICK_HOMEPAGE
-import java.lang.Exception
 
 /**
  * @author by jessica on 2020-01-13
@@ -54,7 +53,7 @@ import java.lang.Exception
 
 class TravelDestinationTrackingUtil {
 
-    fun orderListImpression(list: List<TravelDestinationSectionViewModel.Item>, startingIndex: Int) {
+    fun orderListImpression(list: List<TravelDestinationSectionModel.Item>, startingIndex: Int) {
         val products = mapToPromotionsProducts(list, startingIndex)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -66,7 +65,7 @@ class TravelDestinationTrackingUtil {
                 ))
     }
 
-    fun orderListClicked(item: TravelDestinationSectionViewModel.Item, itemPosition: Int) {
+    fun orderListClicked(item: TravelDestinationSectionModel.Item, itemPosition: Int) {
         val products = mapToPromotionsProducts(listOf(item), itemPosition)
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -79,7 +78,7 @@ class TravelDestinationTrackingUtil {
                 ))
     }
 
-    fun cityRecommendationImpression(list: List<TravelDestinationSectionViewModel.Item>, startingIndex: Int) {
+    fun cityRecommendationImpression(list: List<TravelDestinationSectionModel.Item>, startingIndex: Int) {
         val products = mapToPromotionsProducts(list, startingIndex)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -91,7 +90,7 @@ class TravelDestinationTrackingUtil {
                 ))
     }
 
-    fun cityRecommendationItemClicked(item: TravelDestinationSectionViewModel.Item, itemPosition: Int) {
+    fun cityRecommendationItemClicked(item: TravelDestinationSectionModel.Item, itemPosition: Int) {
         val products = mapToPromotionsProducts(listOf(item), itemPosition)
 
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -104,7 +103,7 @@ class TravelDestinationTrackingUtil {
                 ))
     }
 
-    fun cityEventsImpression(list: List<TravelDestinationSectionViewModel.Item>, startingIndex: Int) {
+    fun cityEventsImpression(list: List<TravelDestinationSectionModel.Item>, startingIndex: Int) {
         val products = mapToImpressionsProduct(list, startingIndex, "/event")
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -117,7 +116,7 @@ class TravelDestinationTrackingUtil {
                 ))
     }
 
-    fun cityEventsClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+    fun cityEventsClick(item: TravelDestinationSectionModel.Item, position: Int) {
         val products = mapToImpressionsProduct(listOf(item), position, "/event")
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -134,7 +133,7 @@ class TravelDestinationTrackingUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_DESTINATION_CATEGORY, CLICK_VIEW_ALL_EVENTS_WIDGET, CLICK)
     }
 
-    fun cityDealsImpression(list: List<TravelDestinationSectionViewModel.Item>, startingIndex: Int) {
+    fun cityDealsImpression(list: List<TravelDestinationSectionModel.Item>, startingIndex: Int) {
         val products = mapToImpressionsProduct(list, startingIndex, "/deals")
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -147,7 +146,7 @@ class TravelDestinationTrackingUtil {
                 ))
     }
 
-    fun cityDealsClick(item: TravelDestinationSectionViewModel.Item, position: Int) {
+    fun cityDealsClick(item: TravelDestinationSectionModel.Item, position: Int) {
         val products = mapToImpressionsProduct(listOf(item), position, "/deals")
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
                 DataLayer.mapOf(
@@ -194,7 +193,7 @@ class TravelDestinationTrackingUtil {
         TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_DESTINATION_CATEGORY, CLICK_VIEW_ALL_BLOGSPOT_WIDGET, CLICK)
     }
 
-    private fun mapToPromotionsProducts(list: List<TravelDestinationSectionViewModel.Item>, startingIndex: Int): MutableList<Any> {
+    private fun mapToPromotionsProducts(list: List<TravelDestinationSectionModel.Item>, startingIndex: Int): MutableList<Any> {
         val products = mutableListOf<Any>()
         for ((index, item) in list.withIndex()) {
             val position = startingIndex + index + 1
@@ -209,7 +208,7 @@ class TravelDestinationTrackingUtil {
         return products
     }
 
-    private fun mapToImpressionsProduct(list: List<TravelDestinationSectionViewModel.Item>, startingIndex: Int, itemType: String): MutableList<Any> {
+    private fun mapToImpressionsProduct(list: List<TravelDestinationSectionModel.Item>, startingIndex: Int, itemType: String): MutableList<Any> {
         val products = mutableListOf<Any>()
         for ((index, item) in list.withIndex()) {
             val position = startingIndex + index + 1

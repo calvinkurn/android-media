@@ -37,11 +37,11 @@ class GetCategoryLevelTwoUsecase
 
         val graphqlUseCase = GraphqlUseCase()
 
-        val id = requestParams!!.getString(KEY_ID, "0")
-        requestParams.clearValue(KEY_ID)
+        val id = requestParams?.getString(KEY_ID, "0")
+        requestParams?.clearValue(KEY_ID)
 
         val graphqlRequest = GraphqlRequest(GraphqlHelper.loadRawString(context.resources,
-                R.raw.category_list), Data::class.java, requestParams.parameters, false)
+                R.raw.category_list), Data::class.java, requestParams?.parameters)
         graphqlUseCase.clearRequest()
 
         val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST)
@@ -51,7 +51,7 @@ class GetCategoryLevelTwoUsecase
         graphqlUseCase.addRequest(graphqlRequest)
         return graphqlUseCase.createObservable(requestParams).map {
 
-            CategoryListTwoModelMapper().transform((it.getData(Data::class.java) as Data), id)
+            CategoryListTwoModelMapper().transform((it.getData(Data::class.java) as Data), id ?: "")
 
 
         }

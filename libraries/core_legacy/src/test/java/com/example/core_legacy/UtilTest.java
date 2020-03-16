@@ -1,7 +1,7 @@
 package com.example.core_legacy;
 
 
-import com.tokopedia.analytic_constant.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.util.PriceUtil;
 import com.tokopedia.design.utils.CurrencyFormatHelper;
