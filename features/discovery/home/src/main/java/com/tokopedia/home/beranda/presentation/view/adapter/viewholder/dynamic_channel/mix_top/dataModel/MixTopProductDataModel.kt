@@ -2,7 +2,7 @@ package com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.typeFactory.MixTopTypeFactory
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardTypeFactory
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 
 class MixTopProductDataModel(
@@ -10,8 +10,8 @@ class MixTopProductDataModel(
         val channel: DynamicHomeChannel.Channels,
         val blankSpaceConfig: BlankSpaceConfig,
         val positionOnWidgetHome: String
-) : MixTopVisitable {
-    override fun type(typeFactory: MixTopTypeFactory): Int {
+) : Visitable<FlashSaleCardTypeFactory> {
+    override fun type(typeFactory: FlashSaleCardTypeFactory): Int {
         return typeFactory.type(this)
     }
 }

@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.v2.MixTopTracking
@@ -22,9 +23,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopProductDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopSeeMoreDataModel
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopVisitable
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.typeFactory.MixTopTypeFactoryImpl
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -33,6 +34,7 @@ import java.util.*
 
 class MixTopBannerViewHolder(
         itemView: View, val homeCategoryListener: HomeCategoryListener,
+        val flashSaleCardListener: FlashSaleCardListener,
         countDownListener: CountDownView.CountDownListener,
         private val parentRecycledViewPool: RecyclerView.RecycledViewPool
 ) : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener){
@@ -137,20 +139,11 @@ class MixTopBannerViewHolder(
         }
     }
 
-    private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<MixTopVisitable>){
-        if (adapter == null) {
-            startSnapHelper.attachToRecyclerView(recyclerView)
-            adapter = MixTopAdapter(
-                    MixTopTypeFactoryImpl(homeCategoryListener),
-                    channel.grids,
-                    channel,
-                    homeCategoryListener)
-            adapter?.setItems(visitables)
-
-            recyclerView.adapter = adapter
-        } else {
-            adapter?.setItems(visitables)
-        }
+    private fun mappingItem(channel: DynamicHomeChannel.Channels, visitables: MutableList<Visitable<*>>) {
+        startSnapHelper.attachToRecyclerView(recyclerView)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(flashSaleCardListener, channel)
+        adapter = MixTopAdapter(visitables, typeFactoryImpl)
+        recyclerView.adapter = adapter
     }
 
     private fun mappingCtaButton(cta: DynamicHomeChannel.CtaData) {
@@ -224,14 +217,14 @@ class MixTopBannerViewHolder(
     }
 
     private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels,
-                                             blankSpaceConfig: BlankSpaceConfig): MutableList<MixTopVisitable> {
-        val visitables: MutableList<MixTopVisitable> = channel.grids.map {
+                                             blankSpaceConfig: BlankSpaceConfig): MutableList<Visitable<*>> {
+        val visitables: MutableList<Visitable<*>> = channel.grids.map {
             MixTopProductDataModel(it, channel, blankSpaceConfig, adapterPosition.toString())
         }.toMutableList()
 
         if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
-            visitables.add(MixTopSeeMoreDataModel(
-                    channel
+            visitables.add(SeeMorePdpDataModel(
+                    applink = channel.header.applink
             ))
         }
         return visitables
