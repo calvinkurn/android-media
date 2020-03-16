@@ -56,5 +56,6 @@
     <string name="chat_unblocked_text">Anda menerima chat dari %s</string>
 
     <string name="action_empty_stock">Stok Kosong</string>
+    <string name="title_chatcommon_check">Cek Sekarang</string>
 
 </resources>
