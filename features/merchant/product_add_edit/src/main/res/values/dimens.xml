@@ -12,4 +12,12 @@
     <dimen name="dp_40">40dp</dimen>
     <dimen name="dp_42">42dp</dimen>
     <dimen name="dp_44">44dp</dimen>
+
+    <!--tooltip dimens-->
+    <dimen name="tooltip_padding">0dp</dimen>
+    <dimen name="tooltip_padding_top">24dp</dimen>
+    <dimen name="tooltip_close_margin">17dp</dimen>
+    <dimen name="tooltip_close_size">30dp</dimen>
+    <dimen name="tooltip_image_size">64dp</dimen>
+
 </resources>

@@ -1,6 +1,5 @@
 package com.tokopedia.product.addedit.preview.presentation.fragment
 
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -15,8 +14,12 @@ import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.*
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.detail.presentation.activity.AddEditProductDetailActivity
 import com.tokopedia.product.addedit.imagepicker.view.activity.ImagePickerAddProductActivity
+import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
+import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.unifyprinciples.Typography
 
 class AddEditProductPreviewFragment : BaseDaggerFragment() {
 
@@ -27,8 +30,11 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
             return AddEditProductPreviewFragment()
         }
 
+
         private const val MAX_PRODUCT_PHOTOS = 5
         private const val REQUEST_CODE_IMAGE = 0x01
+        // TODO faisalramd
+        const val TEST_IMAGE_URL = "https://ecs7.tokopedia.net/img/cache/700/product-1/2018/9/16/36162992/36162992_778e5d1e-06fd-4e4a-b650-50c232815b24_1080_1080.jpg"
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -42,6 +48,16 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
         addEditProductPhotoButton?.setOnClickListener {
             val intent = ImagePickerAddProductActivity.getIntent(context, createImagePickerBuilder())
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
+        }
+
+        val addProductPhotoSection: ViewGroup = view.findViewById(R.id.add_product_photo_section)
+        val tvStartAddEditProductDescription: Typography = view.findViewById(R.id.tv_start_add_edit_product_description)
+        addProductPhotoSection.setOnClickListener {
+            showPhotoTips()
+        }
+
+        tvStartAddEditProductDescription.setOnClickListener {
+            moveToDescriptionActivity()
         }
     }
 
@@ -65,6 +81,27 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
 
+    }
+
+    private fun showPhotoTips() {
+        fragmentManager?.let {
+            val tooltipBottomSheet = TooltipBottomSheet()
+            val tips: ArrayList<ImageTooltipModel> = ArrayList()
+            val tooltipTitle = getString(R.string.title_tooltip_photo_tips)
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_1), TEST_IMAGE_URL))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_2), TEST_IMAGE_URL))
+            tips.add(ImageTooltipModel(getString(R.string.message_tooltip_photo_tips_3), TEST_IMAGE_URL))
+
+            tooltipBottomSheet.apply {
+                setTitle(tooltipTitle)
+                setItemMenuList(tips)
+                show(it, null)
+            }
+        }
+    }
+
+    private fun moveToDescriptionActivity() {
+        startActivity(AddEditProductDescriptionActivity.createInstance(context))
     }
 
     @SuppressLint("WrongConstant")

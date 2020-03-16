@@ -32,7 +32,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_product_name_header"
         app:text_field_counter="@integer/max_product_name_length"
-        app:text_field_label="@string/label_product_name"
+        app:text_field_label="@string/detail_label_product_name"
         app:text_field_label_static="true"
         app:text_field_message="@string/label_add_product_name_tips" />
 

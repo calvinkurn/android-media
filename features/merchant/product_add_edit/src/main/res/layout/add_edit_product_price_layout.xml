@@ -32,7 +32,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_product_price_header"
         app:text_field_input_type="number"
-        app:text_field_label="@string/label_product_price"
+        app:text_field_label="@string/detail_label_product_price"
         app:text_field_label_static="true"
         app:text_field_message="@string/label_add_product_price_tips"
         app:text_field_prepend_text="Rp" />
