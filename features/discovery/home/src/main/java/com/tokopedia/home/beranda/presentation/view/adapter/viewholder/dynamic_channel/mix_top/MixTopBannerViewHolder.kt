@@ -22,10 +22,11 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.DynamicChannelViewModel
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopProductDataModel
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.FlashSaleDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.dataModel.SeeMorePdpDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.listener.FlashSaleCardListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.pdpview.typeFactory.FlashSaleCardViewTypeFactoryImpl
+import com.tokopedia.productcard.ProductCardFlashSaleModel
 import com.tokopedia.productcard.v2.BlankSpaceConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -218,15 +219,34 @@ class MixTopBannerViewHolder(
 
     private fun mappingVisitablesFromChannel(channel: DynamicHomeChannel.Channels,
                                              blankSpaceConfig: BlankSpaceConfig): MutableList<Visitable<*>> {
-        val visitables: MutableList<Visitable<*>> = channel.grids.map {
-            MixTopProductDataModel(it, channel, blankSpaceConfig, adapterPosition.toString())
-        }.toMutableList()
-
+        val visitables: MutableList<Visitable<*>> = convertDataToProductData(channel)
         if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
             visitables.add(SeeMorePdpDataModel(
                     applink = channel.header.applink
             ))
         }
         return visitables
+    }
+
+    private fun convertDataToProductData(channel: DynamicHomeChannel.Channels): MutableList<Visitable<*>> {
+        val list :MutableList<Visitable<*>> = mutableListOf()
+        for (element in channel.grids) {
+            list.add(FlashSaleDataModel(
+                    ProductCardFlashSaleModel(
+                            slashedPrice = element.slashedPrice,
+                            productName = element.name,
+                            formattedPrice = element.price,
+                            productImageUrl = element.imageUrl,
+                            discountPercentage = element.discount,
+                            pdpViewCount = element.productViewCountFormatted,
+                            stockBarLabel = element.label,
+                            stockBarPercentage = element.soldPercentage
+                    ),
+                    blankSpaceConfig = BlankSpaceConfig(),
+                    grid = element,
+                    applink = element.applink
+            ))
+        }
+        return list
     }
 }
