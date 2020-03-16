@@ -667,6 +667,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
         }
     }
 
+    // TODO faisalramd
     private fun isUsingOldAddProduct(): Boolean {
         return false
     }
