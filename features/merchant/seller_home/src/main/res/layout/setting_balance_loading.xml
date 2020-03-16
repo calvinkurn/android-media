@@ -8,8 +8,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmeringBalanceTitle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/setting_zero_dp"
         android:gravity="center_vertical"
         app:corners="@integer/setting_shimmer_radius"
         app:layout_constraintWidth_percent="0.22"
@@ -20,8 +20,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmeringBalanceValue"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/setting_zero_dp"
         android:gravity="center_vertical"
         app:corners="@integer/setting_shimmer_radius"
         app:layout_constraintWidth_percent="0.38"

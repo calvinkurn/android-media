@@ -15,8 +15,8 @@
 
     <View
         android:id="@+id/outerCircle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/setting_zero_dp"
         app:layout_constraintWidth_percent="0.225"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/settingShopGuidelineInfo"
@@ -26,8 +26,8 @@
 
     <RelativeLayout
         android:id="@+id/innerCircle"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/setting_zero_dp"
         android:layout_margin="@dimen/setting_shop_image_border_margin"
         android:background="@drawable/setting_image_circular_border_inner"
         app:layout_constraintTop_toTopOf="@id/outerCircle"
@@ -65,8 +65,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmerShopName"
-        android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_width="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/setting_shop_name_shimmer_height"
         android:gravity="center_vertical"
         app:corners="@integer/setting_shimmer_radius"
         app:layout_constraintWidth_percent="0.5"
@@ -76,8 +76,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/shimmerBadgeFollowers"
-        android:layout_width="0dp"
-        android:layout_height="10dp"
+        android:layout_width="@dimen/setting_zero_dp"
+        android:layout_height="@dimen/setting_shop_badge_height"
         android:gravity="center_vertical"
         app:corners="@integer/setting_shimmer_radius"
         app:layout_constraintWidth_percent="0.22"

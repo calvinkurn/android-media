@@ -16,9 +16,9 @@
         android:id="@+id/settingLocalLoad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="@dimen/setting_local_load_margin"
+        android:layout_marginStart="@dimen/setting_local_load_margin"
+        android:layout_marginEnd="@dimen/setting_local_load_margin"
         android:background="@color/white"
         app:layout_constraintTop_toTopOf="@id/shopInfoView"
         app:layout_constraintStart_toStartOf="@id/shopInfoView"
@@ -27,7 +27,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_divider_thick"
-        android:paddingTop="16dp"
+        android:paddingTop="@dimen/setting_local_load_margin"
         app:layout_constraintTop_toBottomOf="@id/shopInfoView"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

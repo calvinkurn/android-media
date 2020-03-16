@@ -4,6 +4,7 @@
     <dimen name="sah_medium_widget_height">180dp</dimen>
     <dimen name="sah_banner_image_height">210dp</dimen>
     <dimen name="sah_status_bar_height">24dp</dimen>
+    <dimen name="sah_status_bar_elevation">4dp</dimen>
     <dimen name="sah_minus_6dp">-6dp</dimen>
     <dimen name="sah_minus_4dp">-4dp</dimen>
     <dimen name="sah_dimen_1dp">1dp</dimen>
@@ -57,6 +58,11 @@
     <dimen name="setting_toolbar_height">56dp</dimen>
     <dimen name="setting_shop_error_background_height">150dp</dimen>
     <dimen name="setting_shop_error_margin">16dp</dimen>
+    <dimen name="setting_balance_padding">3dp</dimen>
+    <dimen name="setting_zero_dp">0dp</dimen>
+    <dimen name="setting_shop_name_shimmer_height">20dp</dimen>
+    <dimen name="setting_shop_badge_shimmer_height">10dp</dimen>
+    <dimen name="setting_local_load_margin">16dp</dimen>
 
     <dimen category="font-size" name="line_spacing_6">6sp</dimen>
 </resources>
