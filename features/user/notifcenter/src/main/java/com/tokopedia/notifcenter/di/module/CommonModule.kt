@@ -7,6 +7,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUse
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.notifcenter.analytics.NotificationTransactionAnalytics
 import com.tokopedia.notifcenter.di.scope.NotificationContext
+import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.notifcenter.util.CacheManager
 import com.tokopedia.notifcenter.util.coroutines.AppDispatcherProvider
 import com.tokopedia.notifcenter.util.coroutines.DispatcherProvider
@@ -24,25 +25,31 @@ import dagger.Provides
     }
 
     @Provides
+    @NotificationScope
     fun provideMultiRequestGraphqlUseCase(graphqlRepository: GraphqlRepository): MultiRequestGraphqlUseCase {
         return MultiRequestGraphqlUseCase(graphqlRepository)
     }
 
     @Provides
+    @NotificationScope
     fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 
     @Provides
+    @NotificationScope
     fun provideDispatchers(): DispatcherProvider = AppDispatcherProvider()
 
     @Provides
+    @NotificationScope
     fun provideTransactionAnalytics() = NotificationTransactionAnalytics()
 
     @Provides
+    @NotificationScope
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
     @Provides
+    @NotificationScope
     fun provideCacheManager(@ApplicationContext context: Context): CacheManager {
         return CacheManager(context)
     }

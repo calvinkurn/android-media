@@ -157,7 +157,6 @@ public class FavoritePresenterTest {
         Observable mockFavObservable = Observable.just(mockFavoriteShop);
         Observable mocTopAdsObservable = Observable.just(mockTopAdsShop);
 
-        when(repository.getWishlist(any(TKPDMapParam.class))).thenReturn(mockWishlistObservableError);
         when(repository.getFirstPageFavoriteShop(any(TKPDMapParam.class))).thenReturn(mockFavObservable);
         when(repository.getTopAdsShop(any(TKPDMapParam.class))).thenReturn(mocTopAdsObservable);
 

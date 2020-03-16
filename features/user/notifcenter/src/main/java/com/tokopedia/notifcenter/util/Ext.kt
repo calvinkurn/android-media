@@ -1,5 +1,7 @@
 package com.tokopedia.notifcenter.util
 
+import android.content.res.Resources
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -37,4 +39,14 @@ fun RecyclerView.endLess(
             }
         }
     })
+}
+
+inline fun <reified T> List<T>.isSingleItem(): Boolean = this.size == 1
+
+fun View.resize(percentage: Int) {
+    val displayMetrics = Resources.getSystem().displayMetrics
+    val width = displayMetrics.widthPixels
+    val params = this.layoutParams
+    params.width = width * percentage / 100
+    this.layoutParams = params
 }
