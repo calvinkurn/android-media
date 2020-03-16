@@ -27,12 +27,13 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
     companion object {
 
         const val EDIT_STOCK_CACHE_ID = "edit_stock_cache_id"
-        const val EDIT_STOCK_PRODUCT_ID = "edit_stock_product_id"
         const val EDIT_STOCK_PRODUCT = "edit_stock_product"
         const val MAXIMUM_STOCK = 999999
         const val MINIMUM_STOCK = 0
+        private const val TOGGLE_ACTIVE = "active"
+        private const val TOGGLE_NOT_ACTIVE = "not active"
 
-        fun createInstance(context: Context, cacheManagerId: String, productId: String) : ProductManageQuickEditStockFragment {
+        fun createInstance(context: Context, cacheManagerId: String) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment().apply{
                 val view = View.inflate(context, R.layout.fragment_quick_edit_stock,null)
                 setChild(view)
@@ -40,7 +41,6 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
                 arguments =  Bundle().apply{
                     putString(EDIT_STOCK_CACHE_ID, cacheManagerId)
-                    putString(EDIT_STOCK_PRODUCT_ID, productId)
                 }
             }
         }
@@ -50,10 +50,8 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
     lateinit var viewModel: ProductManageQuickEditStockViewModel
 
     var editStockSuccess = false
-    private var firstStateChecked = false
     var cacheManagerId: String? = ""
-    var productId: String = ""
-
+    private var firstStateChecked = false
     private var product: ProductViewModel? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,10 +67,6 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         firstStateChecked = true
     }
 
@@ -114,7 +108,9 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
             }
             editStockSuccess = true
             super.dismiss()
-            ProductManageTracking.eventEditStockSave(productId)
+            product?.let { product ->
+                ProductManageTracking.eventEditStockSave(product.id)
+            }
         }
 
         quickEditStockActivateSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -124,11 +120,13 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
                 viewModel.updateStatus(ProductStatus.INACTIVE)
             }
 
-            if(firstStateChecked) {
-                if(isChecked) {
-                    ProductManageTracking.eventEditStockToggle(getString(R.string.product_manage_tracking_active), productId)
-                } else {
-                    ProductManageTracking.eventEditStockToggle(getString(R.string.product_manage_tracking_not_active), productId)
+            product?.let { product ->
+                if(firstStateChecked) {
+                    if(isChecked) {
+                        ProductManageTracking.eventEditStockToggle(TOGGLE_ACTIVE, product.id)
+                    } else {
+                        ProductManageTracking.eventEditStockToggle(TOGGLE_NOT_ACTIVE, product.id)
+                    }
                 }
             }
         }
@@ -160,6 +158,4 @@ class ProductManageQuickEditStockFragment : BottomSheetUnify(),
             product = product?.copy(status = it)
         })
     }
-
-
 }

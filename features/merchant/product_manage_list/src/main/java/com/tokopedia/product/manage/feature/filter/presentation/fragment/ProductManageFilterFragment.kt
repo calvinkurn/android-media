@@ -193,8 +193,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
                 if(data.name == getString(R.string.product_manage_filter_all_products) || data.name == getString(R.string.product_manage_filter_product_sold)) {
                     ProductManageTracking.eventEtalaseFilter(data.name)
                 }
-            }
-            else {
+            } else {
                 ProductManageTracking.eventSortingFilterName(data.name)
             }
         }

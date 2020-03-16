@@ -37,6 +37,9 @@ class ProductManageFilterExpandChecklistFragment :
         HasComponent<ProductManageFilterComponent> {
 
     companion object {
+        private const val TOGGLE_ACTIVE = "active"
+        private const val TOGGLE_NOT_ACTIVE = "not active"
+
         fun createInstance(flag: String, cacheManagerId: String): ProductManageFilterExpandChecklistFragment {
             return ProductManageFilterExpandChecklistFragment().apply {
                 arguments = Bundle().apply {
@@ -90,9 +93,9 @@ class ProductManageFilterExpandChecklistFragment :
     override fun onChecklistClick(element: ChecklistViewModel) {
         productManageFilterExpandChecklistViewModel.updateSelectedItem(element)
         if(element.isSelected) {
-            ProductManageTracking.eventMoreOthersFilter(element.name, getString(R.string.product_manage_tracking_active))
+            ProductManageTracking.eventMoreOthersFilter(element.name, TOGGLE_ACTIVE)
         } else {
-            ProductManageTracking.eventMoreOthersFilter(element.name, getString(R.string.product_manage_tracking_not_active))
+            ProductManageTracking.eventMoreOthersFilter(element.name, TOGGLE_NOT_ACTIVE)
         }
     }
 

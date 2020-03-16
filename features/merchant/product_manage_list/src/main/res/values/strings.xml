@@ -221,9 +221,4 @@
 
     <string name="add_product_text_description">Tambah Produk</string>
     <string name="import_from_instagram_to_draft">Impor Instagram ke Draft</string>
-
-    <string name="product_manage_tracking_active">active</string>
-    <string name="product_manage_tracking_not_active">not active</string>
-
-
 </resources>

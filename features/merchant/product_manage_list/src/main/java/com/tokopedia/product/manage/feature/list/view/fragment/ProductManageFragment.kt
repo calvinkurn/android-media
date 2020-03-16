@@ -61,7 +61,6 @@ import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_CACHE_MANAGER_KEY
 import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT
-import com.tokopedia.product.manage.feature.cashback.presentation.fragment.ProductManageSetCashbackFragment.Companion.SET_CASHBACK_PRODUCT_ID
 import com.tokopedia.product.manage.feature.filter.presentation.fragment.ProductManageFilterFragment
 import com.tokopedia.product.manage.feature.list.constant.ProductManageUrl
 import com.tokopedia.product.manage.feature.list.di.ProductManageListComponent
@@ -854,7 +853,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         val cacheManager = context?.let { SaveInstanceCacheManager(it,true) }
         cacheManager?.put(EDIT_STOCK_PRODUCT, product)
         val editStockBottomSheet = context?.let { cacheManager?.id?.let {
-            cacheId -> ProductManageQuickEditStockFragment.createInstance(it, cacheId, product.id) } }
+            cacheId -> ProductManageQuickEditStockFragment.createInstance(it, cacheId) } }
         editStockBottomSheet?.setOnDismissListener {
             if(editStockBottomSheet.editStockSuccess) {
                 editStockBottomSheet.editStockSuccess = false
@@ -1051,7 +1050,6 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
             val intent = Intent(this.activity,ProductManageSetCashbackActivity::class.java)
             it.put(SET_CASHBACK_PRODUCT, productManageViewModel)
             intent.putExtra(SET_CASHBACK_CACHE_MANAGER_KEY, it.id)
-            intent.putExtra(SET_CASHBACK_PRODUCT_ID, productManageViewModel.id)
             startActivityForResult(intent, SET_CASHBACK_REQUEST_CODE)
         }
     }

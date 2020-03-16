@@ -39,6 +39,8 @@ class StockReminderFragment: BaseDaggerFragment() {
     companion object {
         private const val ARG_PRODUCT_ID = "product_id"
         private const val ARG_PRODUCT_NAME = "product_name"
+        private const val TOGGLE_ACTIVE = "active"
+        private const val TOGGLE_NOT_ACTIVE = "not active"
 
         fun createInstance(productId: Long, productName: String): Fragment {
             val fragment = StockReminderFragment()
@@ -50,7 +52,7 @@ class StockReminderFragment: BaseDaggerFragment() {
         }
     }
 
-    private var firstStateChecked: Boolean? = null
+    private var firstStateChecked: Boolean = false
     private var toggleStateChecked: Boolean? = null
     private var productId: String? = null
     private var productName: String? = null
@@ -111,13 +113,11 @@ class StockReminderFragment: BaseDaggerFragment() {
                 }
             }
 
-            firstStateChecked?.let { state ->
-                if(state) {
-                    if(isChecked) {
-                        ProductManageTracking.eventToggleReminder(getString(R.string.product_manage_tracking_active))
-                    } else {
-                        ProductManageTracking.eventToggleReminder(getString(R.string.product_manage_tracking_not_active))
-                    }
+            if(firstStateChecked) {
+                if(isChecked) {
+                    ProductManageTracking.eventToggleReminder(TOGGLE_ACTIVE)
+                } else {
+                    ProductManageTracking.eventToggleReminder(TOGGLE_NOT_ACTIVE)
                 }
             }
         }
@@ -143,16 +143,13 @@ class StockReminderFragment: BaseDaggerFragment() {
 
             toggleStateChecked?.let { state ->
                 if (state) {
-                    ProductManageTracking.eventToggleReminderSave(getString(R.string.product_manage_tracking_active))
+                    ProductManageTracking.eventToggleReminderSave(TOGGLE_ACTIVE)
                 } else {
-                    ProductManageTracking.eventToggleReminderSave(getString(R.string.product_manage_tracking_not_active))
+                    ProductManageTracking.eventToggleReminderSave(TOGGLE_NOT_ACTIVE)
                 }
             }
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         firstStateChecked = true
     }
 
@@ -169,11 +166,13 @@ class StockReminderFragment: BaseDaggerFragment() {
     private fun showLoading() {
         ImageHandler.loadGif(ivLoadingStockReminder, R.drawable.ic_loading_indeterminate, R.drawable.ic_loading_indeterminate)
         loadingStockReminder.visibility = View.VISIBLE
+        cardSaveBtn.visibility = View.GONE
     }
 
     private fun hideLoading() {
         ImageHandler.clearImage(ivLoadingStockReminder)
         loadingStockReminder.visibility = View.GONE
+        cardSaveBtn.visibility = View.VISIBLE
     }
 
     private fun doResultIntent() {
@@ -215,15 +214,15 @@ class StockReminderFragment: BaseDaggerFragment() {
                 threshold = stockReminderData.data.getByProductIds.data.getOrNull(0)?.productsWareHouse?.getOrNull(0)?.threshold
 
                 threshold?.let { qeStock.setValue(it) }
-                if (threshold != 0) {
-                    swStockReminder.isChecked = true
-                }
+                swStockReminder.isChecked = threshold != 0
             }
             is Fail -> {
+                cardSaveBtn.visibility = View.GONE
                 globalErrorStockReminder.visibility = View.VISIBLE
                 geStockReminder.setType(GlobalError.SERVER_ERROR)
                 geStockReminder.setActionClickListener {
                     globalErrorStockReminder.visibility = View.GONE
+                    cardSaveBtn.visibility = View.VISIBLE
                     getStockReminder()
                 }
             }
