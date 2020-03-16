@@ -99,6 +99,7 @@ object PlayUiMapper {
                     },
                     isVariantAvailable = it.isVariant,
                     stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
+                    minQty = it.minimumQuantity,
                     applink = it.appLink
             )
         }

@@ -121,14 +121,16 @@ class VariantSheetView(
             variantAdapter.setItemsAndAnimateChanges(model.listOfVariantCategory)
         }
 
+        btnAction.isEnabled = !model.isPartialySelected()
+
         btnAction.text = view.context.getString(
                 if (model.action == ProductAction.Buy) R.string.play_product_buy
                 else R.string.play_product_add_to_card
         )
 
         btnAction.setOnClickListener {
-            if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.product.id)
-            else listener.onAddToCartClicked(this, model.product.id)
+            if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.product)
+            else listener.onAddToCartClicked(this, model.product)
         }
 
         showPlaceholder(false)
@@ -196,15 +198,17 @@ class VariantSheetView(
                         stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
                         isVariantAvailable = true,
                         price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull()),
+                        minQty = variantSheetUiModel?.product?.minQty.orZero(),
                         applink = null
                 )
                 variantSheetUiModel?.stockWording = selectedProduct.stock?.stockWordingHTML
                 variantSheetUiModel?.product = product
                 setProduct(product)
+
+                btnAction.isEnabled = variantSheetUiModel?.isPartialySelected() == false
             }
             variantAdapter.setItemsAndAnimateChanges(listOfVariants)
         }
-
     }
 
     override fun onVariantGuideLineClicked(url: String) {
@@ -221,8 +225,8 @@ class VariantSheetView(
 
     interface Listener {
         fun onCloseButtonClicked(view: VariantSheetView)
-        fun onAddToCartClicked(view: VariantSheetView, productId: String)
-        fun onBuyClicked(view: VariantSheetView, productId: String)
+        fun onAddToCartClicked(view: VariantSheetView, productModel: ProductLineUiModel)
+        fun onBuyClicked(view: VariantSheetView, productModel: ProductLineUiModel)
         fun onVariantGuideLinedClicked(url: String)
     }
 }
