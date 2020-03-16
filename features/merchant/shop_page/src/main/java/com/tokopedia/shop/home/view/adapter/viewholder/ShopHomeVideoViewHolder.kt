@@ -3,9 +3,10 @@ package com.tokopedia.shop.home.view.adapter.viewholder
 import android.content.Intent
 import android.net.Uri
 import android.view.View
-import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.google.android.youtube.player.YouTubeApiServiceUtil
 import com.google.android.youtube.player.YouTubeInitializationResult
@@ -18,7 +19,6 @@ import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
 import kotlinx.android.synthetic.main.widget_shop_page_video_youtube.view.*
 import java.util.regex.Pattern
@@ -28,7 +28,7 @@ import java.util.regex.Pattern
  */
 
 class ShopHomeVideoViewHolder(
-        view: View,
+        val view: View,
         private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
         YouTubeThumbnailView.OnInitializedListener, View.OnClickListener {
@@ -41,19 +41,22 @@ class ShopHomeVideoViewHolder(
     private var videoUrl: String = ""
     private var youTubeThumbnailShopPage: YouTubeThumbnailView? = null
     private var loaderImageView: LoaderImageView? = null
-    private var errorImageView: AppCompatImageView? = null
+    private var errorVideoYoutube: ConstraintLayout? = null
     private var youtubVideoModel: ShopHomeDisplayWidgetUiModel? = null
 
     var btnYoutubePlayer: AppCompatImageView? = null
-    var titleVideoYoutube: Typography? = null
-    var videoContainer: FrameLayout? = null
+    var ivVideoNotFound: AppCompatImageView? = null
+    var groupVideoError: Group? = null
+
+    var videoNotFound = "_uzXPWFV1GE"
 
     init {
         youTubeThumbnailShopPage = view.findViewById(R.id.youtube_home_shop_page)
         btnYoutubePlayer = view.findViewById(R.id.btn_youtube_player)
         btnYoutubePlayer?.hide()
-        titleVideoYoutube = view.findViewById(R.id.titleVideoYoutube)
         loaderImageView = view.findViewById(R.id.loaderVideoYoutube)
+        ivVideoNotFound = view.findViewById(R.id.ivVideoNotFound)
+        groupVideoError = view.findViewById(R.id.groupVideoError)
         youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
@@ -70,6 +73,7 @@ class ShopHomeVideoViewHolder(
             videoUrl
         }
         btnYoutubePlayer?.setOnClickListener(this)
+        ivVideoNotFound?.setOnClickListener(this)
         videoData?.let {
             youTubeThumbnailShopPage?.addOnImpressionListener(it) {
                 listener.onDisplayItemImpression(
@@ -98,11 +102,16 @@ class ShopHomeVideoViewHolder(
                 childYouTubeThumbnailView?.visible()
                 youTubeThumbnailShopPage?.visible()
                 btnYoutubePlayer?.visible()
+                groupVideoError?.gone()
                 loaderImageView?.gone()
                 youTubeThumbnailLoader.release()
             }
 
             override fun onThumbnailError(childYouTubeThumbnailView: YouTubeThumbnailView?, errorReason: YouTubeThumbnailLoader.ErrorReason?) {
+                childYouTubeThumbnailView?.visible()
+                groupVideoError?.visible()
+                youTubeThumbnailShopPage?.gone()
+                loaderImageView?.gone()
                 youTubeThumbnailLoader.release()
             }
         })
@@ -114,18 +123,25 @@ class ShopHomeVideoViewHolder(
     override fun onClick(view: View?) {
         when (view?.id) {
             R.id.btn_youtube_player -> {
-                view.context?.let {
-                    youtubVideoModel?.data?.let { videoItemList ->
-                        listener.onDisplayItemClicked(youtubVideoModel, videoItemList.first(), adapterPosition, 0)
-                    }
-                    if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
-                            == YouTubeInitializationResult.SUCCESS) {
-                        it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, videoUrl))
-                    } else {
-                        it.startActivity(Intent(Intent.ACTION_VIEW,
-                                Uri.parse(HomeConstant.YOUTUBE_BASE_URL + videoUrl)))
-                    }
-                }
+                playYoutube(view)
+            }
+            R.id.ivVideoNotFound -> {
+                playYoutube(view)
+            }
+        }
+    }
+
+    private fun playYoutube(view: View) {
+        view.context?.let {
+            youtubVideoModel?.data?.let { videoItemList ->
+                listener.onDisplayItemClicked(youtubVideoModel, videoItemList.first(), adapterPosition, 0)
+            }
+            if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
+                    == YouTubeInitializationResult.SUCCESS) {
+                it.startActivity(ShopHomePageYoutubePlayerActivity.createIntent(it, videoUrl))
+            } else {
+                it.startActivity(Intent(Intent.ACTION_VIEW,
+                        Uri.parse(HomeConstant.YOUTUBE_BASE_URL + videoUrl)))
             }
         }
     }

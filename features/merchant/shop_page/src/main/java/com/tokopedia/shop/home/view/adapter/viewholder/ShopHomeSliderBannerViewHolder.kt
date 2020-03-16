@@ -4,6 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
@@ -21,7 +22,7 @@ import java.util.ArrayList
 class ShopHomeSliderBannerViewHolder(
         view: View?,
         private val listener: ShopHomeDisplayWidgetListener
-) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
+) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -37,34 +38,31 @@ class ShopHomeSliderBannerViewHolder(
         val img: ImageUnify = view.findViewById(R.id.imageCarousel)
         val carouselItem = data as CarouselData
         val index = carouselData?.indexOf(carouselItem) ?: 0
-        img.setImage(carouselItem.imageUrl, 0F)
-        img.setOnClickListener {
-            onClickBannerItem(
-                    bannerData,
-                    bannerData?.data?.get(index),
-                    adapterPosition,
-                    index
-            )
-        }
-    }
-
-    init {
-        carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
-    }
-
-    override fun onActiveIndexChanged(prev: Int, current: Int) {
-        bannerData?.let { shopHomeDisplayWidgetUiModel ->
-            shopHomeDisplayWidgetUiModel.data?.let { listDisplayWidget ->
-                if (current < shopHomeDisplayWidgetUiModel.data.size) {
-                    listener.onDisplayItemImpression(
-                            shopHomeDisplayWidgetUiModel,
-                            listDisplayWidget[current],
+        bannerData?.let { bannerData ->
+            bannerData.data?.let { bannerItemData ->
+                img.setOnClickListener {
+                    onClickBannerItem(
+                            bannerData,
+                            bannerItemData[index],
                             adapterPosition,
-                            current
+                            index
+                    )
+                }
+                img.addOnImpressionListener(bannerItemData[index]) {
+                    listener.onDisplayItemImpression(
+                            bannerData,
+                            bannerItemData[index],
+                            adapterPosition,
+                            index
                     )
                 }
             }
         }
+        img.setImage(carouselItem.imageUrl, 0F)
+    }
+
+    init {
+        carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
     }
 
     override fun bind(shopHomeDisplayWidgetUiModel: ShopHomeDisplayWidgetUiModel) {
@@ -77,7 +75,6 @@ class ShopHomeSliderBannerViewHolder(
             infinite = true
             carouselData?.let {
                 addItems(R.layout.widget_slider_banner_item, it, itmListener)
-                onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
             }
         }
         itemView.textViewTitle?.apply {
@@ -97,15 +94,13 @@ class ShopHomeSliderBannerViewHolder(
             index: Int
     ) {
         displayWidgetItem?.let {
-            if(it.isInvoke) {
-                listener.onDisplayItemClicked(
-                        element,
-                        it,
-                        adapterPosition,
-                        index
-                )
-                it.invoke()
-            }
+            listener.onDisplayItemClicked(
+                    element,
+                    it,
+                    adapterPosition,
+                    index
+            )
+            it.invoke()
         }
     }
 
