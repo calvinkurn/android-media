@@ -217,7 +217,8 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                     )
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {createDynamicChannel(
-                        channel = channel
+                        channel = channel,
+                        trackingData = HomePageTrackingV2.MixLeft.getMixLeftProductView(channel)
                 )}
                 DynamicHomeChannel.Channels.LAYOUT_POPULAR_KEYWORD -> {createPopularKeywordChannel(channel = channel)}
                 DynamicHomeChannel.Channels.LAYOUT_DEFAULT_ERROR -> { createDynamicChannel(channel = channel) }

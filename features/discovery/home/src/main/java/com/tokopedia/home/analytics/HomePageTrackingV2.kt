@@ -163,8 +163,8 @@ object HomePageTrackingV2 : BaseTracking() {
             ) as HashMap<String, Any>
         }
 
-        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels) = getBasicProductView(
-                event = Event.PRODUCT_VIEW,
+        fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
+                event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
                 eventAction = IMPRESSION_MIX_LEFT,
                 eventLabel = channel.header.name,

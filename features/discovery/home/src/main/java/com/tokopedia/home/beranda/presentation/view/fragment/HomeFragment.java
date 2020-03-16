@@ -150,6 +150,7 @@ import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dy
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_BANNER_CAROUSEL;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_FOUR_GRID_LEGO;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_GIF_BANNER;
+import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_MIX_LEFT;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_MIX_TOP;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_ORGANIC;
 import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.DynamicChannelViewHolder.TYPE_SIX_GRID_LEGO;
@@ -1424,7 +1425,7 @@ public class HomeFragment extends BaseDaggerFragment implements
 
     @Override
     public void onFlashSaleCardImpressed(int position, @NotNull DynamicHomeChannel.Channels channel) {
-        trackingQueue.putEETracking((HashMap<String, Object>) HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductView(channel));
+
     }
 
     @Override
@@ -1851,7 +1852,7 @@ public class HomeFragment extends BaseDaggerFragment implements
             case TYPE_FOUR_GRID_LEGO :
                 putEEToIris(
                         (HashMap<String, Object>) HomePageTrackingV2.LegoBanner.INSTANCE.getLegoBannerFourImageImpression(
-                                channel, position, false
+                                channel, position, true
                         )
                 );
                 break;
@@ -1874,6 +1875,11 @@ public class HomeFragment extends BaseDaggerFragment implements
                 break;
             case TYPE_MIX_TOP:
                 putEEToIris((HashMap<String, Object>) MixTopTracking.INSTANCE.getMixTopViewIris(MixTopTracking.INSTANCE.mapChannelToProductTracker(channel), channel.getHeader().getName(), String.valueOf(position)));
+                break;
+            case TYPE_MIX_LEFT:
+                putEEToIris((HashMap<String, Object>) HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductView(channel, true);
+                break;
+
         }
     }
 
