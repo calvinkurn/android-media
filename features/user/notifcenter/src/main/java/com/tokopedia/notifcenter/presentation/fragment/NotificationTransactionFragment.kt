@@ -176,7 +176,7 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         }
     }
 
-    private fun onSuccessNotificationData(notification: NotificationViewData) {
+    private fun onSuccessInitiateData(notification: NotificationViewData) {
         hideLoading()
 
         val pagination = notification.paging.hasNext
