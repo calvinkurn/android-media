@@ -161,7 +161,7 @@
         android:layout_marginLeft="@dimen/dp_8"
         android:background="@drawable/il_card_background"
         android:padding="@dimen/dp_8"
-        android:src="@drawable/il_ojk_logo"
+        android:src="@drawable/il_tunaikita_logo"
         app:layout_constraintEnd_toEndOf="@+id/text_form_description"
         app:layout_constraintStart_toEndOf="@id/imageview_2"
         app:layout_constraintTop_toTopOf="@id/imageview4" />
@@ -176,7 +176,7 @@
         app:layout_constraintEnd_toEndOf="@+id/imageview4"
         app:layout_constraintStart_toStartOf="@+id/imageview4"
         app:layout_constraintTop_toBottomOf="@+id/imageview4"
-        app:srcCompat="@drawable/il_tunaikita_logo" />
+        app:srcCompat="@drawable/il_ojk_logo" />
 
     <TextView
         android:id="@+id/text_form_disclaimer"
