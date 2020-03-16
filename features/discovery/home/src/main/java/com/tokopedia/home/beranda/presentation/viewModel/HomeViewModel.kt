@@ -462,19 +462,23 @@ open class HomeViewModel @Inject constructor(
     }
 
     private fun insertRechargeRecommendation(recommendations: RechargeRecommendation) {
-        _homeLiveData.value?.list?.run {
-            val findRechargeRecommendationViewModel = find { visitable -> visitable is RechargeRecommendationViewModel }
-            val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
-            if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
-                val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
-                        rechargeRecommendation = recommendations
-                )
-                launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
+        if (recommendations.recommendations.isNotEmpty()) {
+            _homeLiveData.value?.list?.run {
+                val findRechargeRecommendationViewModel = find { visitable -> visitable is RechargeRecommendationViewModel }
+                val indexOfRechargeRecommendationViewModel = indexOf(findRechargeRecommendationViewModel)
+                if (indexOfRechargeRecommendationViewModel > -1 && findRechargeRecommendationViewModel is RechargeRecommendationViewModel) {
+                    val newFindRechargeRecommendationViewModel = findRechargeRecommendationViewModel.copy(
+                            rechargeRecommendation = recommendations
+                    )
+                    launch { channel.send(UpdateLiveDataModel(ACTION_UPDATE, newFindRechargeRecommendationViewModel, indexOfRechargeRecommendationViewModel)) }
+                }
             }
+        } else {
+            removeRechargeRecommendation()
         }
     }
 
-    fun removeRechargeRecommendation() {
+    private fun removeRechargeRecommendation() {
         val findRechargeRecommendationViewModel =
                 _homeLiveData.value?.list?.find { visitable -> visitable is RechargeRecommendationViewModel }
                         ?: return
@@ -814,6 +818,7 @@ open class HomeViewModel @Inject constructor(
     }
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
+        removeRechargeRecommendation()
         if(declineRechargeRecommendationJob?.isActive == true) return
         declineRechargeRecommendationJob = launchCatchError(coroutineContext, block = {
             declineRechargeRecommendationUseCase.setParams(requestParams)

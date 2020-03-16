@@ -163,7 +163,11 @@ class HomeVisitableFactoryImpl(val userSessionInterface: UserSessionInterface) :
                 DynamicHomeChannel.Channels.LAYOUT_TOPADS -> createDynamicTopAds(channel)
                 DynamicHomeChannel.Channels.LAYOUT_SPOTLIGHT -> {
                     homeData?.spotlight?.let { spotlight ->  createSpotlight(spotlight, isCache)} }
-                DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
+
+                // Temporary
+//                DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(position)
+                DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createRechargeRecommendationWidget()
+
                 DynamicHomeChannel.Channels.LAYOUT_3_IMAGE, DynamicHomeChannel.Channels.LAYOUT_HERO ->
                     createDynamicChannel(
                             channel = channel,

@@ -1927,9 +1927,4 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onDeclineClickListener(@NotNull Map<String, String> requestParams) {
         viewModel.declineRechargeRecommendationItem(requestParams);
     }
-
-    @Override
-    public void removeRechargeRecommendation() {
-        viewModel.removeRechargeRecommendation();
-    }
 }
