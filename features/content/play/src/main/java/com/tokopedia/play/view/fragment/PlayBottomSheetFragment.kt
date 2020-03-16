@@ -248,8 +248,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                     .collect {
                         when (it) {
                             VariantSheetInteractionEvent.OnCloseVariantSheet -> closeVariantSheet()
-                            is VariantSheetInteractionEvent.OnBuyProduct -> shouldBuyProduct(it.productId)
-                            is VariantSheetInteractionEvent.OnAddProductToCart -> shouldAtcProduct(it.productId)
+                            is VariantSheetInteractionEvent.OnBuyProduct -> shouldBuyProduct(it.product)
+                            is VariantSheetInteractionEvent.OnAddProductToCart -> shouldAtcProduct(it.product)
                             is VariantSheetInteractionEvent.OnClickVariantGuideline -> {
                                 startActivity(ImagePreviewActivity.getCallingIntent(requireContext(), arrayListOf(it.url)))
                             }
@@ -269,8 +269,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
             openVariantSheet(product, action)
         } else {
             when(action) {
-                ProductAction.Buy -> shouldBuyProduct(product.id)
-                ProductAction.AddToCart -> shouldAtcProduct(product.id)
+                ProductAction.Buy -> shouldBuyProduct(product)
+                ProductAction.AddToCart -> shouldAtcProduct(product)
             }
         }
     }
@@ -295,12 +295,12 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         loadingDialog.dismiss()
     }
 
-    private fun shouldBuyProduct(productId: String) {
-        viewModel.doInteractionEvent(InteractionEvent.BuyProduct(productId))
+    private fun shouldBuyProduct(product: ProductLineUiModel) {
+        viewModel.doInteractionEvent(InteractionEvent.BuyProduct(product.id, product.minQty))
     }
 
-    private fun shouldAtcProduct(productId: String) {
-        viewModel.doInteractionEvent(InteractionEvent.AtcProduct(productId))
+    private fun shouldAtcProduct(product: ProductLineUiModel) {
+        viewModel.doInteractionEvent(InteractionEvent.AtcProduct(product.id, product.minQty))
     }
 
     private fun pushParentPlayBySheetHeight(productSheetHeight: Int) {
@@ -317,19 +317,19 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
-            is InteractionEvent.AtcProduct -> doAtcProduct(event.productId)
-            is InteractionEvent.BuyProduct -> doBuyProduct(event.productId)
+            is InteractionEvent.AtcProduct -> doAtcProduct(event.productId, event.minQty)
+            is InteractionEvent.BuyProduct -> doBuyProduct(event.productId, event.minQty)
         }
     }
 
-    private fun doAtcProduct(productId: String) {
+    private fun doAtcProduct(productId: String, minQty: Int) {
         showLoadingView()
-        viewModel.addToCart(productId, playViewModel.partnerId.toString(), action = ProductAction.AddToCart)
+        viewModel.addToCart(productId, playViewModel.partnerId.toString(), quantity = minQty, action = ProductAction.AddToCart)
     }
 
-    private fun doBuyProduct(productId: String) {
+    private fun doBuyProduct(productId: String, minQty: Int) {
         showLoadingView()
-        viewModel.addToCart(productId, playViewModel.partnerId.toString(), action = ProductAction.Buy)
+        viewModel.addToCart(productId, playViewModel.partnerId.toString(), quantity = minQty, action = ProductAction.Buy)
     }
 
     private fun openLoginPage() {

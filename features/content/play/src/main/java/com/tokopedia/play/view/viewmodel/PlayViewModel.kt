@@ -667,7 +667,8 @@ class PlayViewModel @Inject constructor(
                                         OutOfStock
                                     } else {
                                         StockAvailable(it * 10)
-                                    }
+                                    },
+                                    minQty = 2
                             )
                         }
                 )
@@ -725,7 +726,8 @@ class PlayViewModel @Inject constructor(
                                         OutOfStock
                                     } else {
                                         StockAvailable(it * 10)
-                                    }
+                                    },
+                                    minQty = 2
                             )
 //                            ProductPlaceholderUiModel
                         }

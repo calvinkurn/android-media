@@ -8,6 +8,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.wrapper.PlayResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -56,15 +57,15 @@ class VariantSheetComponent(
         }
     }
 
-    override fun onAddToCartClicked(view: VariantSheetView, productId: String) {
+    override fun onAddToCartClicked(view: VariantSheetView, productModel: ProductLineUiModel) {
         launch {
-            bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnAddProductToCart(productId))
+            bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnAddProductToCart(productModel))
         }
     }
 
-    override fun onBuyClicked(view: VariantSheetView, productId: String) {
+    override fun onBuyClicked(view: VariantSheetView, productModel: ProductLineUiModel) {
         launch {
-            bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnBuyProduct(productId))
+            bus.emit(VariantSheetInteractionEvent::class.java, VariantSheetInteractionEvent.OnBuyProduct(productModel))
         }
     }
 
