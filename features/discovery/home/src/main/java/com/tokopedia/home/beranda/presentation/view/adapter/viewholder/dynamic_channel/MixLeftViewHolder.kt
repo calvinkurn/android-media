@@ -66,7 +66,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun getViewHolderClassName(): String {
-        return ""
+        return MixLeftViewHolder::class.java.simpleName
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
