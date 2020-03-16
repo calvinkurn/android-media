@@ -83,22 +83,25 @@ class DealsViewHolder(
     }
 
     private fun setDealsProductGrid(channel: DynamicChannelViewModel) {
-        val grid = channel.channel?.grids?.firstOrNull()
-        grid?.let {
-            setDealsProductCard(it)
-            setDealsProductName(it.name)
-            setDealsProductPrice(it.price)
-            setDealsProductSlashedPrice(it.slashedPrice)
-            setDealsProductImage(it.imageUrl)
-            setDealsProductDiscountLabel(it.discount)
-            setDealsProductStockbar(it.soldPercentage, it.label)
-            setDealsProductViewCount("")
+        channel.channel?.let { channel ->
+            val grid = channel.grids.firstOrNull()
+            grid?.let {
+                setDealsProductCard(channel, it)
+                setDealsProductName(it.name)
+                setDealsProductPrice(it.price)
+                setDealsProductSlashedPrice(it.slashedPrice)
+                setDealsProductImage(it.imageUrl)
+                setDealsProductDiscountLabel(it.discount)
+                setDealsProductStockbar(it.soldPercentage, it.label)
+                setDealsProductViewCount(it.productViewCountFormatted)
+            }
         }
     }
 
     private fun setDealsProductCard(grid: DynamicHomeChannel.Grid) {
         itemView.deals_product_card.setOnClickListener {
             listener.onSectionItemClicked(grid.applink)
+            ProductHighlightTracking.sendRecommendationListClick(channel, grid, adapterPosition)
         }
     }
 
