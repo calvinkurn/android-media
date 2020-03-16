@@ -118,11 +118,11 @@
         android:text="@string/il_supervisors"
         android:textColor="#7031353b"
         android:textSize="@dimen/sp_10"
-        app:layout_constraintStart_toStartOf="@+id/imageview4"
-        app:layout_constraintTop_toBottomOf="@+id/imageview4" />
+        app:layout_constraintStart_toStartOf="@+id/solusiku_image"
+        app:layout_constraintTop_toBottomOf="@+id/solusiku_image" />
 
     <ImageView
-        android:id="@+id/imageview4"
+        android:id="@+id/solusiku_image"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_gravity="center"
@@ -133,13 +133,13 @@
         android:background="@drawable/il_card_background"
         android:padding="@dimen/dp_8"
         android:src="@drawable/il_solusiku_logo"
-        app:layout_constraintEnd_toStartOf="@+id/imageview_2"
+        app:layout_constraintEnd_toStartOf="@+id/kredit_image"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
         app:layout_constraintStart_toStartOf="@+id/text_form_description"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <ImageView
-        android:id="@+id/imageview_2"
+        android:id="@+id/kredit_image"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_56"
         android:layout_gravity="center"
@@ -150,12 +150,12 @@
         android:background="@drawable/il_card_background"
         android:padding="@dimen/dp_8"
         android:src="@drawable/il_kredit_pintar_logo"
-        app:layout_constraintEnd_toStartOf="@+id/imageview_3"
-        app:layout_constraintStart_toEndOf="@+id/imageview4"
-        app:layout_constraintTop_toTopOf="@+id/imageview4" />
+        app:layout_constraintEnd_toStartOf="@+id/tunaikita_image"
+        app:layout_constraintStart_toEndOf="@+id/solusiku_image"
+        app:layout_constraintTop_toTopOf="@+id/solusiku_image" />
 
     <ImageView
-        android:id="@+id/imageview_3"
+        android:id="@+id/tunaikita_image"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_56"
         android:layout_gravity="center"
@@ -165,18 +165,18 @@
         android:padding="@dimen/dp_8"
         android:src="@drawable/il_tunaikita_logo"
         app:layout_constraintEnd_toEndOf="@+id/text_form_description"
-        app:layout_constraintStart_toEndOf="@id/imageview_2"
-        app:layout_constraintTop_toTopOf="@id/imageview4" />
+        app:layout_constraintStart_toEndOf="@id/kredit_image"
+        app:layout_constraintTop_toTopOf="@id/solusiku_image" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/ojk_image"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_56"
         android:layout_marginTop="10dp"
         android:background="@drawable/il_card_background"
         android:padding="@dimen/dp_8"
-        app:layout_constraintEnd_toEndOf="@+id/imageview4"
-        app:layout_constraintStart_toStartOf="@+id/imageview4"
+        app:layout_constraintEnd_toEndOf="@+id/solusiku_image"
+        app:layout_constraintStart_toStartOf="@+id/solusiku_image"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
         app:srcCompat="@drawable/il_ojk_logo" />
 
@@ -190,7 +190,7 @@
         android:textColor="@color/black_38"
         app:layout_constraintEnd_toEndOf="@+id/text_form_description"
         app:layout_constraintStart_toStartOf="@+id/text_form_description"
-        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
+        app:layout_constraintTop_toBottomOf="@+id/ojk_image" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/il_continue_view"
