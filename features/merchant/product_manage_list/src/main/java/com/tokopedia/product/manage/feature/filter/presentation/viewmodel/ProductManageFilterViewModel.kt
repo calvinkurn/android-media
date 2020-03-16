@@ -77,11 +77,11 @@ class ProductManageFilterViewModel @Inject constructor(
     fun updateSelect(filterData: FilterDataViewModel, title: String) {
         val currentData = _filterData.value?.toMutableList()
         if (title == ProductManageFilterMapper.SORT_HEADER) {
-            if (selectedSort != null) {
-                val selectedPair = getSortFromList(currentData?.get(ITEM_SORT_INDEX), selectedSort!!)
-                selectedPair?.let {
-                    it.second.select = !it.second.select
-                    if (it.second == filterData) {
+            selectedSort?.let {
+                val selectedPair = getSortFromList(currentData?.get(ITEM_SORT_INDEX), it)
+                selectedPair?.let { pair ->
+                    pair.second.select = !pair.second.select
+                    if (pair.second == filterData) {
                         selectedSort = null
                         _filterData.value = currentData
                         return
@@ -97,11 +97,11 @@ class ProductManageFilterViewModel @Inject constructor(
                 }
             }
         } else {
-            if (selectedEtalase != null) {
-                val selectedPair = getDataFromList(currentData?.subList(ITEM_ETALASE_INDEX, ITEM_CATEGORIES_INDEX), selectedEtalase!!)
-                selectedPair?.let {
-                    it.third.select = !it.third.select
-                    if (it.third == filterData) {
+            selectedEtalase?.let {
+                val selectedPair = getDataFromList(currentData?.subList(ITEM_ETALASE_INDEX, ITEM_CATEGORIES_INDEX), it)
+                selectedPair?.let { triple ->
+                    triple.third.select = !triple.third.select
+                    if (triple.third == filterData) {
                         selectedEtalase = null
                         _filterData.value = currentData
                         return
