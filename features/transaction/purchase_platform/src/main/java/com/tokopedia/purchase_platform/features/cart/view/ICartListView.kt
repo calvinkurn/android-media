@@ -73,20 +73,10 @@ interface ICartListView : CustomerView {
 
     fun onDeleteCartDataSuccess(deletedCartIds: List<String>)
 
-    fun goToCouponList()
-
-    fun goToDetailPromoStacking(promoStackingData: PromoStackingData)
-
     fun stopCartPerformanceTrace()
 
     fun stopAllCartPerformanceTrace()
 
-    fun onSuccessClearPromoStack(shopIndex: Int)
-
-    fun onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel: ResponseGetPromoStackUiModel)
-
-    fun onFailedClearPromoStack(ignoreAPIResponse: Boolean)
-    
     fun renderRecentView(recentViewList: List<RecentView>?)
 
     fun renderWishlist(wishlists: List<Wishlist>?)

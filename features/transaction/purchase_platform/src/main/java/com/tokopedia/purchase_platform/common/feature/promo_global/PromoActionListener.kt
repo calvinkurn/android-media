@@ -12,6 +12,4 @@ interface PromoActionListener {
 
     fun onPromoGlobalTrackingCancelled(cartPromoGlobal: PromoStackingData, position: Int)
 
-    fun onPromoGlobalTrackingImpression(cartPromoGlobal: PromoStackingData)
-
 }

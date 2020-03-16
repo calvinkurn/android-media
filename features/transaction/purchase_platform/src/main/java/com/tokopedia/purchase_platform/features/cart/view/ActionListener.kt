@@ -17,8 +17,6 @@ interface ActionListener {
 
     fun onShopItemCheckChanged(itemPosition: Int, checked: Boolean)
 
-    fun onCancelVoucherMerchantClicked(promoMerchantCode: String, position: Int, ignoreAPIResponse: Boolean)
-
     fun onCartDataEnableToCheckout()
 
     fun onCartDataDisableToCheckout()

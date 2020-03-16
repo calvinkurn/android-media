@@ -44,8 +44,6 @@ interface ICartListPresenter {
 
     fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>)
 
-    fun processCancelAutoApplyPromoStack(shopIndex: Int, promoCodeList: ArrayList<String>, ignoreAPIResponse: Boolean)
-
     fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any>
 
     fun generateRecommendationImpressionDataAnalytics(cartRecommendationItemHolderDataList: List<CartRecommendationItemHolderData>, isEmptyCart: Boolean): Map<String, Any>
@@ -99,8 +97,6 @@ interface ICartListPresenter {
     fun generateCheckoutDataAnalytics(cartItemDataList: List<CartItemData>, step: String): Map<String, Any>
 
     fun redirectToLite(url: String)
-
-    fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo
 
     fun doValidateUse(promoRequest: ValidateUsePromoRequest)
 

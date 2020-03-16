@@ -1978,11 +1978,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onPromoGlobalTrackingImpression(PromoStackingData cartPromoGlobal) {
-        trackingPromoCheckoutUtil.checkoutImpressionTicker(cartPromoGlobal.getDescription());
-    }
-
-    @Override
     public void onPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
         sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner();
     }

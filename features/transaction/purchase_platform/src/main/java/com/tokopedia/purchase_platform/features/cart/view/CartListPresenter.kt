@@ -8,14 +8,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.promocheckout.common.data.entity.request.CurrentApplyCode
-import com.tokopedia.promocheckout.common.data.entity.request.Order
-import com.tokopedia.promocheckout.common.data.entity.request.ProductDetail
-import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.domain.CheckPromoStackingCodeUseCase
 import com.tokopedia.promocheckout.common.domain.ClearCacheAutoApplyStackUseCase
-import com.tokopedia.promocheckout.common.view.model.PromoStackingData
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.*
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.*
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
@@ -28,7 +21,6 @@ import com.tokopedia.purchase_platform.features.cart.data.model.request.RemoveCa
 import com.tokopedia.purchase_platform.features.cart.data.model.request.UpdateCartRequest
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartItemData
 import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.CartListData
-import com.tokopedia.purchase_platform.features.cart.domain.model.cartlist.ShopGroupAvailableData
 import com.tokopedia.purchase_platform.features.cart.domain.usecase.*
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceActionFieldData
 import com.tokopedia.purchase_platform.features.cart.view.analytics.EnhancedECommerceClickData
@@ -484,73 +476,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 allCartItemDataList.size > 0 && insuranceChecked
         val unSelectAllItem = allCartItemDataList.size == 0
         view?.renderDetailInfoSubTotal(totalItemQty.toString(), totalPriceString, selectAllItem, unSelectAllItem, dataList.isEmpty())
-    }
-
-    override fun processCancelAutoApplyPromoStack(shopIndex: Int, promoCodeList: ArrayList<String>, ignoreAPIResponse: Boolean) {
-        view?.let {
-            if (promoCodeList.size > 0) {
-                if (!ignoreAPIResponse) {
-                    it.showProgressLoading()
-                }
-                clearCacheAutoApplyStackUseCase?.setParams(ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE, promoCodeList)
-                compositeSubscription.add(
-                        clearCacheAutoApplyStackUseCase?.createObservable(RequestParams.create())
-                                ?.subscribe(ClearCacheAutoApplySubscriber(view, shopIndex, ignoreAPIResponse))
-                )
-            }
-        }
-    }
-
-    override fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo {
-        val orders = ArrayList<Order>()
-        getCartListData()?.shopGroupAvailableDataList?.let { shopGroupAvailableDataList ->
-            for (shopGroupAvailableData in shopGroupAvailableDataList) {
-                val order = Order()
-                val productDetails = ArrayList<ProductDetail>()
-                shopGroupAvailableData.cartItemDataList?.let { cartItemHolderDataList ->
-                    for (cartItemHolderData in cartItemHolderDataList) {
-                        val productDetail = ProductDetail()
-                        try {
-                            productDetail.productId = Integer.parseInt(cartItemHolderData.cartItemData?.originData?.productId
-                                    ?: "0")
-                        } catch (e: NumberFormatException) {
-                            e.printStackTrace()
-                            productDetail.productId = 0
-                        }
-
-                        productDetail.quantity = cartItemHolderData.cartItemData?.updatedData?.quantity
-                        productDetails.add(productDetail)
-                    }
-                }
-                if (shopGroupAvailableData.voucherOrdersItemData != null && !shopGroupAvailableData.voucherOrdersItemData?.code.isNullOrEmpty()) {
-                    val merchantPromoCodes = ArrayList<String>()
-                    merchantPromoCodes.add(shopGroupAvailableData.voucherOrdersItemData?.code ?: "")
-                    if (merchantPromoCodes.size > 0) {
-                        order.codes = merchantPromoCodes
-                    }
-                }
-                order.productDetails = productDetails
-                order.uniqueId = shopGroupAvailableData.cartString
-                try {
-                    order.shopId = Integer.parseInt(shopGroupAvailableData.shopId ?: "0")
-                } catch (e: NumberFormatException) {
-                    e.printStackTrace()
-                    order.shopId = 0
-                }
-
-                orders.add(order)
-            }
-        }
-        val promo = Promo()
-        promo.state = Promo.STATE_CART
-        promo.cartType = Promo.CART_TYPE_DEFAULT
-        val globalPromoCodes = ArrayList<String>()
-        globalPromoCodes.add(promoStackingGlobalData.promoCode)
-        promo.codes = globalPromoCodes
-        promo.orders = orders
-        promo.skipApply = 0
-        promo.isSuggested = 0
-        return promo
     }
 
     override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
