@@ -3,11 +3,14 @@ package com.tokopedia.shop.home.view.adapter
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductEtalaseTitleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductViewModel
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductViewHolder
+import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollListener
 
 /**
@@ -16,9 +19,9 @@ import com.tokopedia.shop.product.view.adapter.scrolllistener.DataEndlessScrollL
 
 class ShopHomeAdapter(
         shopHomeAdapterTypeFactory: ShopHomeAdapterTypeFactory
-): BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener{
+) : BaseListAdapter<Visitable<*>, ShopHomeAdapterTypeFactory>(shopHomeAdapterTypeFactory), DataEndlessScrollListener.OnDataEndlessScrollListener {
 
-    companion object{
+    companion object {
         private const val ALL_PRODUCT_STRING = "Semua Produk"
     }
 
@@ -64,6 +67,35 @@ class ShopHomeAdapter(
 
     override fun getEndlessDataSize(): Int {
         return productListViewModel.size
+    }
+
+    fun getAllProductWidgetPosition(): Int {
+        return visitables.filter {
+            (it !is LoadingModel) && (it !is LoadingMoreModel) && (it !is ShopHomeProductEtalaseTitleUiModel)
+        }.indexOfFirst { it is ShopHomeProductViewModel }
+    }
+
+    fun updateProductWidgetData(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
+        val position = visitables.indexOf(shopHomeCarousellProductUiModel)
+        notifyItemChanged(position)
+    }
+
+    fun updateWishlistProduct(productId: String, isWishlist: Boolean) {
+        visitables.filterIsInstance<ShopHomeProductViewModel>().onEach {
+            if(it.id == productId){
+                it.isWishList = isWishlist
+                notifyItemChanged(visitables.indexOf(it))
+            }
+        }
+        visitables.filterIsInstance<ShopHomeCarousellProductUiModel>().onEach { shopHomeCarousellProductUiModel ->
+            val totalFoundProductId = shopHomeCarousellProductUiModel.productList.filter {
+                it.id == productId
+            }.onEach {
+                it.isWishList = isWishlist
+            }.size
+            if(totalFoundProductId != 0)
+                notifyItemChanged(visitables.indexOf(shopHomeCarousellProductUiModel))
+        }
     }
 
 }

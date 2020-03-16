@@ -4,6 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.adapter.PaddingItemDecorationShopPage
 import com.tokopedia.shop.home.view.adapter.ShopHomeMultipleImageColumnAdapter
@@ -29,9 +31,11 @@ class ShopHomeMultipleImageColumnViewHolder(
         private const val SPAN_SIZE_TRIPLE = 2
     }
 
-    private val shopHomeMultipleImageColumnAdapter by lazy { ShopHomeMultipleImageColumnAdapter(
-            listener
-    ) }
+    private val shopHomeMultipleImageColumnAdapter by lazy {
+        ShopHomeMultipleImageColumnAdapter(
+                listener
+        )
+    }
 
     override fun bind(element: ShopHomeDisplayWidgetUiModel) {
         val gridLayoutManager = GridLayoutManager(itemView.context, SPAN_SIZE_SINGLE)
@@ -46,10 +50,18 @@ class ShopHomeMultipleImageColumnViewHolder(
         }
         itemView.rvShopHomeMultiple.apply {
             layoutManager = gridLayoutManager
-            if(itemDecorationCount == 0) {
+            if (itemDecorationCount == 0) {
                 addItemDecoration(PaddingItemDecorationShopPage(element.name))
             }
             adapter = shopHomeMultipleImageColumnAdapter
+        }
+        itemView.textViewTitle?.apply {
+            if (element.header.title.isEmpty()) {
+                hide()
+            } else {
+                text = element.header.title
+                show()
+            }
         }
         shopHomeMultipleImageColumnAdapter.setShopHomeDisplayWidgetUiModelData(element)
         shopHomeMultipleImageColumnAdapter.setParentPosition(adapterPosition)

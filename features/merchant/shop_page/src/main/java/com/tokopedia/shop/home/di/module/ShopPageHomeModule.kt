@@ -6,6 +6,9 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageHomeTracking
+import com.tokopedia.shop.common.constant.GQLQueryNamedConstant.GQL_CHECK_WISHLIST
+import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
+import com.tokopedia.shop.home.GqlQueryConstant.GQL_ATC_MUTATION
 import com.tokopedia.shop.home.GqlQueryConstant.GQL_GET_SHOP_PAGE_HOME_LAYOUT
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.di.scope.ShopPageHomeScope
@@ -16,6 +19,8 @@ import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
+import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -40,6 +45,20 @@ class ShopPageHomeModule {
 
     @ShopPageHomeScope
     @Provides
+    @Named(GQL_ATC_MUTATION)
+    fun provideAddToCartMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart);
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    @Named(GQL_CHECK_WISHLIST)
+    fun provideCheckWishlistQuery(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_check_wishlist);
+    }
+
+    @ShopPageHomeScope
+    @Provides
     fun getCoroutineDispatcherProvider(): CoroutineDispatcherProvider {
         return CoroutineDispatcherProviderImpl
     }
@@ -51,6 +70,18 @@ class ShopPageHomeModule {
             gqlUseCase: MultiRequestGraphqlUseCase
     ): GqlGetShopProductUseCase {
         return GqlGetShopProductUseCase(gqlQuery, gqlUseCase)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideAddToWishListUseCase(@ApplicationContext context: Context?): AddWishListUseCase {
+        return AddWishListUseCase(context)
+    }
+
+    @ShopPageHomeScope
+    @Provides
+    fun provideRemoveFromWishListUseCase(@ApplicationContext context: Context?): RemoveWishListUseCase {
+        return RemoveWishListUseCase(context)
     }
 
     @ShopPageHomeScope

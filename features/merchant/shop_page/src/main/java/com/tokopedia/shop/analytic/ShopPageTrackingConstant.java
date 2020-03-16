@@ -19,6 +19,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_TOP_NAV = "clickTopNav";
     public static final String SELLER_ADDED_TO_FAVORITE = "Seller_Added_To_Favorite";
     public static final String SELLER_REMOVED_FROM_FAVORITE = "Seller_Removed_From_Favorite";
+    public static final String ADD_TO_CART = "addToCart";
 
     public static final String CLICK_MEMBERSHIP_EVENT = "clickShopPage";
 
@@ -131,6 +132,7 @@ public class ShopPageTrackingConstant {
     public static final String ETALASE_SECTION = "etalase %1s";
     public static final String WISHLIST = "wishlist";
     public static final String IMPRESSION_OF_USE_VOUCHER = "impression of use voucher";
+    public static final String CLICK_ADD_TO_CART = "click add to cart";
 
 
 
@@ -185,6 +187,14 @@ public class ShopPageTrackingConstant {
     public static final String DIMENSION_79 = "dimension79";
 
     public static final String SHOP_REF = "dimension90";
+    public static final String QUANTITY = "quantity";
+    public static final String DIMENSION_80 = "dimension80";
+    public static final String DIMENSION_82 = "dimension82";
+    public static final String DIMENSION_45 = "dimension45";
+    public static final String DIMENSION_38 = "dimension38";
+    public static final String DIMENSION_40 = "dimension40";
+
+
 
     //SCREEN/PAGES
     public static final String SCREEN_SHOP_PAGE = "Shop Page";
@@ -202,6 +212,10 @@ public class ShopPageTrackingConstant {
     public static final String PROMO_SLOT_NAME = "promo slot name";
     public static final String HOME_FEATURED_PRODUCT = "featured product";
     public static final String ALL_PRODUCT = "all product";
+    public static final String WITH_CART = "with cart";
+    public static final String WITHOUT_CART = "without cart";
+    public static final String GENERAL = "general";
+
 
 
 }

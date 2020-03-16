@@ -14,9 +14,7 @@ class ShopPageHomeCarousellAdapter(
 
     fun setProductListData(productList: List<ShopHomeProductViewModel>) {
         val lastIndex = lastIndex
-        visitables.addAll(productList.onEach {
-            it.isCarousel = true
-        })
+        visitables.addAll(productList)
         notifyItemRangeInserted(lastIndex, productList.size)
     }
 

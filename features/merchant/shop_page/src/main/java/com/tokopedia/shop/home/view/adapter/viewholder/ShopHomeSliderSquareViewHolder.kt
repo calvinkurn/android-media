@@ -37,6 +37,8 @@ class ShopHomeSliderSquareViewHolder(
             }
             adapter = shopHomeSliderSquareAdapter
         }
+        shopHomeSliderSquareAdapter.displayWidgetUiModel = element
+        shopHomeSliderSquareAdapter.parentPosition = adapterPosition
         shopHomeSliderSquareAdapter.submitList(element.data)
         itemView.tgHeaderSliderSquare.text = element.header.title
     }

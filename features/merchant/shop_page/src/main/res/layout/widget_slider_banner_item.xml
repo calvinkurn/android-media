@@ -2,9 +2,9 @@
 <com.tokopedia.unifycomponents.ImageUnify xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/imageCarousel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:adjustViewBounds="true"
     android:focusable="true"
-    android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    app:unify_image_corner_radius="0"
-    android:scaleType="fitXY" />
+    android:scaleType="fitXY"
+    app:unify_image_corner_radius="0" />

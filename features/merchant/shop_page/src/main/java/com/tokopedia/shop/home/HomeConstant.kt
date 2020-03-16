@@ -101,12 +101,13 @@ object HomeConstant {
 
 object GqlQueryConstant {
     const val GQL_GET_SHOP_PAGE_HOME_LAYOUT = "gql_get_shop_page_home_layout"
+    const val GQL_ATC_MUTATION = "atcMutation"
 }
 
 object WidgetType {
     const val DISPLAY = "display"
     const val PRODUCT = "product"
-    const val VOUCHER = "voucher"
+    const val VOUCHER = "promo"
 }
 
 object WidgetName {

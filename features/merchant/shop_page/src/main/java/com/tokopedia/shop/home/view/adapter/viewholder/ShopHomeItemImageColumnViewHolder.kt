@@ -26,10 +26,10 @@ class ShopHomeItemImageColumnViewHolder(
         ivMultipleColumn.setImage(data.imageUrl, 0F)
 
         ivMultipleColumn.setOnClickListener {
-            listener.onItemClicked(displayWidgetUiModel, data, parentPosition, adapterPosition)
+            listener.onDisplayItemClicked(displayWidgetUiModel, data, parentPosition, adapterPosition)
         }
         ivMultipleColumn.addOnImpressionListener(data) {
-            listener.onItemImpression(displayWidgetUiModel, data, parentPosition, adapterPosition)
+            listener.onDisplayItemImpression(displayWidgetUiModel, data, parentPosition, adapterPosition)
         }
     }
 }

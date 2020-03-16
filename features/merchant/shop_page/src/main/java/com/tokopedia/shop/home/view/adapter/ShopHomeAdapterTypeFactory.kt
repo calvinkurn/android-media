@@ -69,7 +69,7 @@ class ShopHomeAdapterTypeFactory(
                     listener
             )
             ShopHomeProductViewHolder.LAYOUT -> {
-                ShopHomeProductViewHolder(parent, null)
+                ShopHomeProductViewHolder(parent, shopPageHomeProductClickListener)
             }
             ShopHomeProductEtalaseTitleViewHolder.LAYOUT -> {
                 ShopHomeProductEtalaseTitleViewHolder(parent)

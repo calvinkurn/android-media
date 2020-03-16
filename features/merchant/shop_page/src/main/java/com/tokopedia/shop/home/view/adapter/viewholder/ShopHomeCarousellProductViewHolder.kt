@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -62,10 +63,15 @@ class ShopHomeCarousellProductViewHolder(
                     LinearLayoutManager.HORIZONTAL,
                     false
             )
+            val animator = recyclerView?.itemAnimator
+            if (animator is SimpleItemAnimator) {
+                animator.supportsChangeAnimations = false
+            }
         }
     }
 
     override fun bind(shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel) {
+        val recyclerViewState = recyclerView?.layoutManager?.onSaveInstanceState()
         val title = shopHomeCarousellProductUiModel.header.title
         val ctaText = shopHomeCarousellProductUiModel.header.ctaText
         if(title.isEmpty() && ctaText.isEmpty()){
@@ -85,5 +91,8 @@ class ShopHomeCarousellProductViewHolder(
         adapterCarousell.parentIndex = adapterPosition
         adapterCarousell.clearAllElements()
         adapterCarousell.setProductListData(shopHomeCarousellProductUiModel.productList)
+        if (recyclerViewState != null) {
+            recyclerView?.layoutManager?.onRestoreInstanceState(recyclerViewState)
+        }
     }
 }

@@ -13,15 +13,14 @@ import com.google.android.youtube.player.YouTubeInitializationResult
 import com.google.android.youtube.player.YouTubeThumbnailLoader
 import com.google.android.youtube.player.YouTubeThumbnailView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.HomeConstant
 import com.tokopedia.shop.home.view.activity.ShopHomePageYoutubePlayerActivity
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
 import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.youtubeutils.common.YoutubePlayerConstant
+import kotlinx.android.synthetic.main.widget_shop_page_video_youtube.view.*
 import java.util.regex.Pattern
 
 /**
@@ -30,9 +29,9 @@ import java.util.regex.Pattern
 
 class ShopHomeVideoViewHolder(
         val view: View,
-        private  val listener: ShopHomeDisplayWidgetListener
+        private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view),
-    YouTubeThumbnailView.OnInitializedListener, View.OnClickListener{
+        YouTubeThumbnailView.OnInitializedListener, View.OnClickListener {
 
     companion object {
         @LayoutRes
@@ -61,25 +60,44 @@ class ShopHomeVideoViewHolder(
         youTubeThumbnailShopPage?.initialize(YoutubePlayerConstant.GOOGLE_API_KEY, this)
     }
 
-    override fun bind(element: ShopHomeDisplayWidgetUiModel) {
-        this.youtubVideoModel = element
+    override fun bind(model: ShopHomeDisplayWidgetUiModel) {
+        this.youtubVideoModel = model
+        val videoData = model.data?.first()
         val regex = "v=([^\\s&#]*)"
-        videoUrl = element.data?.first()?.videoUrl ?: ""
+        videoUrl = videoData?.videoUrl ?: ""
         val pattern = Pattern.compile(regex, Pattern.MULTILINE)
         val matcher = pattern.matcher(videoUrl)
-        videoUrl = if(matcher.find()) {
+        videoUrl = if (matcher.find()) {
             matcher.group(1)
-        }else{
+        } else {
             videoUrl
         }
         btnYoutubePlayer?.setOnClickListener(this)
         ivVideoNotFound?.setOnClickListener(this)
+        videoData?.let {
+            youTubeThumbnailShopPage?.addOnImpressionListener(it) {
+                listener.onDisplayItemImpression(
+                        model,
+                        it,
+                        adapterPosition,
+                        1
+                )
+            }
+        }
+        itemView.textViewTitle?.apply {
+            if (model.header.title.isEmpty()) {
+                hide()
+            } else {
+                text = model.header.title
+                show()
+            }
+        }
     }
 
     override fun onInitializationSuccess(youTubeThumbnailView: YouTubeThumbnailView?, youTubeThumbnailLoader: YouTubeThumbnailLoader?) {
 
         youTubeThumbnailLoader?.setVideo(videoUrl)
-        youTubeThumbnailLoader?.setOnThumbnailLoadedListener(object: YouTubeThumbnailLoader.OnThumbnailLoadedListener {
+        youTubeThumbnailLoader?.setOnThumbnailLoadedListener(object : YouTubeThumbnailLoader.OnThumbnailLoadedListener {
             override fun onThumbnailLoaded(childYouTubeThumbnailView: YouTubeThumbnailView?, p1: String?) {
                 childYouTubeThumbnailView?.visible()
                 youTubeThumbnailShopPage?.visible()
@@ -103,7 +121,7 @@ class ShopHomeVideoViewHolder(
     }
 
     override fun onClick(view: View?) {
-        when(view?.id) {
+        when (view?.id) {
             R.id.btn_youtube_player -> {
                 playYoutube(view)
             }
@@ -115,8 +133,8 @@ class ShopHomeVideoViewHolder(
 
     private fun playYoutube(view: View) {
         view.context?.let {
-            youtubVideoModel?.data?.let{ videoItemList ->
-                listener.onItemClicked(youtubVideoModel, videoItemList.first(),adapterPosition, 0)
+            youtubVideoModel?.data?.let { videoItemList ->
+                listener.onDisplayItemClicked(youtubVideoModel, videoItemList.first(), adapterPosition, 0)
             }
             if (YouTubeApiServiceUtil.isYouTubeApiServiceAvailable(it.applicationContext)
                     == YouTubeInitializationResult.SUCCESS) {

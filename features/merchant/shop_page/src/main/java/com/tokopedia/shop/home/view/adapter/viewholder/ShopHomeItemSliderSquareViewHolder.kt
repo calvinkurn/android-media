@@ -32,10 +32,10 @@ class ShopHomeItemSliderSquareViewHolder(
         val deviceWidth = Resources.getSystem().displayMetrics.widthPixels;
         itemView.layoutParams.width = (deviceWidth / ITEM_WIDTH_RATIO_DIVIDER).toInt()
         ivSliderSquare.setOnClickListener {
-            listener.onItemClicked(displayWidgetUiModel, data, parentPosition, adapterPosition)
+            listener.onDisplayItemClicked(displayWidgetUiModel, data, parentPosition, adapterPosition)
         }
         ivSliderSquare.addOnImpressionListener(data) {
-            listener.onItemImpression(displayWidgetUiModel, data, parentPosition, adapterPosition)
+            listener.onDisplayItemImpression(displayWidgetUiModel, data, parentPosition, adapterPosition)
         }
     }
 }
