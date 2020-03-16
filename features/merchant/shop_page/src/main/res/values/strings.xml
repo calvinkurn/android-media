@@ -221,6 +221,7 @@
     <string name="shop_page_setting_action_manage_shipping_service">Atur layanan pengiriman</string>
     <string name="video_component_tag">video_container</string>
     <string name="close_youtube">Close</string>
+    <string name="video_not_found">Video tidak ditemukan</string>
 
 
 </resources>
