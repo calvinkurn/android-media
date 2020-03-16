@@ -14,7 +14,7 @@ import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticdata.data.constant.CourierConstant
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.purchase_platform.R
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderPreference
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPreference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderSummaryPageFragment
 import kotlinx.android.synthetic.main.card_order_preference.view.*
 
@@ -188,6 +188,15 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
                     listener.onDurationChange(selectedServiceId, selectedShippingCourierUiModel, flagNeedToSetPinpoint)
                 }
             })
+        }
+    }
+
+    fun setPaymentError(paymentErrorMessage: String?) {
+        if (paymentErrorMessage?.isNotEmpty() == true) {
+            view.tv_payment_message.text = paymentErrorMessage
+            view.tv_payment_message.visible()
+        } else {
+            view.tv_payment_message.gone()
         }
     }
 

@@ -5,7 +5,6 @@ import com.tokopedia.purchase_platform.common.data.model.response.WholesalePrice
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.CartDataResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProductDataResponse
 
-
 data class OrderCart(
         var product: OrderProduct = OrderProduct(),
         var shop: OrderShop = OrderShop(),

@@ -12,5 +12,11 @@ data class Payment(
         @SerializedName("description")
         val description: String = "",
         @SerializedName("url")
-        val url: String = ""
+        val url: String = "",
+        @SerializedName("minimum_amount")
+        val minimumAmount: Int = 0,
+        @SerializedName("maximum_amount")
+        val maximumAmount: Int = 0,
+        @SerializedName("fee")
+        val fee: Int = 0
 )

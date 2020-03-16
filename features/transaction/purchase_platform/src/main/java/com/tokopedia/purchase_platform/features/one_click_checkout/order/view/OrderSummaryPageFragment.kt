@@ -40,16 +40,13 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bo
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderPreferenceCard
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.card.OrderProductCard
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.ButtonBayarState
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderPreference
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderProduct
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.OrderTotal
 import com.tokopedia.purchase_platform.features.one_click_checkout.preference.edit.view.PreferenceEditActivity
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.android.synthetic.main.card_order_empty_preference.*
 import kotlinx.android.synthetic.main.fragment_order_summary_page.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -120,8 +117,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 global_error.gone()
                 main_content.visible()
                 view?.let { v ->
-                    Toaster.make(v, "success first")
-//                    if (viewModel.orderProduct.quantity != null) {
                     orderProductCard.setProduct(viewModel.orderProduct)
                     orderProductCard.setShop(viewModel.orderShop)
                     orderProductCard.initView()
@@ -132,25 +127,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     } else {
                         showEmptyPreferenceCard()
                     }
-//                    }
-
-//                    setupInsurance(it)
                 }
             } else if (it is OccState.Success) {
                 swipe_refresh_layout.isRefreshing = false
                 main_content.visible()
                 view?.let { v ->
-                    //                    Toaster.make(v, "success")
-//                    if (viewModel.orderProduct.quantity != null) {
-//                        orderProductCard.setProduct(viewModel.orderProduct)
-//                        orderProductCard.setShop(viewModel.orderShop)
-//                        orderProductCard.initView()
-//                        showMessage(it.data.preference)
                     if (it.data.preference.address.addressId > 0) {
                         orderPreferenceCard.setPreference(it.data)
                     }
-//                    }
-
                     setupInsurance(it)
                     if (it.data.shipping?.needPinpoint == true) {
                         goToPinpoint(it.data.preference.address)
@@ -166,6 +150,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
         viewModel.orderTotal.observe(this, Observer {
+            orderPreferenceCard.setPaymentError(it.paymentErrorMessage)
             setupButtonBayar(it)
         })
         viewModel.globalEvent.observe(this, Observer {
@@ -190,7 +175,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     progressDialog?.dismiss()
                     view?.let { v ->
                         var message = it.errorMessage
-                        if (it.throwable != null) {
+                        if (message.isBlank()) {
                             message = ErrorHandler.getErrorMessage(context, it.throwable)
                         }
                         Toaster.make(v, message, type = Toaster.TYPE_ERROR)
@@ -203,9 +188,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
     }
 
-    private fun showPreferenceCard(){
+    private fun showPreferenceCard() {
         empty_preference_card.gone()
-        preference_card.visible()
         preference_card.visible()
         tv_total_payment_label.visible()
         tv_total_payment_value.visible()
@@ -213,8 +197,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         btn_pay.visible()
     }
 
-    private fun showEmptyPreferenceCard()
-    {
+    private fun showEmptyPreferenceCard() {
         ImageHandler.LoadImage(image_empty_profile, EMPTY_STATE_PICT_URL)
         empty_preference_card.visible()
         preference_card.gone()
@@ -225,9 +208,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         button_atur_pilihan.setOnClickListener {
             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
-            intent.apply {
-                putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, 1)
-            }
+            intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, 1)
             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
         }
     }
@@ -360,7 +341,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         tv_header.text = "Barang yang dibeli"
         if (preference.hasPreference) {
             tv_header_2.text = "Pengiriman dan Pembayaran"
+            tv_header_2.visible()
             tv_subheader.gone()
+            tv_subheader_action.gone()
+            iv_subheader.gone()
         } else {
             tv_header_2.gone()
             iv_subheader.visible()
@@ -376,36 +360,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun initViews(view: View) {
         orderProductCard = OrderProductCard(view, this)
         orderPreferenceCard = OrderPreferenceCard(view, getOrderPreferenceCardListener())
-//        orderPreferenceCard.initView()
-
-//        btn_pay.isEnabled = true
-//        btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
-//        btn_pay.setPadding(convertDpToPixel(32f, context!!), btn_pay.paddingTop, convertDpToPixel(32f, context!!), btn_pay.paddingBottom)
-
-//        triggerLoading()
-    }
-
-    private fun triggerLoading() {
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(4000)
-            btn_pay.layoutParams.width = convertDpToPixel(160f, context!!)
-            btn_pay.setText(R.string.label_choose_payment)
-            btn_pay.isLoading = false
-            btn_pay.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
-////            btn_pay.width = convertDpToPixel(140f, context!!)
-            delay(3000)
-            btn_pay.isLoading = true
-            delay(3000)
-//            SpecificErrorBottomSheet().create(context!!).show(fragmentManager!!, null)
-            btn_pay.layoutParams.width = convertDpToPixel(140f, context!!)
-            btn_pay.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_btn_pay_shield, 0, 0, 0)
-            btn_pay.isLoading = false
-            btn_pay.post {
-                btn_pay.setText(R.string.pay)
-            }
-            delay(3000)
-            btn_pay.isEnabled = false
-        }
     }
 
     private fun getOrderPreferenceCardListener() = object : OrderPreferenceCard.OrderPreferenceCardListener {
@@ -440,12 +394,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         val profileId = viewModel._orderPreference?.preference?.profileId ?: 0
         val updateCartParam = viewModel.generateUpdateCartParam()
         if (profileId > 0 && updateCartParam != null) {
-            PreferenceListBottomSheet(viewModel = viewModel,
+            PreferenceListBottomSheet(
                     getPreferenceListUseCase = viewModel.getPreferenceListUseCase,
-                    updateCartOccUseCase = viewModel.updateCartOccUseCase,
-                    updateCartOccRequest = updateCartParam,
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
+                            viewModel.updatePreference(preference)
                             refresh()
                         }
 

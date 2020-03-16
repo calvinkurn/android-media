@@ -4,19 +4,10 @@ import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
-import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.OrderPreference
 
 data class OrderData(
         var cart: OrderCart = OrderCart(),
         var preference: ProfileResponse = ProfileResponse()
-)
-
-data class OrderPreferenceTemp(
-        val id: Int = 0,
-        val address: Address = Address(),
-        val shipment: Shipment = Shipment(),
-        val payment: Payment = Payment(),
-        val isLoadingRates: Boolean = false
 )
 
 data class Shipment(
@@ -26,7 +17,6 @@ data class Shipment(
         val serviceErrorMessage: String? = null,
         val isServicePickerEnable: Boolean = false,
         val needPinpoint: Boolean = false,
-//        val shippingErrorMessage: String? = null,
         val shipperName: String? = null,
         val shipperId: Int? = null,
         val shipperProductId: Int? = null,

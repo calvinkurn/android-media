@@ -14,6 +14,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
+import kotlin.math.min
 
 class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>): UseCase<OrderData>() {
 
@@ -121,7 +122,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             freeOngkirImg = product.freeShipping.badgeUrl
             productResponse = product
         }
-        mapVariant(orderProduct, product)
+//        mapVariant(orderProduct, product)
         mapQuantity(orderProduct, product)
         return orderProduct
     }
@@ -138,13 +139,18 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         quantityViewModel.isStateError = false
 
         quantityViewModel.maxOrderQuantity = product.productMaxOrder
+        quantityViewModel.maxOrderQuantity = if (product.productSwitchInvenage == 0) {
+            product.productMaxOrder
+        } else {
+            min(product.productMaxOrder, product.productInvenageValue)
+        }
         quantityViewModel.minOrderQuantity = product.productMinOrder
-        quantityViewModel.orderQuantity = product.productMinOrder
+        quantityViewModel.orderQuantity = product.productQuantity
         quantityViewModel.stockWording = ""
         orderProduct.quantity = quantityViewModel
     }
 
-    private fun mapVariant(orderProduct: OrderProduct, product: ProductDataResponse) {
+    /*private fun mapVariant(orderProduct: OrderProduct, product: ProductDataResponse) {
 
         val variantViewModelList = ArrayList<TypeVariantUiModel>()
         val productVariantDataModels = product.productVariant
@@ -295,9 +301,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
                 }
             }
         }
-    }
+    }*/
 
-    private fun checkChildAvailable(productChild: OrderProductChild,
+    /*private fun checkChildAvailable(productChild: OrderProductChild,
                                     optionViewModelId: Int,
                                     currentChangedOptionId: Int,
                                     otherVariantSelectedOptionIds: ArrayList<Int>): Boolean {
@@ -316,9 +322,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         val optionViewModelIdAvailable = optionViewModelId in productChild.optionsId
 
         return productChild.isAvailable && currentChangedOptionIdAvailable && optionViewModelIdAvailable && otherSelectedOptionIdCountEqual
-    }
+    }*/
 
-    private fun validateVariantCombination(productVariantDataModel: ProductVariantResponse): Boolean {
+    /*private fun validateVariantCombination(productVariantDataModel: ProductVariantResponse): Boolean {
         val variantModels = productVariantDataModel.variant
         if (variantModels.isNotEmpty()) {
             val variantOptionSizeList: ArrayList<Int> = ArrayList()
@@ -336,9 +342,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         }
 
         return false
-    }
+    }*/
 
-    private fun validateVariantChildren(productVariantDataModel: ProductVariantResponse): Boolean {
+    /*private fun validateVariantChildren(productVariantDataModel: ProductVariantResponse): Boolean {
 
         val childModels = productVariantDataModel.children
         if (childModels.isNotEmpty()) {
@@ -359,9 +365,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
             return hasValidVariant
         }
         return false
-    }
+    }*/
 
-    fun convertToTypeVariantViewModel(variantModel: VariantResponse, childrenModel: List<ChildResponse>): TypeVariantUiModel {
+    /*fun convertToTypeVariantViewModel(variantModel: VariantResponse, childrenModel: List<ChildResponse>): TypeVariantUiModel {
         val typeVariantViewModel = TypeVariantUiModel(null)
 
         val optionVariantViewModels = ArrayList<OptionVariantUiModel>()
@@ -379,9 +385,9 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         typeVariantViewModel.variantName = variantModel.variantName ?: ""
 
         return typeVariantViewModel
-    }
+    }*/
 
-    fun convertToOptionVariantViewModel(optionModel: OptionResponse, variantId: Int, childrenModel: List<ChildResponse>): OptionVariantUiModel {
+    /*fun convertToOptionVariantViewModel(optionModel: OptionResponse, variantId: Int, childrenModel: List<ChildResponse>): OptionVariantUiModel {
         val optionVariantViewModel = OptionVariantUiModel(null)
         optionVariantViewModel.variantId = variantId
         optionVariantViewModel.optionId = optionModel.id ?: 0
@@ -401,5 +407,5 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         }
 
         return optionVariantViewModel
-    }
+    }*/
 }

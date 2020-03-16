@@ -25,19 +25,16 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.bottom_sheet_preference_list.view.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.NonCancellable.cancel
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import kotlin.coroutines.CoroutineContext
 
 class PreferenceListBottomSheet(
-        override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main.immediate,
-        private val viewModel: OrderSummaryPageViewModel,
         private val getPreferenceListUseCase: GetPreferenceListUseCase,
-        private val updateCartOccUseCase: UpdateCartOccUseCase,
-        private val updateCartOccRequest: UpdateCartOccRequest,
         private val listener: PreferenceListBottomSheetListener
-) : CoroutineScope {
+) {
     // need get all preference list usecase, update selected preference usecase
 
     private var bottomSheet: BottomSheetUnify? = null
@@ -126,9 +123,6 @@ class PreferenceListBottomSheet(
                 setChild(child)
                 show(it, null)
                 getPreferenceList()
-                setOnDismissListener {
-                    onCleared()
-                }
             }
         }
     }
@@ -150,7 +144,8 @@ class PreferenceListBottomSheet(
 
     private fun getListener(): PreferenceListAdapter.PreferenceListAdapterListener = object : PreferenceListAdapter.PreferenceListAdapterListener {
         override fun onPreferenceSelected(preference: ProfilesItemModel) {
-            changePreference(preference)
+            bottomSheet?.dismiss()
+            listener.onChangePreference(preference)
         }
 
         override fun onPreferenceEditClicked(preference: ProfilesItemModel, adapterPosition: Int) {
@@ -159,34 +154,8 @@ class PreferenceListBottomSheet(
         }
     }
 
-    private fun changePreference(preference: ProfilesItemModel) {
-        if (preference.profileId != null && preference.addressModel?.addressId != null && preference.shipmentModel?.serviceId != null && preference.paymentModel?.gatewayCode != null) {
-            viewModel.globalEvent.value = OccGlobalEvent.Loading
-            val param = updateCartOccRequest.copy(profile = UpdateCartOccProfileRequest(
-                    profileId = preference.profileId.toString(),
-                    addressId = preference.addressModel?.addressId.toString(),
-                    serviceId = preference.shipmentModel?.serviceId ?: 0,
-                    gatewayCode = preference.paymentModel?.gatewayCode ?: ""
-            ))
-
-            updateCartOccUseCase.execute(param, { updateCartOccGqlResponse: UpdateCartOccGqlResponse ->
-                viewModel.globalEvent.value = OccGlobalEvent.Normal
-                bottomSheet?.dismiss()
-                listener.onChangePreference(preference)
-            }, { throwable: Throwable ->
-                throwable.printStackTrace()
-                if (throwable is MessageErrorException && throwable.message != null) {
-                    viewModel.globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
-                } else {
-                    viewModel.globalEvent.value = OccGlobalEvent.Error(throwable)
-                }
-            })
-        }
-    }
-
     fun dismiss() {
         bottomSheet?.dismiss()
-        onCleared()
     }
 
     fun reload() {
@@ -206,9 +175,9 @@ class PreferenceListBottomSheet(
         }
     }
 
-    private fun onCleared() {
-        cancel()
-    }
+//    private fun onCleared() {
+//        cancel()
+//    }
 
     interface PreferenceListBottomSheetListener {
 
