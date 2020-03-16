@@ -18,9 +18,9 @@ import com.tokopedia.sellerhome.settings.view.uimodel.base.ShopType
 import kotlinx.android.synthetic.main.fragment_other_menu.view.*
 import kotlinx.android.synthetic.main.fragment_other_menu.view.shopInfoLayout
 import kotlinx.android.synthetic.main.setting_balance.view.*
+import kotlinx.android.synthetic.main.setting_partial_main_info_success.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_error.view.*
 import kotlinx.android.synthetic.main.setting_partial_shop_info_success.view.*
-import kotlinx.android.synthetic.main.setting_shop_info_layout.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_pm.view.*
 import kotlinx.android.synthetic.main.setting_shop_status_regular.view.*
 
@@ -142,9 +142,9 @@ class OtherMenuViewHolder(private val itemView: View,
                 is RegularMerchant.NeedUpgrade -> context.resources.getString(R.string.setting_upgrade)
                 is RegularMerchant.NeedVerification -> context.resources.getString(R.string.setting_verifikasi)
             }
-            setOnClickListener {
-                RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
-            }
+        }
+        rightRectangle.setOnClickListener {
+            RouteManager.route(context, ApplinkConstInternalMarketplace.POWER_MERCHANT_SUBSCRIBE)
         }
         return this
     }

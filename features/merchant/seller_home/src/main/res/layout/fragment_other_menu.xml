@@ -12,7 +12,6 @@
         android:layout_height="@dimen/setting_header_height"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:scaleType="fitCenter"
         android:background="@drawable/setting_regular_header"
         app:layout_constraintTop_toTopOf="parent"/>
 

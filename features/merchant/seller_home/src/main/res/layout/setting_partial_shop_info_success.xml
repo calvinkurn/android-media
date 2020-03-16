@@ -6,7 +6,7 @@
 
     <include
         android:id="@+id/shopInfoLayout"
-        layout="@layout/setting_shop_info_layout"/>
+        layout="@layout/setting_partial_main_info_success"/>
 
     <LinearLayout
         android:id="@+id/shopStatus"

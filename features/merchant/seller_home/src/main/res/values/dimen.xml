@@ -43,6 +43,7 @@
     <dimen name="setting_shop_badge_border_margin">2dp</dimen>
     <dimen name="setting_shop_badge_border_pm_margin">4dp</dimen>
     <dimen name="setting_shop_badge_border_os_margin">5dp</dimen>
+    <dimen name="setting_shop_badge_height">16dp</dimen>
     <dimen name="setting_status_margin">20dp</dimen>
     <dimen name="setting_status_margin_top">17dp</dimen>
     <dimen name="setting_title_padding_top">23dp</dimen>

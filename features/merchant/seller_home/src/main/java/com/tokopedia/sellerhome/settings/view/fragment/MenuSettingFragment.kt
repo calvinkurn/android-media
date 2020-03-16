@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.IndentedSettingTitleUiModel
@@ -102,7 +103,11 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
                 DividerUiModel(DividerType.THIN_INDENTED),
                 IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_exclusive_feature)),
                 MenuItemUiModel(resources.getString(R.string.setting_menu_cash_on_delivery_service), clickApplink = ApplinkConstInternalMarketplace.COD),
-                MenuItemUiModel(resources.getString(R.string.setting_menu_priority_order)),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_priority_order)) {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
+                    intent.putExtra(OtherMenuFragment.URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_ORDER_PRIORITY)
+                    context?.startActivity(intent)
+                },
                 DividerUiModel(DividerType.THICK),
                 SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
                 MenuItemUiModel(resources.getString(R.string.setting_menu_self_profile), clickApplink = ApplinkConst.SETTING_PROFILE),
