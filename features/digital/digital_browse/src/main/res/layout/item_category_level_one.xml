@@ -1,52 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_layout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_5">
 
     <ImageView
         android:id="@+id/category_imageview"
         android:layout_width="@dimen/dp_35"
         android:layout_height="@dimen/dp_35"
-        android:paddingTop="@dimen/dp_6"
+        android:layout_margin="@dimen/dp_8"
         app:layout_constraintBottom_toTopOf="@+id/category_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/category_name"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:gravity="center"
-        android:paddingLeft="@dimen/dp_4"
-        android:paddingRight="@dimen/dp_4"
-        android:textSize="@dimen/sp_14"
+        android:lines="2"
+        android:maxLength="18"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:paddingBottom="@dimen/dp_10"
+        android:textColor="@color/clr_ae31353b"
         app:layout_constraintBottom_toTopOf="@+id/border"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/category_imageview" />
-
+        app:layout_constraintTop_toBottomOf="@+id/category_imageview"
+        app:layout_constraintWidth_default="spread"
+        app:typographyType="small"
+        tools:text="Fashion Wanita" />
 
     <View
         android:id="@+id/border"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="@dimen/dp_1"
-        android:background="@color/white"
+        android:background="@color/category_border"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/category_name" />
-
-    <View
-        android:id="@+id/unselected_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="#1A000000"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/border"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

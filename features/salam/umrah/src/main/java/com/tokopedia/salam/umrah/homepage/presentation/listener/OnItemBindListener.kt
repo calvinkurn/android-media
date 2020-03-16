@@ -39,4 +39,5 @@ interface onItemBindListener{
 
     fun onImpressionPartnerTravel(headerTitle: String, umrahTravelAgentsEntity: UmrahTravelAgentsEntity)
     fun onClickPartnerTravel(headerTitle: String, travelAgent: TravelAgent)
+    fun onClickAllPartner()
 }

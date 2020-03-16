@@ -19,6 +19,7 @@ import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
 import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
@@ -60,6 +61,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     private lateinit var moduleNameTranslated: String
     private lateinit var applink: String
     private var imageUrl: String? = null
+    private var fallbackUrl: String = ""
     private var moduleSize = 0L
     private var freeInternalStorageBeforeDownload = 0L
 
@@ -73,6 +75,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         private const val EXTRA_APPLINK = "dfapplink"
         private const val EXTRA_AUTO = "dfauto"
         private const val EXTRA_IMAGE = "dfimage"
+        private const val EXTRA_FALLBACK_WEB = "dffallbackurl"
         private const val defaultImageUrl = "https://ecs7.tokopedia.net/img/android/empty_profile/drawable-xxxhdpi/product_image_48_x_48.png"
         private const val CONFIRMATION_REQUEST_CODE = 1
         private const val SETTING_REQUEST_CODE = 2
@@ -90,6 +93,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
             if (imageUrl.isNullOrEmpty()) {
                 imageUrl = defaultImageUrl
             }
+            fallbackUrl = uri.getQueryParameter(EXTRA_FALLBACK_WEB) ?: ""
         }
 
         super.onCreate(savedInstanceState)
@@ -134,8 +138,8 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         progressGroup = findViewById(R.id.progress_group)
 
         progressBar.progressDrawable.setColorFilter(
-                ContextCompat.getColor(this, R.color.tkpd_main_green),
-                android.graphics.PorterDuff.Mode.MULTIPLY)
+            ContextCompat.getColor(this, R.color.tkpd_main_green),
+            android.graphics.PorterDuff.Mode.MULTIPLY)
     }
 
     private fun loadAndLaunchModule(name: String) {
@@ -238,9 +242,9 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
     private fun showOnBoardingView() {
         updateInformationView(R.drawable.ic_ill_onboarding,
-                String.format(getString(R.string.feature_download_title), moduleNameTranslated),
-                String.format(getString(R.string.feature_download_subtitle), moduleNameTranslated),
-                getString(R.string.start_download)) {
+            String.format(getString(R.string.feature_download_title), moduleNameTranslated),
+            String.format(getString(R.string.feature_download_subtitle), moduleNameTranslated),
+            getString(R.string.start_download)) {
             downloadFeature()
         }
     }
@@ -248,61 +252,80 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
     private fun showFailedMessage(errorCode: String = "") {
         val errorCodeTemp = ErrorUtils.getValidatedErrorCode(this, errorCode, freeInternalStorageBeforeDownload)
         errorList.add(errorCodeTemp)
+        var ctaAction: (() -> Unit)? = null
+        if (fallbackUrl.isNotEmpty()) {
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.WEBVIEW, fallbackUrl)
+            intent?.let { it ->
+                ctaAction = { ->
+                    startActivity(it)
+                }
+            }
+        }
         when (errorCodeTemp) {
             ErrorConstant.ERROR_PLAY_SERVICE_NOT_CONNECTED -> {
                 updateInformationView(R.drawable.ic_ill_general_error,
-                        getString(R.string.download_error_playservice_title),
-                        getString(R.string.download_error_playservice_subtitle),
-                        getString(R.string.start_download)) {
+                    getString(R.string.download_error_playservice_title),
+                    getString(R.string.download_error_playservice_subtitle),
+                    getString(R.string.start_download), {
                     if (Utils.isPlayServiceConnected(this)) {
                         downloadFeature()
                     } else {
                         Utils.showPlayServiceErrorDialog(this)
                     }
-                }
+                }, getString(R.string.continue_without_install),
+                    ctaAction)
                 Utils.showPlayServiceErrorDialog(this)
             }
             ErrorConstant.ERROR_PLAY_STORE_NOT_AVAILABLE -> updateInformationView(R.drawable.ic_ill_general_error,
-                    getString(R.string.download_error_play_store_title),
-                    getString(R.string.download_error_play_store_subtitle),
-                    getString(R.string.goto_playstore)) {
-                gotoPlayStore()
-            }
+                getString(R.string.download_error_play_store_title),
+                getString(R.string.download_error_play_store_subtitle),
+                getString(R.string.goto_playstore),
+                ::gotoPlayStore,
+                getString(R.string.continue_without_install),
+                ctaAction
+            )
             ErrorConstant.ERROR_INVALID_INSUFFICIENT_STORAGE -> updateInformationView(R.drawable.ic_ill_general_error,
-                    getString(R.string.download_error_os_and_play_store_title),
-                    getString(R.string.download_error_os_and_play_store_subtitle),
-                    getString(R.string.goto_seting)) {
+                getString(R.string.download_error_os_and_play_store_title),
+                getString(R.string.download_error_os_and_play_store_subtitle),
+                getString(R.string.goto_seting), {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
-            }
+            }, getString(R.string.continue_without_delete_storage),
+                ctaAction)
             SplitInstallErrorCode.INSUFFICIENT_STORAGE.toString() -> updateInformationView(R.drawable.ic_ill_insuficient_memory,
-                    getString(R.string.download_error_insuficient_storage_title),
-                    getString(R.string.download_error_insuficient_storage_subtitle),
-                    getString(R.string.goto_seting)) {
+                getString(R.string.download_error_insuficient_storage_title),
+                getString(R.string.download_error_insuficient_storage_subtitle),
+                getString(R.string.goto_seting), {
                 startActivityForResult(Intent(android.provider.Settings.ACTION_SETTINGS), SETTING_REQUEST_CODE)
-            }
+            }, getString(R.string.continue_without_install),
+                ctaAction)
             SplitInstallErrorCode.NETWORK_ERROR.toString() -> updateInformationView(R.drawable.ic_ill_no_connection,
-                    getString(R.string.download_error_connection_title),
-                    getString(R.string.download_error_connection_subtitle),
-                    getString(R.string.df_installer_try_again)) {
-                downloadFeature()
-            }
+                getString(R.string.download_error_connection_title),
+                getString(R.string.download_error_connection_subtitle),
+                getString(R.string.df_installer_try_again), ::downloadFeature,
+                getString(R.string.continue_without_install),
+                ctaAction)
             SplitInstallErrorCode.MODULE_UNAVAILABLE.toString() -> updateInformationView(R.drawable.ic_ill_module_unavailable,
-                    getString(R.string.download_error_module_unavailable_title),
-                    getString(R.string.download_error_module_unavailable_subtitle),
-                    getString(R.string.goto_playstore)) {
-                gotoPlayStore()
-            }
+                getString(R.string.download_error_module_unavailable_title),
+                getString(R.string.download_error_module_unavailable_subtitle),
+                getString(R.string.goto_playstore),
+                ::gotoPlayStore,
+                getString(R.string.continue_without_install),
+                ctaAction)
             else -> updateInformationView(R.drawable.ic_ill_general_error,
-                    getString(R.string.download_error_general_title),
-                    getString(R.string.download_error_general_subtitle),
-                    getString(R.string.df_installer_try_again)) {
-                downloadFeature()
-            }
+                getString(R.string.download_error_general_title),
+                getString(R.string.download_error_general_subtitle),
+                getString(R.string.df_installer_try_again),
+                ::downloadFeature,
+                getString(R.string.continue_without_install),
+                ctaAction)
         }
     }
 
     private fun updateInformationView(imageRes: Int, title: String, subTitle: String,
-                                      buttonText: String = "", onDownloadButtonClicked: () -> (Unit) = {}) {
+                                      buttonText: String = "",
+                                      onDownloadButtonClicked: () -> (Unit) = {},
+                                      ctaText: String = "",
+                                      onCtaClicked: ( ()-> (Unit))? = null) {
         image.setImageResource(imageRes)
         progressGroup.visibility = View.INVISIBLE
         title_txt.text = title
@@ -315,6 +338,15 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
             button_download.visibility = View.VISIBLE
         } else {
             button_download.visibility = View.INVISIBLE
+        }
+        if (onCtaClicked != null && ctaText.isNotEmpty()) {
+            button_cta.setOnClickListener {
+                onCtaClicked.invoke()
+            }
+            button_cta.text = ctaText
+            button_cta.visibility = View.VISIBLE
+        } else {
+            button_cta.visibility = View.GONE
         }
     }
 

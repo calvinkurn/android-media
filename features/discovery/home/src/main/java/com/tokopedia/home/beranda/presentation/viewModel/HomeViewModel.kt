@@ -39,6 +39,7 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.ClosedSendChannelException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -160,7 +161,7 @@ open class HomeViewModel @Inject constructor(
         initFlow()
     }
 
-    fun refresh(){
+    fun refresh(isFirstInstall: Boolean){
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
             refreshHomeData()
@@ -170,20 +171,20 @@ open class HomeViewModel @Inject constructor(
         }
         getTokocashBalance()
         getTokopoint()
-        searchHint()
+        searchHint(isFirstInstall)
     }
 
     fun hitBannerImpression(slidesModel: BannerSlidesModel) {
         if (!slidesModel.isImpressed && slidesModel.topadsViewUrl.isNotEmpty()) {
             compositeSubscription.add(Observable.just(ImpresionTask(object : ImpressionListener {
-                override fun onSuccess() {
-                    slidesModel.isImpressed = true
-                }
+                        override fun onSuccess() {
+                            slidesModel.isImpressed = true
+                        }
 
-                override fun onFailed() {
-                    slidesModel.isImpressed = false
-                }
-            }).execute(slidesModel.topadsViewUrl))
+                        override fun onFailed() {
+                            slidesModel.isImpressed = false
+                        }
+                    }).execute(slidesModel.topadsViewUrl))
                     .debounce(200, TimeUnit.MILLISECONDS)
                     .subscribeOn(Schedulers.newThread())
                     .unsubscribeOn(Schedulers.newThread())
@@ -272,9 +273,13 @@ open class HomeViewModel @Inject constructor(
                 headerViewModel.isTokoPointDataError = it
             }
             headerViewModel.isUserLogin = userSession.isLoggedIn
+<<<<<<< HEAD
             if(channel?.isClosedForSend == false){
                 launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
             }
+=======
+            launch { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
+>>>>>>> fc6e5bd6e5eb96ad512fd8b6d5ef111239799d58
         }
 
     }
@@ -330,10 +335,10 @@ open class HomeViewModel @Inject constructor(
 
     fun getPlayBanner(position: Int){
         val playBanner =
-            if (position < _homeLiveData.value?.list?.size ?: -1
-                    && _homeLiveData.value?.list?.get(position) is PlayCardViewModel)
-                _homeLiveData.value?.list?.getOrNull(position) as PlayCardViewModel
-            else _homeLiveData.value?.list?.find { it is PlayCardViewModel }
+                if (position < _homeLiveData.value?.list?.size ?: -1
+                        && _homeLiveData.value?.list?.get(position) is PlayCardViewModel)
+                    _homeLiveData.value?.list?.getOrNull(position) as PlayCardViewModel
+                else _homeLiveData.value?.list?.find { it is PlayCardViewModel }
         playBanner?.let {
             loadPlayBannerFromNetwork(playBanner as PlayCardViewModel)
         }
@@ -392,7 +397,7 @@ open class HomeViewModel @Inject constructor(
         val indexOfReviewViewModel = _homeLiveData.value?.list?.indexOf(findReviewViewModel) ?: -1
         if(indexOfReviewViewModel != -1 && findReviewViewModel is ReviewViewModel){
             val newFindReviewViewModel = findReviewViewModel.copy(
-                suggestedProductReview = suggestedProductReview
+                    suggestedProductReview = suggestedProductReview
             )
             launch { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, newFindReviewViewModel, indexOfReviewViewModel)) }
         }
@@ -687,9 +692,10 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchHint(){
+    fun searchHint(isFirstInstall: Boolean) {
         if(getSearchHintJob?.isActive == true) return
         getSearchHintJob = launchCatchError(coroutineContext, block={
+            getKeywordSearchUseCase.params = getKeywordSearchUseCase.createParams(isFirstInstall)
             val data = getKeywordSearchUseCase.executeOnBackground()
             _searchHint.postValue(data.searchData)
         }){}
@@ -703,11 +709,11 @@ open class HomeViewModel @Inject constructor(
             })
             val response = stickyLoginUseCase.executeOnBackground()
             val data = response.response.tickers.find { it.layout == StickyLoginConstant.LAYOUT_FLOATING }
-             if(data == null){
-                 _stickyLogin.postValue(Result.error(Exception()))
-             } else {
-                 _stickyLogin.postValue(Result.success(data))
-             }
+            if(data == null){
+                _stickyLogin.postValue(Result.error(Exception()))
+            } else {
+                _stickyLogin.postValue(Result.success(data))
+            }
 
         }){
             _stickyLogin.postValue(Result.error(it))
@@ -832,7 +838,7 @@ open class HomeViewModel @Inject constructor(
                     when (data.action) {
                         ACTION_ADD -> newList.add(homeVisitable)
                         ACTION_UPDATE -> {
-                            if (newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
+                            if (data.position != -1 && newList.isNotEmpty() && newList.size > data.position && newList[data.position]::class.java == homeVisitable::class.java) {
                                 newList[data.position] = homeVisitable
                             } else {
                                 newList.withIndex().find { it::class.java == homeVisitable::class.java }?.let {
@@ -861,10 +867,22 @@ open class HomeViewModel @Inject constructor(
     }
 
     private suspend fun updateWidget(updateWidget: UpdateLiveDataModel){
+<<<<<<< HEAD
         if(channel?.isClosedForSend == true){
             initChannel()
+            channel?.send(updateWidget)
         }
-        channel?.send(updateWidget)
+=======
+        try {
+            if(channel?.isClosedForSend == true){
+                initChannel()
+            }
+            channel?.send(updateWidget)
+        }catch (e: ClosedSendChannelException){
+            initChannel()
+            channel?.send(updateWidget)
+        }
+>>>>>>> fc6e5bd6e5eb96ad512fd8b6d5ef111239799d58
     }
 
 // ============================================================================================

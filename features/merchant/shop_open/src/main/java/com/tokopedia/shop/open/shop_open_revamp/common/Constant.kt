@@ -27,5 +27,5 @@ object TermsAndConditionsLink {
 }
 
 object ImageAssets {
-    val IMG_SHOP_OPEN_SPLASH_SCREEN = "https://ecs7.tokopedia.net/android/splash_screen/drawable-xxxhdpi/illustration_1.png"
+    val IMG_SHOP_OPEN_SPLASH_SCREEN = "https://ecs7.tokopedia.net/android/others/seller_empty_state.png"
 }

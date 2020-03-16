@@ -24,8 +24,8 @@ class Constants {
         const val SEVERITY_MEDIUM = 2
         const val SEVERITY_NONE = 0
 
-        val LOG_SERVICE_MIN_LATENCY = TimeUnit.SECONDS.toMillis(5)
-        val LOG_SERVICE_MAX_LATENCY = TimeUnit.SECONDS.toMillis(30)
+        val LOG_SERVICE_MIN_LATENCY = TimeUnit.SECONDS.toMillis(15)
+        val LOG_SERVICE_MAX_LATENCY = TimeUnit.SECONDS.toMillis(60)
 
         const val CLIENT_LOGENTRIES = "logentries"
         const val CLIENT_SCALYR = "scalyr"
@@ -34,7 +34,7 @@ class Constants {
         const val SCALYR_SUCCESS_CODE = 200
         const val LOG_DEFAULT_ERROR_CODE = 404
 
-        val SCALYR_TOKEN = intArrayOf(48, 100, 49, 101, 104, 72, 98, 119, 110, 73, 101, 48, 83, 108, 57, 87, 71, 89, 115, 77, 105, 106, 89, 79, 47, 48, 87, 112, 88, 121, 49, 77, 79, 110, 107, 99, 95, 79, 85, 52, 56, 110, 54, 52, 45)
+        val SCALYR_TOKEN = intArrayOf(48, 115, 98, 97, 53, 108, 77, 56, 69, 49, 112, 121, 115, 110, 71, 86, 111, 66, 111, 108, 82, 67, 53, 109, 83, 51, 109, 98, 101, 95, 101, 110, 68, 110, 118, 107, 116, 98, 80, 78, 95, 100, 84, 77, 45)
         const val SCALYR_PREF_NAME = "scalyr_sp"
         const val SCALYR_SESSION_KEY = "session"
         const val ANDROID_APP_VALUE = "androidApp"

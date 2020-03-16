@@ -18,7 +18,7 @@ import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRe
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_3
 import com.tokopedia.product.detail.data.util.ProductTrackingConstant.PageNameRecommendation.PDP_4
 import com.tokopedia.product.detail.view.adapter.RecommendationProductAdapter
-import com.tokopedia.productcard.v2.ProductCardModel
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.utils.ImpresionTask
 import com.tokopedia.unifyprinciples.Typography
@@ -64,20 +64,17 @@ abstract class BaseRecommendationView(context: Context,
             getView().base_recom_4 -> PDP_4
             else -> ""
         }
-        getRecyclerView().bindCarouselProductCardView(
-                activity = activity,
-                parentView = getView(),
-                isScrollable = true,
+        getRecyclerView().bindCarouselProductCardViewGrid(
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
-                    override fun onItemClick(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        val productRecommendation = product.recommendationItemList[adapterPosition]
+                    override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
                         val topAdsClickUrl = productRecommendation.clickUrl
                         if (productCardModel.isTopAds) {
                             ImpresionTask().execute(topAdsClickUrl)
                         }
                         productDetailTracking.eventRecommendationClick(
                                 productRecommendation,
-                                adapterPosition,
+                                carouselProductCardPosition,
                                 getListener().isUserSessionActive,
                                 pageName,
                                 product.title)
@@ -89,24 +86,22 @@ abstract class BaseRecommendationView(context: Context,
                     }
                 },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
-                    override fun getImpressHolder(adapterPosition: Int): ImpressHolder {
-                        return product.recommendationItemList[adapterPosition]
+                    override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                        return product.recommendationItemList.getOrNull(carouselProductCardPosition)
                     }
 
-                    override fun onItemImpressed(productCardModel: ProductCardModel, adapterPosition: Int) {
-                        if (product.recommendationItemList.size > adapterPosition) {
-                            val productRecommendation = product.recommendationItemList[adapterPosition]
-                            val topAdsImageUrl = productRecommendation.trackerImageUrl
-                            if (productCardModel.isTopAds) {
-                                ImpresionTask().execute(topAdsImageUrl)
-                            }
-                            productDetailTracking.eventRecommendationImpression(
-                                    adapterPosition,
-                                    productRecommendation,
-                                    getListener().isUserSessionActive,
-                                    pageName,
-                                    product.title)
+                    override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                        val productRecommendation = product.recommendationItemList.getOrNull(carouselProductCardPosition) ?: return
+                        val topAdsImageUrl = productRecommendation.trackerImageUrl
+                        if (productCardModel.isTopAds) {
+                            ImpresionTask().execute(topAdsImageUrl)
                         }
+                        productDetailTracking.eventRecommendationImpression(
+                                carouselProductCardPosition,
+                                productRecommendation,
+                                getListener().isUserSessionActive,
+                                pageName,
+                                product.title)
                     }
                 },
                 productCardModelList = product.recommendationItemList.map {
@@ -123,24 +118,20 @@ abstract class BaseRecommendationView(context: Context,
                             isWishlistVisible = false,
                             isWishlisted = it.isWishlist,
                             shopBadgeList = it.badgesUrl.map {
-                                ProductCardModel.ShopBadge(imageUrl = it?:"")
+                                ProductCardModel.ShopBadge(imageUrl = it
+                                        ?: "")
                             },
                             freeOngkir = ProductCardModel.FreeOngkir(
                                     isActive = it.isFreeOngkirActive,
                                     imageUrl = it.freeOngkirImageUrl
                             ),
-                            labelPromo = ProductCardModel.Label(
-                                    title = it.labelPromo.title,
-                                    type = it.labelPromo.type
-                            ),
-                            labelCredibility = ProductCardModel.Label(
-                                    title = it.labelCredibility.title,
-                                    type = it.labelCredibility.type
-                            ),
-                            labelOffers = ProductCardModel.Label(
-                                    title = it.labelOffers.title,
-                                    type = it.labelOffers.type
-                            )
+                            labelGroupList = it.labelGroupList.map { recommendationLabel ->
+                                ProductCardModel.LabelGroup(
+                                        position = recommendationLabel.position,
+                                        title = recommendationLabel.title,
+                                        type = recommendationLabel.type
+                                )
+                            }
                     )
                 }
 
