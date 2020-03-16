@@ -47,6 +47,7 @@ class MainSliceProvider : SliceProvider() {
     var recommendationModel: List<Recommendation>? = null
 
     var loadString : String ? = ""
+    var alreadyLoadData : Boolean = false
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         userSession = UserSession(contextNonNull)
@@ -96,6 +97,7 @@ class MainSliceProvider : SliceProvider() {
                         }
                     }
             } else {
+                if (!alreadyLoadData)
                 getData(sliceUri)
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
@@ -160,6 +162,7 @@ class MainSliceProvider : SliceProvider() {
             try {
                 val data = repository.getReseponse(listOf(graphqlRequest)).getSuccessData<Data>()
                 recommendationModel = data.rechargeFavoriteRecommendationList.recommendations
+                alreadyLoadData = true
                 updateSlice(sliceUri)
             } catch (e: Exception) {
 
