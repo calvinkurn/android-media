@@ -496,14 +496,18 @@ public class DealDetailsFragment extends BaseDaggerFragment implements DealDetai
 
     @Override
     public void hideShareButton() {
-        MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
-        item.setVisible(false);
+        if(mMenu!=null) {
+            MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
+            item.setVisible(false);
+        }
     }
 
     @Override
     public void showShareButton() {
-        MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
-        item.setVisible(true);
+        if(mMenu!=null) {
+            MenuItem item = mMenu.findItem(com.tokopedia.digital_deals.R.id.action_menu_share);
+            item.setVisible(true);
+        }
     }
 
     @Override
