@@ -260,6 +260,13 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
+    @Named(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
+    fun provideGetCartType(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
+    }
+
+    @ProductDetailScope
+    @Provides
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context):
             String = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)

@@ -90,6 +90,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getNearestWarehouseUseCase: GetNearestWarehouseUseCase,
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
+                                                             private val getCartTypeUseCase: GetCartTypeUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()

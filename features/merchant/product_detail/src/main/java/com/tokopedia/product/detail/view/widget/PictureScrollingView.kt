@@ -34,6 +34,7 @@ class PictureScrollingView @JvmOverloads constructor(
 
     init {
         instantiateView()
+        pdp_view_pager.offscreenPageLimit = 2
     }
 
     fun stopVideo() {

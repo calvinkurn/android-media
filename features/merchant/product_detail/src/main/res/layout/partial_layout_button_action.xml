@@ -52,94 +52,51 @@
         app:srcCompat="@drawable/ic_topchat"
         tools:visibility="visible" />
 
-    <FrameLayout
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_buy_now"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:text="@string/buy"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginLeft="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_8"
         android:layout_marginRight="@dimen/dp_8"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@drawable/bg_rounded_orange_red_outline"
-        android:visibility="gone"
+        app:unifyButtonSize="medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btn_add_to_cart"
         app:layout_constraintLeft_toRightOf="@+id/btn_topchat"
         app:layout_constraintRight_toLeftOf="@+id/btn_add_to_cart"
         app:layout_constraintStart_toEndOf="@+id/btn_topchat"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="transaction"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
-        <com.tokopedia.design.component.TextViewCompat
-            android:id="@+id/tv_buy_now"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:text="@string/buy_now"
-            android:textColor="@color/orange_red"
-            android:textStyle="bold"
-            app:fontSize="micro" />
-
-        <ProgressBar
-            android:id="@+id/pb_buy_now"
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/orange_red"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-    </FrameLayout>
-
-    <FrameLayout
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_add_to_cart"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_40"
+        android:layout_width="@dimen/dp_0"
+        android:layout_height="wrap_content"
+        android:text="@string/add_product_to_cart"
         android:layout_marginTop="@dimen/dp_8"
         android:layout_marginEnd="@dimen/dp_16"
         android:layout_marginRight="@dimen/dp_16"
         android:layout_marginBottom="@dimen/dp_8"
-        android:background="@drawable/bg_btn_add_to_cart"
-        android:visibility="gone"
+        app:unifyButtonSize="medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@+id/btn_buy_now"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_buy_now"
         app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible">
-
-        <com.tokopedia.design.component.TextViewCompat
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:paddingStart="@dimen/dp_8"
-            android:paddingLeft="@dimen/dp_8"
-            android:paddingEnd="@dimen/dp_8"
-            android:paddingRight="@dimen/dp_8"
-            android:text="@string/add_product_to_cart"
-            android:textStyle="bold"
-            app:fontSize="micro"
-            app:textViewTheme="darkPrimary" />
-
-        <ProgressBar
-            android:id="@+id/pb_add_to_cart"
-            style="?android:progressBarStyleInverse"
-            android:layout_width="19dp"
-            android:layout_height="19dp"
-            android:layout_gravity="center"
-            android:indeterminateTint="@color/white"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
-    </FrameLayout>
+        app:unifyButtonVariant="filled"
+        app:unifyButtonType="transaction"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_apply_leasing"
@@ -161,43 +118,42 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_top_ads"
         android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_40"
-        android:layout_margin="@dimen/dp_10"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:text="@string/promote_topads"
-        android:textStyle="bold"
-        tools:visibility="gone"
-        android:visibility="gone"
-        app:buttonCompatSize="big"
-        app:buttonCompatType="primary"
+        android:layout_margin="@dimen/dp_8"
+        app:unifyButtonSize="medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonType="main"
+        android:visibility="gone"
+        tools:visibility="gone"
+        />
 
-    <com.tokopedia.design.component.ButtonCompat
+    <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_empty_stock"
         android:layout_width="@dimen/dp_0"
-        android:layout_height="@dimen/dp_40"
-        android:layout_margin="@dimen/dp_8"
-        android:gravity="center"
+        android:layout_height="wrap_content"
         android:text="@string/no_stock"
-        android:textStyle="bold"
-        tools:visibility="gone"
-        android:visibility="gone"
-        app:buttonCompatSize="big"
-        app:buttonCompatType="primary_disabled"
-        android:enabled="false"
+        android:layout_margin="@dimen/dp_8"
+        app:unifyButtonSize="medium"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyButtonVariant="filled"
+        app:unifyButtonType="main"
+        android:enabled="false"
+        android:visibility="gone"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
