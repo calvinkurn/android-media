@@ -37,8 +37,6 @@ class ProductCardFlashSaleView: BaseCustomView, IProductCardFlashSaleView {
 
         imageProduct?.loadImage(productCardModel.productImageUrl)
 
-//        labelProductStatus?.initLabelGroup(productCardModel.getLabelProductStatus())
-
         renderProductCardFlashSaleContent(productCardModel)
 
     }
