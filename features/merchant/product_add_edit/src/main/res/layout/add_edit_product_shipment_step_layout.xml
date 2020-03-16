@@ -28,6 +28,7 @@
         android:layout_marginRight="@dimen/spacing_lvl4"
         android:text="@string/action_start"
         android:textColor="@color/Green_G500"
+        android:visibility="gone"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"

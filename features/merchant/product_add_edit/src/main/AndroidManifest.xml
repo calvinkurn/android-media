@@ -5,8 +5,14 @@
     <application
         android:allowBackup="true"
         android:supportsRtl="true">
+
         <activity
             android:name=".preview.presentation.activity.AddEditProductPreviewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
+        <activity
+            android:name=".detail.presentation.activity.AddEditProductDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White" />
     </application>

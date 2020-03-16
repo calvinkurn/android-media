@@ -1,13 +1,86 @@
 <resources>
+
+    <!-- add edit preview -->
     <string name="product_subtitle_product_information">Yuk, lengkapi informasi produk kamu</string>
     <string name="label_add_product_photo">Foto Produk</string>
     <string name="label_add_product_detail">Detail Produk</string>
     <string name="label_add_product_description">Deskripsi Produk</string>
     <string name="label_add_product_shipment">Detail Pengiriman</string>
+    <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
     <string name="action_start">Mulai</string>
     <string name="action_change">Ubah</string>
-    <string name="label_add_product_photo_tips">Tips Memilih foto produk yang benar</string>
+
+    <!-- add edit product photo -->
+    <string name="add_product_photo_header">Foto Produk</string>
+    <string name="label_primary">Utama</string>
+    <string name="action_add_product_photo">Tambah Foto</string>
+    <string name="action_pick_image">Pilih Gambar</string>
+
+    <!-- add edit product name -->
+    <string name="add_product_name_header">Isi nama produk yang kamu jual</string>
     <string name="label_product_name">Nama Produk</string>
-    <string name="label_product_price">Harga</string>
-    <string name="label_product_stock">Stok</string>
+    <string name="label_add_product_name_tips">Tips: Jenis Produk + Merek Produk + Keterangan Tambahan</string>
+    <string name="error_empty_product_name">Nama produk tidak boleh kosong</string>
+    <string name="error_product_name_exist">Oops, nama produk ini sudah digunakan. Coba cari nama lain, ya!</string>
+    <string name="error_restricted_product_name">Nama produk tidak bisa digunakan. Coba cari nama lain, ya!</string>
+
+    <!-- add edit product category -->
+    <string name="add_product_category_header">Kategori</string>
+    <string name="action_choose_other_category">Pilih kategori lainnya</string>
+
+    <!-- add edit product catalog -->
+    <string name="add_product_catalog_header">Katalog</string>
+    <string name="action_choose_catalog">Pilih</string>
+
+    <!-- add edit product price -->
+    <string name="add_product_price_header">Harga</string>
+    <string name="label_product_price">Harga Produk</string>
+    <string name="label_add_product_price_tips">Tentukan harga sesuai pasaran produkmu</string>
+    <string name="label_prefix_rupiah">Rp </string>
+    <string name="error_empty_product_price">Harga produk tidak boleh kosong</string>
+    <string name="error_product_price_exceeding_max_limit">Harga melebihi batas maks. Rp500 juta</string>
+    <string name="error_product_price_less_than_min_limit">Harga kurang dari batas minimum Rp100</string>
+
+    <!-- add edit product wholesale -->
+    <string name="add_product_wholesale_header">Grosir</string>
+    <string name="label_minimum_quantity">Jumlah minimal</string>
+    <string name="label_wholesale_quantity">Harga grosir</string>
+    <string name="action_add_new_wholesale_price">+ Tambah harga grosir</string>
+    <string name="error_wholesale_quantity_less_than_two">Stok minimum 2</string>
+    <string name="error_wholesale_price_exceeding_max_limit">Harga grosir melebihi batas maks. Rp500 juta</string>
+    <string name="error_product_wholesale_price_too_expensive">Harga grosir harus lebih murah dari harga satuan</string>
+
+    <!-- add edit product stock -->
+    <string name="add_product_stock_header">Stok</string>
+    <string name="label_available_stock">Stok tersedia</string>
+    <string name="label_minimum_order">Minimum pemesanan</string>
+    <string name="error_empty_product_stock">Stok produk tidak boleh kosong</string>
+    <string name="error_empty_minimum_order">Minimum pemesanan tidak boleh kosong</string>
+    <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. 999.999</string>
+    <string name="error_available_stock_quantity_cant_be_zero">Stok tidak boleh 0</string>
+    <string name="error_minimum_order_cant_be_zero">Minimum pemesanan tidak boleh 0</string>
+    <string name="error_minimum_order_cant_exceed_available_stock">Minimum pemesanan tidak boleh melebihi jumlah stok</string>
+
+    <!-- activate preOrder state -->
+    <string name="action_activate_preorder_state">Aktifkan PreOrder</string>
+    <string name="label_duration">Durasi</string>
+    <string name="label_duration_amount">Jumlah</string>
+    <string name="error_preorder_duration_cant_be_zero">PreOrder tidak boleh 0</string>
+    <string name="error_preorder_duration_cant_exceed_ninety_days">PreOrder tidak boleh 0</string>
+
+    <!-- add edit product condition -->
+    <string name="add_product_condition_header">Kondisi</string>
+    <string name="label_new">Baru</string>
+    <string name="label_secondhand">Bekas</string>
+
+    <!-- add edit product sku -->
+    <string name="label_sku">SKU (Stock Keeping Unit)</string>
+    <string name="product_sku_description">SKU (Stock Keeping Unit)</string>
+    <string name="label_add_product_sku_tips">Gunakan kode unik SKU jika kamu ingin bisa melacak produk dengan mudah</string>
+
+    <string name="label_asterisk">&#160;*</string>
+    <string name="action_continue">Lanjut</string>
+
+    <string name="product_label_catalog">Katalog</string>
+    <string name="primary">Utama</string>
 </resources>
