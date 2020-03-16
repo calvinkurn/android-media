@@ -20,6 +20,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.mapper.PlayUiMapper
+import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.state.PlayVideoState
@@ -74,42 +75,46 @@ class PlayViewModel @Inject constructor(
         get() = _observablePinned
     val observableVideoProperty: LiveData<VideoPropertyUiModel>
         get() = _observableVideoProperty
-    val observableProductSheetContent: LiveData<ProductSheetUiModel>
+    val observableProductSheetContent: LiveData<PlayResult<ProductSheetUiModel>>
         get() = _observableProductSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
-    val isLive: PlayChannelType get() {
-        val channelInfo = _observableGetChannelInfo.value
-        return if (channelInfo != null && channelInfo is Success) {
-            channelInfo.data.channelType
-        } else {
-            PlayChannelType.Unknown
+    val isLive: PlayChannelType
+        get() {
+            val channelInfo = _observableGetChannelInfo.value
+            return if (channelInfo != null && channelInfo is Success) {
+                channelInfo.data.channelType
+            } else {
+                PlayChannelType.Unknown
+            }
         }
-    }
-    val contentId: Int get() {
-        val channelInfo = _observableGetChannelInfo.value
-        return if (channelInfo != null && channelInfo is Success) {
-            channelInfo.data.contentId
-        } else {
-            0
+    val contentId: Int
+        get() {
+            val channelInfo = _observableGetChannelInfo.value
+            return if (channelInfo != null && channelInfo is Success) {
+                channelInfo.data.contentId
+            } else {
+                0
+            }
         }
-    }
-    val contentType: Int get() {
-        val channelInfo = _observableGetChannelInfo.value
-        return if (channelInfo != null && channelInfo is Success) {
-            channelInfo.data.contentType
-        } else {
-            0
+    val contentType: Int
+        get() {
+            val channelInfo = _observableGetChannelInfo.value
+            return if (channelInfo != null && channelInfo is Success) {
+                channelInfo.data.contentType
+            } else {
+                0
+            }
         }
-    }
-    val likeType: Int get() {
-        val channelInfo = _observableGetChannelInfo.value
-        return if (channelInfo != null && channelInfo is Success) {
-            channelInfo.data.likeType
-        } else {
-            0
+    val likeType: Int
+        get() {
+            val channelInfo = _observableGetChannelInfo.value
+            return if (channelInfo != null && channelInfo is Success) {
+                channelInfo.data.likeType
+            } else {
+                0
+            }
         }
-    }
     val partnerId: Long?
         get() = _observablePartnerInfo.value?.id
     val totalView: String?
@@ -131,7 +136,7 @@ class PlayViewModel @Inject constructor(
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
     private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
-    private val _observableProductSheetContent = MutableLiveData<ProductSheetUiModel>()
+    private val _observableProductSheetContent = MutableLiveData<PlayResult<ProductSheetUiModel>>()
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
@@ -141,7 +146,8 @@ class PlayViewModel @Inject constructor(
                     ?: PlayVideoState.NotConfigured)
         }
         addSource(playVideoManager.getObservablePlayVideoState()) {
-            _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type ?: PlayChannelType.Unknown, it)
+            _observableVideoProperty.value = VideoPropertyUiModel(_observableVideoProperty.value?.type
+                    ?: PlayChannelType.Unknown, it)
         }
         addSource(observablePartnerInfo) {
             val currentMessageValue = _observablePinnedMessage.value
@@ -159,12 +165,11 @@ class PlayViewModel @Inject constructor(
             }
         }
         addSource(observableProductSheetContent) {
-            if (it.productList.isNullOrEmpty()) {
+            if (it is PlayResult.Success && it.data.productList.isNullOrEmpty()) {
                 val pinnedMessage = _observablePinnedMessage.value
                 if (pinnedMessage != null) _observablePinnedMessage.value = _observablePinnedMessage.value
                 else _observablePinned.value = PinnedRemoveUiModel
-            }
-            else _observablePinnedProduct.value = _observablePinnedProduct.value
+            } else _observablePinnedProduct.value = _observablePinnedProduct.value
         }
         addSource(observableEvent) {
             if (it.isFreeze) doOnChannelFreeze()
@@ -194,11 +199,14 @@ class PlayViewModel @Inject constructor(
             }
         }
         _observablePinned.addSource(_observablePinnedProduct) {
-            if (_observableProductSheetContent.value?.productList.isNullOrEmpty() || it == null) {
+            val productSheet = _observableProductSheetContent.value
+            if (productSheet is PlayResult.Success && productSheet.data.productList.isNotEmpty()) {
+                _observablePinned.value = it
+            } else {
                 val pinnedMessage = _observablePinnedMessage.value
                 if (pinnedMessage != null) _observablePinnedMessage.value = _observablePinnedMessage.value
                 else _observablePinned.value = PinnedRemoveUiModel
-            } else _observablePinned.value = it
+            }
         }
 
         _observableBottomInsetsState.value = getLatestBottomInsetsMapState()
@@ -306,7 +314,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun getLatestBottomInsetsMapState(): Map<BottomInsetsType, BottomInsetsState> {
-        val currentValue = _observableBottomInsetsState.value ?: return getDefaultBottomInsetsMapState()
+        val currentValue = _observableBottomInsetsState.value
+                ?: return getDefaultBottomInsetsMapState()
         currentValue.values.forEach {
             it.isPreviousStateSame = true
             if (it is BottomInsetsState.Shown) it.deepLevel += 1
@@ -335,7 +344,8 @@ class PlayViewModel @Inject constructor(
         startVideoWithUrlString(
                 channel.videoStream.config.streamUrl,
                 channel.videoStream.isLive,
-                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) } ?: PlayBufferControl()
+                bufferControl = channel.videoStream.bufferControl?.let { mapBufferControl(it) }
+                        ?: PlayBufferControl()
         )
         playVideoManager.setRepeatMode(false)
     }
@@ -450,7 +460,8 @@ class PlayViewModel @Inject constructor(
                 getTotalLikeUseCase.executeOnBackground()
             }
             _observableTotalLikes.value = PlayUiMapper.mapTotalLikes(totalLike)
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     private suspend fun getIsLike(contentId: Int, contentType: Int) {
@@ -460,7 +471,8 @@ class PlayViewModel @Inject constructor(
                 getIsLikeUseCase.executeOnBackground()
             }
             _observableIsLikeContent.value = isLiked
-        } catch (e: Exception) {}
+        } catch (e: Exception) {
+        }
     }
 
     private suspend fun getPartnerInfo(channel: ChannelInfoUiModel): PartnerInfoUiModel {
@@ -491,22 +503,31 @@ class PlayViewModel @Inject constructor(
                     getCartCountUseCase.executeOnBackground()
                 }
                 _observableBadgeCart.value = CartUiModel(isShowCart, countCart)
-            } catch (e: Exception) {}
+            } catch (e: Exception) {
+            }
         }
     }
 
     private fun getProductTagItems(channel: Channel) {
-        if (!isProductSheetInitialized) showProductSheetPlaceholder()
+        if (!isProductSheetInitialized) _observableProductSheetContent.value = PlayResult.Loading(
+                showPlaceholder = true
+        )
 
         launchCatchError(block = {
             val productTagsItems = withContext(dispatchers.io) {
                 getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
                 getProductTagItemsUseCase.executeOnBackground()
             }
-            _observableProductSheetContent.value = PlayUiMapper.mapProductSheet(
-                    channel.pinnedProduct.titleBottomSheet,
-                    productTagsItems)
-        }) {}
+            _observableProductSheetContent.value = PlayResult.Success(
+                    PlayUiMapper.mapProductSheet(
+                            channel.pinnedProduct.titleBottomSheet,
+                            productTagsItems)
+            )
+        }) {
+            _observableProductSheetContent.value = PlayResult.Failure(it) {
+                getProductTagItems(channel)
+            }
+        }
     }
 
     fun updateBadgeCart() {
@@ -552,13 +573,17 @@ class PlayViewModel @Inject constructor(
                         }
                     }
                     is ProductTag -> {
-                        _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
-                                productList = PlayUiMapper.mapItemProducts(result.listOfProducts)
+                        val productSheet = _observableProductSheetContent.value
+                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+                        _observableProductSheetContent.value = PlayResult.Success(
+                                data = currentProduct.copy(productList = PlayUiMapper.mapItemProducts(result.listOfProducts))
                         )
                     }
                     is MerchantVoucher -> {
-                        _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
-                                voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers)
+                        val productSheet = _observableProductSheetContent.value
+                        val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+                        _observableProductSheetContent.value = PlayResult.Success(
+                                data = currentProduct.copy(voucherList = PlayUiMapper.mapItemVouchers(result.listOfVouchers))
                         )
                     }
                 }
@@ -613,19 +638,7 @@ class PlayViewModel @Inject constructor(
     }
     //endregion
 
-    //region placeholder
-    private fun showProductSheetPlaceholder() {
-        _observableProductSheetContent.value = ProductSheetUiModel(
-                title = "",
-                voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
-                productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
-        )
-    }
-    //endregion
-
     companion object {
-        private const val PLACEHOLDER_COUNT = 5
-
         private const val MAX_RETRY_CHANNEL_INFO = 3
 
         private const val MS_PER_SECOND = 1000
@@ -648,7 +661,9 @@ class PlayViewModel @Inject constructor(
         launch(dispatchers.io) {
             delay(10000)
             withContext(dispatchers.main) {
-                _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                val productSheet = _observableProductSheetContent.value
+                val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+                _observableProductSheetContent.value = PlayResult.Success(currentProduct.copy(
                         productList = List(5) {
                             ProductLineUiModel(
                                     id = it.toString(),
@@ -673,7 +688,7 @@ class PlayViewModel @Inject constructor(
                                     applink = null
                             )
                         }
-                )
+                ))
             }
         }
     }
@@ -682,7 +697,9 @@ class PlayViewModel @Inject constructor(
         launch(dispatchers.io) {
             delay(15000)
             withContext(dispatchers.main) {
-                _observableProductSheetContent.value =_observableProductSheetContent.value?.copy(
+                val productSheet = _observableProductSheetContent.value
+                val currentProduct = if (productSheet is PlayResult.Success) productSheet.data else ProductSheetUiModel.empty()
+                _observableProductSheetContent.value = PlayResult.Success(currentProduct.copy(
                         voucherList = List(5) { voucherIndex ->
                             MerchantVoucherUiModel(
                                     type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
@@ -690,7 +707,7 @@ class PlayViewModel @Inject constructor(
                                     description = "min. pembelian ${(voucherIndex + 1)}00rb"
                             )
                         }
-                )
+                ))
             }
         }
     }
@@ -699,10 +716,10 @@ class PlayViewModel @Inject constructor(
         launch(dispatchers.io) {
             delay(3000)
             withContext(dispatchers.main) {
-                _observableProductSheetContent.value = ProductSheetUiModel(
+                _observableProductSheetContent.value = PlayResult.Success(ProductSheetUiModel(
                         title = "Barang & Promo Pilihan",
                         voucherList = List(5) { voucherIndex ->
-//                            MerchantVoucherUiModel(
+                            //                            MerchantVoucherUiModel(
 //                                    type = if (voucherIndex % 2 == 0) MerchantVoucherType.Discount else MerchantVoucherType.Shipping,
 //                                    title = if (voucherIndex % 2 == 0) "Cashback ${(voucherIndex + 1) * 2}rb" else "Gratis ongkir ${(voucherIndex + 1) * 2}rb",
 //                                    description = "min. pembelian ${(voucherIndex + 1)}00rb"
@@ -734,7 +751,7 @@ class PlayViewModel @Inject constructor(
                             )
 //                            ProductPlaceholderUiModel
                         }
-                )
+                ))
             }
         }
     }

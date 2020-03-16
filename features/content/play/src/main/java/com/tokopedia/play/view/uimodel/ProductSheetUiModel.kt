@@ -7,4 +7,13 @@ data class ProductSheetUiModel(
         val title: String,
         val voucherList: List<PlayVoucherUiModel>,
         val productList: List<PlayProductUiModel>
-)
+) {
+
+    companion object {
+        fun empty() = ProductSheetUiModel(
+                title = "",
+                voucherList = emptyList(),
+                productList = emptyList()
+        )
+    }
+}

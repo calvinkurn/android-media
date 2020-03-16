@@ -8,12 +8,13 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
@@ -22,6 +23,7 @@ import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantPlaceholderItemD
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.variant_common.model.ProductVariantCommon
@@ -56,6 +58,8 @@ class VariantSheetView(
     private val tvOriginalPrice: TextView = view.findViewById(R.id.tv_original_price)
     private val tvCurrentPrice: TextView = view.findViewById(R.id.tv_current_price)
 
+    private val globalError: GlobalError = view.findViewById(R.id.global_error_variant)
+
     private val imageRadius = view.resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
 
@@ -89,6 +93,8 @@ class VariantSheetView(
         } else {
             btnContainer.setBackgroundResource(R.drawable.bg_play_product_action_container)
         }
+
+        tvSheetTitle.text = container.context.getString(R.string.play_title_variant)
     }
 
     override val containerId: Int = view.id
@@ -99,77 +105,6 @@ class VariantSheetView(
 
     override fun hide() {
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-    }
-
-    internal fun showWithHeight(height: Int) {
-        if (view.height != height) {
-            val layoutParams = view.layoutParams as CoordinatorLayout.LayoutParams
-            layoutParams.height = height
-            view.layoutParams = layoutParams
-        }
-
-        show()
-    }
-
-    internal fun setVariantSheet(model: VariantSheetUiModel) {
-        variantSheetUiModel = model
-        tvSheetTitle.text = container.context.getString(R.string.play_title_variant)
-
-        setProduct(model.product)
-
-        if (model.listOfVariantCategory.isNotEmpty()) {
-            variantAdapter.setItemsAndAnimateChanges(model.listOfVariantCategory)
-        }
-
-        btnAction.isEnabled = !model.isPartialySelected()
-
-        btnAction.text = view.context.getString(
-                if (model.action == ProductAction.Buy) R.string.play_product_buy
-                else R.string.play_product_add_to_card
-        )
-
-        btnAction.setOnClickListener {
-            if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.product)
-            else listener.onAddToCartClicked(this, model.product)
-        }
-
-        showPlaceholder(false)
-    }
-
-    internal fun showPlaceholder(isShow: Boolean, placeholderList: List<Any> = emptyList()) {
-        if (isShow) {
-            phProductVariant.visible()
-            phBtnAction.visible()
-            variantAdapter.setItemsAndAnimateChanges(placeholderList)
-
-            btnAction.gone()
-            clProductVariant.gone()
-        } else {
-            phProductVariant.gone()
-            phBtnAction.gone()
-
-            btnAction.visible()
-            clProductVariant.visible()
-        }
-    }
-
-    private fun setProduct(product: ProductLineUiModel) {
-        ivProductImage.loadImageRounded(product.imageUrl, imageRadius)
-        tvProductTitle.text = product.title
-
-        when (product.price) {
-            is DiscountedPrice -> {
-                llProductDiscount.visible()
-                tvProductDiscount.text = view.context.getString(R.string.play_discount_percent, product.price.discountPercent)
-                tvOriginalPrice.text = product.price.originalPrice
-                tvCurrentPrice.text = product.price.discountedPrice
-            }
-            is OriginalPrice -> {
-                llProductDiscount.gone()
-                tvCurrentPrice.text = product.price.price
-            }
-        }
-
     }
 
     override fun onVariantClicked(variantOptions: VariantOptionWithAttribute) {
@@ -221,6 +156,116 @@ class VariantSheetView(
         } else {
             variantSheetUiModel?.stockWording?:container.context.getString(R.string.play_stock_available)
         }
+    }
+
+    internal fun showWithHeight(height: Int) {
+        if (view.height != height) {
+            val layoutParams = view.layoutParams as CoordinatorLayout.LayoutParams
+            layoutParams.height = height
+            view.layoutParams = layoutParams
+        }
+
+        show()
+    }
+
+    internal fun setVariantSheet(model: VariantSheetUiModel) {
+        showContent(shouldShow = true, withPlaceholder = false)
+
+        variantSheetUiModel = model
+
+        setProduct(model.product)
+
+        if (model.listOfVariantCategory.isNotEmpty()) {
+            variantAdapter.setItemsAndAnimateChanges(model.listOfVariantCategory)
+        }
+
+        btnAction.isEnabled = !model.isPartialySelected()
+
+        btnAction.text = view.context.getString(
+                if (model.action == ProductAction.Buy) R.string.play_product_buy
+                else R.string.play_product_add_to_card
+        )
+
+        btnAction.setOnClickListener {
+            if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.product)
+            else listener.onAddToCartClicked(this, model.product)
+        }
+    }
+
+    internal fun showPlaceholder() {
+        showContent(shouldShow = true, withPlaceholder = true)
+        variantAdapter.setItemsAndAnimateChanges(getPlaceholderModel())
+    }
+
+    internal fun showError(isConnectionError: Boolean, onError: () -> Unit) {
+        showContent(shouldShow = false, withPlaceholder = false)
+
+        globalError.setActionClickListener {
+            onError()
+        }
+
+        globalError.setType(
+                if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
+        )
+    }
+
+    private fun setProduct(product: ProductLineUiModel) {
+        ivProductImage.loadImageRounded(product.imageUrl, imageRadius)
+        tvProductTitle.text = product.title
+
+        when (product.price) {
+            is DiscountedPrice -> {
+                llProductDiscount.visible()
+                tvProductDiscount.text = view.context.getString(R.string.play_discount_percent, product.price.discountPercent)
+                tvOriginalPrice.text = product.price.originalPrice
+                tvCurrentPrice.text = product.price.discountedPrice
+            }
+            is OriginalPrice -> {
+                llProductDiscount.gone()
+                tvCurrentPrice.text = product.price.price
+            }
+        }
+
+    }
+
+    private fun showContent(shouldShow: Boolean, withPlaceholder: Boolean) {
+        if (shouldShow) {
+            btnContainer.visible()
+
+            if (withPlaceholder) {
+                phProductVariant.visible()
+                phBtnAction.visible()
+
+                clProductVariant.gone()
+                btnAction.gone()
+            }
+            else {
+                phProductVariant.gone()
+                phBtnAction.gone()
+
+                clProductVariant.visible()
+                btnAction.visible()
+            }
+
+            globalError.gone()
+        } else {
+            clProductVariant.gone()
+            phProductVariant.gone()
+            btnContainer.gone()
+
+            globalError.visible()
+        }
+    }
+
+    private fun getPlaceholderModel() = List(PLACEHOLDER_VARIANT_CATEGORY_COUNT) {
+        VariantPlaceholderUiModel.Category(
+                List(PLACEHOLDER_VARIANT_OPTION_COUNT) { VariantPlaceholderUiModel.Option }
+        )
+    }
+
+    companion object {
+        private const val PLACEHOLDER_VARIANT_CATEGORY_COUNT = 2
+        private const val PLACEHOLDER_VARIANT_OPTION_COUNT = 7
     }
 
     interface Listener {
