@@ -349,6 +349,9 @@ dependencies {
     implementation project(rootProject.ext.features.agerestriction)
     implementation project(rootProject.ext.features.kyccentralized)
 
+    implementation project(rootProject.ext.features.attachinvoice)
+    implementation project(rootProject.ext.features.attachvoucher)
+
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.principles

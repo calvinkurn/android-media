@@ -85,6 +85,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation (rootProject.ext.serviceDependencies.crashlytics) {
+        transitive = true
+    }
 }
 
 project.ext {

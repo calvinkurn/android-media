@@ -220,8 +220,11 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                 }
             }
 
-            if (selectedPosition != SellerHomeState.DrawerPosition.INDEX_HOME && drawerItem.id != SellerHomeState.DrawerPosition.LOGOUT && isNeedToCloseActivity)
+            if (selectedPosition != SellerHomeState.DrawerPosition.INDEX_HOME
+                    && drawerItem.id != SellerHomeState.DrawerPosition.LOGOUT
+                    && isNeedToCloseActivity) {
                 context.finish()
+            }
 
             closeDrawer()
         }
@@ -441,6 +444,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
         ImageHandler.LoadImage(context.findViewById(R.id.shop_icon), profile.shopAvatar)
         context.findViewById<FrameLayout>(R.id.drawer_shop).setOnClickListener {
             onGoToShop()
+            closeDrawer()
         }
     }
 
