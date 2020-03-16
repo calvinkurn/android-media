@@ -13,7 +13,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.RatesModel
 import com.tokopedia.product.detail.estimasiongkir.data.model.v3.SummaryText
-import com.tokopedia.product.detail.updatecartcounter.interactor.UpdateCartCounterUseCase
+import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.product.detail.usecase.*
 import com.tokopedia.product.detail.view.viewmodel.DynamicProductDetailViewModel
 import com.tokopedia.product.util.TestDispatcherProvider

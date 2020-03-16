@@ -13,8 +13,8 @@ import com.tokopedia.usecase.coroutines.Success
 import rx.Subscriber
 import javax.inject.Inject
 
-class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: GetCategoryLevelTwoUsecase,
-                                                    var getCategoryHotListUseCase: GetCategoryHotListUseCase) : ViewModel() {
+class CategoryLevelTwoViewModel @Inject constructor(private var getCategoryListUseCase: GetCategoryLevelTwoUsecase,
+                                                    private var getCategoryHotListUseCase: GetCategoryHotListUseCase) : ViewModel() {
 
     var childItem = MutableLiveData<Result<List<ChildItem>>>()
 
@@ -38,13 +38,14 @@ class CategoryLevelTwoViewModel @Inject constructor(var getCategoryListUseCase: 
     }
 
 
-    fun fetchHotlist(categoryId: String, categoryname: String) {
-        getCategoryHotListUseCase.execute(getCategoryHotListUseCase.createRequestParams(categoryId.toInt(), categoryname), object : Subscriber<CategoryHotlist>() {
+    fun fetchHotlist(categoryId: String, categoryName: String) {
+        getCategoryHotListUseCase.execute(getCategoryHotListUseCase.createRequestParams(categoryId.toInt(), categoryName), object : Subscriber<CategoryHotlist>() {
             override fun onNext(categoryHotlist: CategoryHotlist?) {
                 categoryHotlist!!.list.let {
                     hotlistItem.value = categoryHotlist.list
                 }
             }
+
             override fun onCompleted() {
 
             }

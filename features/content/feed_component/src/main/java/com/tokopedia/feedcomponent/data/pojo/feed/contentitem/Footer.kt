@@ -19,4 +19,12 @@ data class Footer (
     @SerializedName("stats")
     @Expose
     val stats: Stats = Stats()
-)
+) {
+    fun copy(): Footer {
+        return Footer(like.copy(),
+                comment.copy(),
+                buttonCta.copy(),
+                share.copy(),
+                stats.copy())
+    }
+}

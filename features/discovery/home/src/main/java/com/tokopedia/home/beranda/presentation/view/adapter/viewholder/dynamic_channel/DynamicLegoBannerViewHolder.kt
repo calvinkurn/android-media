@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
-import com.google.android.gms.analytics.Tracker
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
@@ -98,13 +97,12 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
             private val LEGO_LANDSCAPE = R.layout.layout_lego_landscape
         }
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
-            val layout = if(legoBannerType == TYPE_FOUR_GRID_LEGO) LEGO_LANDSCAPE else LEGO_SQUARE
-            val v = LayoutInflater.from(parent.context).inflate(layout, parent, false)
+            val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
             return LegoItemViewHolder(v)
         }
 
         override fun getItemViewType(position: Int): Int {
-            return R.layout.layout_lego_item
+            return if(legoBannerType == TYPE_FOUR_GRID_LEGO) LEGO_LANDSCAPE else LEGO_SQUARE
         }
 
         override fun onBindViewHolder(holder: LegoItemViewHolder, position: Int) {
@@ -141,11 +139,11 @@ class DynamicLegoBannerViewHolder(legoBannerView: View,
                     }
 
                     listener.onLegoBannerClicked(
-                            if (grid.applink.isEmpty()) grid.applink else grid.url,
+                            if (grid.applink.isNotEmpty()) grid.applink else grid.url,
                             channels.getHomeAttribution(position + 1, grid.attribution))
                     HomeTrackingUtils.homeDiscoveryWidgetClick(context,
                             parentPosition + 1, grid,
-                            if (grid.applink.isEmpty()) grid.applink else grid.url,
+                            if (grid.applink.isNotEmpty()) grid.applink else grid.url,
                             channels.type)
                 }
             } catch (e: Exception) {

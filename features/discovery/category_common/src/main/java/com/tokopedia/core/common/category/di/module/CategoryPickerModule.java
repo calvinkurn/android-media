@@ -2,7 +2,8 @@ package com.tokopedia.core.common.category.di.module;
 
 import android.content.Context;
 
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
@@ -93,7 +94,7 @@ public class CategoryPickerModule {
     OkHttpClient provideOkHttpClientNoAuth(TopAdsAuthInterceptor tkpdBearerWithAuthInterceptor,
                                            FingerprintInterceptor fingerprintInterceptor,
                                            TkpdBaseInterceptor tkpdBaseInterceptor,
-                                           @Named(ConstantCategoryCommon.CATEGORY_PICKER_CHUCK) ChuckInterceptor chuckInterceptor,
+                                           @Named(ConstantCategoryCommon.CATEGORY_PICKER_CHUCK) ChuckerInterceptor chuckInterceptor,
                                            DebugInterceptor debugInterceptor,
                                            CacheApiInterceptor cacheApiInterceptor,
                                            @ApplicationContext Context context) {
@@ -135,10 +136,10 @@ public class CategoryPickerModule {
 
     @Named(ConstantCategoryCommon.CATEGORY_PICKER_CHUCK)
     @Provides
-    ChuckInterceptor provideChuckInterceptor(@ApplicationContext Context context,
-                                             @Named(ConstantCategoryCommon.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
-        return new ChuckInterceptor(context)
-                .showNotification(localCacheHandler.getBoolean(ConstantCategoryCommon.IS_CHUCK_ENABLED, false));
+    ChuckerInterceptor provideChuckInterceptor(@ApplicationContext Context context,
+                                               @Named(ConstantCategoryCommon.CHUCK_ENABLED) LocalCacheHandler localCacheHandler) {
+        ChuckerCollector collector = new ChuckerCollector(context, localCacheHandler.getBoolean(ConstantCategoryCommon.IS_CHUCK_ENABLED, false));
+        return new ChuckerInterceptor(context, collector);
     }
 
     @Named(ConstantCategoryCommon.CHUCK_ENABLED)

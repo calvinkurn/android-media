@@ -19,9 +19,11 @@ import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
-import com.tokopedia.travelhomepage.destination.presentation.activity.TravelDestinationActivity
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
-import com.tokopedia.travelhomepage.homepage.data.*
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageItemModel
+import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
 import com.tokopedia.travelhomepage.homepage.di.TravelHomepageComponent
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
@@ -233,7 +235,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         travelHomepageTrackingUtil.travelHomepageClickCategory(category, position)
     }
 
-    override fun onTrackDealsClick(deal: TravelHomepageSectionViewModel.Item, position: Int) {
+    override fun onTrackDealsClick(deal: TravelHomepageSectionModel.Item, position: Int) {
         travelHomepageTrackingUtil.travelHomepageClickDeal(deal, position)
     }
 

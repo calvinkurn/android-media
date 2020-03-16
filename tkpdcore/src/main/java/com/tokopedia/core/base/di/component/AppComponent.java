@@ -2,8 +2,8 @@ package com.tokopedia.core.base.di.component;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
 import com.tkpd.library.utils.image.ImageHandler;
 import com.tokopedia.core.app.BaseActivity;
 import com.tokopedia.core.app.MainApplication;
@@ -114,7 +114,7 @@ public interface AppComponent {
 
     PostExecutionThread postExecutionThread();
 
-    ChuckInterceptor chuckInterceptor();
+    ChuckerInterceptor ChuckerInterceptor();
 
     SessionHandler sessionHandler();
 

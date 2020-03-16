@@ -12,9 +12,9 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
-import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core2.R;
 import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
+import com.tokopedia.config.GlobalConfig;
 
 /**
  * Created by meta on 23/07/18.
@@ -120,7 +120,7 @@ public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
 
     @Override
     protected boolean isLightToolbarThemes() {
-        return GlobalConfig.isCustomerApp();
+        return !GlobalConfig.isSellerApp();
     }
 
     @Override

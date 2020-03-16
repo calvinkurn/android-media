@@ -2,13 +2,15 @@ package com.tokopedia.logisticdata.data.module;
 
 import android.content.Context;
 
+import com.chuckerteam.chucker.api.ChuckerCollector;
+import com.chuckerteam.chucker.api.RetentionManager;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.logisticdata.data.apiservice.InsuranceApi;
@@ -148,12 +150,13 @@ public class LogisticNetworkModule {
 
     @Provides
     @LogisticChuckInterceptorQualifier
-    Interceptor provideChuckInterceptor(@LogisticContextQualifier Context context,
+    Interceptor provideChuckerInterceptor(@LogisticContextQualifier Context context,
                                         @LogisticAbstractionRouterQualifier AbstractionRouter abstractionRouter) {
-        ChuckInterceptor chuckInterceptor = new ChuckInterceptor(context);
 
-        chuckInterceptor.showNotification(abstractionRouter.isAllowLogOnChuckInterceptorNotification());
-        return chuckInterceptor;
+        ChuckerCollector collector = new ChuckerCollector(
+                context, abstractionRouter.isAllowLogOnChuckInterceptorNotification());
+
+        return new ChuckerInterceptor(context, collector);
     }
 
     @Provides

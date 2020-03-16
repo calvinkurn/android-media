@@ -146,7 +146,7 @@ public class WidgetTokenView extends FrameLayout {
     }
 
     @SuppressWarnings("SuspiciousNameCombination")
-    public void initImageBound(float scaleFactor, float translation) {
+    public void initImageBound(float drawableHeight, float scaleFactor, float translation) {
         int rootWidth = rootView.getWidth();
         int rootHeight = rootView.getHeight();
         int imageWidth = TokenMarginUtil.getEggWidth(rootWidth, rootHeight);
@@ -156,7 +156,10 @@ public class WidgetTokenView extends FrameLayout {
             int screenHeight = getContext().getResources().getDisplayMetrics().heightPixels - getStatusBarHeight();
             imageMarginTop = (int) (screenHeight - (screenHeight * TokenMarginUtil.RATIO_IMAGE_MARGIN_TOP));
         } else {
-            imageMarginTop = (int) ((TokenMarginUtil.STAGE_PIXEL * scaleFactor) - imageHeight + translation);
+            float baseDrawableHeight = TokenMarginUtil.BASE_DRAWABLE_HEIGHT;
+            float baseStageHeight = TokenMarginUtil.STAGE_PIXEL;
+            float point = drawableHeight / (baseDrawableHeight / baseStageHeight);
+            imageMarginTop = (int) ((point * scaleFactor) - imageHeight + translation);
         }
 
         FrameLayout.LayoutParams ivFullLp = (FrameLayout.LayoutParams) imageViewFull.getLayoutParams();
@@ -164,6 +167,7 @@ public class WidgetTokenView extends FrameLayout {
         ivFullLp.height = imageHeight;
         ivFullLp.gravity = CENTER_HORIZONTAL;
         ivFullLp.topMargin = imageMarginTop;
+
         imageViewFull.requestLayout();
 
         FrameLayout.LayoutParams ivCrackedLp = (FrameLayout.LayoutParams) imageViewCracked.getLayoutParams();
