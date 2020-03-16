@@ -22,6 +22,10 @@ import com.tokopedia.topads.common.activity.NoCreditActivity
 import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
+import com.tokopedia.topads.data.param.AdsItem
+import com.tokopedia.topads.data.param.Group
+import com.tokopedia.topads.data.param.InputCreateGroup
+import com.tokopedia.topads.data.param.KeywordsItem
 import com.tokopedia.topads.data.response.*
 import com.tokopedia.topads.di.CreateAdsComponent
 import com.tokopedia.topads.view.activity.StepperActivity

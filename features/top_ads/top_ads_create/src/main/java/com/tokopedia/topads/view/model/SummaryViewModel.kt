@@ -10,7 +10,6 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.topads.create.R
-import com.tokopedia.topads.data.response.InputCreateGroup
 import com.tokopedia.topads.data.response.ResponseCreateGroup
 import com.tokopedia.topads.data.response.TopAdsDepositResponse
 import com.tokopedia.topads.internal.ParamObject.CREDIT_DATA
