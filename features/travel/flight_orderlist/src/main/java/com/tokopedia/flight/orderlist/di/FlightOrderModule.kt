@@ -4,11 +4,11 @@ import android.content.Context
 import android.content.res.Resources
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.readystatesoftware.chuck.ChuckInterceptor
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.abstraction.common.utils.GlobalConfig
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.flight.orderlist.data.FlightOrderApi
 import com.tokopedia.flight.orderlist.data.cloud.FlightOrderDataSource
 import com.tokopedia.flight.orderlist.di.qualifier.FlightOrderChuckQualifier
@@ -46,7 +46,7 @@ class FlightOrderModule {
     @Provides
     @FlightOrderChuckQualifier
     fun provideChuckInterceptory(@ApplicationContext context: Context): Interceptor {
-        return ChuckInterceptor(context)
+        return ChuckerInterceptor(context)
     }
 
     @FlightOrderScope

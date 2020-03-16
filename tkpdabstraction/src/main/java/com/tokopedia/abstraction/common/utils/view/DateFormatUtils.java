@@ -1,7 +1,5 @@
 package com.tokopedia.abstraction.common.utils.view;
 
-import android.annotation.SuppressLint;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -44,11 +42,17 @@ public class DateFormatUtils {
         return dateFormat.format(instance.getTime());
     }
 
-    public static String getFormattedDateSeconds(int timeInSeconds, String format) {
+    public static String getFormattedDateSeconds(long timeInSeconds, String format) {
         return getFormattedDate(timeInSeconds * 1000L, format);
     }
 
     public static String getFormattedDate(String unixTimeStringInSeconds, String format) {
-        return getFormattedDateSeconds(Integer.parseInt(unixTimeStringInSeconds), format);
+        long timeInSeconds = 0L;
+        try {
+            timeInSeconds = Long.parseLong(unixTimeStringInSeconds);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return getFormattedDateSeconds(timeInSeconds, format);
     }
 }

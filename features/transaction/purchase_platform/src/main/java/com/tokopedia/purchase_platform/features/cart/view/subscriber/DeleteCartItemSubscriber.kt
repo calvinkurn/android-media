@@ -45,6 +45,7 @@ class DeleteCartItemSubscriber(private val view: ICartListView?,
                 } else {
                     view.onDeleteCartDataSuccess(toBeDeletedCartIds)
                 }
+                view.updateCartCounter(deleteCartData.cartCounter)
             } else {
                 view.showToastMessageRed(deleteCartData.message ?: "")
             }

@@ -40,6 +40,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
+    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
@@ -54,7 +55,7 @@ dependencies {
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
     debugImplementation rootProject.ext.debugToolsDependencies.stetho
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore
@@ -68,7 +69,7 @@ dependencies {
     // Room components
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
-    androidTestApi rootProject.ext.dbDependencies.dbRoomTesting
+    androidTestImplementation rootProject.ext.dbDependencies.dbRoomTesting
 
 }
 
@@ -80,3 +81,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+//apply from: '../../../jacoco_task.gradle'

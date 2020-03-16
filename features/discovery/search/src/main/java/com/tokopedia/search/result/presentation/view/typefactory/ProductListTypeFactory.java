@@ -8,6 +8,7 @@ import com.tokopedia.search.result.presentation.model.BannedProductsTickerViewMo
 import com.tokopedia.search.result.presentation.model.CpmViewModel;
 import com.tokopedia.search.result.presentation.model.EmptySearchProductViewModel;
 import com.tokopedia.search.result.presentation.model.GlobalNavViewModel;
+import com.tokopedia.search.result.presentation.model.InspirationCarouselViewModel;
 import com.tokopedia.search.result.presentation.model.ProductItemViewModel;
 import com.tokopedia.search.result.presentation.model.QuickFilterViewModel;
 import com.tokopedia.search.result.presentation.model.RecommendationItemViewModel;
@@ -30,6 +31,8 @@ public interface ProductListTypeFactory {
     int type(RelatedSearchViewModel relatedSearchModel);
 
     int type(GlobalNavViewModel globalNavViewModel);
+
+    int type(InspirationCarouselViewModel inspirationCarouselViewModel);
 
     int type(RecommendationTitleViewModel titleViewModel);
 

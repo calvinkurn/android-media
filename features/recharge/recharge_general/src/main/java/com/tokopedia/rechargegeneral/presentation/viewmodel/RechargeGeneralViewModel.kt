@@ -9,6 +9,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.rechargegeneral.model.RechargeGeneralOperatorCluster
 import com.tokopedia.rechargegeneral.model.RechargeGeneralProductData
 import com.tokopedia.usecase.coroutines.Fail
@@ -44,7 +45,11 @@ class RechargeGeneralViewModel  @Inject constructor(
                     graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
                 }.getSuccessData<RechargeGeneralOperatorCluster.Response>()
 
-                _operatorCluster.postValue(Success(data.response))
+                if (data.response.operatorGroups == null) {
+                    throw MessageErrorException(NULL_PRODUCT_ERROR)
+                } else {
+                    _operatorCluster.postValue(Success(data.response))
+                }
             }) {
                 _operatorCluster.postValue(Fail(it))
             }
@@ -60,7 +65,11 @@ class RechargeGeneralViewModel  @Inject constructor(
                     graphqlRepository.getReseponse(listOf(graphqlRequest), graphqlCacheStrategy)
                 }.getSuccessData<RechargeGeneralProductData.Response>()
 
-                _productList.postValue(Success(data.response))
+                if (data.response.product == null) {
+                    throw MessageErrorException(NULL_PRODUCT_ERROR)
+                } else {
+                    _productList.postValue(Success(data.response))
+                }
             }) {
                 _productList.postValue(Fail(it))
             }
@@ -77,5 +86,6 @@ class RechargeGeneralViewModel  @Inject constructor(
     companion object {
         const val PARAM_MENU_ID = "menuID"
         const val PARAM_OPERATOR = "operator"
+        const val NULL_PRODUCT_ERROR = "null product"
     }
 }
