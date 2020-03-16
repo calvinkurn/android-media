@@ -24,7 +24,7 @@ class ThankYouPageTimerView @JvmOverloads constructor(
     var timer: CountDownTimer? = null
     private var timerRunning: Boolean = false
 
-    private var startDuration: Long = 0
+    private var expireUnixTime: Long = 0
     private var currentDuration: Long = 0
     private val layout = R.layout.thank_timer_view
     private var mTvTimer: AppCompatTextView? = null
@@ -36,22 +36,26 @@ class ThankYouPageTimerView @JvmOverloads constructor(
     }
 
     private fun initUI() {
-        val v = LayoutInflater.from(context).inflate(layout, this, true)
+        val v = LayoutInflater.from(context).inflate(layout, null)
         addView(v)
         mTvTimer = v.findViewById(R.id.tvTimer)
     }
 
-    fun setStartDuration(duration: Long, listener: ThankTimerViewListener) {
+    fun setStartDuration(expireOnTimeUnix: Long, listener: ThankTimerViewListener) {
         if (timerRunning) {
             return
         }
         weakListener = WeakReference(listener)
-        currentDuration = duration
-        startDuration = currentDuration
-        updateText(duration)
+        expireUnixTime = expireOnTimeUnix * 1000L
+        updateText(getCurrentDuration())
+    }
+
+    private fun getCurrentDuration(): Long {
+        return expireUnixTime - System.currentTimeMillis()
     }
 
     fun startTimer() {
+        currentDuration = getCurrentDuration()
         if (timerRunning || currentDuration <= 0) {
             return
         }
@@ -98,7 +102,7 @@ class ThankYouPageTimerView @JvmOverloads constructor(
         val formattedHr: String = String.format(locale, format, hr)
         val formattedMin: String = String.format(locale, format, min)
         val formattedSec: String = String.format(locale, format, sec)
-        return String.format(locale, "%sh %sm %ss", formattedHr, formattedMin, formattedSec)
+        return String.format(locale, "%s:%s:%s", formattedHr, formattedMin, formattedSec)
     }
 
     private fun notifyListener() {

@@ -10,9 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.thankyou_native.R
+import com.tokopedia.thankyou_native.THANK_YOU_PAGE_DATA
 import com.tokopedia.thankyou_native.di.ThankYouPageComponent
 import com.tokopedia.thankyou_native.domain.ThanksPageData
+import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageDataLoadCallback
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -52,7 +56,12 @@ class LoaderFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeViewModel()
-        thanksPageDataViewModel.getThanksPageData(715599, "tokopediatest")
+        arguments?.let {
+            if (it.containsKey(ThankYouPageActivity.ARG_PAYMENT_ID) && it.containsKey(ThankYouPageActivity.ARG_MERCHANT)) {
+                thanksPageDataViewModel.getThanksPageData(it.getLong(ThankYouPageActivity.ARG_PAYMENT_ID),
+                        it.getString(ThankYouPageActivity.ARG_MERCHANT, ""))
+            }
+        }
     }
 
     private fun observeViewModel() {
@@ -76,13 +85,13 @@ class LoaderFragment : BaseDaggerFragment() {
     }
 
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
-        loading_layout.visibility = View.GONE
-        globalError.visibility = View.VISIBLE
+        loading_layout.gone()
+        globalError.visible()
         globalError.setType(GlobalError.MAINTENANCE)
     }
 
     private fun onThankYouPageDataLoaded(data: ThanksPageData) {
-        loading_layout.visibility = View.GONE
+        loading_layout.gone()
         callback?.onThankYouPageDataLoaded(data)
     }
 

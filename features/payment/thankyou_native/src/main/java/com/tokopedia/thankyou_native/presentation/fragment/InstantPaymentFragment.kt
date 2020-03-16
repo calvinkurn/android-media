@@ -21,7 +21,7 @@ class InstantPaymentFragment : BaseDaggerFragment() {
 
     private lateinit var thanksPageData: ThanksPageData
 
-    override fun getScreenName(): String = ""
+    override fun getScreenName(): String = "Pembayaran Berhasil"
 
     override fun initInjector() {
         getComponent(ThankYouPageComponent::class.java).inject(this)

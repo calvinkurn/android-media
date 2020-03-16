@@ -14,12 +14,17 @@ import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.fragment.DeferredPaymentFragment
 import com.tokopedia.thankyou_native.presentation.fragment.InstantPaymentFragment
 import com.tokopedia.thankyou_native.presentation.fragment.LoaderFragment
+import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFragment
 
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>, ThankYouPageDataLoadCallback {
 
+    //todo handle toolbar back-press button
+
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
+        intent.putExtra(ARG_MERCHANT, "tokopediatest")
+        intent.putExtra(ARG_PAYMENT_ID, 715598L)
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
@@ -42,30 +47,45 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
                     .baseAppComponent).build()
 
     private fun getGetFragmentByPaymentMode(thanksPageData: ThanksPageData): Fragment? {
-        return when (PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus)) {
-            is PaymentVerified -> {
-                InstantPaymentFragment.getLoaderFragmentInstance(Bundle(), thanksPageData)
+        val bundle = Bundle()
+        if (intent.extras != null) {
+            bundle.putAll(intent.extras)
+        }
+        return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
+            is ProcessingPaymentPage -> {
+                DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
-            is PaymentWaiting -> {
-                DeferredPaymentFragment.getFragmentInstance(thanksPageData)
+            is InstantPaymentPage -> {
+                InstantPaymentFragment.getLoaderFragmentInstance(bundle, thanksPageData)
             }
-            is PaymentExpired -> {
-
-            }
-            is PaymentActive -> {
-
-            }
-            is PaymentCancelled -> {
-            }
-            is PaymentVoid -> {
-            }
-            is PaymentPreAuth -> {
-            }
-            is PaymentWaitingCOD -> {
+            is WaitingPaymentPage -> {
+                DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             else -> null
         }
 
+    }
+
+    /**
+     * this function is override because need to check payment
+     * status if payment type is deferred/Processing
+     * */
+    override fun onBackPressed() {
+        if (!isOnBackPressOverride())
+            super.onBackPressed()
+    }
+
+    private fun isOnBackPressOverride(): Boolean {
+        val fragment = supportFragmentManager.findFragmentByTag(tagFragment)
+        fragment?.let {
+            if (it is DeferredPaymentFragment) {
+                return it.onBackPressed()
+            } else if(it is ProcessingPaymentFragment){
+                return it.onBackPressed()
+            }
+
+        }
+        return false
     }
 
     companion object {

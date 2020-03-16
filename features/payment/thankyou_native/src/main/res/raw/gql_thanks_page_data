@@ -1,6 +1,8 @@
 query ThanksPageData($paymentID : Int!,$merchant: String!){
   thanksPageData(paymentID: $paymentID,merchant: $merchant){
     payment_status
+    page_type
+    payment_type
     gateway_name
     gateway_image
     expire_time_unix

@@ -1,7 +1,12 @@
 <resources>
     <string name="app_name">ThankYou</string>
     <string name="thank_instant_payment_successful">Selamat, pembayaranmu berhasil!</string>
+
     <string name="thank_instant_payment_check_order">Pesanan akan diteruskan ke penjual. Silakan cek status pesananmu di Daftar Transaksi.</string>
+    <string name="thank_processing_payment_check_order">Pesananmu baru diteruskan ke penjual setelah pembayaran terverifikasi.</string>
+
+
+
     <string name="thank_instant_payment_total_pay">Total Bayar</string>
     <string name="thank_payment_method">Metode Pembayaran</string>
     <string name="thank_see_transaction_list">Lihat Daftar Transaksi</string>
@@ -22,4 +27,34 @@
     <string name="thank_payment_code">Kode Pembayaran</string>
     <string name="thank_phone_number">Nomor Ponsel</string>
     <string name="thank_account_number">Nomor Rekening</string>
+    <string name="thank_order_will_be_deliver_after_payment">Pesananmu baru diteruskan ke penjual setelah pembayaran terverifikasi.</string>
+    <string name="thank_check_payment_status">Cek Status Pembayaran</string>
+    <string name="thank_shop_again">Belanja Lagi</string>
+
+
+    <string name="thank_payment_success">Pembayaran Berhasil</string>
+    <string name="thank_payment_success_description">Pembayaranmu telah terverifikasi. Silakan lihat status pesananmu di daftar transaksi.</string>
+
+    <string name="thank_exit_this_page">Keluar dari halaman ini?</string>
+    <string name="thank_payment_success_back_press">Setelah keluar, kamu akan diarahkan ke halaman Daftar Transaksi untuk cek detail pesananmu.</string>
+    <string name="thank_cancel">Batal</string>
+    <string name="thank_exit_page">Keluar Halaman</string>
+
+
+    <string name="thank_payment_failed">Pembayaran Dibatalkan</string>
+    <string name="thank_payment_failed_description">Transaksi ini telah dibatalkan. Yuk, belanja lagi di Tokopedia!</string>
+
+
+    <!--Expired Payment-->
+    <string name="thank_payment_expired_title">Waktu Pembayaran Habis</string>
+    <string name="thank_payment_expired_desc">Maaf, transaksi dibatalkan karena kamu belum melakukan pembayaran hingga batas waktu.</string>
+
+    <string name="thank_payment_waiting_desc">Setelah keluar, kamu bisa cek detail tagihanmu di halaman Menunggu Pembayaran.</string>
+
+
+    <string name="thank_total_pay">Total Bayar</string>
+    <string name="thank_type_of_payment">Jenis Pembayaran</string>
+    <string name="thank_payment_in_progress">Pembayaran sedang diproses</string>
+    <string name="thank_payment_in_progress_time">Pembayaranmu sedang diverifikasi oleh pihak %s, harap tunggu maks. 2 x 24 jam.</string>
+
 </resources>

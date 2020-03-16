@@ -22,13 +22,12 @@ import com.tokopedia.thankyou_native.helper.*
 import com.tokopedia.thankyou_native.presentation.activity.ThankYouPageActivity
 import com.tokopedia.thankyou_native.presentation.helper.*
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
-import com.tokopedia.thankyou_native.presentation.views.ThankYouPageTimerView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 import javax.inject.Inject
 
-class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.ThankTimerViewListener {
+class ProcessingPaymentFragment : BaseDaggerFragment() {
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
 
@@ -37,14 +36,15 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
 
     var paymentType: PaymentType? = null
 
-    var dialogOrigin: DialogOrigin? = null
+    private var dialogOrigin: DialogOrigin? = null
+
     private lateinit var dialogHelper: DialogHelper
 
     private lateinit var thanksPageData: ThanksPageData
 
     private var dialog: DialogUnify? = null
 
-    override fun getScreenName(): String = "Selesaikan Pembayaran"
+    override fun getScreenName(): String = "Pembayaran Diproses"
 
     override fun initInjector() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
@@ -61,7 +61,7 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.thank_fragment_deferred, container, false)
+        return inflater.inflate(R.layout.thank_fragment_processing, container, false)
     }
 
     private fun initViewModels() {
@@ -90,47 +90,23 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
                 it.finish()
         }
         paymentType = PaymentTypeMapper.getPaymentTypeByStr(thanksPageData.paymentType)
-        paymentType?.let {
-            when (it) {
-                is BankTransfer -> {
-                    inflateWaitingUI(getString(R.string.thank_account_number), isCopyVisible = true)
-                    showDigitAnnouncementTicker()
-                }
-                is VirtualAccount -> inflateWaitingUI(getString(R.string.thank_virtual_account_tag), isCopyVisible = true)
-                is Retail -> inflateWaitingUI(getString(R.string.thank_payment_code), isCopyVisible = true)
-                is SmsPayment -> inflateWaitingUI(getString(R.string.thank_phone_number), isCopyVisible = false)
-            }
-        }
+        inflateWaitingUI()
         initCheckPaymentWidgetData()
     }
 
-    private fun inflateWaitingUI(numberTypeTitle: String, isCopyVisible: Boolean) {
-        tvPaymentGatewayName.text = thanksPageData.gatewayName
+    private fun inflateWaitingUI() {
+        /*tvPaymentGatewayName.text = thanksPageData.gatewayName
         ImageLoader.LoadImage(ivPaymentGatewayImage, thanksPageData.gatewayImage)
         tvAccountNumberTypeTag.text = numberTypeTitle
         tvAccountNumber.text = thanksPageData.additionalInfo.accountDest
         tvTotalAmount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
 
-        if (isCopyVisible) {
-            tvAccountNumberCopy.visible()
-            tvAccountNumberCopy.tag = thanksPageData.additionalInfo
-            tvAccountNumberCopy.setOnClickListener {
-                val accountNumberStr: String? = tvAccountNumberCopy.tag?.toString()
-                copyAccountNumberToClipboard(accountNumberStr)
-            }
-        } else {
-            tvAccountNumberCopy.gone()
-        }
         if (thanksPageData.additionalInfo.bankName.isNotBlank()) {
             tvBankName.text = thanksPageData.additionalInfo.bankName
             tvBankName.visible()
         }
         tvSeeDetail.setOnClickListener { openPaymentDetail() }
-        tvSeePaymentMethods.setOnClickListener { openPaymentMethodInfo() }
-        tvDeadlineTime.text = thanksPageData.expireTimeStr
-        tvDeadlineTimer.setStartDuration(System.currentTimeMillis() / 1000L + 2 * 60 * 60, this)
-
-
+        tvSeePaymentMethods.setOnClickListener { openPaymentMethodInfo() }*/
     }
 
     private fun initCheckPaymentWidgetData() {
@@ -155,11 +131,6 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
         thanksPageDataViewModel.getThanksPageData(paymentId, merchantID)
     }
 
-    private fun showDigitAnnouncementTicker() {
-        tickerAnnouncementExactDigits.visible()
-        view_divider_3.gone()
-    }
-
     private fun copyAccountNumberToClipboard(accountNumberStr: String?) {
         accountNumberStr?.let { str ->
             context?.let { context ->
@@ -168,21 +139,6 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
                 clipboard.primaryClip = clip
             }
         }
-    }
-
-    override fun onTimerFinished() {
-        dialogOrigin = OriginTimerFinished
-        checkPaymentStatus()
-    }
-
-    override fun onStart() {
-        super.onStart()
-        tvDeadlineTimer.startTimer()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        tvDeadlineTimer.stopTimer()
     }
 
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
@@ -214,19 +170,10 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
         //todo open payment methods screen
     }
 
-    private fun isPaymentTimerExpired(): Boolean {
-        if (thanksPageData.expireTimeUnix <= System.currentTimeMillis() / 1000L)
-            return true
-        return false
-    }
-
     internal fun onBackPressed(): Boolean {
-        if (!isPaymentTimerExpired()) {
-            dialogOrigin = OriginOnBackPress
-            checkPaymentStatus()
-            return true
-        }
-        return false
+        dialogOrigin = OriginOnBackPress
+        checkPaymentStatus()
+        return true
     }
 
     companion object {

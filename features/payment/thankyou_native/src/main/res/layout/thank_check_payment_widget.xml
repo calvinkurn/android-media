@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:padding="@dimen/dp_16">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCheckPaymentStatusTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        app:typographyType="heading_6"
+        android:textColor="@color/black_54"
+        android:text="@string/thank_instant_payment_check_order"/>
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btnCheckPaymentStatus"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/bg_button_green_enabled"
+        android:gravity="center"
+        android:padding="@dimen/dp_11"
+        android:text="@string/thank_check_payment_status"
+        android:textColor="@color/Neutral_N0"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvCheckPaymentStatusTitle"/>
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/btnShopAgain"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_16"
+        android:background="@drawable/bg_button_green_enabled_border"
+        android:gravity="center"
+        android:padding="@dimen/dp_11"
+        android:text="@string/thank_shop_again"
+        android:textColor="@color/green_500"
+        app:typographyType="heading_5"
+        app:typographyWeight="bold"
+        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnCheckPaymentStatus"/>
+
+</LinearLayout>

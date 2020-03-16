@@ -16,7 +16,8 @@ class ThanksPageDataViewModel @Inject constructor(
 
     val thanksPageDataResultLiveData = MutableLiveData<Result<ThanksPageData>>()
 
-    fun getThanksPageData(paymentId: Int, merchant: String) {
+    fun getThanksPageData(paymentId: Long, merchant: String) {
+        thanksPageDataUseCase.cancelJobs()
         thanksPageDataUseCase.getThankPageData(
                 ::onThanksPageDataSuccess,
                 ::onThanksPageDataError,
