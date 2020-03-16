@@ -22,11 +22,11 @@ class SeeMorePdpViewHolder(view: View,
 
     override fun bind(element: SeeMorePdpDataModel) {
         bannerBackgroundImage.setOnClickListener {
-            listener.onMixLeftSeeMoreClicked(applink = element.applink, channel = channels)
+            listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
         }
         bannerBackgroundImage.loadImage(element.backgroundImage)
         container.setOnClickListener {
-            listener.onMixLeftSeeMoreClicked(applink = element.applink, channel = channels)
+            listener.onBannerSeeMoreClicked(applink = element.applink, channel = channels)
         }
     }
 
