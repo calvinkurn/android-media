@@ -80,7 +80,7 @@ class NotificationChatService : JobIntentService() {
         replyChatUseCase.execute(params, object : Subscriber<ReplyChatViewModel>() {
             override fun onNext(response: ReplyChatViewModel) {
                 if (response.isSuccessReplyChat) {
-                    analytics.eventClickReplyChatFromNotif(if (userId.isBlank()) "0" else userId)
+                    analytics.eventClickReplyChatFromNotif(if (userId.isNullOrBlank()) "0" else userId)
                     clearNotification(notificationId)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                         if (isJobIdRunning(JOB_ID_RETRY)) {
