@@ -21,73 +21,93 @@ import java.util.ArrayList
 class ShopHomeSliderBannerViewHolder(
         view: View?,
         private val listener: ShopHomeDisplayWidgetListener
-) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view)
-//        BannerView.OnPromoClickListener, BannerView.OnPromoAllClickListener,
-//        BannerView.OnPromoDragListener, BannerView.OnPromoScrolledListener,
-//        BannerView.OnPromoLoadedListener
-{
+) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
+
+    companion object {
+        @LayoutRes
+        val LAYOUT_RES = R.layout.viewmodel_slider_banner
+    }
+
+    class CarouselData(val imageUrl: String)
 
     private var carouselShopPage: CarouselUnify? = null
     private var bannerData: ShopHomeDisplayWidgetUiModel? = null
+    private var carouselData: ArrayList<Any>? = null
+    private var itmListener = { view: View, data: Any ->
+        val img: ImageUnify = view.findViewById(R.id.imageCarousel)
+        val carouselItem = data as CarouselData
+        val index = carouselData?.indexOf(carouselItem) ?: 0
+        img.setImage(carouselItem.imageUrl, 0F)
+        img.setOnClickListener {
+            onClickBannerItem(
+                    bannerData,
+                    bannerData?.data?.get(index),
+                    adapterPosition,
+                    index
+            )
+        }
+    }
 
     init {
         carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
     }
 
-    override fun bind(element: ShopHomeDisplayWidgetUiModel) {
-        bannerData = element
-        val carouselData = dataWidgetToCarouselData(element)
-
-        val itemCarousel = { view: View, data: Any ->
-            val img: ImageUnify = view.findViewById(R.id.imageCarousel)
-
-            img.setImage((data as CarouselData).imageUrl, 0F)
+    override fun onActiveIndexChanged(prev: Int, current: Int) {
+        bannerData?.let { shopHomeDisplayWidgetUiModel ->
+            shopHomeDisplayWidgetUiModel.data?.let { listDisplayWidget ->
+                if (current < shopHomeDisplayWidgetUiModel.data.size) {
+                    listener.onDisplayItemImpression(
+                            shopHomeDisplayWidgetUiModel,
+                            listDisplayWidget[current],
+                            adapterPosition,
+                            current
+                    )
+                }
+            }
         }
+    }
 
+    override fun bind(shopHomeDisplayWidgetUiModel: ShopHomeDisplayWidgetUiModel) {
+        bannerData = shopHomeDisplayWidgetUiModel
+        carouselData = dataWidgetToCarouselData(shopHomeDisplayWidgetUiModel)
         carouselShopPage?.apply {
-            autoplay = true
             autoplayDuration = 5000L
+            autoplay = true
             indicatorPosition = CarouselUnify.INDICATOR_BL
             infinite = true
-
-            addItems(R.layout.widget_slider_banner_item, carouselData, itemCarousel)
+            carouselData?.let {
+                addItems(R.layout.widget_slider_banner_item, it, itmListener)
+                onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
+            }
         }
         itemView.textViewTitle?.apply {
-            if (element.header.title.isEmpty()) {
+            if (shopHomeDisplayWidgetUiModel.header.title.isEmpty()) {
                 hide()
             } else {
-                text = element.header.title
+                text = shopHomeDisplayWidgetUiModel.header.title
                 show()
             }
         }
     }
 
-//    override fun onPromoLoaded() {
-//        this.banner?.bannerIndicator?.visible()
-//    }
-//
-//    override fun onPromoClick(position: Int) {
-//        bannerData?.data?.let {
-//            val widgetItem = it[position]
-//            listener.onItemClicked(bannerData, widgetItem, adapterPosition, position)
-//        }
-//    }
-//
-//    override fun onPromoAllClick() {}
-//
-//    override fun onPromoDragEnd() {}
-//
-//    override fun onPromoDragStart() {}
-//
-//    override fun onPromoScrolled(position: Int) {
-//        bannerData?.data?.let {
-//            val widgetItem = it[position]
-//            if(!widgetItem.isInvoke){
-//                listener.onItemImpression(bannerData, widgetItem, adapterPosition, position)
-//                widgetItem.invoke()
-//            }
-//        }
-//    }
+    private fun onClickBannerItem(
+            element: ShopHomeDisplayWidgetUiModel?,
+            displayWidgetItem: ShopHomeDisplayWidgetUiModel.DisplayWidgetItem?,
+            adapterPosition: Int,
+            index: Int
+    ) {
+        displayWidgetItem?.let {
+            if(it.isInvoke) {
+                listener.onDisplayItemClicked(
+                        element,
+                        it,
+                        adapterPosition,
+                        index
+                )
+                it.invoke()
+            }
+        }
+    }
 
     private fun dataWidgetToCarouselData(element: ShopHomeDisplayWidgetUiModel): ArrayList<Any> {
         val mutableString: ArrayList<Any> = ArrayList()
@@ -98,12 +118,4 @@ class ShopHomeSliderBannerViewHolder(
         }
         return mutableString
     }
-
-    companion object {
-        @LayoutRes
-        val LAYOUT_RES = R.layout.viewmodel_slider_banner
-    }
-
-
-    class CarouselData(val imageUrl: String)
 }
