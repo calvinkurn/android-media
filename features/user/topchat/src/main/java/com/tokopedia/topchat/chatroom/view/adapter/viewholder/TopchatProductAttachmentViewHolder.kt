@@ -212,15 +212,13 @@ class TopchatProductAttachmentViewHolder(
     }
 
     private fun bindWishList(product: ProductAttachmentViewModel) {
-        wishListBtn?.let {
-            if (product.hasEmptyStock()) {
-                it.show()
-                it.setOnClickListener {
-                    listener.onClickAddToWishList(product.productId.toString()) { }
-                }
-            } else {
-                it.hide()
+        if (product.hasEmptyStock()) {
+            wishListBtn?.show()
+            wishListBtn?.setOnClickListener {
+                listener.onClickAddToWishList(product.productId.toString()) { }
             }
+        } else {
+            wishListBtn?.hide()
         }
     }
 
