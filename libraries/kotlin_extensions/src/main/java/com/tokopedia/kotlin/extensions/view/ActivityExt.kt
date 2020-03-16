@@ -4,10 +4,9 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.view.View
-import androidx.annotation.ColorRes
-import androidx.annotation.RequiresApi
 import android.view.Window
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 
 /**
  * Created By @ilhamsuaib on 2020-02-28
@@ -22,36 +21,23 @@ fun Activity.setLightStatusBar(isLight: Boolean = true) {
     }
 }
 
-fun Activity.setOpaqueStatusBar(color: Int = Color.WHITE) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        window?.run {
-            decorView.systemUiVisibility =
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            statusBarColor = color
-        }
-    }
-}
-
+@RequiresApi(Build.VERSION_CODES.M)
 fun Activity.requestStatusBarLight() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        window?.run {
-            decorView.systemUiVisibility =
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            statusBarColor = Color.TRANSPARENT
-        }
+    window?.run {
+        decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+        statusBarColor = Color.TRANSPARENT
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 fun Activity.requestStatusBarDark() {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        window?.run {
-            decorView.systemUiVisibility =
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            statusBarColor = Color.TRANSPARENT
-        }
+    window?.run {
+        decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
+        statusBarColor = Color.TRANSPARENT
     }
 }
 
@@ -83,7 +69,6 @@ fun Activity.setupStatusBarUnderMarshmallow() {
         }
     }
 }
-
 
 @RequiresApi(Build.VERSION_CODES.M)
 fun Activity.setStatusBarColor(color: Int) {
