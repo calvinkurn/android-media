@@ -3,7 +3,9 @@ package com.tokopedia.loginregister.login.view.fragment
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.hardware.fingerprint.FingerprintManager
@@ -143,6 +145,7 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
     private lateinit var tickerAnnouncement: Ticker
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var bannerLogin: ImageView
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun getScreenName(): String {
         return LoginRegisterAnalytics.SCREEN_LOGIN
@@ -660,6 +663,8 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
 
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
+
+        saveFirstInstallTime()
     }
 
     private fun setFCM() {
@@ -1384,6 +1389,15 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
         }
     }
 
+    private fun saveFirstInstallTime() {
+        context?.let {
+            sharedPrefs = it.getSharedPreferences(
+                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs.edit().putLong(
+                    KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
@@ -1497,6 +1511,9 @@ class LoginEmailPhoneFragment : BaseDaggerFragment(), ScanFingerprintInterface, 
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
         private const val REMOTE_CONFIG_KEY_BANNER = "android_user_banner_login"
+
+        private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
+        private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         private const val BANNER_LOGIN_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 
