@@ -39,9 +39,7 @@ data class RecommendationItem(val productId: Int = 0,
                               val type: String = "",
                               val isFreeOngkirActive: Boolean = false,
                               val freeOngkirImageUrl: String = "",
-                              val labelPromo: RecommendationLabel = RecommendationLabel(),
-                              val labelOffers: RecommendationLabel = RecommendationLabel(),
-                              val labelCredibility: RecommendationLabel = RecommendationLabel(),
+                              val labelGroupList: List<RecommendationLabel> = listOf(),
                               val isGold: Boolean = false): ImpressHolder(){
 
     fun getPriceIntFromString() = CurrencyFormatHelper.convertRupiahToInt(price)
@@ -88,9 +86,7 @@ data class RecommendationItem(val productId: Int = 0,
         if (type != other.type) return false
         if (isFreeOngkirActive != other.isFreeOngkirActive) return false
         if (freeOngkirImageUrl != other.freeOngkirImageUrl) return false
-        if (labelPromo != other.labelPromo) return false
-        if (labelOffers != other.labelOffers) return false
-        if (labelCredibility != other.labelCredibility) return false
+        if (labelGroupList != other.labelGroupList) return false
         if (isGold != other.isGold) return false
 
         return true
@@ -133,9 +129,7 @@ data class RecommendationItem(val productId: Int = 0,
         result = HASH_CODE * result + type.hashCode()
         result = HASH_CODE * result + isFreeOngkirActive.hashCode()
         result = HASH_CODE * result + freeOngkirImageUrl.hashCode()
-        result = HASH_CODE * result + labelPromo.hashCode()
-        result = HASH_CODE * result + labelOffers.hashCode()
-        result = HASH_CODE * result + labelCredibility.hashCode()
+        result = HASH_CODE * result + labelGroupList.hashCode()
         result = HASH_CODE * result + isGold.hashCode()
         return result
     }
@@ -146,4 +140,4 @@ data class RecommendationItem(val productId: Int = 0,
 
 }
 
-data class RecommendationLabel(var title: String = "", val type: String = "")
+data class RecommendationLabel(var title: String = "", val type: String = "", val position: String = "")

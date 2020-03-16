@@ -95,9 +95,13 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     override fun showInitialStateResult(initialStateVisitableList: List<Visitable<*>>) {
+        notifyAdapter(initialStateVisitableList)
+    }
+
+    private fun notifyAdapter(list: List<Visitable<*>>){
         stopTracePerformanceMonitoring()
         adapter.clearData()
-        adapter.addAll(initialStateVisitableList)
+        adapter.addAll(list)
 
         initialStateViewUpdateListener?.showInitialStateView()
     }
@@ -107,11 +111,11 @@ class InitialStateFragment : BaseDaggerFragment(), InitialStateContract.View, In
     }
 
     override fun refreshPopularSearch(list: List<Visitable<*>>) {
-        stopTracePerformanceMonitoring()
-        adapter.clearData()
-        adapter.addAll(list)
+        notifyAdapter(list)
+    }
 
-        initialStateViewUpdateListener?.showInitialStateView()
+    override fun deleteRecentSearch(list: List<Visitable<*>>) {
+        notifyAdapter(list)
     }
 
     override fun onViewStateRestored(savedInstanceState: Bundle?) {

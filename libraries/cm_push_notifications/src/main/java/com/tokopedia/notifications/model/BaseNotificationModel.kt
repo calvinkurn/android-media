@@ -22,7 +22,7 @@ data class BaseNotificationModel(
 
         @ColumnInfo(name = "notificationId")
         var notificationId: Int = 0,
-        
+
         @PrimaryKey
         @ColumnInfo(name = "campaignId")
         var campaignId: Long = 0,
@@ -120,9 +120,11 @@ data class BaseNotificationModel(
         var endTime: Long = 0,
 
         @ColumnInfo(name = "notificationMode")
-        var notificationMode: NotificationMode = NotificationMode.OFFLINE
+        var notificationMode: NotificationMode = NotificationMode.OFFLINE,
         //new Fields for offline ends
 
+        @ColumnInfo(name = "is_test")
+        var isTest: Boolean = false
 
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -158,7 +160,8 @@ data class BaseNotificationModel(
             NotificationStatusConverter.instances.toStatus(parcel.readInt()),
             parcel.readLong(),
             parcel.readLong(),
-            NotificationModeConverter.instances.toMode(parcel.readInt()))
+            NotificationModeConverter.instances.toMode(parcel.readInt()),
+            parcel.readByte() != 0.toByte())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(notificationId)
@@ -193,6 +196,8 @@ data class BaseNotificationModel(
         parcel.writeLong(startTime)
         parcel.writeLong(endTime)
         parcel.writeInt(status.statusInt)
+        parcel.writeByte(if (isTest) 1 else 0)
+
     }
 
     override fun describeContents(): Int {

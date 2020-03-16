@@ -1,5 +1,7 @@
 package com.tokopedia.onboarding.view.fragment
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -10,10 +12,8 @@ import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.DeeplinkDFMapper
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.dynamicfeatures.DFInstaller
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.onboarding.R
@@ -34,6 +34,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.NotNull
+import java.util.*
 import javax.inject.Inject
 
 
@@ -58,6 +59,7 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
     lateinit var remoteConfig: RemoteConfig
 
     private lateinit var onboardingViewPagerAdapter: OnboardingViewPagerAdapter
+    private lateinit var sharedPrefs: SharedPreferences
 
     override fun getScreenName(): String = OnboardingAnalytics.SCREEN_ONBOARDING
 
@@ -99,7 +101,9 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
             onboardingViewPagerAdapter = OnboardingViewPagerAdapter(it, listItem)
             screenViewpager.apply {
                 adapter = onboardingViewPagerAdapter
-                offscreenPageLimit = 2
+                if(onboardingViewPagerAdapter.count > 1) {
+                    screenViewpager.offscreenPageLimit = onboardingViewPagerAdapter.count - 1
+                }
                 addOnPageChangeListener(OnPageChangeListener())
             }
 
@@ -184,12 +188,12 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         context?.let {
             val taskStackBuilder = TaskStackBuilder.create(it)
             val homeIntent = RouteManager.getIntent(it, ApplinkConst.HOME)
-            val loginIntent = RouteManager.getIntent(it, ApplinkConst.REGISTER)
+            val registIntent = RouteManager.getIntent(it, ApplinkConst.REGISTER)
 
             finishOnBoarding()
 
             taskStackBuilder.addNextIntent(homeIntent)
-            taskStackBuilder.addNextIntent(loginIntent)
+            taskStackBuilder.addNextIntent(registIntent)
             taskStackBuilder.startActivities()
         }
     }
@@ -208,9 +212,19 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
 
     private fun finishOnBoarding() {
         activity?.let {
+            saveFirstInstallTime()
             userSession.setFirstTimeUserOnboarding(false)
-            DFInstaller().uninstallOnBackground(it.application, listOf(DeeplinkDFMapper.DFM_ONBOARDING))
             it.finish()
+        }
+    }
+
+    private fun saveFirstInstallTime() {
+        context?.let {
+            val date = Date()
+            sharedPrefs = it.getSharedPreferences(
+                    KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
+            sharedPrefs.edit().putLong(
+                    KEY_FIRST_INSTALL_TIME_SEARCH, date.time).apply()
         }
     }
 
@@ -240,6 +254,9 @@ class OnboardingFragment : BaseDaggerFragment(), IOnBackPressed {
         const val ONBOARD_IMAGE_PAGE_1_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_1.png"
         const val ONBOARD_IMAGE_PAGE_2_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_2.png"
         const val ONBOARD_IMAGE_PAGE_3_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_3.png"
+
+        private const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
+        private const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
 
         fun createInstance(bundle: Bundle): OnboardingFragment {
             val fragment = OnboardingFragment()

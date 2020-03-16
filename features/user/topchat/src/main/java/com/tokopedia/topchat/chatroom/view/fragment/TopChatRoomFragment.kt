@@ -41,6 +41,7 @@ import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
 import com.tokopedia.imagepicker.picker.gallery.type.GalleryType
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerBuilder
+import com.tokopedia.imagepicker.picker.main.builder.ImagePickerMultipleSelectionBuilder
 import com.tokopedia.imagepicker.picker.main.builder.ImagePickerTabTypeDef
 import com.tokopedia.imagepicker.picker.main.view.ImagePickerActivity
 import com.tokopedia.imagepreview.ImagePreviewActivity
@@ -51,8 +52,10 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
 import com.tokopedia.topchat.chatroom.di.DaggerChatComponent
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatRoomAdapter
@@ -61,7 +64,6 @@ import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactoryImpl
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.AttachedInvoiceViewHolder.InvoiceThumbnailListener
 import com.tokopedia.topchat.chatroom.view.adapter.viewholder.QuotationViewHolder
 import com.tokopedia.topchat.chatroom.view.customview.TopChatRoomDialog
-import com.tokopedia.topchat.chatroom.view.customview.TopChatViewState
 import com.tokopedia.topchat.chatroom.view.customview.TopChatViewStateImpl
 import com.tokopedia.topchat.chatroom.view.listener.*
 import com.tokopedia.topchat.chatroom.view.presenter.TopChatRoomPresenter
@@ -119,12 +121,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
+    private var composeArea: EditText? = null
 
     override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false)
+        return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
+            bindView(it)
+        }
+    }
+
+    private fun bindView(view: View?) {
+        composeArea = view?.findViewById(R.id.new_comment)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -156,10 +165,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun initInjector() {
         if (activity != null && (activity as Activity).application != null) {
-            val chatComponent = DaggerChatComponent.builder().baseAppComponent(
-                    ((activity as Activity).application as BaseMainApplication).baseAppComponent)
-                    .build()
-            chatComponent.inject(this)
+            context?.let {
+                val chatComponent = DaggerChatComponent.builder()
+                        .baseAppComponent(((activity as Activity).application as BaseMainApplication).baseAppComponent)
+                        .chatRoomContextModule(ChatRoomContextModule(it))
+                        .build()
+                chatComponent.inject(this)
+            }
             presenter.attachView(this)
         }
     }
@@ -416,8 +428,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 this,
                 this,
                 this,
-                this
+                this,
+                isUseNewCard()
         )
+    }
+
+    private fun isUseNewCard(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -444,12 +461,22 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().showRetryUploadImages(it, true)
     }
 
-    override fun onSendButtonClicked() {
-        val sendMessage = view?.findViewById<EditText>(com.tokopedia.chat_common.R.id.new_comment)?.text.toString()
-        val startTime = SendableViewModel.generateStartTime()
+    override fun prepareListener() {
+        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
+            onSendButtonClicked()
+        }
+    }
 
-        presenter.sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage
-        (sendMessage, startTime))
+    override fun onSendButtonClicked() {
+        val sendMessage = composeArea?.text.toString()
+        val startTime = SendableViewModel.generateStartTime()
+        presenter.sendAttachmentsAndMessage(
+                messageId,
+                sendMessage,
+                startTime,
+                opponentId,
+                onSendingMessage(sendMessage, startTime)
+        )
     }
 
     private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
@@ -481,16 +508,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         presenter.stopTyping()
     }
 
-    override fun onSendClicked(message: String, generateStartTime: String) {
-        presenter.sendAttachmentsAndMessage(
-                messageId,
-                message,
-                generateStartTime,
-                "",
-                onSendingMessage(message, generateStartTime)
-        )
-    }
-
     override fun addTemplateString(message: String?) {
         message?.let {
             getViewState().addTemplateString(message)
@@ -507,9 +524,17 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun pickImageToUpload() {
         activity?.let {
-            val builder = ImagePickerBuilder(it.getString(com.tokopedia.imagepicker.R.string.choose_image),
-                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA), GalleryType.IMAGE_ONLY, ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
-                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION, null, true, null, null)
+            val builder = ImagePickerBuilder(
+                    it.getString(com.tokopedia.imagepicker.R.string.choose_image),
+                    intArrayOf(ImagePickerTabTypeDef.TYPE_GALLERY, ImagePickerTabTypeDef.TYPE_CAMERA),
+                    GalleryType.IMAGE_ONLY,
+                    ImagePickerBuilder.DEFAULT_MAX_IMAGE_SIZE_IN_KB,
+                    ImagePickerBuilder.DEFAULT_MIN_RESOLUTION,
+                    null,
+                    true,
+                    null,
+                    ImagePickerMultipleSelectionBuilder(null, null, 0, 1)
+            )
             val intent = ImagePickerActivity.getIntent(context, builder)
             startActivityForResult(intent, TopChatRoomActivity.REQUEST_CODE_CHAT_IMAGE)
         }
@@ -771,10 +796,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onBackPressed(): Boolean {
         if (presenter.isUploading()) {
             showDialogConfirmToAbortUpload()
-            return true
+        } else {
+            finishActivity()
         }
-
-        return super.onBackPressed()
+        return true
     }
 
     private fun finishActivity() {
@@ -981,6 +1006,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     companion object {
+        private const val abNewThumbnailKey = "Topchat Product Thumbnail"
+        private const val variantNewThumbnail = "New Thumbnail"
+
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle

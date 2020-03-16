@@ -15,7 +15,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.attachcommon.data.VoucherPreview
 import com.tokopedia.attachvoucher.R
 import com.tokopedia.attachvoucher.analytic.AttachVoucherAnalytic
-import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.data.VoucherType
 import com.tokopedia.attachvoucher.di.AttachVoucherComponent
 import com.tokopedia.attachvoucher.view.adapter.AttachVoucherAdapter
@@ -129,7 +129,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
         })
     }
 
-    private fun enableAttachButton(voucher: Voucher) {
+    private fun enableAttachButton(voucher: VoucherUiModel) {
         btnAttach?.isEnabled = true
         btnAttach.setOnClickListener {
             analytic.trackOnAttachVoucher(voucher)
@@ -138,7 +138,7 @@ class AttachVoucherFragment : BaseListFragment<Visitable<*>, AttachVoucherTypeFa
         }
     }
 
-    private fun getVoucherPreviewIntent(voucher: Voucher): Intent {
+    private fun getVoucherPreviewIntent(voucher: VoucherUiModel): Intent {
         val voucherPreview = VoucherPreview(
                 source = "inbox",
                 voucherId = voucher.voucherId,

@@ -49,12 +49,18 @@ import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.applink.ApplinkConst;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularListener;
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularModel;
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularPageChangeListener;
+import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager;
+import com.tokopedia.circular_view_pager.presentation.widgets.pageIndicator.CircularPageIndicator;
 import com.tokopedia.coachmark.CoachMark;
 import com.tokopedia.coachmark.CoachMarkBuilder;
 import com.tokopedia.coachmark.CoachMarkContentPosition;
 import com.tokopedia.coachmark.CoachMarkItem;
 import com.tokopedia.common.network.util.NetworkClient;
 import com.tokopedia.design.bottomsheet.CloseableBottomSheetDialog;
+import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.AllBrandsActivity;
 import com.tokopedia.digital_deals.view.activity.CategoryDetailActivity;
@@ -68,6 +74,7 @@ import com.tokopedia.digital_deals.view.model.Brand;
 import com.tokopedia.digital_deals.view.model.CategoriesModel;
 import com.tokopedia.digital_deals.view.model.CategoryItem;
 import com.tokopedia.digital_deals.view.model.Location;
+import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealsHomePresenter;
 import com.tokopedia.digital_deals.view.utils.CuratedDealsView;
 import com.tokopedia.digital_deals.view.utils.CurrentLocationCallBack;
@@ -88,7 +95,7 @@ import javax.inject.Inject;
 
 import static android.app.Activity.RESULT_OK;
 
-public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, CloseableBottomSheetDialog.OnCancelListener, PopupMenu.OnMenuItemClickListener {
+public class DealsHomeFragment extends BaseDaggerFragment implements DealsContract.View, View.OnClickListener, DealsCategoryAdapter.INavigateToActivityRequest, DealsCategoryItemAdapter.CategorySelected, PopupMenu.OnMenuItemClickListener, DialogInterface.OnCancelListener, CircularListener {
 
     private final long SHOW_CASE_DELAY = 400;
     private final String SCREEN_NAME = "/digital/deals/homepage";
@@ -104,7 +111,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private LinearLayout catItems;
     private RecyclerView rvTrendingDeals;
     private RecyclerView rvBrandItems;
-    private RecyclerView rvPromos;
+    private CircularViewPager cvPromos;
+    private CircularPageIndicator indicatorPromos;
     private CoordinatorLayout baseMainContent;
     private LinearLayout noContent;
     private ConstraintLayout clBrands;
@@ -130,6 +138,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private int adapterPosition = -1;
     private boolean forceRefresh;
     private DealsCategoryAdapter categoryAdapter;
+    private PromoAdapter promoAdapter;
     private CloseableBottomSheetDialog dealsCategoryBottomSheet;
     private CloseableBottomSheetDialog selectLocationFragment;
     private RecyclerView rvSearchResults;
@@ -139,6 +148,10 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     private TextView promoheading;
     private UserSession userSession;
     private PermissionCheckerHelper permissionCheckerHelper;
+    private List<ProductItem> bannerList;
+
+    @Inject
+    public DealsAnalytics dealsAnalytics;
 
     public static DealsHomeFragment createInstance(boolean isLocationUpdated) {
         DealsHomeFragment fragment = new DealsHomeFragment();
@@ -155,6 +168,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         if (getArguments() != null) {
             isLocationUpdated = getArguments().getBoolean(LOCATION_UPDATE);
         }
+        bannerList = new ArrayList<>();
         permissionCheckerHelper = new PermissionCheckerHelper();
     }
 
@@ -166,6 +180,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         setUpVariables(view);
         checkLocationStatus();
 
+        promoAdapter = new PromoAdapter(new ArrayList<>(), this);
         categoryAdapter = new DealsCategoryAdapter(null, DealsCategoryAdapter.HOME_PAGE, this, IS_SHORT_LAYOUT);
         userSession = new UserSession(getActivity());
         if (userSession.isLoggedIn()) {
@@ -210,7 +225,7 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         ArrayList<CoachMarkItem> coachItems = new ArrayList<>();
         coachItems.add(new CoachMarkItem(toolbarNameLayout, getString(com.tokopedia.digital_deals.R.string.coachicon_title_location), getString(com.tokopedia.digital_deals.R.string.coachicon_description_location)));
         coachItems.add(new CoachMarkItem(searchInputView, getString(com.tokopedia.digital_deals.R.string.coachicon_title_searchbar), getString(com.tokopedia.digital_deals.R.string.coachicon_description_searchbar)));
-        coachItems.add(new CoachMarkItem(rvPromos, getString(com.tokopedia.digital_deals.R.string.coachicon_title_promo), getString(com.tokopedia.digital_deals.R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, com.tokopedia.design.R.color.white, nestedScrollView));
+        coachItems.add(new CoachMarkItem(cvPromos, getString(com.tokopedia.digital_deals.R.string.coachicon_title_promo), getString(com.tokopedia.digital_deals.R.string.coachicon_description_promo), CoachMarkContentPosition.BOTTOM, com.tokopedia.design.R.color.white, nestedScrollView));
         CoachMark coachMark = new CoachMarkBuilder().build();
         coachMark.setShowCaseStepListener(new CoachMark.OnShowCaseStepListener() {
             @Override
@@ -258,7 +273,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
         tvLocationName = view.findViewById(com.tokopedia.digital_deals.R.id.tv_location_name);
         clBrands = view.findViewById(com.tokopedia.digital_deals.R.id.cl_brands);
         clPromos = view.findViewById(com.tokopedia.digital_deals.R.id.cl_promos);
-        rvPromos = view.findViewById(com.tokopedia.digital_deals.R.id.rv_trending_promos);
+        cvPromos = view.findViewById(com.tokopedia.digital_deals.R.id.cv_trending_promos);
+        indicatorPromos = view.findViewById(R.id.indicator_banner);
         tvSeeAllPromos = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all_promos);
         noContent = view.findViewById(com.tokopedia.digital_deals.R.id.no_content);
         tvSeeAllBrands = view.findViewById(com.tokopedia.digital_deals.R.id.tv_see_all_brands);
@@ -504,11 +520,57 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     public void renderCarousels(CategoryItem carousel) {
         if (carousel.getItems() != null && carousel.getItems().size() > 0) {
             clPromos.setVisibility(View.VISIBLE);
-            rvPromos.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-            rvPromos.setAdapter(new PromoAdapter(carousel.getItems(), mPresenter));
+            bannerList = carousel.getItems();
+            initBanner();
         } else {
             clPromos.setVisibility(View.GONE);
         }
+    }
+
+    private ArrayList<CircularModel> mapProductListToCircularModel(){
+        ArrayList circularList = new ArrayList<CircularModel>();
+        for (ProductItem item: bannerList) {
+            CircularModel circularModel = new CircularModel(item.getId(), item.getImageWeb());
+            circularList.add(circularModel);
+        }
+        return circularList;
+    }
+
+    private void initBanner(){
+        setBannerImpression();
+        cvPromos.setAdapter(promoAdapter);
+        cvPromos.setItemList(mapProductListToCircularModel());
+        setBannerIndicatorAnimation();
+    }
+
+    private void setBannerIndicatorAnimation(){
+        cvPromos.setIndicatorPageChangeListener(newIndicatorPosition -> indicatorPromos.animatePageSelected(newIndicatorPosition));
+        indicatorPromos.createIndicators(cvPromos.getIndicatorCount(), cvPromos.getIndicatorPosition());
+    }
+
+    private void setBannerImpression(){
+        cvPromos.setPageChangeListener(new CircularPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position) {
+                onPromoScrolled(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {}
+        });
+    }
+
+    @Override
+    public void onClick(int position) {
+        if(!bannerList.isEmpty() && bannerList.size() > position){
+            ProductItem item = bannerList.get(position);
+            dealsAnalytics.sendOnClickBannerPromoEvent(item, position);
+            mPresenter.onClickBanner(bannerList.get(position));
+        }
+    }
+
+    private void onPromoScrolled(int position){
+        dealsAnalytics.sendPromoImpressionEvent(bannerList.get(position), position);
     }
 
     @Override
@@ -626,6 +688,12 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        cvPromos.pauseAutoScroll();
+    }
+
+    @Override
     public View getRootView() {
         return mainContent;
     }
@@ -722,6 +790,8 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
                 categoryAdapter.notifyDataSetChanged();
             forceRefresh = false;
         }
+        cvPromos.resumeAutoScroll();
+        cvPromos.resetImpressions();
     }
 
     @Override
@@ -844,7 +914,6 @@ public class DealsHomeFragment extends BaseDaggerFragment implements DealsContra
             mPresenter.getBrandsHome();
         }
     }
-
 
     public interface OpenTrendingDeals {
         void replaceFragment(String url, String title, int position);

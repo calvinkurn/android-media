@@ -33,14 +33,14 @@ class UmrahShare(private val activity: Activity) {
         generateBranchLink(data,loadShare,doneLoadShare,context)
     }
 
-    private fun openIntentShare(title: String, shareContent: String) {
+    private fun openIntentShare(title: String, shareContent: String, context:Context) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
             type = TYPE
             addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-            putExtra(Intent.EXTRA_TITLE, title)
-            putExtra(Intent.EXTRA_TEXT, shareContent)
-            putExtra(Intent.EXTRA_SUBJECT, title)
+            putExtra(Intent.EXTRA_TITLE, context.getString(R.string.umrah_travel_share_name, title))
+            putExtra(Intent.EXTRA_TEXT, context.getString(R.string.umrah_travel_share_desc, title,title)+shareContent)
+            putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.umrah_travel_share_name, title))
         }
         activity.startActivity(Intent.createChooser(shareIntent, "Bagikan Produk Ini"))
     }
@@ -52,7 +52,7 @@ class UmrahShare(private val activity: Activity) {
                     LinkerUtils.createShareRequest(0,
                             travelDataToLinkerDataMapper(data, context), object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult) {
-                            openIntentShare(data.name, linkerShareData.shareContents)
+                            openIntentShare(data.name, linkerShareData.shareContents, context)
                             doneLoadShare()
                         }
 
@@ -61,7 +61,7 @@ class UmrahShare(private val activity: Activity) {
                         }
                     }))
         }else{
-            openIntentShare(data.name,activity.resources.getString(R.string.umrah_agen_link_share, data.slugName))
+            openIntentShare(data.name,activity.resources.getString(R.string.umrah_agen_link_share, data.slugName),context)
             doneLoadShare()
         }
     }
