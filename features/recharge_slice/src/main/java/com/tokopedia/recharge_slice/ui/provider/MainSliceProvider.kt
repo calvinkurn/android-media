@@ -46,15 +46,15 @@ class MainSliceProvider : SliceProvider() {
 
     var recommendationModel: List<Recommendation>? = null
 
-    var loadString : String ? = ""
-    var alreadyLoadData : Boolean = false
+    var loadString: String? = ""
+    var alreadyLoadData: Boolean = false
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
         userSession = UserSession(contextNonNull)
         return createGetInvoiceV3Slice(sliceUri)
     }
 
-    private fun createPendingIntent(id: Int?, applink: String?, trackingClick:String): PendingIntent? {
+    private fun createPendingIntent(id: Int?, applink: String?, trackingClick: String): PendingIntent? {
         return id?.let {
             PendingIntent.getActivity(
                     contextNonNull,
@@ -69,7 +69,7 @@ class MainSliceProvider : SliceProvider() {
     private fun createPendingIntentLogin() = PendingIntent.getActivity(
             contextNonNull,
             0,
-             RouteManager.getIntent(contextNonNull,ApplinkConst.LOGIN),
+            RouteManager.getIntent(contextNonNull, ApplinkConst.LOGIN),
             0
     )
 
@@ -77,33 +77,20 @@ class MainSliceProvider : SliceProvider() {
         val mainPendingIntent = PendingIntent.getActivity(
                 contextNonNull,
                 0,
-                RouteManager.getIntent(contextNonNull,ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
+                RouteManager.getIntent(contextNonNull, ApplinkConst.DIGITAL_SUBHOMEPAGE_HOME)
                         .putExtra(RECHARGE_HOME_PAGE_EXTRA, true),
                 0
         )
-            if (!userSession.isLoggedIn) {
-                    return list(contextNonNull, sliceUri, INFINITY) {
-                        setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
-                        header {
-                            title = contextNonNull.resources.getString(R.string.slice_not_login)
-                            primaryAction = createPendingIntentLogin()?.let {
-                                SliceAction.create(
-                                        it,
-                                        createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
-                                        SMALL_IMAGE,
-                                        ""
-                                )
-                            }
-                        }
-                    }
-            } else {
+        try {
+
+            if (userSession.isLoggedIn) {
                 if (!alreadyLoadData)
-                getData(sliceUri)
+                    getData(sliceUri)
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
                         title = contextNonNull.resources.getString(R.string.slice_daftar_rekomendasi)
-                        subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir)+recommendationModel?.get(0)?.productName).capitalizeWords()
+                        subtitle = (contextNonNull.resources.getString(R.string.slice_pembelian_terakhir) + recommendationModel?.get(0)?.productName).capitalizeWords()
                         primaryAction = SliceAction.create(
                                 mainPendingIntent,
                                 createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
@@ -120,14 +107,14 @@ class MainSliceProvider : SliceProvider() {
                             )
                     )
                     recommendationModel?.indices?.let { recomRange ->
-                      var listProduct : MutableList<Product> = mutableListOf()
+                        var listProduct: MutableList<Product> = mutableListOf()
                         for (i in recomRange) {
                             var product = Product()
                             row {
                                 setTitleItem(createWithBitmap(recommendationModel?.get(i)?.iconUrl?.getBitmap()), SMALL_IMAGE)
                                 recommendationModel.let {
                                     it?.let {
-                                        product = Product(it.get(i).categoryId.toString(), it.get(i).productName, it.get(i).title )
+                                        product = Product(it.get(i).categoryId.toString(), it.get(i).productName, it.get(i).title)
                                         listProduct.add(i, product)
                                     }
                                     it?.get(i)?.categoryName?.capitalizeWords()?.let { it1 -> setTitle(it1) }
@@ -144,12 +131,45 @@ class MainSliceProvider : SliceProvider() {
                                 }
                             }
                         }
-                    val trackingImpression = TrackingData(listProduct)
-                    Timber.d(contextNonNull.resources.getString(R.string.slice_track_timber_impression)+trackingImpression)
+                        val trackingImpression = TrackingData(listProduct)
+                        Timber.d(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + trackingImpression)
                     }
                 }
+            } else {
+                return list(contextNonNull, sliceUri, INFINITY) {
+                    setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+                    header {
+                        title = contextNonNull.resources.getString(R.string.slice_not_login)
+                        primaryAction = createPendingIntentLogin()?.let {
+                            SliceAction.create(
+                                    it,
+                                    createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                                    SMALL_IMAGE,
+                                    ""
+                            )
+                        }
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            return list(contextNonNull, sliceUri, INFINITY) {
+                setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+                header {
+                    title = contextNonNull.resources.getString(R.string.slice_not_login)
+                    primaryAction = createPendingIntentLogin()?.let {
+                        SliceAction.create(
+                                it,
+                                createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                                SMALL_IMAGE,
+                                ""
+                        )
+                    }
+                }
+            }
         }
+
     }
+
 
     private fun getData(sliceUri: Uri) {
         val gqlQuery = GraphqlHelper.loadRawString(contextNonNull.resources, R.raw.recharge_slice_gql)
@@ -170,7 +190,7 @@ class MainSliceProvider : SliceProvider() {
         }
     }
 
-    private fun updateSlice(sliceUri: Uri){
+    private fun updateSlice(sliceUri: Uri) {
         contextNonNull.contentResolver.notifyChange(sliceUri, null)
     }
 
