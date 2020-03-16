@@ -38,7 +38,6 @@ import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -51,6 +50,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.utils.TradeInUtils
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -78,6 +80,7 @@ import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWareh
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.ProductInfoP1
 import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCartDoneAddedProductDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.URL_VALUE_PROPOSITION_GUARANTEE
@@ -159,7 +162,6 @@ import kotlinx.android.synthetic.main.partial_product_shop_info.*
 import kotlinx.android.synthetic.main.partial_product_trade_in.*
 import kotlinx.android.synthetic.main.partial_value_proposition_os.*
 import kotlinx.android.synthetic.main.partial_variant_rate_estimation.*
-import tradein_common.TradeInUtils
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.roundToLong
@@ -697,6 +699,21 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
     override fun onResume() {
         super.onResume()
         updateStickyContent()
+        reloadCartCounter()
+    }
+
+    private fun reloadCartCounter() {
+        activity?.run {
+            if (isAdded) {
+                menu?.let {
+                    if (it.size() > 2) {
+                        val menuCart = it.findItem(R.id.action_cart)
+                        menuCart.actionView.cart_image_view.tag = R.drawable.ic_product_cart_counter_dark
+                        setBadgeMenuCart(menuCart)
+                    }
+                }
+            }
+        }
     }
 
     private fun doBuy() {
@@ -853,7 +870,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
     }
 
-    private fun onImageReviewClick(imageReview: List<ImageReviewItem>, position: Int) {
+    private fun onImageReviewClick(imageReview: List<ImageReviewItem>, position: Int, noOp: ComponentTrackDataModel?) {
         context?.let {
             val productId = productInfo?.basic?.id ?: return
             productDetailTracking.eventClickReviewOnBuyersImage(productId, imageReview[position].reviewId)
@@ -865,7 +882,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onSeeAllReviewClick() {
+    private fun onSeeAllReviewClick(noOp : ComponentTrackDataModel?) {
         context?.let {
             val productId = productInfo?.basic?.id ?: return
             productDetailTracking.eventClickReviewOnSeeAllImage(productId)
@@ -873,7 +890,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onImagehelpfulReviewClick(images: List<String>, pos: Int, reviewId: String?) {
+    private fun onImagehelpfulReviewClick(images: List<String>, pos: Int, reviewId: String?, noOp: ComponentTrackDataModel?) {
         productDetailTracking.eventClickReviewOnMostHelpfulReview(productInfo?.basic?.id, reviewId)
         context?.let { ImageReviewGalleryActivity.moveTo(it, ArrayList(images), pos) }
     }
@@ -1474,11 +1491,12 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
                     shopInfo.goldOS.shopTypeString,
                     productId ?: "")
 
-            val tradeinResponse = p2ShopData.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInPDP()
+            val tradeinResponse = p2ShopData.tradeinResponse?.validateTradeInPDP ?: ValidateTradeInResponse()
             productInfoViewModel.tradeInParams.isEligible = if (tradeinResponse.isEligible) 1 else 0
             productInfoViewModel.tradeInParams.usedPrice = tradeinResponse.usedPrice
             productInfoViewModel.tradeInParams.remainingPrice = tradeinResponse.remainingPrice
-            productInfoViewModel.tradeInParams.isUseKyc = if (tradeinResponse.useKyc) 1 else 0
+            productInfoViewModel.tradeInParams.isUseKyc = if (tradeinResponse.isUseKyc) 1 else 0
+            productInfoViewModel.tradeInParams.widgetString = tradeinResponse.widgetString
 
             if (tradeinResponse.isEligible) {
                 if (tv_trade_in_promo != null) {
@@ -1487,6 +1505,8 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
 
                 tv_text_price.text = if (tradeinResponse.usedPrice > 0) {
                     getString(R.string.text_price_holder, CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice, true))
+                } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
+                    tradeinResponse.widgetString
                 } else {
                     getString(R.string.trade_in_exchange)
                 }
@@ -1582,7 +1602,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         imageReviewViewView.renderData(productInfoP2)
         mostHelpfulReviewView.renderData(productInfoP2.helpfulReviews)
         latestTalkView.renderData(productInfoP2.latestTalk, productInfo?.stats?.countTalk ?: 0,
-                productInfo?.basic?.shopID ?: 0, this::onDiscussionClicked)
+                productInfo?.basic?.shopID ?: 0, this::onLastDiscussionClicked)
 
 
         partialVariantAndRateEstView.renderPurchaseProtectionData(productInfoP2.productPurchaseProtectionInfo)
@@ -1874,20 +1894,32 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         sendIntentResusltWishlistChange(productId ?: "", true)
     }
 
-    private fun onDiscussionClicked() {
-        activity?.let {
-            val intent = RouteManager.getIntent(it,
-                    ApplinkConstInternalGlobal.PRODUCT_TALK).apply {
-                putExtra(ApplinkConstInternalGlobal.PARAM_PRODUCT_ID, productInfo?.basic?.id.toString())
-            }
-            startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
-        }
+    private fun onDiscussionClicked(noOp: ComponentTrackDataModel?) {
+
         productInfo?.run {
             productDetailTracking.eventDiscussionClickedIris(this, deeplinkUrl, (shopInfo?.goldOS?.isOfficial
                     ?: 0) > 0, shopInfo?.shopCore?.name ?: "")
             productDetailTracking.sendMoEngageClickDiskusi(this,
                     (shopInfo?.goldOS?.isOfficial ?: 0) > 0,
                     shopInfo?.shopCore?.name ?: "")
+        }
+
+        discussionClicked()
+    }
+
+    private fun onLastDiscussionClicked(talkId:String){
+        productDetailTracking.eventLastDiscussionClicked(talkId,productInfo?.basic?.id.toString())
+        discussionClicked()
+    }
+
+    private fun discussionClicked(){
+        activity?.let {
+            val intent = RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalGlobal.PRODUCT_TALK,
+                    productInfo?.basic?.id.toString()
+            )
+            startActivityForResult(intent, REQUEST_CODE_TALK_PRODUCT)
         }
     }
 
@@ -1939,7 +1971,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         }
     }
 
-    private fun onSwipePicture(swipeDirection: String, position: Int) {
+    private fun onSwipePicture(swipeDirection: String, position: Int, noOp: ComponentTrackDataModel?) {
         productDetailTracking.eventProductImageOnSwipe(productId, swipeDirection, position)
     }
 

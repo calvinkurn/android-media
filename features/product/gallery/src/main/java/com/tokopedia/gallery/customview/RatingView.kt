@@ -1,12 +1,5 @@
 package com.tokopedia.gallery.customview
 
-import android.content.Context
-import android.os.Bundle
-import android.util.AttributeSet
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
-
 import com.tokopedia.gallery.R
 
 /**
@@ -15,14 +8,14 @@ import com.tokopedia.gallery.R
 object RatingView {
 
     fun getRatingDrawable(param: Int): Int {
-        when (param) {
-            0 -> return R.drawable.ic_star_none
-            1 -> return R.drawable.ic_star_one
-            2 -> return R.drawable.ic_star_two
-            3 -> return R.drawable.ic_star_three
-            4 -> return R.drawable.ic_star_four
-            5 -> return R.drawable.ic_star_five
-            else -> return R.drawable.ic_star_none
+        return when (param) {
+            0 -> R.drawable.ic_gold_star_none
+            1 -> R.drawable.ic_gold_star_one
+            2 -> R.drawable.ic_gold_star_two
+            3 -> R.drawable.ic_gold_star_three
+            4 -> R.drawable.ic_gold_star_four
+            5 -> R.drawable.ic_gold_star_five
+            else -> R.drawable.ic_gold_star_none
         }
     }
 }

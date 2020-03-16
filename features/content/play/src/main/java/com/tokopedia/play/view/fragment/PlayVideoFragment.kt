@@ -178,20 +178,20 @@ class PlayVideoFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun initVideoComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return VideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
                 .also(viewLifecycleOwner.lifecycle::addObserver)
     }
 
     private fun initVideoLoadingComponent(container: ViewGroup): UIComponent<Unit> {
-        return VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return VideoLoadingComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initOneTapComponent(container: ViewGroup): UIComponent<Unit> {
-        return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return OneTapComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
 
     private fun initOverlayVideoComponent(container: ViewGroup): UIComponent<Unit> {
-        return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this)
+        return OverlayVideoComponent(container, EventBusFactory.get(viewLifecycleOwner), this, dispatchers)
     }
     //endregion
 

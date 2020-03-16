@@ -2,7 +2,7 @@ package com.tokopedia.sellerapp.dashboard.view.listener;
 
 import android.content.Context;
 
-import com.tokopedia.core.base.presentation.CustomerView;
+import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.core.common.ticker.model.Ticker;
 import com.tokopedia.core.drawer2.data.viewmodel.DrawerNotification;
 import com.tokopedia.gm.common.data.source.cloud.model.GoldGetPmOsStatus;

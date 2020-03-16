@@ -32,8 +32,6 @@ public class ReputationLevelUtils {
     public static final int MEDAL_TYPE_3 = 3;
     public static final int MEDAL_TYPE_4 = 4;
 
-    private static boolean isDialogHidden = false;
-
     public static void setReputationMedalsWithoutDialog(Context context, LinearLayout layout, int typeMedal,
                                            int levelMedal, String reputationPoints){
         int medalType = getTypeMedal(typeMedal);

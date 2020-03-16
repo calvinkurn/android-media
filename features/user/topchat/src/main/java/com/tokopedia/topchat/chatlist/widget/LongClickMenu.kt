@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
-import com.tkpd.library.ui.view.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.widget.DividerItemDecoration
 import com.tokopedia.design.component.Menus
 import com.tokopedia.topchat.R
@@ -35,7 +35,7 @@ class LongClickMenu : BottomSheetUnify() {
 
     private fun changeCloseButtonColour() {
         context?.let { ctx ->
-            val color = ContextCompat.getColor(ctx, R.color.Neutral_N400)
+            val color = ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Neutral_N400)
             bottomSheetClose.drawable?.apply {
                 mutate()
                 setColorFilter(color, PorterDuff.Mode.SRC_ATOP)

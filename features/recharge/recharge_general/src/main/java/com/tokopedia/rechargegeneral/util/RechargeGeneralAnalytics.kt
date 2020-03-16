@@ -1,6 +1,6 @@
 package com.tokopedia.rechargegeneral.util
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.rechargegeneral.util.RechargeGeneralEventTracking.*
@@ -53,7 +53,7 @@ class RechargeGeneralAnalytics {
     fun eventClickProductListDropdown(categoryName: String, operatorName: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 Event.CLICK_CATEGORY,
-                Category.DIGITAL_CATEGORY,
+                Category.DIGITAL_HOMEPAGE,
                 Action.CLICK_PRODUCT_LIST_DROPDOWN,
                 "$categoryName - $operatorName"
         )

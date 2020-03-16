@@ -13,8 +13,32 @@
     <string name="open_shop_choose_city">Pilih Kota Terlebih Dahulu</string>
     <string name="open_shop_null_zip_code">Kota/Kecamatan tidak didukung oleh kurir pengiriman</string>
 
+    <string name="open_shop_revamp_default_hint_input_shop">Nama yang menarik lebih mudah diingat pembeli \nNama yang sudah dipilih tidak dapat diubah</string>
+    <string name="open_shop_revamp_error_shop_name_too_short">Nama Toko terlalu pendek, minimum 3 karakter</string>
+    <string name="open_shop_revamp_error_domain_too_short">Domain Toko terlalu pendek, minimum 3 karakter</string>
+    <string name="open_shop_revamp_error_shop_name_already_taken_hint_input_shop">Maaf nama toko tersebut telah digunakan</string>
+    <string name="open_shop_revamp_error_domain_already_taken_hint_input_shop">Domain sudah terdaftar. Coba rekomendasi ini</string>
+    <string name="open_shop_revamp_error_shop_name_unavailable">Nama Toko Tidak Tersedia</string>
+    <string name="open_shop_revamp_error_domain_unavailable">Domain Toko Tidak Tersedia</string>
+    <string name="open_shop_revamp_tnc_open_shop">Syarat dan Ketentuan dan Kebijakan Privasi.</string>
+    <string name="open_shop_revamp_tnc_webview_title">Syarat dan Ketentuan </string>
+    <string name="open_shop_revamp_tnc_unclickable">dan </string>
+    <string name="open_shop_revamp_tnc_privacy_policy_webview_title">Kebijakan Privasi</string>
+    <string name="open_shop_revamp_error_retry">Terjadi kendala, silahkan coba lagi</string>
+    <string name="open_shop_revamp_retry">coba lagi</string>
+    <string name="open_shop_revamp_text_horay_name">Hore <![CDATA[%1$s]]>!</string>
+    <string name="open_shop_revamp_text_title_finish_success">Selamat <![CDATA[%1$s]]>, \nTokomu sudah jadi!</string>
+
     <string name="open_shop_logout_title">Keluar dari Tokopedia</string>
     <string name="open_shop_logout_confirm">Apakah Anda ingin keluar?</string>
     <string name="open_shop_logout_button">Keluar</string>
     <string name="open_shop_cancel">Batal</string>
+    <string name="masukkan_info_toko">Masukkan info Toko</string>
+    <string name="nama_domain">Nama Domain</string>
+    <string name="title_text_greeting">Selamat Name,  Tokomu sudah jadi!</string>
+    <string name="text_add_product">Tambah produk dan mulai usahamu</string>
+    <string name="domain_short_create_shop_revamp">tokopedia.com/</string>
+    <string name="shop_splash_screen_sub_info">Tokomu sebentar lagi jadi. Ada yang segera ganti status jadi pengusaha nih…</string>
+    <string name="text_default_choice_item">Pernah berjualan di e-commerce lain</string>
+    <string name="text_default_title_quisionaire">Oh, apakah lalalalala?</string>
 </resources>

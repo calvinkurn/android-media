@@ -3,13 +3,13 @@ package com.tokopedia.topchat.chattemplate.di;
 import android.content.Context;
 
 import com.google.gson.Gson;
-import com.readystatesoftware.chuck.ChuckInterceptor;
+import com.chuckerteam.chucker.api.ChuckerInterceptor;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.abstraction.common.network.converter.TokopediaWsV4ResponseConverter;
 import com.tokopedia.abstraction.common.network.exception.HeaderErrorListResponse;
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor;
 import com.tokopedia.abstraction.common.network.interceptor.HeaderErrorResponseInterceptor;
-import com.tokopedia.abstraction.common.utils.GlobalConfig;
+import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.cacheapi.interceptor.CacheApiInterceptor;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.converter.StringResponseConverter;
@@ -27,6 +27,7 @@ import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepository;
 import com.tokopedia.topchat.chattemplate.data.repository.TemplateRepositoryImpl;
 import com.tokopedia.topchat.common.chat.api.ChatApi;
 import com.tokopedia.topchat.common.di.qualifier.InboxQualifier;
+import com.tokopedia.topchat.common.di.qualifier.TopchatContext;
 import com.tokopedia.topchat.common.network.XUserIdInterceptor;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -48,32 +49,43 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class TemplateChatModule {
 
+    private Context mContext;
+
+    private TemplateChatModule() {}
+
+    public TemplateChatModule(Context context) {
+        mContext = context;
+    }
+
+    @Provides
+    @TemplateChatScope
+    @TopchatContext
+    Context provideContext() {
+        return mContext;
+    }
+
     @TemplateChatScope
     @Provides
-    UserSessionInterface provideUserSessionInterface(
-            @ApplicationContext Context context) {
+    UserSessionInterface provideUserSessionInterface(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
     @TemplateChatScope
     @Provides
-    UserSession provideUserSession(
-            @ApplicationContext Context context) {
+    UserSession provideUserSession(@ApplicationContext Context context) {
         return new UserSession(context);
     }
 
     @TemplateChatScope
     @Provides
-    NetworkRouter provideNetworkRouter(
-            @ApplicationContext Context context) {
+    NetworkRouter provideNetworkRouter(@ApplicationContext Context context) {
         return (NetworkRouter) context;
     }
 
     @TemplateChatScope
     @Provides
-    ChuckInterceptor provideChuckInterceptor(
-            @ApplicationContext Context context) {
-        return new ChuckInterceptor(context);
+    ChuckerInterceptor provideChuckerInterceptor(@ApplicationContext Context context) {
+        return new ChuckerInterceptor(context);
     }
 
 
@@ -102,7 +114,7 @@ public class TemplateChatModule {
     OkHttpClient provideOkHttpClient(@ApplicationContext Context context,
                                      @InboxQualifier OkHttpRetryPolicy retryPolicy,
                                      ErrorResponseInterceptor errorResponseInterceptor,
-                                     ChuckInterceptor chuckInterceptor,
+                                     ChuckerInterceptor chuckInterceptor,
                                      HttpLoggingInterceptor httpLoggingInterceptor,
                                      NetworkRouter networkRouter,
                                      UserSessionInterface userSessionInterface,
