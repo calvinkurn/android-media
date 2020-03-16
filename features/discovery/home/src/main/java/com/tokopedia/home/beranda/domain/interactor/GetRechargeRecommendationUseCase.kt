@@ -51,7 +51,8 @@ class GetRechargeRecommendationUseCase @Inject constructor(
 
     private val dummyQuery by lazy {
         """
-            "rechargeRecommendation": {
+            {
+                "rechargeRecommendation": {
                   "UUID": "recharge_watf_1234567",
                   "Recommendations": [
                     {
@@ -64,6 +65,7 @@ class GetRechargeRecommendationUseCase @Inject constructor(
                     }
                   ]
                 }
+            }
         """.trimIndent()
     }
     //endregion
