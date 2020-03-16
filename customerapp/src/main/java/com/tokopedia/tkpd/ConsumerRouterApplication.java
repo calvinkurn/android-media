@@ -17,6 +17,11 @@ import androidx.fragment.app.FragmentManager;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.google.android.gms.tagmanager.DataLayer;
+import com.google.android.play.core.inappreview.InAppReviewInfo;
+import com.google.android.play.core.inappreview.InAppReviewManager;
+import com.google.android.play.core.inappreview.InAppReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.tkpd.library.utils.LocalCacheHandler;
@@ -231,6 +236,8 @@ import static com.tokopedia.core.gcm.Constants.ARG_NOTIFICATION_DESCRIPTION;
 import static com.tokopedia.kyc.Constants.Keys.KYC_CARDID_CAMERA;
 import static com.tokopedia.kyc.Constants.Keys.KYC_SELFIEID_CAMERA;
 import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_SALDO_SPLIT;
+import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE;
+import static com.tokopedia.tkpd.thankyou.view.ReactNativeThankYouPageActivity.CACHE_THANK_YOU_PAGE;
 
 
 /**
@@ -1301,7 +1308,42 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
 
     @Override
     public void showSimpleAppRatingDialog(Activity activity) {
-        SimpleAppRatingDialog.show(activity);
+        boolean hasShownInAppReviewBefore = getInAppReviewHasShownBefore();
+        boolean enableInAppReview = remoteConfig.getBoolean(RemoteConfigKey.ENABLE_IN_APP_REVIEW_DIGITAL_THANKYOU_PAGE, false);
+
+        if (enableInAppReview && !hasShownInAppReviewBefore) {
+            launchInAppReview(activity);
+        } else {
+            SimpleAppRatingDialog.show(activity);
+        }
+    }
+
+    private boolean getInAppReviewHasShownBefore() {
+        LocalCacheHandler cacheHandler = new LocalCacheHandler(this, CACHE_THANK_YOU_PAGE);
+        return cacheHandler.getBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE);
+    }
+
+    private void setInAppReviewHasShownBefore() {
+        LocalCacheHandler cacheHandler = new LocalCacheHandler(this, CACHE_THANK_YOU_PAGE);
+        cacheHandler.putBoolean(CACHE_KEY_HAS_SHOWN_IN_APP_REVIEW_BEFORE, true);
+        cacheHandler.applyEditor();
+    }
+
+    private void launchInAppReview(Activity activity) {
+        InAppReviewManager inAppReviewManager = InAppReviewManagerFactory.create(activity);
+        inAppReviewManager.requestInAppReviewFlow().addOnCompleteListener(new OnCompleteListener<InAppReviewInfo>() {
+            @Override
+            public void onComplete(Task<InAppReviewInfo> request) {
+                if (request.isSuccessful()) {
+                    inAppReviewManager.launchInAppReviewFlow(activity, request.getResult()).addOnCompleteListener(new OnCompleteListener<Integer>() {
+                        @Override
+                        public void onComplete(Task<Integer> task) {
+                            setInAppReviewHasShownBefore();
+                        }
+                    });
+                }
+            }
+        });
     }
 
     @Override
