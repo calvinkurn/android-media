@@ -26,6 +26,8 @@ data class PlayChannel(
         val description: String = "",
         @SerializedName("cover_url")
         val coverUrl: String = "",
+        @SerializedName("is_show_total_view")
+        val isShowTotalView: Boolean = false,
         @SerializedName("total_view_formatted")
         val totalView: String = "",
         @SerializedName("moderator_id")

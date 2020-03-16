@@ -6,14 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.attachvoucher.data.Voucher
+import com.tokopedia.attachvoucher.data.VoucherUiModel
 import com.tokopedia.attachvoucher.view.adapter.viewholder.AttachVoucherViewHolder
 
 class AttachVoucherAdapter(private val baseListAdapterTypeFactory: AttachVoucherTypeFactory)
     : BaseListAdapter<Visitable<*>, AttachVoucherTypeFactory>(baseListAdapterTypeFactory),
         AttachVoucherViewHolder.Listener {
 
-    val selectedVoucher: MutableLiveData<Voucher?> = MutableLiveData()
+    val selectedVoucher: MutableLiveData<VoucherUiModel?> = MutableLiveData()
     private var selectedVoucherPosition: Int = RecyclerView.NO_POSITION
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<out Visitable<*>> {
@@ -21,7 +21,7 @@ class AttachVoucherAdapter(private val baseListAdapterTypeFactory: AttachVoucher
         return baseListAdapterTypeFactory.createViewHolder(view, viewType, this)
     }
 
-    override fun checkCurrentItem(element: Voucher, position: Int) {
+    override fun checkCurrentItem(element: VoucherUiModel, position: Int) {
         selectedVoucher.postValue(element)
         selectedVoucherPosition = position
     }
@@ -33,7 +33,7 @@ class AttachVoucherAdapter(private val baseListAdapterTypeFactory: AttachVoucher
         selectedVoucherPosition = RecyclerView.NO_POSITION
     }
 
-    override fun isChecked(element: Voucher): Boolean {
+    override fun isChecked(element: VoucherUiModel): Boolean {
         return selectedVoucher.value == element
     }
 

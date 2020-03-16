@@ -25,6 +25,7 @@ import com.tokopedia.notifcenter.data.entity.NotifCenterSendNotifData
 import com.tokopedia.notifcenter.data.entity.NotificationTabItem
 import com.tokopedia.notifcenter.data.entity.NotificationUpdateUnread
 import com.tokopedia.notifcenter.di.DaggerNotificationUpdateComponent
+import com.tokopedia.notifcenter.di.module.CommonModule
 import com.tokopedia.notifcenter.presentation.adapter.NotificationFragmentAdapter
 import com.tokopedia.notifcenter.presentation.contract.NotificationActivityContract
 import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
@@ -105,7 +106,10 @@ class NotificationActivity : BaseTabActivity(), HasComponent<BaseAppComponent>,
 
     private fun initInjector() {
         DaggerNotificationUpdateComponent.builder()
-                .baseAppComponent(component).build().inject(this)
+                .baseAppComponent(component)
+                .commonModule(CommonModule(this))
+                .build()
+                .inject(this)
         presenter.attachView(this)
     }
 

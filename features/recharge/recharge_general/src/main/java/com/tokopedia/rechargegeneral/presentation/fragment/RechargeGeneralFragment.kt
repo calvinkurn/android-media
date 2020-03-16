@@ -34,6 +34,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
+import com.tokopedia.common_digital.common.RechargeAnalytics
 import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.onTabSelected
@@ -76,6 +77,8 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     lateinit var viewModel: RechargeGeneralViewModel
     @Inject
     lateinit var sharedViewModel: SharedRechargeGeneralViewModel
+    @Inject
+    lateinit var rechargeAnalytics: RechargeAnalytics
     @Inject
     lateinit var rechargeGeneralAnalytics: RechargeGeneralAnalytics
     private var saveInstanceManager: SaveInstanceCacheManager? = null
@@ -129,10 +132,6 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             viewModel = viewModelProvider.get(RechargeGeneralViewModel::class.java)
             sharedViewModel = viewModelProvider.get(SharedRechargeGeneralViewModel::class.java)
-
-            // Setup viewmodel queries
-            viewModel.operatorClusterQuery = GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group)
-            viewModel.productListQuery = GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input)
 
             saveInstanceManager = SaveInstanceCacheManager(it, savedInstanceState)
             val savedEnquiryData: TopupBillsEnquiry? = saveInstanceManager!!.get(EXTRA_PARAM_ENQUIRY_DATA, TopupBillsEnquiry::class.java)
@@ -546,18 +545,14 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun setupAutoFillData(data: TopupBillsRecommendation) {
-        val operatorClusters = viewModel.operatorCluster.value
-        if (operatorClusters is Success
-                && !operatorClusters.data.operatorGroups.isNullOrEmpty()) {
-            with (data) {
-                this@RechargeGeneralFragment.operatorId = operatorId
-                selectedProduct = RechargeGeneralProductSelectData(productId.toString(), title)
-                if (clientNumber.isNotEmpty()) {
-                    inputData[PARAM_CLIENT_NUMBER] = clientNumber
-                }
+        with (data) {
+            this@RechargeGeneralFragment.operatorId = operatorId
+            selectedProduct = RechargeGeneralProductSelectData(productId.toString(), title)
+            if (clientNumber.isNotEmpty()) {
+                inputData[PARAM_CLIENT_NUMBER] = clientNumber
             }
-            renderInitialData()
         }
+        renderInitialData()
     }
 
     private fun renderTickers(tickers: List<TopupBillsTicker>) {
@@ -653,9 +648,9 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
 
     private fun renderClientNumber(favNumber: TopupBillsFavNumberItem) {
         with (favNumber) {
-            this@RechargeGeneralFragment.operatorId = operatorId.toIntOrNull() ?: 0
+            operatorId.toIntOrNull()?.let { oprId -> this@RechargeGeneralFragment.operatorId = oprId }
             inputData[PARAM_CLIENT_NUMBER] = clientNumber
-            selectedProduct = RechargeGeneralProductSelectData(productId)
+            if (productId.isNotEmpty()) selectedProduct = RechargeGeneralProductSelectData(productId)
 
             if (adapter.data.isNotEmpty()) {
                 val clientNumberInput: RechargeGeneralProductInput? = adapter.data.find { it is RechargeGeneralProductInput && it.name == PARAM_CLIENT_NUMBER } as? RechargeGeneralProductInput
@@ -697,11 +692,17 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     private fun getOperatorCluster(menuId: Int) {
-        viewModel.getOperatorCluster(viewModel.createParams(menuId))
+        viewModel.getOperatorCluster(
+                GraphqlHelper.loadRawString(resources, R.raw.query_catalog_operator_select_group),
+                viewModel.createOperatorClusterParams(menuId)
+        )
     }
 
     private fun getProductList(menuId: Int, operator: Int) {
-        viewModel.getProductList(viewModel.createParams(menuId, operator))
+        viewModel.getProductList(
+                GraphqlHelper.loadRawString(resources, com.tokopedia.common.topupbills.R.raw.query_catalog_product_input),
+                viewModel.createProductListParams(menuId, operator)
+        )
     }
 
     override fun onFinishInput(label: String, input: String, position: Int, isManual: Boolean) {
@@ -765,8 +766,11 @@ class RechargeGeneralFragment: BaseTopupBillsFragment(),
     }
 
     override fun processMenuDetail(data: TopupBillsMenuDetail) {
-        (activity as? BaseSimpleActivity)?.updateTitle(data.catalog.label)
-        categoryName = data.catalog.name.toLowerCase()
+        with (data.catalog) {
+            (activity as? BaseSimpleActivity)?.updateTitle(label)
+            categoryName = name.toLowerCase()
+            rechargeAnalytics.eventOpenScreen(userSession.isLoggedIn, categoryName, categoryId.toString())
+        }
         renderTickers(data.tickers)
         // Set recommendation data if available
         hasFavoriteNumbers = data.recommendations.isNotEmpty()

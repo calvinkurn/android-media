@@ -7,17 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethod
 import android.view.inputmethod.InputMethodManager
-import android.widget.FrameLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common_digital.common.util.AnalyticUtils
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.di.DigitalHomePageComponent
@@ -27,7 +24,7 @@ import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchType
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.vouchergame.list.view.viewmodel.DigitalHomePageSearchViewModel
+import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
 import kotlinx.android.synthetic.main.layout_digital_home_search.*
 import javax.inject.Inject
 
