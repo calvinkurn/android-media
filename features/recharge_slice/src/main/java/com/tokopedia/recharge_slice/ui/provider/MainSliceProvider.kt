@@ -174,7 +174,7 @@ class MainSliceProvider : SliceProvider() {
                 alreadyLoadData = true
                 updateSlice(sliceUri)
             } catch (e: Exception) {
-
+                Timber.d(contextNonNull.resources.getString(R.string.slice_track_timber_impression) + e.message)
             }
         }
     }
