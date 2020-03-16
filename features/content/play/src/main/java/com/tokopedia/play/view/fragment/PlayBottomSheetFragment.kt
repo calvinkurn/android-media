@@ -228,7 +228,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                     Toaster.make(requireView(),
                             getString(R.string.play_add_to_cart_message_success),
                             Snackbar.LENGTH_LONG,
-                            actionText = getString(R.string.play_add_to_cart_action_success),
+                            actionText = getString(R.string.play_view_idn),
                             clickListener = View.OnClickListener {
                                 RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
                                 PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
