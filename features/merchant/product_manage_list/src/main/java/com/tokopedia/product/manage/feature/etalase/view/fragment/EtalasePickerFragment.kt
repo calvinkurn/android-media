@@ -85,6 +85,7 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_ADD_ETALASE && resultCode == Activity.RESULT_OK) {
             if (data != null && data.getBooleanExtra(PARAM_ADD_ETALASE_SUCCESS, false)) {
+                clearEtalaseCache()
                 getEtalaseList()
             }
         }
@@ -164,6 +165,10 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
     private fun getEtalaseList() {
         val shopId = userSession.shopId
         viewModel.getEtalaseList(shopId)
+    }
+
+    private fun clearEtalaseCache() {
+        viewModel.clearGetEtalaseCache()
     }
 
     private fun setupSaveButton() {

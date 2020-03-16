@@ -47,4 +47,8 @@ class EtalasePickerViewModel @Inject constructor(
             _getEtalaseResult.value = Fail(it)
         })
     }
+
+    fun clearGetEtalaseCache() {
+        getEtalaseUseCase.clearCache()
+    }
 }
