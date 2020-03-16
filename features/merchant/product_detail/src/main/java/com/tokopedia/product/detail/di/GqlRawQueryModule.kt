@@ -236,6 +236,13 @@ class GqlRawQueryModule {
     fun provideProductCategory(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_product_catalog)
 
+    @ProductDetailScope
+    @Provides
+    @IntoMap
+    @StringKey(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
+    fun provideGetCartType(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
+
 
     @ProductDetailScope
     @Provides
@@ -260,13 +267,6 @@ class GqlRawQueryModule {
 
     @ProductDetailScope
     @Provides
-    @Named(RawQueryKeyConstant.QUERY_GET_CART_TYPE)
-    fun provideGetCartType(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.gql_get_cart_type)
-    }
-
-    @ProductDetailScope
-    @Provides
     @Named("atcMutation")
     fun provideAddToCartMutation(@ApplicationContext context: Context):
             String = GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart)
@@ -276,5 +276,12 @@ class GqlRawQueryModule {
     @Named("atcOcsMutation")
     fun provideAddToCartOcsMutation(@ApplicationContext context: Context): String {
         return GraphqlHelper.loadRawString(context.resources, R.raw.mutation_add_to_cart_one_click_shipment)
+    }
+
+    @ProductDetailScope
+    @Provides
+    @Named(AtcConstant.MUTATION_ATC_OCC)
+    fun provideAtcOccMutation(@ApplicationContext context: Context): String {
+        return GraphqlHelper.loadRawString(context.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart_one_click_checkout)
     }
 }

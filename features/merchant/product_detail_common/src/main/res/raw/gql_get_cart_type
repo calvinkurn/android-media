@@ -8,8 +8,8 @@ query getCartRedirection($params:[CartRedirectionParams]){
         text
         color
         cart_type
+        show_recommendation
       }
-      show_recommendation
       unavailable_buttons
     }
   }
