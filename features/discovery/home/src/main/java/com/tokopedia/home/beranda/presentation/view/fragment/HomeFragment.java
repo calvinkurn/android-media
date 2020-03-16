@@ -1402,7 +1402,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public void onPopularKeywordSectionReloadClicked(int position, @NotNull DynamicHomeChannel.Channels channel) {
         viewModel.getPopularKeywordData();
-        TrackApp.getInstance().getGTM().sendGeneralEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickReload(channel));
+        HomePageTrackingV2.PopularKeyword.INSTANCE.sendPopularKeywordClickReload(channel);
     }
 
     @Override
@@ -1413,14 +1413,14 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public void onPopularKeywordItemClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
         RouteManager.route(getContext(),applink);
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomePageTrackingV2.PopularKeyword.INSTANCE.getPopularKeywordClickItem(channel, position, keyword));
+        HomePageTrackingV2.PopularKeyword.INSTANCE.sendPopularKeywordClickItem(channel, position, keyword);
     }
 
 
     @Override
     public void onMixLeftSeeMoreClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel) {
         RouteManager.route(getContext(), applink);
-        TrackApp.getInstance().getGTM().sendGeneralEvent(HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftClickLoadMore(channel));
+        HomePageTrackingV2.MixLeft.INSTANCE.sendMixLeftClickLoadMore(channel);
     }
 
     @Override
@@ -1431,7 +1431,7 @@ public class HomeFragment extends BaseDaggerFragment implements
     @Override
     public void onFlashSaleCardClicked(int position, @NotNull DynamicHomeChannel.Channels channel, @NonNull DynamicHomeChannel.Grid grid, String applink) {
         RouteManager.route(getContext(), applink);
-        TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(HomePageTrackingV2.MixLeft.INSTANCE.getMixLeftProductClick(channel, grid, position - 1));
+        HomePageTrackingV2.MixLeft.INSTANCE.sendMixLeftProductClick(channel, grid, position - 1);
     }
 
     protected void registerBroadcastReceiverTokoCash() {

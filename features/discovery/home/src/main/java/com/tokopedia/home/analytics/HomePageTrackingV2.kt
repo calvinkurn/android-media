@@ -163,6 +163,10 @@ object HomePageTrackingV2 : BaseTracking() {
             ) as HashMap<String, Any>
         }
 
+        fun sendMixLeftClickLoadMore(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getMixLeftClickLoadMore(channel))
+        }
+
         fun getMixLeftProductView(channel: DynamicHomeChannel.Channels, isToIris: Boolean = false) = getBasicProductView(
                 event = if(isToIris) Event.PRODUCT_VIEW_IRIS else Event.PRODUCT_VIEW,
                 eventCategory = Category.HOMEPAGE,
@@ -211,6 +215,10 @@ object HomePageTrackingV2 : BaseTracking() {
                         Value.LIST, "1", LIST_MIX_LEFT, channel.header.name
                 )
         )
+
+        fun sendMixLeftProductClick(channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, position: Int) {
+            getTracker().sendEnhanceEcommerceEvent(getMixLeftProductClick(channel, grid, position))
+        }
     }
 
     object PopularKeyword {
@@ -255,6 +263,9 @@ object HomePageTrackingV2 : BaseTracking() {
 
                 })
 
+        fun sendPopularKeywordClickItem(channel: DynamicHomeChannel.Channels, position: Int, keyword: String) {
+            getTracker().sendEnhanceEcommerceEvent(getPopularKeywordClickItem(channel, position, keyword))
+        }
 
         fun getPopularKeywordClickReload(channel: DynamicHomeChannel.Channels): HashMap<String, Any> {
             return DataLayer.mapOf(
@@ -264,6 +275,10 @@ object HomePageTrackingV2 : BaseTracking() {
                     Label.KEY, channel.header.name,
                     Label.CHANNEL_LABEL, channel.header.name
             ) as HashMap<String, Any>
+        }
+
+        fun sendPopularKeywordClickReload(channel: DynamicHomeChannel.Channels) {
+            getTracker().sendGeneralEvent(getPopularKeywordClickReload(channel))
         }
     }
 

@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.product_card_flashsale_layout.view.*
 
 class ProductCardFlashSaleView: BaseCustomView, IProductCardFlashSaleView {
 
-
     constructor(context: Context): super(context) {
         init()
     }
@@ -34,11 +33,8 @@ class ProductCardFlashSaleView: BaseCustomView, IProductCardFlashSaleView {
     }
 
     override fun setProductModel(productCardModel: ProductCardFlashSaleModel) {
-
         imageProduct?.loadImage(productCardModel.productImageUrl)
-
         renderProductCardFlashSaleContent(productCardModel)
-
     }
 
     override fun getCardMaxElevation() = cardViewProductCard?.maxCardElevation ?: 0f

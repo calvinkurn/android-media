@@ -63,7 +63,6 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         setupBackground(channel)
         setupList(channel)
         setSnapEffect()
-        setParallaxEffect()
     }
 
     override fun getViewHolderClassName(): String {
@@ -75,11 +74,16 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
-        parallaxBackground.setBackgroundColor(Color.parseColor(channel.banner.backColor))
-        image.loadImage(channel.banner.imageUrl)
+        if (channel.banner.backColor.isNotEmpty()) {
+            parallaxBackground.setBackgroundColor(Color.parseColor(channel.banner.backColor))
+        }
+        if (channel.banner.imageUrl.isNotEmpty()) {
+            image.loadImage(channel.banner.imageUrl)
+        }
     }
 
     private fun setupList(channel: DynamicHomeChannel.Channels) {
+        image.alpha = 1f
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
         val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(flashSaleCardListener, channel)
@@ -99,6 +103,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                 throwable.printStackTrace()
             }
         }
+        recyclerView.addOnScrollListener(getParallaxEffect())
     }
 
     private fun setSnapEffect() {
@@ -106,9 +111,8 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         snapHelper.attachToRecyclerView(recyclerView)
     }
 
-    private fun setParallaxEffect() {
-        image.alpha = 1f
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+    private fun getParallaxEffect(): RecyclerView.OnScrollListener {
+        return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 if (layoutManager.findFirstVisibleItemPosition() == 0) {
@@ -126,7 +130,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
                     }
                 }
             }
-        })
+        }
     }
 
     private fun convertDataToProductData(channel: DynamicHomeChannel.Channels): List<FlashSaleDataModel> {
@@ -160,11 +164,9 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         this.layoutParams = carouselLayoutParams
     }
 
-
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardFlashSaleModel>): Int {
         val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
         return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
-
     }
 
 }
