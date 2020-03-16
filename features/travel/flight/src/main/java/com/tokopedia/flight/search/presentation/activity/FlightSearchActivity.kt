@@ -8,6 +8,8 @@ import android.view.MenuItem
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.coachmark.CoachMarkBuilder
+import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.flight.R
 import com.tokopedia.flight.airport.view.viewmodel.FlightAirportViewModel
 import com.tokopedia.flight.bookingV3.presentation.activity.FlightBookingActivity
@@ -44,7 +46,6 @@ open class FlightSearchActivity : BaseFlightActivity(),
         setupSearchToolbar()
 
         remoteConfig = FirebaseRemoteConfigImpl(this)
-
     }
 
     override fun getNewFragment(): Fragment = FlightSearchFragment.newInstance(passDataViewModel)
@@ -157,6 +158,7 @@ open class FlightSearchActivity : BaseFlightActivity(),
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menu.clear()
         menuInflater.inflate(R.menu.menu_flight_search, menu)
+        setupChangeSearchCoachMark()
         return true
     }
 
@@ -200,7 +202,21 @@ open class FlightSearchActivity : BaseFlightActivity(),
 
     open fun isReturnPage(): Boolean = false
 
+    private fun setupChangeSearchCoachMark() {
+        val coachMarkItems = arrayListOf<CoachMarkItem>()
+        coachMarkItems.add(CoachMarkItem(
+                findViewById(R.id.menu_change_search),
+                getString(R.string.flight_search_coach_mark_change_title),
+                getString(R.string.flight_search_coach_mark_change_description)
+        ))
+
+        val coachMark = CoachMarkBuilder().build()
+        coachMark.show(this, TAG_CHANGE_COACH_MARK, coachMarkItems)
+    }
+
     companion object {
+
+        const val TAG_CHANGE_COACH_MARK = "TagChangeSearchCoachMark"
 
         const val EXTRA_PASS_DATA = "EXTRA_PASS_DATA"
 
