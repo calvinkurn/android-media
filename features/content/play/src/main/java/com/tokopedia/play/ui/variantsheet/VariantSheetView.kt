@@ -23,6 +23,7 @@ import com.tokopedia.play.ui.variantsheet.itemdecoration.VariantPlaceholderItemD
 import com.tokopedia.play.view.custom.TopShadowOutlineProvider
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.VariantPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.VariantSheetUiModel
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.variant_common.model.ProductVariantCommon
@@ -58,8 +59,6 @@ class VariantSheetView(
     private val tvCurrentPrice: TextView = view.findViewById(R.id.tv_current_price)
 
     private val globalError: GlobalError = view.findViewById(R.id.global_error_variant)
-    private val groupContent: Group = view.findViewById(R.id.group_content)
-    private val groupProductOverview: Group = view.findViewById(R.id.group_product_overview)
 
     private val imageRadius = view.resources.getDimensionPixelSize(R.dimen.play_product_line_image_radius).toFloat()
     private val bottomSheetBehavior = BottomSheetBehavior.from(view)
@@ -170,7 +169,7 @@ class VariantSheetView(
     }
 
     internal fun setVariantSheet(model: VariantSheetUiModel) {
-        showContent(true)
+        showContent(shouldShow = true, withPlaceholder = false)
 
         variantSheetUiModel = model
 
@@ -191,31 +190,15 @@ class VariantSheetView(
             if (model.action == ProductAction.Buy) listener.onBuyClicked(this, model.product)
             else listener.onAddToCartClicked(this, model.product)
         }
-
-        showPlaceholder(false)
     }
 
-    internal fun showPlaceholder(isShow: Boolean, placeholderList: List<Any> = emptyList()) {
-        showContent(true)
-
-        if (isShow) {
-            phProductVariant.visible()
-            phBtnAction.visible()
-            variantAdapter.setItemsAndAnimateChanges(placeholderList)
-
-            btnAction.gone()
-            clProductVariant.gone()
-        } else {
-            phProductVariant.gone()
-            phBtnAction.gone()
-
-            btnAction.visible()
-            clProductVariant.visible()
-        }
+    internal fun showPlaceholder() {
+        showContent(shouldShow = true, withPlaceholder = true)
+        variantAdapter.setItemsAndAnimateChanges(getPlaceholderModel())
     }
 
     internal fun showError(isConnectionError: Boolean, onError: () -> Unit) {
-        showContent(false)
+        showContent(shouldShow = false, withPlaceholder = false)
 
         globalError.setActionClickListener {
             onError()
@@ -245,16 +228,44 @@ class VariantSheetView(
 
     }
 
-    private fun showContent(shouldShow: Boolean) {
+    private fun showContent(shouldShow: Boolean, withPlaceholder: Boolean) {
         if (shouldShow) {
-            groupContent.visible()
-            groupProductOverview.visible()
+            btnContainer.visible()
+
+            if (withPlaceholder) {
+                phProductVariant.visible()
+                phBtnAction.visible()
+
+                clProductVariant.gone()
+                btnAction.gone()
+            }
+            else {
+                phProductVariant.gone()
+                phBtnAction.gone()
+
+                clProductVariant.visible()
+                btnAction.visible()
+            }
+
             globalError.gone()
         } else {
-            groupContent.gone()
-            groupProductOverview.gone()
+            clProductVariant.gone()
+            phProductVariant.gone()
+            btnContainer.gone()
+
             globalError.visible()
         }
+    }
+
+    private fun getPlaceholderModel() = List(PLACEHOLDER_VARIANT_CATEGORY_COUNT) {
+        VariantPlaceholderUiModel.Category(
+                List(PLACEHOLDER_VARIANT_OPTION_COUNT) { VariantPlaceholderUiModel.Option }
+        )
+    }
+
+    companion object {
+        private const val PLACEHOLDER_VARIANT_CATEGORY_COUNT = 2
+        private const val PLACEHOLDER_VARIANT_OPTION_COUNT = 7
     }
 
     interface Listener {

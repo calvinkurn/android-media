@@ -37,7 +37,7 @@ class VariantSheetComponent(
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.VariantSheet]?.let(::handleShowHideVariantSheet) }
                             is ScreenStateEvent.SetVariantSheet -> when (it.variantResult) {
-                                is PlayResult.Loading -> if (it.variantResult.showPlaceholder) uiView.showPlaceholder(true, it.variantResult.placeholderList)
+                                is PlayResult.Loading -> if (it.variantResult.showPlaceholder) uiView.showPlaceholder()
                                 is PlayResult.Success -> uiView.setVariantSheet(it.variantResult.data)
                                 is PlayResult.Failure -> uiView.showError(
                                         isConnectionError = it.variantResult.error is ConnectException || it.variantResult.error is UnknownHostException,

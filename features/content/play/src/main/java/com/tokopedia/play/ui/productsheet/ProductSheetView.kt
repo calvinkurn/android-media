@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Group
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,7 +23,9 @@ import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDeco
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.ProductPlaceholderUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
+import com.tokopedia.play.view.uimodel.VoucherPlaceholderUiModel
 
 /**
  * Created by jegul on 02/03/20
@@ -41,7 +44,8 @@ class ProductSheetView(
     private val rvVoucherList: RecyclerView = view.findViewById(R.id.rv_voucher_list)
     private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
 
-    private val globalErrorProduct: GlobalError = view.findViewById(R.id.global_error_product)
+    private val globalError: GlobalError = view.findViewById(R.id.global_error_product)
+    private val groupContent: Group = view.findViewById(R.id.group_product_content)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: ProductLineUiModel) {
@@ -110,7 +114,7 @@ class ProductSheetView(
     }
 
     internal fun setProductSheet(model: ProductSheetUiModel) {
-        globalErrorProduct.gone()
+        showContent(true)
 
         tvSheetTitle.text = model.title
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
@@ -119,12 +123,41 @@ class ProductSheetView(
         if (model.voucherList.isEmpty()) rvVoucherList.gone()
     }
 
-    internal fun setErrorNoConnection() {
-        globalErrorProduct.setType(GlobalError.NO_CONNECTION)
-        globalErrorProduct.setActionClickListener {
+    internal fun showPlaceholder() {
+        showContent(true)
+        setProductSheet(getPlaceholderModel())
+    }
 
+    internal fun showError(isConnectionError: Boolean, onError: () -> Unit) {
+        showContent(false)
+
+        globalError.setActionClickListener {
+            onError()
         }
-        globalErrorProduct.visible()
+
+        globalError.setType(
+                if (isConnectionError) GlobalError.NO_CONNECTION else GlobalError.SERVER_ERROR
+        )
+    }
+
+    private fun showContent(shouldShow: Boolean) {
+        if (shouldShow) {
+            groupContent.visible()
+            globalError.gone()
+        } else {
+            groupContent.gone()
+            globalError.visible()
+        }
+    }
+
+    private fun getPlaceholderModel() = ProductSheetUiModel(
+            title = "",
+            voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
+            productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
+    )
+
+    companion object {
+        private const val PLACEHOLDER_COUNT = 5
     }
 
     interface Listener {

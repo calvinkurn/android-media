@@ -26,7 +26,7 @@ sealed class ScreenStateEvent : ComponentEvent {
     data class SetTotalLikes(val totalLikes: TotalLikeUiModel): ScreenStateEvent()
     data class SetPinned(val pinned: PinnedUiModel) : ScreenStateEvent()
     data class SetQuickReply(val quickReply: QuickReplyUiModel) : ScreenStateEvent()
-    data class SetProductSheet(val productSheetModel: ProductSheetUiModel) : ScreenStateEvent()
+    data class SetProductSheet(val productResult: PlayResult<ProductSheetUiModel>) : ScreenStateEvent()
     data class SetVariantSheet(val variantResult: PlayResult<VariantSheetUiModel>) : ScreenStateEvent()
     /**
      * Chat

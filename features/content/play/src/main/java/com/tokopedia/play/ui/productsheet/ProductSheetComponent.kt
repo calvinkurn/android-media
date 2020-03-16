@@ -9,10 +9,13 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
+import com.tokopedia.play.view.wrapper.PlayResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.UnknownHostException
 
 /**
  * Created by jegul on 02/03/20
@@ -33,7 +36,14 @@ class ProductSheetComponent(
                         when (it) {
                             ScreenStateEvent.Init -> uiView.hide()
                             is ScreenStateEvent.BottomInsetsChanged -> { it.insetsViewMap[BottomInsetsType.ProductSheet]?.let(::handleShowHideProductSheet) }
-                            is ScreenStateEvent.SetProductSheet -> uiView.setProductSheet(it.productSheetModel)
+                            is ScreenStateEvent.SetProductSheet -> when (it.productResult) {
+                                is PlayResult.Loading -> if (it.productResult.showPlaceholder) uiView.showPlaceholder()
+                                is PlayResult.Success -> uiView.setProductSheet(it.productResult.data)
+                                is PlayResult.Failure -> uiView.showError(
+                                        isConnectionError = it.productResult.error is ConnectException || it.productResult.error is UnknownHostException,
+                                        onError = it.productResult.onRetry
+                                )
+                            }
                         }
                     }
         }

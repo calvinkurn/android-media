@@ -8,6 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_play_bottom_sheet"
+        android:clickable="true"
+        android:focusable="true"
         app:behavior_hideable="true"
         app:behavior_skipCollapsed="true"
         app:layout_behavior="com.tokopedia.play.view.custom.behavior.LockableBottomSheetBehavior"
@@ -52,6 +54,13 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 />
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_product_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="rv_voucher_list, rv_product_list"
+                />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <include layout="@layout/bottom_sheet_bottom_overlay"/>
@@ -62,10 +71,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"
+            android:elevation="@dimen/play_product_variant_elevation"
+            android:clickable="true"
+            android:focusable="true"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/v_bottom_overlay"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
