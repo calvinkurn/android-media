@@ -8,11 +8,11 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tvCentralizedPromoCreationTitleShimmer"
-        android:layout_width="200dp"
-        android:layout_height="@dimen/sah_dimen_18dp"
+        android:layout_width="@dimen/centralized_promo_text_shimmer_width_200dp"
+        android:layout_height="@dimen/centralized_promo_text_shimmer_height_18dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/centralized_promo_dimen_4dp"
         android:layout_marginEnd="@dimen/layout_lvl2"
         android:layout_marginRight="@dimen/layout_lvl2"
         app:corners="10"
@@ -22,8 +22,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/recommendedOne"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
@@ -38,8 +38,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/recommendedTwo"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
@@ -54,8 +54,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/recommendedThree"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
         android:layout_marginTop="@dimen/layout_lvl2"
@@ -70,8 +70,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/recommendedFour"
-        android:layout_width="0dp"
-        android:layout_height="150dp"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"

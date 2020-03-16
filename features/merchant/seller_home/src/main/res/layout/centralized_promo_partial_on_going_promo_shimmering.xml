@@ -14,16 +14,16 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderTextView
         android:id="@+id/tvCentralizedPromoOnGoingShimmer"
-        android:layout_width="200dp"
-        android:layout_height="@dimen/sah_dimen_18dp"
+        android:layout_width="@dimen/centralized_promo_text_shimmer_width_200dp"
+        android:layout_height="@dimen/centralized_promo_text_shimmer_height_18dp"
         app:corners="10"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/itemOnGoingOne"
-        android:layout_width="@dimen/sah_dimen_150dp"
-        android:layout_height="@dimen/sah_dimen_150dp"
+        android:layout_width="@dimen/centralized_promo_image_shimmer_height_150dp"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginTop="@dimen/layout_lvl2"
         app:corners="10"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,8 +31,8 @@
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
         android:id="@+id/itemOnGoingTwo"
-        android:layout_width="@dimen/sah_dimen_150dp"
-        android:layout_height="@dimen/sah_dimen_150dp"
+        android:layout_width="@dimen/centralized_promo_image_shimmer_height_150dp"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"
@@ -41,8 +41,8 @@
         app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoOnGoingShimmer" />
 
     <com.elyeproj.loaderviewlibrary.LoaderImageView
-        android:layout_width="@dimen/sah_dimen_150dp"
-        android:layout_height="@dimen/sah_dimen_150dp"
+        android:layout_width="@dimen/centralized_promo_image_shimmer_height_150dp"
+        android:layout_height="@dimen/centralized_promo_image_shimmer_height_150dp"
         android:layout_marginStart="@dimen/layout_lvl1"
         android:layout_marginLeft="@dimen/layout_lvl1"
         android:layout_marginTop="@dimen/layout_lvl2"

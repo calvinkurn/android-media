@@ -24,13 +24,6 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
             tvOnGoingPromoStatus.text = element.status.text
             tvOnGoingPromoCount.text = element.status.count.toString()
             tvSeePastPromotion.text = element.footer.text
-
-            addOnImpressionListener(element.impressHolder) {
-                CentralizedPromoTracking.sendImpressionOnGoingPromoStatus(
-                        widgetName = element.title,
-                        value = element.status.count,
-                        state = element.status.text)
-            }
         }
 
         initListeners(element)
@@ -52,6 +45,12 @@ class OnGoingPromoViewHolder(view: View?) : AbstractViewHolder<OnGoingPromoUiMod
             }
             ivCaret.setOnClickListener {
                 onFooterClicked(element.footer.url, element.title, element.footer.text)
+            }
+            addOnImpressionListener(element.impressHolder) {
+                CentralizedPromoTracking.sendImpressionOnGoingPromoStatus(
+                        widgetName = element.title,
+                        value = element.status.count,
+                        state = element.status.text)
             }
         }
     }

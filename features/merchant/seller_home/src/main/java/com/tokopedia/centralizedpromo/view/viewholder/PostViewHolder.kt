@@ -6,7 +6,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
 import com.tokopedia.centralizedpromo.view.model.PostUiModel
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.R.layout.centralized_promo_item_post
@@ -29,9 +28,9 @@ class PostViewHolder(view: View?) : AbstractViewHolder<PostUiModel>(view) {
 
     private fun loadImage(featuredMediaURL: String) = with(itemView) {
         if (featuredMediaURL.isNotBlank()) {
-            ImageHandler.loadImageRounded(context, ivPromotionPost, featuredMediaURL, context.dpToPx(8))
+            ImageHandler.loadImageRounded(context, ivPromotionPost, featuredMediaURL, resources.getDimension(R.dimen.layout_lvl1))
         } else {
-            ImageHandler.loadImageRounded2(context, ivPromotionPost, R.drawable.error_drawable, context.dpToPx(8))
+            ImageHandler.loadImageRounded2(context, ivPromotionPost, R.drawable.error_drawable, resources.getDimension(R.dimen.layout_lvl1))
         }
     }
 

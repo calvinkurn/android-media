@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginStart="4dp"
-    android:layout_marginLeft="4dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginEnd="4dp"
-    android:layout_marginRight="4dp"
-    android:layout_marginBottom="4dp"
-    app:cardCornerRadius="@dimen/layout_lvl1"
+    android:layout_marginStart="@dimen/centralized_promo_on_going_item_margin"
+    android:layout_marginLeft="@dimen/centralized_promo_on_going_item_margin"
+    android:layout_marginTop="@dimen/centralized_promo_on_going_item_margin"
+    android:layout_marginEnd="@dimen/centralized_promo_on_going_item_margin"
+    android:layout_marginRight="@dimen/centralized_promo_on_going_item_margin"
+    android:layout_marginBottom="@dimen/centralized_promo_on_going_item_margin"
+    app:cardCornerRadius="@dimen/centralized_promo_on_going_item_card_radius"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
@@ -20,11 +20,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minWidth="160dp">
+        android:minWidth="@dimen/centralized_promo_on_going_promo_item_min_width">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvOnGoingPromoTitle"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:padding="@dimen/layout_lvl1"
             android:textColor="@color/Neutral_N700_96"
@@ -38,8 +38,8 @@
 
         <View
             android:id="@+id/headerDivider"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/sah_dimen_1dp"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/centralized_promo_on_going_divider_height"
             android:background="@color/Neutral_N75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -49,11 +49,11 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvOnGoingPromoStatus"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/layout_lvl1"
             android:paddingLeft="@dimen/layout_lvl1"
-            android:paddingTop="4dp"
+            android:paddingTop="@dimen/centralized_promo_dimen_4dp"
             android:paddingEnd="@dimen/layout_lvl1"
             android:paddingRight="@dimen/layout_lvl1"
             android:textColor="@color/sah_description_desc"
@@ -67,13 +67,13 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvOnGoingPromoCount"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/layout_lvl0"
             android:layout_height="wrap_content"
             android:paddingStart="@dimen/layout_lvl1"
             android:paddingLeft="@dimen/layout_lvl1"
             android:paddingEnd="@dimen/layout_lvl1"
             android:paddingRight="@dimen/layout_lvl1"
-            android:paddingBottom="4dp"
+            android:paddingBottom="@dimen/centralized_promo_dimen_4dp"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/tvOnGoingPromoStatus"
@@ -85,8 +85,8 @@
 
         <View
             android:id="@+id/footerDivider"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/sah_dimen_1dp"
+            android:layout_width="@dimen/layout_lvl0"
+            android:layout_height="@dimen/centralized_promo_on_going_divider_height"
             android:background="@color/Neutral_N75"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -116,10 +116,10 @@
 
         <ImageView
             android:id="@+id/ivCaret"
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:paddingStart="4dp"
-            android:paddingLeft="4dp"
+            android:layout_width="@dimen/centralized_promo_on_going_caret_icon_size"
+            android:layout_height="@dimen/centralized_promo_on_going_caret_icon_size"
+            android:paddingStart="@dimen/centralized_promo_dimen_4dp"
+            android:paddingLeft="@dimen/centralized_promo_dimen_4dp"
             android:paddingEnd="@dimen/layout_lvl1"
             android:paddingRight="@dimen/layout_lvl1"
             app:layout_constraintBottom_toBottomOf="@id/tvSeePastPromotion"

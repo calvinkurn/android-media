@@ -9,7 +9,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPostListTitleOnError"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:lineSpacingExtra="@dimen/spacing_lvl2"
         android:textColor="@color/Neutral_N700_96"

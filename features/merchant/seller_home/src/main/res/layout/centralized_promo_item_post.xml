@@ -10,8 +10,8 @@
 
     <ImageView
         android:id="@+id/ivPromotionPost"
-        android:layout_width="@dimen/sah_dimen_50dp"
-        android:layout_height="@dimen/sah_dimen_50dp"
+        android:layout_width="@dimen/centralized_promo_post_item_image_size"
+        android:layout_height="@dimen/centralized_promo_post_item_image_size"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -19,10 +19,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPromotionPostTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/sah_dimen_12dp"
-        android:layout_marginLeft="@dimen/sah_dimen_12dp"
+        android:layout_marginStart="@dimen/centralized_promo_post_title_left_margin"
+        android:layout_marginLeft="@dimen/centralized_promo_post_title_left_margin"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toRightOf="@id/ivPromotionPost"
@@ -34,9 +34,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPromotionPostTitleDescription"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="@dimen/centralized_promo_post_desc_top_margin"
         android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/tvPromotionPostTitle"

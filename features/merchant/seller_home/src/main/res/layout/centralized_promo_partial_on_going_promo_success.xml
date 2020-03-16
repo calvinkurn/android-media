@@ -11,7 +11,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvOnGoingPromo"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
@@ -30,7 +30,7 @@
         android:id="@+id/rvCentralizedPromoOnGoingPromo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="@dimen/centralized_promo_dimen_12dp"
         android:clipToPadding="false"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

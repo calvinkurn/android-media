@@ -57,7 +57,7 @@ class CentralizedPromoViewModel @Inject constructor(
 
     private suspend fun getResult(type: LayoutType) = when (type) {
         LayoutType.ON_GOING_PROMO -> getOnGoingPromotion()
-        LayoutType.RECOMMENDED_PROMO -> getRecommendedPromotion()
+        LayoutType.PROMO_CREATION -> getRecommendedPromotion()
         LayoutType.POST -> getPostList()
     }
 
@@ -65,7 +65,6 @@ class CentralizedPromoViewModel @Inject constructor(
         return try {
             getOnGoingPromotionUseCase.params = GetOnGoingPromotionUseCase.getRequestParams(false)
             Success(getOnGoingPromotionUseCase.executeOnBackground())
-//            Success(OnGoingPromoStaticData.provideStaticData())
         } catch (t: Throwable) {
             Fail(t)
         }

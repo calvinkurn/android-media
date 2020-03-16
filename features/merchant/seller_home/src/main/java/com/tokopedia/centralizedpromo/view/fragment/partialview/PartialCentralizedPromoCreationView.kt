@@ -8,7 +8,6 @@ import com.tokopedia.centralizedpromo.view.model.PromoCreationListUiModel
 import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
 import com.tokopedia.centralizedpromo.view.viewholder.PromoCreationViewHolder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.sellerhome.R
@@ -22,16 +21,20 @@ class PartialCentralizedPromoCreationView(
         showCoachMark: Boolean
 ) : BasePartialListView<PromoCreationListUiModel, CentralizedPromoAdapterTypeFactory, PromoCreationUiModel>(view, adapterTypeFactory, coachMarkListener, showCoachMark) {
 
+    companion object {
+        const val SPAN_COUNT: Int = 2
+    }
+
     init {
         setupPromoRecommendation()
     }
 
     private fun setupPromoRecommendation() = with(view) {
         rvCentralizedPromoCreation.apply {
-            layoutManager = GridLayoutManager(context, 2)
+            layoutManager = GridLayoutManager(context, SPAN_COUNT)
             adapter = this@PartialCentralizedPromoCreationView.adapter.apply { setHasStableIds(true) }
             isNestedScrollingEnabled = false
-            addItemDecoration(PromoCreationViewHolder.ItemDecoration(context.dpToPx(4).toInt()))
+            addItemDecoration(PromoCreationViewHolder.ItemDecoration(resources.getDimension(R.dimen.centralized_promo_dimen_4dp).toInt()))
         }
     }
 

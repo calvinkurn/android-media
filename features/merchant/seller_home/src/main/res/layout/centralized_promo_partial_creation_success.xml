@@ -10,7 +10,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvCentralizedPromoCreationTitle"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
@@ -28,9 +28,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPromoCreationDescription"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/centralized_promo_dimen_4dp"
         android:text="@string/sh_lbl_create_promotion_desc"
         android:textColor="@color/sah_description_desc"
         app:layout_constraintEnd_toEndOf="@id/tvCentralizedPromoCreationTitle"
