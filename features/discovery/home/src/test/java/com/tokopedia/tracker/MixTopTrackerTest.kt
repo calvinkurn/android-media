@@ -76,7 +76,7 @@ class MixTopTrackerTest : Spek({
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
-                        "eventAction", "click view all on dynamic channel coupon",
+                        "eventAction", "click view all on dynamic channel top carousel",
                         "eventLabel", channel.header.name
                 )
             }
@@ -93,7 +93,7 @@ class MixTopTrackerTest : Spek({
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
                         "event", "clickHomepage",
                         "eventCategory", "homepage",
-                        "eventAction", "click Cek Sekarang on dynamic channel coupon",
+                        "eventAction", "click Cek Sekarang on dynamic channel top carousel",
                         "eventLabel", channel.header.name
                 )
             }
@@ -110,14 +110,14 @@ class MixTopTrackerTest : Spek({
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
                         "event", "productClick",
                         "eventCategory", "homepage",
-                        "eventAction", "click on product dynamic channel coupon",
+                        "eventAction", "click on product dynamic channel top carousel",
                         "eventLabel", "Testing Top",
                         "channelId", "21370",
                         "ecommerce", DataLayer.mapOf(
                             "currencyCode","IDR",
                             "click", DataLayer.mapOf(
                                 "actionField", DataLayer.mapOf(
-                                "list", "/ - p5 - dynamic channel coupon - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
                             ),
                         "products", DataLayer.listOf(
                             DataLayer.mapOf(
@@ -171,7 +171,7 @@ class MixTopTrackerTest : Spek({
                 every { testTracker.getTracker() } returns DataLayer.mapOf(
                 "event", "productView",
                 "eventCategory", "homepage",
-                "eventAction", "impression on product dynamic channel coupon",
+                "eventAction", "impression on product dynamic channel top carousel",
                 "eventLabel", "",
                 "ecommerce", DataLayer.mapOf(
                     "currencyCode","IDR",
@@ -186,7 +186,7 @@ class MixTopTrackerTest : Spek({
                                 "position", "0",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel coupon - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
                         ),
                         DataLayer.mapOf(
                                 "name", "Monster Mass Iron Labs 90 Capsules IronLabs MonsterMass 90Caps 90 Caps",
@@ -198,7 +198,7 @@ class MixTopTrackerTest : Spek({
                                 "position", "1",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel coupon - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
                         ),
                         DataLayer.mapOf(
                                 "name", "Samsung Galaxy A30S [4GB/64GB] - Garansi Resmi Indonesia",
@@ -210,7 +210,7 @@ class MixTopTrackerTest : Spek({
                                 "position", "2",
                                 "dimension83", "bebas ongkir",
                                 "dimension84", "21370",
-                                "list", "/ - p5 - dynamic channel coupon - Testing Top"
+                                "list", "/ - p5 - dynamic channel top carousel - Testing Top"
                         )
                     )
                 )

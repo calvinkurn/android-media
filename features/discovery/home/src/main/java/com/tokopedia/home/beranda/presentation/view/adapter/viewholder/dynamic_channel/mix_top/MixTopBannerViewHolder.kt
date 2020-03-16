@@ -79,7 +79,7 @@ class MixTopBannerViewHolder(
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        homeCategoryListener.putEEToTrackingQueue(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
+        homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
     }
 
     private fun mappingView(channel: DynamicHomeChannel.Channels) {
@@ -229,7 +229,7 @@ class MixTopBannerViewHolder(
             MixTopProductDataModel(it, channel, blankSpaceConfig, adapterPosition.toString())
         }.toMutableList()
 
-        if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_BANNER_CAROUSEL) {
+        if (isHasSeeMoreApplink(channel) && getLayoutType(channel) == TYPE_MIX_TOP) {
             visitables.add(MixTopSeeMoreDataModel(
                     channel
             ))

@@ -25,6 +25,7 @@ import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
 import com.tokopedia.dynamicfeatures.utils.DFInstallerLogUtil
 import com.tokopedia.dynamicfeatures.utils.ErrorUtils
+import com.tokopedia.dynamicfeatures.utils.StorageUtils
 import com.tokopedia.dynamicfeatures.utils.Utils
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.activity_dynamic_feature_installer.*
@@ -158,7 +159,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
 
             if (freeInternalStorageBeforeDownload == 0L) {
                 freeInternalStorageBeforeDownload = withContext(Dispatchers.IO) {
-                    DFInstallerLogUtil.getFreeSpaceBytes(applicationContext)
+                    StorageUtils.getFreeSpaceBytes(applicationContext)
                 }
             }
 
