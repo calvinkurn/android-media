@@ -4,7 +4,7 @@
     <string name="search">Search</string>
     <string name="daftar_transaksi">Daftar Transaksi</string>
     <string name="title_activity_deals">Deals</string>
-    <string name="bantuan">Bantuan</string>
+    <string name="help_text">Tokopedia Care</string>
     <string name="promo">Promo</string>
     <string name="trending_deals">Trending Deals</string>
     <string name="search_input_hint_deals">Cari Deals atau Brand</string>
@@ -129,5 +129,7 @@
     <string name="location_error_message">Belum ada Deals di lokasimu. Lokasi Deals dialihkan ke Jakarta</string>
     <string name="detect_current_location">Gunakan lokasi saya saat ini</string>
     <string name="ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
+
+    <string name="how_to_redeem_error">Cara untuk redeem voucher belum dapat ditemukan, silakan coba lagi nanti.</string>
 
 </resources>

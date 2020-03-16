@@ -160,7 +160,7 @@ open class HomeViewModel @Inject constructor(
         initFlow()
     }
 
-    fun refresh(){
+    fun refresh(isFirstInstall: Boolean){
         val needSendGeolocationRequest = lastRequestTimeHomeData + REQUEST_DELAY_SEND_GEOLOCATION < System.currentTimeMillis()
         if (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY)) {
             refreshHomeData()
@@ -170,7 +170,7 @@ open class HomeViewModel @Inject constructor(
         }
         getTokocashBalance()
         getTokopoint()
-        searchHint()
+        searchHint(isFirstInstall)
     }
 
     fun hitBannerImpression(slidesModel: BannerSlidesModel) {
@@ -324,6 +324,17 @@ open class HomeViewModel @Inject constructor(
             }
         }
         return homeDataModel
+    }
+
+    fun getPlayBanner(position: Int){
+        val playBanner =
+            if (position < _homeLiveData.value?.list?.size ?: -1
+                    && _homeLiveData.value?.list?.get(position) is PlayCardViewModel)
+                _homeLiveData.value?.list?.getOrNull(position) as PlayCardViewModel
+            else _homeLiveData.value?.list?.find { it is PlayCardViewModel }
+        playBanner?.let {
+            loadPlayBannerFromNetwork(playBanner as PlayCardViewModel)
+        }
     }
 
     // Logic detect play banner should load data from API
@@ -668,9 +679,10 @@ open class HomeViewModel @Inject constructor(
         }
     }
 
-    fun searchHint(){
+    fun searchHint(isFirstInstall: Boolean) {
         if(getSearchHintJob?.isActive == true) return
         getSearchHintJob = launchCatchError(coroutineContext, block={
+            getKeywordSearchUseCase.params = getKeywordSearchUseCase.createParams(isFirstInstall)
             val data = getKeywordSearchUseCase.executeOnBackground()
             _searchHint.postValue(data.searchData)
         }){}

@@ -22,8 +22,8 @@ class AnalyticsDebuggerModule {
 
     @Provides
     @Named(NAMED_GTM_ANALYTICS)
-    fun providePresenter(getGtmLogUseCase: GetGtmLogUseCase?,
-                         deleteGtmLogUseCase: DeleteGtmLogUseCase?): AnalyticsDebugger.Presenter {
+    fun providePresenter(getGtmLogUseCase: GetGtmLogUseCase,
+                         deleteGtmLogUseCase: DeleteGtmLogUseCase): AnalyticsDebugger.Presenter {
         return AnalyticsDebuggerPresenter(getGtmLogUseCase, deleteGtmLogUseCase)
     }
 

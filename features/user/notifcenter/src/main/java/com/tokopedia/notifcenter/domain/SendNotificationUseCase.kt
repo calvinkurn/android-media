@@ -7,6 +7,7 @@ import com.tokopedia.notifcenter.data.entity.SendNotification
 import com.tokopedia.notifcenter.data.consts.NotificationQueriesConstant
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by Ade Fulki on 2019-09-18.
@@ -14,20 +15,19 @@ import javax.inject.Inject
  */
 
 class SendNotificationUseCase @Inject constructor(
-        private val rawQueries: Map<String, String>,
+        @Named(NotificationQueriesConstant.MUTATION_NOTIF_CENTER_PUSH_NOTIF)
+        private val query: String,
         private val userSession: UserSessionInterface,
         graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<SendNotification>(graphqlRepository) {
 
-    fun executeCoroutines(onSuccess: (NotifCenterSendNotifData) -> kotlin.Unit, onError: (kotlin.Throwable) -> kotlin.Unit){
-        rawQueries[NotificationQueriesConstant.MUTATION_NOTIF_CENTER_PUSH_NOTIF]?.let { query ->
-            setRequestParams(getRequestParams())
-            setTypeClass(SendNotification::class.java)
-            setGraphqlQuery(query)
-            execute({
-                onSuccess(it.data)
-            }, onError)
-        }
+    fun executeCoroutines(onSuccess: (NotifCenterSendNotifData) -> Unit, onError: (Throwable) -> Unit){
+        setRequestParams(getRequestParams())
+        setTypeClass(SendNotification::class.java)
+        setGraphqlQuery(query)
+        execute({
+            onSuccess(it.data)
+        }, onError)
     }
 
     private fun getRequestParams(): Map<String, Any>{
@@ -39,9 +39,9 @@ class SendNotificationUseCase @Inject constructor(
     }
 
     companion object {
-        val SECTION_TYPE = "userapp_"
-        val TEMPLATE_KEY = "first_access_notification"
-        val EXPIRED_TIME = 0
+        private const val SECTION_TYPE = "userapp_"
+        private const val TEMPLATE_KEY = "first_access_notification"
+        private const val EXPIRED_TIME = 0
     }
 
 }
