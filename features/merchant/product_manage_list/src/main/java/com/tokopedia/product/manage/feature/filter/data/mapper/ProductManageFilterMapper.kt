@@ -92,23 +92,19 @@ class ProductManageFilterMapper {
         }
 
         fun mapFilterOptionWrapperToSelectedEtalase(filterOptionWrapper: FilterOptionWrapper): FilterDataViewModel? {
-            filterOptionWrapper.filterOptions.forEach {
-                if (it is FilterOption.FilterByMenu) {
+            filterOptionWrapper.filterOptions.filterIsInstance(FilterOption.FilterByMenu::class.java).forEach {
                     return FilterDataViewModel(it.menuIds.first(), select = false)
-                }
             }
             return null
         }
 
         fun mapFilterOptionWrapperToSelectedCategories(filterOptionWrapper: FilterOptionWrapper): List<FilterDataViewModel> {
             val selectedCategories = mutableListOf<FilterDataViewModel>()
-            filterOptionWrapper.filterOptions.forEach {
-                if (it is FilterOption.FilterByCategory) {
-                    it.categoryIds.forEach { category ->
-                        selectedCategories.add(
-                                FilterDataViewModel(category, select = false)
-                        )
-                    }
+            filterOptionWrapper.filterOptions.filterIsInstance(FilterOption.FilterByCategory::class.java).forEach {
+                it.categoryIds.forEach { category ->
+                    selectedCategories.add(
+                            FilterDataViewModel(category, select = false)
+                    )
                 }
             }
             return selectedCategories
@@ -116,12 +112,10 @@ class ProductManageFilterMapper {
 
         fun mapFilterOptionWrapperToSelectedOtherFilters(filterOptionWrapper: FilterOptionWrapper): List<FilterDataViewModel> {
             val selectedOtherFilters = mutableListOf<FilterDataViewModel>()
-            filterOptionWrapper.filterOptions.forEach {
-                if (it is FilterOption.FilterByCondition) {
-                    selectedOtherFilters.add(
-                            FilterDataViewModel(it.id, select = false)
-                    )
-                }
+            filterOptionWrapper.filterOptions.filterIsInstance(FilterOption.FilterByCondition::class.java).forEach {
+                selectedOtherFilters.add(
+                        FilterDataViewModel(it.id, select = false)
+                )
             }
             return selectedOtherFilters
         }
