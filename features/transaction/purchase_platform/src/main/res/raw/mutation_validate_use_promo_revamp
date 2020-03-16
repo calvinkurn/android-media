@@ -164,6 +164,11 @@ mutation validate_use_promo_revamp($params: PromoStackRequest) {
          error_detail{
            message
          }
+         empty_cart_info {
+           image_url
+           message
+           detail
+         }
          sp_ids
        }
      }

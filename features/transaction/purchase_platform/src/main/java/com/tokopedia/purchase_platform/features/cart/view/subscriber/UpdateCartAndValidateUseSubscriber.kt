@@ -12,8 +12,8 @@ class UpdateCartAndValidateUseSubscriber(private val view: ICartListView?) : Sub
         t?.let {
             it.updateCartData?.let { updateCartData ->
                 if (updateCartData.isSuccess) {
-                    it.additionalInfoUiModel?.let { additional ->
-                        view?.updatePromoCheckoutStickyButton(additional)
+                    it.promoUiModel?.let { promoUiModel ->
+                        view?.updatePromoCheckoutStickyButton(promoUiModel)
                     }
                 }
             }

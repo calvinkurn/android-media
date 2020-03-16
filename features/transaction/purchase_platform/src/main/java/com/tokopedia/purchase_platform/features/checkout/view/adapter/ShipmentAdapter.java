@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.promocheckout.common.view.model.PromoCheckoutData;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.LastApplyData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.design.utils.CurrencyFormatUtil;

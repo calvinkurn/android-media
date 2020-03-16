@@ -1,6 +1,5 @@
 package com.tokopedia.purchase_platform.features.promo.presentation.mapper
 
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.features.promo.data.response.validate_use.*
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.*
 
@@ -83,11 +82,11 @@ class ValidateUsePromoCheckoutMapper {
         private fun mapToAdditionalInfoUiModel(additionalInfo: AdditionalInfo?) : AdditionalInfoUiModel {
             val additionalInfoUiModel = AdditionalInfoUiModel()
             additionalInfo?.messageInfo?.let {
-                additionalInfoUiModel.messageInfoUiModel.message = it.message.toString()
-                additionalInfoUiModel.messageInfoUiModel.detail = it.detail.toString()
+                additionalInfoUiModel.messageInfoUiModel.message = it.message
+                additionalInfoUiModel.messageInfoUiModel.detail = it.detail
             }
             additionalInfo?.errorDetail?.let {
-                additionalInfoUiModel.errorDetailUiModel.message = it.message.toString()
+                additionalInfoUiModel.errorDetailUiModel.message = it.message
             }
             return additionalInfoUiModel
         }
@@ -95,11 +94,9 @@ class ValidateUsePromoCheckoutMapper {
         private fun mapToBenefitSummaryInfoUiModel(benefitSummaryInfo: BenefitSummaryInfo?): BenefitSummaryInfoUiModel {
             val benefitSummaryInfoUiModel = BenefitSummaryInfoUiModel()
             benefitSummaryInfo?.let { benefit ->
-                benefit.finalBenefitText?.let { benefitSummaryInfoUiModel.finalBenefitText = it }
-                benefit.finalBenefitAmountStr?.let { benefitSummaryInfoUiModel.finalBenefitAmountStr = it }
-                benefit.summaries?.let {
-                    mapToListSummaryInfoUiModel(it)
-                }
+                benefitSummaryInfoUiModel.finalBenefitText = benefit.finalBenefitText
+                benefitSummaryInfoUiModel.finalBenefitAmountStr = benefit.finalBenefitAmountStr
+                mapToListSummaryInfoUiModel(benefit.summaries)
             }
             return benefitSummaryInfoUiModel
         }
@@ -116,13 +113,13 @@ class ValidateUsePromoCheckoutMapper {
                 var amountStr = ""
                 summary?.amountStr?.let { amountStr = it }
 
-                val summary = SummariesItemUiModel(
+                val summaryItemUiModel = SummariesItemUiModel(
                         description = desc,
                         type = type,
                         amountStr = amountStr,
                         details = mapToDetailSummaryUiModel(summary?.details)
                 )
-                listSummaryInfoUiModel.add(summary)
+                listSummaryInfoUiModel.add(summaryItemUiModel)
             }
             return listSummaryInfoUiModel
         }

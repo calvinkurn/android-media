@@ -82,7 +82,8 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.PromoEmptyCartInfo
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.*
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
@@ -102,6 +103,7 @@ import com.tokopedia.purchase_platform.features.cart.view.mapper.RecentViewMappe
 import com.tokopedia.purchase_platform.features.cart.view.mapper.WishlistMapper
 import com.tokopedia.purchase_platform.features.cart.view.uimodel.*
 import com.tokopedia.purchase_platform.features.cart.view.viewholder.CartRecommendationViewHolder
+import com.tokopedia.purchase_platform.features.checkout.domain.mapper.LastApplyUiMapper
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentActivity
 import com.tokopedia.purchase_platform.features.promo.data.request.Order
 import com.tokopedia.purchase_platform.features.promo.data.request.ProductDetail
@@ -110,8 +112,7 @@ import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.AdditionalInfoUiModel
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.*
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -123,7 +124,6 @@ import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.*
 import rx.subscriptions.CompositeSubscription
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -463,7 +463,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun setCbSelectAllOnCheckedChangeListener() {
         var prevIsChecked = cartListData?.isAllSelected
-        cbSelectAll.setOnCheckedChangeListener { buttonView, isChecked ->
+        cbSelectAll.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked != prevIsChecked) {
                 prevIsChecked = isChecked
 
@@ -1377,41 +1377,45 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     private fun renderPromoCheckout(cartListData: CartListData) {
         cartListData.lastApplyShopGroupSimplifiedData?.let { lastApply ->
-            var isApplied = false
-            if (lastApply.additionalInfo.errorDetail.message.isNotEmpty()) {
-                showToaster(lastApply.additionalInfo.errorDetail.message)
-            }
+            doRenderPromoCheckoutButton(lastApply)
+        }
+    }
 
-            var title = getString(R.string.promo_funnel_label)
-            promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
+    private fun doRenderPromoCheckoutButton(lastApplyData: LastApplyUiModel) {
+        var isApplied = false
+        if (lastApplyData.additionalInfo.errorDetail.message.isNotEmpty()) {
+            showToaster(lastApplyData.additionalInfo.errorDetail.message)
+        }
 
-            if (lastApply.additionalInfo.messageInfo.message.isNotEmpty()) title = lastApply.additionalInfo.messageInfo.message
-            promoCheckoutBtn.title = title
-            if (lastApply.additionalInfo.messageInfo.detail.isNotEmpty()) {
-                isApplied = true
-                promoCheckoutBtn.desc = lastApply.additionalInfo.messageInfo.detail
-            }
-            promoCheckoutBtn.setOnClickListener {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
-                val promoRequest = generateParamsCouponList()
-                var validateUseRequest: ValidateUsePromoRequest? = null
-                if (lastValidateUsePromoRequest != null) {
-                    validateUseRequest = lastValidateUsePromoRequest
-                } else {
-                    validateUseRequest = generateParamValidateUsePromoRevamp(false, -1, true)
-                }
-                intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CART)
-                intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
-                intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
+        var title = getString(R.string.promo_funnel_label)
+        promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
 
-                startActivityForResult(intent, NAVIGATION_PROMO)
+        if (lastApplyData.additionalInfo.messageInfo.message.isNotEmpty()) title = lastApplyData.additionalInfo.messageInfo.message
+        promoCheckoutBtn.title = title
+        if (lastApplyData.additionalInfo.messageInfo.detail.isNotEmpty()) {
+            isApplied = true
+            promoCheckoutBtn.desc = lastApplyData.additionalInfo.messageInfo.detail
+        }
+        promoCheckoutBtn.setOnClickListener {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_CHECKOUT_MARKETPLACE)
+            val promoRequest = generateParamsCouponList()
+            var validateUseRequest: ValidateUsePromoRequest?
+            if (lastValidateUsePromoRequest != null) {
+                validateUseRequest = lastValidateUsePromoRequest
+            } else {
+                validateUseRequest = generateParamValidateUsePromoRevamp(false, -1, true)
+            }
+            intent.putExtra(ARGS_PAGE_SOURCE, PromoCheckoutAnalytics.PAGE_CART)
+            intent.putExtra(ARGS_PROMO_REQUEST, promoRequest)
+            intent.putExtra(ARGS_VALIDATE_USE_REQUEST, validateUseRequest)
 
-                // analytics
-                PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApply), isApplied)
-            }
-            if (isApplied) {
-                PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
-            }
+            startActivityForResult(intent, NAVIGATION_PROMO)
+
+            // analytics
+            PromoRevampAnalytics.eventCartClickPromoSection(getAllPromosApplied(lastApplyData), isApplied)
+        }
+        if (isApplied) {
+            PromoRevampAnalytics.eventCartViewPromoAlreadyApplied()
         }
     }
 
@@ -1457,18 +1461,20 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                             }
                         }
 
-                        val productDetail = cartItemHolderData.cartItemData?.originData?.productId?.toInt()?.let {
-                            cartItemHolderData.cartItemData?.updatedData?.quantity?.let { it1 ->
-                                ProductDetailsItem(
-                                        productId = it,
-                                        quantity = it1
-                                )
+                        if (isCheckedItem) {
+                            val productDetail = cartItemHolderData.cartItemData?.originData?.productId?.toInt()?.let {
+                                cartItemHolderData.cartItemData?.updatedData?.quantity?.let { it1 ->
+                                    ProductDetailsItem(
+                                            productId = it,
+                                            quantity = it1
+                                    )
+                                }
                             }
-                        }
-                        productDetail?.let { listProductDetail.add(it) }
+                            productDetail?.let { listProductDetail.add(it) }
 
-                        cartItemHolderData.cartItemData?.originData?.listPromoCheckout?.let {
-                            listPromoCodes = it as ArrayList<String>
+                            cartItemHolderData.cartItemData?.originData?.listPromoCheckout?.let {
+                                listPromoCodes = it as ArrayList<String>
+                            }
                         }
                     }
                 }
@@ -1476,12 +1482,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 shopGroupAvailableData.cartItemDataList?.forEach { cartItemHolderData ->
                     cartItemHolderData.cartItemData?.originData?.productId?.let { productId ->
                         cartItemHolderData.cartItemData?.updatedData?.quantity?.let { qty ->
-                            val productDetail = ProductDetailsItem(
-                                    productId = productId.toInt(),
-                                    quantity = qty
-                            )
-                            listProductDetail.add(productDetail)
-
                             if (ignoreIsChecked) {
                                 cartItemHolderData.cartItemData?.originData?.isCheckboxState?.let { isCheckedData ->
                                     isCheckedItem = isCheckedData
@@ -1490,15 +1490,25 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                                 isCheckedItem = isChecked
                             }
 
-                            cartItemHolderData.cartItemData?.originData?.listPromoCheckout?.let {
-                                listPromoCodes = it as ArrayList<String>
+                            if (isCheckedItem) {
+                                val productDetail = ProductDetailsItem(
+                                        productId = productId.toInt(),
+                                        quantity = qty
+                                )
+                                listProductDetail.add(productDetail)
+
+                                cartItemHolderData.cartItemData?.originData?.listPromoCheckout?.let {
+                                    listPromoCodes = it as ArrayList<String>
+                                }
                             }
                         }
                     }
                 }
             }
 
-            listOrder = setListOrder(shopGroupAvailableData, listProductDetail, listPromoCodes, isCheckedItem, listOrder)
+            if (isCheckedItem) {
+                listOrder = setListOrder(shopGroupAvailableData, listProductDetail, listPromoCodes, isCheckedItem, listOrder)
+            }
         }
 
         return ValidateUsePromoRequest(
@@ -2758,39 +2768,8 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun updatePromoCheckoutStickyButton(additionalInfoUiModel: AdditionalInfoUiModel) {
-        var errorDetailMsg: String
-        var additionalInfoMsg: String
-        var additionalInfoDesc: String
-
-        additionalInfoUiModel.errorDetailUiModel.message.let {
-            errorDetailMsg = it
-        }
-
-        additionalInfoUiModel.messageInfoUiModel.message.let {
-            additionalInfoMsg = it
-        }
-
-        additionalInfoUiModel.messageInfoUiModel.detail.let {
-            additionalInfoDesc = it
-        }
-
-        if (errorDetailMsg.isNotEmpty()) {
-            showToaster(errorDetailMsg)
-            PromoRevampAnalytics.eventCartViewPromoMessage(errorDetailMsg)
-        } else {
-            if (additionalInfoMsg.isEmpty() && additionalInfoDesc.isEmpty()) {
-                showPromoCheckoutStickyButtonInactive()
-            } else {
-                promoCheckoutBtn.state = ButtonPromoCheckoutView.State.ACTIVE
-                promoCheckoutBtn.title = additionalInfoMsg
-                promoCheckoutBtn.desc = additionalInfoDesc
-                promoCheckoutBtn.setOnClickListener {
-                    val params = generateParamsCouponList()
-                    // TODO: then intent to coupon list page with params above
-                }
-            }
-        }
+    override fun updatePromoCheckoutStickyButton(promoUiModel: PromoUiModel) {
+        doRenderPromoCheckoutButton(LastApplyUiMapper.mapValidateUsePromoUiModelToLastApplyUiModel(promoUiModel))
     }
 
     private fun showToaster(msg: String) {
