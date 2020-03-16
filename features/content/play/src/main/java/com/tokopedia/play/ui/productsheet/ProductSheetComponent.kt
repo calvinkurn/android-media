@@ -65,9 +65,9 @@ class ProductSheetComponent(
         }
     }
 
-    override fun onProductCardClicked(view: ProductSheetView, applink: String) {
+    override fun onProductCardClicked(view: ProductSheetView, product: ProductLineUiModel) {
         launch {
-            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductCardClicked(applink))
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductCardClicked(product))
         }
     }
 

@@ -11,5 +11,5 @@ sealed class ProductSheetInteractionEvent : ComponentEvent {
     object OnCloseProductSheet : ProductSheetInteractionEvent()
     data class OnBuyProduct(val product: ProductLineUiModel) : ProductSheetInteractionEvent()
     data class OnAtcProduct(val product: ProductLineUiModel) : ProductSheetInteractionEvent()
-    data class OnProductCardClicked(val applink: String) : ProductSheetInteractionEvent()
+    data class OnProductCardClicked(val product: ProductLineUiModel) : ProductSheetInteractionEvent()
 }

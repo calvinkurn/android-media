@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -15,10 +14,11 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayAnalytics
 import com.tokopedia.play.component.EventBusFactory
 import com.tokopedia.play.component.UIComponent
 import com.tokopedia.play.di.DaggerPlayComponent
@@ -35,11 +35,13 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -58,8 +60,12 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
         private const val PERCENT_VARIANT_SHEET_HEIGHT = 0.6
 
-        fun newInstance(): PlayBottomSheetFragment {
-            return PlayBottomSheetFragment()
+        fun newInstance(channelId: String?): PlayBottomSheetFragment {
+            return PlayBottomSheetFragment().apply {
+                val args = Bundle()
+                args.putString(PLAY_KEY_CHANNEL_ID, channelId)
+                arguments = args
+            }
         }
     }
 
@@ -74,6 +80,9 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     @Inject
     lateinit var dispatchers: CoroutineDispatcherProvider
 
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
+
     private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
 
     private lateinit var playViewModel: PlayViewModel
@@ -81,6 +90,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private lateinit var productSheetComponent: UIComponent<*>
     private lateinit var variantSheetComponent: UIComponent<*>
+
+    private var channelId: String = ""
 
     private val variantSheetMaxHeight: Int
         get() = (requireView().height * PERCENT_VARIANT_SHEET_HEIGHT).toInt()
@@ -106,6 +117,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
         super.onCreate(savedInstanceState)
         playViewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayViewModel::class.java)
         viewModel = ViewModelProvider(requireParentFragment(), viewModelFactory).get(PlayBottomSheetViewModel::class.java)
+        channelId  = arguments?.getString(PLAY_KEY_CHANNEL_ID).orEmpty()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -144,8 +156,20 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                                 ScreenStateEvent::class.java,
                                 ScreenStateEvent.SetProductSheet(it)
                         )
+               sendTrackerImpression(it.productList)
             }
         })
+    }
+
+    private fun sendTrackerImpression(productList: List<PlayProductUiModel>) {
+        if (productList.isNotEmpty() && productList[0] is ProductLineUiModel) {
+            with(PlayAnalytics) { impressionProductList(
+                    trackingQueue,
+                    channelId,
+                    productList as List<ProductLineUiModel>,
+                    playViewModel.isLive
+            ) }
+        }
     }
 
     private fun observeVariantSheetContent() {
@@ -233,12 +257,19 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
                             is ProductSheetInteractionEvent.OnBuyProduct -> checkProductVariant(it.product, ProductAction.Buy)
                             is ProductSheetInteractionEvent.OnAtcProduct -> checkProductVariant(it.product, ProductAction.AddToCart)
-                            is ProductSheetInteractionEvent.OnProductCardClicked -> openPageByApplink(it.applink)
+                            is ProductSheetInteractionEvent.OnProductCardClicked -> onProductCardClicked(it.product)
                         }
                     }
         }
 
         return productSheetComponent
+    }
+
+    private fun onProductCardClicked(product: ProductLineUiModel) {
+        if (product.applink != null && product.applink.isNotEmpty()) {
+            PlayAnalytics.clickProduct(trackingQueue, channelId, product, playViewModel.isLive)
+            openPageByApplink(product.applink)
+        }
     }
 
     private fun initVariantSheetComponent(container: ViewGroup): UIComponent<VariantSheetInteractionEvent> {

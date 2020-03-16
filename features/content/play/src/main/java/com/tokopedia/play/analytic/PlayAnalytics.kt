@@ -154,14 +154,14 @@ object PlayAnalytics {
 
     fun impressionProductList(trackingQueue: TrackingQueue,
                               channelId: String,
-                              listOfProductLineUiModel: List<ProductLineUiModel>,
+                              listOfProducts: List<ProductLineUiModel>,
                               channelType: PlayChannelType) {
         trackingQueue.putEETracking(
                 EventModel(
                         "productView",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         "view product",
-                        "$channelId - ${listOfProductLineUiModel[0].id} - ${channelType.value} - product in bottom sheet"
+                        "$channelId - ${listOfProducts[0].id} - ${channelType.value} - product in bottom sheet"
                 ),
                 hashMapOf(
 
@@ -170,15 +170,15 @@ object PlayAnalytics {
     }
 
     fun clickProduct(trackingQueue: TrackingQueue,
-                              channelId: String,
-                              listOfProductLineUiModel: List<ProductLineUiModel>,
-                              channelType: PlayChannelType) {
+                     channelId: String,
+                     product: ProductLineUiModel,
+                     channelType: PlayChannelType) {
         trackingQueue.putEETracking(
                 EventModel(
                         "productClick",
                         KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_TRACK_CLICK,
-                        "$channelId - ${listOfProductLineUiModel[0].id} - ${channelType.value} - product in bottom sheet"
+                        "$channelId - ${product.id} - ${channelType.value} - product in bottom sheet"
                 ),
                 hashMapOf(
 
