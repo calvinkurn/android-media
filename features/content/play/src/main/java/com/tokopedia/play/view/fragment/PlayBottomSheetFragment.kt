@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.snackbar.Snackbar
@@ -14,6 +15,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.imagepreview.ImagePreviewActivity
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.R
@@ -85,6 +87,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
 
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
+
+    private lateinit var loadingDialog: PlayLoadingDialogFragment
 
     override fun getScreenName(): String = "Play Bottom Sheet"
 
@@ -281,11 +285,14 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun showLoadingView() {
-        //TODO("create loading view")
+        if (!::loadingDialog.isInitialized) {
+            loadingDialog = PlayLoadingDialogFragment.newInstance()
+        }
+        loadingDialog.show(childFragmentManager)
     }
 
     private fun hideLoadingView() {
-        //TODO("create loading view")
+        loadingDialog.dismiss()
     }
 
     private fun shouldBuyProduct(productId: String) {
