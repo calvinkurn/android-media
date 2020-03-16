@@ -1,5 +1,6 @@
 package com.tokopedia.analytics.debugger.ui.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.*
@@ -135,7 +136,7 @@ class ApplinkDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     }
 
     private fun openDetail(viewModel: com.tokopedia.analyticsdebugger.debugger.ui.model.ApplinkDebuggerViewModel) {
-        startActivity(ApplinkDebuggerDetailActivity.newInstance(context, viewModel))
+        startActivity(ApplinkDebuggerDetailActivity.newInstance(requireContext(), viewModel))
     }
 
     companion object {

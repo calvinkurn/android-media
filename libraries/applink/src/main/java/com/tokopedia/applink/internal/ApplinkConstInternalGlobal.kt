@@ -389,7 +389,8 @@ object ApplinkConstInternalGlobal {
         "dfname={moduleTranslate}&" +
         "dfapplink={encodedApplink}&" +
         "dfauto={isAutoDownload}&" +
-        "dfimage={imageUrl}"
+        "dfimage={imageUrl}&" +
+        "dffallbackurl={fallbackUrl}"
 
     /**
      * LogoutActivity

@@ -3,27 +3,26 @@ package com.tokopedia.browse.categoryNavigation.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.core.content.ContextCompat
 import android.text.Spannable
 import android.text.SpannableStringBuilder
-import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.airbnb.deeplinkdispatch.DeepLink
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.browse.R
-import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics
+import com.tokopedia.browse.categoryNavigation.analytics.CategoryAnalytics.Companion.categoryAnalytics
 import com.tokopedia.browse.categoryNavigation.fragments.CategoryLevelTwoFragment
 import com.tokopedia.browse.categoryNavigation.fragments.CategorylevelOneFragment
 import com.tokopedia.browse.categoryNavigation.fragments.Listener
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import kotlinx.android.synthetic.main.activity_category_browse.*
-import kotlinx.android.synthetic.main.activity_category_browse.empty_view
-import kotlinx.android.synthetic.main.empty_category_view.*
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeListener, ActivityStateListener {
 
@@ -33,11 +32,10 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     private var masterFragment = Fragment()
     private var slaveFragment = Fragment()
 
-    private var autocompleteParam = ""
-
     private var deepLinkCategoryName: String? = null
 
-    private var TOOLBAR_NAME = "Belanja"
+    private var toolbarName = "Kategori"
+    private lateinit var globalError: GlobalError
 
 
     companion object {
@@ -67,6 +65,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
     object DeepLinkIntents {
         lateinit var extras: Bundle
+
         @DeepLink(ApplinkConst.CATEGORY_BELANJA)
         @JvmStatic
         fun getCategoryBrowseIntent(context: Context, bundle: Bundle): Intent {
@@ -83,7 +82,6 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
 
     override fun getNewFragment(): Fragment {
         return CategoryLevelTwoFragment.newInstance()
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -94,7 +92,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
             }
         }
         super.onCreate(savedInstanceState)
-        setupToolbar(TOOLBAR_NAME)
+        setupToolbar(toolbarName)
     }
 
     override fun onPause() {
@@ -124,11 +122,7 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     }
 
     private fun initView() {
-        tv_button_retry.setOnClickListener {
-            empty_view.visibility = View.GONE
-            (slaveFragment as CategoryLevelTwoFragment).startShimmer(true)
-            (masterFragment as CategorylevelOneFragment).reloadData()
-        }
+        globalError = findViewById(R.id.global_error)
     }
 
     override fun inflateFragment() {
@@ -157,42 +151,37 @@ open class BaseCategoryBrowseActivity : BaseSimpleActivity(), CategoryChangeList
     }
 
     override fun onCategoryChanged(id: String, categoryName: String, applink: String?) {
-        empty_view.visibility = View.GONE
         (slaveFragment as Listener).refreshView(id, categoryName, applink)
     }
 
-    override fun onError() {
-        (slaveFragment as CategoryLevelTwoFragment).startShimmer(false)
-        empty_view.visibility = View.VISIBLE
-    }
+    override fun onError(e: Throwable) {
+        slave_view.hide()
+        master_view.hide()
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_digital_browse_search, menu)
-        return true
+        if (e is UnknownHostException
+                || e is SocketTimeoutException) {
+            globalError.setType(GlobalError.NO_CONNECTION)
+        } else {
+            globalError.setType(GlobalError.SERVER_ERROR)
+        }
+
+        globalError.show()
+
+        globalError.setOnClickListener {
+            slave_view.show()
+            master_view.show()
+            globalError.hide()
+            (masterFragment as CategorylevelOneFragment).reloadData()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_search) {
-            onSearchClicked()
-            CategoryAnalytics.createInstance().eventSearchBarClick()
-            return true
-        } else if (item.itemId == android.R.id.home) {
-            CategoryAnalytics.createInstance().eventBackButtonClick()
+        if (item.itemId == android.R.id.home) {
+            categoryAnalytics.eventBackButtonClick()
             onBackPressed()
             return true
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun onSearchClicked() {
-        RouteManager.route(this, ApplinkConstInternalDiscovery.AUTOCOMPLETE + "?navsource=shoppingnav", autocompleteParam)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        val menuItem = menu.findItem(R.id.action_search)
-        menuItem.setIcon(R.drawable.ic_browse_search)
-
-        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun getActivityTrackingQueue(): TrackingQueue {
@@ -206,5 +195,5 @@ interface ActivityStateListener {
 
 interface CategoryChangeListener {
     fun onCategoryChanged(id: String, categoryName: String, applink: String?)
-    fun onError()
+    fun onError(e: Throwable)
 }
