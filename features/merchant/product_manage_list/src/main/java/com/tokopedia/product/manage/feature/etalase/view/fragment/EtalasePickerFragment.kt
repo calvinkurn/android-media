@@ -251,7 +251,10 @@ class EtalasePickerFragment: Fragment(), EtalaseViewHolder.OnClickListener,
     private fun showErrorToast() {
         view?.let {
             val message = getString(R.string.product_manage_snack_bar_fail)
-            Toaster.make(it, message, Toaster.TYPE_ERROR, Toaster.LENGTH_LONG)
+            val actionText = getString(R.string.product_manage_snack_bar_retry)
+            Toaster.make(it, message, Toaster.TYPE_ERROR, Toaster.LENGTH_LONG, actionText, View.OnClickListener {
+                getEtalaseList()
+            })
         }
     }
 }
