@@ -33,8 +33,6 @@ import com.tokopedia.topads.sourcetagging.data.repository.TopAdsSourceTaggingRep
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingDataSource
 import com.tokopedia.topads.sourcetagging.data.source.TopAdsSourceTaggingLocal
 import com.tokopedia.topads.sourcetagging.domain.repository.TopAdsSourceTaggingRepository
-import com.tokopedia.user.session.UserSession
-import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -52,12 +50,6 @@ class ProductManageListModule {
     ): ProductDraftListCountPresenter {
         return ProductDraftListCountPresenterImpl(fetchAllDraftProductCountUseCase,
             clearAllDraftProductUseCase, updateUploadingDraftProductUseCase)
-    }
-
-    @ProductManageListScope
-    @Provides
-    fun provideUserSessionInterface(@ApplicationContext context: Context?): UserSessionInterface {
-        return UserSession(context)
     }
 
     @Provides
