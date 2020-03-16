@@ -57,6 +57,8 @@ dependencies {
     implementation project(rootProject.ext.libraries.track)
     implementation project(rootProject.ext.libraries.baseList)
 
+    implementation project(rootProject.ext.features.productAddEdit)
+
     implementation rootProject.ext.unifyDependencies.icon
     implementation rootProject.ext.unifyDependencies.principles
 

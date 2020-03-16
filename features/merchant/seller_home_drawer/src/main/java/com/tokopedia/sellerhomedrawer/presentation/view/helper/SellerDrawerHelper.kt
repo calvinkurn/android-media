@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.product.addedit.preview.presentation.activity.AddEditProductPreviewActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sellerhomedrawer.R
@@ -144,7 +145,7 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
                 }
                 SellerHomeState.DrawerPosition.ADD_PRODUCT -> {
                     val manageProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-                    val addProductIntent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM)
+                    val addProductIntent = getAddProductIntent()
                     TaskStackBuilder.create(context)
                             .addNextIntent(manageProductIntent)
                             .addNextIntent(addProductIntent)
@@ -656,6 +657,18 @@ class SellerDrawerHelper @Inject constructor(val context: Activity,
             val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.WEBVIEW, ApplinkConst.WebViewUrl.SALDO_DETAIL)
             context.startActivity(intent)
         }
+    }
+
+    private fun getAddProductIntent(): Intent {
+        return if (isUsingOldAddProduct()) {
+            RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_ADD_ITEM)
+        } else {
+            AddEditProductPreviewActivity.createInstance(context)
+        }
+    }
+
+    private fun isUsingOldAddProduct(): Boolean {
+        return false
     }
 
     private fun logout() {

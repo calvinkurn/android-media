@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.product.addedit.R
+import com.tokopedia.product.addedit.description.presentation.AddEditProductDescriptionActivity
 import com.tokopedia.product.addedit.tooltip.model.ImageTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.unifyprinciples.Typography
 
 class AddEditProductPreviewFragment : BaseDaggerFragment() {
 
@@ -30,8 +32,12 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val addProductPhotoSection: ViewGroup = view.findViewById(R.id.add_product_photo_section)
+        val tvStartAddEditProductDescription: Typography = view.findViewById(R.id.tv_start_add_edit_product_description)
         addProductPhotoSection.setOnClickListener {
             showPhotoTips()
+        }
+        tvStartAddEditProductDescription.setOnClickListener {
+            moveToDescriptionActivity()
         }
     }
 
@@ -50,6 +56,10 @@ class AddEditProductPreviewFragment : BaseDaggerFragment() {
                 show(it, null)
             }
         }
+    }
+
+    private fun moveToDescriptionActivity() {
+        startActivity(AddEditProductDescriptionActivity.createInstance(context))
     }
 
     override fun getScreenName(): String {
