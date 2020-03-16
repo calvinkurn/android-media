@@ -180,7 +180,6 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                 ) }
             }
         }
-
     }
 
     private fun observeVariantSheetContent() {
@@ -243,6 +242,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
             else Toaster.make(requireView(), it.errorMessage, Snackbar.LENGTH_LONG, type = Toaster.TYPE_ERROR)
         })
     }
+
     private fun setupView(view: View) {}
 
     private fun initComponents(container: ViewGroup) {

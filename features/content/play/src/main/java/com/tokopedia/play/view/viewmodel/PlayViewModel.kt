@@ -383,12 +383,7 @@ class PlayViewModel @Inject constructor(
             launch { getBadgeCart(channel.isShowCart) }
             launch { if (channel.isShowProductTagging) getProductTagItems(channel) }
 
-            /**
-             * If Live => start web socket
-             */
-            if (channel.videoStream.isLive
-                    && channel.videoStream.type.equals(PlayChannelType.Live.value, true))
-                startWebSocket(channelId, channel.gcToken, channel.settings)
+            startWebSocket(channelId, channel.gcToken, channel.settings)
 
             playVideoStream(channel)
 
