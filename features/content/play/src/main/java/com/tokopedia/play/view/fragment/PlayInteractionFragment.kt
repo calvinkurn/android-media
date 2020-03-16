@@ -531,7 +531,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
                             is PlayToolbarInteractionEvent.FollowButtonClicked -> doClickFollow(it.partnerId, it.action)
                             PlayToolbarInteractionEvent.MoreButtonClicked -> showMoreActionBottomSheet()
                             is PlayToolbarInteractionEvent.PartnerNameClicked -> openPartnerPage(it.partnerId, it.type)
-                            PlayToolbarInteractionEvent.CartButtonClicked -> openPageByApplink(ApplinkConst.CART)
+                            PlayToolbarInteractionEvent.CartButtonClicked -> shouldOpenCartPage()
                         }
                     }
         }
@@ -985,6 +985,10 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
         viewModel.doInteractionEvent(InteractionEvent.Follow(partnerId, followAction))
     }
 
+    private fun shouldOpenCartPage() {
+        viewModel.doInteractionEvent(InteractionEvent.CartPage)
+    }
+
     private fun doSendChat(message: String) {
         playViewModel.sendChat(message)
     }
@@ -998,6 +1002,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     private fun handleInteractionEvent(event: InteractionEvent) {
         when (event) {
+            InteractionEvent.CartPage -> openPageByApplink(ApplinkConst.CART)
             InteractionEvent.SendChat -> sendEventComposeChat()
             is InteractionEvent.Like -> doLikeUnlike(event.shouldLike)
             is InteractionEvent.Follow -> doActionFollowPartner(event.partnerId, event.partnerAction)
@@ -1038,12 +1043,16 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openLoginPage() {
-        openPageByApplink(ApplinkConst.LOGIN)
+        openPageByApplink(ApplinkConst.LOGIN, requestCode = REQUEST_CODE_LOGIN)
     }
 
-    private fun openPageByApplink(applink: String, vararg params: String, shouldFinish: Boolean = false) {
-        val intent = RouteManager.getIntent(context, applink, *params)
-        startActivityForResult(intent, REQUEST_CODE_LOGIN)
+    private fun openPageByApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
+        if (requestCode == null) {
+            RouteManager.route(context, applink, *params)
+        } else {
+            val intent = RouteManager.getIntent(context, applink, *params)
+            startActivityForResult(intent, requestCode)
+        }
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
 
         if (shouldFinish) activity?.finish()
