@@ -26,6 +26,7 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.recharge_slice.data.Product
 import com.tokopedia.recharge_slice.data.TrackingData
 import com.tokopedia.recharge_slice.di.DaggerRechargeSliceComponent
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -38,6 +39,7 @@ import timber.log.Timber
 
 class MainSliceProvider : SliceProvider() {
     private lateinit var contextNonNull: Context
+    private lateinit var userSession: UserSession
 
     @Inject
     lateinit var repository: GraphqlRepository
@@ -45,9 +47,9 @@ class MainSliceProvider : SliceProvider() {
     var recommendationModel: List<Recommendation>? = null
 
     var loadString : String ? = ""
-    var alreadyGetData = false
 
     override fun onBindSlice(sliceUri: Uri): Slice? {
+        userSession = UserSession(contextNonNull)
         return createGetInvoiceV3Slice(sliceUri)
     }
 
@@ -78,13 +80,11 @@ class MainSliceProvider : SliceProvider() {
                         .putExtra(RECHARGE_HOME_PAGE_EXTRA, true),
                 0
         )
-            if (recommendationModel == null) {
-                    if(!alreadyGetData)
-                    getData(sliceUri)
+            if (!userSession.isLoggedIn) {
                     return list(contextNonNull, sliceUri, INFINITY) {
                         setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                         header {
-                            title = loadString
+                            title = contextNonNull.resources.getString(R.string.slice_not_login)
                             primaryAction = createPendingIntentLogin()?.let {
                                 SliceAction.create(
                                         it,
@@ -96,6 +96,7 @@ class MainSliceProvider : SliceProvider() {
                         }
                     }
             } else {
+                getData(sliceUri)
                 return list(contextNonNull, sliceUri, INFINITY) {
                     setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
                     header {
@@ -153,7 +154,6 @@ class MainSliceProvider : SliceProvider() {
         val deviceId = 0
         val params = mapOf(RECHARGE_SLICE_DEVICE_ID to deviceId)
         val graphqlRequest = GraphqlRequest(gqlQuery, Data::class.java, params)
-        alreadyGetData = true
         GraphqlClient.init(contextNonNull)
         DaggerRechargeSliceComponent.builder().build().inject(this)
         GlobalScope.launch(Dispatchers.IO) {
@@ -162,10 +162,7 @@ class MainSliceProvider : SliceProvider() {
                 recommendationModel = data.rechargeFavoriteRecommendationList.recommendations
                 updateSlice(sliceUri)
             } catch (e: Exception) {
-                if(e.message==NOT_LOGIN)
-                loadString = contextNonNull.resources.getString(R.string.slice_not_login)
-                Timber.d(contextNonNull.resources.getString(R.string.slice_track_timber_impression)+contextNonNull.resources.getString(R.string.slice_not_login))
-                updateSlice(sliceUri)
+
             }
         }
     }
@@ -195,8 +192,5 @@ class MainSliceProvider : SliceProvider() {
         const val RECHARGE_SLICE_DEVICE_ID = "device_id"
         const val RECHARGE_PRODUCT_EXTRA = "RECHARGE_PRODUCT_EXTRA"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
-        const val NOT_LOGIN = "401 - UNAUTHORIZED"
     }
-
-
 }
