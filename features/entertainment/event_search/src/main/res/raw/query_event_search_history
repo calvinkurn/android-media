@@ -1,0 +1,14 @@
+query{
+  TravelCollectiveRecentSearches(product:EVENTS){
+    items {
+      product
+      title
+      subtitle
+      prefix
+      prefixStyling
+      value
+      appURL
+      imageURL
+    }
+  }
+}

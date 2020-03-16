@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalEntertainment
 import com.tokopedia.entertainment.R
 import com.tokopedia.entertainment.home.di.DaggerEventHomeComponent
 import com.tokopedia.entertainment.home.di.EventHomeComponent
@@ -19,6 +21,14 @@ class HomeEventActivity : BaseSimpleActivity(), HasComponent<EventHomeComponent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        txt_search.searchBarTextField.inputType = 0
+        txt_search.searchBarTextField.setOnTouchListener { v, event -> openEventSearch() }
+        txt_search.setOnClickListener {openEventSearch() }
+    }
+
+    private fun openEventSearch(): Boolean {
+        RouteManager.route(this, ApplinkConstInternalEntertainment.EVENT_SEARCH)
+        return true
     }
 
     override fun getComponent(): EventHomeComponent = DaggerEventHomeComponent.builder()

@@ -52,6 +52,7 @@ ext {
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
             eventHome                       : ":features:entertainment:event_home",
+            eventSearch                       : ":features:entertainment:event_search",
             digitalBrowse                   : ":features:digital:digital_browse",
             instantDebitBca                 : ":features:digital:instant_debit_bca",
 

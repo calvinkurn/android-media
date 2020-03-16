@@ -220,5 +220,8 @@
 
     <!-- Dynamic feature for event-->
     <string name="entertainment_event_hiburan"><![CDATA[Event & Hiburan]]></string>
+    <string name="entertainment_event_search"><![CDATA[Search Event]]></string>
+    <string name="entertainment_event_location"><![CDATA[Lokasi]]></string>
+
 
 </resources>
