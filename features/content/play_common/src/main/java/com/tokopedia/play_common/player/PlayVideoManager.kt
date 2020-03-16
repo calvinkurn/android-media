@@ -68,11 +68,12 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     private val playerEventListener = object : Player.EventListener {
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-            if (!playWhenReady) _observablePlayVideoState.value = PlayVideoState.Pause
-            else when (playbackState) {
+            when (playbackState) {
                 Player.STATE_IDLE -> _observablePlayVideoState.value = PlayVideoState.NoMedia
                 Player.STATE_BUFFERING -> _observablePlayVideoState.value = PlayVideoState.Buffering
-                Player.STATE_READY -> _observablePlayVideoState.value = PlayVideoState.Playing
+                Player.STATE_READY -> {
+                    _observablePlayVideoState.value = if (!playWhenReady) PlayVideoState.Pause else PlayVideoState.Playing
+                }
                 Player.STATE_ENDED -> _observablePlayVideoState.value = PlayVideoState.Ended
             }
         }
@@ -124,15 +125,15 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         }
     }
 
-    private var playerModel: PlayPlayerModel by Delegates.observable(initVideoPlayer(null, PlayBufferControl())) { _, _, new ->
-        _observableVideoPlayer.value = new.player
+    private var playerModel: PlayPlayerModel by Delegates.observable(initVideoPlayer(null, PlayBufferControl())) { _, old, new ->
+        if (old.player != new.player) _observableVideoPlayer.value = new.player
     }
 
     val videoPlayer: SimpleExoPlayer
         get() = playerModel.player
 
     //region public method
-    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl) {
+    fun safePlayVideoWithUri(uri: Uri, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl.bufferControl) {
         if (uri.toString().isEmpty()) {
             releasePlayer()
             return
@@ -153,15 +154,6 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
         if (!videoPlayer.isPlaying) resumeCurrentVideo()
     }
 
-    fun safePlayVideoWithUriString(uriString: String?, autoPlay: Boolean = true, bufferControl: PlayBufferControl = playerModel.loadControl) {
-        if (uriString.isNullOrEmpty()) {
-            releasePlayer()
-            return
-        }
-
-        safePlayVideoWithUri(Uri.parse(uriString), autoPlay, bufferControl)
-    }
-
     private fun playVideoWithUri(uri: Uri, autoPlay: Boolean = true, lastPosition: Long?, resetState: Boolean = true) {
         val mediaSource = getMediaSourceBySource(applicationContext, uri)
         videoPlayer.playWhenReady = autoPlay
@@ -173,11 +165,13 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     //region player control
     fun resumeCurrentVideo() {
+        playerModel.loadControl.setPreventLoading(false)
         if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) resetCurrentVideo()
         videoPlayer.playWhenReady = true
     }
 
-    fun pauseCurrentVideo() {
+    fun pauseCurrentVideo(preventLoadingBuffer: Boolean) {
+        playerModel.loadControl.setPreventLoading(preventLoadingBuffer)
         videoPlayer.playWhenReady = false
     }
 
@@ -272,21 +266,16 @@ class PlayVideoManager private constructor(private val applicationContext: Conte
 
     private fun initVideoPlayer(playerModel: PlayPlayerModel?, bufferControl: PlayBufferControl): PlayPlayerModel {
         playerModel?.player?.removeListener(playerEventListener)
+        val videoLoadControl = initCustomLoadControl(bufferControl)
         val videoPlayer = SimpleExoPlayer.Builder(applicationContext)
-                .setLoadControl(initCustomLoadControl(bufferControl))
+                .setLoadControl(videoLoadControl)
                 .build()
                 .apply { addListener(playerEventListener) }
 
-        return PlayPlayerModel(videoPlayer, bufferControl)
+        return PlayPlayerModel(videoPlayer, videoLoadControl)
     }
 
-    private fun initCustomLoadControl(bufferControl: PlayBufferControl): LoadControl {
-        return DefaultLoadControl.Builder()
-                .setBufferDurationsMs(
-                        bufferControl.minBufferMs,
-                        bufferControl.maxBufferMs,
-                        bufferControl.bufferForPlaybackMs,
-                        bufferControl.bufferForPlaybackAfterRebufferMs
-                ).createDefaultLoadControl()
+    private fun initCustomLoadControl(bufferControl: PlayBufferControl): PlayVideoLoadControl {
+        return PlayVideoLoadControl(bufferControl)
     }
 }

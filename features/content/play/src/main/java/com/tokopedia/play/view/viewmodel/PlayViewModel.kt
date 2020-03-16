@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -340,7 +341,7 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun startVideoWithUrlString(urlString: String, isLive: Boolean, bufferControl: PlayBufferControl) {
-        playVideoManager.safePlayVideoWithUriString(urlString, isLive, bufferControl)
+        playVideoManager.safePlayVideoWithUri(Uri.parse(urlString), isLive, bufferControl)
     }
 
     private fun playVideoStream(channel: Channel) {
