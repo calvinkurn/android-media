@@ -70,8 +70,8 @@ class PopularSearchViewHolder(
         inner class ItemViewHolder(itemView: View, private val clickListener: InitialStateItemClickListener) : RecyclerView.ViewHolder(itemView) {
 
             fun bind(item: BaseItemInitialStateSearch) {
-                itemView.autocompleteRecentSearchItem?.chip_text?.text = item.title
-                itemView.autocompleteRecentSearchItem?.setOnClickListener {
+                itemView.autocompletePopularSearchItem?.chip_text?.text = item.title
+                itemView.autocompletePopularSearchItem?.setOnClickListener {
                     AutocompleteTracking.eventClickPopularSearch(
                             itemView.context,
                             String.format(

@@ -14,10 +14,10 @@ abstract class BaseTracking {
         const val IMPRESSION = "impression"
         const val PROMO_VIEW = "promoView"
         const val PRODUCT_VIEW = "productView"
+        const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val PROMO_CLICK = "promoClick"
         const val PRODUCT_CLICK = "productClick"
         const val PROMO_VIEW_IRIS = "promoViewIris"
-        const val PRODUCT_VIEW_IRIS = "productViewIris"
         const val CLICK_HOMEPAGE = "clickHomepage"
     }
 
@@ -29,9 +29,9 @@ abstract class BaseTracking {
     protected object Action{
         const val KEY = "eventAction"
         const val IMPRESSION = "%s impression"
-        const val IMPRESSION_ON = "impression on \"%s"
+        const val IMPRESSION_ON = "impression on %s"
         const val CLICK = "%s click"
-        const val CLICK_ON = "click on \"%s"
+        const val CLICK_ON = "click on %s"
     }
 
     protected object Label{
@@ -160,11 +160,11 @@ abstract class BaseTracking {
             val map = HashMap<String, String>()
             map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
-            map[KEY_BRAND] = product.brand
-            map[KEY_VARIANT] = product.variant
-            map[KEY_PRICE] = product.productPrice.toString()
-            map[KEY_CATEGORY] = product.category
-            map[KEY_POSITION] = product.productPosition.toString()
+            map[KEY_BRAND] = if(product.brand.isNotBlank()) product.brand else NONE
+            map[KEY_VARIANT] = if(product.variant.isNotBlank()) product.variant else NONE
+            map[KEY_PRICE] = product.productPrice
+            map[KEY_CATEGORY] = if(product.category.isNotBlank()) product.category else NONE
+            map[KEY_POSITION] = product.productPosition
             map[KEY_DIMENSION_83] = if(product.isFreeOngkir) FREE_ONGKIR else NONE
             if (product.channelId.isNotEmpty()) map[KEY_DIMENSION_84] = product.channelId else NONE
             if (list.isNotEmpty()) map[KEY_LIST] = list
