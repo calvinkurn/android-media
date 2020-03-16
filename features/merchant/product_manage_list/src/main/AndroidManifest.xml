@@ -65,7 +65,7 @@
 
                 <data
                     android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_stock_reminder"
+                    android:pathPattern="@string/path_set_cashback"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

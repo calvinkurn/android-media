@@ -19,22 +19,10 @@ import javax.inject.Inject
 
 class ProductManageSetCashbackViewModel @Inject constructor(private val setCashbackUseCase: SetCashbackUseCase, dispatcher: CoroutineDispatcher) : BaseViewModel(dispatcher) {
 
-    val product: LiveData<ProductViewModel>
-        get() = _product
     val setCashbackResult: LiveData<Result<SetCashbackResult>>
         get() = _setCashbackResult
 
-    private val _product = MutableLiveData<ProductViewModel>()
     private val _setCashbackResult = MutableLiveData<Result<SetCashbackResult>>()
-
-    fun updateProduct(product: ProductViewModel) {
-        _product.postValue(product)
-    }
-
-    fun updateCashback(cashback: Int) {
-        val updatedProduct = _product.value?.copy(cashBack = cashback)
-        _product.value = updatedProduct
-    }
 
     fun setCashback(productId: String, productName: String, cashback: Int) {
         setCashbackUseCase.params = SetCashbackUseCase.createRequestParams(productId.toIntOrZero(), cashback, false)
