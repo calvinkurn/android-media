@@ -668,7 +668,9 @@ class PlayViewModel @Inject constructor(
                                         OutOfStock
                                     } else {
                                         StockAvailable(it * 10)
-                                    }
+                                    },
+                                    minQty = 2,
+                                    applink = null
                             )
                         }
                 )
@@ -726,7 +728,9 @@ class PlayViewModel @Inject constructor(
                                         OutOfStock
                                     } else {
                                         StockAvailable(it * 10)
-                                    }
+                                    },
+                                    minQty = 2,
+                                    applink = "tokopedia://login"
                             )
 //                            ProductPlaceholderUiModel
                         }

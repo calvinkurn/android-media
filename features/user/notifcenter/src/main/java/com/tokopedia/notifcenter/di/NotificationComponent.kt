@@ -1,29 +1,26 @@
 package com.tokopedia.notifcenter.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.notifcenter.di.module.*
+import com.tokopedia.notifcenter.di.scope.NotificationScope
 import com.tokopedia.notifcenter.presentation.activity.NotificationActivity
-import com.tokopedia.notifcenter.di.module.CommonModule
-import com.tokopedia.notifcenter.di.module.NotificationQueryModule
-import com.tokopedia.notifcenter.di.module.NotificationUpdateModule
-import com.tokopedia.notifcenter.di.scope.NotificationUpdateScope
+import com.tokopedia.notifcenter.presentation.fragment.NotificationTransactionFragment
 import com.tokopedia.notifcenter.presentation.fragment.NotificationUpdateFragment
 import dagger.Component
 
-/**
- * @author : Steven 10/04/19
- */
-
-
-@NotificationUpdateScope
+@NotificationScope
 @Component(
         modules = [
             CommonModule::class,
+            NotificationQueryModule::class,
             NotificationUpdateModule::class,
-            NotificationQueryModule::class
+            NotificationTransactionModule::class,
+            NotificationTransactionViewModelModule::class
         ],
         dependencies = [(BaseAppComponent::class)]
 )
-interface NotificationUpdateComponent {
-    fun inject(fragment: NotificationActivity)
+interface NotificationComponent {
+    fun inject(fragment: NotificationTransactionFragment)
     fun inject(fragment: NotificationUpdateFragment)
+    fun inject(activity: NotificationActivity)
 }

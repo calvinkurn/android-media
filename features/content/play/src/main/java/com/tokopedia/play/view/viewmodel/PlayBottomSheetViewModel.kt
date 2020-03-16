@@ -79,7 +79,7 @@ class PlayBottomSheetViewModel @Inject constructor(
         )
     }
 
-    fun addToCart(productId: String, shopId: String, quantity: Int = 1, notes: String = "", action: ProductAction) {
+    fun addToCart(productId: String, shopId: String, quantity: Int, notes: String = "", action: ProductAction) {
         launchCatchError(block = {
             val responseCart = withContext(dispatchers.io) {
                 postAddToCartUseCase.parameters = AddToCartUseCase.getMinimumParams(productId, shopId, quantity, notes)
@@ -129,7 +129,9 @@ class PlayBottomSheetViewModel @Inject constructor(
                                 discountPercent = 10,
                                 discountedPrice = "Rp20.000"
                         ),
-                        stock = OutOfStock
+                        stock = OutOfStock,
+                        minQty = 1,
+                        applink = null
                 ),
                 action = action
         ))

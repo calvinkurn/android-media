@@ -65,6 +65,12 @@ class ProductSheetComponent(
         }
     }
 
+    override fun onProductCardClicked(view: ProductSheetView, applink: String) {
+        launch {
+            bus.emit(ProductSheetInteractionEvent::class.java, ProductSheetInteractionEvent.OnProductCardClicked(applink))
+        }
+    }
+
     private fun initView(container: ViewGroup) =
             ProductSheetView(container, this)
 

@@ -79,10 +79,15 @@ class ProductLineViewHolder(itemView: View, private val listener: Listener) : Ba
         ivProductAtc.setOnClickListener {
             listener.onAtcProduct(item)
         }
+
+        itemView.setOnClickListener {
+            if (!item.applink.isNullOrEmpty()) listener.onClickProductCard(item.applink)
+        }
     }
 
     interface Listener {
         fun onBuyProduct(product: ProductLineUiModel)
         fun onAtcProduct(product: ProductLineUiModel)
+        fun onClickProductCard(applink: String)
     }
 }
