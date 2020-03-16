@@ -19,6 +19,7 @@ import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dynamicfeatures.constant.CommonConstant
 import com.tokopedia.dynamicfeatures.constant.ErrorConstant
 import com.tokopedia.dynamicfeatures.track.DFTracking.Companion.trackDownloadDF
@@ -252,7 +253,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
         errorList.add(errorCodeTemp)
         var ctaAction: (() -> Unit)? = null
         if (fallbackUrl.isNotEmpty()) {
-            val intent = RouteManager.getIntentNoFallback(this, fallbackUrl)
+            val intent = RouteManager.getIntent(this, ApplinkConstInternalGlobal.WEBVIEW, fallbackUrl)
             intent?.let { it ->
                 ctaAction = { ->
                     startActivity(it)
@@ -341,6 +342,7 @@ class DFInstallerActivity : BaseSimpleActivity(), CoroutineScope {
             button_cta.setOnClickListener {
                 onCtaClicked.invoke()
             }
+            button_cta.text = ctaText
             button_cta.visibility = View.VISIBLE
         } else {
             button_cta.visibility = View.GONE
