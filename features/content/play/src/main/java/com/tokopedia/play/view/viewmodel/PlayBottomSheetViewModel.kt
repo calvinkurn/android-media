@@ -69,7 +69,11 @@ class PlayBottomSheetViewModel @Inject constructor(
                 )
             }
             _observableProductVariant.value = PlayResult.Success(variantSheetUiModel)
-        }){}
+        }){
+            _observableProductVariant.value = PlayResult.Failure(it) {
+                getProductVariant(product, action)
+            }
+        }
     }
 
     fun doInteractionEvent(event: InteractionEvent) {

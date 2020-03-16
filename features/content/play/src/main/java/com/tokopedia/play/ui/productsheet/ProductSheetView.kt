@@ -11,7 +11,9 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
@@ -38,6 +40,8 @@ class ProductSheetView(
     private val rvProductList: RecyclerView = view.findViewById(R.id.rv_product_list)
     private val rvVoucherList: RecyclerView = view.findViewById(R.id.rv_voucher_list)
     private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
+
+    private val globalErrorProduct: GlobalError = view.findViewById(R.id.global_error_product)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: ProductLineUiModel) {
@@ -106,11 +110,21 @@ class ProductSheetView(
     }
 
     internal fun setProductSheet(model: ProductSheetUiModel) {
+        globalErrorProduct.gone()
+
         tvSheetTitle.text = model.title
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
         productLineAdapter.setItemsAndAnimateChanges(model.productList)
 
         if (model.voucherList.isEmpty()) rvVoucherList.gone()
+    }
+
+    internal fun setErrorNoConnection() {
+        globalErrorProduct.setType(GlobalError.NO_CONNECTION)
+        globalErrorProduct.setActionClickListener {
+
+        }
+        globalErrorProduct.visible()
     }
 
     interface Listener {
