@@ -129,7 +129,8 @@ class PlayBottomSheetViewModel @Inject constructor(
                                 discountPercent = 10,
                                 discountedPrice = "Rp20.000"
                         ),
-                        stock = OutOfStock
+                        stock = OutOfStock,
+                        applink = null
                 ),
                 action = action
         ))
