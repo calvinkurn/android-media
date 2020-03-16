@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.carousel.CarouselUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisibleOnTheScreen
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
@@ -22,7 +23,7 @@ import java.util.ArrayList
 class ShopHomeSliderBannerViewHolder(
         view: View?,
         private val listener: ShopHomeDisplayWidgetListener
-) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view) {
+) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(view), CarouselUnify.OnActiveIndexChangedListener {
 
     companion object {
         @LayoutRes
@@ -39,19 +40,11 @@ class ShopHomeSliderBannerViewHolder(
         val carouselItem = data as CarouselData
         val index = carouselData?.indexOf(carouselItem) ?: 0
         bannerData?.let { bannerData ->
-            bannerData.data?.let { bannerItemData ->
+            bannerData.data?.let {
                 img.setOnClickListener {
                     onClickBannerItem(
                             bannerData,
-                            bannerItemData[index],
-                            adapterPosition,
-                            index
-                    )
-                }
-                img.addOnImpressionListener(bannerItemData[index]) {
-                    listener.onDisplayItemImpression(
-                            bannerData,
-                            bannerItemData[index],
+                            bannerData.data.get(index),
                             adapterPosition,
                             index
                     )
@@ -65,6 +58,27 @@ class ShopHomeSliderBannerViewHolder(
         carouselShopPage = view?.findViewById(R.id.carousel_shop_page)
     }
 
+    override fun onActiveIndexChanged(prev: Int, current: Int) {
+        itemView.isVisibleOnTheScreen({
+            bannerData?.let { shopHomeDisplayWidgetUiModel ->
+                shopHomeDisplayWidgetUiModel.data?.let { listDisplayWidget ->
+                    if (current < shopHomeDisplayWidgetUiModel.data.size) {
+                        val item = listDisplayWidget[current]
+                        if (!item.isInvoke) {
+                            listener.onDisplayItemImpression(
+                                    shopHomeDisplayWidgetUiModel,
+                                    listDisplayWidget[current],
+                                    adapterPosition,
+                                    current
+                            )
+                            item.invoke()
+                        }
+                    }
+                }
+            }
+        }, {})
+    }
+
     override fun bind(shopHomeDisplayWidgetUiModel: ShopHomeDisplayWidgetUiModel) {
         bannerData = shopHomeDisplayWidgetUiModel
         carouselData = dataWidgetToCarouselData(shopHomeDisplayWidgetUiModel)
@@ -75,6 +89,7 @@ class ShopHomeSliderBannerViewHolder(
             infinite = true
             carouselData?.let {
                 addItems(R.layout.widget_slider_banner_item, it, itmListener)
+                onActiveIndexChangedListener = this@ShopHomeSliderBannerViewHolder
             }
         }
         itemView.textViewTitle?.apply {
