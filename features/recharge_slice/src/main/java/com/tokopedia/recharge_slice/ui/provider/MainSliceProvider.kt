@@ -82,7 +82,6 @@ class MainSliceProvider : SliceProvider() {
                 0
         )
         try {
-
             if (userSession.isLoggedIn) {
                 if (!alreadyLoadData)
                     getData(sliceUri)
@@ -136,38 +135,28 @@ class MainSliceProvider : SliceProvider() {
                     }
                 }
             } else {
-                return list(contextNonNull, sliceUri, INFINITY) {
-                    setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
-                    header {
-                        title = contextNonNull.resources.getString(R.string.slice_not_login)
-                        primaryAction = createPendingIntentLogin()?.let {
-                            SliceAction.create(
-                                    it,
-                                    createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
-                                    SMALL_IMAGE,
-                                    ""
-                            )
-                        }
-                    }
-                }
+                return sliceNotLogin(sliceUri)
             }
         } catch (e: Exception) {
-            return list(contextNonNull, sliceUri, INFINITY) {
-                setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
-                header {
-                    title = contextNonNull.resources.getString(R.string.slice_not_login)
-                    primaryAction = createPendingIntentLogin()?.let {
-                        SliceAction.create(
-                                it,
-                                createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
-                                SMALL_IMAGE,
-                                ""
-                        )
-                    }
+          return sliceNotLogin(sliceUri)
+        }
+    }
+
+    private fun sliceNotLogin(sliceUri: Uri): Slice{
+        return list(contextNonNull, sliceUri, INFINITY) {
+            setAccentColor(ContextCompat.getColor(contextNonNull, R.color.colorAccent))
+            header {
+                title = contextNonNull.resources.getString(R.string.slice_not_login)
+                primaryAction = createPendingIntentLogin()?.let {
+                    SliceAction.create(
+                            it,
+                            createWithResource(contextNonNull, R.drawable.tab_indicator_ab_tokopedia),
+                            SMALL_IMAGE,
+                            ""
+                    )
                 }
             }
         }
-
     }
 
 
