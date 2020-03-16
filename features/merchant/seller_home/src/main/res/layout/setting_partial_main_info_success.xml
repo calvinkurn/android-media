@@ -10,7 +10,7 @@
         android:id="@+id/shopInfoView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/setting_shop_info_height"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginTop="@dimen/setting_header_height"
         app:layout_constraintTop_toTopOf="parent"
         android:background="@color/white"/>
 
@@ -67,9 +67,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shopBadges"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:adjustViewBounds="true"
-        app:layout_constraintHeight_percent="0.15"
+        android:layout_height="@dimen/setting_shop_badge_height"
         app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"/>
@@ -86,16 +84,6 @@
         app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
         app:layout_constraintBottom_toTopOf="@id/bottomRefer"
         app:layout_constraintStart_toEndOf="@id/shopBadges"/>
-
-    <View
-        android:id="@+id/dotLoading"
-        android:layout_width="10dp"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/shopName"
-        app:layout_constraintBottom_toTopOf="@id/bottomRefer"
-        app:layout_constraintStart_toEndOf="@id/shimmerBadge"
-        android:visibility="invisible"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/shopFollowers"
@@ -141,7 +129,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.3"/>
-    
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/settingMiddleGuideline"
         android:layout_width="wrap_content"
@@ -150,42 +138,5 @@
         app:layout_constraintVertical_bias="0.3"
         app:layout_constraintTop_toTopOf="@id/shopInfoView"
         app:layout_constraintBottom_toBottomOf="@id/shopInfoView"/>
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmerShopName"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        app:layout_constraintWidth_percent="0.5"
-        app:layout_constraintTop_toTopOf="@id/shopInfoView"
-        app:layout_constraintBottom_toTopOf="@id/settingMiddleGuideline"
-        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
-        android:visibility="gone"/>
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmerFollowers"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        app:layout_constraintWidth_percent="0.3"
-        app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintTop_toBottomOf="@id/settingMiddleGuideline"
-        app:layout_constraintBottom_toBottomOf="@id/shopInfoView"
-        app:layout_constraintStart_toEndOf="@id/dot"
-        android:visibility="gone"/>
-
-    <com.elyeproj.loaderviewlibrary.LoaderTextView
-        android:id="@+id/shimmerBadge"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:gravity="center_vertical"
-        app:layout_constraintWidth_percent="0.1"
-        app:layout_constraintHeight_percent="0.1"
-        app:layout_constraintTop_toTopOf="@id/settingMiddleGuideline"
-        app:layout_constraintBottom_toBottomOf="@id/shopInfoView"
-        app:layout_constraintStart_toStartOf="@id/settingShopGuidelineInfo"
-        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

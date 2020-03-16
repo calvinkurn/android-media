@@ -20,6 +20,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
+import com.tokopedia.sellerhome.settings.data.constant.SellerBaseUrl
 import com.tokopedia.sellerhome.settings.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.sellerhome.settings.view.uimodel.DividerUiModel
 import com.tokopedia.sellerhome.settings.view.uimodel.IndentedSettingTitleUiModel
@@ -37,27 +38,6 @@ import javax.inject.Inject
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>() {
 
     companion object {
-        private const val PENGATURAN_TOKO = "Pengaturan Toko"
-        private const val PROFIL_TOKO = "PROFIL TOKO"
-        private const val INFORMASI_DASAR = "Informasi Dasar"
-        private const val CATATAN_TOKO = "Catatan Toko"
-        private const val JAM_BUKA_TUTUP_TOKO = "Jam buka tutup toko"
-        private const val LOKASI_DAN_PENGIRIMAN = "LOKASI DAN PENGIRIMAN"
-        private const val TAMBAH_DAN_LOKASI_TOKO = "Tambah dan lokasi toko"
-        private const val ATUR_LAYANAN_PENGIRIMAN = "Atur layanan pengiriman"
-        private const val FITUR_EKSKLUSIF = "FITUR EKSKLUSIF"
-        private const val LAYANAN_BAYAR_DI_TEMPAT = "Layanan bayar di tempat"
-        private const val ORDER_PRIORITAS = "Order prioritas"
-        private const val PENGATURAN_AKUN = "Pengaturan Akun"
-        private const val PROFIL_DIRI = "Profil Diri"
-        private const val REKENING_BANK = "Rekening Bank"
-        private const val KATA_SANDI = "Kata Sandi"
-        private const val PENGATURAN_APLIKASI = "Pengaturan Aplikasi"
-        private const val CHAT_DAN_NOTIFIKASI = "Chat & Notifikasi"
-        private const val BAGIKAN_APLIKASI = "Bagikan Aplikasi"
-        private const val REVIEW_APLIKASI = "Review Aplikasi"
-        private const val DEVELOPER_OPTION = "Developer Options"
-
         private const val REQUEST_CHANGE_PASSWORD = 123
         private const val REQUEST_ADD_PASSWORD = 1234
 
@@ -111,33 +91,37 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     private fun setupView() {
         recycler_view.layoutManager = LinearLayoutManager(context)
         val settingList = mutableListOf(
-                SettingTitleMenuUiModel(PENGATURAN_TOKO, R.drawable.ic_pengaturan_toko),
-                IndentedSettingTitleUiModel(PROFIL_TOKO),
-                MenuItemUiModel(INFORMASI_DASAR, clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO),
-                MenuItemUiModel(CATATAN_TOKO, clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES),
-                MenuItemUiModel(JAM_BUKA_TUTUP_TOKO, clickApplink = ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE),
+                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_shop_setting), R.drawable.ic_pengaturan_toko),
+                IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_shop_profile)),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_basic_info), clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_INFO),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_shop_notes), clickApplink = ApplinkConstInternalMarketplace.SHOP_SETTINGS_NOTES),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_shop_working_hours), clickApplink = ApplinkConstInternalMarketplace.SHOP_EDIT_SCHEDULE),
                 DividerUiModel(DividerType.THIN_INDENTED),
-                IndentedSettingTitleUiModel(LOKASI_DAN_PENGIRIMAN),
-                MenuItemUiModel(TAMBAH_DAN_LOKASI_TOKO, clickApplink =  ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
-                MenuItemUiModel(ATUR_LAYANAN_PENGIRIMAN, clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR),
+                IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_location_and_shipment)),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_add_and_shop_location), clickApplink =  ApplinkConstInternalMarketplace.SHOP_SETTINGS_ADDRESS),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_set_shipment_method), clickApplink = ApplinkConst.SELLER_SHIPPING_EDITOR),
                 DividerUiModel(DividerType.THIN_INDENTED),
-                IndentedSettingTitleUiModel(FITUR_EKSKLUSIF),
-                MenuItemUiModel(LAYANAN_BAYAR_DI_TEMPAT, clickApplink = ApplinkConstInternalMarketplace.COD),
-                MenuItemUiModel(ORDER_PRIORITAS),
+                IndentedSettingTitleUiModel(resources.getString(R.string.setting_menu_exclusive_feature)),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_cash_on_delivery_service), clickApplink = ApplinkConstInternalMarketplace.COD),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_priority_order)) {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.WEBVIEW)
+                    intent.putExtra(OtherMenuFragment.URL_KEY, SellerBaseUrl.SELLER_HOSTNAME + SellerBaseUrl.SELLER_ORDER_PRIORITY)
+                    context?.startActivity(intent)
+                },
                 DividerUiModel(DividerType.THICK),
-                SettingTitleMenuUiModel(PENGATURAN_AKUN, R.drawable.ic_account),
-                MenuItemUiModel(PROFIL_DIRI, clickApplink = ApplinkConst.SETTING_PROFILE),
-                MenuItemUiModel(REKENING_BANK, clickApplink = ApplinkConstInternalGlobal.SETTING_BANK),
-                MenuItemUiModel(KATA_SANDI) { addOrChangePassword() },
+                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_account_setting), R.drawable.ic_account),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_self_profile), clickApplink = ApplinkConst.SETTING_PROFILE),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_bank_account), clickApplink = ApplinkConstInternalGlobal.SETTING_BANK),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_password)) { addOrChangePassword() },
                 DividerUiModel(DividerType.THICK),
-                SettingTitleMenuUiModel(PENGATURAN_APLIKASI, R.drawable.ic_app_setting),
-                MenuItemUiModel(CHAT_DAN_NOTIFIKASI, clickApplink = ApplinkConstInternalGlobal.MANAGE_NOTIFICATION),
-                MenuItemUiModel(BAGIKAN_APLIKASI) { shareApplication() },
-                MenuItemUiModel(REVIEW_APLIKASI) { reviewApplication() },
+                SettingTitleMenuUiModel(resources.getString(R.string.setting_menu_app_setting), R.drawable.ic_app_setting),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_chat_and_notification), clickApplink = ApplinkConstInternalGlobal.MANAGE_NOTIFICATION),
+                MenuItemUiModel(resources.getString(R.string.setting_menu_share_app)) { shareApplication() },
+                MenuItemUiModel(resources.getString(R.string.setting_menu_review_app)) { reviewApplication() },
                 DividerUiModel(DividerType.THIN_INDENTED)
         )
         if (GlobalConfig.isAllowDebuggingTools())
-            settingList.add(DEVELOPER_OPTION_INDEX, MenuItemUiModel(DEVELOPER_OPTION) {
+            settingList.add(DEVELOPER_OPTION_INDEX, MenuItemUiModel(resources.getString(R.string.setting_menu_developer_options)) {
                 RouteManager.route(activity, ApplinkConst.DEVELOPER_OPTIONS)
             })
         adapter.data.addAll(settingList)
@@ -171,7 +155,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(Intent.EXTRA_TEXT, resources.getString(R.string.msg_share_apps).toString() + "\n" + urlPlayStore)
         sendIntent.type = "text/plain"
-        activity!!.startActivity(Intent.createChooser(sendIntent, resources.getText(R.string.title_share)))
+        activity?.startActivity(Intent.createChooser(sendIntent, resources.getText(R.string.title_share)))
     }
 
     private fun reviewApplication() {

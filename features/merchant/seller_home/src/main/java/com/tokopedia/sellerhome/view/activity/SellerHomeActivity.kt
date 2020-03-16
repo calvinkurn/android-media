@@ -2,12 +2,8 @@ package com.tokopedia.sellerhome.view.activity
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -16,6 +12,8 @@ import com.google.android.material.bottomnavigation.LabelVisibilityMode
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.kotlin.extensions.view.requestStatusBarDark
+import com.tokopedia.kotlin.extensions.view.setupStatusBarUnderMarshmallow
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.analytic.TrackingConstant
@@ -25,6 +23,7 @@ import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.view.fragment.OtherMenuFragment
+import com.tokopedia.sellerhome.view.StatusBarCallback
 import com.tokopedia.sellerhome.view.fragment.ContainerFragment
 import com.tokopedia.sellerhome.view.model.NotificationCenterUnreadUiModel
 import com.tokopedia.sellerhome.view.model.NotificationChatUiModel
@@ -57,6 +56,8 @@ class SellerHomeActivity : BaseActivity() {
     private var hasAttachSettingsFragment = false
     private var lastSomTab = PageFragment(FragmentType.ORDER) //by default show tab "Semua Pesanan"
 
+    private var statusBarCallback: StatusBarCallback? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sah_seller_home)
@@ -68,26 +69,7 @@ class SellerHomeActivity : BaseActivity() {
         observeNotificationsLiveData()
         observeShopInfoLiveData()
         observeCurrentSelectedPageLiveData()
-        setStatusBarTransparent()
-    }
-
-    private fun setStatusBarTransparent() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            this.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false)
-            this.window.statusBarColor = Color.TRANSPARENT
-        }
-    }
-
-    private fun setWindowFlag(bits: Int, on: Boolean) {
-        val win: Window = window
-        val winParams: WindowManager.LayoutParams = win.attributes
-        if (on) {
-            winParams.flags = winParams.flags or bits
-        } else {
-            winParams.flags = winParams.flags and bits.inv()
-        }
-        win.attributes = winParams
+        setupStatusBar()
     }
 
     override fun onResume() {
@@ -101,6 +83,10 @@ class SellerHomeActivity : BaseActivity() {
             lastSomTab = page
             sharedViewModel.setCurrentSelectedPage(page)
         }
+    }
+
+    fun attachCallback(callback: StatusBarCallback) {
+        statusBarCallback = callback
     }
 
     private fun initInjector() {
@@ -129,6 +115,8 @@ class SellerHomeActivity : BaseActivity() {
         if (currentSelectedMenu == page.type) return
         currentSelectedMenu = page.type
 
+        setupStatusBar()
+
         sharedViewModel.setCurrentSelectedPage(page)
         showFragment(containerFragment)
         lastSomTab = PageFragment(FragmentType.ORDER)
@@ -137,6 +125,7 @@ class SellerHomeActivity : BaseActivity() {
     }
 
     private fun showOtherSettingsFragment() {
+        statusBarCallback?.setStatusBar()
         val type = FragmentType.OTHER
         if (currentSelectedMenu == type) return
         currentSelectedMenu = type
@@ -210,5 +199,17 @@ class SellerHomeActivity : BaseActivity() {
     private fun showOrderNotificationCounter(orderStatus: NotificationSellerOrderStatusUiModel) {
         val notificationCount = orderStatus.newOrder.plus(orderStatus.readyToShip)
         sahBottomNav.setNotification(notificationCount, FragmentType.ORDER)
+    }
+
+    private fun setupStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            this.requestStatusBarDark()
+        }
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+                sahContainer.requestApplyInsets()
+            }
+            this.setupStatusBarUnderMarshmallow()
+        }
     }
 }
