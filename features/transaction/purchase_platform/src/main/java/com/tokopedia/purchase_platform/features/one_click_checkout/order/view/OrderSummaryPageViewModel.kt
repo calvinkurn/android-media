@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.authentication.AuthHelper
+import com.tokopedia.design.utils.CurrencyFormatUtil
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
 import com.tokopedia.logisticcart.shipping.model.*
@@ -336,11 +337,27 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     insurancePrice = shipping.insuranceData.insurancePrice.toDouble()
                 }
                 val subtotal = totalProductPrice + totalShippingPrice + insurancePrice
-                orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice))
+                val minimumAmount = _orderPreference?.preference?.payment?.minimumAmount ?: 0
+//                val minimumAmount = 500000
+                val maximumAmount = _orderPreference?.preference?.payment?.maximumAmount ?: 0
+//                val maximumAmount = 700000
+                val fee = _orderPreference?.preference?.payment?.fee ?: 0
+                val orderCost = OrderCost(totalProductPrice, subtotal, totalShippingPrice, insurancePrice)
+                if (minimumAmount > subtotal) {
+                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
+                            paymentErrorMessage = "minimum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}",
+                            isButtonChoosePayment = true)
+                } else if (maximumAmount > 0 && maximumAmount < subtotal) {
+                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost,
+                            paymentErrorMessage = "maximum pembayaran adalah ${CurrencyFormatUtil.convertPriceValueToIdrFormat(minimumAmount, false)}",
+                            isButtonChoosePayment = true)
+                } else {
+                    orderTotal.value = orderTotal.value?.copy(orderCost = orderCost, paymentErrorMessage = null, isButtonChoosePayment = false)
+                }
                 return
             }
         }
-        orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost())
+        orderTotal.value = orderTotal.value?.copy(orderCost = OrderCost(), buttonState = ButtonBayarState.DISABLE)
     }
 
     fun generateCheckoutRequest() {
@@ -701,7 +718,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
             }, { throwable: Throwable ->
                 throwable.printStackTrace()
                 if (throwable is MessageErrorException && throwable.message != null) {
-                    globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = throwable.message
+                            ?: "Terjadi kesalahan pada server. Ulangi beberapa saat lagi")
                 } else {
                     globalEvent.value = OccGlobalEvent.Error(throwable)
                 }

@@ -14,6 +14,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.*
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.model.*
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
+import kotlin.math.min
 
 class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Context, val graphqlUseCase: GraphqlUseCase<GetOccCartGqlResponse>): UseCase<OrderData>() {
 
@@ -138,6 +139,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext val context: Con
         quantityViewModel.isStateError = false
 
         quantityViewModel.maxOrderQuantity = product.productMaxOrder
+        quantityViewModel.maxOrderQuantity = if (product.productSwitchInvenage == 0) {
+            product.productMaxOrder
+        } else {
+            min(product.productMaxOrder, product.productInvenageValue)
+        }
         quantityViewModel.minOrderQuantity = product.productMinOrder
         quantityViewModel.orderQuantity = product.productQuantity
         quantityViewModel.stockWording = ""

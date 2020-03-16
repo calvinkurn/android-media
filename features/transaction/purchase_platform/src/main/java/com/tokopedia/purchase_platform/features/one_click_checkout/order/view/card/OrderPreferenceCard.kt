@@ -179,6 +179,15 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         }
     }
 
+    fun setPaymentError(paymentErrorMessage: String?) {
+        if (paymentErrorMessage?.isNotEmpty() == true) {
+            view.tv_payment_message.text = paymentErrorMessage
+            view.tv_payment_message.visible()
+        } else {
+            view.tv_payment_message.gone()
+        }
+    }
+
     interface OrderPreferenceCardListener {
 
         fun onChangePreferenceClicked()

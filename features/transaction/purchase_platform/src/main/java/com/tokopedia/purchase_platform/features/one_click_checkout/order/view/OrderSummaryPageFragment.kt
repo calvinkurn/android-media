@@ -117,7 +117,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 global_error.gone()
                 main_content.visible()
                 view?.let { v ->
-                    Toaster.make(v, "success first")
                     orderProductCard.setProduct(viewModel.orderProduct)
                     orderProductCard.setShop(viewModel.orderShop)
                     orderProductCard.initView()
@@ -133,7 +132,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 swipe_refresh_layout.isRefreshing = false
                 main_content.visible()
                 view?.let { v ->
-                    //                    Toaster.make(v, "success")
                     if (it.data.preference.address.addressId > 0) {
                         orderPreferenceCard.setPreference(it.data)
                     }
@@ -152,6 +150,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
             }
         })
         viewModel.orderTotal.observe(this, Observer {
+            orderPreferenceCard.setPaymentError(it.paymentErrorMessage)
             setupButtonBayar(it)
         })
         viewModel.globalEvent.observe(this, Observer {
@@ -342,7 +341,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         tv_header.text = "Barang yang dibeli"
         if (preference.hasPreference) {
             tv_header_2.text = "Pengiriman dan Pembayaran"
+            tv_header_2.visible()
             tv_subheader.gone()
+            tv_subheader_action.gone()
+            iv_subheader.gone()
         } else {
             tv_header_2.gone()
             iv_subheader.visible()
