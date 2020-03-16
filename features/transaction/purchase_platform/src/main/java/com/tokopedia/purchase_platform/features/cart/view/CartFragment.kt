@@ -342,6 +342,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 object : TypeToken<CartSectionHeaderHolderData>() {}.type, null)
     }
 
+    override fun onStart() {
+        super.onStart()
+        sendAnalyticsScreenName(screenName)
+    }
+
     override fun onStop() {
         updateCartAfterDetached()
 
@@ -643,9 +648,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
     }
 
     override fun onGoToChuck() {
-        activity?.let {
-            startActivity(Chucker.getLaunchIntent(it, Chucker.SCREEN_HTTP))
-        }
     }
 
     private fun checkGoToShipment(message: String?) {

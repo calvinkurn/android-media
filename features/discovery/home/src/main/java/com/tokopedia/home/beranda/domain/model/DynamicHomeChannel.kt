@@ -1,20 +1,20 @@
 package com.tokopedia.home.beranda.domain.model
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tkpd.library.utils.CurrencyFormatHelper
 import com.tokopedia.kotlin.model.ImpressHolder
 import java.util.*
 
-class DynamicHomeChannel(
+data class DynamicHomeChannel(
     @Expose
     @SerializedName("channels")
     var channels: List<Channels> = listOf()
 ) {
 
 
-    class Channels(
+    data class Channels(
             @Expose
             @SerializedName("id")
             val id: String = "",
@@ -105,8 +105,8 @@ class DynamicHomeChannel(
                             "id", grids[position].id,
                             "price", CurrencyFormatHelper.convertRupiahToInt(grids[position].price).toString(),
                             "list", "/ - p1 - lego product - " + header.name,
-                            "position", (position + 1).toString()),
-                            "dimension84", id
+                            "position", (position + 1).toString(),
+                            "dimension84", id)
             )
             )
             ),
@@ -531,6 +531,9 @@ class DynamicHomeChannel(
             const val LAYOUT_REVIEW: String = "product_review"
             const val LAYOUT_PLAY_BANNER: String = "play_widget"
             const val LAYOUT_DEFAULT_ERROR: String = "default_error"
+            const val LAYOUT_LIST_CAROUSEL: String = "list_carousel"
+            const val LAYOUT_POPULAR_KEYWORD: String = "popular_keyword"
+            const val LAYOUT_MIX_TOP: String = "top_carousel"
             const val channelId: String = "channelId"
         }
     }
@@ -559,7 +562,7 @@ class DynamicHomeChannel(
             val attribution: String = ""
     )
 
-    class Grid(
+    data class Grid(
             @Expose
             @SerializedName("id")
             val id: String = "",
@@ -607,13 +610,16 @@ class DynamicHomeChannel(
             val freeOngkir: FreeOngkir = FreeOngkir()
     )
 
-    class Header(
+    data class Header(
             @Expose
             @SerializedName("id")
             val id: String = "",
             @Expose
             @SerializedName("name")
             val name: String = "",
+            @Expose
+            @SerializedName("subtitle")
+            val subtitle: String = "",
             @Expose
             @SerializedName("expiredTime")
             val expiredTime: String = "",
@@ -637,7 +643,7 @@ class DynamicHomeChannel(
             val textColor: String = ""
     )
 
-    class Banner(
+    data class Banner(
             @Expose
             @SerializedName("id")
             val id: String = "",
@@ -647,6 +653,9 @@ class DynamicHomeChannel(
             @Expose
             @SerializedName("description")
             val description: String = "",
+            @Expose
+            @SerializedName("back_color")
+            val backColor: String = "",
             @Expose
             @SerializedName("cta")
             val cta: CtaData = CtaData(),
@@ -667,7 +676,7 @@ class DynamicHomeChannel(
             val attribution: String = ""
     ) : ImpressHolder()
 
-    class CtaData(
+    data class CtaData(
             @Expose
             @SerializedName("type")
             val type: String = "",

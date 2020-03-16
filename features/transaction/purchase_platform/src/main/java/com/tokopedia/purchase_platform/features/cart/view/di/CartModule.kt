@@ -122,8 +122,8 @@ class CartModule {
 
     @Provides
     @CartScope
-    fun provideCheckoutAnalyticsCart(): CheckoutAnalyticsCart {
-        return CheckoutAnalyticsCart()
+    fun provideCheckoutAnalyticsCart(@ApplicationContext context: Context): CheckoutAnalyticsCart {
+        return CheckoutAnalyticsCart(context)
     }
 
     @Provides

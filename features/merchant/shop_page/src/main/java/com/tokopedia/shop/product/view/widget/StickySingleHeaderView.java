@@ -116,6 +116,7 @@ public class StickySingleHeaderView extends FrameLayout
         if (mHeaderHeight == -1 || adapter == null || staggeredGridLayoutManager == null)
             return;
         int firstCompletelyVisiblePosition = staggeredGridLayoutManager.findFirstCompletelyVisibleItemPositions(null)[0];
+        int firstVisiblePosition = staggeredGridLayoutManager.findFirstVisibleItemPositions(null)[0];
         if (firstCompletelyVisiblePosition > -1) {
             if (firstCompletelyVisiblePosition >= (stickyPosition) && currentScroll >= recyclerViewPaddingTop) {
                 // make the etalase label always visible
@@ -124,7 +125,9 @@ public class StickySingleHeaderView extends FrameLayout
                     mHeaderContainer.setVisibility(View.VISIBLE);
                     refreshSticky = false;
                 }
-                adapter.updateEtalaseListViewHolderData();
+                if (firstVisiblePosition == stickyPosition) {
+                    adapter.updateEtalaseListViewHolderData();
+                }
             } else {
                 // make the etalase label always gone
                 if (isStickyShowed() || refreshSticky) {

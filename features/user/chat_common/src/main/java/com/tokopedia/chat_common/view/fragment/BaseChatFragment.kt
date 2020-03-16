@@ -49,10 +49,14 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     protected var opponentName = ""
     protected var opponentRole = ""
     protected var shopId = 0
-
     protected var toShopId = "0"
     protected var toUserId = "0"
     protected var source = ""
+    protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
+
+    abstract fun onCreateViewState(view: View): BaseChatViewState
+    abstract fun onSendButtonClicked()
+    abstract fun getUserSession(): UserSessionInterface
 
     private var rvAttachmentMenu: AttachmentMenuRecyclerView? = null
 
@@ -69,15 +73,11 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         rvAttachmentMenu = view.findViewById(rvAttachmentMenuId())
     }
 
-    protected open fun rvAttachmentMenuId() = R.id.rv_attachment_menu
-
     private fun setupViewState(view: View?) {
         view?.let {
             viewState = onCreateViewState(it)
         }
     }
-
-    abstract fun onCreateViewState(view: View): BaseChatViewState
 
     override fun callInitialLoadAutomatically(): Boolean {
         return false
@@ -123,7 +123,6 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
             else -> -1
         }
     }
-
 
     override fun onImageAnnouncementClicked(viewModel: ImageAnnouncementViewModel) {
         if (!TextUtils.isEmpty(viewModel.redirectUrl)) {
@@ -239,18 +238,12 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         //Please override if you use
     }
 
-    abstract fun onSendButtonClicked()
-
-    abstract fun getUserSession(): UserSessionInterface
-
     open fun updateViewData(it: ChatroomViewModel) {
         this.opponentId = it.headerModel.senderId
         this.opponentName = it.headerModel.name
         this.opponentRole = it.headerModel.role
         this.shopId = it.headerModel.shopId
     }
-
-    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 
     override fun onDestroy() {
         super.onDestroy()
@@ -282,6 +275,8 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {}
 
     override fun onClickBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
+
+    override fun trackSeenProduct(element: ProductAttachmentViewModel) {}
 
     override fun trackSeenBannedProduct(viewModel: BannedProductAttachmentViewModel) {}
 

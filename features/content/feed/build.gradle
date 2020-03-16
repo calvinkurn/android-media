@@ -86,7 +86,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
-    implementation rootProject.ext.playServicesDependencies.analytics
+    implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
     implementation rootProject.ext.miscDependencies.multiDex
@@ -122,9 +122,6 @@ project.ext {
     groupId = 'com.tokopedia.content'
     versionName = "0.0.1"
     artifactName = "feed-release"
-    unitTestKotlinIncludes = [
-            '**/FeedViewModel.*'
-    ]
 }
 
 apply from: '../../../publish_local.gradle'

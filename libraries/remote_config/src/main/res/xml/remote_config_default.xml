@@ -323,16 +323,7 @@
         <value>false</value>
     </entry>
     <entry>
-        <key>app_enable_category_revamp</key>
-        <value>true</value>
-    </entry>
-
-    <entry>
         <key>app_enable_banned_navigation</key>
-        <value>true</value>
-    </entry>
-    <entry>
-        <key>app_enable_catalog_revamp</key>
         <value>true</value>
     </entry>
     <entry>
@@ -353,6 +344,14 @@
     </entry>
     <entry>
         <key>android_main_app_enable_new_shop_page</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>android_main_app_enabled_cache_pdp</key>
+        <value>true</value>
+    </entry>
+    <entry>
+        <key>app_semua_category_enable</key>
         <value>true</value>
     </entry>
 </defaultsMap>

@@ -1,6 +1,6 @@
 package com.tokopedia.common_digital.common
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common_digital.common.presentation.model.RechargePushEventRecommendationResponseEntity
 import com.tokopedia.common_digital.common.usecase.RechargePushEventRecommendationUseCase
 import com.tokopedia.graphql.data.model.GraphqlResponse
@@ -28,6 +28,7 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         mapOpenScreen[IS_LOGIN_STATUS] = if (isLoginStatus) "true" else "false"
         mapOpenScreen[CATEGORY] = categoryName
         mapOpenScreen[CATEGORY_ID] = categoryId
+        mapOpenScreen[BUSINESS_UNIT] = BUSINESS_UNIT_RECHARGE
 
         TrackApp.getInstance().gtm.sendScreenAuthenticated(stringScreenName.toString(), mapOpenScreen)
     }
@@ -86,9 +87,9 @@ class RechargeAnalytics(private val rechargePushEventRecommendationUseCase: Rech
         const val IS_LOGIN_STATUS = "isLoggedInStatus"
         const val CATEGORY = "category"
         const val CATEGORY_ID = "digitalCategoryId"
+        const val BUSINESS_UNIT = "businessUnit"
 
         const val RECHARGE_SCREEN_NAME = "/digital/"
-
-
+        const val BUSINESS_UNIT_RECHARGE = "recharge"
     }
 }

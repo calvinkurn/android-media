@@ -22,7 +22,7 @@ import com.tokopedia.logisticcart.shipping.model.RatesParam;
 import com.tokopedia.logisticcart.shipping.model.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
-import com.tokopedia.logisticcart.shipping.model.ShippingCourierViewModel;
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShippingParam;
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
@@ -187,7 +187,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private boolean partialCheckout;
     private boolean couponStateChanged;
     private boolean hasDeletePromoAfterChecKPromoCodeFinal;
-    private Map<Integer, List<ShippingCourierViewModel>> shippingCourierViewModelsState;
+    private Map<Integer, List<ShippingCourierUiModel>> shippingCourierViewModelsState;
     private boolean isPurchaseProtectionPage = false;
     private boolean isShowOnboarding;
     private boolean isIneligbilePromoDialogEnabled;
@@ -2049,7 +2049,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public List<ShippingCourierViewModel> getShippingCourierViewModelsState(int itemPosition) {
+    public List<ShippingCourierUiModel> getShippingCourierViewModelsState(int itemPosition) {
         if (shippingCourierViewModelsState != null) {
             return shippingCourierViewModelsState.get(itemPosition);
         }
@@ -2057,12 +2057,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void setShippingCourierViewModelsState(List<ShippingCourierViewModel> shippingCourierViewModelsState,
+    public void setShippingCourierViewModelsState(List<ShippingCourierUiModel> shippingCourierUiModelsState,
                                                   int itemPosition) {
         if (this.shippingCourierViewModelsState == null) {
             this.shippingCourierViewModelsState = new HashMap<>();
         }
-        this.shippingCourierViewModelsState.put(itemPosition, shippingCourierViewModelsState);
+        this.shippingCourierViewModelsState.put(itemPosition, shippingCourierUiModelsState);
     }
 
     @Override
