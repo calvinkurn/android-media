@@ -251,8 +251,8 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
         if(cryptographyUtils?.isInitialized() == true) {
             view?.let { view ->
                 getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                        { checkStatusFingerprint() },
-                        view.onErrorGetUserInfo())
+                    { checkStatusFingerprint() },
+                    view.onErrorGetUserInfo())
                 )
             }
         } else getUserInfo()
