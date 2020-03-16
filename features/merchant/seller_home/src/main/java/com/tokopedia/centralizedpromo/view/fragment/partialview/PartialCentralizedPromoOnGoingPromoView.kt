@@ -97,7 +97,7 @@ class PartialCentralizedPromoOnGoingPromoView(
     private fun setupOnGoingPromo() = with(view) {
         rvCentralizedPromoOnGoingPromo.apply {
             adapter = this@PartialCentralizedPromoOnGoingPromoView.adapter.apply { setHasStableIds(true) }
-            addItemDecoration(OnGoingPromoViewHolder.ItemDecoration(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.layout_lvl1).toInt()))
+            addItemDecoration(OnGoingPromoViewHolder.ItemDecoration(resources.getDimension(R.dimen.sah_dimen_10dp).toInt()))
         }
     }
 
