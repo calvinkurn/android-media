@@ -295,7 +295,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     private fun setupSearchBar() {
         searchInputView.clearFocus()
         searchInputView.closeImageButton.setOnClickListener {
-            searchInputView.searchText = ""
+            clearSearchBarInput()
             allProductList.clear()
             loadInitialData()
         }
@@ -752,15 +752,15 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onSwipeRefresh() {
-        super.onSwipeRefresh()
         allProductList.clear()
         clearSearchBarInput()
         clearSelectedProduct()
         renderCheckedView()
+        super.onSwipeRefresh()
     }
 
     private fun clearSearchBarInput() {
-        searchInputView.searchTextView.text.clear()
+        searchInputView.searchText = ""
     }
 
     override fun onItemChecked(data: ProductViewModel, isChecked: Boolean) {
