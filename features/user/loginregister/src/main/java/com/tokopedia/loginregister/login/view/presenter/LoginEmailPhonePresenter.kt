@@ -248,12 +248,14 @@ class LoginEmailPhonePresenter @Inject constructor(private val registerCheckUseC
     }
 
     override fun getUserInfoFingerprint() {
-        view?.let { view ->
-            getProfileUseCase.execute(GetProfileSubscriber(userSession,
-                    { checkStatusFingerprint() },
-                    view.onErrorGetUserInfo())
-            )
-        }
+        if(cryptographyUtils?.isInitialized() == true) {
+            view?.let { view ->
+                getProfileUseCase.execute(GetProfileSubscriber(userSession,
+                        { checkStatusFingerprint() },
+                        view.onErrorGetUserInfo())
+                )
+            }
+        } else getUserInfo()
     }
 
     override fun getTickerInfo() {
