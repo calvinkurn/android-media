@@ -5,9 +5,10 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_c
 
 interface FlashSaleCardListener {
     //title listener
-    fun onMixLeftSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels)
+    fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels)
 
     //flash sale card listener
     fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels)
     fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String)
+
 }

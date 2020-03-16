@@ -40,7 +40,6 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
                          private val countDownListener: CountDownView.CountDownListener,
                          private val homeReviewListener: HomeReviewListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool,
-                         private val flashSaleCardListener: FlashSaleCardListener,
                          private val popularKeywordListener: PopularKeywordViewHolder.PopularKeywordListener) : BaseAdapterTypeFactory(), HomeTypeFactory {
 
     private val productLayout = HashSet(
@@ -240,9 +239,9 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             HomeLoadingMoreViewHolder.LAYOUT -> viewHolder = HomeLoadingMoreViewHolder(view)
             ErrorPromptViewHolder.LAYOUT -> viewHolder = ErrorPromptViewHolder(view, listener, countDownListener)
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
-            MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, countDownListener, flashSaleCardListener, parentRecycledViewPool)
+            MixLeftViewHolder.LAYOUT -> viewHolder = MixLeftViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, countDownListener, parentRecycledViewPool)
-            MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener, flashSaleCardListener, countDownListener, parentRecycledViewPool)
+            MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

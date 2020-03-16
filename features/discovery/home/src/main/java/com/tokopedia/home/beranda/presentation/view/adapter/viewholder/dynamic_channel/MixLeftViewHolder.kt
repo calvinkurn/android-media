@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.countdown.CountDownView
 import com.tokopedia.home.R
+import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.helper.GravitySnapHelper
 import com.tokopedia.home.beranda.helper.glide.loadImage
@@ -35,12 +37,10 @@ import kotlinx.coroutines.launch
  */
 class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryListener,
                          val countDownListener: CountDownView.CountDownListener,
-                         val flashSaleCardListener: FlashSaleCardListener,
                          private val parentRecycledViewPool: RecyclerView.RecycledViewPool)
-    : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), CoroutineScope {
+    : DynamicChannelViewHolder(itemView, homeCategoryListener, countDownListener), CoroutineScope, FlashSaleCardListener {
 
     private lateinit var adapter: MixLeftAdapter
-
 
     private val masterJob = SupervisorJob()
 
@@ -70,7 +70,21 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
     }
 
     override fun onSeeAllClickTracker(channel: DynamicHomeChannel.Channels, applink: String) {
-        flashSaleCardListener.onMixLeftSeeMoreClicked(applink, channel)
+        this.onBannerSeeMoreClicked(applink, channel)
+    }
+
+    override fun onBannerSeeMoreClicked(applink: String, channel: DynamicHomeChannel.Channels) {
+        RouteManager.route(itemView.context, applink)
+        HomePageTrackingV2.MixLeft.sendMixLeftClickLoadMore(channel)
+    }
+
+    override fun onFlashSaleCardImpressed(position: Int, channel: DynamicHomeChannel.Channels) {
+
+    }
+
+    override fun onFlashSaleCardClicked(position: Int, channel: DynamicHomeChannel.Channels, grid: DynamicHomeChannel.Grid, applink: String) {
+        RouteManager.route(itemView.context, applink)
+        HomePageTrackingV2.MixLeft.sendMixLeftProductClick(channel, grid, position - 1)
     }
 
     private fun setupBackground(channel: DynamicHomeChannel.Channels) {
@@ -86,7 +100,7 @@ class MixLeftViewHolder (itemView: View, val homeCategoryListener: HomeCategoryL
         image.alpha = 1f
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.layoutManager = layoutManager
-        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(flashSaleCardListener, channel)
+        val typeFactoryImpl = FlashSaleCardViewTypeFactoryImpl(this, channel)
         val listData = mutableListOf<Visitable<*>>()
         listData.add(EmptyDataModel())
         val productDataList = convertDataToProductData(channel)

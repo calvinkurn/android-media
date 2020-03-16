@@ -166,7 +166,7 @@ import static com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dy
 public class HomeFragment extends BaseDaggerFragment implements
         SwipeRefreshLayout.OnRefreshListener, HomeCategoryListener,
         CountDownView.CountDownListener, AllNotificationListener, FragmentListener,
-        HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener, FlashSaleCardListener,
+        HomeEggListener, HomeTabFeedListener, HomeInspirationListener, HomeFeedsListener,
         HomeReviewListener, PopularKeywordViewHolder.PopularKeywordListener {
 
     private static final String TOKOPOINTS_NOTIFICATION_TYPE = "drawer";
@@ -794,7 +794,6 @@ public class HomeFragment extends BaseDaggerFragment implements
                 this,
                 this,
                 homeRecyclerView.getRecycledViewPool(),
-                this,
                 this
         );
         AsyncDifferConfig<HomeVisitable> asyncDifferConfig =
@@ -1414,24 +1413,6 @@ public class HomeFragment extends BaseDaggerFragment implements
     public void onPopularKeywordItemClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel, int position, @NotNull String keyword) {
         RouteManager.route(getContext(),applink);
         HomePageTrackingV2.PopularKeyword.INSTANCE.sendPopularKeywordClickItem(channel, position, keyword);
-    }
-
-
-    @Override
-    public void onMixLeftSeeMoreClicked(@NotNull String applink, @NotNull DynamicHomeChannel.Channels channel) {
-        RouteManager.route(getContext(), applink);
-        HomePageTrackingV2.MixLeft.INSTANCE.sendMixLeftClickLoadMore(channel);
-    }
-
-    @Override
-    public void onFlashSaleCardImpressed(int position, @NotNull DynamicHomeChannel.Channels channel) {
-
-    }
-
-    @Override
-    public void onFlashSaleCardClicked(int position, @NotNull DynamicHomeChannel.Channels channel, @NonNull DynamicHomeChannel.Grid grid, String applink) {
-        RouteManager.route(getContext(), applink);
-        HomePageTrackingV2.MixLeft.INSTANCE.sendMixLeftProductClick(channel, grid, position - 1);
     }
 
     protected void registerBroadcastReceiverTokoCash() {
