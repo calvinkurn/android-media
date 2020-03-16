@@ -8,5 +8,8 @@ data class PreferenceListData(
         @SerializedName("profiles")
         val profiles: List<ProfilesItem> = emptyList(),
         @SerializedName("messages")
-        val messages: List<String> = emptyList()
+        val messages: List<String> = emptyList(),
+        @SerializedName("max_profile")
+        val maxProfile: Int = 0
+
 )

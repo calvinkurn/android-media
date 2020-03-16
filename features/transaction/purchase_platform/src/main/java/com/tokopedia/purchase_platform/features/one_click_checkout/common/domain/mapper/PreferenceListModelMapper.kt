@@ -20,6 +20,7 @@ class PreferenceListModelMapper @Inject constructor() : PreferenceDataMapper {
                 }
 
                 preferenceListResponseModel.profiles = profilesModules
+                preferenceListResponseModel.maxProfile = data.maxProfile
 
                 return preferenceListResponseModel
             } else {
