@@ -52,6 +52,7 @@ import com.tokopedia.merchantvoucher.voucherList.MerchantVoucherListFragment
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.di.ChatRoomContextModule
@@ -120,12 +121,19 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     private var seenAttachedProduct = HashSet<Int>()
     private var seenAttachedBannedProduct = HashSet<Int>()
+    private var composeArea: EditText? = null
 
     override fun rvAttachmentMenuId() = R.id.rv_attachment_menu
     override fun getRecyclerViewResourceId() = R.id.recycler_view
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false)
+        return inflater.inflate(R.layout.fragment_topchat_chatroom, container, false).also {
+            bindView(it)
+        }
+    }
+
+    private fun bindView(view: View?) {
+        composeArea = view?.findViewById(R.id.new_comment)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -420,8 +428,13 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
                 this,
                 this,
                 this,
-                this
+                this,
+                isUseNewCard()
         )
+    }
+
+    private fun isUseNewCard(): Boolean {
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(abNewThumbnailKey) == variantNewThumbnail
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {
@@ -448,12 +461,22 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
         getViewState().showRetryUploadImages(it, true)
     }
 
-    override fun onSendButtonClicked() {
-        val sendMessage = view?.findViewById<EditText>(com.tokopedia.chat_common.R.id.new_comment)?.text.toString()
-        val startTime = SendableViewModel.generateStartTime()
+    override fun prepareListener() {
+        view?.findViewById<View>(R.id.send_but)?.setOnClickListener {
+            onSendButtonClicked()
+        }
+    }
 
-        presenter.sendMessage(messageId, sendMessage, startTime, opponentId, onSendingMessage
-        (sendMessage, startTime))
+    override fun onSendButtonClicked() {
+        val sendMessage = composeArea?.text.toString()
+        val startTime = SendableViewModel.generateStartTime()
+        presenter.sendAttachmentsAndMessage(
+                messageId,
+                sendMessage,
+                startTime,
+                opponentId,
+                onSendingMessage(sendMessage, startTime)
+        )
     }
 
     private fun onSendingMessage(sendMessage: String, startTime: String): () -> Unit {
@@ -483,16 +506,6 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
 
     override fun onStopTyping() {
         presenter.stopTyping()
-    }
-
-    override fun onSendClicked(message: String, generateStartTime: String) {
-        presenter.sendAttachmentsAndMessage(
-                messageId,
-                message,
-                generateStartTime,
-                "",
-                onSendingMessage(message, generateStartTime)
-        )
     }
 
     override fun addTemplateString(message: String?) {
@@ -783,10 +796,10 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     override fun onBackPressed(): Boolean {
         if (presenter.isUploading()) {
             showDialogConfirmToAbortUpload()
-            return true
+        } else {
+            finishActivity()
         }
-
-        return super.onBackPressed()
+        return true
     }
 
     private fun finishActivity() {
@@ -993,6 +1006,9 @@ class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View
     }
 
     companion object {
+        private const val abNewThumbnailKey = "Topchat Product Thumbnail"
+        private const val variantNewThumbnail = "New Thumbnail"
+
         fun createInstance(bundle: Bundle): BaseChatFragment {
             return TopChatRoomFragment().apply {
                 arguments = bundle
