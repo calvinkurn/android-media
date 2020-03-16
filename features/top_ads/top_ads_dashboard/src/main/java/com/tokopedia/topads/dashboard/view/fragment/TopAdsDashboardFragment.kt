@@ -208,8 +208,8 @@ class TopAdsDashboardFragment : BaseDaggerFragment(), TopAdsDashboardView {
         /*Ad switching is still in progress*/
         if (adCurrentState == 400 || adCurrentState == 300 || adCurrentState == 200) {
             startActivity(Intent(activity, AdCreationChooserActivity::class.java))
-        }
-        startActivity(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS))
+        } else
+            startActivity(RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS))
     }
 
     private fun noProduct() {

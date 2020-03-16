@@ -182,7 +182,7 @@ abstract class DailyBudgetFragment : BaseDaggerFragment() {
 
     fun deactivedAds() {
         /*Showing in progress screen*/
-        activity?.setResult(100)
+        activity?.setResult(Activity.RESULT_OK)
         val budget = priceEditText.textWithoutPrefix.replace(",", "").toInt()
         budgetViewModel.postAutoAds(AutoAdsParam(AutoAdsParam.Input(
                 TOGGLE_OFF,

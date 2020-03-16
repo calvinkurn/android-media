@@ -101,15 +101,17 @@
     <string name="daily_budget_error">Biaya minimum %d rupiah</string>
     <string name="group_name_empty_error">"group name can't be empty"</string>
     <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
-   // new resources
 
+    <string name="ads_active">Aktif</string>
+    <string name="ads_deactive">Tidak Aktif</string>
+    <string name="ads_inprogress">Dalam Proses</string>
+    <string name="ads_not_delivered">Tidak tampil</string>
     <string name="confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
     <string name="confirmation_switch_auto">Siap beriklan dengan Iklan Otomatis?</string>
     <string name="confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
     <string name="confirmation_switch_auto_description">Semua grup iklanmu akan dihapus dan diganti dengan Iklan Otomatis</string>
     <string name="active">Aktif</string>
     <string name="cancel">Batalkan</string>
-    <string name="ads_not_delivered">Tidak Tampil</string>
     <string name="select_ad_creation_option_auto">Sistem akan memilihkan produk dan kata kunci yang tepat sehingga iklan lebih efektif</string>
     <string name="select_ad_creation_option_manual">Pilih produk, kata kunci, dan atur biaya iklanmu sendiri secara manual</string>
     <string name="ticker_title">Iklan Otomatis akan dinonaktifkan</string>

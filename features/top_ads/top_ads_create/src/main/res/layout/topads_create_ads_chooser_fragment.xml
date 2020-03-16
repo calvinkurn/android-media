@@ -67,7 +67,6 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/tv_shop_status"
-                style="@style/Toolbar.Green"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dp_8"
@@ -79,6 +78,7 @@
                 android:textStyle="normal"
                 app:layout_constraintStart_toEndOf="@id/typography1"
                 app:layout_constraintTop_toTopOf="parent"
+                tools:background="@drawable/active_status_green"
                 tools:text="Aktif" />
 
             <com.tokopedia.unifyprinciples.Typography
