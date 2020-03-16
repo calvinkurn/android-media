@@ -273,13 +273,7 @@ open class HomeViewModel @Inject constructor(
                 headerViewModel.isTokoPointDataError = it
             }
             headerViewModel.isUserLogin = userSession.isLoggedIn
-<<<<<<< HEAD
-            if(channel?.isClosedForSend == false){
-                launch { channel?.send(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
-            }
-=======
             launch { updateWidget(UpdateLiveDataModel(ACTION_UPDATE, headerViewModel, currentPosition)) }
->>>>>>> fc6e5bd6e5eb96ad512fd8b6d5ef111239799d58
         }
 
     }
@@ -867,12 +861,6 @@ open class HomeViewModel @Inject constructor(
     }
 
     private suspend fun updateWidget(updateWidget: UpdateLiveDataModel){
-<<<<<<< HEAD
-        if(channel?.isClosedForSend == true){
-            initChannel()
-            channel?.send(updateWidget)
-        }
-=======
         try {
             if(channel?.isClosedForSend == true){
                 initChannel()
@@ -882,7 +870,6 @@ open class HomeViewModel @Inject constructor(
             initChannel()
             channel?.send(updateWidget)
         }
->>>>>>> fc6e5bd6e5eb96ad512fd8b6d5ef111239799d58
     }
 
 // ============================================================================================

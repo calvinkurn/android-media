@@ -18,24 +18,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-<<<<<<< HEAD
 
-=======
-    <ViewStub
-        android:id="@+id/channel_subtitle"
-        android:inflatedId="@+id/channel_subtitle"
-        android:layout="@layout/view_stub_dc_subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:visibility="gone"
-        tools:visibility="gone"
-        tools:text="Berakhir dalam"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
->>>>>>> fc6e5bd6e5eb96ad512fd8b6d5ef111239799d58
     <ViewStub
         android:id="@+id/count_down"
         android:inflatedId="@+id/count_down"
@@ -64,21 +47,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <ViewStub
-        android:id="@+id/channel_subtitle"
-        android:inflatedId="@+id/channel_subtitle"
-        android:layout="@layout/view_stub_dc_subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_16"
-        android:layout_marginLeft="@dimen/dp_16"
-        android:visibility="gone"
-        tools:visibility="gone"
-        tools:text="Berakhir dalam"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/channel_title"
-        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <ViewStub
         android:id="@+id/channel_subtitle"
