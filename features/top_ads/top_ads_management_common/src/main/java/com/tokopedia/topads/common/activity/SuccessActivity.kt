@@ -1,14 +1,14 @@
-package com.tokopedia.topads.view.activity
+package com.tokopedia.topads.common.activity
 
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
-import com.tokopedia.topads.view.fragment.NoCreditFragment
+import com.tokopedia.topads.common.fragment.OnSuccessFragment
 
-class NoCreditActivity : BaseSimpleActivity() {
+class SuccessActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
-        return NoCreditFragment.newInstance()
+        return OnSuccessFragment.newInstance()
     }
 
     override fun onBackPressed() {

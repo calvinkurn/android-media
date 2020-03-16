@@ -45,4 +45,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SummaryViewModel::class)
     internal abstract fun provideSummaryViewModel(viewModel: SummaryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AdChooserViewModel::class)
+    internal abstract fun provideAdChooserViewModel(viewModel: AdChooserViewModel): ViewModel
 }

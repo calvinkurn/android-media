@@ -50,4 +50,19 @@
     <string name="terpakai">Terpakai Rp %,.0f</string>
     <string name="anggaran_harian_status">Anggaran Harian Rp %,.0f</string>
     <string name="toaster_inactive_success">Iklan Otomatis berhasil dinonaktifkan</string>
+
+    //Ad Create Auto
+    <string name="tip_title">Seputar Anggaran Harian</string>
+    <string name="tip_desc_1">Semakin tinggi anggaran harian, semakin besar potensi produkmu jangkau lebih banyak pembeli.</string>
+    <string name="tip_desc_2">Anggaran harian hanya akan mengiklankan produk-produkmu yang berpotensi laku.</string>
+    <string name="tip_desc_3">Kamu dapat atur atau hentikan anggaran harian kapan saja!</string>
+    <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
+    <string name="range_start">Rp%d</string>
+    <string name="range_end">Rp%d</string>
+    <string name="potential_ads_reach">Iklan berpotensi menjangkau</string>
+    <string name="price_range">orang per hari</string>
+    <string name="iklankan">Iklankan</string>
+    <string name="budget_range">Anggaran Harian</string>
+    <string name="auto_ads_creation">Buat Iklan Otomatis</string>
+    <string name="info_text">Sistem TopAds melindungi iklanmu dari klik yang tidak valid. Info Selengkapnya</string>
 </resources>

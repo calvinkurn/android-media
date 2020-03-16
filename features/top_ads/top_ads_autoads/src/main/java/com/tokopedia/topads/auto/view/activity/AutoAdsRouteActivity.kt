@@ -95,7 +95,8 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
     }
 
     private fun noAds() {
-        startActivity(Intent(this@AutoAdsRouteActivity, StartAutoAdsActivity::class.java))
+        startActivity(RouteManager.getIntent(this@AutoAdsRouteActivity, ApplinkConstInternalTopAds.TOPADS_CREATE_ADS))
+
     }
 
     private fun manualAds() {
@@ -104,7 +105,7 @@ class AutoAdsRouteActivity : AutoAdsBaseActivity() {
 
     private fun openDashboard() {
         if (AppUtil.isSellerInstalled(this)) {
-            RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_SELLER)
+            RouteManager.route(this, ApplinkConstInternalTopAds.TOPADS_DASHBOARD_CUSTOMER)
         } else {
             RouteManager.route(this, ApplinkConstInternalMechant.MERCHANT_REDIRECT_CREATE_SHOP)
         }

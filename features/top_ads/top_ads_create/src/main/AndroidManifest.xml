@@ -33,14 +33,8 @@
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name="com.tokopedia.topads.view.activity.SuccessActivity"
-            android:label="@string/create_group"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustPan" />
-        <activity
-            android:name="com.tokopedia.topads.view.activity.NoCreditActivity"
-            android:label="@string/create_group"
+            android:name="com.tokopedia.topads.view.activity.AdCreationChooserActivity"
+            android:label="@string/creat_ad"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
             android:windowSoftInputMode="adjustPan" />

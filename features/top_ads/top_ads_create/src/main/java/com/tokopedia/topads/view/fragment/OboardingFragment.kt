@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.view.activity.StepperActivity
 import kotlinx.android.synthetic.main.topads_create_fragment_onboarding.*
@@ -28,7 +28,7 @@ class OboardingFragment: TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         btn_start_auto_ads.setOnClickListener {
-            RouteManager.route(it.context, ApplinkConst.SellerApp.TOPADS_AUTOADS)
+            RouteManager.route(it.context, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE)
         }
         btn_start_manual_ads.setOnClickListener {
             startActivity(Intent(activity, StepperActivity::class.java))

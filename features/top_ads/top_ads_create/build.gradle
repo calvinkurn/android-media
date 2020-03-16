@@ -13,6 +13,7 @@ buildscript {
 }
 
 dependencies {
+    implementation project(rootProject.ext.features.topAdsAutoAds)
     implementation project(rootProject.ext.libraries.applink)
     implementation project(rootProject.ext.features.resourcesCommon)
     implementation project(rootProject.ext.libraries.tkpddesign)
@@ -35,6 +36,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.unifyDependencies.coach_mark
+    implementation rootProject.ext.unifyDependencies.components
     implementation project(rootProject.ext.libraries.kotlinExtensions)
     kapt rootProject.ext.miscDependencies.daggerCompiler
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime

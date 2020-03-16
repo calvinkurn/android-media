@@ -51,12 +51,9 @@
     <string name="optimalkan_penjualan_dengan_atur_anggaran_harian_iklan">Optimalkan penjualan dengan atur anggaran harian iklan</string>
     <string name="type_iklan">Tipe iklan</string>
     <string name="yay_produkmu_berhasil_diiklankan">Yay, produkmu\nberhasil diiklankan!</string>
-    <string name="pantau_terus_performa_iklan_produkmu_di_dashboard_topads">Pantau terus performa iklan produkmu di\nDashboard TopAds</string>
-    <string name="yuk_isi_kredit_sekarang">Yuk, isi kredit sekarang</string>
-    <string name="tambah_kredit_topads_agar_iklanmu_nselalu_tampil_dan_lebih_bersaing">Tambah kredit TopAds agar iklanmu\nselalu tampil dan lebih bersaing</string>
-    <string name="tambah_kredit_topads">Tambah Kredit TopAds</string>
     <string name="lihat_performa_iklan">Lihat performa iklan</string>
     <string name="create_group">Buat Group Iklan</string>
+    <string name="creat_ad">Buat Iklan Produk</string>
     <string name="seputar_biaya_iklan">Seputar biaya iklan</string>
     <string name="makin_tinggi_biaya_iklan_makin_besar_kemungkinan_produkmu_tampil_di_halaman_pencarian">Makin tinggi biaya iklan, makin besar kemungkinan produkmu tampil di halaman pencarian</string>
     <string name="gunakan_rekomendasi_biaya_agar_produkmu_lebih_bersaing">Gunakan rekomendasi biaya agar produkmu lebih bersaing</string>
@@ -104,5 +101,17 @@
     <string name="daily_budget_error">Biaya minimum %d rupiah</string>
     <string name="group_name_empty_error">"group name can't be empty"</string>
     <string name="more_info">https://seller.tokopedia.com/edu/cara-topads-mendeteksi-klik-tampil-yang-tidak-valid/</string>
+   // new resources
 
+    <string name="confirmation_switch_manual">Yakin beralih dari Iklan Otomatis?</string>
+    <string name="confirmation_switch_auto">Siap beriklan dengan Iklan Otomatis?</string>
+    <string name="confirmation_switch_manual_description">Dengan Iklan Otomatis, pasti lebih mudah dan cepat untuk promosikan produkmu di halaman teratas.</string>
+    <string name="confirmation_switch_auto_description">Semua grup iklanmu akan dihapus dan diganti dengan Iklan Otomatis</string>
+    <string name="active">Aktif</string>
+    <string name="cancel">Batalkan</string>
+    <string name="ads_not_delivered">Tidak Tampil</string>
+    <string name="select_ad_creation_option_auto">Sistem akan memilihkan produk dan kata kunci yang tepat sehingga iklan lebih efektif</string>
+    <string name="select_ad_creation_option_manual">Pilih produk, kata kunci, dan atur biaya iklanmu sendiri secara manual</string>
+    <string name="ticker_title">Iklan Otomatis akan dinonaktifkan</string>
+    <string name="ticker_desc">Proses menonaktifkan Iklan Otomatis butuh waktu. Cek beberapa saat lagi, ya</string>
 </resources>

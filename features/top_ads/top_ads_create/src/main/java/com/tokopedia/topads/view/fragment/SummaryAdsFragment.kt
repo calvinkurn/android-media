@@ -18,13 +18,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.topads.common.activity.NoCreditActivity
+import com.tokopedia.topads.common.activity.SuccessActivity
 import com.tokopedia.topads.create.R
 import com.tokopedia.topads.data.CreateManualAdsStepperModel
 import com.tokopedia.topads.data.response.*
 import com.tokopedia.topads.di.CreateAdsComponent
-import com.tokopedia.topads.view.activity.NoCreditActivity
 import com.tokopedia.topads.view.activity.StepperActivity
-import com.tokopedia.topads.view.activity.SuccessActivity
 import com.tokopedia.topads.view.model.SummaryViewModel
 import com.tokopedia.user.session.UserSession
 import kotlinx.android.synthetic.main.topads_create_fragment_summary.*
