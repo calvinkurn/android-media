@@ -11,44 +11,33 @@ import androidx.fragment.app.DialogFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.CurrencyIdrTextWatcher
 import kotlinx.android.synthetic.main.fragment_quick_edit_price.*
 
-class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
+class ProductManageQuickEditPriceFragment(private val onFinishedListener: OnFinishedListener,
+                                          private var product: ProductViewModel) : BottomSheetUnify() {
 
     companion object {
-        private const val PRODUCT_PRICE = "price"
+
         private const val MAX_PRICE = 100000000
         private const val MIN_PRICE = 100
         private const val MAXIMUM_STRING_LENGTH = 11
-        fun createInstance(context: Context, price: String) : ProductManageQuickEditPriceFragment {
-            return ProductManageQuickEditPriceFragment().apply{
+        fun createInstance(context: Context, product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditPriceFragment {
+            return ProductManageQuickEditPriceFragment(onFinishedListener, product).apply{
                 val view = View.inflate(context, R.layout.fragment_quick_edit_price,null)
                 setChild(view)
                 setTitle(context.resources.getString(R.string.product_manage_menu_set_price))
                 setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
-                arguments =  Bundle().apply{
-                    putString(PRODUCT_PRICE, price)
-                }
             }
-        }
-    }
-
-    var editPriceSuccess = false
-    var price = ""
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            price = it.getString(PRODUCT_PRICE) ?: ""
         }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initView(price)
+        product.price?.let { initView(it) }
     }
 
     private fun initView(currentPrice: String) {
@@ -66,7 +55,7 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
             }
             textFieldInput.setOnEditorActionListener { _, actionId, _ ->
                 if(actionId == EditorInfo.IME_ACTION_DONE){
-                    price = textFieldInput.text.toString()
+                    product = product.copy(price = textFieldInput.text.toString())
                     val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     imm.hideSoftInputFromWindow(textFieldInput.windowToken, 0)
                 }
@@ -93,12 +82,12 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
     }
 
     private fun isPriceTooLow(): Boolean {
-        if(price.toIntOrZero() < MIN_PRICE) return true
+        if(product.price.toIntOrZero() < MIN_PRICE) return true
         return false
     }
 
     private fun isPriceTooHigh(): Boolean {
-        if(price.toIntOrZero() > MAX_PRICE) return true
+        if(product.price.toIntOrZero() > MAX_PRICE) return true
         return false
     }
 
@@ -118,7 +107,7 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
     }
 
     private fun isPriceValid() {
-        price = CurrencyFormatHelper.convertRupiahToInt(quickEditPriceTextField.textFieldInput.text.toString()).toString()
+        product = product.copy(price = CurrencyFormatHelper.convertRupiahToInt(quickEditPriceTextField.textFieldInput.text.toString()).toString())
         when {
             isPriceTooLow() -> {
                 showErrorPriceTooLow()
@@ -129,10 +118,14 @@ class ProductManageQuickEditPriceFragment : BottomSheetUnify() {
                 return
             }
             else -> {
-                editPriceSuccess = true
+                onFinishedListener.onFinishEditPrice(product)
                 super.dismiss()
             }
         }
+    }
+
+    interface OnFinishedListener {
+        fun onFinishEditPrice(product: ProductViewModel)
     }
 
 }

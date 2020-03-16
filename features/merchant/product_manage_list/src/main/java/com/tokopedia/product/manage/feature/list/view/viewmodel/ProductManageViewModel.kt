@@ -10,6 +10,7 @@ import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_SUCCESS_CODE
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
@@ -92,6 +93,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _toggleMultiSelect
     val multiEditProductResult: LiveData<Result<MultiEditResult>>
         get() = _multiEditProductResult
+    val selectedFilterAndSort: LiveData<FilterOptionWrapper>
+        get() = _selectedFilterAndSort
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -106,6 +109,7 @@ class ProductManageViewModel @Inject constructor(
     private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
+    private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
@@ -314,6 +318,10 @@ class ProductManageViewModel @Inject constructor(
                 }
             })
 
+    }
+
+    fun setSelectedFilterAndSort(selectedFilter: FilterOptionWrapper) {
+        _selectedFilterAndSort.postValue(selectedFilter)
     }
 
     fun toggleMultiSelect() {

@@ -9,7 +9,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.feature.filter.data.mapper.ProductManageFilterMapper
@@ -34,7 +33,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_filter.*
 import javax.inject.Inject
 
-class ProductManageFilterFragment : BottomSheetUnify(),
+class ProductManageFilterFragment(private val onFinishedListener: OnFinishedListener,
+                                  private val filterOptionWrapper: FilterOptionWrapper?) : BottomSheetUnify(),
         HasComponent<ProductManageFilterComponent>,
         SeeAllListener, ChipsAdapter.ChipClickListener, ShowChipsListener {
 
@@ -56,14 +56,11 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         const val ITEM_CATEGORIES_INDEX = 2
         const val ITEM_OTHER_FILTER_INDEX = 3
 
-        fun createInstance(context: Context, cacheManagerId: String) : ProductManageFilterFragment {
-            return ProductManageFilterFragment().apply{
+        fun createInstance(context: Context, filterOptionWrapper: FilterOptionWrapper?, onFinishedListener: OnFinishedListener) : ProductManageFilterFragment {
+            return ProductManageFilterFragment(onFinishedListener, filterOptionWrapper).apply{
                 val view = View.inflate(context, R.layout.fragment_filter,null)
                 setChild(view)
                 setTitle(BOTTOMSHEET_TITLE)
-                arguments = Bundle().apply {
-                    putString(CACHE_MANAGER_KEY, cacheManagerId)
-                }
             }
         }
     }
@@ -77,33 +74,17 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     private var filterAdapter: FilterAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
 
-    var isResultReady: Boolean = false
-    var resultCacheManagerId: String = ""
-    var selectedFilterOptions: FilterOptionWrapper? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
-        var cacheManagerId: String = ""
-        arguments?.let {
-            cacheManagerId = it.getString(CACHE_MANAGER_KEY) ?: ""
-        }
-        val manager = this.context?.let { SaveInstanceCacheManager(it, savedInstanceState) }
-        val savedInstanceManager = if (savedInstanceState == null) this.context?.let { SaveInstanceCacheManager(it, cacheManagerId) } else manager
-        //TODO use this cache manager to get filters from product list page
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        productManageFilterViewModel.getData(userSession.shopId)
-        showLoading()
-        layoutManager = LinearLayoutManager(this.context)
-        val adapterTypeFactory = FilterAdapterTypeFactory(this, this, this)
-        filterAdapter = FilterAdapter(adapterTypeFactory)
-        filterRecyclerView.layoutManager = layoutManager
-        filterRecyclerView.adapter = filterAdapter
         observeCombinedResponse()
         observeFilterData()
         initView()
+        productManageFilterViewModel.getData(userSession.shopId)
+        showLoading()
     }
 
     override fun onDestroy() {
@@ -179,11 +160,11 @@ class ProductManageFilterFragment : BottomSheetUnify(),
         }
     }
 
-    override fun onChipClicked(data: FilterDataViewModel, canSelectMany: Boolean, title: String) {
+    override fun onChipClicked(element: FilterDataViewModel, canSelectMany: Boolean, title: String) {
         if(canSelectMany) {
-            productManageFilterViewModel.updateSelect(data)
+            productManageFilterViewModel.updateSelect(element)
         } else {
-            productManageFilterViewModel.updateSelect(data, title)
+            productManageFilterViewModel.updateSelect(element, title)
         }
     }
 
@@ -201,8 +182,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
                 is Success -> {
                     val mappedResult = ProductManageFilterMapper.mapCombinedResultToFilterViewModels(it.data)
                     productManageFilterViewModel.updateData(mappedResult)
-                    filterAdapter?.updateData(mappedResult)
-                    hideLoading()
+                    getSelectedFilters()
                 }
                 is Fail -> {
                     this.dismiss()
@@ -212,19 +192,17 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     }
 
     private fun initView() {
+        layoutManager = LinearLayoutManager(this.context)
+        val adapterTypeFactory = FilterAdapterTypeFactory(this, this, this)
+        filterAdapter = FilterAdapter(adapterTypeFactory)
+        filterRecyclerView.layoutManager = layoutManager
+        filterRecyclerView.adapter = filterAdapter
         buttonCloseBottomSheet.setOnClickListener {
-            isResultReady = true
             productManageFilterViewModel.filterData.value?.let { data ->
-                context?.let {
-                    val dataToSave = ProductManageFilterMapper.mapFiltersToFilterOptions(data)
-                    selectedFilterOptions = dataToSave
-                    //TODO leo tanya hendry
-//                    val cacheManager = SaveInstanceCacheManager(it, true)
-//                    resultCacheManagerId = cacheManager.id ?: ""
-//                    cacheManager.put(SELECTED_FILTER, dataToSave)
-                }
+                val dataToSave = ProductManageFilterMapper.mapFiltersToFilterOptions(data)
+                onFinishedListener.onFinish(dataToSave)
+                super.dismiss()
             }
-            super.dismiss()
         }
         adjustBottomSheetPadding()
         initBottomSheetReset()
@@ -241,6 +219,7 @@ class ProductManageFilterFragment : BottomSheetUnify(),
 
     private fun observeFilterData() {
         productManageFilterViewModel.filterData.observe(this, Observer {
+            hideLoading()
             filterAdapter?.updateData(it)
             if(checkSelected(it)) {
                 bottomSheetAction.visibility = View.VISIBLE
@@ -275,5 +254,28 @@ class ProductManageFilterFragment : BottomSheetUnify(),
     private fun adjustBottomSheetPadding() {
         bottomSheetWrapper.setPadding(0,0,0,0)
         (bottomSheetHeader.layoutParams as LinearLayout.LayoutParams).setMargins(16.toPx(),16.toPx(),16.toPx(),16.toPx())
+    }
+
+    private fun getSelectedFilters() {
+        filterOptionWrapper?.let {
+            ProductManageFilterMapper.mapFilterOptionWrapperToSelectedSort(it)?.let { selectedSort ->
+                productManageFilterViewModel.updateSelect(selectedSort,
+                        ProductManageFilterMapper.SORT_HEADER)
+            }
+            ProductManageFilterMapper.mapFilterOptionWrapperToSelectedEtalase(it)?.let { selectedEtalase ->
+                productManageFilterViewModel.updateSelect(selectedEtalase,
+                        ProductManageFilterMapper.ETALASE_HEADER)
+            }
+            ProductManageFilterMapper.mapFilterOptionWrapperToSelectedCategories(it).forEach { data ->
+                productManageFilterViewModel.updateSelect(data)
+            }
+            ProductManageFilterMapper.mapFilterOptionWrapperToSelectedOtherFilters(it).forEach { data ->
+                productManageFilterViewModel.updateSelect(data)
+            }
+        }
+    }
+
+    interface OnFinishedListener {
+        fun onFinish(selectedData: FilterOptionWrapper)
     }
 }
