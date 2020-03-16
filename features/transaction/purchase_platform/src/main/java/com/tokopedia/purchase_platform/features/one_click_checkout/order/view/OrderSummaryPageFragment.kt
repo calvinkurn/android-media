@@ -337,7 +337,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
         }
 
         btn_pay.setOnClickListener {
-//            viewModel.finalUpdate()
+            viewModel.finalUpdate()
         }
     }
 

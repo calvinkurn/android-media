@@ -19,9 +19,9 @@ data class UpdateCartOccCartRequest(
         @SerializedName("product_id")
         val productId: String = "",
         @SerializedName("shipping_id")
-        val shippingId: String = "",
+        val shippingId: Int = 0,
         @SerializedName("sp_id")
-        val spId: String = ""
+        val spId: Int = 0
 )
 
 data class UpdateCartOccProfileRequest(

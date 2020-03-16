@@ -312,12 +312,6 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
 
     private fun getCourierDatabySpId(spId: Int, shippingCourierViewModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
         return shippingCourierViewModels.firstOrNull { it.productData.shipperProductId == spId }
-//        for (shippingCourierViewModel in shippingCourierViewModels) {
-//            if (shippingCourierViewModel.productData.shipperProductId == spId) {
-//                return ShippingCourierConverter().convertToCourierItemData(shippingCourierViewModel)
-//            }
-//        }
-//        return null
     }
 
     private fun getRatesDataFromLogisticPromo(serviceId: Int, list: List<ShippingDurationUiModel>): ShippingDurationUiModel? {
@@ -707,8 +701,8 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                     quantity.orderQuantity,
                     op.notes,
                     op.productId.toString(),
-                    pref.shipping?.shipperId.toZeroIfNull().toString(),
-                    pref.shipping?.shipperProductId.toZeroIfNull().toString()
+                    pref.shipping?.shipperId.toZeroIfNull(),
+                    pref.shipping?.shipperProductId.toZeroIfNull()
             )
             val profile = UpdateCartOccProfileRequest(
                     pref.preference.profileId.toString(),
@@ -796,7 +790,24 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
                 )
         ))))
         checkoutOccUseCase.execute(param, { checkoutOccGqlResponse: CheckoutOccGqlResponse ->
-            globalEvent.value = OccGlobalEvent.Normal
+            if (checkoutOccGqlResponse.response.status.equals("OK", true)) {
+                if (checkoutOccGqlResponse.response.data.success == 1) {
+                    val paymentParameter = checkoutOccGqlResponse.response.data.paymentParameter
+                    globalEvent.value = OccGlobalEvent.Normal
+                } else {
+                    if (checkoutOccGqlResponse.response.data.error.message.isNotBlank()) {
+                        globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.data.error.message)
+                    } else {
+                        globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan dengan kode ${checkoutOccGqlResponse.response.data.error.message}")
+                    }
+                }
+            } else {
+                if (checkoutOccGqlResponse.response.header.messages.isNotEmpty()) {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = checkoutOccGqlResponse.response.header.messages[0])
+                } else {
+                    globalEvent.value = OccGlobalEvent.Error(errorMessage = "Terjadi kesalahan")
+                }
+            }
         }, { throwable: Throwable ->
             throwable.printStackTrace()
             globalEvent.value = OccGlobalEvent.Error(throwable)
