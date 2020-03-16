@@ -1880,15 +1880,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         shipmentPresenter.cancelAutoApplyPromoStack(INDEX_PROMO_GLOBAL, promoCodes, false, "global");
     }
 
-    @Override
-    public void onCartPromoUseVoucherGlobalPromoClicked(PromoStackingData cartPromoGlobal, int position) {
-        trackingPromoCheckoutUtil.checkoutClickUseTickerPromoOrCoupon();
-        Promo promo = generateCheckPromoFirstStepParam();
-
-        Intent intent = getIntentToPromoList(promo);
-        startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE);
-    }
-
     @NotNull
     private Intent getIntentToPromoList(Promo promo) {
         Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalPromo.PROMO_LIST_MARKETPLACE);
@@ -2154,20 +2145,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             case REQUEST_CODE_COD:
                 shipmentPresenter.proceedCodCheckout(checkPromoParam, hasInsurance, isOneClickShipment(),
                         isTradeIn(), getDeviceId(), getCheckoutLeasingId());
-        }
-    }
-
-    @Override
-    public void onClickDetailPromoGlobal(PromoStackingData dataGlobal, int position) {
-        trackingPromoCheckoutUtil.checkoutClickTicker(dataGlobal.getDescription());
-
-        Promo promo = generateCheckPromoFirstStepParam();
-        if (dataGlobal.getTypePromo() == PromoStackingData.CREATOR.getTYPE_COUPON()) {
-            Intent intent = getIntentToPromoDetail(promo, dataGlobal);
-            startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE);
-        } else {
-            Intent intent = getIntentToPromoList(promo);
-            startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE);
         }
     }
 

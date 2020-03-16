@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.chuckerteam.chucker.api.Chucker
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -43,18 +42,15 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.merchantvoucher.common.gql.data.request.CartItemDataVoucher
-import com.tokopedia.merchantvoucher.voucherlistbottomsheet.MerchantVoucherListBottomSheetFragment
 import com.tokopedia.navigation_common.listener.CartNotifyListener
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.analytics.FROM_CART
 import com.tokopedia.promocheckout.common.analytics.TrackingPromoCheckoutUtil
 import com.tokopedia.promocheckout.common.data.*
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
-import com.tokopedia.promocheckout.common.util.*
+import com.tokopedia.promocheckout.common.util.EXTRA_PROMO_DATA
+import com.tokopedia.promocheckout.common.util.mapToStatePromoStackingCheckout
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingInfoDetailUiModel
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.promocheckout.common.view.uimodel.ResponseGetPromoStackUiModel
 import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
@@ -82,9 +78,7 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.data.model.response.PromoEmptyCartInfo
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.*
-import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment
+import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
@@ -112,7 +106,8 @@ import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.*
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -125,7 +120,6 @@ import com.tokopedia.wishlist.common.listener.WishListActionListener
 import kotlinx.coroutines.*
 import rx.subscriptions.CompositeSubscription
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 /**
  * @author anggaprasetiyo on 18/01/18.
@@ -133,8 +127,7 @@ import kotlin.collections.ArrayList
 
 class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, CartItemAdapter.ActionListener,
         PromoActionListener, RefreshHandler.OnRefreshHandlerListener, ICartListAnalyticsListener,
-        ToolbarRemoveView.ToolbarCartListener, MerchantVoucherListBottomSheetFragment.ActionListener,
-        InsuranceItemActionListener, TickerAnnouncementActionListener {
+        ToolbarRemoveView.ToolbarCartListener, InsuranceItemActionListener, TickerAnnouncementActionListener {
 
     lateinit var appBarLayout: AppBarLayout
     lateinit var cartRecyclerView: RecyclerView
@@ -1148,25 +1141,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         cartAdapter.checkForShipmentForm()
     }
 
-    override fun onCartPromoUseVoucherGlobalPromoClicked(cartPromoGlobal: PromoStackingData, position: Int) {
-        val cartItemData = getAllSelectedCartDataList()
-        if (cartItemData?.isNotEmpty() == true) {
-            trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon()
-            dPresenter.processUpdateCartDataPromoGlobal(cartItemData, cartPromoGlobal, GO_TO_LIST)
-        } else {
-            showToastMessageRed(getString(R.string.checkout_module_label_promo_no_item_checked))
-        }
-    }
-
-    override fun onVoucherMerchantPromoClicked(`object`: Any) {
-        if (`object` is ShopGroupAvailableData) {
-            getAllSelectedCartDataList()?.let {
-                cartPageAnalytics.eventClickPilihMerchantVoucher()
-                dPresenter.processUpdateCartDataPromoMerchant(it, `object`)
-            }
-        }
-    }
-
     override fun onCartPromoCancelVoucherPromoGlobalClicked(cartPromoGlobal: PromoStackingData, position: Int) {
         val promoCodes = ArrayList<String>()
         promoCodes.add(cartPromoGlobal.promoCode)
@@ -1186,14 +1160,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     override fun onPromoGlobalTrackingCancelled(cartPromoGlobal: PromoStackingData, position: Int) {
         sendAnalyticsOnClickCancelPromoCodeAndCouponBanner()
-    }
-
-    override fun onClickDetailPromoGlobal(dataGlobal: PromoStackingData, position: Int) {
-        val cartItemData = getAllSelectedCartDataList()
-        if (cartItemData?.isNotEmpty() == true) {
-            trackingPromoCheckoutUtil.cartClickUseTickerPromoOrCoupon()
-            dPresenter.processUpdateCartDataPromoGlobal(cartItemData, dataGlobal, GO_TO_DETAIL)
-        }
     }
 
     override fun onCartDataEnableToCheckout() {
@@ -2111,15 +2077,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                     }
                 }
             }
-        } else if (resultCode == RESULT_CLASHING) {
-            data?.extras?.let {
-                val clashingInfoDetailUiModel = it.getParcelable<ClashingInfoDetailUiModel>(EXTRA_CLASHING_DATA)
-                if (clashingInfoDetailUiModel != null) {
-                    var type = it.getString(EXTRA_TYPE)
-                    if (type == null) type = ""
-                    onClashCheckPromo(clashingInfoDetailUiModel, type)
-                }
-            }
         }
     }
 
@@ -2257,65 +2214,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
         }
     }
 
-    override fun showMerchantVoucherListBottomsheet(shopGroupAvailableData: ShopGroupAvailableData) {
-        if (fragmentManager != null) {
-            var shopId = 0
-            try {
-                shopId = Integer.parseInt(shopGroupAvailableData.shopId ?: "0")
-            } catch (e: NumberFormatException) {
-                if (GlobalConfig.isAllowDebuggingTools()) {
-                    e.printStackTrace()
-                }
-            }
-
-            val cartItemDataVoucherArrayList = ArrayList<CartItemDataVoucher>()
-            val cartItemDataList = shopGroupAvailableData.cartItemDataList
-            cartItemDataList?.let {
-                for (cartItemHolderData in cartItemDataList) {
-                    if (cartItemHolderData.isSelected) {
-                        try {
-                            val cartItemDataVoucher = CartItemDataVoucher().apply {
-                                productId = Integer.parseInt(cartItemHolderData.cartItemData?.originData?.productId
-                                        ?: "0")
-                                productName = cartItemHolderData.cartItemData?.originData?.productName
-                                        ?: ""
-                            }
-                            cartItemDataVoucherArrayList.add(cartItemDataVoucher)
-                        } catch (e: NumberFormatException) {
-                            if (GlobalConfig.isAllowDebuggingTools()) {
-                                e.printStackTrace()
-                            }
-                        }
-                    }
-                }
-
-                cartAdapter.promoStackingGlobalData?.let {
-                    val promo = dPresenter.generateCheckPromoFirstStepParam(it)
-                    val merchantVoucherListBottomSheetFragment = MerchantVoucherListBottomSheetFragment.newInstance(
-                            shopId, shopGroupAvailableData.cartString ?: "",
-                            promo, "cart", cartItemDataVoucherArrayList
-                    )
-                    merchantVoucherListBottomSheetFragment.actionListener = this@CartFragment
-                    merchantVoucherListBottomSheetFragment.show(fragmentManager!!, "")
-                }
-            }
-        }
-    }
-
-    override fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel,
-                                   type: String) {
-        fragmentManager?.let {
-            ClashBottomSheetFragment.newInstance().apply {
-                setData(clashingInfoDetailUiModel)
-                setActionListener(this@CartFragment)
-                setAnalyticsCart(cartPageAnalytics)
-                setSource("cart")
-                setType(type)
-                show(it, "")
-            }
-        }
-    }
-
     override fun getInsuranceCartShopData(): ArrayList<InsuranceCartDigitalProduct>? {
         try {
             val insuranceCartDigitalProductArrayList = ArrayList<InsuranceCartDigitalProduct>()
@@ -2377,10 +2275,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
 
     }
 
-    override fun onSuccessCheckPromoMerchantFirstStep(promoData: ResponseGetPromoStackUiModel, promoCode: String) {
-        onSuccessCheckPromoFirstStep(promoData)
-    }
-
     override fun onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel: ResponseGetPromoStackUiModel) {
         // Update global promo state
         if (responseGetPromoStackUiModel.data.codes.isNotEmpty()) {
@@ -2438,23 +2332,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener, Cart
                 cartAdapter.notifyItemChanged(shopIndex)
             }
         }
-    }
-
-    override fun onSuccessClearPromoStackAfterClash() {
-        // Reset global promo
-        cartAdapter.promoStackingGlobalData?.let {
-            resetPromoGlobal(it)
-        }
-
-        // Reset merchant promo
-        val cartShopHolderDataList = cartAdapter.allCartShopHolderData
-        for (cartShopHolderData in cartShopHolderDataList) {
-            cartShopHolderData.let {
-                cartShopHolderData.shopGroupAvailableData.voucherOrdersItemData = null
-            }
-        }
-
-        cartAdapter.notifyDataSetChanged()
     }
 
     private fun resetPromoGlobal(promoStackingData: PromoStackingData) {

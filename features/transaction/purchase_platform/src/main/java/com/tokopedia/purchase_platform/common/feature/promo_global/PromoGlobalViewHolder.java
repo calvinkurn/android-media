@@ -22,28 +22,6 @@ public class PromoGlobalViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bindData(final PromoStackingData data, final int position) {
-        tickerPromoStackingCheckoutView.setActionListener(new TickerPromoStackingCheckoutView.ActionListener() {
-            @Override
-            public void onClickUsePromo() {
-                actionListener.onCartPromoUseVoucherGlobalPromoClicked(data, position);
-            }
-
-            @Override
-            public void onResetPromoDiscount() {
-                actionListener.onCartPromoCancelVoucherPromoGlobalClicked(data, position);
-                actionListener.onPromoGlobalTrackingCancelled(data, position);
-            }
-
-            @Override
-            public void onClickDetailPromo() {
-                actionListener.onClickDetailPromoGlobal(data, position);
-            }
-
-            @Override
-            public void onDisablePromoDiscount() {
-
-            }
-        });
         tickerPromoStackingCheckoutView.setState(data.getState());
 
         if (data.getState() == TickerPromoStackingCheckoutView.State.EMPTY) {

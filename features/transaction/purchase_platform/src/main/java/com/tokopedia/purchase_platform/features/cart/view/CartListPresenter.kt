@@ -278,39 +278,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
         }
     }
 
-    override fun processUpdateCartDataPromoMerchant(cartItemDataList: List<CartItemData>,
-                                                    shopGroupAvailableData: ShopGroupAvailableData) {
-        view?.let {
-            it.showProgressLoading()
-
-            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
-            val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
-
-            compositeSubscription.add(
-                    updateCartUseCase?.createObservable(requestParams)
-                            ?.subscribe(UpdateCartPromoMerchantSubscriber(it, shopGroupAvailableData))
-            )
-        }
-    }
-
-    override fun processUpdateCartDataPromoGlobal(cartItemDataList: List<CartItemData>,
-                                                  promoStackingData: PromoStackingData,
-                                                  goToDetail: Int) {
-        view?.let {
-            it.showProgressLoading()
-
-            val updateCartRequestList = getUpdateCartRequest(cartItemDataList)
-            val requestParams = RequestParams.create()
-            requestParams.putObject(UpdateCartUseCase.PARAM_UPDATE_CART_REQUEST, updateCartRequestList)
-
-            compositeSubscription.add(
-                    updateCartUseCase?.createObservable(requestParams)
-                            ?.subscribe(UpdateCartPromoGlobalSubscriber(it, promoStackingData, goToDetail))
-            )
-        }
-    }
-
     override fun processToUpdateAndReloadCartData(cartId: String) {
         view?.let {
             val cartItemDataList = ArrayList<CartItemData>()
@@ -532,18 +499,6 @@ class CartListPresenter @Inject constructor(private val getCartListSimplifiedUse
                 )
             }
         }
-    }
-
-    override fun processCancelAutoApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData,
-                                                            oldPromoList: ArrayList<String>,
-                                                            newPromoList: ArrayList<ClashingVoucherOrderUiModel>,
-                                                            type: String) {
-    }
-
-    override fun processApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData,
-                                                  newPromoList: ArrayList<ClashingVoucherOrderUiModel>,
-                                                  type: String) {
-
     }
 
     override fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo {

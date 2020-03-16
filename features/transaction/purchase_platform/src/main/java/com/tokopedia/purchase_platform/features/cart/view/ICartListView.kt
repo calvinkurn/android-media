@@ -86,13 +86,7 @@ interface ICartListView : CustomerView {
     fun onSuccessCheckPromoFirstStep(responseGetPromoStackUiModel: ResponseGetPromoStackUiModel)
 
     fun onFailedClearPromoStack(ignoreAPIResponse: Boolean)
-
-    fun showMerchantVoucherListBottomsheet(shopGroupAvailableData: ShopGroupAvailableData)
-
-    fun onClashCheckPromo(clashingInfoDetailUiModel: ClashingInfoDetailUiModel, type: String)
-
-    fun onSuccessClearPromoStackAfterClash()
-
+    
     fun renderRecentView(recentViewList: List<RecentView>?)
 
     fun renderWishlist(wishlists: List<Wishlist>?)
