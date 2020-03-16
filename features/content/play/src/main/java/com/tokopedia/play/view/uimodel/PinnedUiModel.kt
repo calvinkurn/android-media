@@ -3,8 +3,7 @@ package com.tokopedia.play.view.uimodel
 /**
  * Created by jegul on 16/12/19
  */
-sealed class PinnedUiModel {
-}
+sealed class PinnedUiModel
 
 data class PinnedMessageUiModel(
         val applink: String?,

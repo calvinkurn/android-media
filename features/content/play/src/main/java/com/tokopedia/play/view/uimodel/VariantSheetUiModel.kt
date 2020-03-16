@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.uimodel
 
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.ProductLineUiModel
 import com.tokopedia.variant_common.model.ProductVariantCommon
 import com.tokopedia.variant_common.model.VariantCategory
 

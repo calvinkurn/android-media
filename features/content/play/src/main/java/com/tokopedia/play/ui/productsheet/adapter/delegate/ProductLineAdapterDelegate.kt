@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.play.R
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
-import com.tokopedia.play.view.type.PlayProductUiModel
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 
 /**
  * Created by jegul on 03/03/20

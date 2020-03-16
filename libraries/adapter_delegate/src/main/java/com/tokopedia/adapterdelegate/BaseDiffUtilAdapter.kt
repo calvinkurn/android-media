@@ -12,8 +12,8 @@ abstract class BaseDiffUtilAdapter<T: Any> : BaseAdapter<T>() {
 
     abstract fun areContentsTheSame(oldItem: T, newItem: T): Boolean
 
-    open fun getChangePayload(oldItem: T, newItem: T): Bundle {
-        return Bundle.EMPTY
+    open fun getChangePayload(oldItem: T, newItem: T): Bundle? {
+        return null
     }
 
     inner class BaseDiffUtilCallback(

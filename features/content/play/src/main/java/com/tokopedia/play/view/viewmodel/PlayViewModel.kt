@@ -75,8 +75,6 @@ class PlayViewModel @Inject constructor(
         get() = _observableVideoProperty
     val observableProductSheetContent: LiveData<ProductSheetUiModel>
         get() = _observableProductSheetContent
-    val observableVariantSheetContent: LiveData<VariantSheetUiModel>
-        get() = _observableVariantSheetContent
     val observableBadgeCart: LiveData<CartUiModel>
         get() = _observableBadgeCart
     val isLive: PlayChannelType get() {
@@ -116,6 +114,9 @@ class PlayViewModel @Inject constructor(
     val totalView: String?
         get() = _observableTotalViews.value?.totalView
 
+    private val isProductSheetInitialized: Boolean
+        get() = _observableProductSheetContent.value != null
+
     private val _observableGetChannelInfo = MutableLiveData<Result<ChannelInfoUiModel>>()
     private val _observableSocketInfo = MutableLiveData<PlaySocketInfo>()
     private val _observableVideoStream = MutableLiveData<VideoStreamUiModel>()
@@ -130,7 +131,6 @@ class PlayViewModel @Inject constructor(
     private val _observablePinnedProduct = MutableLiveData<PinnedProductUiModel>()
     private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
     private val _observableProductSheetContent = MutableLiveData<ProductSheetUiModel>()
-    private val _observableVariantSheetContent = MutableLiveData<VariantSheetUiModel>()
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observablePinned = MediatorLiveData<PinnedUiModel>()
     private val _observableBadgeCart = MutableLiveData<CartUiModel>()
@@ -205,9 +205,9 @@ class PlayViewModel @Inject constructor(
 //        startMockFreeze()
 //        setMockProductSocket()
 //        setMockVoucherSocket()
-//        setMockProductSheetContent()
+        setMockProductSheetContent()
 //        setMockVariantSheetContent()
-//        setMockProductPinned()
+        setMockProductPinned()
     }
 
     //region lifecycle
@@ -286,10 +286,6 @@ class PlayViewModel @Inject constructor(
                 )
 
         _observableBottomInsetsState.value = insetsMap
-        _observableVariantSheetContent.value = VariantSheetUiModel(
-                product = product,
-                action = action
-        )
 //        setMockVariantSheetContent(action)
     }
 
@@ -499,6 +495,8 @@ class PlayViewModel @Inject constructor(
     }
 
     private fun getProductTagItems(channel: Channel) {
+        if (!isProductSheetInitialized) showProductSheetPlaceholder()
+
         launchCatchError(block = {
             val productTagsItems = withContext(dispatchers.io) {
                 getProductTagItemsUseCase.params = GetProductTagItemsUseCase.createParam(channel.channelId)
@@ -614,7 +612,19 @@ class PlayViewModel @Inject constructor(
     }
     //endregion
 
+    //region placeholder
+    private fun showProductSheetPlaceholder() {
+        _observableProductSheetContent.value = ProductSheetUiModel(
+                title = "",
+                voucherList = List(PLACEHOLDER_COUNT) { VoucherPlaceholderUiModel },
+                productList = List(PLACEHOLDER_COUNT) { ProductPlaceholderUiModel }
+        )
+    }
+    //endregion
+
     companion object {
+        private const val PLACEHOLDER_COUNT = 5
+
         private const val MAX_RETRY_CHANNEL_INFO = 3
 
         private const val MS_PER_SECOND = 1000
@@ -722,24 +732,6 @@ class PlayViewModel @Inject constructor(
                 )
             }
         }
-    }
-
-    private fun setMockVariantSheetContent(action: ProductAction) {
-        _observableVariantSheetContent.value = VariantSheetUiModel(
-                product = ProductLineUiModel(
-                        id = "123",
-                        imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/5/8/52943980/52943980_908dc570-338d-46d5-aed2-4871f2840d0d_1664_1664",
-                        title = "Product Value",
-                        isVariantAvailable = true,
-                        price = DiscountedPrice(
-                                originalPrice = "Rp20.000",
-                                discountPercent = 10,
-                                discountedPrice = "Rp20.000"
-                        ),
-                        stock = OutOfStock
-                ),
-                action = action
-        )
     }
 
     private fun setMockProductPinned() {

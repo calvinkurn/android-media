@@ -33,7 +33,7 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
@@ -145,16 +145,6 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeVariantSheetContent() {
-        playViewModel.observableVariantSheetContent.observe(viewLifecycleOwner, Observer {
-            launch {
-                EventBusFactory.get(viewLifecycleOwner)
-                        .emit(
-                                ScreenStateEvent::class.java,
-                                ScreenStateEvent.SetVariantSheet(it)
-                        )
-            }
-        })
-
         viewModel.observableProductVariant.observe(viewLifecycleOwner, Observer {
             launch {
                 EventBusFactory.get(viewLifecycleOwner)
@@ -189,7 +179,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private fun observeBuyEvent() {
-        viewModel.observableAddtoCart.observe(viewLifecycleOwner, Observer {
+        viewModel.observableAddToCart.observe(viewLifecycleOwner, Observer {
             hideLoadingView()
             if (it.isSuccess) {
                 playViewModel.updateBadgeCart()

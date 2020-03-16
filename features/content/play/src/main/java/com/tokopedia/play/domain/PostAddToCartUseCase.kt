@@ -10,7 +10,7 @@ import javax.inject.Inject
 /**
  * Created by mzennis on 2020-03-06.
  */
-class PostAddtoCartUseCase @Inject constructor(
+class PostAddToCartUseCase @Inject constructor(
         private val addToCartUseCase: AddToCartUseCase
 ) : UseCase<AddToCartDataModel>() {
 

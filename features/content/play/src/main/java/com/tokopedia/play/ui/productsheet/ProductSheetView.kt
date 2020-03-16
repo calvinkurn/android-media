@@ -11,6 +11,7 @@ import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.play.R
 import com.tokopedia.play.component.UIView
 import com.tokopedia.play.ui.productsheet.adapter.MerchantVoucherAdapter
@@ -18,7 +19,7 @@ import com.tokopedia.play.ui.productsheet.adapter.ProductLineAdapter
 import com.tokopedia.play.ui.productsheet.itemdecoration.MerchantVoucherItemDecoration
 import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecoration
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 
 /**
@@ -104,6 +105,8 @@ class ProductSheetView(
         tvSheetTitle.text = model.title
         voucherAdapter.setItemsAndAnimateChanges(model.voucherList)
         productLineAdapter.setItemsAndAnimateChanges(model.productList)
+
+        if (model.voucherList.isEmpty()) rvVoucherList.gone()
     }
 
     interface Listener {

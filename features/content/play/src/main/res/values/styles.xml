@@ -10,4 +10,8 @@
     <style name="PlayPlaceholder">
         <item name="android:background">@drawable/bg_play_placeholder</item>
     </style>
+
+    <style name="PlayCirclePlaceholder">
+        <item name="android:background">@drawable/bg_play_circle_placeholder</item>
+    </style>
 </resources>

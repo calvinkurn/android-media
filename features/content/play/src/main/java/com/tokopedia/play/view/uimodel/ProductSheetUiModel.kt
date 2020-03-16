@@ -1,7 +1,5 @@
 package com.tokopedia.play.view.uimodel
 
-import com.tokopedia.play.view.type.PlayProductUiModel
-
 /**
  * Created by jegul on 03/03/20
  */

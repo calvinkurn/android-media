@@ -1,7 +1,7 @@
 package com.tokopedia.play.ui.productsheet.interaction
 
 import com.tokopedia.play.component.ComponentEvent
-import com.tokopedia.play.view.type.ProductLineUiModel
+import com.tokopedia.play.view.uimodel.ProductLineUiModel
 
 /**
  * Created by jegul on 03/03/20
