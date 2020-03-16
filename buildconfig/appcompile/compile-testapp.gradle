@@ -60,4 +60,7 @@ include "features:common:resources_common"
 //include ":features:digital:digital_homepage"
 
 include 'libraries:play_core'
+include 'libraries:analytics_debugger'
+include 'libraries:analytics_debugger_noop'
+include 'libraries:base_list'
 include 'testapp'

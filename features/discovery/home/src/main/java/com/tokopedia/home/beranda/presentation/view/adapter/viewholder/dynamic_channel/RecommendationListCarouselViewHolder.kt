@@ -15,8 +15,8 @@ import com.tokopedia.home.analytics.HomePageTrackingV2
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.itemdecoration.SimpleHorizontalLinearLayoutDecoration
-import com.tokopedia.productcard.v2.ProductCardModel
-import com.tokopedia.productcard.v2.ProductCardViewList
+import com.tokopedia.productcard.ProductCardListView
+import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.unifyprinciples.Typography
 
 class RecommendationListCarouselViewHolder(itemView: View,
@@ -111,7 +111,7 @@ class RecommendationListCarouselViewHolder(itemView: View,
     }
 
     class HomeRecommendationListViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-        val recommendationCard = itemView.findViewById<ProductCardViewList>(R.id.productCardView)
+        val recommendationCard = itemView.findViewById<ProductCardListView>(R.id.productCardView)
     }
 
     data class HomeRecommendationListData(

@@ -4,11 +4,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.notifcenter.data.viewbean.NotificationFilterSectionViewBean
-import com.tokopedia.notifcenter.data.viewbean.PurchaseNotificationViewBean
-import com.tokopedia.notifcenter.data.viewbean.SaleNotificationViewBean
-import com.tokopedia.notifcenter.data.viewbean.NotificationEmptyStateViewBean
-import com.tokopedia.notifcenter.data.viewbean.NotificationItemViewBean
+import com.tokopedia.notifcenter.data.viewbean.*
+import com.tokopedia.notifcenter.listener.NotificationFilterListener
 import com.tokopedia.notifcenter.listener.NotificationItemListener
 import com.tokopedia.notifcenter.listener.TransactionMenuListener
 import com.tokopedia.notifcenter.presentation.adapter.viewholder.notification.*
@@ -19,7 +16,7 @@ import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationTransactionFactoryImpl(
         private var notificationUpdateListener: NotificationItemListener,
-        private val notificationFilterListener: NotificationFilterViewHolder.NotifFilterListener,
+        private val notificationFilterListener: NotificationFilterListener,
         private val transactionMenuListener: TransactionMenuListener,
         private val userSession: UserSessionInterface
 ): BaseAdapterTypeFactory(), NotificationTransactionFactory {
