@@ -46,7 +46,7 @@ class ProductHighlightViewHolder(
     }
 
     private fun setDealsCountDownTimer(it: DynamicHomeChannel.Header, channel: DynamicChannelViewModel) {
-        itemView.deals_channel_subtitle.text = "Berakhir dalam:"
+        itemView.deals_channel_subtitle.text = it.subtitle
         if (it.textColor.isNotEmpty()) {
             val textColor = Color.parseColor(it.textColor)
             itemView.deals_channel_subtitle.setTextColor(textColor)
