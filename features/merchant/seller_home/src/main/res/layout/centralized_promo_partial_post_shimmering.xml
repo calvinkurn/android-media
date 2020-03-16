@@ -17,7 +17,7 @@
 
     <include
         android:id="@+id/shimmering_first_info_seller_item"
-        layout="@layout/sah_item_centralized_promo_post_shimmering"
+        layout="@layout/centralized_promo_item_post_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/sah_dimen_26dp"
@@ -25,7 +25,7 @@
 
     <include
         android:id="@+id/shimmering_second_info_seller_item"
-        layout="@layout/sah_item_centralized_promo_post_shimmering"
+        layout="@layout/centralized_promo_item_post_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
@@ -33,7 +33,7 @@
 
     <include
         android:id="@+id/shimmering_third_info_seller_item"
-        layout="@layout/sah_item_centralized_promo_post_shimmering"
+        layout="@layout/centralized_promo_item_post_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"

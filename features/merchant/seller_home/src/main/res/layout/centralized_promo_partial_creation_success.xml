@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layoutCentralizedPromoRecommendationSuccess"
+    android:id="@+id/layoutCentralizedPromoCreationSuccess"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/layout_lvl2"
+    android:paddingBottom="@dimen/layout_lvl1"
     android:visibility="gone">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvCentralizedPromoPostTitle"
-        android:layout_width="0dp"
+        android:id="@+id/tvCentralizedPromoCreationTitle"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/layout_lvl2"
         android:layout_marginLeft="@dimen/layout_lvl2"
@@ -26,17 +27,17 @@
         app:typographyType="heading_4" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvPromoRecommendationDescription"
-        android:layout_width="0dp"
+        android:id="@+id/tvPromoCreationDescription"
+        android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/centralized_promo_dimen_4dp"
         android:text="@string/sh_lbl_create_promotion_desc"
         android:textColor="@color/sah_description_desc"
-        app:layout_constraintEnd_toEndOf="@id/tvCentralizedPromoPostTitle"
-        app:layout_constraintLeft_toLeftOf="@id/tvCentralizedPromoPostTitle"
-        app:layout_constraintRight_toRightOf="@id/tvCentralizedPromoPostTitle"
-        app:layout_constraintStart_toStartOf="@id/tvCentralizedPromoPostTitle"
-        app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoPostTitle"
+        app:layout_constraintEnd_toEndOf="@id/tvCentralizedPromoCreationTitle"
+        app:layout_constraintLeft_toLeftOf="@id/tvCentralizedPromoCreationTitle"
+        app:layout_constraintRight_toRightOf="@id/tvCentralizedPromoCreationTitle"
+        app:layout_constraintStart_toStartOf="@id/tvCentralizedPromoCreationTitle"
+        app:layout_constraintTop_toBottomOf="@id/tvCentralizedPromoCreationTitle"
         app:typographyType="body_2" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

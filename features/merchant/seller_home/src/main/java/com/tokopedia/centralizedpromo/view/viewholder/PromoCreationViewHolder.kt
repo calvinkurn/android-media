@@ -6,19 +6,21 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.centralizedpromo.view.model.RecommendedPromotionUiModel
+import com.tokopedia.centralizedpromo.analytic.CentralizedPromoTracking
+import com.tokopedia.centralizedpromo.view.model.PromoCreationUiModel
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.sellerhome.R.layout.sah_item_centralized_promo_recommendation
-import kotlinx.android.synthetic.main.sah_item_centralized_promo_recommendation.view.*
+import com.tokopedia.sellerhome.R.layout.centralized_promo_item_promo_creation
+import kotlinx.android.synthetic.main.centralized_promo_item_promo_creation.view.*
 
-class RecommendedPromotionViewHolder(view: View?) : AbstractViewHolder<RecommendedPromotionUiModel>(view) {
+class PromoCreationViewHolder(view: View?) : AbstractViewHolder<PromoCreationUiModel>(view) {
 
     companion object {
-        val RES_LAYOUT = sah_item_centralized_promo_recommendation
+        val RES_LAYOUT = centralized_promo_item_promo_creation
     }
 
-    override fun bind(element: RecommendedPromotionUiModel) {
+    override fun bind(element: PromoCreationUiModel) {
         with(itemView) {
             ImageHandler.loadImageWithId(ivRecommendedPromo, element.imageDrawable)
             tvRecommendedPromoTitle.text = element.title
@@ -32,13 +34,19 @@ class RecommendedPromotionViewHolder(view: View?) : AbstractViewHolder<Recommend
                 icRecommendedPromoExtra.gone()
             }
 
-            setOnClickListener { openApplink(element.applink) }
+            addOnImpressionListener(element.impressHolder) {
+                CentralizedPromoTracking.sendImpressionPromoCreation(element.title)
+            }
+
+            setOnClickListener { openApplink(element.applink, element.title) }
         }
     }
 
-    private fun openApplink(url: String) {
+    private fun openApplink(url: String, title: String) {
         with(itemView) {
-            RouteManager.route(context, url)
+            if (RouteManager.route(context, url)) {
+                CentralizedPromoTracking.sendClickPromoCreation(title)
+            }
         }
     }
 
@@ -47,12 +55,6 @@ class RecommendedPromotionViewHolder(view: View?) : AbstractViewHolder<Recommend
             with(outRect) {
                 if (parent.getChildAdapterPosition(view) > 1) {
                     top = margin
-                }
-                if (parent.getChildAdapterPosition(view) % 2 != 0) {
-                    left = margin
-                }
-                if (parent.getChildAdapterPosition(view) % 2 == 0) {
-                    right = margin
                 }
                 bottom = margin
             }
