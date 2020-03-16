@@ -66,6 +66,7 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.state.PlayVideoState
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.CoroutineScope
@@ -108,6 +109,9 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
 
     @Inject
     lateinit var dispatchers: CoroutineDispatcherProvider
+
+    @Inject
+    lateinit var trackingQueue: TrackingQueue
     
     private val offset24 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl5) }
     private val offset16 by lazy { resources.getDimensionPixelOffset(R.dimen.spacing_lvl4) }
@@ -986,6 +990,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun shouldOpenCartPage() {
+        PlayAnalytics.clickCartIcon(channelId, playViewModel.isLive)
         viewModel.doInteractionEvent(InteractionEvent.CartPage)
     }
 
@@ -1123,6 +1128,7 @@ class PlayInteractionFragment : BaseDaggerFragment(), CoroutineScope, PlayMoreAc
     }
 
     private fun openProductSheet() {
+        PlayAnalytics.clickPinnedProduct(channelId)
         playViewModel.onShowProductSheet(productSheetMaxHeight)
     }
 

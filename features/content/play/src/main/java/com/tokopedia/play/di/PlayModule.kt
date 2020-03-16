@@ -16,6 +16,7 @@ import com.tokopedia.play.util.CoroutineDispatcherProvider
 import com.tokopedia.play.util.DefaultCoroutineDispatcherProvider
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.util.PlayLifecycleObserver
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -115,5 +116,11 @@ class PlayModule(val mContext: Context) {
     @Named(AtcConstant.MUTATION_ADD_TO_CART)
     internal fun provideAddToCartMutation(): String {
         return GraphqlHelper.loadRawString(mContext.resources, com.tokopedia.atc_common.R.raw.mutation_add_to_cart)
+    }
+
+    @Provides
+    @PlayScope
+    fun provideTrackingQueue(): TrackingQueue {
+        return TrackingQueue(mContext)
     }
 }
