@@ -11,13 +11,10 @@ import kotlinx.android.parcel.Parcelize
  * @author okasurya on 5/16/18.
  */
 @Parcelize
-class AnalyticsDebuggerViewModel : Visitable<AnalyticsDebuggerTypeFactory>, Parcelable {
-    var id: Long = 0
-    var name: String? = null
-    var category: String? = null
-    var data: String? = null
-    var dataExcerpt: String? = null
-    var timestamp: String? = null
+data class AnalyticsDebuggerViewModel(var id: Long = 0, var name: String? = null,
+                                 var category: String? = null, var data: String? = null,
+                                 var dataExcerpt: String? = null,
+                                 var timestamp: String? = null) : Visitable<AnalyticsDebuggerTypeFactory>, Parcelable {
 
     override fun type(typeFactory: AnalyticsDebuggerTypeFactory): Int {
         return typeFactory.type(this)
