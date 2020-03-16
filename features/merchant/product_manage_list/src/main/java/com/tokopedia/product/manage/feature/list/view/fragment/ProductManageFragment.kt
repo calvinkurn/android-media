@@ -300,12 +300,8 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onFinishEditStock(modifiedProduct: ProductViewModel) {
-        modifiedProduct.stock?.let { stock ->
-            modifiedProduct.title?.let { title ->
-                modifiedProduct.status?.let { status ->
-                        viewModel.editStock( modifiedProduct.id, stock, title, status)
-                }
-            }
+        if(modifiedProduct.stock != null && modifiedProduct.title != null && modifiedProduct.status != null) {
+            viewModel.editStock(modifiedProduct.id, modifiedProduct.stock, modifiedProduct.title, modifiedProduct.status)
         }
     }
 
