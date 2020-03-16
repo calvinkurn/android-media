@@ -233,6 +233,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                             ProductSheetInteractionEvent.OnCloseProductSheet -> closeProductSheet()
                             is ProductSheetInteractionEvent.OnBuyProduct -> checkProductVariant(it.product, ProductAction.Buy)
                             is ProductSheetInteractionEvent.OnAtcProduct -> checkProductVariant(it.product, ProductAction.AddToCart)
+                            is ProductSheetInteractionEvent.OnProductCardClicked -> openPageByApplink(it.applink)
                         }
                     }
         }

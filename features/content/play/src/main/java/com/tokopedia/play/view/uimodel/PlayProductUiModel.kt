@@ -15,7 +15,8 @@ data class ProductLineUiModel(
         val stock: ProductStock,
         val isVariantAvailable: Boolean,
         val price: ProductPrice,
-        val minQty: Int
+        val minQty: Int,
+        val applink: String?
 ) : PlayProductUiModel()
 
 object ProductPlaceholderUiModel : PlayProductUiModel()

@@ -198,7 +198,8 @@ class VariantSheetView(
                         stock = if (stock == null) OutOfStock else StockAvailable(stock.stock.orZero()),
                         isVariantAvailable = true,
                         price = OriginalPrice(selectedProduct.priceFmt.toEmptyStringIfNull()),
-                        minQty = variantSheetUiModel?.product?.minQty.orZero()
+                        minQty = variantSheetUiModel?.product?.minQty.orZero(),
+                        applink = null
                 )
                 variantSheetUiModel?.stockWording = selectedProduct.stock?.stockWordingHTML
                 variantSheetUiModel?.product = product
