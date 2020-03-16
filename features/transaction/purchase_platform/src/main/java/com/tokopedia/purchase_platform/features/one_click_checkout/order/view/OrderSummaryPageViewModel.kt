@@ -682,7 +682,7 @@ class OrderSummaryPageViewModel @Inject constructor(dispatcher: CoroutineDispatc
         val op = orderProduct
         val quantity = op.quantity
         val pref = _orderPreference
-        if (quantity != null && pref != null) {
+        if (quantity != null && pref != null && pref.preference.profileId > 0) {
             val cart = UpdateCartOccCartRequest(
                     orderShop.cartResponse.cartId.toString(),
                     quantity.orderQuantity,

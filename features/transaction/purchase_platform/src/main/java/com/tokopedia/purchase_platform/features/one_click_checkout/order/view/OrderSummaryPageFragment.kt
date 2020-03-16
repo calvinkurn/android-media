@@ -387,6 +387,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                 orderPreferenceCard.showDurationBottomSheet(this@OrderSummaryPageFragment)
             }
         }
+
+        override fun onErrorPaymentClicked() {
+            nested_scroll_view.smoothScrollTo(nested_scroll_view.scrollX, nested_scroll_view.maxScrollAmount)
+        }
     }
 
     fun showPreferenceListBottomSheet() {

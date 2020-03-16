@@ -195,6 +195,9 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         if (paymentErrorMessage?.isNotEmpty() == true) {
             view.tv_payment_message.text = paymentErrorMessage
             view.tv_payment_message.visible()
+            view.tv_payment_message.setOnClickListener {
+                listener.onErrorPaymentClicked()
+            }
         } else {
             view.tv_payment_message.gone()
         }
@@ -213,5 +216,7 @@ class OrderPreferenceCard(private val view: View, private val listener: OrderPre
         fun chooseCourier()
 
         fun chooseDuration()
+
+        fun onErrorPaymentClicked()
     }
 }
