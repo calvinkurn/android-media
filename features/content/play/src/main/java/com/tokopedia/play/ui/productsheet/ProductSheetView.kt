@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.Group
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -45,7 +44,6 @@ class ProductSheetView(
     private val vBottomOverlay: View = view.findViewById(R.id.v_bottom_overlay)
 
     private val globalError: GlobalError = view.findViewById(R.id.global_error_product)
-    private val groupContent: Group = view.findViewById(R.id.group_product_content)
 
     private val productLineAdapter = ProductLineAdapter(object : ProductLineViewHolder.Listener {
         override fun onBuyProduct(product: ProductLineUiModel) {
@@ -142,10 +140,14 @@ class ProductSheetView(
 
     private fun showContent(shouldShow: Boolean) {
         if (shouldShow) {
-            groupContent.visible()
+            rvProductList.visible()
+            rvVoucherList.visible()
+
             globalError.gone()
         } else {
-            groupContent.gone()
+            rvProductList.gone()
+            rvVoucherList.gone()
+
             globalError.visible()
         }
     }
