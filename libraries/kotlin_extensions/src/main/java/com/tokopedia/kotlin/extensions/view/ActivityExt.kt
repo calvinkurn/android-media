@@ -4,6 +4,8 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Build
 import android.view.View
+import androidx.annotation.ColorRes
+import androidx.annotation.RequiresApi
 import android.view.Window
 import android.view.WindowManager
 
@@ -82,3 +84,10 @@ fun Activity.setupStatusBarUnderMarshmallow() {
     }
 }
 
+
+@RequiresApi(Build.VERSION_CODES.M)
+fun Activity.setStatusBarColor(color: Int) {
+    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+    window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+    window.statusBarColor = color;
+}

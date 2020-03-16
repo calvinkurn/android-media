@@ -15,6 +15,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.SellerHomeRouter
+import com.tokopedia.sellerhome.analytic.NavigationTracking
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
 import com.tokopedia.sellerhome.common.SomTabConst
@@ -123,6 +124,7 @@ class ContainerFragment : Fragment() {
 
         view?.sahToolbar?.showNotificationActionMenu {
             RouteManager.route(requireContext(), ApplinkConst.SELLER_INFO)
+            NavigationTracking.sendClickNotificationEvent()
         }
     }
 

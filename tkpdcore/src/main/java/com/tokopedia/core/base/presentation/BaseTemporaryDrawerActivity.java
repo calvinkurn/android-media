@@ -14,7 +14,6 @@ import com.tokopedia.core.app.DrawerPresenterActivity;
 import com.tokopedia.core.gcm.intentservices.PushNotificationIntentService;
 import com.tokopedia.core.util.GlobalConfig;
 import com.tokopedia.core2.R;
-import com.tokopedia.sellerhomedrawer.domain.service.SellerDrawerGetNotificationService;
 
 /**
  * Created by meta on 23/07/18.
@@ -32,10 +31,6 @@ public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
                     && intent.getBooleanExtra(PushNotificationIntentService.GET_NOTIFICATION_SUCCESS, false)){
                 updateDrawerData();
             }
-
-            if (intent.getAction().equals(PushNotificationIntentService.UPDATE_NOTIFICATION_DATA)){
-                SellerDrawerGetNotificationService.startService(BaseTemporaryDrawerActivity.this, true, true);
-            }
         }
     };
 
@@ -49,12 +44,7 @@ public class BaseTemporaryDrawerActivity extends DrawerPresenterActivity{
         super.onResume();
         if (GlobalConfig.isSellerApp()) {
             registerBroadcastReceiver();
-            startDrawerGetNotificationServiceOnResume();
         }
-    }
-
-    protected void startDrawerGetNotificationServiceOnResume(){
-        SellerDrawerGetNotificationService.startService(this,true,false);
     }
 
     @Override
