@@ -19,11 +19,13 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.UNIT_KILOGRAM
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductViewModel
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.UnifyButton
 import javax.inject.Inject
 
 class AddEditProductShipmentFragment : BaseDaggerFragment() {
     private var tfWeightAmount: TextFieldUnify? = null
     private var tfWeightUnit: TextFieldUnify? = null
+    private var btnEnd: UnifyButton? = null
     private var selectedWeightPosition: Int = 0
     private lateinit var viewModel: AddEditProductViewModel
 
@@ -58,6 +60,7 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         tfWeightUnit = view.findViewById(R.id.tf_weight_unit)
         tfWeightAmount = view.findViewById(R.id.tf_weight_amount)
+        btnEnd = view.findViewById(R.id.btn_end)
         tfWeightUnit?.apply {
             textFieldInput.setText(getWeightTypeTitle(0))
             textFieldInput.isFocusable = false // disable focus
@@ -68,6 +71,9 @@ class AddEditProductShipmentFragment : BaseDaggerFragment() {
         }
         tfWeightAmount?.textFieldInput?.afterTextChanged{
             validateInputWeight(it)
+        }
+        btnEnd?.setOnClickListener {
+            activity?.finish()
         }
     }
 
