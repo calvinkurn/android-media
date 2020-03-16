@@ -46,7 +46,11 @@ data class PromoRequest(
         @SerializedName("state")
         var state: String = "", // cart & checkout & occ
         @SerializedName("orders")
-        var orders: List<Order> = emptyList()
+        var orders: List<Order> = emptyList(),
+        @SerializedName("is_trade_in")
+        var isTradeIn: Int = 0,
+        @SerializedName("is_trade_in_drop_off")
+        var isTradeInDropOff: Int = 0
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -56,7 +60,9 @@ data class PromoRequest(
             parcel.readInt(),
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.createTypedArrayList(Order) ?: emptyList()) {
+            parcel.createTypedArrayList(Order) ?: emptyList(),
+            parcel.readInt(),
+            parcel.readInt()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -67,6 +73,8 @@ data class PromoRequest(
         parcel.writeString(cartType)
         parcel.writeString(state)
         parcel.writeTypedList(orders)
+        parcel.writeInt(isTradeIn)
+        parcel.writeInt(isTradeInDropOff)
     }
 
     override fun describeContents(): Int {

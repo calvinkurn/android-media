@@ -2817,6 +2817,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         promoRequest.setState(PARAM_CHECKOUT);
         promoRequest.setCartType(PARAM_DEFAULT);
 
+        if (isTradeIn()) {
+            promoRequest.setTradeIn(1);
+            promoRequest.setTradeInDropOff(isTradeInByDropOff() ? 1 : 0);
+        }
+
         PromoCheckoutData promoCheckoutData = shipmentAdapter.getPromoCheckoutData();
         if (promoCheckoutData != null) {
             ArrayList<String> globalPromoCodes = new ArrayList<>();
