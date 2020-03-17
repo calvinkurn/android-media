@@ -8,6 +8,7 @@ import com.tokopedia.feedcomponent.di.FeedComponentModule;
 import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedOnboardingFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment;
+import com.tokopedia.feedplus.view.fragment.FeedPlusDetailNavFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.interest_pick_common.di.InterestPickCommonModule;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -36,6 +37,8 @@ public interface FeedPlusComponent {
     void inject(FeedPlusFragment feedPlusFragment);
 
     void inject(FeedPlusDetailFragment feedPlusDetailFragment);
+
+    void inject(FeedPlusDetailNavFragment feedPlusDetailNavFragment);
 
     void inject(DynamicFeedFragment dynamicFeedFragment);
 

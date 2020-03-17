@@ -164,6 +164,11 @@ query FeedV2Query($userID: String!, $limit: Int, $cursor: String, $source: Strin
                     viewType
                     recomID
               	}
+              	tags {
+                    linkType
+                    text
+                    type
+                }
               }
               isVoted
               totalVoter

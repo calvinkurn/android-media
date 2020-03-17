@@ -21,7 +21,7 @@ public class FeedPlusDetailActivity extends BaseSimpleActivity {
     public static final String EXTRA_DETAIL_ID = "extra_detail_id";
     public static final String EXTRA_ANALYTICS_PAGE_ROW_NUMBER = "EXTRA_ANALYTICS_PAGE_ROW_NUMBER";
 
-    @DeepLink(ApplinkConst.FEED_DETAILS)
+//    @DeepLink(ApplinkConst.FEED_DETAILS)
     public static Intent getCallingIntent(Context context, Bundle extras) {
         Uri.Builder uri = Uri.parse(extras.getString(DeepLink.URI)).buildUpon();
         return new Intent(context, FeedPlusDetailActivity.class)
