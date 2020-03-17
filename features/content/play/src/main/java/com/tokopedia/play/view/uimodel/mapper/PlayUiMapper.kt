@@ -12,6 +12,9 @@ import com.tokopedia.play.view.uimodel.*
  */
 object PlayUiMapper {
 
+    private const val MAX_PRODUCTS = 5
+    private const val MAX_VOUCHERS = 5
+
     fun mapChannelInfo(channel: Channel) = ChannelInfoUiModel(
             id = channel.channelId,
             title = channel.title,
@@ -83,7 +86,7 @@ object PlayUiMapper {
     }
 
     fun mapItemProducts(products: List<Product>): List<ProductLineUiModel> {
-        return products.map {
+        return products.take(MAX_PRODUCTS).map {
             ProductLineUiModel(
                     id = it.id.toString(),
                     shopId = it.shopId,
@@ -109,20 +112,16 @@ object PlayUiMapper {
     }
 
     fun mapItemVouchers(vouchers: List<Voucher>): List<MerchantVoucherUiModel> {
-        val merchantVouchersUiModel = mutableListOf<MerchantVoucherUiModel>()
-        vouchers.forEach {
-            merchantVouchersUiModel.add(
-                    MerchantVoucherUiModel(
-                            title = it.title,
-                            description = it.subtitle,
-                            type = when(it.voucherType) {
-                                1 -> MerchantVoucherType.Shipping
-                                2,3 -> MerchantVoucherType.Discount
-                                else -> MerchantVoucherType.Unknown
-                            }
-                    )
+        return vouchers.take(MAX_VOUCHERS).map {
+            MerchantVoucherUiModel(
+                    title = it.title,
+                    description = it.subtitle,
+                    type = when(it.voucherType) {
+                        1 -> MerchantVoucherType.Shipping
+                        2,3 -> MerchantVoucherType.Discount
+                        else -> MerchantVoucherType.Unknown
+                    }
             )
         }
-        return merchantVouchersUiModel
     }
 }
