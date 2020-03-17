@@ -8,14 +8,8 @@ import com.tokopedia.promocheckout.common.view.model.PromoStackingData
 
 interface PromoActionListener {
 
-    fun onCartPromoUseVoucherGlobalPromoClicked(cartPromoGlobal: PromoStackingData, position: Int)
-
     fun onCartPromoCancelVoucherPromoGlobalClicked(cartPromoGlobal: PromoStackingData, position: Int)
 
     fun onPromoGlobalTrackingCancelled(cartPromoGlobal: PromoStackingData, position: Int)
-
-    fun onClickDetailPromoGlobal(dataGlobal: PromoStackingData, position: Int)
-
-    fun onPromoGlobalTrackingImpression(cartPromoGlobal: PromoStackingData)
 
 }

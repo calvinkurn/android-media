@@ -82,7 +82,7 @@ class DeferredWorker(val context: Context, params: WorkerParameters) :
                                 .setConstraints(getWorkerConstraints())
                                 .setBackoffCriteria(
                                         BackoffPolicy.LINEAR,
-                                        OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                                        30 * 60 * 1000,
                                         TimeUnit.MILLISECONDS
                                 )
                                 .setInputData(createInputData(resourceId))

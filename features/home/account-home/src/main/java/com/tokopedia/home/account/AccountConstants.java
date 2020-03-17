@@ -47,6 +47,7 @@ public class AccountConstants {
         public static final String SHAKE_SHAKE = "shake - shake";
         public static final String SAFE_MODE = "safe mode";
         public static final String TERM_CONDITION = "terms & condition";
+        public static final String ABOUT_US = "about us";
         public static final String PRIVACY_POLICY = "privacy policy";
         public static final String APPLICATION_REVIEW = "application review";
         public static final String HELP_CENTER = "help center";
@@ -83,7 +84,7 @@ public class AccountConstants {
         public static final String SCREEN_NAME_ACCOUNT = "/account";
         public static final String MY_ACCOUNT = "my account page";
         public static final String CLICK_MY_ACCOUNT_ACTIVATION_OVO = "click aktivasi ovo pada akun";
-        public static final String CLICK_KYC_SETTING = "click on dokumen data diri";
+        public static final String CLICK_KYC_SETTING = "click dokumen data diri";
         public static final String CLICK_KYC_REJECTED = "click on verifikasi ulang";
         public static final String CLICK_KYC_NOT_VERIFIED = "click on verifikasi sekarang";
         public static final String CLICK_KYC_PENDING = "click on lihat status";

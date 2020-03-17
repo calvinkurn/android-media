@@ -73,6 +73,7 @@ object HomeQuery{
               header {
                 id
                 name
+                subtitle
                 url
                 applink
                 serverTime
@@ -113,6 +114,7 @@ object HomeQuery{
                 title
                 description
                 url
+                back_color
                 cta {
                   type
                   mode

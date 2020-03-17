@@ -16,8 +16,10 @@ if (hasProperty('buildScan')) {
 }
 
 apply plugin: 'io.hansel.preprocessor'
+apply plugin: 'com.bugsnag.android.gradle'
 
 apply from: '../tools/dynamic_feature_inclusion.gradle'
+apply from: '../tools/set_debug_tools.gradle'
 
 def getDpiId(String density) {
 
@@ -107,7 +109,7 @@ project.ext {
     defaultVersionName = "3.41";
     react = [
             nodeExecutableAndArgs: ["${nodeExecutableAndArgs}"],
-            enableHermes: true,
+            enableHermes         : true,
     ]
 }
 
@@ -195,6 +197,7 @@ android {
             buildConfigField "String", "PREINSTALL_DESC", "\"\""
             buildConfigField "String", "PREINSTALL_SITE", "\"\""
             ext.enableHansel = project.hasProperty('hanselEnableDebug')
+            ext.enableCrashlytics = false
             FirebasePerformance {
                 // Set this flag to 'false' to disable @AddTrace annotation processing and
                 // automatic HTTP/S network request monitoring
@@ -208,9 +211,9 @@ android {
             }
             ext.enableHansel = !project.hasProperty('hanselDisableRelease')
 
-            if(isFirebasePerformanceLogEnabled().toBoolean()){
+            if (isFirebasePerformanceLogEnabled().toBoolean()) {
                 minifyEnabled false
-            }else{
+            } else {
                 minifyEnabled true
             }
 
@@ -232,7 +235,6 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-
         }
     }
 
@@ -249,7 +251,7 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
         }
-        manifestPlaceholders = [firebasePerformanceLogEnabled:isFirebasePerformanceLogEnabled()]
+        manifestPlaceholders = [firebasePerformanceLogEnabled: isFirebasePerformanceLogEnabled()]
     }
 
     dexOptions {
@@ -293,8 +295,6 @@ android {
         generateAssetFile(project, dynamicFeatures)
     }
 }
-
-
 
 dependencies {
 
@@ -346,6 +346,7 @@ dependencies {
     implementation project(rootProject.ext.features.instantDebitBca)
     implementation project(rootProject.ext.features.topAdsManagementSourceTagging)
     implementation project(rootProject.ext.features.atc_common)
+    implementation project(rootProject.ext.features.fcm_common)
     implementation project(rootProject.ext.features.purchase_platform)
     implementation project(rootProject.ext.features.purchase_platform_common)
     implementation project(rootProject.ext.features.logisticcart)
@@ -386,8 +387,10 @@ dependencies {
     implementation project(rootProject.ext.features.categoryCommon)
     implementation project(rootProject.ext.features.campaignShakeLanding)
     implementation project(rootProject.ext.features.officialStore)
+    implementation project(rootProject.ext.features.brandlist)
     implementation project(rootProject.ext.features.play)
     implementation project(rootProject.ext.features.playCommon)
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.pushNotification)
     implementation project(rootProject.ext.libraries.applink)
@@ -419,6 +422,11 @@ dependencies {
     implementation project(rootProject.ext.features.merchantVoucher)
     implementation project(rootProject.ext.features.navigationCommon)
     implementation project(rootProject.ext.libraries.analytics)
+    if (rootProject.ext.debugToolsEnabled) {
+        implementation project(rootProject.ext.libraries.analyticsDebugger)
+    } else {
+        implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
+    }
     implementation project(rootProject.ext.libraries.linker)
     implementation project(rootProject.ext.libraries.weaver)
     implementation project(rootProject.ext.features.common_promo)
@@ -430,6 +438,7 @@ dependencies {
     implementation project(rootProject.ext.libraries.logger)
     implementation project(rootProject.ext.features.filter)
     implementation project(rootProject.ext.features.commonTradein)
+    implementation project(rootProject.ext.features.exploreCategory)
     implementation project(rootProject.ext.libraries.inappupdate)
     implementation project(rootProject.ext.libraries.youtubeutil)
     implementation project(rootProject.ext.features.tokopointsNotification)
@@ -469,6 +478,8 @@ dependencies {
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
     implementation rootProject.ext.miscDependencies.lottie
+    implementation project(rootProject.ext.features.install_referral)
+
 
     implementation rootProject.ext.miscDependencies.bcaxcoWidget
     implementation rootProject.ext.firebase.config
@@ -548,6 +559,7 @@ dependencies {
     implementation(rootProject.ext.miscDependencies.facebook) {
         exclude group: 'com.android.support'
     }
+    implementation rootProject.ext.monitoringDependencies.bugSnag
     implementation 'com.facebook.soloader:soloader:0.8.0'
     implementation 'com.facebook.infer.annotation:infer-annotation:0.11.2'
     implementation(rootProject.ext.debugToolsDependencies.timber) {
@@ -611,11 +623,5 @@ dependencies {
 }
 
 
-project.ext.sentryCli = [
-        logLevel   : "debug",
-        flavorAware: true
-]
-
 apply from: "../buildconfig/reactnative/react.gradle"
 apply from: "../buildconfig/reactnative/codepush.gradle"
-apply from: "../buildconfig/reactnative/sentry.gradle"

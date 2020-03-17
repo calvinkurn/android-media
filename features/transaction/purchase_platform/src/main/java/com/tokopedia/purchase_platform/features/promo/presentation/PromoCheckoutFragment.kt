@@ -339,6 +339,7 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 it.state == ApplyPromoResponseAction.ACTION_SHOW_TOAST_ERROR -> {
                     it.exception?.let {
                         showToastMessage(it)
+                        viewModel.sendAnalyticsClickPakaiPromoFailed(getErrorMessage(it))
                     }
                 }
             }
@@ -416,12 +417,14 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
                 layout_global_error.setType(getGlobalErrorType(it))
             }
             layout_global_error.setActionClickListener { view ->
+                viewModel.sendAnalyticsClickCobaLagi()
                 layout_global_error.gone()
                 reloadData()
             }
             layout_global_error.show()
             layout_main_container.gone()
             container_action_bottom.gone()
+            viewModel.sendAnalyticsViewErrorPopup()
         }
     }
 
@@ -498,12 +501,15 @@ class PromoCheckoutFragment : BaseListFragment<Visitable<*>, PromoCheckoutAdapte
     }
 
     fun showToastMessage(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
-        if (errorMessage.isNotBlank()) {
-            showToastMessage(errorMessage)
-        } else {
-            showToastMessage("Terjadi kesalahan. Ulangi beberapa saat lagi")
+        showToastMessage(getErrorMessage(throwable))
+    }
+
+    private fun getErrorMessage(throwable: Throwable): String {
+        var errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        if (errorMessage.isNullOrBlank()) {
+            errorMessage = "Terjadi kesalahan. Ulangi beberapa saat lagi"
         }
+        return errorMessage
     }
 
     private fun showSavePromoDialog() {

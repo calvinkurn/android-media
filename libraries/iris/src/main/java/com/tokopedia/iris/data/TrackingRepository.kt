@@ -3,7 +3,7 @@ package com.tokopedia.iris.data
 import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
-import com.tokopedia.analytics.debugger.IrisLogger
+import com.tokopedia.analyticsdebugger.debugger.IrisLogger
 import com.tokopedia.iris.IrisAnalytics
 import com.tokopedia.iris.data.db.IrisDb
 import com.tokopedia.iris.data.db.dao.TrackingDao
@@ -51,7 +51,6 @@ class TrackingRepository(
             try {
                 val tracking = Tracking(data, session.getUserId(), session.getDeviceId())
                 trackingDao.insert(tracking)
-                logIrisStoreAnalytics(eventName, eventCategory, eventAction)
                 IrisLogger.getInstance(context).putSaveIrisEvent(tracking.toString())
 
                 val dbCount = trackingDao.getCount()
@@ -73,21 +72,6 @@ class TrackingRepository(
                 Timber.e("P1#IRIS#saveEvent %s", e.toString())
             }
         }
-
-    private fun logIrisStoreAnalytics(eventName: String?, eventCategory: String?, eventAction: String?) {
-        try {
-            if ("clickTopNav" == eventName &&
-                eventCategory?.startsWith("top nav") == true &&
-                "click search box" == eventAction) {
-                Timber.w("P1#IRIS_COLLECT#IRISSTORE_CLICKSEARCHBOX")
-            } else if ("clickPDP" == eventName && "product detail page" == eventCategory &&
-                "click - tambah ke keranjang" == eventAction) {
-                Timber.w("P1#IRIS_COLLECT#IRISSTORE_PDP_ATC")
-            }
-        } catch (e: Exception) {
-            Timber.e("P1#IRIS#logIrisAnalyticsStore %s", e.toString())
-        }
-    }
 
     private fun getFromOldest(maxRow: Int): List<Tracking> {
         return try {
@@ -148,9 +132,7 @@ class TrackingRepository(
             val requestBody = ApiService.parse(request)
             val response = apiService.sendMultiEventAsync(requestBody)
             if (response.isSuccessful && response.code() == 200) {
-                IrisLogger.getInstance(context).putSendIrisEvent(data.size.toString() +
-                    " - " +
-                    request)
+                IrisLogger.getInstance(context).putSendIrisEvent(request, data.size)
                 delete(data)
                 totalSentData += data.size
 

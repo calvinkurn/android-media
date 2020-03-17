@@ -980,4 +980,16 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
     fun sendAnalyticsClickButtonVerifikasiNomorHp() {
         analytics.eventClickButtonVerifikasiNomorHp(getPageSource())
     }
+
+    fun sendAnalyticsViewErrorPopup() {
+        analytics.eventViewErrorPopup(getPageSource())
+    }
+
+    fun sendAnalyticsClickCobaLagi() {
+        analytics.eventClickCobaLagi(getPageSource())
+    }
+
+    fun sendAnalyticsClickPakaiPromoFailed(errorMessage: String) {
+        analytics.eventClickPakaiPromoFailed(getPageSource(), errorMessage)
+    }
 }

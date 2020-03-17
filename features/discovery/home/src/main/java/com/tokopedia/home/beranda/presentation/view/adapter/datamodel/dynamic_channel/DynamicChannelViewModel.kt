@@ -34,7 +34,9 @@ class DynamicChannelViewModel : HomeVisitable {
                         if (grid.imageUrl != newGrid[position].imageUrl) return false
                     }
                 }
-                return true
+                return  channel?.layout == b.channel?.layout
+                        &&channel?.header == b.channel?.header
+                        && channel?.banner == b.channel?.banner
             }
         }
         return false

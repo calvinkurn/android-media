@@ -29,6 +29,8 @@ class HomePlayWidgetHelper(
         private const val DELAY_BACK = 1000L
     }
 
+    var isAutoPlay = true
+
     private var mPlayer: ExoPlayer? = null
     private var mExoPlayerListener: ExoPlayerListener? = null
 
@@ -139,7 +141,9 @@ class HomePlayWidgetHelper(
     }
 
     fun resumeVideo() {
-        if(videoUri != null && !videoUri?.toString().isNullOrEmpty() && isDeviceHasRequirementAutoPlay()) {
+        if(videoUri != null && !videoUri?.toString().isNullOrEmpty()
+                && isDeviceHasRequirementAutoPlay()
+                && isAutoPlay) {
             playManager.safePlayVideoWithUri(videoUri ?: Uri.parse(""), autoPlay = false)
             muteVideoPlayer()
             exoPlayerView.setPlayer(mPlayer)

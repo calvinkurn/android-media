@@ -3,8 +3,7 @@ package com.tokopedia.topchat.chatlist.domain.usecase;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.tokopedia.topchat.chatlist.data.repository.MessageRepository;
-import com.tokopedia.topchat.chatlist.data.repository.MessageRepositoryImpl;
-import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListViewModel;
+import com.tokopedia.topchat.chatlist.viewmodel.DeleteChatListUiModel;
 import com.tokopedia.usecase.RequestParams;
 import com.tokopedia.usecase.UseCase;
 
@@ -16,7 +15,7 @@ import rx.Observable;
  * Created by stevenfredian on 8/31/17.
  */
 
-public class DeleteMessageListUseCase extends UseCase<DeleteChatListViewModel> {
+public class DeleteMessageListUseCase extends UseCase<DeleteChatListUiModel> {
 
     MessageRepository messageRepository;
 
@@ -27,7 +26,7 @@ public class DeleteMessageListUseCase extends UseCase<DeleteChatListViewModel> {
     }
 
     @Override
-    public Observable<DeleteChatListViewModel> createObservable(RequestParams requestParams) {
+    public Observable<DeleteChatListUiModel> createObservable(RequestParams requestParams) {
         JsonObject object = (JsonObject) requestParams.getParameters().get("json");
         return messageRepository.deleteMessage(object);
     }

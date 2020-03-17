@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.features.cart.view
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.promocheckout.common.data.entity.request.Promo
 import com.tokopedia.promocheckout.common.view.model.PromoStackingData
-import com.tokopedia.promocheckout.common.view.uimodel.ClashingVoucherOrderUiModel
 import com.tokopedia.purchase_platform.common.data.model.response.insurance.entity.request.UpdateInsuranceProductApplicationDetails
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartDigitalProduct
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
@@ -39,21 +38,11 @@ interface ICartListPresenter {
 
     fun processUpdateCartData(fireAndForget: Boolean)
 
-    fun processUpdateCartDataPromoMerchant(cartItemDataList: List<CartItemData>, shopGroupAvailableData: ShopGroupAvailableData)
-
-    fun processUpdateCartDataPromoGlobal(cartItemDataList: List<CartItemData>, promoStackingData: PromoStackingData, goToDetail: Int)
-
     fun processToUpdateAndReloadCartData(cartId: String)
 
     fun processUpdateCartCounter()
 
     fun reCalculateSubTotal(dataList: List<CartShopHolderData>, insuranceCartShopsArrayList: ArrayList<InsuranceCartShops>)
-
-    fun processCancelAutoApplyPromoStack(shopIndex: Int, promoCodeList: ArrayList<String>, ignoreAPIResponse: Boolean)
-
-    fun processCancelAutoApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData, oldPromoList: ArrayList<String>, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
-
-    fun processApplyPromoStackAfterClash(promoStackingGlobalData: PromoStackingData, newPromoList: ArrayList<ClashingVoucherOrderUiModel>, type: String)
 
     fun generateDeleteCartDataAnalytics(cartItemDataList: List<CartItemData>): Map<String, Any>
 
@@ -108,8 +97,6 @@ interface ICartListPresenter {
     fun generateCheckoutDataAnalytics(cartItemDataList: List<CartItemData>, step: String): Map<String, Any>
 
     fun redirectToLite(url: String)
-
-    fun generateCheckPromoFirstStepParam(promoStackingGlobalData: PromoStackingData): Promo
 
     fun doValidateUse(promoRequest: ValidateUsePromoRequest)
 

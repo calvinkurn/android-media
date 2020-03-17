@@ -24,7 +24,6 @@ import com.tokopedia.abstraction.common.utils.receiver.ErrorNetworkReceiver;
 import com.tokopedia.abstraction.common.utils.snackbar.SnackbarManager;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
-import com.tokopedia.promotionstarget.presentation.subscriber.GratificationSubscriber;
 import com.tokopedia.track.TrackApp;
 
 
@@ -44,8 +43,6 @@ public abstract class BaseActivity extends AppCompatActivity implements
     private ErrorNetworkReceiver logoutNetworkReceiver;
     private BroadcastReceiver inappReceiver;
     private boolean pauseFlag;
-
-    private GratificationSubscriber gratificationSubscriber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -204,19 +201,11 @@ public abstract class BaseActivity extends AppCompatActivity implements
         if (getApplication() instanceof AbstractionRouter) {
             ((AbstractionRouter) getApplication()).onNewIntent(this, intent);
         }
-
-        if (gratificationSubscriber == null) {
-            gratificationSubscriber = new GratificationSubscriber(getApplicationContext());
-        }
-        gratificationSubscriber.onNewIntent(this, intent);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (gratificationSubscriber != null) {
-            gratificationSubscriber.onActivityDestroyed(this);
-        }
         if (!GlobalConfig.isSellerApp() && getApplication() instanceof AbstractionRouter) {
             String screenName = getScreenName();
             if (screenName == null) {

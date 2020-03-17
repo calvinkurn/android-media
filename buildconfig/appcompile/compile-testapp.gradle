@@ -15,6 +15,15 @@ include "features:user:sessioncommon"
 include "features:common:resources_common"
 include 'libraries:play_core'
 include ':libraries:base_list'
+include ':libraries:analytics_debugger_noop'
+include ':libraries:analytics_debugger'
+include ':libraries:core_legacy'
+include ':libraries:core_legacy'
+include ':features:fcm_common'
+include ':libraries:iris'
+include ':libraries:device_info'
+include ':libraries:weaver'
+include ':libraries:instrumentation_test'
 
 include 'testapp'
 
