@@ -31,9 +31,9 @@ import java.util.concurrent.TimeUnit
     }
 
     companion object {
-        private const val NET_READ_TIMEOUT = 60L
-        private const val NET_WRITE_TIMEOUT = 60L
-        private const val NET_CONNECT_TIMEOUT = 60L
+        private const val NET_READ_TIMEOUT = 30L
+        private const val NET_WRITE_TIMEOUT = 30L
+        private const val NET_CONNECT_TIMEOUT = 30L
 
         private const val BASE_URL = "https://upedia.tokopedia.net/"
     }
