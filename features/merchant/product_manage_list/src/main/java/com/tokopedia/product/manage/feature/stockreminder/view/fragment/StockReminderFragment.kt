@@ -94,9 +94,21 @@ class StockReminderFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         checkLogin()
+        initView()
+    }
 
+    private fun checkLogin() {
+        if (!userSession.isLoggedIn) {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+            activity?.finish()
+        } else if (!userSession.hasShop()) {
+            RouteManager.route(context, ApplinkConst.HOME)
+            activity?.finish()
+        }
+    }
+
+    private fun initView() {
         viewModel.getStockReminderLiveData.observe(viewLifecycleOwner, getStockReminderObserver())
         viewModel.createStockReminderLiveData.observe(viewLifecycleOwner, createStockReminderObserver())
         viewModel.updateStockReminderLiveData.observe(viewLifecycleOwner, updateStockReminderObserver())
@@ -120,6 +132,7 @@ class StockReminderFragment: BaseDaggerFragment() {
                     ProductManageTracking.eventToggleReminder(TOGGLE_NOT_ACTIVE)
                 }
             }
+            firstStateChecked = true
         }
 
         btnSaveReminder.setOnClickListener {
@@ -148,18 +161,6 @@ class StockReminderFragment: BaseDaggerFragment() {
                     ProductManageTracking.eventToggleReminderSave(TOGGLE_NOT_ACTIVE)
                 }
             }
-        }
-
-        firstStateChecked = true
-    }
-
-    private fun checkLogin() {
-        if (!userSession.isLoggedIn) {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-            activity?.finish()
-        } else if (!userSession.hasShop()) {
-            RouteManager.route(context, ApplinkConst.HOME)
-            activity?.finish()
         }
     }
 
@@ -215,6 +216,7 @@ class StockReminderFragment: BaseDaggerFragment() {
 
                 threshold?.let { qeStock.setValue(it) }
                 swStockReminder.isChecked = threshold != 0
+                if(!swStockReminder.isChecked) firstStateChecked = true
             }
             is Fail -> {
                 cardSaveBtn.visibility = View.GONE
