@@ -7,7 +7,6 @@ import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.tokopedia.purchase_platform.R;
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoGlobalViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.PromoCheckoutViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentButtonPaymentViewHolder;
 import com.tokopedia.purchase_platform.features.checkout.view.viewholder.ShipmentDonationViewHolder;

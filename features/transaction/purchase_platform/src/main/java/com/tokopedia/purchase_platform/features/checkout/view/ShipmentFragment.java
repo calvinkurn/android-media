@@ -37,8 +37,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
 import com.tokopedia.cachemanager.SaveInstanceCacheManager;
-import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.design.base.BaseToaster;
@@ -47,6 +45,7 @@ import com.tokopedia.design.component.ToasterNormal;
 import com.tokopedia.design.component.Tooltip;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheet;
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierBottomsheetListener;
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheet;
@@ -89,7 +88,6 @@ import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.TrackingDetailUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.VoucherOrdersItemUiModel;
-import com.tokopedia.promocheckout.common.view.widget.ButtonPromoCheckoutView;
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView;
 import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsChangeAddress;
@@ -115,10 +113,7 @@ import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.mo
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.MessageData;
 import com.tokopedia.purchase_platform.common.feature.promo_auto_apply.domain.model.VoucherOrdersItemData;
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUsageSummariesUiModel;
-import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo_clashing.ClashBottomSheetFragment;
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener;
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData;
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest;
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult;
@@ -143,13 +138,12 @@ import com.tokopedia.purchase_platform.features.checkout.view.uimodel.NotEligibl
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.purchase_platform.features.checkout.view.uimodel.ShipmentNotifierModel;
-import com.tokopedia.purchase_platform.features.promo.data.request.CouponListRecommendationRequest;
 import com.tokopedia.purchase_platform.features.promo.data.request.PromoRequest;
-import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics;
-import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.OrdersItem;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ProductDetailsItem;
 import com.tokopedia.purchase_platform.features.promo.data.request.validate_use.ValidateUsePromoRequest;
+import com.tokopedia.purchase_platform.features.promo.presentation.analytics.PromoCheckoutAnalytics;
+import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoCheckoutVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.PromoUiModel;
 import com.tokopedia.purchase_platform.features.promo.presentation.uimodel.validate_use.ValidateUsePromoRevampUiModel;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -186,7 +180,7 @@ import static com.tokopedia.remoteconfig.RemoteConfigKey.APP_ENABLE_INSURANCE_RE
  * Originaly authored by Aghny, Angga, Kris
  */
 
-public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View, PromoActionListener,
+public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
         MerchantVoucherListBottomSheetFragment.ActionListener, ClashBottomSheetFragment.ActionListener,
@@ -1907,16 +1901,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onCartPromoCancelVoucherPromoGlobalClicked(PromoStackingData cartPromoGlobal, int position) {
-        ArrayList<String> promoCodes = new ArrayList<>();
-        promoCodes.add(cartPromoGlobal.getPromoCode());
-        shipmentPresenter.cancelAutoApplyPromoStack(INDEX_PROMO_GLOBAL, promoCodes, false, "global");
-        if (isToogleYearEndPromoOn()) {
-            shipmentAdapter.cancelAllCourierPromo();
-        }
-    }
-
-    @Override
     public void onCancelVoucherMerchantClicked(String promoMerchantCode, int position, boolean ignoreAPIResponse) {
         checkoutAnalyticsCourierSelection.eventClickHapusPromoXOnTicker(promoMerchantCode);
         ArrayList<String> promoMerchantCodes = new ArrayList<>();
@@ -1936,11 +1920,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (isToogleYearEndPromoOn()) {
             shipmentAdapter.cancelAllCourierPromo();
         }
-    }
-
-    @Override
-    public void onPromoGlobalTrackingCancelled(PromoStackingData cartPromoGlobal, int position) {
-        sendAnalyticsOnClickCancelUsePromoCodeAndCouponBanner();
     }
 
     @Override

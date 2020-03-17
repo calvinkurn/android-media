@@ -344,10 +344,6 @@ public interface ShipmentContract {
 
         void cancelAutoApplyPromoStackAfterClash(ArrayList<String> promoCodesToBeCleared);
 
-        void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
-                                       boolean isFromMultipleAddress, boolean isOneClickShipment,
-                                       boolean isTradeIn, String cornerId, String deviceId, String type);
-
         void changeShippingAddress(RecipientAddressModel newRecipientAddressModel, boolean isOneClickShipment, boolean isTradeInDropOff, boolean isHandleFallback);
 
         void setShipmentDonationModel(ShipmentDonationModel shipmentDonationModel);

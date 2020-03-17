@@ -1812,62 +1812,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void applyPromoStackAfterClash(ArrayList<ClashingVoucherOrderUiModel> newPromoList,
-                                          boolean isFromMultipleAddress, boolean isOneClickShipment,
-                                          boolean isTradeIn, String cornerId, String deviceId, String type) {
-        Promo promo = getView().generateCheckPromoFirstStepParam();
-        promo.setCodes(new ArrayList<>());
-        if (promo.getOrders() != null) {
-            for (Order order : promo.getOrders()) {
-                order.setCodes(new ArrayList<>());
-            }
-        }
-
-        // New promo list will always be 1
-        if (newPromoList != null && newPromoList.size() > 0) {
-            ClashingVoucherOrderUiModel model = newPromoList.get(0);
-            if (TextUtils.isEmpty(model.getUniqueId())) {
-                ArrayList<String> codes = new ArrayList<>();
-                if (!TextUtils.isEmpty(model.getCode())) {
-                    codes.add(model.getCode());
-                }
-                promo.setCodes(codes);
-
-                CurrentApplyCode currentApplyCode = new CurrentApplyCode();
-                if (!model.getCode().isEmpty()) {
-                    currentApplyCode.setCode(model.getCode());
-                    currentApplyCode.setType(PARAM_GLOBAL);
-                }
-                promo.setCurrentApplyCode(currentApplyCode);
-            } else {
-                if (promo.getOrders() != null) {
-                    for (Order order : promo.getOrders()) {
-                        if (model.getUniqueId().equals(order.getUniqueId())) {
-                            ArrayList<String> codes = new ArrayList<>();
-                            codes.add(model.getCode());
-                            order.setCodes(codes);
-
-                            CurrentApplyCode currentApplyCode = new CurrentApplyCode();
-                            if (!model.getCode().isEmpty()) {
-                                currentApplyCode.setCode(model.getCode());
-                                currentApplyCode.setType(type);
-                            }
-                            promo.setCurrentApplyCode(currentApplyCode);
-                            break;
-                        }
-                    }
-                }
-            }
-            getView().showLoading();
-            checkPromoStackingCodeUseCase.setParams(promo);
-            compositeSubscription.add(
-                    checkPromoStackingCodeUseCase.createObservable(RequestParams.create())
-                            .subscribe(new CheckShipmentPromoFirstStepAfterClashSubscriber(getView(), this, checkPromoStackingCodeMapper, type, newPromoList.get(0).getCode()))
-            );
-        }
-    }
-
-    @Override
     public void changeShippingAddress(RecipientAddressModel newRecipientAddressModel,
                                       boolean isOneClickShipment,
                                       boolean isTradeInDropOff,

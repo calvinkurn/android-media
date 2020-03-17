@@ -21,7 +21,6 @@ import com.tokopedia.purchase_platform.common.di.*
 import com.tokopedia.purchase_platform.common.domain.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.domain.schedulers.ExecutorSchedulers
 import com.tokopedia.purchase_platform.common.domain.usecase.GetInsuranceCartUseCase
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
 import com.tokopedia.purchase_platform.common.usecase.SubmitHelpTicketUseCase
 import com.tokopedia.purchase_platform.features.cart.view.InsuranceItemActionListener
 import com.tokopedia.purchase_platform.features.cart.view.di.CartScope
@@ -155,12 +154,6 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     fun provideInsuranceItemActionListener(): InsuranceItemActionListener {
-        return shipmentFragment
-    }
-
-    @Provides
-    @CheckoutScope
-    fun providePromoActionListener(): PromoActionListener {
         return shipmentFragment
     }
 

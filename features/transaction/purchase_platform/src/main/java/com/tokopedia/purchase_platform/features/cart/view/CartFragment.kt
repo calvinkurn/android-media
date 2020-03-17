@@ -70,7 +70,6 @@ import com.tokopedia.purchase_platform.common.data.model.response.macro_insuranc
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartResponse
 import com.tokopedia.purchase_platform.common.data.model.response.macro_insurance.InsuranceCartShops
 import com.tokopedia.purchase_platform.common.feature.promo_checkout.domain.model.last_apply.LastApplyUiModel
-import com.tokopedia.purchase_platform.common.feature.promo_global.PromoActionListener
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementActionListener
 import com.tokopedia.purchase_platform.common.feature.ticker_announcement.TickerAnnouncementHolderData
 import com.tokopedia.purchase_platform.common.utils.Utils
