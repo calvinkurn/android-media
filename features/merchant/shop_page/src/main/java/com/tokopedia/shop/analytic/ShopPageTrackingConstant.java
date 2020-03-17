@@ -90,7 +90,7 @@ public class ShopPageTrackingConstant {
     public static final String CLICK_FOLLOW_FROM_ZERO_FOLLOWER = "click follow from zero follower";
     public static final String IMPRESSION_FOLLOW_FROM_ZERO_FOLLOWER = "impression of follow from zero follower";
     public static final String CLICK_MENU_FROM_MORE_MENU = "click menu from more menu";
-    public static final String CLICK_WISHLIST = "click wishlist";
+    public static final String CLICK_WISHLIST = "clickWishlist";
     public static final String ADD = "add";
     public static final String REMOVE = "remove";
     public static final String CLICK_SORT = "click sort";
