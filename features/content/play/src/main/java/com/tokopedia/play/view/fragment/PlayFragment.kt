@@ -307,6 +307,10 @@ class PlayFragment : BaseDaggerFragment() {
     }
 
     fun onBottomInsetsViewShown(bottomMostBounds: Int) {
+        flInteraction.layoutParams = flInteraction.layoutParams.apply {
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
+        }
+
         videoScaleAnimator.cancel()
 
         val currentHeight = flVideo.height
@@ -326,11 +330,13 @@ class PlayFragment : BaseDaggerFragment() {
             addListener(onBottomInsetsShownAnimatorListener)
             playTogether(animatorX, animatorY)
         }.start()
-
-        flInteraction.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
     }
 
     fun onBottomInsetsViewHidden() {
+        flInteraction.layoutParams = flInteraction.layoutParams.apply {
+            height = ViewGroup.LayoutParams.MATCH_PARENT
+        }
+
         videoScaleAnimator.cancel()
 
         val animatorY = ObjectAnimator.ofFloat(flVideo, View.SCALE_Y, flVideo.scaleY, FULL_SCALE_FACTOR)
@@ -343,8 +349,6 @@ class PlayFragment : BaseDaggerFragment() {
             addListener(onBottomInsetsHiddenAnimatorListener)
             playTogether(animatorX, animatorY)
         }.start()
-
-        flInteraction.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
     }
 
     fun setResultBeforeFinish() {

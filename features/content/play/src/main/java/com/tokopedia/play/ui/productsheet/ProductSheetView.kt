@@ -131,6 +131,7 @@ class ProductSheetView(
         productLineAdapter.setItemsAndAnimateChanges(model.productList)
 
         if (model.voucherList.isEmpty()) rvVoucherList.gone()
+        else rvVoucherList.visible()
     }
 
     internal fun showPlaceholder() {
