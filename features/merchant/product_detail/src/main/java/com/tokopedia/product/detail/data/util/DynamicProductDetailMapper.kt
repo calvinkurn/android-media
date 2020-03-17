@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirectionParams
 import com.tokopedia.product.detail.common.data.model.pdplayout.*
 import com.tokopedia.product.detail.common.data.model.product.Etalase
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
@@ -140,6 +141,33 @@ object DynamicProductDetailMapper {
     fun convertMediaToDataModel(media: MutableList<Media>): List<ProductMediaDataModel> {
         return media.map { it ->
             ProductMediaDataModel(it.type, it.uRL300, it.uRLOriginal, it.uRLThumbnail, it.description, it.videoURLAndroid, it.isAutoplay)
+        }
+    }
+
+    fun generateCartTypeParam(dynamicProductInfoP1: DynamicProductInfoP1?): List<CartRedirectionParams> {
+        val campaignId = dynamicProductInfoP1?.data?.campaign?.campaignID?.toIntOrNull() ?: 0
+        val campaignTypeId = dynamicProductInfoP1?.data?.campaign?.campaignType?.toIntOrNull() ?: 0
+        val listOfFlags = mutableListOf<String>()
+        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add("preorder")
+        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add("leasing")
+
+        return listOf(CartRedirectionParams(campaignId, campaignTypeId, listOfFlags))
+    }
+
+    fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {
+        if (atcButton) return ProductDetailConstant.ATC_BUTTON
+        if (leasing) return ProductDetailConstant.LEASING_BUTTON
+        return when (it) {
+            "normal" -> {
+                ProductDetailConstant.BUY_BUTTON
+            }
+            "ocs" -> {
+                ProductDetailConstant.OCS_BUTTON
+            }
+            "occ" -> {
+                ProductDetailConstant.OCC_BUTTON
+            }
+            else -> ProductDetailConstant.BUY_BUTTON
         }
     }
 

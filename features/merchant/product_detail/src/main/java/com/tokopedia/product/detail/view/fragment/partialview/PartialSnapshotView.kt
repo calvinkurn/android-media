@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
 class PartialSnapshotView(private val view: View,
                           private val listener: DynamicProductDetailListener) {
 
-    fun renderData(product: DynamicProductInfoP1) {
+    fun renderData(product: DynamicProductInfoP1, nearestWarehouseStockWording: String) {
         val data = product.data
         val basic = product.basic
         with(view) {
@@ -64,8 +64,8 @@ class PartialSnapshotView(private val view: View,
                 text_original_price.paintFlags = text_original_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 text_discount.text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
 
-                sale_text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
-                text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
+                sale_text_stock_available.text = MethodChecker.fromHtml(data.stock.getFinalStockWording(nearestWarehouseStockWording))
+                text_stock_available.text = MethodChecker.fromHtml(data.stock.getFinalStockWording(nearestWarehouseStockWording))
                 if (campaign.activeAndHasId) {
                     discount_timer_holder.visibility = View.VISIBLE
                     showCountDownTimer(data.campaign)
@@ -87,7 +87,7 @@ class PartialSnapshotView(private val view: View,
                 text_original_price.visibility = View.GONE
                 text_discount.visibility = View.GONE
                 discount_timer_holder.visibility = View.GONE
-                text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
+                text_stock_available.text = MethodChecker.fromHtml(data.stock.getFinalStockWording(nearestWarehouseStockWording))
                 sale_text_stock_available.gone()
                 if (data.variant.isVariant) {
                     text_stock_available.gone()

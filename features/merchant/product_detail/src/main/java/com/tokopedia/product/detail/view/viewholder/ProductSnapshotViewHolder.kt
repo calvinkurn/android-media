@@ -38,7 +38,7 @@ class ProductSnapshotViewHolder(private val view: View,
                 view.addOnImpressionListener(element.impressHolder) {
                     listener.onImpressComponent(getComponentTrackData(element))
                 }
-                header?.renderData(it)
+                header?.renderData(it, element.nearestWarehouseDataModel?.nearestWarehouseStockWording ?: "")
                 header?.showOfficialStore(it.data.isPowerMerchant, it.data.isOS)
                 view_picture_search_bar.renderShopStatusDynamicPdp(element.shopStatus, element.statusTitle, element.statusMessage,
                         it.basic.status)

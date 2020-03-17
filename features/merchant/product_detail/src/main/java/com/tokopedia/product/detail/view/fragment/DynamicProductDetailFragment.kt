@@ -50,6 +50,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
@@ -116,8 +117,6 @@ import com.tokopedia.product.share.ProductData
 import com.tokopedia.product.share.ProductShare
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.constant.Constant
-import com.tokopedia.purchase_platform.common.data.model.request.atc.AtcRequestParam
 import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.purchase_platform.common.sharedata.helpticket.SubmitTicketResult
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -586,7 +585,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 val categoryName = it.lastOrNull()?.name ?: ""
                 DynamicProductDetailTracking.Click.eventCategoryClicked(categoryId, categoryName, viewModel.getDynamicProductInfoP1, componentTrackDataModel)
             }
-
             RouteManager.route(context, url)
         }
     }
@@ -1015,8 +1013,10 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun observeonVariantClickedData() {
         viewModel.onVariantClickedData.observe(viewLifecycleOwner, Observer {
-            val selectedChild = VariantCommonMapper.selectedProductData(viewModel.variantData
+            val selectedChildAndPosition = VariantCommonMapper.selectedProductData(viewModel.variantData
                     ?: ProductVariantCommon())
+            val selectedChild = selectedChildAndPosition?.second
+            val indexOfSelectedVariant = selectedChildAndPosition?.first
             val updatedDynamicProductInfo = VariantMapper.updateDynamicProductInfo(viewModel.getDynamicProductInfoP1, selectedChild, viewModel.listOfParentMedia)
 
             pdpHashMapUtil?.productNewVariantDataModel?.listOfVariantCategory = it
@@ -1063,28 +1063,38 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
     private fun onSuccessAtc(cartId: String) {
         when (viewModel.buttonAction) {
+            ProductDetailConstant.OCS_BUTTON -> {
+                goToCheckout(ShipmentFormRequest
+                        .BundleBuilder()
+                        .build()
+                        .bundle)
+            }
             ProductDetailConstant.BUY_BUTTON -> {
-
-                val isOcsCheckoutType = (viewModel.p2Login.value)?.isOcsCheckoutType
-                        ?: false
-
-                if (isOcsCheckoutType) {
-                    goToCheckout(ShipmentFormRequest
-                            .BundleBuilder()
-                            .build()
-                            .bundle)
-                } else {
-                    goToCartCheckout(cartId)
-                }
+                goToCartCheckout(cartId)
+            }
+            ProductDetailConstant.OCC_BUTTON -> {
+                goToExpressCheckout()
             }
             ProductDetailConstant.ATC_BUTTON -> {
                 showAddToCartDoneBottomSheet()
             }
             ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE -> {
+                // Same with OCS but should send devideId
                 goToCheckout(ShipmentFormRequest.BundleBuilder()
                         .deviceId(viewModel.tradeinDeviceId)
                         .build()
                         .bundle)
+            }
+        }
+    }
+
+    private fun goToExpressCheckout() {
+        activity?.let {
+            val expressCheckoutUriString = ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT
+            val intent = RouteManager.getIntent(it, expressCheckoutUriString)
+            intent?.run {
+                startActivityForResult(intent, ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS)
+                it.overridePendingTransition(R.anim.pull_up, 0)
             }
         }
     }
@@ -1127,7 +1137,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeP2Login() {
         viewModel.p2Login.observe(this, Observer {
             topAdsGetProductManage = it.topAdsGetProductManage
-            actionButtonView.renderData(it.isExpressCheckoutType, hasTopAds())
+            actionButtonView.renderData(it.isExpressCheckoutType, hasTopAds(), it.newCartTypeResponse.cartRedirection)
 
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
@@ -2005,12 +2015,19 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                 doAtc(ProductDetailConstant.ATC_BUTTON)
             }
         }
+
         actionButtonView.buyNowClick = {
             // buy now / buy / preorder
             viewModel.getDynamicProductInfoP1?.let {
                 DynamicProductDetailTracking.Click.eventClickBuy(viewModel.isUserSessionActive, viewModel.getDynamicProductInfoP1, it.data.variant.isVariant)
                 doAtc(ProductDetailConstant.BUY_BUTTON)
             }
+        }
+
+        actionButtonView.buttonCartTypeClick = { cartType, isAtcButton ->
+            val isLeasing = viewModel.getDynamicProductInfoP1?.basic?.isLeasing ?: false
+            val atcKey = DynamicProductDetailMapper.generateButtonAction(cartType, isAtcButton, isLeasing)
+            doAtc(atcKey)
         }
     }
 
@@ -2019,8 +2036,6 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         context?.let {
             val isVariant = viewModel.getDynamicProductInfoP1?.data?.variant?.isVariant ?: false
             val isPartialySelected = pdpHashMapUtil?.productNewVariantDataModel?.isPartialySelected()
-                    ?: false
-            val isOcs = (viewModel.p2Login.value)?.isOcsCheckoutType
                     ?: false
 
             if (!viewModel.isUserSessionActive) {
@@ -2044,8 +2059,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     return@let
                 }
             }
-
-            hitAtc(isOcs)
+            hitAtc(buttonAction)
         }
     }
 
@@ -2053,37 +2067,50 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
         //TODOTRACKTRADEIN
         viewModel.buttonAction = ProductDetailConstant.TRADEIN_AFTER_DIAGNOSE
         viewModel.tradeinDeviceId = deviceId
-        hitAtc(true)
+        hitAtc(ProductDetailConstant.OCS_BUTTON)
     }
 
-    private fun hitAtc(isOcs: Boolean) {
+    private fun hitAtc(actionButton: Int) {
         val selectedWarehouseId = viewModel.selectedMultiOrigin.warehouseInfo.id.toIntOrZero()
 
         viewModel.getDynamicProductInfoP1?.let { data ->
             showProgressDialog()
-            if (isOcs) {
-                val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
-                    productId = data.basic.productID.toLongOrNull() ?: 0
-                    shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
-                    quantity = data.basic.minOrder
-                    notes = ""
-                    warehouseId = selectedWarehouseId
-                    trackerAttribution = trackerAttributionPdp ?: ""
-                    trackerListName = trackerListNamePdp ?: ""
-                    isTradeIn = data.data.isTradeIn
+            when (actionButton) {
+                ProductDetailConstant.OCS_BUTTON -> {
+                    val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
+                        productId = data.basic.productID.toLongOrNull() ?: 0
+                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        quantity = data.basic.minOrder
+                        notes = ""
+                        warehouseId = selectedWarehouseId
+                        trackerAttribution = trackerAttributionPdp ?: ""
+                        trackerListName = trackerListNamePdp ?: ""
+                        isTradeIn = data.data.isTradeIn
+                    }
+                    viewModel.addToCart(addToCartOcsRequestParams)
                 }
-                viewModel.addToCart(addToCartOcsRequestParams)
-            } else {
-                val addToCartRequestParams = AddToCartRequestParams().apply {
-                    productId = data.basic.productID.toLongOrNull() ?: 0
-                    shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
-                    quantity = data.basic.minOrder
-                    notes = ""
-                    attribution = trackerAttributionPdp ?: ""
-                    listTracker = trackerListNamePdp ?: ""
-                    warehouseId = selectedWarehouseId
+                ProductDetailConstant.OCC_BUTTON -> {
+                    val addToCartOccRequestParams = AddToCartOccRequestParams(
+                            productId = data.basic.productID ?: "",
+                            shopId = viewModel.shopInfo?.shopCore?.shopID ?: "",
+                            quantity = data.basic.minOrder.toString(),
+                            attribution = trackerAttributionPdp ?: "",
+                            listTracker = trackerListNamePdp ?: ""
+                    )
+                    viewModel.addToCart(addToCartOccRequestParams)
                 }
-                viewModel.addToCart(addToCartRequestParams)
+                else -> {
+                    val addToCartRequestParams = AddToCartRequestParams().apply {
+                        productId = data.basic.productID.toLongOrNull() ?: 0
+                        shopId = viewModel.shopInfo?.shopCore?.shopID.toIntOrZero()
+                        quantity = data.basic.minOrder
+                        notes = ""
+                        attribution = trackerAttributionPdp ?: ""
+                        listTracker = trackerListNamePdp ?: ""
+                        warehouseId = selectedWarehouseId
+                    }
+                    viewModel.addToCart(addToCartRequestParams)
+                }
             }
         }
     }

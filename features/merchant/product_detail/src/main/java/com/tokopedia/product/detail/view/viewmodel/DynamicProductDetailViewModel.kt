@@ -7,9 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateUseCase
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.atc_common.data.model.request.AddToCartOccRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.AddToCartOccUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartOcsUseCase
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
@@ -20,6 +22,7 @@ import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.product.ProductParams
@@ -32,6 +35,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductDetailDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLastSeenDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductOpenShopDataModel
 import com.tokopedia.product.detail.data.model.financing.FinancingDataResponse
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.origin
@@ -90,7 +94,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getNearestWarehouseUseCase: GetNearestWarehouseUseCase,
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val addToCartOcsUseCase: AddToCartOcsUseCase,
-                                                             private val getCartTypeUseCase: GetCartTypeUseCase,
+                                                             private val addToCartOccUseCase: AddToCartOccUseCase,
                                                              val userSessionInterface: UserSessionInterface) : BaseViewModel(dispatcher.ui()) {
 
     private val _productLayout = MutableLiveData<Result<List<DynamicPdpDataModel>>>()
@@ -146,6 +150,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         get() = _onVariantClickedData
 
     var multiOrigin: Map<String, VariantMultiOriginWarehouse> = mapOf()
+    var cartTypeData: List<CartTypeData> = listOf()
     var selectedMultiOrigin: VariantMultiOriginWarehouse = VariantMultiOriginWarehouse()
     var getDynamicProductInfoP1: DynamicProductInfoP1? = null
     var shopInfo: ShopInfo? = null
@@ -279,8 +284,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 is AddToCartRequestParams -> {
                     withContext(dispatcher.io()) {
                         val result = addToCartUseCase.createObservable(requestParams).toBlocking().single()
-
-                        if (result.data.success == 0) {
+                        if (result.isDataError()) {
                             _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
                                     ?: "")))
                         } else {
@@ -291,7 +295,18 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 is AddToCartOcsRequestParams -> {
                     withContext(dispatcher.io()) {
                         val result = addToCartOcsUseCase.createObservable(requestParams).toBlocking().single()
-                        if (result.data.success == 0) {
+                        if (result.isDataError()) {
+                            _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
+                                    ?: "")))
+                        } else {
+                            _addToCartLiveData.postValue(Success(result))
+                        }
+                    }
+                }
+                is AddToCartOccRequestParams -> {
+                    withContext(dispatcher.io()) {
+                        val result = addToCartOccUseCase.createObservable(requestParams).toBlocking().single()
+                        if (result.isDataError()) {
                             _addToCartLiveData.postValue(Fail(Throwable(result.errorMessage.firstOrNull()
                                     ?: "")))
                         } else {
@@ -674,7 +689,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private fun getProductInfoP2LoginAsync(shopId: Int, productId: Int): Deferred<ProductInfoP2Login> {
         return async {
-            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId)
+            getProductInfoP2LoginUseCase.requestParams = GetProductInfoP2LoginUseCase.createParams(shopId, productId, DynamicProductDetailMapper.generateCartTypeParam(getDynamicProductInfoP1))
             getProductInfoP2LoginUseCase.executeOnBackground()
         }
     }

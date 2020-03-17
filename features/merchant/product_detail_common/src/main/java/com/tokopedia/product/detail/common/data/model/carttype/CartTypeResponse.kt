@@ -8,20 +8,13 @@ data class CartRedirectionResponse(
         val cartRedirection: CartRedirection = CartRedirection()
 )
 
-data class CartTypeResponse(
-        @SerializedName("data")
-        val response: CartRedirectionResponse = CartRedirectionResponse()
-)
-
 data class CartTypeData(
         @SerializedName("available_buttons")
         val availableButtons: List<AvailableButton> = listOf(),
         @SerializedName("config_name")
         val configName: String = "",
-        @SerializedName("show_recommendation")
-        val showRecommendation: Boolean = false,
         @SerializedName("unavailable_buttons")
-        val unavailableButtons: List<Any> = listOf()
+        val unavailableButtons: List<String> = listOf()
 )
 
 data class CartRedirection(
@@ -39,5 +32,7 @@ data class AvailableButton(
         @SerializedName("color")
         val color: String = "",
         @SerializedName("text")
-        val text: String = ""
+        val text: String = "",
+        @SerializedName("show_recommendation")
+        val showRecommendation: Boolean = false
 )

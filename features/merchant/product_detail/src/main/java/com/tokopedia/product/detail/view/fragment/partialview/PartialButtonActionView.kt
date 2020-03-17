@@ -10,6 +10,7 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.UnifyButton
@@ -31,6 +32,7 @@ class PartialButtonActionView private constructor(private val view: View,
                 if (value) base_btn_action.visible() else base_btn_action.gone()
             }
         }
+    var buttonCartTypeClick: ((String, Boolean) -> Unit)? = null
 
     var hasComponentLoading = false
     var isExpressCheckout = false
@@ -39,9 +41,8 @@ class PartialButtonActionView private constructor(private val view: View,
     var isLeasing: Boolean = false
     var hasTopAdsActive: Boolean = false
     var preOrder: PreOrder? = PreOrder()
-    var listOfButtonShouldHide: List<String> = listOf()
-    var listOfButtonShouldSHow = listOf("buy")
     var onSuccessGetCartType = false
+    private var cartTypeData: CartRedirection? = null
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
@@ -59,9 +60,11 @@ class PartialButtonActionView private constructor(private val view: View,
         renderButton()
     }
 
-    fun renderData(isExpressCheckout: Boolean, hasTopAdsActive: Boolean) {
+    fun renderData(isExpressCheckout: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartRedirection) {
         this.isExpressCheckout = isExpressCheckout
         this.hasTopAdsActive = hasTopAdsActive
+        this.cartTypeData = cartTypeData
+        this.onSuccessGetCartType = cartTypeData.errorMessage.isEmpty() && cartTypeData.data.firstOrNull()?.availableButtons?.isNotEmpty() == true
         renderButton()
     }
 
@@ -71,19 +74,47 @@ class PartialButtonActionView private constructor(private val view: View,
         } else if (hasShopAuthority) {
             showShopManageButton()
         } else if (!GlobalConfig.isSellerApp() && onSuccessGetCartType) {
-
-        } else if (!GlobalConfig.isSellerApp()) {
+            showCartTypeButton()
+        } else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType) {
             showNewCheckoutButton()
         }
     }
 
     private fun showCartTypeButton() = with(view) {
-        btn_topchat.showWithCondition("chat" !in listOfButtonShouldHide)
-        btn_byme.showWithCondition("byme" !in listOfButtonShouldHide)
-        btn_buy_now.showWithCondition(listOfButtonShouldSHow.firstOrNull() != null)
-        btn_add_to_cart.showWithCondition(listOfButtonShouldSHow.getOrNull(1) != null)
+        val unavailableButton = cartTypeData?.data?.firstOrNull()?.unavailableButtons ?: listOf()
+        val availableButton = cartTypeData?.data?.firstOrNull()?.availableButtons ?: listOf()
 
         bindAbTestChatButton(btn_topchat)
+
+        btn_topchat.showWithCondition("chat" !in unavailableButton)
+        btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
+        btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
+
+        btn_buy_now.text = availableButton.getOrNull(0)?.text ?: ""
+        btn_add_to_cart.text = availableButton.getOrNull(1)?.text ?: ""
+
+        btn_buy_now.setOnClickListener {
+            buttonCartTypeClick?.invoke(availableButton.getOrNull(0)?.cartType
+                    ?: "", availableButton.getOrNull(0)?.showRecommendation ?: false)
+        }
+
+        btn_add_to_cart.setOnClickListener {
+            buttonCartTypeClick?.invoke(availableButton.getOrNull(1)?.cartType
+                    ?: "", availableButton.getOrNull(1)?.showRecommendation ?: false)
+        }
+
+        btn_buy_now.generateTheme(availableButton.getOrNull(0)?.color ?: "")
+        btn_add_to_cart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
+    }
+
+    private fun UnifyButton.generateTheme(colorDescription: String) {
+        if (colorDescription == "orange") {
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.buttonType = UnifyButton.Type.TRANSACTION
+        } else {
+            this.buttonVariant = UnifyButton.Variant.GHOST
+            this.buttonType = UnifyButton.Type.TRANSACTION
+        }
     }
 
     private fun showNewCheckoutButton() {
@@ -101,6 +132,7 @@ class PartialButtonActionView private constructor(private val view: View,
                             R.string.buy
                         }
                     })
+            btn_add_to_cart.text = context.getString(R.string.add_product_to_cart)
             btn_buy_now.visibility = View.VISIBLE
             btn_add_to_cart.visible()
             if (isLeasing) {
