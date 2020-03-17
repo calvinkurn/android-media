@@ -402,7 +402,7 @@ public interface ConstantTransactionAnalytics {
         String CLICK_ON_INSURANCE = "courier - click on asuransi pengiriman";
         String CLICK_BAYAR_NOT_SUCCESS = "click bayar - not success";
         String VIEW_ERROR_ON_OSP = "view error messagge";
-        String CLICK_ATUR_PREFERENSI_FROM_OSP = "preference - click tambah pilihan from ganti pilihan";
+        String CLICK_ADD_PREFERENSI_FROM_OSP = "preference - click tambah pilihan from ganti pilihan";
         String USER_CHANGES_PROFILE = "preference - click ganti pilihan on order summary";
         String USER_SETS_FIRST_PREFERENCE = "preference - click atur preferensi for new buyer";
         String CHOOSE_BBO_AS_DURATION = "courier - click pilih on tersedia bebas ongkir";

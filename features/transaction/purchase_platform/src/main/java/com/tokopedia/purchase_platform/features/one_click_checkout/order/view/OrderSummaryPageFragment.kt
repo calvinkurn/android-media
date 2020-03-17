@@ -25,6 +25,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticdata.data.constant.InsuranceConstant
 import com.tokopedia.logisticdata.data.constant.LogisticConstant
 import com.tokopedia.logisticdata.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticdata.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.R
 import com.tokopedia.purchase_platform.common.utils.Utils.convertDpToPixel
@@ -32,6 +33,7 @@ import com.tokopedia.purchase_platform.features.one_click_checkout.common.data.m
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccGlobalEvent
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.OccState
 import com.tokopedia.purchase_platform.features.one_click_checkout.common.domain.model.preference.ProfilesItemModel
+import com.tokopedia.purchase_platform.features.one_click_checkout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.data.ProfileResponse
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.di.OrderSummaryPageComponent
 import com.tokopedia.purchase_platform.features.one_click_checkout.order.view.bottomsheet.OccInfoBottomSheet
@@ -59,6 +61,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var orderSummaryAnalytics: OrderSummaryAnalytics
 
     private val viewModel: OrderSummaryPageViewModel by lazy {
         ViewModelProviders.of(this, viewModelFactory)[OrderSummaryPageViewModel::class.java]
@@ -247,6 +251,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
     private fun setupInsurance(it: OccState.Success<OrderPreference>) {
         val insuranceData = it.data.shipping?.insuranceData
+//        val productId
         if (insuranceData != null) {
             if (insuranceData.insurancePrice > 0) {
                 tv_insurance_price.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(insuranceData.insurancePrice, false)
@@ -261,6 +266,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         R.drawable.ic_pp_insurance)
             }
             cb_insurance.setOnCheckedChangeListener { _, isChecked ->
+                if(isChecked){
+//                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"check", insuranceData.insurancePrice.toString())
+                } else {
+//                    orderSummaryAnalytics.eventClickOnInsurance(productId.toString(),"uncheck", insuranceData.insurancePrice.toString())
+                }
                 viewModel.setInsuranceCheck(isChecked)
             }
             if (insuranceData.insuranceType == InsuranceConstant.INSURANCE_TYPE_MUST) {
@@ -351,6 +361,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
 
         btn_order_detail.setOnClickListener {
             if (orderTotal.orderCost.totalPrice > 0.0) {
+                orderSummaryAnalytics
                 OrderPriceSummaryBottomSheet().show(this, orderTotal.orderCost)
             }
         }
@@ -411,6 +422,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
     private fun getOrderPreferenceCardListener() = object : OrderPreferenceCard.OrderPreferenceCardListener {
 
         override fun onChangePreferenceClicked() {
+            orderSummaryAnalytics.eventChangesProfile()
             showPreferenceListBottomSheet()
         }
 
@@ -446,10 +458,12 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                     updateCartOccRequest = updateCartParam,
                     listener = object : PreferenceListBottomSheet.PreferenceListBottomSheetListener {
                         override fun onChangePreference(preference: ProfilesItemModel) {
+                            orderSummaryAnalytics.eventChangesProfile()
                             refresh()
                         }
 
                         override fun onEditPreference(preference: ProfilesItemModel, adapterPosition: Int) {
+                            orderSummaryAnalytics.eventClickGearLogoInPreferenceFromGantiPilihanOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
                             intent.apply {
                                 putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, adapterPosition)
@@ -465,6 +479,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment(), OrderProductCard.OrderPro
                         }
 
                         override fun onAddPreference(itemCount: Int) {
+                            orderSummaryAnalytics.eventAddPreferensiFromOSP()
                             val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PREFERENCE_EDIT)
                             intent.putExtra(PreferenceEditActivity.EXTRA_PREFERENCE_INDEX, itemCount + 1)
                             startActivityForResult(intent, REQUEST_CREATE_PREFERENCE)
