@@ -12,7 +12,8 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:tickerShapeType="full"/>
+        app:tickerShapeType="full"
+        app:closeButtonVisibility="visible"/>
 
     <LinearLayout
         android:id="@+id/rl_search_filter"

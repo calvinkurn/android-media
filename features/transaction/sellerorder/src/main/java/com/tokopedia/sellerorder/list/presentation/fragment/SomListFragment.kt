@@ -21,7 +21,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalOrder
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -33,7 +32,6 @@ import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.loadImageDrawable
 import com.tokopedia.sellerorder.R
 import com.tokopedia.sellerorder.analytics.SomAnalytics
-import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickButtonPeluangInEmptyState
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventClickOrder
 import com.tokopedia.sellerorder.analytics.SomAnalytics.eventSubmitSearch
 import com.tokopedia.sellerorder.common.util.SomConsts
@@ -291,7 +289,10 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun setListeners() {
         search_input_view?.setListener(this)
         search_input_view?.setResetListener(this)
-        search_input_view?.searchTextView?.setOnClickListener { search_input_view?.searchTextView?.isCursorVisible = true }
+        search_input_view?.searchTextView?.setOnClickListener {
+            SomAnalytics.eventClickSearchBar()
+            search_input_view?.searchTextView?.isCursorVisible = true
+        }
 
         filter_action_button?.setOnClickListener {
             SomAnalytics.eventClickFilterButtonOnOrderList()
@@ -394,6 +395,13 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                             SomAnalytics.eventClickSeeMoreOnTicker()
                         }
+                    })
+                    ticker_info?.setDescriptionClickEvent(object: TickerCallback {
+                        override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                        override fun onDismiss() {
+                            SomAnalytics.eventClickXOnTicker()
+                        }
 
                     })
                     ticker_info?.addPagerView(adapter, listTickerData)
@@ -408,7 +416,9 @@ class SomListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             SomAnalytics.eventClickSeeMoreOnTicker()
                         }
 
-                        override fun onDismiss() {}
+                        override fun onDismiss() {
+                            SomAnalytics.eventClickXOnTicker()
+                        }
 
                     })
                 }

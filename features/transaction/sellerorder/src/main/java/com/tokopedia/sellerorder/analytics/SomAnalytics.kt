@@ -30,6 +30,12 @@ object SomAnalytics {
     private const val CLICK_RESET_BUTTON_ON_FILTER_PAGE = "click reset button on filter page"
     private const val CLICK_TOLAK_PESANAN = "click tolak pesanan"
     private const val CLICK_CEK_PELUANG_ON_EMPTY_STATE = "click cek peluang on empty state"
+    private const val CLICK_ACCEPT_ORDER_POPUP = "click accept order popup"
+    private const val CLICK_KONFIRMASI = "click konfirmasi"
+    private const val CLICK_REQUEST_PICKUP_POPUP = "click request pickup popup"
+    private const val CLICK_BUTTON_TOLAK_PESANAN_POPUP = "click button tolak pesanan - popup"
+    private const val CLICK_BUTTON_CHAT_PEMBELI_POPUP = "click button chat pembeli - popup"
+    private const val CLICK_SEARCH_RECENT_SEARCH = "top nav - click search - search box"
 
     @JvmStatic
     fun sendScreenName(activity: Activity, screenName: String) {
@@ -75,7 +81,7 @@ object SomAnalytics {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_PELUANG_IN_EMPTY_STATE, statusOrder)
     }
 
-    fun eventClickButtonPeluangInEmptyState() {
+    fun eventClickTerapkanOnFilterPage() {
         sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_TERAPKAN_ON_FILTER_PAGE)
     }
 
@@ -90,7 +96,7 @@ object SomAnalytics {
     }
 
     fun eventClickXOnTicker() {
-        // TODO : put ticker_id to label, ask unify team how to detect close button?
+        // TODO : put ticker_id to label, ask unify team how to detect close button on view pager ticker?
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_X_ON_TICKER, "")
     }
 
@@ -120,5 +126,33 @@ object SomAnalytics {
 
     fun eventClickCekPeluangOnEmptyState(statusOrderName: String) {
         sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_CEK_PELUANG_ON_EMPTY_STATE, statusOrderName)
+    }
+
+    fun eventClickAcceptOrderPopup(isSuccess: Boolean) {
+        var success = "success"
+        if (!isSuccess) success = "failed"
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_ACCEPT_ORDER_POPUP, success)
+    }
+
+    fun eventClickKonfirmasi(isSuccess: Boolean) {
+        var success = "success"
+        if (!isSuccess) success = "failed"
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_KONFIRMASI, success)
+    }
+
+    fun eventClickRequestPickupPopup() {
+        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_REQUEST_PICKUP_POPUP)
+    }
+
+    fun eventClickButtonTolakPesananPopup(statusOrder: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_TOLAK_PESANAN_POPUP, statusOrder)
+    }
+
+    fun eventClickButtonChatPembeliPopup(statusOrder: String) {
+        sendEventCategoryActionLabel(CLICK_SOM, CATEGORY_SOM, CLICK_BUTTON_CHAT_PEMBELI_POPUP, statusOrder)
+    }
+
+    fun eventClickSearchBar() {
+        sendEventCategoryAction(CLICK_SOM, CATEGORY_SOM, CLICK_SEARCH_RECENT_SEARCH)
     }
 }

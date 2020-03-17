@@ -305,6 +305,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
         somDetailViewModel.acceptOrderResult.observe(this, Observer {
             when (it) {
                 is Success -> {
+                    SomAnalytics.eventClickAcceptOrderPopup(true)
                     acceptOrderResponse = it.data.acceptOrder
                     if (acceptOrderResponse.success == 1) {
                         activity?.setResult(Activity.RESULT_OK, Intent().apply {
@@ -317,6 +318,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                     }
                 }
                 is Fail -> {
+                    SomAnalytics.eventClickAcceptOrderPopup(false)
                 }
             }
         })
@@ -660,6 +662,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
     }
 
     private fun setActionRequestPickup() {
+        SomAnalytics.eventClickRequestPickupPopup()
         Intent(activity, SomConfirmReqPickupActivity::class.java).apply {
             putExtra(PARAM_ORDER_ID, orderId)
             startActivityForResult(this, FLAG_CONFIRM_REQ_PICKUP)
@@ -908,8 +911,12 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 ll_buyer_req_cancel_buttons?.visibility = View.GONE
             } else {
                 ll_buyer_req_cancel_buttons?.visibility = View.VISIBLE
-                btn_chat_buyer?.setOnClickListener { goToAskBuyer() }
+                btn_chat_buyer?.setOnClickListener {
+                    SomAnalytics.eventClickButtonChatPembeliPopup("${detailResponse.statusId}")
+                    goToAskBuyer()
+                }
                 btn_tolak_pesanan?.setOnClickListener {
+                    SomAnalytics.eventClickButtonTolakPesananPopup("${detailResponse.statusId}")
                     bottomSheetReqCancel.dismiss()
                     val orderRejectRequest = SomRejectRequest(
                             orderId = detailResponse.orderId.toString(),
