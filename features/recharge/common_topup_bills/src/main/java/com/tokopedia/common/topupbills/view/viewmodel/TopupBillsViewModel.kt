@@ -24,10 +24,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.PromoDigitalModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import rx.Subscriber
 import javax.inject.Inject
 
@@ -62,6 +59,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     private val _expressCheckoutData = MutableLiveData<Result<RechargeExpressCheckoutData>>()
     val expressCheckoutData : LiveData<Result<RechargeExpressCheckoutData>>
         get() = _expressCheckoutData
+
+    private var checkVoucherJob: Job? = null
 
     fun getEnquiry(rawQuery: String, mapParam: List<TopupBillsEnquiryQuery>) {
         val params = mapOf(PARAM_FIELDS to mapParam)
@@ -136,9 +135,13 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
     }
 
     fun checkVoucher(promoCode: String, promoDigitalModel: PromoDigitalModel) {
-        digitalCheckVoucherUseCase.execute(
-                digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), getCheckVoucherSubscriber()
-        )
+        if (checkVoucherJob?.isActive == true) checkVoucherJob?.cancel()
+        checkVoucherJob = CoroutineScope(coroutineContext).launch {
+            delay(CHECK_VOUCHER_DEBOUNCE_DELAY)
+            digitalCheckVoucherUseCase.execute(
+                    digitalCheckVoucherUseCase.createRequestParams(promoCode, promoDigitalModel), getCheckVoucherSubscriber()
+            )
+        }
     }
 
     private fun getCheckVoucherSubscriber(): Subscriber<GraphqlResponse> {
@@ -284,6 +287,8 @@ class TopupBillsViewModel @Inject constructor(private val graphqlRepository: Gra
         const val STATUS_PENDING = "PENDING"
 
         const val NULL_RESPONSE = "null response"
+
+        const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
     }
 
 }

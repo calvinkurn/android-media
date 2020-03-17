@@ -83,8 +83,6 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     var operatorName = ""
     var productName = ""
 
-    private var checkVoucherJob: Job? = null
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         topupBillsViewModel.enquiryData.observe(this, Observer {
@@ -222,32 +220,32 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     fun getPromoListener(): TickerPromoStackingCheckoutView.ActionListener {
         return object: TickerPromoStackingCheckoutView.ActionListener {
             override fun onClickUsePromo() {
-                if (checkVoucherJob?.isActive != true) {
+//                if (checkVoucherJob?.isActive != true) {
                     commonTopupBillsAnalytics.eventClickUsePromo()
 
                     val intent = RouteManager.getIntent(activity, ApplinkConstInternalPromo.PROMO_LIST_DIGITAL)
                     intent.putExtra(EXTRA_PROMO_DIGITAL_MODEL, getPromoDigitalModel())
                     startActivityForResult(intent, REQUEST_CODE_PROMO_LIST)
-                }
+//                }
             }
 
             override fun onResetPromoDiscount() {
-                if (checkVoucherJob?.isActive != true) {
+//                if (checkVoucherJob?.isActive != true) {
                     commonTopupBillsAnalytics.eventClickRemovePromo()
                     promoCode = ""
                     promoTicker?.resetPromoTicker()
-                }
+//                }
             }
 
             override fun onDisablePromoDiscount() {
-                if (checkVoucherJob?.isActive != true) {
+//                if (checkVoucherJob?.isActive != true) {
                     promoCode = ""
                     promoTicker?.resetPromoTicker()
-                }
+//                }
             }
 
             override fun onClickDetailPromo() {
-                if (checkVoucherJob?.isActive != true) {
+//                if (checkVoucherJob?.isActive != true) {
                     val intent: Intent
                     if (promoCode.isNotEmpty()) {
                         val requestCode: Int
@@ -266,7 +264,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
                         }
                         startActivityForResult(intent, requestCode)
                     }
-                }
+//                }
             }
         }
     }
@@ -309,12 +307,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     // Check voucher with delay; used on pdp with changeable products
     fun checkVoucherWithDelay() {
         if (promoCode.isNotEmpty()) {
-            checkVoucherJob?.cancel()
-            checkVoucherJob = CoroutineScope(Dispatchers.Main).launch {
-                delay(CHECK_VOUCHER_DEBOUNCE_DELAY)
-                promoTicker?.showLoading()
-                checkVoucher()
-            }
+            checkVoucher()
         }
     }
 
@@ -341,6 +334,7 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     }
 
     fun checkVoucher() {
+        promoTicker?.showLoading()
         topupBillsViewModel.checkVoucher(promoCode, PromoDigitalModel(categoryId, productId, price = price ?: 0))
     }
 
@@ -416,7 +410,6 @@ abstract class BaseTopupBillsFragment: BaseDaggerFragment()  {
     }
 
     companion object {
-        const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
         const val REQUEST_CODE_LOGIN = 1010
         const val REQUEST_CODE_CART_DIGITAL = 1090
 
