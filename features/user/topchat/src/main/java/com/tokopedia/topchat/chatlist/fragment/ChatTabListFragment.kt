@@ -81,17 +81,27 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         initViewPagerAdapter()
         initViewPager()
         initViewModel()
-        initObserver()
         initData()
         initOnBoarding()
     }
 
+    override fun onStart() {
+        super.onStart()
+        initObserver()
+        webSocketViewModel.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopLiveDataObserver()
+        clearLiveDataValue()
+        webSocketViewModel.onStop()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
-        webSocketViewModel.itemChat.removeObservers(this)
-        webSocketViewModel.flush()
-        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
-        chatNotifCounterViewModel.flush()
+        stopLiveDataObserver()
+        flushAllViewModel()
     }
 
     private fun bindView(view: View) {
@@ -462,6 +472,20 @@ class ChatTabListFragment : BaseDaggerFragment(), ChatListContract.TabFragment {
         )
         CoachMark().show(activity, TAG_ONBOARDING, tutorials)
         context?.let { CoachMarkPreference.setShown(it, TAG_ONBOARDING, true) }
+    }
+
+    private fun stopLiveDataObserver() {
+        webSocketViewModel.itemChat.removeObservers(this)
+        chatNotifCounterViewModel.chatNotifCounter.removeObservers(this)
+    }
+
+    private fun clearLiveDataValue() {
+        webSocketViewModel.clearItemChatValue()
+    }
+
+    private fun flushAllViewModel() {
+        webSocketViewModel.flush()
+        chatNotifCounterViewModel.flush()
     }
 
     companion object {
