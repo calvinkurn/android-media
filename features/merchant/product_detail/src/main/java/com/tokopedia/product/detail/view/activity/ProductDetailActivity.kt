@@ -111,7 +111,7 @@ class ProductDetailActivity : BaseSimpleActivity(), HasComponent<ProductDetailCo
     }
 
     override fun getNewFragment(): Fragment =
-            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_OLD_PDP, false)) {
+            if (remoteConfig.getBoolean(RemoteConfigKey.ANDROID_MAIN_APP_ENABLED_OLD_PDP, false) || false) {
                 ProductDetailFragment.newInstance(productId, warehouseId, shopDomain,
                         productKey, isFromDeeplink,
                         isFromAffiliate, trackerAttribution,
