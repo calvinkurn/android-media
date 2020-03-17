@@ -839,6 +839,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
     }
 
     override fun onClickContactCsButton(product: ProductViewModel) {
+        goToProductViolationHelpPage()
         ProductManageTracking.eventContactCs(product.id)
     }
 
@@ -871,7 +872,7 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
                 ProductManageTracking.eventSettingsPreview(productId)
             }
             is Duplicate -> {
-                clickDuplicateProduct(productId, menuTitle)
+                clickDuplicateProduct(productId)
                 ProductManageTracking.eventSettingsDuplicate(productId)
             }
             is StockReminder -> {
@@ -903,7 +904,11 @@ open class ProductManageFragment : BaseSearchListFragment<ProductViewModel, Prod
         productManageBottomSheet?.dismiss()
     }
 
-    private fun clickDuplicateProduct(productId: String, menuTitle: String) {
+    private fun goToProductViolationHelpPage() {
+        RouteManager.route(activity, ProductManageUrl.PRODUCT_VIOLATION_HELP_URL)
+    }
+
+    private fun clickDuplicateProduct(productId: String) {
         goToDuplicateProduct(productId)
     }
 
