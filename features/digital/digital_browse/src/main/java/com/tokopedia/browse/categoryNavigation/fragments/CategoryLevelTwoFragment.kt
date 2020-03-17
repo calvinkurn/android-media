@@ -80,7 +80,7 @@ class CategoryLevelTwoFragment : Fragment(), Listener, HasComponent<CategoryNavi
                 is Success -> {
                     childList.clear()
                     childList.addAll(it.data)
-                    slave_list.adapter?.notifyDataSetChanged()
+                    slave_list.adapter = CategoryLevelTwoAdapter(childList, activityStateListener?.getActivityTrackingQueue())
                 }
             }
 
