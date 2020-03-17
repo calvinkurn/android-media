@@ -4,27 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     android:layout_marginLeft="@dimen/travel_homepage_dp_4"
-    android:layout_marginRight="@dimen/travel_homepage_dp_4"
     android:layout_marginTop="@dimen/layout_lvl1"
-    android:layout_marginBottom="@dimen/layout_lvl1">
+    android:layout_marginRight="@dimen/travel_homepage_dp_4"
+    android:layout_marginBottom="@dimen/layout_lvl1"
+    android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="@dimen/homepage_product_card_picture_height"
+        android:layout_height="wrap_content"
         app:cardCornerRadius="@dimen/layout_lvl1">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.tokopedia.travelhomepage.homepage.widget.SquareImageView
                 android:id="@+id/travel_homepage_product_image"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
-                tools:background="@color/Green_G500" />
+                tools:background="@color/Green_G500"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/travel_homepage_product_discount_tag"
@@ -34,13 +35,13 @@
                 android:background="@color/product_card_orange_detail"
                 android:padding="@dimen/travel_homepage_dp_4"
                 android:textColor="@color/Neutral_N0"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:typographyType="small"
                 app:typographyWeight="bold"
                 tools:text="Diskon 30%"
-                android:visibility="gone"
-                tools:visibility="visible"/>
+                tools:visibility="visible" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -7,17 +7,16 @@ import com.tokopedia.banner.dynamic.BannerViewDynamicBackground
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageBannerModel
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment
 import com.tokopedia.travelhomepage.homepage.presentation.listener.ActivityStateListener
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import kotlinx.android.synthetic.main.travel_homepage_banner.view.*
 
 /**
  * @author by furqan on 06/08/2019
  */
 class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener: OnItemBindListener,
-                                     private val onItemClickListener: OnItemClickListener)
+                                     private val travelHomepageActionListener: TravelHomepageActionListener)
     : AbstractViewHolder<TravelHomepageBannerModel>(itemView), BannerView.OnPromoClickListener, BannerView.OnPromoScrolledListener,
         BannerView.OnPromoAllClickListener, BannerView.OnPromoLoadedListener, BannerView.OnPromoDragListener, ActivityStateListener {
 
@@ -61,17 +60,17 @@ class TravelHomepageBannerViewHolder(itemView: View, private val onBindListener:
     }
 
     override fun onPromoClick(position: Int) {
-        onItemClickListener.onTrackBannerClick(bannerList[position], position + 1)
-        onItemClickListener.onItemClick(bannerList[position].attribute.appUrl, bannerList[position].attribute.webUrl)
+//        travelHomepageActionListener.onTrackBannerClick(bannerList[position], position + 1)
+        travelHomepageActionListener.onItemClick(bannerList[position].attribute.appUrl, bannerList[position].attribute.webUrl)
     }
 
     override fun onPromoScrolled(position: Int) {
-        onItemClickListener.onTrackBannerImpression(bannerList[position], position + 1)
+//        travelHomepageActionListener.onTrackBannerImpression(bannerList[position], position + 1)
     }
 
     override fun onPromoAllClick() {
-        onItemClickListener.onTrackEventClick(TravelHomepageFragment.TYPE_ALL_PROMO)
-        onItemClickListener.onItemClick(showAllUrl)
+//        travelHomepageActionListener.onTrackEventClick(TravelHomepageFragment.TYPE_ALL_PROMO)
+        travelHomepageActionListener.onItemClick(showAllUrl)
     }
 
     override fun onPromoDragStart() {

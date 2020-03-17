@@ -11,13 +11,13 @@ import com.tokopedia.travelhomepage.homepage.data.TravelHomepageCategoryListMode
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageCategoryListAdapter
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageCategoryListShimmeringAdapter
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 
 /**
  * @author by furqan on 06/08/2019
  */
 class TravelHomepageCategoryViewHolder(itemView: View, private val onItemBindListener: OnItemBindListener,
-                                       private val onItemClickListener: OnItemClickListener)
+                                       private val travelHomepageActionListener: TravelHomepageActionListener)
     : AbstractViewHolder<TravelHomepageCategoryListModel>(itemView) {
 
     private val categoriesRecyclerView: RecyclerView = itemView.findViewById(R.id.category_recycler_view)
@@ -29,7 +29,7 @@ class TravelHomepageCategoryViewHolder(itemView: View, private val onItemBindLis
         if (element.isLoaded) {
             if (element.isSuccess && element.categories.isNotEmpty()) {
                 categoriesRecyclerView.show()
-                categoriesRecyclerView.adapter = TravelHomepageCategoryListAdapter(element.categories, onItemClickListener)
+                categoriesRecyclerView.adapter = TravelHomepageCategoryListAdapter(element.categories, travelHomepageActionListener)
             }
             else categoriesRecyclerView.hide()
 

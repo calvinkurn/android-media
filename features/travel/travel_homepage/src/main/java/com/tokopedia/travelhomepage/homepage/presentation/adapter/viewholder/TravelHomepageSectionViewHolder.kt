@@ -8,12 +8,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageSectionAdapter
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ALL_DEALS
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ALL_ORDER_LIST
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_ORDER_LIST
-import com.tokopedia.travelhomepage.homepage.presentation.fragment.TravelHomepageFragment.Companion.TYPE_RECOMMENDATION
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import kotlinx.android.synthetic.main.travel_homepage_travel_section_list.view.*
 
 /**
@@ -21,7 +17,7 @@ import kotlinx.android.synthetic.main.travel_homepage_travel_section_list.view.*
  */
 class TravelHomepageSectionViewHolder(itemView: View,
                                       private val onItemBindListener: OnItemBindListener,
-                                      private val onItemClickListener: OnItemClickListener)
+                                      private val travelHomepageActionListener: TravelHomepageActionListener)
     : AbstractViewHolder<TravelHomepageSectionModel>(itemView) {
 
     lateinit var orderAdapter: TravelHomepageSectionAdapter
@@ -41,15 +37,15 @@ class TravelHomepageSectionViewHolder(itemView: View,
                     if (element.seeAllUrl.isNotBlank()) {
                         section_see_all.show()
                         section_see_all.setOnClickListener {
-                            if (element.type == TYPE_ORDER_LIST) onItemClickListener.onTrackEventClick(TYPE_ALL_ORDER_LIST)
-                            else if (element.type == TYPE_RECOMMENDATION) onItemClickListener.onTrackEventClick(TYPE_ALL_DEALS)
+//                            if (element.type == TYPE_ORDER_LIST) travelHomepageActionListener.onTrackEventClick(TYPE_ALL_ORDER_LIST)
+//                            else if (element.type == TYPE_RECOMMENDATION) travelHomepageActionListener.onTrackEventClick(TYPE_ALL_DEALS)
 
-                            onItemClickListener.onItemClick(element.seeAllUrl)
+                            travelHomepageActionListener.onItemClick(element.seeAllUrl)
                         }
                     } else section_see_all.hide()
 
                     if (!::orderAdapter.isInitialized) {
-                        orderAdapter = TravelHomepageSectionAdapter(element.list, element.type, element.categoryType, onItemClickListener)
+                        orderAdapter = TravelHomepageSectionAdapter(element.list, element.type, element.categoryType, travelHomepageActionListener)
 
                         val layoutManager = LinearLayoutManager(this.context, LinearLayoutManager.HORIZONTAL, false)
                         list_recycler_view.layoutManager = layoutManager

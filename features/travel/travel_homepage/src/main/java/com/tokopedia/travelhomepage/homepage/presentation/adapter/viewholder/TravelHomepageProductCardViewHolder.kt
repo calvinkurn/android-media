@@ -6,7 +6,7 @@ import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageProductCardModel
 import com.tokopedia.travelhomepage.homepage.data.widgetmodel.ProductGridCardItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import com.tokopedia.travelhomepage.homepage.widget.TravelHomepageProductGridCardWidget
 import kotlinx.android.synthetic.main.layout_travel_homepage_product_card.view.*
 
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.layout_travel_homepage_product_card.view.*
  */
 
 class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBindListener: OnItemBindListener,
-                                          private val onItemClickListener: OnItemClickListener) : AbstractViewHolder<TravelHomepageProductCardModel>(itemView) {
+                                          private val travelHomepageActionListener: TravelHomepageActionListener) : AbstractViewHolder<TravelHomepageProductCardModel>(itemView) {
 
     override fun bind(element: TravelHomepageProductCardModel) {
         if (element.isLoaded) {
@@ -29,11 +29,11 @@ class TravelHomepageProductCardViewHolder(itemView: View, private val onItemBind
                     productCardWidget.hasSeeAllButton = element.clickSeeAllUrl.isNotEmpty()
                     productCardWidget.listener = object: TravelHomepageProductGridCardWidget.ActionListener {
                         override fun onItemClickListener(item: ProductGridCardItemModel) {
-                            onItemClickListener.onItemClick(item.appUrl)
+                            travelHomepageActionListener.onItemClick(item.appUrl)
                         }
 
                         override fun onClickSeeAllListener() {
-                            onItemClickListener.onItemClick(element.clickSeeAllUrl)
+                            travelHomepageActionListener.onItemClick(element.clickSeeAllUrl)
                         }
                     }
                     productCardWidget.buildView(element.productItem)

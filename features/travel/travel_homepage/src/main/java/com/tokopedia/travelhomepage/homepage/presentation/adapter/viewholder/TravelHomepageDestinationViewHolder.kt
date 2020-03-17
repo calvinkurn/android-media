@@ -1,7 +1,7 @@
 package com.tokopedia.travelhomepage.homepage.presentation.adapter.viewholder
 
-import androidx.recyclerview.widget.GridLayoutManager
 import android.view.View
+import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -10,14 +10,14 @@ import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepageDestinationAdapter
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.itemdecoration.TravelHomepageDestinationViewDecorator
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import kotlinx.android.synthetic.main.travel_homepage_travel_destination_list.view.*
 
 /**
  * @author by furqan on 06/08/2019
  */
 class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBindListener: OnItemBindListener,
-                                          private val onItemClickListener: OnItemClickListener)
+                                          private val travelHomepageActionListener: TravelHomepageActionListener)
     : AbstractViewHolder<TravelHomepageDestinationModel>(itemView) {
 
     lateinit var recentSearchAdapter: TravelHomepageDestinationAdapter
@@ -34,22 +34,26 @@ class TravelHomepageDestinationViewHolder(itemView: View, private val onItemBind
                         section_title.text = element.meta.title
                     } else section_title.hide()
 
-                    if (!::recentSearchAdapter.isInitialized) {
-                        recentSearchAdapter = TravelHomepageDestinationAdapter(element.destination, onItemClickListener)
+                    recentSearchAdapter = TravelHomepageDestinationAdapter(element.destination, travelHomepageActionListener)
 
-                        val layoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
-                        layoutManager.spanSizeLookup = object: GridLayoutManager.SpanSizeLookup() {
-                            override fun getSpanSize(position: Int): Int {
-                                if (element.spanSize == 0) return if (position == 0) 2 else 1
-                                return element.spanSize
+                    val layoutManager = GridLayoutManager(this.context, 2, GridLayoutManager.VERTICAL, false)
+                    layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return when (element.spanSize) {
+                                0 -> if (position == 0) 2 else 1
+                                1 -> 2
+                                else -> 1
                             }
                         }
-                        list_recycler_view.layoutManager = layoutManager
-                        list_recycler_view.addItemDecoration(TravelHomepageDestinationViewDecorator())
-                        list_recycler_view.adapter = recentSearchAdapter
-                    } else {
-                        recentSearchAdapter.updateList(element.destination)
                     }
+                    list_recycler_view.layoutManager = layoutManager
+                    list_recycler_view.adapter = recentSearchAdapter
+
+                    while (list_recycler_view.itemDecorationCount > 0) {
+                        list_recycler_view.removeItemDecorationAt(0)
+                    }
+                    list_recycler_view.addItemDecoration(TravelHomepageDestinationViewDecorator(element.spanSize))
+
                 }
             } else {
                 itemView.section_layout.hide()

@@ -45,6 +45,7 @@ import com.tokopedia.travelhomepage.homepage.data.TravelHomepageSectionModel
 class TravelHomepageTrackingUtil {
 
     fun travelHomepageImpressionBanner(item: TravelCollectiveBannerModel.Banner, position: Int) {
+        if (item.id.isEmpty()) item.id = "0"
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
                 NAME, "${item.attribute.promoCode} - slider banner",
@@ -65,6 +66,7 @@ class TravelHomepageTrackingUtil {
     }
 
     fun travelHomepageClickBanner(item: TravelCollectiveBannerModel.Banner, position: Int) {
+        if (item.id.isEmpty()) item.id = "0"
         val products = mutableListOf<Any>()
         products.add(DataLayer.mapOf(
                 NAME, "${item.attribute.promoCode} - slider banner",
@@ -106,50 +108,6 @@ class TravelHomepageTrackingUtil {
                         TrackAppUtils.EVENT_LABEL, "$position - ${item.product}",
                         ECOMMERCE, DataLayer.mapOf(PROMO_CLICK, DataLayer.mapOf(PROMOTIONS, products))
                 ))
-    }
-
-    fun travelHomepageClickOrder(position: Int, categoryName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, ORDER_CLICK, "$position - $categoryName")
-    }
-
-    fun travelHomepageClickAllOrder() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, ORDER_CLICK_ALL, CLICK)
-    }
-
-    fun travelHomepageClickRecentSearch(position: Int, categoryName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, RECENT_SEARCH_CLICK, "$position - $categoryName")
-    }
-
-    fun travelHomepageClickPopularSearch(position: Int, categoryName: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, POPULAR_SEARCH_CLICK, "$position - $categoryName")
-    }
-
-    fun travelHomepageClickDeal(item: TravelHomepageSectionModel.Item, position: Int) {
-        val products = mutableListOf<Any>()
-        products.add(DataLayer.mapOf(
-                NAME, "${item.subtitle} - best deals widget",
-                ID, item.product,
-                PRICE, item.value,
-                BRAND, item.title,
-                CATEGORY, item.product,
-                VARIANT, "",
-                POSITION, position
-        ))
-
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DataLayer.mapOf(
-                TrackAppUtils.EVENT, PRODUCT_CLICK,
-                TrackAppUtils.EVENT_CATEGORY, TRAVEL_HOMEPAGE_CATEGORY,
-                TrackAppUtils.EVENT_ACTION, DEALS_CLICK,
-                TrackAppUtils.EVENT_LABEL, "$position - ${item.product}",
-                ECOMMERCE, DataLayer.mapOf(CLICK, DataLayer.mapOf(
-                ACTION_FIELD, DataLayer.mapOf("list", "/best deals"),
-                PRODUCTS, products
-        ))
-        ))
-    }
-
-    fun travelHomepageClickAllDeals() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(CLICK_HOMEPAGE, TRAVEL_HOMEPAGE_CATEGORY, DEALS_CLICK_ALL, CLICK)
     }
 
     fun travelHomepageClickPopularDestination(item: TravelHomepageDestinationModel.Destination, position: Int) {

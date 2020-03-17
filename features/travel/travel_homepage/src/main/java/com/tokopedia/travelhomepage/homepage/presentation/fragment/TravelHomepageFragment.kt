@@ -3,11 +3,11 @@ package com.tokopedia.travelhomepage.homepage.presentation.fragment
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.DeeplinkMapper
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.analytics.TravelHomepageTrackingUtil
 import com.tokopedia.travelhomepage.homepage.data.*
@@ -28,7 +27,7 @@ import com.tokopedia.travelhomepage.homepage.presentation.adapter.TravelHomepage
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageAdapterTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.adapter.factory.TravelHomepageTypeFactory
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import com.tokopedia.travelhomepage.homepage.presentation.viewmodel.TravelHomepageViewModel
 import kotlinx.android.synthetic.main.travel_homepage_fragment.*
 import javax.inject.Inject
@@ -36,7 +35,7 @@ import javax.inject.Inject
 /**
  * @author by furqan on 06/08/2019
  */
-class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, OnItemClickListener {
+class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelHomepageTypeFactory>(), OnItemBindListener, TravelHomepageActionListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -160,7 +159,7 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
 
     override fun onItemClicked(t: TravelHomepageItemModel) {
         // do nothing
-        Log.d("LAYOUT", t.layoutData.widgetType)
+        Toast.makeText(context, t.layoutData.widgetType, Toast.LENGTH_SHORT).show()
     }
 
     override fun loadData(page: Int) {
@@ -180,55 +179,6 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
     }
 
     override fun getScreenName(): String = ""
-
-    override fun onItemClick(appUrl: String, webUrl: String) {
-        context?.run {
-            when {
-                RouteManager.isSupportApplink(this, appUrl) -> RouteManager.route(this, appUrl)
-                DeeplinkMapper.getRegisteredNavigation(this, appUrl).isNotEmpty() -> RouteManager.route(this, DeeplinkMapper.getRegisteredNavigation(this, appUrl))
-                webUrl.isNotEmpty() -> RouteManager.route(this, webUrl)
-                else -> { /* do nothing */
-                }
-            }
-        }
-    }
-
-    override fun onTrackEventClick(type: Int, position: Int, categoryName: String) {
-        when (type) {
-            TYPE_ALL_PROMO -> travelHomepageTrackingUtil.travelHomepageClickAllBanner()
-            TYPE_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickOrder(position, categoryName)
-            TYPE_ALL_ORDER_LIST -> travelHomepageTrackingUtil.travelHomepageClickAllOrder()
-            TYPE_RECENT_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickRecentSearch(position, categoryName)
-            TYPE_POPULAR_SEARCH -> travelHomepageTrackingUtil.travelHomepageClickPopularSearch(position, categoryName)
-            TYPE_ALL_DEALS -> travelHomepageTrackingUtil.travelHomepageClickAllDeals()
-        }
-    }
-
-    override fun onTrackBannerImpression(banner: TravelCollectiveBannerModel.Banner, position: Int) {
-        travelHomepageTrackingUtil.travelHomepageImpressionBanner(banner, position)
-    }
-
-    override fun onTrackBannerClick(banner: TravelCollectiveBannerModel.Banner, position: Int) {
-        travelHomepageTrackingUtil.travelHomepageClickBanner(banner, position)
-    }
-
-    override fun onTrackCategoryClick(category: TravelHomepageCategoryListModel.Category, position: Int) {
-        travelHomepageTrackingUtil.travelHomepageClickCategory(category, position)
-    }
-
-    override fun onTrackDealsClick(deal: TravelHomepageSectionModel.Item, position: Int) {
-        travelHomepageTrackingUtil.travelHomepageClickDeal(deal, position)
-    }
-
-    override fun onTrackPopularDestinationClick(destination: TravelHomepageDestinationModel.Destination, position: Int) {
-        travelHomepageTrackingUtil.travelHomepageClickPopularDestination(destination, position)
-    }
-
-    override fun onPopularDestinationClick(appUrl: String, webUrl: String) {
-        context?.let {
-            RouteManager.route(context, appUrl)
-        }
-    }
 
     override fun onItemBindViewHolder(travelLayoutSubhomepageMetaData: TravelLayoutSubhomepage.Data, position: Int, isFromCloud: Boolean?) {
         travelHomepageViewModel.getTravelUnifiedData(GraphqlHelper.loadRawString(resources, R.raw.query_travel_homepage_dynamic_subhomepage),
@@ -259,18 +209,75 @@ class TravelHomepageFragment : BaseListFragment<TravelHomepageItemModel, TravelH
         onItemBindViewHolder(travelLayoutSubhomepage, position, isFromCloud)
     }
 
+    override fun onItemClick(appUrl: String, webUrl: String) {
+        context?.run {
+            when {
+                RouteManager.isSupportApplink(this, appUrl) -> RouteManager.route(this, appUrl)
+                DeeplinkMapper.getRegisteredNavigation(this, appUrl).isNotEmpty() -> RouteManager.route(this, DeeplinkMapper.getRegisteredNavigation(this, appUrl))
+                webUrl.isNotEmpty() -> RouteManager.route(this, webUrl)
+                else -> { /* do nothing */
+                }
+            }
+        }
+    }
+
+    override fun onViewSliderBanner() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickSliderBannerItem() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickSeeAllSliderBanner() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickDynamicIcon() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickDynamicBannerItem() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onViewDynamicBanners() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onViewProductCards() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickProductCard() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickSeeAllProductCards() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onViewLegoBanner() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickLegoBanner() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onViewProductSlider() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickProductSliderItem() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun onClickSeeAllProductSlider() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     companion object {
         fun getInstance(): TravelHomepageFragment = TravelHomepageFragment()
-
-        const val TYPE_ORDER_LIST = 1
-        const val TYPE_RECENT_SEARCH = 2
-        const val TYPE_RECOMMENDATION = 3
-        const val TYPE_POPULAR_SEARCH = 4
-        const val TYPE_ALL_PROMO = 5
-        const val TYPE_ALL_ORDER_LIST = 6
-        const val TYPE_ALL_DEALS = 7
-
-        const val TYPE_POPULAR_SEARCH_CATEGORY = "popularDestination"
-
     }
 }

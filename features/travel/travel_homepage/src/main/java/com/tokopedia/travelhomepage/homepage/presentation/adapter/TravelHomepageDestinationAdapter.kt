@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageDestinationModel
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import kotlinx.android.synthetic.main.travel_homepage_destination_section_list_item.view.*
 
 /**
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.travel_homepage_destination_section_list_i
  */
 
 class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDestinationModel.Destination>,
-                                       var listener: OnItemClickListener) :
+                                       var listener: TravelHomepageActionListener) :
         RecyclerView.Adapter<TravelHomepageDestinationAdapter.DestinationViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): DestinationViewHolder {
@@ -36,7 +36,7 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
 
     class DestinationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        fun bind(destination: TravelHomepageDestinationModel.Destination, position: Int, listener: OnItemClickListener) {
+        fun bind(destination: TravelHomepageDestinationModel.Destination, position: Int, listener: TravelHomepageActionListener) {
             with(itemView) {
                 image.loadImage(destination.attributes.imageUrl)
                 title.text = destination.attributes.title
@@ -44,8 +44,8 @@ class TravelHomepageDestinationAdapter(private var list: List<TravelHomepageDest
                 destination_container.invalidate()
             }
             if (listener != null) itemView.setOnClickListener {
-                listener.onTrackPopularDestinationClick(destination, position+1)
-                listener.onPopularDestinationClick(destination.attributes.appUrl, destination.attributes.webUrl)
+//                listener.onTrackPopularDestinationClick(destination, position+1)
+//                listener.onPopularDestinationClick(destination.attributes.appUrl, destination.attributes.webUrl)
             }
         }
 

@@ -6,7 +6,7 @@ import com.tokopedia.travelhomepage.R
 import com.tokopedia.travelhomepage.homepage.data.TravelHomepageLegoBannerModel
 import com.tokopedia.travelhomepage.homepage.data.widgetmodel.LegoBannerItemModel
 import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemBindListener
-import com.tokopedia.travelhomepage.homepage.presentation.listener.OnItemClickListener
+import com.tokopedia.travelhomepage.homepage.presentation.listener.TravelHomepageActionListener
 import com.tokopedia.travelhomepage.homepage.widget.TravelHomepageLegoBannerWidget
 import kotlinx.android.synthetic.main.layout_travel_homepage_lego_banner.view.*
 
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.layout_travel_homepage_lego_banner.view.*
  */
 
 class TravelHomepageLegoBannerViewHolder(itemView: View, private val onItemBindListener: OnItemBindListener,
-                                          private val onItemClickListener: OnItemClickListener) : AbstractViewHolder<TravelHomepageLegoBannerModel>(itemView) {
+                                          private val travelHomepageActionListener: TravelHomepageActionListener) : AbstractViewHolder<TravelHomepageLegoBannerModel>(itemView) {
     override fun bind(element: TravelHomepageLegoBannerModel) {
         if (element.isLoaded) {
             if (element.isSuccess && element.bannerItem.isNotEmpty()) {
@@ -27,7 +27,7 @@ class TravelHomepageLegoBannerViewHolder(itemView: View, private val onItemBindL
                     legoBannerWidget.subtitleText = element.subtitle
                     legoBannerWidget.listener = object: TravelHomepageLegoBannerWidget.ActionListener{
                         override fun onItemClickListener(item: LegoBannerItemModel) {
-                            onItemClickListener.onItemClick(item.appUrl, item.webUrl)
+                            travelHomepageActionListener.onItemClick(item.appUrl, item.webUrl)
                         }
                     }
                     legoBannerWidget.buildView(element.bannerItem)
