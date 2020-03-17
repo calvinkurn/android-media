@@ -3,9 +3,10 @@ package com.tokopedia.thankyou_native.di
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
+import com.tokopedia.thankyou_native.GQL_CHECK_WHITE_LIST
 import com.tokopedia.thankyou_native.R
-import com.tokopedia.thankyou_native.RECOMMENDATION_DATA
-import com.tokopedia.thankyou_native.THANK_YOU_PAGE_DATA
+import com.tokopedia.thankyou_native.GQL_RECOMMENDATION_DATA
+import com.tokopedia.thankyou_native.GQL_THANK_YOU_PAGE_DATA
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -14,12 +15,18 @@ import javax.inject.Named
 class GqlQueryModule {
 
     @Provides
-    @Named(THANK_YOU_PAGE_DATA)
+    @Named(GQL_THANK_YOU_PAGE_DATA)
     fun provideRawThankYouPageData(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_thanks_page_data)
+
     @Provides
-    @Named(RECOMMENDATION_DATA)
+    @Named(GQL_RECOMMENDATION_DATA)
     fun provideRawRecommendationData(@ApplicationContext context: Context): String =
             GraphqlHelper.loadRawString(context.resources, R.raw.gql_thanks_recommendation)
+
+    @Provides
+    @Named(GQL_CHECK_WHITE_LIST)
+    fun provideRawCheckWhitelist(@ApplicationContext context: Context): String =
+            GraphqlHelper.loadRawString(context.resources, R.raw.mutation_thanks_white_list_rba)
 
 }

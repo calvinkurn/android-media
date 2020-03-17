@@ -2,12 +2,12 @@ package com.tokopedia.thankyou_native.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.thankyou_native.THANK_YOU_PAGE_DATA
+import com.tokopedia.thankyou_native.GQL_THANK_YOU_PAGE_DATA
 import javax.inject.Inject
 import javax.inject.Named
 
 class ThanksPageDataUseCase @Inject constructor(
-        @Named(THANK_YOU_PAGE_DATA) val query: String, graphqlRepository: GraphqlRepository)
+        @Named(GQL_THANK_YOU_PAGE_DATA) val query: String, graphqlRepository: GraphqlRepository)
     : GraphqlUseCase<ThanksPageResponse>(graphqlRepository) {
 
     fun getThankPageData(onSuccess: (ThanksPageData) -> Unit,

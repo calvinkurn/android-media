@@ -10,6 +10,7 @@ query ThanksPageData($paymentID : Int!,$merchant: String!){
     amount
     amount_str
     order_list{
+      order_id
       store_name
       item_list{
         product_name

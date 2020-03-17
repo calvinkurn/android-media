@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -28,7 +30,7 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.android.synthetic.main.thank_fragment_deferred.*
 import javax.inject.Inject
 
-class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.ThankTimerViewListener {
+class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.ThankTimerViewListener, OnDialogRedirectListener {
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
 
@@ -44,7 +46,8 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
 
     private var dialog: DialogUnify? = null
 
-    override fun getScreenName(): String = "Selesaikan Pembayaran"
+
+    override fun getScreenName(): String = SCREEN_NAME
 
     override fun initInjector() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
@@ -194,7 +197,7 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
         thanksPageData = data
         context?.let {
             if (!::dialogHelper.isInitialized)
-                dialogHelper = DialogHelper(it)
+                dialogHelper = DialogHelper(it, this)
             dialogOrigin?.let { dialogOrigin ->
                 dialogHelper.showPaymentStatusDialog(dialogOrigin,
                         PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus))
@@ -202,17 +205,6 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
         }
     }
 
-    private fun gotoShopAgain() {
-        //todo goto home...
-    }
-
-    private fun openPaymentDetail() {
-        //todo open payment detail screen
-    }
-
-    private fun openPaymentMethodInfo() {
-        //todo open payment methods screen
-    }
 
     private fun isPaymentTimerExpired(): Boolean {
         if (thanksPageData.expireTimeUnix <= System.currentTimeMillis() / 1000L)
@@ -229,7 +221,34 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
         return false
     }
 
+
+
+    private fun gotoShopAgain() {
+        gotoHomePage()
+    }
+
+    private fun openPaymentDetail() {
+        //todo open payment detail screen bottomsheet
+    }
+
+    private fun openPaymentMethodInfo() {
+        //todo open payment methods screen bottomsheet
+    }
+
+    override fun gotoHomePage() {
+        RouteManager.route(context, ApplinkConst.HOME, "")
+    }
+
+    override fun gotoPaymentWaitingPage() {
+        RouteManager.route(context, ApplinkConst.PMS, "")
+    }
+
+    override fun gotoOrderList() {
+        RouteManager.route(context, ApplinkConst.PURCHASE_ORDER_DETAIL, "")//arrayOf(thanksPageData.orderList[0].orderId))
+    }
+
     companion object {
+        const val SCREEN_NAME ="Selesaikan Pembayaran"
         private const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):
                 DeferredPaymentFragment = DeferredPaymentFragment().apply {
@@ -239,5 +258,4 @@ class DeferredPaymentFragment : BaseDaggerFragment(), ThankYouPageTimerView.Than
             }
         }
     }
-
 }

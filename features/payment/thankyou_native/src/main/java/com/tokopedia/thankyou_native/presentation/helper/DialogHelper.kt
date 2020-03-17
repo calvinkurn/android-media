@@ -2,6 +2,8 @@ package com.tokopedia.thankyou_native.presentation.helper
 
 import android.content.Context
 import androidx.annotation.StringRes
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.helper.*
@@ -11,7 +13,7 @@ object OriginTimerFinished : DialogOrigin()
 object OriginCheckStatusButton : DialogOrigin()
 object OriginOnBackPress : DialogOrigin()
 
-class DialogHelper(val context: Context) {
+class DialogHelper(val context: Context, val listener: OnDialogRedirectListener) {
 
     var dialogUnify: DialogUnify? = null
 
@@ -32,13 +34,13 @@ class DialogHelper(val context: Context) {
 
     private fun showPaymentWaitingDialog() {
         showTwoActionDialog(R.string.thank_exit_this_page, R.string.thank_payment_waiting_desc,
-                R.string.thank_cancel, R.string.thank_exit_page, { cancelDialog() }, { gotoOrderList() })
+                R.string.thank_cancel, R.string.thank_exit_page, { cancelDialog() }, { gotoPaymentWaitingPage() })
     }
 
     private fun showPaymentSuccessDialog(dialogOrigin: DialogOrigin) {
         when (dialogOrigin) {
             OriginOnBackPress -> showTwoActionDialog(R.string.thank_exit_this_page, R.string.thank_payment_success_back_press,
-                    R.string.thank_cancel, R.string.thank_exit_page, { cancelDialog() }, { gotoOrderList() })
+                    R.string.thank_cancel, R.string.thank_exit_page, { cancelDialog() }, { gotoPaymentWaitingPage() })
             OriginCheckStatusButton -> showSingleActionDialog(R.string.thank_payment_success, R.string.thank_payment_success_description,
                     R.string.thank_see_transaction_list) { gotoOrderList() }
             OriginTimerFinished -> showSingleActionDialog(R.string.thank_payment_success, R.string.thank_payment_success_description,
@@ -66,6 +68,7 @@ class DialogHelper(val context: Context) {
             setSecondaryCTAText(getString(secondaryBtnTextRes))
             setPrimaryCTAClickListener { onPrimaryBtnClick.invoke() }
             setSecondaryCTAClickListener { onSecondaryBtnClick.invoke() }
+            show()
         }
 
     }
@@ -78,23 +81,31 @@ class DialogHelper(val context: Context) {
             setDescription(getString(descriptionRes))
             setPrimaryCTAText(getString(primaryBtnTextRes))
             setPrimaryCTAClickListener { onPrimaryBtnClick.invoke() }
+            show()
         }
     }
 
     private fun gotoHomePage() {
-        //todo tokopedia://home
+        listener.gotoHomePage()//gotoAppLink(ApplinkConst.HOME)
     }
 
     private fun gotoPaymentWaitingPage() {
-        //todo tokopedia://buyer/payment
+        listener.gotoPaymentWaitingPage()//gotoAppLink(ApplinkConst.PMS)
     }
 
     private fun gotoOrderList() {
-        //todo tokopedia://marketplace/order
+        listener.gotoOrderList()//gotoAppLink(ApplinkConst.PURCHASE_ORDER_DETAIL)
     }
 
     private fun cancelDialog() {
         dialogUnify?.cancel()
     }
+
+}
+
+interface OnDialogRedirectListener{
+    fun gotoHomePage()
+    fun gotoPaymentWaitingPage()
+    fun gotoOrderList()
 }
 

@@ -19,12 +19,15 @@ import com.tokopedia.thankyou_native.presentation.fragment.ProcessingPaymentFrag
 
 class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComponent>, ThankYouPageDataLoadCallback {
 
-    //todo handle toolbar back-press button
+    //todo handle toolbar back-press button and toolbar icon
+
+    //processing
+    //instant credit card 720599
 
     override fun getNewFragment(): Fragment? {
         val bundle = Bundle()
         intent.putExtra(ARG_MERCHANT, "tokopediatest")
-        intent.putExtra(ARG_PAYMENT_ID, 715598L)
+        intent.putExtra(ARG_PAYMENT_ID, 720599L)
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
         }
@@ -53,12 +56,15 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         }
         return when (PaymentPageMapper.getPaymentPageType(thanksPageData.pageType)) {
             is ProcessingPaymentPage -> {
-                DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
+                title = ProcessingPaymentFragment.SCREEN_NAME
+                ProcessingPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             is InstantPaymentPage -> {
+                title = InstantPaymentFragment.SCREEN_NAME
                 InstantPaymentFragment.getLoaderFragmentInstance(bundle, thanksPageData)
             }
             is WaitingPaymentPage -> {
+                title = DeferredPaymentFragment.SCREEN_NAME
                 DeferredPaymentFragment.getFragmentInstance(bundle, thanksPageData)
             }
             else -> null
@@ -80,7 +86,7 @@ class ThankYouPageActivity : BaseSimpleActivity(), HasComponent<ThankYouPageComp
         fragment?.let {
             if (it is DeferredPaymentFragment) {
                 return it.onBackPressed()
-            } else if(it is ProcessingPaymentFragment){
+            } else if (it is ProcessingPaymentFragment) {
                 return it.onBackPressed()
             }
 

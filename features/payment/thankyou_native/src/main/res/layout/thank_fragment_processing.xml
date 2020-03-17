@@ -156,7 +156,7 @@
                 app:typographyType="small"
                 android:visibility="gone"
                 tools:visibility="visible"
-                tools:text="Interest Rate"/>
+                tools:text="@string/thank_interest_rate"/>
 
 
 

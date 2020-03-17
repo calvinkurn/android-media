@@ -29,7 +29,7 @@ data class ThanksPageData(
         @SerializedName("how_to_pay")
         val howToPay: String,
         @SerializedName("whitelisted_rba")
-        val whitelistedRBA: String,
+        val whitelistedRBA: Boolean,
         @SerializedName("payment_type")
         val paymentType: String,
         @SerializedName("expire_time_str")
@@ -47,10 +47,11 @@ data class ThanksPageData(
             parcel.createTypedArrayList(OrderList) ?: arrayListOf(),
             parcel.readParcelable(AdditionalInfo::class.java.classLoader),
             parcel.readString() ?: "",
+            parcel.readByte() != 0.toByte(),
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readString() ?: "",
-            parcel.readString() ?: "")
+            parcel.readString() ?: "") {
+    }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(paymentStatus)
@@ -62,7 +63,7 @@ data class ThanksPageData(
         parcel.writeTypedList(orderList)
         parcel.writeParcelable(additionalInfo, flags)
         parcel.writeString(howToPay)
-        parcel.writeString(whitelistedRBA)
+        parcel.writeByte(if (whitelistedRBA) 1 else 0)
         parcel.writeString(paymentType)
         parcel.writeString(expireTimeStr)
         parcel.writeString(pageType)
@@ -136,6 +137,8 @@ data class AdditionalInfo(
 }
 
 data class OrderList(
+        @SerializedName("order_id")
+        val orderId: String,
         @SerializedName("store_name")
         val storeName: String,
         @SerializedName("item_list")
@@ -143,10 +146,13 @@ data class OrderList(
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
+            parcel.readString() ?: "",
             parcel.createTypedArrayList(PurchaseItem) ?: arrayListOf())
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(orderId)
         parcel.writeString(storeName)
+        parcel.writeTypedList(purchaseItemList)
     }
 
     override fun describeContents(): Int {

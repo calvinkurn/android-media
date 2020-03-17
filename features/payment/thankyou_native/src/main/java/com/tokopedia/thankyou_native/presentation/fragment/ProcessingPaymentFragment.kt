@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.image.ImageLoader
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -24,10 +26,10 @@ import com.tokopedia.thankyou_native.presentation.helper.*
 import com.tokopedia.thankyou_native.presentation.viewModel.ThanksPageDataViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.android.synthetic.main.thank_fragment_deferred.*
+import kotlinx.android.synthetic.main.thank_fragment_processing.*
 import javax.inject.Inject
 
-class ProcessingPaymentFragment : BaseDaggerFragment() {
+class ProcessingPaymentFragment : BaseDaggerFragment(), OnDialogRedirectListener {
 
     private lateinit var thanksPageDataViewModel: ThanksPageDataViewModel
 
@@ -44,7 +46,7 @@ class ProcessingPaymentFragment : BaseDaggerFragment() {
 
     private var dialog: DialogUnify? = null
 
-    override fun getScreenName(): String = "Pembayaran Diproses"
+    override fun getScreenName(): String = SCREEN_NAME
 
     override fun initInjector() {
         getComponent(ThankYouPageComponent::class.java).inject(this)
@@ -95,18 +97,13 @@ class ProcessingPaymentFragment : BaseDaggerFragment() {
     }
 
     private fun inflateWaitingUI() {
-        /*tvPaymentGatewayName.text = thanksPageData.gatewayName
+        tvPaymentProcessingTimeInfo.text = getString(R.string.thank_payment_in_progress_time, thanksPageData.gatewayName)
         ImageLoader.LoadImage(ivPaymentGatewayImage, thanksPageData.gatewayImage)
-        tvAccountNumberTypeTag.text = numberTypeTitle
-        tvAccountNumber.text = thanksPageData.additionalInfo.accountDest
+        tvPaymentGatewayName.text = thanksPageData.gatewayName
+        tvCreditWithTimeLine.text = thanksPageData.additionalInfo.installmentInfo
+        tvInterestRate.text = getString(R.string.thank_interest_rate, thanksPageData.additionalInfo.interest) + "%"
         tvTotalAmount.text = getString(R.string.thankyou_rp, thanksPageData.amountStr)
-
-        if (thanksPageData.additionalInfo.bankName.isNotBlank()) {
-            tvBankName.text = thanksPageData.additionalInfo.bankName
-            tvBankName.visible()
-        }
         tvSeeDetail.setOnClickListener { openPaymentDetail() }
-        tvSeePaymentMethods.setOnClickListener { openPaymentMethodInfo() }*/
     }
 
     private fun initCheckPaymentWidgetData() {
@@ -131,16 +128,6 @@ class ProcessingPaymentFragment : BaseDaggerFragment() {
         thanksPageDataViewModel.getThanksPageData(paymentId, merchantID)
     }
 
-    private fun copyAccountNumberToClipboard(accountNumberStr: String?) {
-        accountNumberStr?.let { str ->
-            context?.let { context ->
-                val clipboard = context.getSystemService(Activity.CLIPBOARD_SERVICE) as ClipboardManager
-                val clip = ClipData.newPlainText("Tokopedia", str)
-                clipboard.primaryClip = clip
-            }
-        }
-    }
-
     private fun onThankYouPageDataLoadingFail(throwable: Throwable) {
         loading_layout.gone()
     }
@@ -150,7 +137,7 @@ class ProcessingPaymentFragment : BaseDaggerFragment() {
         thanksPageData = data
         context?.let {
             if (!::dialogHelper.isInitialized)
-                dialogHelper = DialogHelper(it)
+                dialogHelper = DialogHelper(it, this)
             dialogOrigin?.let { dialogOrigin ->
                 dialogHelper.showPaymentStatusDialog(dialogOrigin,
                         PaymentStatusMapper.getPaymentStatusByInt(thanksPageData.paymentStatus))
@@ -159,16 +146,26 @@ class ProcessingPaymentFragment : BaseDaggerFragment() {
     }
 
     private fun gotoShopAgain() {
-        //todo goto home...
+        gotoHomePage()
     }
 
     private fun openPaymentDetail() {
-        //todo open payment detail screen
+        //todo open payment detail screen bottomsheet
     }
 
-    private fun openPaymentMethodInfo() {
-        //todo open payment methods screen
+
+    override fun gotoHomePage() {
+        RouteManager.route(context, ApplinkConst.HOME, "")
     }
+
+    override fun gotoPaymentWaitingPage() {
+        RouteManager.route(context, ApplinkConst.PMS, "")
+    }
+
+    override fun gotoOrderList() {
+        RouteManager.route(context, ApplinkConst.PURCHASE_ORDER_DETAIL, "")//arrayOf(thanksPageData.orderList[0].orderId))
+    }
+
 
     internal fun onBackPressed(): Boolean {
         dialogOrigin = OriginOnBackPress
@@ -177,14 +174,16 @@ class ProcessingPaymentFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        const val SCREEN_NAME = "Pembayaran Diproses"
         private const val ARG_THANK_PAGE_DATA = "arg_thank_page_data"
         fun getFragmentInstance(bundle: Bundle, thanksPageData: ThanksPageData):
-                DeferredPaymentFragment = DeferredPaymentFragment().apply {
+                ProcessingPaymentFragment = ProcessingPaymentFragment().apply {
             bundle.let {
                 arguments = bundle
                 bundle.putParcelable(ARG_THANK_PAGE_DATA, thanksPageData)
             }
         }
     }
+
 
 }

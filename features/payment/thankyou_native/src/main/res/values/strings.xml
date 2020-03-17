@@ -10,11 +10,6 @@
     <string name="thank_instant_payment_total_pay">Total Bayar</string>
     <string name="thank_payment_method">Metode Pembayaran</string>
     <string name="thank_see_transaction_list">Lihat Daftar Transaksi</string>
-    <string name="thank_activate_it">Aktifkan</string>
-    <string name="thank_next_time">Lain Kali</string>
-    <string name="thank_single_auth">Autentifikasi Tunggal</string>
-    <string name="thank_dont_ask_again_single_auth">Jangan tampilkan lagi untuk transaksi berikutnya</string>
-    <string name="thank_single_auth_cc_message">Aktifkan autentikasi tunggal untuk kemudahan transaksi kartu kredit berikutnya</string>
     <string name="thankyou_rp">Rp %s</string>
     <string name="thank_payment_deadline">Batas akhir pembayaran</string>
     <string name="thank_copy">Salin</string>
@@ -56,5 +51,18 @@
     <string name="thank_type_of_payment">Jenis Pembayaran</string>
     <string name="thank_payment_in_progress">Pembayaran sedang diproses</string>
     <string name="thank_payment_in_progress_time">Pembayaranmu sedang diverifikasi oleh pihak %s, harap tunggu maks. 2 x 24 jam.</string>
+
+
+    <string name="thank_single_authentication">Autentifikasi Tunggal</string>
+    <string name="thank_enable_single_authentication_easy">Aktifkan autentikasi tunggal untuk kemudahan transaksi kartu kredit berikutnya</string>
+    <string name="thank_next_time">Lain Kali</string>
+    <string name="thank_activate_it">Aktifkan</string>
+    <string name="thank_interest_rate">Bunga %1$f</string>
+
+
+    <string name="thank_enable_single_authentication_error">Autentifikasi tunggal gagal diaktifkan. Coba beberapa saat lagi.</string>
+    <string name="thank_coba_lagi">Coba Lagi</string>
+    <string name="thank_enable_single_authentication_success">Autentifikasi tunggal berhasil diaktifkan.</string>
+
 
 </resources>
