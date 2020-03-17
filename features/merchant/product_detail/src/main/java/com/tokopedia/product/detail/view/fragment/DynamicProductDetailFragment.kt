@@ -139,6 +139,7 @@ import kotlinx.android.synthetic.main.dynamic_product_detail_fragment.*
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
 import kotlinx.android.synthetic.main.partial_layout_button_action.*
 import com.tokopedia.common_tradein.utils.TradeInUtils
+import com.tokopedia.purchase_platform.common.sharedata.ShipmentFormRequest
 import com.tokopedia.unifycomponents.Toaster
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -505,6 +506,12 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                         showAddToCartDoneBottomSheet(successMessage)
                         updateCartNotification()
                     }
+
+                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.CHECKOUT)
+                    intent.putExtra(CheckoutConstant.EXTRA_IS_ONE_CLICK_SHIPMENT, true)
+                    intent.putExtras(ShipmentFormRequest.BundleBuilder().deviceId("").build().bundle)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
                 }
             }
             ProductDetailConstant.REQUEST_CODE_ATC_EXPRESS -> {
@@ -1810,7 +1817,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                     putExtra(ApplinkConst.Transaction.TRACKER_LIST_NAME, trackerListName)
                     putExtra(ApplinkConst.Transaction.EXTRA_SHOP_TYPE, shopInfo?.goldOS?.shopTypeString)
                     putExtra(ApplinkConst.Transaction.EXTRA_SHOP_NAME, shopInfo?.shopCore?.name)
-                    putExtra(ApplinkConst.Transaction.EXTRA_OCS, isOcsCheckoutType)
+                    putExtra(ApplinkConst.Transaction.EXTRA_OCS, true)
                     putExtra(ApplinkConst.Transaction.EXTRA_IS_LEASING, it.basic.isLeasing)
                     putExtra(ApplinkConst.Transaction.EXTRA_LAYOUT_NAME, it.layoutName)
                 }

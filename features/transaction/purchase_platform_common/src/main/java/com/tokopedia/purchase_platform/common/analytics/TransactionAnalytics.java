@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.common.analytics;
 
 import android.app.Activity;
-import android.os.Bundle;
 
 import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
@@ -42,18 +41,16 @@ public abstract class TransactionAnalytics {
     }
 
     protected void sendEventCategoryActionLabel(String event, String eventCategory,
-                                      String eventAction, String eventLabel) {
+                                                String eventAction, String eventLabel) {
 
         TrackApp.getInstance().getGTM().sendGeneralEvent(TrackAppUtils.gtmData(
                 event, eventCategory, eventAction, eventLabel));
     }
 
-
     protected void sendEventCategoryAction(String event, String eventCategory,
-                                 String eventAction) {
+                                           String eventAction) {
         sendEventCategoryActionLabel(event, eventCategory, eventAction, "");
     }
-
 
     protected void sendEnhancedEcommerce(Map<String, Object> dataLayer) {
         TrackApp.getInstance().getGTM().sendEnhanceEcommerceEvent(dataLayer);
