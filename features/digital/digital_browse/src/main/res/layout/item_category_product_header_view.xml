@@ -38,13 +38,12 @@
 
     <ImageView
         android:id="@+id/arrow_icon"
-        android:layout_width="@dimen/dp_30"
-        android:layout_height="@dimen/dp_30"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
         android:layout_marginStart="@dimen/dp_6"
         android:layout_marginLeft="@dimen/dp_6"
-        android:layout_marginEnd="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
-        android:padding="@dimen/dp_5"
+        android:layout_marginEnd="@dimen/dp_16"
+        android:layout_marginRight="@dimen/dp_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="@+id/product_name"
