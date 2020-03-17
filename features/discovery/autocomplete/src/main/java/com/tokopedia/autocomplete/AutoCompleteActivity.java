@@ -96,7 +96,6 @@ public class AutoCompleteActivity extends BaseActivity
     }
 
     private void handleIntent(Intent intent) {
-
         SearchParameter searchParameter = getSearchParameterFromIntentUri(intent);
 
         handleIntentAutoComplete(searchParameter);

@@ -106,6 +106,7 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
 
+import static com.tokopedia.discovery.common.constants.SearchApiConst.PREVIOUS_KEYWORD;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.BIG_GRID;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.LIST;
 import static com.tokopedia.discovery.common.constants.SearchConstant.ViewType.SMALL_GRID;
@@ -1184,6 +1185,11 @@ public class ProductListFragment
     @Override
     public String getQueryKey() {
         return searchParameter == null ? "" : searchParameter.getSearchQuery();
+    }
+
+    @Override
+    public String getPreviousKeyword() {
+        return searchParameter == null ? "" : searchParameter.get(PREVIOUS_KEYWORD);
     }
 
     @Override
