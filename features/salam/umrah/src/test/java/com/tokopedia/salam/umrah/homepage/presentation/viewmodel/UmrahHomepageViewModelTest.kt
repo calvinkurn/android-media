@@ -41,7 +41,6 @@ class UmrahHomepageViewModelTest {
 
     private val dispatcher = UmrahDispatchersProviderTest()
     private lateinit var umrahHomepageViewModel: UmrahHomepageViewModel
-    private lateinit var umrahSearchParamEmpty : List<UmrahHomepageModel>
     val flags = listOf("TRAVEL_AGENT_FEATURED_ON_HOMEPAGE")
 
     @Before
@@ -55,33 +54,6 @@ class UmrahHomepageViewModelTest {
                 umrahHomepageBannerUseCase,
                 umrahTravelAgentsUseCase,
                 dispatcher)
-
-        val isLoadedFromCloud = true
-        val umrahSearchParam = UmrahSearchParameterEntity()
-        umrahSearchParam.isLoadFromCloud = isLoadedFromCloud
-
-        val umrahDreamFund = UmrahHomepageMyUmrahEntity()
-        umrahDreamFund.isLoadFromCloud = isLoadedFromCloud
-
-        val umrahCategory = UmrahHomepageCategoryEntity()
-        umrahCategory.isLoadFromCloud = isLoadedFromCloud
-
-        val umrahCategoryFeatured = UmrahHomepageCategoryFeaturedEntity()
-        umrahCategoryFeatured.isLoadFromCloud = isLoadedFromCloud
-
-        val umrahBanner = UmrahHomepageBannerEntity()
-        umrahBanner.isLoadFromCloud = isLoadedFromCloud
-
-        val umrahPartnerTravel = UmrahTravelAgentsEntity()
-        umrahPartnerTravel.isLoadFromCloud = isLoadedFromCloud
-
-        umrahSearchParamEmpty = listOf(umrahSearchParam,
-                umrahBanner,
-                umrahDreamFund,
-                umrahCategory,
-                umrahCategoryFeatured,
-                umrahPartnerTravel
-        )
     }
 
     @Test
@@ -92,7 +64,7 @@ class UmrahHomepageViewModelTest {
 
         val actual = umrahHomepageViewModel.homePageModel.value
         val isError = umrahHomepageViewModel.isError.value
-        assert(actual == umrahSearchParamEmpty)
+        assert(actual!!.isNotEmpty())
         assert(isError==false)
     }
 
@@ -295,4 +267,5 @@ class UmrahHomepageViewModelTest {
         assert(!(umrahHomepageViewModel.homePageModel.value as List<UmrahHomepageModel>)[UmrahHomepageViewModel.PARTNER_TRAVEL_ORDER].isLoaded)
         assert(!(umrahHomepageViewModel.homePageModel.value as List<UmrahHomepageModel>)[UmrahHomepageViewModel.PARTNER_TRAVEL_ORDER].isSuccess)
     }
+
 }
