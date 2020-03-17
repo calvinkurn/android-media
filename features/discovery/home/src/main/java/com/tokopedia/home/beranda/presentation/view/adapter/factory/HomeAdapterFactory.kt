@@ -240,7 +240,7 @@ class HomeAdapterFactory(private val fragmentManager: FragmentManager, private v
             PopularKeywordViewHolder.LAYOUT -> viewHolder = PopularKeywordViewHolder(view, listener, popularKeywordListener)
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder = RecommendationListCarouselViewHolder(view, listener, countDownListener, parentRecycledViewPool)
             MixTopBannerViewHolder.LAYOUT -> viewHolder = MixTopBannerViewHolder(view, listener, countDownListener, parentRecycledViewPool)
-            RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener)
+            RechargeRecommendationViewHolder.LAYOUT -> viewHolder = RechargeRecommendationViewHolder(view, rechargeRecommendationListener, listener)
             else -> viewHolder = super.createViewHolder(view, type)
         }
 

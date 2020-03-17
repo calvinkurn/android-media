@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendation
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -74,8 +75,11 @@ class GetRechargeRecommendationUseCase @Inject constructor(
         graphqlUseCase.clearCache()
         graphqlUseCase.setGraphqlQuery(query)
         graphqlUseCase.setRequestParams(params.parameters)
-//        return graphqlUseCase.executeOnBackground().response
-        return Gson().fromJson(dummyQuery, RechargeRecommendation.Response::class.java).response
+        val response = graphqlUseCase.executeOnBackground().response
+//        val response = Gson().fromJson(dummyQuery, RechargeRecommendation.Response::class.java)?.response
+
+        if (response != null) return response
+        else throw (MessageErrorException("null data"))
     }
 
     fun setParams(type: Int = DEFAULT_TYPE) {

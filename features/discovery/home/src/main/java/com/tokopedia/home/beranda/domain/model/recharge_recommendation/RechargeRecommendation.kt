@@ -15,6 +15,6 @@ data class RechargeRecommendation(
 ) {
     data class Response(
             @SerializedName("rechargeRecommendation")
-            val response: RechargeRecommendation = RechargeRecommendation()
+            val response: RechargeRecommendation? = RechargeRecommendation()
     )
 }

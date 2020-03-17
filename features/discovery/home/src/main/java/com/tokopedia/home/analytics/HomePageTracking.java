@@ -7,10 +7,11 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.tokopedia.analyticconstant.DataLayer;
 import com.tkpd.library.utils.CurrencyFormatHelper;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel;
 import com.tokopedia.home.beranda.domain.model.banner.BannerSlidesModel;
+import com.tokopedia.home.beranda.domain.model.recharge_recommendation.RechargeRecommendationData;
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReviewResponse;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.PlayCardViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.HomeIconItem;
@@ -18,6 +19,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.BannerFeedViewModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.FeedTabModel;
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel;
+import com.tokopedia.iris.util.ConstantKt;
+import com.tokopedia.iris.util.IrisSession;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -27,8 +30,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.tokopedia.iris.util.IrisSession;
-import com.tokopedia.iris.util.ConstantKt;
 
 /**
  * Created by Akmal on 2/6/18.
@@ -1799,5 +1800,74 @@ public class HomePageTracking {
                 EVENT_ACTION, EVENT_ACTION_CLICK_ON_TOKOPOINTS_NEW_COUPON,
                 EVENT_LABEL, LABEL_EMPTY
         ));
+    }
+
+    public static void homeRechargeRecommendationImpressionTracker(
+            TrackingQueue trackingQueue,
+            String productName,
+            RechargeRecommendationData recommendation
+    ) {
+        List<Object> promotionBody = DataLayer.listOf(DataLayer.mapOf(
+                "id", recommendation.getContentID(),
+                "name", "digital bills - " + productName,
+                "creative", "",
+                "creative_url", recommendation.getIconURL(),
+                "position", 0,
+                "category", "",
+                "promo_id", null,
+                "promo_code", null
+        ));
+
+
+        trackingQueue.putEETracking((HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, "promoView",
+                EVENT_CATEGORY, "homepage-digital",
+                EVENT_ACTION, "impression on digital bills",
+                EVENT_LABEL, productName,
+                ECOMMERCE, DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", promotionBody
+                        )
+                )
+        ));
+    }
+
+    public static void homeRechargeRecommendationOnClickTracker(
+            TrackingQueue trackingQueue,
+            String productName,
+            RechargeRecommendationData recommendation
+    ) {
+        List<Object> promotionBody = DataLayer.listOf(DataLayer.mapOf(
+                "id", recommendation.getContentID(),
+                "name", "digital bills - " + productName,
+                "creative", "",
+                "creative_url", recommendation.getIconURL(),
+                "position", 0,
+                "category", "",
+                "promo_id", null,
+                "promo_code", null
+        ));
+
+
+        trackingQueue.putEETracking((HashMap<String, Object>) DataLayer.mapOf(
+                EVENT, "promoClick",
+                EVENT_CATEGORY, "homepage-digital",
+                EVENT_ACTION, "click on digital bills",
+                EVENT_LABEL, productName,
+                ECOMMERCE, DataLayer.mapOf(
+                        "promoView", DataLayer.mapOf(
+                                "promotions", promotionBody
+                        )
+                )
+        ));
+    }
+
+    public static void homeRechargeRecommendationOnCloseTracker(String productName) {
+        getTracker().sendGeneralEvent(
+                "clickHomepage",
+                "homepage-digital",
+                "click close on digital bills",
+                productName
+        );
     }
 }
