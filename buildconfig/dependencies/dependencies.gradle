@@ -243,8 +243,7 @@ ext {
             workManager           : "android.arch.work:work-runtime-ktx:$workManagerVersion",
             stfalconImageViewer   : "com.github.stfalcon:stfalcon-imageviewer:$stfalconVersion",
             liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
-            javaxInject           :  "javax.inject:javax.inject:1"
-            liveness              : "ai.advance.liveness:guardian_core_v1.6@aar",
+            javaxInject           :  "javax.inject:javax.inject:1",
 
             slice                 : "androidx.slice:slice-builders-ktx:$sliceVersion"
     ]
