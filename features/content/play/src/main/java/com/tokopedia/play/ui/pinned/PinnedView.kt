@@ -78,7 +78,6 @@ class PinnedView(
                     listener.onPinnedMessageActionClicked(this, pinnedMessage.applink, pinnedMessage.title)
                 }
             }
-            tvPinnedAction.text = container.context.getString(R.string.play_view_en)
             tvPinnedAction.setOnClickListener(pinnedMessageDebouncedClick)
 
         } else tvPinnedAction.gone()
@@ -93,7 +92,6 @@ class PinnedView(
                 listener.onPinnedProductActionClicked(this)
             }
         }
-        tvPinnedAction.text = container.context.getString(R.string.play_view_idn)
         tvPinnedAction.setOnClickListener(pinnedProductDebouncedClick)
 
         tvPinnedMessage.text = spanPartnerName(pinnedProduct.partnerName, SpannableString(pinnedProduct.partnerName))

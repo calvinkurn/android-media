@@ -35,7 +35,6 @@ import com.tokopedia.play.view.event.ScreenStateEvent
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.type.ProductAction
-import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.ProductLineUiModel
 import com.tokopedia.play.view.uimodel.ProductSheetUiModel
 import com.tokopedia.play.view.viewmodel.PlayBottomSheetViewModel
@@ -236,7 +235,7 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                     ProductAction.AddToCart -> Toaster.make(requireView(),
                             getString(R.string.play_add_to_cart_message_success),
                             Snackbar.LENGTH_LONG,
-                            actionText = getString(R.string.play_view_idn),
+                            actionText = getString(R.string.play_action_view),
                             clickListener = View.OnClickListener {
                                 RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
                                 PlayAnalytics.clickSeeToasterAfterAtc(channelId, playViewModel.channelType)
@@ -307,8 +306,8 @@ class PlayBottomSheetFragment : BaseDaggerFragment(), CoroutineScope {
                     .collect {
                         when (it) {
                             VariantSheetInteractionEvent.OnCloseVariantSheet -> closeVariantSheet()
-                            is VariantSheetInteractionEvent.OnBuyProduct -> doActionProduct(it.product, ProductAction.Buy, BottomInsetsType.VariantSheet)
-                            is VariantSheetInteractionEvent.OnAddProductToCart -> doActionProduct(it.product, ProductAction.AddToCart, BottomInsetsType.VariantSheet)
+                            is VariantSheetInteractionEvent.OnBuyProduct -> shouldDoActionProduct(it.product, ProductAction.Buy, BottomInsetsType.VariantSheet)
+                            is VariantSheetInteractionEvent.OnAddProductToCart -> shouldDoActionProduct(it.product, ProductAction.AddToCart, BottomInsetsType.VariantSheet)
                             is VariantSheetInteractionEvent.OnClickVariantGuideline -> {
                                 startActivity(ImagePreviewActivity.getCallingIntent(requireContext(), arrayListOf(it.url)))
                             }

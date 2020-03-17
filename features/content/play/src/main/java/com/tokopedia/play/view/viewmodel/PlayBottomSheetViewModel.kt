@@ -115,7 +115,7 @@ class PlayBottomSheetViewModel @Inject constructor(
                     isSuccess = addToCartDataModel.data.success == 1,
                     errorMessage = if (addToCartDataModel.errorMessage.size > 0)
                         addToCartDataModel.errorMessage.joinToString { "$it " } else "",
-                    cartId = addToCartDataModel.data.cartId.toString(),
+                    cartId = addToCartDataModel.data.cartId,
                     product = product,
                     action = action,
                     bottomInsetsType = bottomInsetsType

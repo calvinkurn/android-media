@@ -9,7 +9,7 @@ import android.os.Parcelable
 
 data class DataModel(
         var success: Int = 0,
-        var cartId: Int = 0,
+        var cartId: String = "",
         var productId: Int = 0,
         var quantity: Int = 0,
         var notes: String = "",
@@ -25,7 +25,7 @@ data class DataModel(
 
     constructor(parcel: Parcel) : this(
             parcel.readInt(),
-            parcel.readInt(),
+            parcel.readString(),
             parcel.readInt(),
             parcel.readInt(),
             parcel.readString(),
@@ -40,7 +40,7 @@ data class DataModel(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeInt(success)
-        parcel.writeInt(cartId)
+        parcel.writeString(cartId)
         parcel.writeInt(productId)
         parcel.writeInt(quantity)
         parcel.writeString(notes)

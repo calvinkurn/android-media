@@ -2,7 +2,7 @@
 <resources>
     <string name="play_title">Play</string>
     <string name="play_chat_placeholder">Chat di sini&#8230;</string>
-    <string name="play_action_view">View</string>
+    <string name="play_action_view">Lihat</string>
     <string name="play_duration_divider">/</string>
     <string name="play_follow">Follow</string>
     <string name="play_following">Following</string>
@@ -24,8 +24,6 @@
     <string name="play_discount_percent">%d%%</string>
     <string name="play_stock_available">Stok Tersedia</string>
     <string name="play_add_to_cart_message_success">Produk berhasil ditambahkan ke keranjang</string>
-    <string name="play_view_idn">Lihat</string>
-    <string name="play_view_en">View</string>
 
     <!--mock-->
     <string name="play_mock_view">2k</string>
