@@ -139,6 +139,12 @@ class NotificationTransactionFragment : BaseNotificationFragment(), TransactionM
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        fetchUpdateFilter(hashMapOf())
+        loadInitialData()
+    }
+
     private fun getNotification(position: String) {
         viewModel.setLastNotificationId(position)
     }
