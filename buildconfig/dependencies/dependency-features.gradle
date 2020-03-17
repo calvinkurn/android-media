@@ -91,6 +91,7 @@ ext {
             commonWallet                    : ":features:fintech:common_wallet",
             wallet                          : ":features:fintech:wallet",
             ovoPayWithQr                    : ":features:fintech:ovo_pay_with_qr",
+            layanan                         : ":features:fintech:layanan_finansial",
 
             accountHome                     : ":features:home:account-home",
             dynamicBanner                   : ":features:home:dynamicbanner",
