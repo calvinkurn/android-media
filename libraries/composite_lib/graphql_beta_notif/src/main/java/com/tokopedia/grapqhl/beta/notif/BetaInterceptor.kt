@@ -19,8 +19,8 @@ const val NOTIFICATION_ID = 123 shr 5
 class BetaInterceptor(private val context: Context) : Interceptor {
 
     companion object {
-        var URL_BETA = "https://gql-beta.tokopedia.com"
-        var HEADER_ACCESS_CONTROL_ALLOW_ORIGIN = "access-control-allow-origin"
+        val URL_BETA = "1"
+        val HEADER_ACCESS_CONTROL_ALLOW_ORIGIN = "x-tkpd-beta"
     }
 
 

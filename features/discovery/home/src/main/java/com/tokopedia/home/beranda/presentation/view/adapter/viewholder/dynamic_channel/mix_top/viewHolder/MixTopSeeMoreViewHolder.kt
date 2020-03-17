@@ -11,11 +11,13 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home.R
 import com.tokopedia.home.analytics.HomePageTracking
+import com.tokopedia.home.analytics.v2.MixTopTracking
 import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.banner_mix.datamodel.SeeMoreBannerMixDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.mix_top.dataModel.MixTopSeeMoreDataModel
 import com.tokopedia.productcard.v2.ProductCardViewSmallGrid
 import com.tokopedia.unifyprinciples.Typography
+import java.util.HashMap
 
 class MixTopSeeMoreViewHolder(view: View,
                                  val homeCategoryListener: HomeCategoryListener): AbstractViewHolder<MixTopSeeMoreDataModel>(view) {
@@ -40,7 +42,7 @@ class MixTopSeeMoreViewHolder(view: View,
                 .centerCrop()
                 .into(bannerBackgroundImage)
         container.setOnClickListener {
-            HomePageTracking.eventClickSeeAllBannerMixChannel(channel.id, channel.header.name)
+            homeCategoryListener.sendEETracking(MixTopTracking.getMixTopSeeAllClick(channel.header.name) as HashMap<String, Any>)
         }
     }
 
