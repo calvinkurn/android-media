@@ -57,5 +57,10 @@
             android:theme="@style/Theme.White"
             android:label="@string/product_manage_set_cashback"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.tokopedia.product.manage.feature.etalase.view.activity.EtalasePickerActivity"
+            android:label="@string/product_manage_etalase_picker_title"
+            android:theme="@style/Theme.White"
+            android:screenOrientation="portrait" />
     </application>
 </manifest>

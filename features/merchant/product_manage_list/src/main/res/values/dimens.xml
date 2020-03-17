@@ -18,4 +18,6 @@
     <dimen name="product_manage_horizontal_spacing">14dp</dimen>
     <dimen name="dp_negative_8">-8dp</dimen>
     <dimen name="product_manage_edit_item_vertical_spacing">18.5dp</dimen>
+    <dimen name="product_manage_etalase_item_vertical_spacing">14dp</dimen>
+    <dimen name="product_manage_etalase_search_bar_vertical_spacing">12dp</dimen>
 </resources>

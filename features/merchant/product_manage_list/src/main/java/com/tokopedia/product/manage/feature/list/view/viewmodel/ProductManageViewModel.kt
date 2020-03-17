@@ -10,10 +10,11 @@ import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE
 import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_SUCCESS_CODE
+import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
 import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult
-import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.*
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.list.view.model.SetFeaturedProductResult
 import com.tokopedia.product.manage.feature.list.view.model.ShopInfoResult
@@ -21,6 +22,7 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgressDialog
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
+import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
@@ -92,6 +94,8 @@ class ProductManageViewModel @Inject constructor(
         get() = _toggleMultiSelect
     val multiEditProductResult: LiveData<Result<MultiEditResult>>
         get() = _multiEditProductResult
+    val selectedFilterAndSort: LiveData<FilterOptionWrapper>
+        get() = _selectedFilterAndSort
 
     private val _viewState = MutableLiveData<ViewState>()
     private val _productListResult = MutableLiveData<Result<List<ProductViewModel>>>()
@@ -106,6 +110,7 @@ class ProductManageViewModel @Inject constructor(
     private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
     private val _toggleMultiSelect = MutableLiveData<Boolean>()
     private val _multiEditProductResult = MutableLiveData<Result<MultiEditResult>>()
+    private val _selectedFilterAndSort = MutableLiveData<FilterOptionWrapper>()
 
     fun isIdlePowerMerchant(): Boolean = userSessionInterface.isPowerMerchantIdle
     fun isPowerMerchant(): Boolean = userSessionInterface.isGoldMerchant
@@ -148,6 +153,34 @@ class ProductManageViewModel @Inject constructor(
             val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
 
             _multiEditProductResult.value = Success(EditByStatus(status, success, failed))
+            hideProgressDialog()
+        }, onError = {
+            _multiEditProductResult.value = Fail(it)
+            hideProgressDialog()
+        })
+    }
+
+    fun editProductsEtalase(productIds: List<String>, menuId: String, menuName: String) {
+        launchCatchError(block = {
+            showProgressDialog()
+
+            val response = withContext(Dispatchers.IO) {
+                val shopParam = ShopParam(userSessionInterface.shopId)
+                val menuParam = MenuParam(menuId, menuName)
+
+                val params = productIds.map { productId ->
+                    ProductParam(productId = productId, shop = shopParam, menu = menuParam)
+                }
+
+                val requestParams = MultiEditProductUseCase.createRequestParam(params)
+                multiEditProductUseCase.execute(requestParams)
+            }
+
+            val success = response.results?.filter { it.isSuccess() }.orEmpty()
+            val failed = response.results?.filter { !it.isSuccess() }.orEmpty()
+
+            val result = EditByMenu(menuId, menuName, success, failed)
+            _multiEditProductResult.value = Success(result)
             hideProgressDialog()
         }, onError = {
             _multiEditProductResult.value = Fail(it)
@@ -314,6 +347,10 @@ class ProductManageViewModel @Inject constructor(
                 }
             })
 
+    }
+
+    fun setSelectedFilterAndSort(selectedFilter: FilterOptionWrapper) {
+        _selectedFilterAndSort.postValue(selectedFilter)
     }
 
     fun toggleMultiSelect() {

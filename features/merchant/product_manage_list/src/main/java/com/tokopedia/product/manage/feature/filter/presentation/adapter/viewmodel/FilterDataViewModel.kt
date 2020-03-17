@@ -2,7 +2,7 @@ package com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmod
 
 data class FilterDataViewModel(
         val id: String,
-        val name: String,
+        val name: String = "",
         val value: String = "",
         var select: Boolean = false
 )

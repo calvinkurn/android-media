@@ -38,7 +38,7 @@ object ProductMapper {
     }
 
     fun mapToTabFilters(productList: List<ProductViewModel>?): List<FilterViewModel> {
-        val productFilters = mutableListOf<FilterViewModel>(Default)
+        val productFilters = mutableListOf<FilterViewModel>(MoreFilter)
 
         val availableFilters = productList
             ?.filter { filterType.contains(it.status) }
@@ -54,7 +54,7 @@ object ProductMapper {
                     ACTIVE -> Active(productCount)
                     INACTIVE -> InActive(productCount)
                     BANNED -> Banned(productCount)
-                    else -> Default
+                    else -> MoreFilter
                 }
             } ?: emptyList()
 
