@@ -78,12 +78,14 @@ def archiveAPK(variant, output) {
 buildscript {
     repositories {
         mavenCentral()
+        google()
         maven { url 'https://maven.fabric.io/public' }
         maven { url 'https://hansel.io/maven' }
     }
     dependencies {
         classpath rootProject.ext.gradlePlugin.crashlytics
         classpath rootProject.ext.miscDependencies.hansel
+        classpath rootProject.ext.gradlePlugin.googleServices
     }
 }
 
@@ -157,32 +159,8 @@ android {
             }
             ext.betaDistributionReleaseNotesFilePath = 'release_notes.txt'
             ext.betaDistributionGroupAliasesFilePath = 'group_beta.txt'
-//            if (allowSplit()) {
-//                applicationVariants.all { variant ->
-//                    variant.outputs.each { output ->
-//                        String density = output.getFilter(com.android.build.OutputFile.DENSITY);
-//                        output.versionCodeOverride = (getTkpdVersionCode() * 100) + getDpiId(density);
-//                    }
-//                    variant.assemble.doLast {
-//                        variant.outputs.each { output ->
-//                            if (output.zipAlign) {
-//                                archiveAPK(variant, output);
-//                            }
-//                        }
-//                    }
-//                }
-//            } else {
-//            }
         }
     }
-
-//    splits {
-//        density {
-//            enable allowSplit()
-//            exclude "tvdpi", "xxxhdpi", "ldpi" //Add or modify the supported density here`
-//            compatibleScreens 'small', 'normal', 'large', 'xlarge' //Discouraged to touch this
-//        }
-//    }
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -385,6 +363,7 @@ dependencies {
 
     implementation rootProject.ext.playServicesDependencies.analytics
     implementation rootProject.ext.playServicesDependencies.maps
+    implementation rootProject.ext.serviceDependencies.crashlytics
 
     implementation project(rootProject.ext.libraries.playCore)
     implementation rootProject.ext.firebase.config
@@ -451,3 +430,5 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.robust
 }
+
+apply plugin: 'com.google.gms.google-services'
