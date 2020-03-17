@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +29,7 @@ import com.tokopedia.product.manage.feature.filter.presentation.fragment.Product
 import com.tokopedia.product.manage.feature.filter.presentation.viewmodel.ProductManageFilterExpandSelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.ChecklistClickListener
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import kotlinx.android.synthetic.main.fragment_product_manage_filter_select.*
 import javax.inject.Inject
 
@@ -98,6 +100,7 @@ class ProductManageFilterExpandSelectFragment :
                     isChipsShown
             ))
             this.activity?.setResult(ProductManageFilterFragment.UPDATE_SORT_SUCCESS_RESPONSE, Intent().putExtra(CACHE_MANAGER_KEY, cacheManagerId))
+            ProductManageTracking.eventMoreSorting(element.name)
         } else {
             cacheManager?.put(ETALASE_CACHE_MANAGER_KEY, ProductManageFilterMapper.mapSelectViewModelsToFilterViewModel(
                     ETALASE_CACHE_MANAGER_KEY,

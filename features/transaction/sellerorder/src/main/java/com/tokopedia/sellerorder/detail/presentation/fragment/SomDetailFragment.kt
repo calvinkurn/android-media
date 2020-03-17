@@ -418,6 +418,7 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 detailResponse.receiver.phone,
                 detailResponse.receiver.street,
                 detailResponse.receiver.district + ", " + detailResponse.receiver.city + " " + detailResponse.receiver.postal,
+                detailResponse.receiver.province,
                 detailResponse.flagOrderMeta.flagFreeShipping,
                 detailResponse.bookingInfo.driver.photo,
                 detailResponse.bookingInfo.driver.name,
@@ -431,7 +432,6 @@ class SomDetailFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerL
                 detailResponse.bookingInfo.onlineBooking.messageArray,
                 detailResponse.bookingInfo.onlineBooking.barcodeType,
                 isRemoveAwb = detailResponse.onlineBooking.isRemoveInputAwb)
-
         listDetailData.add(SomDetailData(dataShipping, DETAIL_SHIPPING_TYPE))
     }
 

@@ -114,7 +114,7 @@ class HomeFeedViewHolder(itemView: View, private val homeFeedView: HomeFeedContr
 
     private fun showSuccessAddWishlist(view: View, message: String){
         Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-                .setAction(R.string.go_to_wishlist) { RouteManager.route(view.context, ApplinkConst.WISHLIST) }
+                .setAction(R.string.go_to_wishlist) { RouteManager.route(view.context, ApplinkConst.NEW_WISHLIST) }
                 .show()
     }
 

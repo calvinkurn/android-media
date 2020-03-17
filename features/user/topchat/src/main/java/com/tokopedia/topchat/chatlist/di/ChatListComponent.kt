@@ -12,16 +12,18 @@ import dagger.Component
 @ChatListScope
 @Component(
         modules = [CommonTopchatModule::class,
-                    ChatListNetworkModule::class,
-                    ChatListSettingModule::class,
-                    ChatListQueryModule::class,
-                    ChatNotificationsQueryModule::class,
-                    ChatListViewModelModule::class,
-                    ChatNotificationsViewModelModule::class],
+            ChatListNetworkModule::class,
+            ChatListSettingModule::class,
+            ChatListQueryModule::class,
+            ChatNotificationsQueryModule::class,
+            ChatListViewsModelModule::class,
+            ChatNotificationsViewsModelModule::class,
+            ChatListContextModule::class
+        ],
         dependencies = [BaseAppComponent::class]
 )
 
 interface ChatListComponent {
-    fun inject (fragment: ChatListFragment)
-    fun inject (activity: ChatListActivity)
+    fun inject(fragment: ChatListFragment)
+    fun inject(activity: ChatListActivity)
 }

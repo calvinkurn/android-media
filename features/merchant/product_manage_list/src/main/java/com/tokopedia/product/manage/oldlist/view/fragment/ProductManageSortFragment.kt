@@ -85,7 +85,9 @@ class ProductManageSortFragment : BaseDaggerFragment(), ProductManageSortViewHol
             }
         }
 
-        viewModel.getListSortManageProduct(resources.getStringArray(com.tokopedia.product.manage.R.array.sort_option))
+        context?.let{
+            viewModel.getListSortManageProduct(it, resources.getStringArray(com.tokopedia.product.manage.R.array.sort_option))
+        }
     }
 
     private fun onSuccessGetListSort(productManageSortModels: List<ProductManageSortModel>) {

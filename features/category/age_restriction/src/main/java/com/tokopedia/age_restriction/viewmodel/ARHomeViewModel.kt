@@ -1,25 +1,20 @@
 package com.tokopedia.age_restriction.viewmodel
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.age_restriction.data.UserDOBResponse
-import com.tokopedia.common.network.data.model.RequestType
+import com.tokopedia.age_restriction.usecase.FetchUserDobUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tradein_common.viewmodel.BaseViewModel
-import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.CoroutineContext
+import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class ARHomeViewModel(application : Application) : BaseViewModel(application), CoroutineScope {
+private const val minimumAdultAge = 21
 
-    private var userDetailLiveData: UserDOBResponse? = null
+class ARHomeViewModel @Inject constructor(private val fetchUserDobUseCase: FetchUserDobUseCase,
+                                          private val userSession: UserSessionInterface) : BaseARViewModel(){
+
     private val askUserLogin = MutableLiveData<Int>()
-    private val USER_DOB_PATH = "https://accounts.tokopedia.com/userapp/api/v1/profile/get-dob"
     val notAdult = MutableLiveData<Int>()
     val notVerified = MutableLiveData<String>()
     val notFilled = MutableLiveData<Int>()
@@ -27,38 +22,20 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
 
     override fun doOnCreate() {
         super.doOnCreate()
-        repository?.let {
-            if (!it.getUserLoginState()?.isLoggedIn)
-                askUserLogin.value = 1
-            else {
-                fetchUserDOB()
-            }
+        if (!userSession.isLoggedIn)
+            askUserLogin.value = 1
+        else {
+            fetchUserDOB()
         }
     }
 
-    override fun doOnPause() {
-
-    }
-
-    override fun doOnStop() {
-
-    }
-
-    override fun doOnDestroy() {
-
-    }
-
     fun fetchUserDOB() {
+        val userDobQuery = TokopediaUrl.Companion.getInstance().ACCOUNTS.plus("userapp/api/v1/profile/get-dob")
         progBarVisibility.value = true
         launchCatchError(
                 block = {
-                    val response = getRepo().getRestData(USER_DOB_PATH,
-                            object : TypeToken<DataResponse<UserDOBResponse>>() {}.type,
-                            RequestType.GET,
-                            RequestParams.EMPTY.parameters)
-                    val userDataResponse = response?.getData() as DataResponse<UserDOBResponse>
-                    userDetailLiveData = userDataResponse.data
-                    processUserDOB(userDetailLiveData)
+                    val response = fetchUserDobUseCase.getData(userDobQuery)
+                    processUserDOB(response)
                 },
                 onError = {
                     warningMessage.value = it.localizedMessage
@@ -67,11 +44,6 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
         )
     }
 
-    fun getRepo() = repository
-
-    override val coroutineContext: CoroutineContext
-        get() = Dispatchers.Main + SupervisorJob()
-
     fun getAskUserLogin(): LiveData<Int> {
         return askUserLogin
     }
@@ -79,7 +51,7 @@ class ARHomeViewModel(application : Application) : BaseViewModel(application), C
     private fun processUserDOB(userDOBResponse: UserDOBResponse?) {
         userDOBResponse?.let {
             if (it.isDobVerified) {
-                if (it.isAdult || it.age >= 18)
+                if (it.isAdult || it.age >= minimumAdultAge)
                     userAdult.value = 1
                 else
                     notAdult.value = 1

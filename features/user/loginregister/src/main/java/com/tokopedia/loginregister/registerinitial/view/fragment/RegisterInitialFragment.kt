@@ -26,23 +26,26 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.tasks.Task
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GlobalConfig
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.ApplinkRouter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.design.component.Dialog
 import com.tokopedia.design.text.TextDrawable
 import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.PartialRegisterInputUtils
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
+import com.tokopedia.loginregister.common.data.DynamicBannerConstant
+import com.tokopedia.loginregister.common.data.model.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.di.LoginRegisterComponent
 import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.discover.data.DiscoverItemViewModel
@@ -61,7 +64,6 @@ import com.tokopedia.otp.cotp.domain.interactor.RequestOtpUseCase
 import com.tokopedia.otp.cotp.view.activity.VerificationActivity
 import com.tokopedia.permissionchecker.PermissionCheckerHelper
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.Token.Companion.GOOGLE_API_KEY
 import com.tokopedia.sessioncommon.data.loginphone.ChooseTokoCashAccountViewModel
@@ -78,6 +80,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.image.ImageUtils
 import kotlinx.android.synthetic.main.fragment_initial_register.*
 import javax.inject.Inject
 import javax.inject.Named
@@ -87,17 +90,19 @@ import javax.inject.Named
  */
 class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.PartialRegisterInputViewListener {
 
-    lateinit var optionTitle: TextView
-    lateinit var separator: View
-    lateinit var partialRegisterInputView: PartialRegisterInputView
-    lateinit var registerButton: LoginTextView
-    lateinit var loginButton: TextView
-    lateinit var container: ScrollView
-    lateinit var progressBar: RelativeLayout
-    lateinit var tickerAnnouncement: Ticker
+    private lateinit var optionTitle: TextView
+    private lateinit var separator: View
+    private lateinit var partialRegisterInputView: PartialRegisterInputView
+    private lateinit var registerButton: LoginTextView
+    private lateinit var loginButton: TextView
+    private lateinit var container: ScrollView
+    private lateinit var progressBar: RelativeLayout
+    private lateinit var tickerAnnouncement: Ticker
+    private lateinit var bannerRegister: ImageView
     private lateinit var socmedButton: ButtonCompat
     private lateinit var bottomSheet: BottomSheetUnify
     private lateinit var socmedButtonsContainer: LinearLayout
+
 
     private var phoneNumber: String? = ""
     private var source: String = ""
@@ -105,6 +110,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     private var isSmartLogin: Boolean = false
     private var isPending: Boolean = false
     private var isShowTicker: Boolean = false
+    private var isShowBanner: Boolean = false
 
     @field:Named(SESSION_MODULE)
     @Inject
@@ -211,6 +217,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         container = view.findViewById(R.id.container)
         progressBar = view.findViewById(R.id.progress_bar)
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
+        bannerRegister = view.findViewById(R.id.banner_register)
         prepareView()
         setViewListener()
         if (isSmartLogin) {
@@ -265,6 +272,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         context?.let {
             val firebaseRemoteConfig = FirebaseRemoteConfigImpl(it)
             isShowTicker = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_TICKER_FROM_ATC, false)
+            isShowBanner = firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_KEY_BANNER_REGISTER, false)
         }
     }
 
@@ -273,31 +281,18 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.getProvider()
         partialRegisterInputView.setListener(this)
 
-        if (!GlobalConfig.isSellerApp()) {
-            if (isFromAtc() && isShowTicker) {
-                tickerAnnouncement.visibility = View.VISIBLE
-                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
-                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
-                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
-
-                    override fun onDismiss() {
-                        registerAnalytics.trackClickCloseTickerButton()
-                    }
-                })
-                tickerAnnouncement.setOnClickListener {
-                    registerAnalytics.trackClickTicker()
-                }
-            } else {
-                registerInitialViewModel.getTickerInfo()
-            }
-        }
-
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(resources.getStringArray(R.array.email_extension))
         partialRegisterInputView.setEmailExtension(emailExtension, emailExtensionList)
         partialRegisterInputView.initKeyboardListener(view)
+
+        if (!GlobalConfig.isSellerApp()) {
+            if (isShowBanner) {
+                registerInitialViewModel.getDynamicBannerData(DynamicBannerConstant.Page.REGISTER)
+            } else {
+                showTicker()
+            }
+        }
 
     }
 
@@ -446,6 +441,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(this, Observer {
             if (it != null) onGoToSecurityQuestionAfterRelogin()
         })
+
+        registerInitialViewModel.dynamicBannerResponse.observe(this, Observer {
+            when(it) {
+                is Success -> setDynamicBannerView(it.data)
+                is Fail -> {
+                    bannerRegister.hide()
+                    showTicker()
+                }
+            }
+        })
     }
 
     private fun onSuccessGetProvider(discoverItems: ArrayList<DiscoverItemViewModel>) {
@@ -478,18 +483,16 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
 
     private fun onFailedGetProvider(throwable: Throwable) {
         dismissLoadingDiscover()
-
-        ErrorHandlerSession.getErrorMessage(object : ErrorHandlerSession.ErrorForbiddenListener {
-            override fun onForbidden() {
-                onGoToForbiddenPage()
-            }
-
-            override fun onError(errorMessage: String) {
-                NetworkErrorHelper.createSnackbarWithAction(activity,
-                        errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
-                loginButton.isEnabled = false
-            }
-        }, throwable, context)
+        val forbiddenMessage = context?.getString(
+                com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
+        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        if (errorMessage == forbiddenMessage){
+            onGoToForbiddenPage()
+        } else {
+            NetworkErrorHelper.createSnackbarWithAction(activity,
+                    errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
+            loginButton.isEnabled = false
+        }
     }
 
     private fun onSuccessGetFacebookCredential(facebookCredentialData: FacebookCredentialData) {
@@ -639,7 +642,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedRegisterCheck(throwable: Throwable) {
-        val messageError = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)
+        val messageError = ErrorHandler.getErrorMessage(context, throwable)
         registerAnalytics.trackFailedClickSignUpButton(messageError)
         partialRegisterInputView.onErrorValidate(messageError)
         phoneNumber = ""
@@ -652,7 +655,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
     }
 
     private fun onFailedActivateUser(throwable: Throwable) {
-        throwable.message?.let { onErrorRegister(com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context, throwable)) }
+        throwable.message?.let { onErrorRegister(ErrorHandler.getErrorMessage(context, throwable)) }
     }
 
     //Flow should not be possible
@@ -1213,6 +1216,50 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         return result
     }
 
+    private fun showTicker() {
+        if (!GlobalConfig.isSellerApp()) {
+            if (isFromAtc() && isShowTicker) {
+                tickerAnnouncement.visibility = View.VISIBLE
+                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
+                tickerAnnouncement.setTextDescription(getString(R.string.desc_ticker_from_atc))
+                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
+                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                    override fun onDescriptionViewClick(linkUrl: CharSequence) {}
+
+                    override fun onDismiss() {
+                        registerAnalytics.trackClickCloseTickerButton()
+                    }
+                })
+                tickerAnnouncement.setOnClickListener {
+                    registerAnalytics.trackClickTicker()
+                }
+            } else {
+                registerInitialViewModel.getTickerInfo()
+            }
+        }
+    }
+
+    private fun setDynamicBannerView(dynamicBannerDataModel: DynamicBannerDataModel) {
+        if (dynamicBannerDataModel.banner.isEnable) {
+            context?.let {
+                ImageUtils.loadImage(
+                        imageView = bannerRegister,
+                        url = dynamicBannerDataModel.banner.imgUrl,
+                        imageLoaded = {
+                            if (it) {
+                                bannerRegister.show()
+                                registerAnalytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
+                            } else {
+                                bannerRegister.hide()
+                                showTicker()
+                            }
+                        })
+            }
+        } else {
+            showTicker()
+        }
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         registerInitialViewModel.getProviderResponse.removeObservers(this)
@@ -1229,6 +1276,7 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         registerInitialViewModel.goToSecurityQuestion.removeObservers(this)
         registerInitialViewModel.goToActivationPageAfterRelogin.removeObservers(this)
         registerInitialViewModel.goToSecurityQuestionAfterRelogin.removeObservers(this)
+        registerInitialViewModel.dynamicBannerResponse.removeObservers(this)
         combineLoginTokenAndValidateToken.removeObservers(this)
         registerInitialViewModel.flush()
     }
@@ -1265,6 +1313,9 @@ class RegisterInitialFragment : BaseDaggerFragment(), PartialRegisterInputView.P
         private const val FACEBOOK_LOGIN_TYPE = "fb"
 
         private const val REMOTE_CONFIG_KEY_TICKER_FROM_ATC = "android_user_ticker_from_atc"
+        private const val REMOTE_CONFIG_KEY_BANNER_REGISTER = "android_user_banner_register"
+
+        private const val BANNER_REGISTER_URL = "https://ecs7.tokopedia.net/android/others/banner_login_register_page.png"
 
         fun createInstance(bundle: Bundle): RegisterInitialFragment {
             val fragment = RegisterInitialFragment()

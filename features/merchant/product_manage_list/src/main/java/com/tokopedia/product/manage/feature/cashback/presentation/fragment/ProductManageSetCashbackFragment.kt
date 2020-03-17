@@ -26,6 +26,7 @@ import com.tokopedia.product.manage.feature.cashback.presentation.adapter.viewmo
 import com.tokopedia.product.manage.feature.cashback.presentation.viewmodel.ProductManageSetCashbackViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.adapter.viewmodel.SelectViewModel
 import com.tokopedia.product.manage.feature.filter.presentation.widget.SelectClickListener
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -36,7 +37,6 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
         HasComponent<ProductManageSetCashbackComponent> {
 
     companion object {
-
         const val SET_CASHBACK_CACHE_MANAGER_KEY = "set_cashback_cache_id"
         const val SET_CASHBACK_RESULT = "set_cashback_result"
         const val ZERO_CASHBACK = 0
@@ -136,6 +136,7 @@ class ProductManageSetCashbackFragment : Fragment(), SelectClickListener,
     private fun initButton() {
         submitCashbackButton.setOnClickListener {
             viewModel.setCashback(productId, productName, cashback)
+            ProductManageTracking.eventCashbackSettingsSave(productId)
         }
     }
 

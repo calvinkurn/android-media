@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.R
+import com.tokopedia.product.manage.feature.list.utils.ProductManageTracking
 import com.tokopedia.product.manage.feature.list.view.model.ProductViewModel
 import com.tokopedia.product.manage.feature.quickedit.stock.di.DaggerProductManageQuickEditStockComponent
 import com.tokopedia.product.manage.feature.quickedit.stock.di.ProductManageQuickEditStockComponent
@@ -27,6 +28,8 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
 
         const val MAXIMUM_STOCK = 999999
         const val MINIMUM_STOCK = 0
+        private const val TOGGLE_ACTIVE = "active"
+        private const val TOGGLE_NOT_ACTIVE = "not active"
 
         fun createInstance(context: Context, product: ProductViewModel, onFinishedListener: OnFinishedListener) : ProductManageQuickEditStockFragment {
             return ProductManageQuickEditStockFragment(onFinishedListener, product).apply{
@@ -41,6 +44,8 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
     @Inject
     lateinit var viewModel: ProductManageQuickEditStockViewModel
 
+    private var firstStateChecked = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
@@ -49,6 +54,7 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        firstStateChecked = true
     }
 
     override fun getComponent(): ProductManageQuickEditStockComponent? {
@@ -84,12 +90,22 @@ class ProductManageQuickEditStockFragment(private val onFinishedListener: OnFini
         quickEditStockSaveButton.setOnClickListener {
             onFinishedListener.onFinishEditStock(product)
             super.dismiss()
+            ProductManageTracking.eventEditStockSave(product.id)
         }
+
         quickEditStockActivateSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 viewModel.updateStatus(ProductStatus.ACTIVE)
             } else {
                 viewModel.updateStatus(ProductStatus.INACTIVE)
+            }
+
+            if(firstStateChecked) {
+                if(isChecked) {
+                    ProductManageTracking.eventEditStockToggle(TOGGLE_ACTIVE, product.id)
+                } else {
+                    ProductManageTracking.eventEditStockToggle(TOGGLE_NOT_ACTIVE, product.id)
+                }
             }
         }
         quickEditStockActivateSwitch.isChecked = product.isActive()
