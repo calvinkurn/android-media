@@ -7,9 +7,11 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import androidx.fragment.app.FragmentManager
-import androidx.viewpager.widget.ViewPager
+import androidx.lifecycle.Lifecycle
+import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
@@ -23,80 +25,78 @@ import kotlinx.android.synthetic.main.widget_picture_scrolling.view.*
 class PictureScrollingView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
+
     lateinit var pagerAdapter: VideoPicturePagerAdapter
+    private var listenerCallback: ViewPager2.OnPageChangeCallback? = null
 
     val position: Int
-        get() = view_pager?.currentItem ?: 0
+        get() = pdp_view_pager?.currentItem ?: 0
+    var shouldRenderViewPager: Boolean = true
 
     init {
         instantiateView()
+        pdp_view_pager.offscreenPageLimit = 2
     }
 
     fun stopVideo() {
         (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.pauseVideo()
     }
 
-    private fun instantiateView() {
-        View.inflate(context, R.layout.widget_picture_scrolling, this)
+    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, Int, ComponentTrackDataModel?) -> Unit), fragmentManager: FragmentManager,
+                   componentTrackData: ComponentTrackDataModel? = null, onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)? = null,
+                   lifecycle: Lifecycle) {
+        val mediaList = processMedia(media)
+
+        listenerCallback = object : ViewPager2.OnPageChangeCallback() {
+            var lastPosition = 0
+            override fun onPageSelected(position: Int) {
+                pdp_page_control.setCurrentIndicator(position)
+                val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
+                onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
+                (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
+                (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
+                lastPosition = position
+            }
+
+            override fun onPageScrollStateChanged(b: Int) {}
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+        }
+
+        if (!::pagerAdapter.isInitialized || shouldRenderViewPager) {
+            pdp_page_control.setIndicator(mediaList.size)
+            pagerAdapter = VideoPicturePagerAdapter(mediaList, onPictureClickListener, fragmentManager, componentTrackData
+                    ?: ComponentTrackDataModel(), onPictureClickTrackListener, lifecycle)
+            pdp_view_pager.adapter = pagerAdapter
+            pdp_view_pager.setPageTransformer { page, position ->
+                //NO OP DONT DELETE THIS, DISABLE ITEM ANIMATOR
+            }
+            listenerCallback?.let {
+                pdp_view_pager.registerOnPageChangeCallback(it)
+            }
+        }
     }
 
-    fun renderData(media: List<ProductMediaDataModel>?, onPictureClickListener: ((Int) -> Unit)?, onSwipePictureListener: ((String, Int, ComponentTrackDataModel?) -> Unit), fragmentManager: FragmentManager,
-                   forceRefresh: Boolean = true, componentTrackData: ComponentTrackDataModel? = null, onPictureClickTrackListener: ((ComponentTrackDataModel?) -> Unit)? = null) {
-
-        val mediaList = if (media == null || media.isEmpty()) {
-            val resId = R.drawable.product_no_photo_default
-            val res = context.resources
-            val uriNoPhoto = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
-                    + "://" + res.getResourcePackageName(resId)
-                    + '/'.toString() + res.getResourceTypeName(resId)
-                    + '/'.toString() + res.getResourceEntryName(resId))
-            mutableListOf(ProductMediaDataModel(urlOriginal = uriNoPhoto.toString()))
-        } else
-            media.toMutableList()
-
-        if (!::pagerAdapter.isInitialized || forceRefresh) {
-            pagerAdapter = VideoPicturePagerAdapter(context, mediaList, onPictureClickListener, fragmentManager, componentTrackData
-                    ?: ComponentTrackDataModel(), onPictureClickTrackListener)
-            view_pager.adapter = pagerAdapter
-
-            view_pager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                var lastPosition = 0
-                override fun onPageSelected(position: Int) {
-                    val swipeDirection = if (lastPosition > position) SWIPE_LEFT_DIRECTION else SWIPE_RIGHT_DIRECTION
-                    onSwipePictureListener.invoke(swipeDirection, position, componentTrackData)
-                    (pagerAdapter.getRegisteredFragment(lastPosition) as? VideoPictureFragment)?.imInvisible()
-                    (pagerAdapter.getRegisteredFragment(position) as? VideoPictureFragment)?.imVisible()
-                    lastPosition = position
-                }
-
-                override fun onPageScrollStateChanged(b: Int) {
-
-                }
-
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-
-                }
-            })
-
-            indicator_picture.setViewPager(view_pager)
-            indicator_picture.notifyDataSetChanged()
-        }
-        pagerAdapter.notifyDataSetChanged()
+    fun updateImage(listOfImage: List<ProductMediaDataModel>?) {
+        pagerAdapter.setData(listOfImage ?: listOf())
+        resetViewPagerToFirstPosition(listOfImage?.size ?: 0)
     }
 
     fun renderShopStatus(shopInfo: ShopInfo.StatusInfo, productStatus: String, productStatusTitle: String = "",
                          productStatusMessage: String = "") {
-        if (shopInfo.shopStatus != SHOP_STATUS_ACTIVE) {
-            error_product_container.visible()
-            error_product_title.text = MethodChecker.fromHtml(shopInfo.statusTitle)
-            error_product_descr.text = MethodChecker.fromHtml(shopInfo.statusMessage)
-        } else if (productStatus != ProductStatusTypeDef.ACTIVE) {
-            // TODO ASK PRODUCT STATUS DETAIL
-            error_product_container.visible()
-            error_product_title.text = productStatusTitle
-            error_product_descr.text = productStatusMessage
-        } else {
-            error_product_container.gone()
+        when {
+            shopInfo.shopStatus != SHOP_STATUS_ACTIVE -> {
+                error_product_container.visible()
+                error_product_title.text = MethodChecker.fromHtml(shopInfo.statusTitle)
+                error_product_descr.text = MethodChecker.fromHtml(shopInfo.statusMessage)
+            }
+            productStatus != ProductStatusTypeDef.ACTIVE -> {
+                error_product_container.visible()
+                error_product_title.text = productStatusTitle
+                error_product_descr.text = productStatusMessage
+            }
+            else -> {
+                error_product_container.gone()
+            }
         }
     }
 
@@ -108,12 +108,41 @@ class PictureScrollingView @JvmOverloads constructor(
                 error_product_descr.text = MethodChecker.fromHtml(statusMessage)
             }
             productStatus != ProductStatusTypeDef.ACTIVE -> {
-                error_product_container.visible()
+                error_product_container.showWithCondition(productStatus != ProductStatusTypeDef.WAREHOUSE)
                 error_product_title.text = productStatusTitle
                 error_product_descr.text = productStatusMessage
             }
             else -> error_product_container.gone()
         }
+    }
+
+    fun removeListener() {
+        listenerCallback?.let {
+            pdp_view_pager.unregisterOnPageChangeCallback(it)
+        }
+    }
+
+    private fun instantiateView() {
+        View.inflate(context, R.layout.widget_picture_scrolling, this)
+    }
+
+    private fun processMedia(media: List<ProductMediaDataModel>?): List<ProductMediaDataModel> {
+        return if (media == null || media.isEmpty()) {
+            val resId = R.drawable.product_no_photo_default
+            val res = context.resources
+            val uriNoPhoto = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE
+                    + "://" + res.getResourcePackageName(resId)
+                    + '/'.toString() + res.getResourceTypeName(resId)
+                    + '/'.toString() + res.getResourceEntryName(resId))
+            mutableListOf(ProductMediaDataModel(urlOriginal = uriNoPhoto.toString()))
+        } else
+            media.toMutableList()
+    }
+
+    private fun resetViewPagerToFirstPosition(countIndicator: Int) {
+        pdp_page_control.setIndicator(countIndicator)
+        pdp_page_control.setCurrentIndicator(0)
+        pdp_view_pager.setCurrentItem(0, false)
     }
 
     companion object {

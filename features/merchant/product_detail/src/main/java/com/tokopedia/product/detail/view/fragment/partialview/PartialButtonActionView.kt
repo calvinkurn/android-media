@@ -1,24 +1,20 @@
 package com.tokopedia.product.detail.view.fragment.partialview
 
-import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.PARENT_ID
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.UNSET
-import androidx.core.content.ContextCompat
-import androidx.core.widget.TextViewCompat.setTextAppearance
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffiliateResponse
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.android.synthetic.main.partial_layout_button_action.view.*
-
 
 
 class PartialButtonActionView private constructor(private val view: View,
@@ -36,6 +32,7 @@ class PartialButtonActionView private constructor(private val view: View,
                 if (value) base_btn_action.visible() else base_btn_action.gone()
             }
         }
+    var buttonCartTypeClick: ((String, Boolean) -> Unit)? = null
 
     var hasComponentLoading = false
     var isExpressCheckout = false
@@ -44,6 +41,8 @@ class PartialButtonActionView private constructor(private val view: View,
     var isLeasing: Boolean = false
     var hasTopAdsActive: Boolean = false
     var preOrder: PreOrder? = PreOrder()
+    var onSuccessGetCartType = false
+    private var cartTypeData: CartRedirection? = null
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
@@ -54,15 +53,6 @@ class PartialButtonActionView private constructor(private val view: View,
         private const val KEY_AB_TOPCHAT = "TopChat Icon at PDP 2"
     }
 
-    init {
-        with(view) {
-            pb_buy_now.indeterminateDrawable
-                .setColorFilter(ContextCompat.getColor(context, R.color.orange_red), PorterDuff.Mode.SRC_IN)
-            pb_add_to_cart.indeterminateDrawable
-                .setColorFilter(ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN)
-        }
-    }
-
     fun renderData(isWarehouseProduct: Boolean, hasShopAuthority: Boolean, preOrder: PreOrder?) {
         this.isWarehouseProduct = isWarehouseProduct
         this.hasShopAuthority = hasShopAuthority
@@ -70,47 +60,88 @@ class PartialButtonActionView private constructor(private val view: View,
         renderButton()
     }
 
-    fun renderData(isExpressCheckout: Boolean, hasTopAdsActive: Boolean) {
+    fun renderData(isExpressCheckout: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartRedirection) {
         this.isExpressCheckout = isExpressCheckout
         this.hasTopAdsActive = hasTopAdsActive
+        this.cartTypeData = cartTypeData
+        this.onSuccessGetCartType = cartTypeData.errorMessage.isEmpty() && cartTypeData.data.firstOrNull()?.availableButtons?.isNotEmpty() == true
         renderButton()
     }
 
-    private fun renderButton(){
+    private fun renderButton() {
         if (isWarehouseProduct) {
             showNoStockButton()
         } else if (hasShopAuthority) {
             showShopManageButton()
-        } else if (!GlobalConfig.isSellerApp()) {
-            showNewCheckoutButton(preOrder)
+        } else if (!GlobalConfig.isSellerApp() && onSuccessGetCartType) {
+            showCartTypeButton()
+        } else if (!GlobalConfig.isSellerApp() && !onSuccessGetCartType) {
+            showNewCheckoutButton()
         }
     }
 
-    private fun showNewCheckoutButton(preOrder: PreOrder?) {
+    private fun showCartTypeButton() = with(view) {
+        val unavailableButton = cartTypeData?.data?.firstOrNull()?.unavailableButtons ?: listOf()
+        val availableButton = cartTypeData?.data?.firstOrNull()?.availableButtons ?: listOf()
+
+        bindAbTestChatButton(btn_topchat)
+
+        btn_topchat.showWithCondition("chat" !in unavailableButton)
+        btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
+        btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
+
+        btn_buy_now.text = availableButton.getOrNull(0)?.text ?: ""
+        btn_add_to_cart.text = availableButton.getOrNull(1)?.text ?: ""
+
+        btn_buy_now.setOnClickListener {
+            buttonCartTypeClick?.invoke(availableButton.getOrNull(0)?.cartType
+                    ?: "", availableButton.getOrNull(0)?.showRecommendation ?: false)
+        }
+
+        btn_add_to_cart.setOnClickListener {
+            buttonCartTypeClick?.invoke(availableButton.getOrNull(1)?.cartType
+                    ?: "", availableButton.getOrNull(1)?.showRecommendation ?: false)
+        }
+
+        btn_buy_now.generateTheme(availableButton.getOrNull(0)?.color ?: "")
+        btn_add_to_cart.generateTheme(availableButton.getOrNull(1)?.color ?: "")
+    }
+
+    private fun UnifyButton.generateTheme(colorDescription: String) {
+        if (colorDescription == "orange") {
+            this.buttonVariant = UnifyButton.Variant.FILLED
+            this.buttonType = UnifyButton.Type.TRANSACTION
+        } else {
+            this.buttonVariant = UnifyButton.Variant.GHOST
+            this.buttonType = UnifyButton.Type.TRANSACTION
+        }
+    }
+
+    private fun showNewCheckoutButton() {
         with(view) {
-            btn_buy.visibility = View.GONE
-            container_btn_promote_topads.visibility = View.GONE
+            hideButtonEmptyAndTopAds()
             btn_topchat.visibility = View.VISIBLE
             bindAbTestChatButton(btn_topchat)
-            tv_buy_now.text = context.getString(
-                if (preOrder?.isPreOrderActive() == true) {
-                    R.string.action_preorder
-                } else {
-                    if (isExpressCheckout) {
-                        R.string.buy_now
+            btn_buy_now.text = context.getString(
+                    if (preOrder?.isPreOrderActive() == true) {
+                        R.string.action_preorder
                     } else {
-                        R.string.buy
-                    }
-                })
+                        if (isExpressCheckout) {
+                            R.string.buy_now
+                        } else {
+                            R.string.buy
+                        }
+                    })
+            btn_add_to_cart.text = context.getString(R.string.add_product_to_cart)
             btn_buy_now.visibility = View.VISIBLE
             btn_add_to_cart.visible()
-            if(isLeasing){
-                btn_apply_leasing.visibility  = View.VISIBLE
+            if (isLeasing) {
+                btn_apply_leasing.visibility = View.VISIBLE
                 btn_add_to_cart.visibility = View.GONE
                 btn_buy_now.visibility = View.GONE
                 changeTopChatLayoutParamsToHandleLeasingLayout()
-            }else{
-                btn_apply_leasing.visibility  = View.GONE
+            } else {
+                btn_apply_leasing.visibility = View.GONE
                 resetTopChatLayoutParams()
             }
             btn_buy_now.setOnClickListener {
@@ -145,7 +176,7 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun resetTopChatLayoutParams() {
-        with(view){
+        with(view) {
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
             topChatParams.startToEnd = btn_byme.id
             topChatParams.startToStart = UNSET
@@ -156,7 +187,7 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun changeTopChatLayoutParamsToHandleLeasingLayout() {
-        with(view){
+        with(view) {
             val topChatParams = btn_topchat.layoutParams as ConstraintLayout.LayoutParams
             topChatParams.startToEnd = UNSET
             topChatParams.startToStart = PARENT_ID
@@ -164,64 +195,33 @@ class PartialButtonActionView private constructor(private val view: View,
             topChatParams.endToStart = btn_apply_leasing.id
             btn_topchat.layoutParams = topChatParams
         }
+    }
 
+    private fun hideButtonEmptyAndTopAds() = with(view) {
+        btn_empty_stock.hide()
+        btn_top_ads.hide()
     }
 
     private fun showShopManageButton() {
         with(view) {
-            btn_buy.visibility = View.GONE
-            container_btn_promote_topads.visibility = View.VISIBLE
-            btn_byme.visibility = View.GONE
-            btn_topchat.visibility = View.GONE
-            btn_buy_now.visibility = View.GONE
-            btn_add_to_cart.visibility = View.GONE
+            btn_empty_stock.hide()
+            btn_top_ads.show()
             if (hasTopAdsActive) {
-                btn_promote_topads.setOnClickListener { rincianTopAdsClick?.invoke() }
-                btn_promote_topads.text = context.getString(R.string.rincian_topads)
-                btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_grey_outline)
-                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPRincian)
+                btn_top_ads.setOnClickListener { rincianTopAdsClick?.invoke() }
+                btn_top_ads.text = context.getString(R.string.rincian_topads)
+                btn_top_ads.buttonVariant = UnifyButton.Variant.GHOST
             } else {
-                btn_promote_topads.setOnClickListener { promoTopAdsClick?.invoke() }
-                btn_promote_topads.text = context.getString(R.string.promote_topads)
-                btn_promote_topads.setBackgroundResource(R.drawable.bg_rounded_green)
-                setTextAppearance(btn_promote_topads, R.style.BtnTopAdsPDPIklankan)
+                btn_top_ads.setOnClickListener { promoTopAdsClick?.invoke() }
+                btn_top_ads.text = context.getString(R.string.promote_topads)
+                btn_top_ads.buttonVariant = UnifyButton.Variant.FILLED
             }
         }
     }
 
     private fun showNoStockButton() {
         with(view) {
-            tv_buy.setTextColor(ContextCompat.getColor(context, R.color.black_38))
-            btn_buy.setBackgroundColor(ContextCompat.getColor(context, R.color.grey_300))
-            tv_buy.text = context.getString(R.string.no_stock)
-            btn_buy.isEnabled = false
-            btn_buy.visibility = View.VISIBLE
-            container_btn_promote_topads.visibility = View.GONE
-            btn_byme.visibility = View.GONE
-            btn_topchat.visibility = View.GONE
-            btn_buy_now.visibility = View.GONE
-            btn_add_to_cart.visibility = View.GONE
+            btn_empty_stock.visible()
         }
-    }
-
-    fun showLoadingBuy() {
-        hasComponentLoading = true
-        view.pb_buy_now.visible()
-    }
-
-    fun hideLoadingBuy() {
-        hasComponentLoading = false
-        view.pb_buy_now.hide()
-    }
-
-    fun showLoadingCart() {
-        hasComponentLoading = true
-        view.pb_add_to_cart.visible()
-    }
-
-    fun hideLoadingCart() {
-        hasComponentLoading = false
-        view.pb_add_to_cart.hide()
     }
 
     fun gone() {

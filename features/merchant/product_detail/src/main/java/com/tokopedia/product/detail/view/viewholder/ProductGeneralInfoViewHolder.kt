@@ -28,7 +28,6 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
         }
 
         element.data.run {
-
             view.addOnImpressionListener(element.impressHolder) {
                 listener.onImpressComponent(getComponentTrackData(element))
             }
@@ -40,7 +39,6 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
             } else {
                 view.pdp_arrow_right.hide()
             }
-
         }
 
         view.pdp_info_title.text = MethodChecker.fromHtml(element.title)
@@ -50,7 +48,7 @@ class ProductGeneralInfoViewHolder(val view: View, private val listener: Dynamic
 
         if (element.parentIcon.isNotEmpty()) {
             view.pdp_icon.show()
-            ImageHandler.loadImage(view.context, view.pdp_icon, element.parentIcon, R.drawable.ic_loading_image)
+            ImageHandler.LoadImage(view.pdp_icon, element.parentIcon)
         } else {
             view.pdp_icon.hide()
         }

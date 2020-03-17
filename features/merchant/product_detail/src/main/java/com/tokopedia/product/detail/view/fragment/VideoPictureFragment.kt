@@ -1,16 +1,16 @@
 package com.tokopedia.product.detail.view.fragment
 
 import android.content.Context
-import android.content.res.Configuration
 import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ProgressBar
+import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.exoplayer2.C
@@ -21,6 +21,7 @@ import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory
 import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.MediaSource
+import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DataSpec
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
@@ -35,7 +36,6 @@ import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.videoplayer.state.RepeatMode
 import com.tokopedia.videoplayer.state.VideoSourceProtocol
-import kotlinx.android.synthetic.main.video_picture_view.*
 import java.io.File
 
 
@@ -54,6 +54,11 @@ class VideoPictureFragment : BaseDaggerFragment() {
     private var isMute = false
     private var currentVol = 1f
     private var mExoPlayer: SimpleExoPlayer? = null
+
+    lateinit var loadingVideoPdp: ProgressBar
+    lateinit var videoPlayerPdp: PlayerView
+    lateinit var volumePdp: ImageView
+    lateinit var imgPdp: ImageView
 
     companion object {
 
@@ -103,7 +108,7 @@ class VideoPictureFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initView(view)
         view.setOnClickListener {
             onPictureClickTrackListener?.invoke(componentTrackDataModel)
             onPictureClickListener?.invoke(mediaPosition)
@@ -112,35 +117,23 @@ class VideoPictureFragment : BaseDaggerFragment() {
         if (mediaSource.isBlank()) return
 
         if (mediaType == TYPE_IMAGE) {
-            volume_pdp.hide()
-            img_pdp_video.show()
-            video_player_pdp.hide()
-            loading_pdp.hide()
-            val currentOrientation = context?.resources?.configuration?.orientation
-            if (currentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-                img_pdp_video.scaleType = ImageView.ScaleType.FIT_CENTER
-                if (mediaSource.isNotEmpty()) {
-                    Glide.with(view.context)
-                            .load(mediaSource)
-                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                            .fitCenter()
-                            .into(img_pdp_video)
-                }
-            } else {
-                img_pdp_video.scaleType = ImageView.ScaleType.CENTER_CROP
-                if (mediaSource.isNotEmpty()) {
-                    Glide.with(view.context)
-                            .load(mediaSource)
-                            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                            .centerCrop()
-                            .into(img_pdp_video)
-                }
+            volumePdp.hide()
+            imgPdp.show()
+            videoPlayerPdp.hide()
+            loadingVideoPdp.hide()
+            imgPdp.scaleType = ImageView.ScaleType.CENTER_CROP
+            if (mediaSource.isNotEmpty()) {
+                Glide.with(view.context)
+                        .load(mediaSource)
+                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        .centerCrop()
+                        .into(imgPdp)
             }
         } else {
-            volume_pdp.show()
-            video_player_pdp.show()
-            loading_pdp.show()
-            img_pdp_video.hide()
+            volumePdp.show()
+            videoPlayerPdp.show()
+            loadingVideoPdp.show()
+            imgPdp.hide()
         }
 
         savedInstanceState?.let {
@@ -152,11 +145,11 @@ class VideoPictureFragment : BaseDaggerFragment() {
         }
 
         context?.let {
-            volume_pdp.setImageDrawable(
+            volumePdp.setImageDrawable(
                     ContextCompat.getDrawable(it, if (isMute) R.drawable.ic_volume_off_black else R.drawable.ic_volume_up_black))
         }
 
-        volume_pdp.setOnClickListener {
+        volumePdp.setOnClickListener {
             if (isMute) {
                 //turn on volume
                 isMute = false
@@ -167,10 +160,17 @@ class VideoPictureFragment : BaseDaggerFragment() {
                 mExoPlayer?.volume = 0f
             }
             context?.let {
-                volume_pdp.setImageDrawable(
+                volumePdp.setImageDrawable(
                         ContextCompat.getDrawable(it, if (isMute) R.drawable.ic_volume_off_black else R.drawable.ic_volume_up_black))
             }
         }
+    }
+
+    private fun initView(view: View) {
+        loadingVideoPdp = view.findViewById(R.id.loading_pdp)
+        videoPlayerPdp = view.findViewById(R.id.video_player_pdp)
+        volumePdp = view.findViewById(R.id.volume_pdp)
+        imgPdp = view.findViewById(R.id.img_pdp_video)
     }
 
     override fun onStart() {
@@ -224,10 +224,10 @@ class VideoPictureFragment : BaseDaggerFragment() {
             override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                 when (playbackState) {
                     Player.STATE_READY -> {
-                        loading_pdp.gone()
+                        loadingVideoPdp.gone()
                     }
                     else -> {
-                        loading_pdp.visible()
+                        loadingVideoPdp.visible()
                     }
                 }
             }
@@ -253,32 +253,35 @@ class VideoPictureFragment : BaseDaggerFragment() {
         if (url == null) return
 
         try {
-            mExoPlayer = ExoPlayerFactory.newSimpleInstance(context)
-            video_player_pdp.useController = true
-            video_player_pdp.player = mExoPlayer
-            mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF
+            context?.let {
+                mExoPlayer = ExoPlayerFactory.newSimpleInstance(it)
+                videoPlayerPdp.useController = true
+                videoPlayerPdp.setPlayer(mExoPlayer)
+                mExoPlayer?.repeatMode = RepeatMode.REPEAT_MODE_OFF
 
-            if (isConnectedToWifi()) {
-                mExoPlayer?.playWhenReady = isReadyPlayed
-            } else {
-                mExoPlayer?.playWhenReady = false
+                if (isConnectedToWifi()) {
+                    mExoPlayer?.playWhenReady = isReadyPlayed
+                } else {
+                    mExoPlayer?.playWhenReady = false
+                }
+
+                val isHasStartPosition = currentWindowIndex != C.INDEX_UNSET
+                if (isHasStartPosition) {
+                    mExoPlayer?.seekTo(currentWindowIndex, currentPosition)
+                }
+
+                if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+                    videoPlayerPdp.rotation = VIDEO_ROTATION_90
+                }
+
+                videoPlayerPdp.controllerShowTimeoutMs = 1000
+                if (isMute) {
+                    mExoPlayer?.volume = 0f
+                }
+
+                mExoPlayer?.prepare(buildMediaSource(url, protocol), !isHasStartPosition, false)
+
             }
-
-            val isHasStartPosition = currentWindowIndex != C.INDEX_UNSET
-            if (isHasStartPosition) {
-                mExoPlayer?.seekTo(currentWindowIndex, currentPosition)
-            }
-
-            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-                video_player_pdp.rotation = VIDEO_ROTATION_90
-            }
-
-            video_player_pdp.controllerShowTimeoutMs = 1000
-            if (isMute) {
-                mExoPlayer?.volume = 0f
-            }
-
-            mExoPlayer?.prepare(buildMediaSource(url, protocol), !isHasStartPosition, false)
         } catch (t: Throwable) {
 
         }

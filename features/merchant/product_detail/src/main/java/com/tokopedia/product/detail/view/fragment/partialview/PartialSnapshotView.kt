@@ -15,7 +15,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.CampaignModular
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
-import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
+import com.tokopedia.product.detail.data.model.datamodel.ProductSnapshotDataModel
 import com.tokopedia.product.detail.data.util.getCurrencyFormatted
 import com.tokopedia.product.detail.data.util.numberFormatted
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
 class PartialSnapshotView(private val view: View,
                           private val listener: DynamicProductDetailListener) {
 
-    fun renderData(product: DynamicProductInfoP1) {
+    fun renderData(product: DynamicProductInfoP1, nearestWarehouseStockWording: String) {
         val data = product.data
         val basic = product.basic
         with(view) {
@@ -64,8 +64,8 @@ class PartialSnapshotView(private val view: View,
                 text_original_price.paintFlags = text_original_price.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                 text_discount.text = context.getString(R.string.template_campaign_off, campaign.percentageAmount.numberFormatted())
 
-                sale_text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
-                text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
+                sale_text_stock_available.text = MethodChecker.fromHtml(data.stock.getFinalStockWording(nearestWarehouseStockWording))
+                text_stock_available.text = MethodChecker.fromHtml(data.stock.getFinalStockWording(nearestWarehouseStockWording))
                 if (campaign.activeAndHasId) {
                     discount_timer_holder.visibility = View.VISIBLE
                     showCountDownTimer(data.campaign)
@@ -74,7 +74,12 @@ class PartialSnapshotView(private val view: View,
                 } else {
                     discount_timer_holder.gone()
                     sale_text_stock_available.gone()
-                    text_stock_available.visible()
+
+                    if (data.variant.isVariant) {
+                        text_stock_available.gone()
+                    } else {
+                        text_stock_available.visible()
+                    }
                 }
             } else {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
@@ -82,9 +87,13 @@ class PartialSnapshotView(private val view: View,
                 text_original_price.visibility = View.GONE
                 text_discount.visibility = View.GONE
                 discount_timer_holder.visibility = View.GONE
-                text_stock_available.text = MethodChecker.fromHtml(data.stock.stockWording)
+                text_stock_available.text = MethodChecker.fromHtml(data.stock.getFinalStockWording(nearestWarehouseStockWording))
                 sale_text_stock_available.gone()
-                text_stock_available.visible()
+                if (data.variant.isVariant) {
+                    text_stock_available.gone()
+                } else {
+                    text_stock_available.visible()
+                }
             }
             label_prescription.showWithCondition(basic.needPrescription)
             divider.visible()
@@ -103,16 +112,17 @@ class PartialSnapshotView(private val view: View,
         }
     }
 
-    fun updateStockAndPriceWarehouse(nearestWarehouse: MultiOriginWarehouse, campaign: CampaignModular) {
+    fun updateStockAndPriceWarehouse(nearestWarehouseData: ProductSnapshotDataModel.NearestWarehouseDataModel, campaign: CampaignModular, variant: Boolean) {
         with(view) {
             if (campaign.activeAndHasId) {
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
-                        nearestWarehouse.price.getCurrencyFormatted())
-                sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouse.stockWording)
+                        nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
+                sale_text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
             } else {
+                text_stock_available.showWithCondition(!nearestWarehouseData.nearestWarehouseStockWording.isBlank() && !variant)
                 tv_price_pdp.text = context.getString(R.string.template_price, "",
-                        nearestWarehouse.price.getCurrencyFormatted())
-                text_stock_available.text = MethodChecker.fromHtml(nearestWarehouse.stockWording)
+                        nearestWarehouseData.nearestWarehousePrice.getCurrencyFormatted())
+                text_stock_available.text = MethodChecker.fromHtml(nearestWarehouseData.nearestWarehouseStockWording)
             }
         }
     }
@@ -152,13 +162,12 @@ class PartialSnapshotView(private val view: View,
             renderTxtIcon(labelIc, colorIc, imageIc)
             view.layout_guarantee.visible()
             view.layout_guarantee.setOnClickListener {
-            listener.onValuePropositionClicked(R.id.layout_guarantee)
+                listener.onValuePropositionClicked(R.id.layout_guarantee)
             }
         } else {
             view.layout_guarantee.gone()
             view.label_official_store.gone()
         }
-
     }
 
     private fun renderTxtIcon(labelIc: String, colorIc: Int, imageIc: ImageSpan) {
@@ -177,7 +186,6 @@ class PartialSnapshotView(private val view: View,
             setText(spanText, android.widget.TextView.BufferType.SPANNABLE)
         }
         view.label_official_store.visible()
-
     }
 
     private fun showCountDownTimer(campaign: CampaignModular) {
@@ -199,5 +207,4 @@ class PartialSnapshotView(private val view: View,
             view.discount_timer_holder.visibility = View.GONE
         }
     }
-
 }

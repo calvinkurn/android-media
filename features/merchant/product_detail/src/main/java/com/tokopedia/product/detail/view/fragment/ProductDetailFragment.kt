@@ -50,9 +50,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.common_tradein.model.ValidateTradeInResponse
 import com.tokopedia.design.base.BaseToaster
 import com.tokopedia.design.component.ToasterError
 import com.tokopedia.design.component.ToasterNormal
@@ -73,9 +73,9 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
+import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.*
-import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
 import com.tokopedia.product.detail.data.model.*
 import com.tokopedia.product.detail.data.model.ProductInfoP1
@@ -142,6 +142,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.variant_common.model.ProductVariantCommon
 import kotlinx.android.synthetic.main.fragment_product_detail.*
 import kotlinx.android.synthetic.main.fragment_product_detail.baseTradein
 import kotlinx.android.synthetic.main.menu_item_cart.view.*
@@ -1376,7 +1377,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         p2Login.pdpAffiliate?.let { renderAffiliate(it) }
         isWishlisted = p2Login.isWishlisted
 
-        actionButtonView.renderData(p2Login.isExpressCheckoutType,hasTopAds())
+        actionButtonView.renderData(p2Login.isExpressCheckoutType,hasTopAds(), CartRedirection())
     }
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
@@ -1680,7 +1681,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         val mediaViewModel = data.media.map {
             ProductMediaDataModel(it.type, it.url300, it.urlOriginal, it.urlThumbnail, it.mediaDescription, it.videoUrl, it.isAutoPlay)
         }
-        varPictureImage.renderData(mediaViewModel, this::onPictureProductClicked, this::onSwipePicture, childFragmentManager)
+        varPictureImage.renderData(mediaViewModel, this::onPictureProductClicked, this::onSwipePicture, childFragmentManager, lifecycle = lifecycle)
         productStatsView.renderData(data.stats.countReview, data.stats.countTalk, this::onReviewClicked, this::onDiscussionClicked)
         productDescrView.renderData(data)
         attributeInfoView.renderData(data.stats.countView, data.txStats)
@@ -1773,7 +1774,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
     }
 
-    private fun onSuccessGetProductVariantInfo(data: ProductVariant?) {
+    private fun onSuccessGetProductVariantInfo(data: ProductVariantCommon?) {
         if (data == null || !data.hasChildren) {
             partialVariantAndRateEstView.renderData(null, "", this::onVariantClicked)
             return
