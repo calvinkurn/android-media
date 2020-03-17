@@ -181,6 +181,8 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             settingItems.add(SwitchSettingItemViewModel(SettingConstant.SETTING_SAFE_SEARCH_ID,
                     getString(R.string.title_safe_mode_setting), getString(R.string.subtitle_safe_mode_setting), true))
 
+        settingItems.add(SettingItemViewModel(SettingConstant.SETTING_ABOUT_US,
+                getString(R.string.title_about_us)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_TNC_ID,
                 getString(R.string.title_tnc_setting)))
         settingItems.add(SettingItemViewModel(SettingConstant.SETTING_PRIVACY_ID,
@@ -233,6 +235,14 @@ class GeneralSettingFragment : BaseGeneralSettingFragment(), LogoutView, General
             SettingConstant.SETTING_TNC_ID -> {
                 accountAnalytics.eventClickSetting(TERM_CONDITION)
                 RouteManager.route(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK + SettingConstant.Url.BASE_MOBILE + SettingConstant.Url.PATH_TERM_CONDITION)
+            }
+            SettingConstant.SETTING_ABOUT_US -> {
+                accountAnalytics.eventClickSetting(ABOUT_US)
+                RouteManager.getIntent(activity, SettingConstant.Url.BASE_WEBVIEW_APPLINK
+                        + SettingConstant.Url.BASE_MOBILE
+                        + SettingConstant.Url.PATH_ABOUT_US).run {
+                    startActivity(this)
+                }
             }
             SettingConstant.SETTING_PRIVACY_ID -> {
                 accountAnalytics.eventClickSetting(PRIVACY_POLICY)

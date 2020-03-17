@@ -2,7 +2,7 @@ package com.tokopedia.navigation.analytics;
 
 import android.content.Context;
 
-import com.google.android.gms.tagmanager.DataLayer;
+import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.interfaces.ContextAnalytics;
@@ -70,7 +70,7 @@ public class InboxGtmTracker {
                 );
     }
 
-    public void eventClickRecommendationWishlist(Context context, RecommendationItem recommendationItem, boolean isAdd){
+    public void eventClickRecommendationWishlist(Context context, boolean isAdd){
         ContextAnalytics tracker = getTracker(context);
         if(tracker != null) {
             Map<String, Object> map =

@@ -92,6 +92,13 @@
         <meta-data
             android:name="HANSEL_APP_KEY"
             android:value="8CDH74MC9EZLPFIHNNJPT39ERKS5BODETYX2LBFQ83ECSV86WY"/>
+        <meta-data
+            android:name="com.bugsnag.android.API_KEY"
+            android:value="5476717ed806545b414030fcbe0964d7"/>
+        <meta-data android:name="com.bugsnag.android.DETECT_ANRS"
+            android:value="true"/>
+        <meta-data android:name="com.bugsnag.android.DETECT_NDK_CRASHES"
+            android:value="true"/>
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -179,11 +186,6 @@
                 android:name="APPS_HOME"
                 android:value="true"/>
         </activity>
-        <activity
-            android:name=".home.SimpleHomeActivity"
-            android:label="@string/title_activity_simple_home"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.White" />
         <activity
             android:name=".goldmerchant.GoldMerchantRedirectActivity"
             android:label="@string/label_gold_merchant"

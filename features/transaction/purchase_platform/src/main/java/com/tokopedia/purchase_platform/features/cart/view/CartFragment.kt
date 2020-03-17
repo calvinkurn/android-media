@@ -19,7 +19,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.*
 import com.google.android.material.appbar.AppBarLayout
 import com.google.gson.reflect.TypeToken
-import com.chuckerteam.chucker.api.Chucker
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
@@ -98,6 +97,7 @@ import com.tokopedia.wishlist.common.data.source.cloud.model.Wishlist
 import com.tokopedia.wishlist.common.listener.WishListActionListener
 import java.util.*
 import javax.inject.Inject
+import com.chuckerteam.chucker.api.Chucker
 
 /**
  * @author anggaprasetiyo on 18/01/18.

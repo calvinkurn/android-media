@@ -1,6 +1,6 @@
 package com.tokopedia.hotel.common.analytics
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.common.travel.data.entity.TravelCollectiveBannerModel
 import com.tokopedia.common.travel.data.entity.TravelRecentSearchModel
 import com.tokopedia.common.travel.utils.TravelDateUtil
@@ -491,10 +491,9 @@ class TrackingHotelUtil {
                 PROMOTIONS_LABEL, DataLayer.listOf(
                 DataLayer.mapOf(
                         ID_LABEL, position + 1,
-                        NAME_LABEL, lastSearchItems.title,
+                        NAME_LABEL, "$LAST_SEARCH_LABEL - ${lastSearchItems.title}",
                         CREATIVE_LABEL, lastSearchItems.appUrl,
-                        POSITION_LABEL, position + 1,
-                        CATEGORY_LABEL, HOTEL_CONTENT_LABEL
+                        POSITION_LABEL, position + 1
                 )))
     }
 

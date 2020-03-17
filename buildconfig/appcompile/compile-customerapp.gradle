@@ -25,6 +25,7 @@ include "features:content:interest_pick_common"
 include "features:category:basemvvm"
 include "features:category:tradein"
 include "features:category:age_restriction"
+include "features:category:explore_category"
 
 include "features:recharge:common_digital"
 include "features:recharge:digitalproduct"
@@ -190,12 +191,14 @@ include "features:user:user_identification"
 //include "features:user:user_identification_no_op"
 include "features:user:user_identification_common"
 include "features:user:kyc_centralized"
+include "features:user:loginfingerprint"
 
 include "features:user:vote"
 include "features:fintech:ovo_pay_with_qr"
 include "features:discovery:home_recom"
 include "features:discovery:home_wishlist"
 include "features:user:seamless_login"
+include "features:user:liveness"
 
 include 'features:fcm_common'
 include 'features:user:campaign_shake_landing'

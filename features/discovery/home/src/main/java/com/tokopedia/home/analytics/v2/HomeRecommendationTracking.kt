@@ -1,6 +1,6 @@
 package com.tokopedia.home.analytics.v2
 
-import com.google.android.gms.tagmanager.DataLayer
+import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.recommendation.HomeFeedViewModel
 
 object HomeRecommendationTracking : BaseTracking(){
@@ -39,7 +39,7 @@ object HomeRecommendationTracking : BaseTracking(){
             eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_NON_TOPADS,
             eventLabel = tabName,
             list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(homeFeedViewModel)
+            products = listOf(mapToProductTracking(homeFeedViewModel))
     )
 
     fun getRecommendationProductClickLogin(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductClick(
@@ -48,7 +48,7 @@ object HomeRecommendationTracking : BaseTracking(){
             eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_NON_TOPADS,
             eventLabel = tabName,
             list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(homeFeedViewModel)
+            products = listOf(mapToProductTracking(homeFeedViewModel))
     )
 
     fun getRecommendationProductClickLoginTopAds(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductClick(
@@ -57,7 +57,7 @@ object HomeRecommendationTracking : BaseTracking(){
             eventAction = CustomAction.RECOMMENDATION_CLICK_LOGIN_TOPADS,
             eventLabel = tabName,
             list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(homeFeedViewModel)
+            products = listOf(mapToProductTracking(homeFeedViewModel))
     )
 
     fun getRecommendationProductClickNonLoginTopAds(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductClick(
@@ -66,7 +66,7 @@ object HomeRecommendationTracking : BaseTracking(){
             eventAction = CustomAction.RECOMMENDATION_CLICK_NON_LOGIN_TOPADS,
             eventLabel = tabName,
             list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(homeFeedViewModel)
+            products = listOf(mapToProductTracking(homeFeedViewModel))
     )
 
     fun getRecommendationProductViewLogin(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductView(
@@ -75,7 +75,7 @@ object HomeRecommendationTracking : BaseTracking(){
             eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_NON_TOPADS,
             eventLabel = tabName,
             list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(homeFeedViewModel)
+            products = listOf(mapToProductTracking(homeFeedViewModel))
     )
 
     fun getRecommendationProductViewLoginTopAds(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductView(
@@ -84,7 +84,7 @@ object HomeRecommendationTracking : BaseTracking(){
             eventAction = CustomAction.RECOMMENDATION_VIEW_LOGIN_TOPADS,
             eventLabel = tabName,
             list = ActionField.RECOMMENDATION_ACTION_FIELD_LOGIN_TOP_ADS.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(homeFeedViewModel)
+            products = listOf(mapToProductTracking(homeFeedViewModel))
     )
 
     fun getRecommendationProductViewNonLogin(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductView(
@@ -93,7 +93,7 @@ object HomeRecommendationTracking : BaseTracking(){
             eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_NON_TOPADS,
             eventLabel = tabName,
             list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(homeFeedViewModel)
+            products = listOf(mapToProductTracking(homeFeedViewModel))
     )
 
     fun getRecommendationProductViewNonLoginTopAds(tabName: String, homeFeedViewModel: HomeFeedViewModel) = getBasicProductView(
@@ -102,7 +102,7 @@ object HomeRecommendationTracking : BaseTracking(){
             eventAction = CustomAction.RECOMMENDATION_VIEW_NON_LOGIN_TOPADS,
             eventLabel = tabName,
             list = ActionField.RECOMMENDATION_ACTION_FIELD_NON_LOGIN_TOP_ADS.format(tabName, homeFeedViewModel.recommendationType),
-            products = listOf(homeFeedViewModel)
+            products = listOf(mapToProductTracking(homeFeedViewModel))
     )
 
     fun getRecommendationAddWishlistLogin(productId: String, tabName: String): Map<String, Any> = DataLayer.mapOf(
@@ -124,5 +124,16 @@ object HomeRecommendationTracking : BaseTracking(){
             Category.KEY, Category.HOMEPAGE,
             Action.KEY, CustomAction.RECOMMENDATION_REMOVE_WISHLIST_LOGIN,
             Label.KEY, "$productId - $tabName"
+    )
+
+    private fun mapToProductTracking(homeFeedViewModel: HomeFeedViewModel) = Product(
+            id = homeFeedViewModel.productId,
+            name = homeFeedViewModel.productName,
+            variant = "",
+            productPrice = homeFeedViewModel.priceNumber.toString(),
+            productPosition = homeFeedViewModel.position.toString(),
+            isFreeOngkir = homeFeedViewModel.isFreeOngkirActive,
+            category = homeFeedViewModel.categoryBreadcrumbs,
+            brand = ""
     )
 }

@@ -14,11 +14,14 @@ import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.salam.umrah.R
 import com.tokopedia.salam.umrah.common.analytics.UmrahTrackingAnalytics
 import com.tokopedia.salam.umrah.common.data.MyUmrahEntity
+import com.tokopedia.salam.umrah.common.data.TravelAgent
+import com.tokopedia.salam.umrah.common.data.UmrahTravelAgentsEntity
 import com.tokopedia.salam.umrah.common.util.UmrahDateUtil.getYearNow
 import com.tokopedia.salam.umrah.homepage.data.Products
 import com.tokopedia.salam.umrah.homepage.data.UmrahBanner
@@ -49,6 +52,8 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    lateinit var performanceMonitoring: PerformanceMonitoring
+
     override fun getAdapterTypeFactory(): UmrahHomepageFactoryImpl =  UmrahHomepageFactoryImpl(this, userSessionInterface)
 
     override fun getScreenName(): String = getString(R.string.umrah_home_page_activity_label, getYearNow())
@@ -59,6 +64,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
+        initializePerformance()
         resetIsRequested()
         setHideFAB()
     }
@@ -116,6 +122,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        initializePerformance()
         resetIsRequested()
         activity?.run {
             val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
@@ -139,6 +146,7 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         umrahHomepageViewModel.isError.observe(this, Observer {
             it?.let {
                 if (it) {
+                    performanceMonitoring.stopTrace()
                     resetIsRequested()
                     NetworkErrorHelper.showEmptyState(context, view?.rootView,null,null,null,R.drawable.umrah_img_empty_search_png) {
                         loadDataAll()
@@ -146,6 +154,10 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
                 }
             }
         })
+    }
+
+    private fun initializePerformance(){
+        performanceMonitoring = PerformanceMonitoring.start(UMRAH_HOME_PAGE_PERFORMANCE)
     }
 
     private fun resetIsRequested(){
@@ -167,6 +179,11 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
 
     private fun setHideFAB(){
         fab_umrah_home_page_message.hide()
+    }
+
+    override fun onDestroyView() {
+        performanceMonitoring.stopTrace()
+        super.onDestroyView()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -250,6 +267,24 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         umrahHomepageViewModel.getPartnerTravelData(GraphqlHelper.loadRawString(resources,
                 R.raw.gql_query_umrah_common_travel_agents), isLoadFromCloud)
     }
+
+    override fun onPerformanceHomepageListener() {
+        performanceMonitoring.stopTrace()
+    }
+
+    override fun onImpressionPartnerTravel(headerTitle: String, umrahTravelAgentsEntity: UmrahTravelAgentsEntity) {
+        trackingUmrahUtil.umrahHomepagePartnerTravelImpression(headerTitle,umrahTravelAgentsEntity)
+
+    }
+
+    override fun onClickPartnerTravel(headerTitle: String, travelAgent: TravelAgent) {
+        trackingUmrahUtil.umrahHomepagePartnerTravelClick(headerTitle,travelAgent)
+    }
+
+    override fun onClickAllPartner() {
+        RouteManager.route(context, ApplinkConst.SALAM_UMRAH_LIST_AGEN)
+    }
+
     companion object {
         fun getInstance(): UmrahHomepageFragment = UmrahHomepageFragment()
         var isRequestedMyUmrah = false
@@ -260,6 +295,8 @@ class UmrahHomepageFragment : BaseListFragment<UmrahHomepageModel, UmrahHomepage
         var isRequestedPartner = false
         const val REQUEST_CODE_LOGIN = 400
         const val UMRAH_SEARCH_PARAM_INDEX = 0
+
+        const val UMRAH_HOME_PAGE_PERFORMANCE = "sl_umrah_homepage"
     }
 
     private fun goToLoginPage() {
