@@ -60,28 +60,24 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
     }
 
     private fun initCategoryViewHolder(holder: CategoryViewHolder, position: Int) {
+        val item = categoryList[position]
 
         holder.parentLayout.setOnClickListener {
-            listener.onItemClicked(categoryList[position].id
-                    ?: "", position, categoryList[position].name
-                    ?: "", categoryList[position].applinks)
+            listener.onItemClicked(item.id
+                    ?: "", position, item.name
+                    ?: "", item.applinks)
 
             categoryAnalytics.eventSideBarCategoryClick(categoryList[position], position)
         }
-        if (categoryList[position].isSelected) {
-            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrl, R.drawable.category_ic_broken_image)
+        if (item.isSelected) {
+            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, item.iconImageUrl, R.drawable.category_ic_broken_image)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.white))
         } else {
-            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, categoryList[position].iconImageUrlGray, R.drawable.category_ic_broken_image)
+            ImageHandler.loadImage(holder.itemView.context, holder.categoryImage, item.iconImageUrlGray, R.drawable.category_ic_broken_image)
             holder.parentLayout.setBackgroundColor(MethodChecker.getColor(holder.itemView.context, R.color.category_background))
         }
 
-        val categoryName: String = categoryList[position].name ?: ""
-        if (categoryName.length > 18) {
-            holder.categoryName.text = categoryName.substring(0, 18) + "..."
-        } else {
-            holder.categoryName.text = categoryName
-        }
+        holder.categoryName.text = getEllipsizedMessage(item.name ?: "")
     }
 
 
@@ -114,4 +110,9 @@ class CategoryLevelOneAdapter(private val categoryList: MutableList<com.tokopedi
         }
     }
 
+    private fun getEllipsizedMessage(message: String): String? {
+        return if (message.length > 18) {
+            message.substring(0, 17).plus("...")
+        } else message
+    }
 }
