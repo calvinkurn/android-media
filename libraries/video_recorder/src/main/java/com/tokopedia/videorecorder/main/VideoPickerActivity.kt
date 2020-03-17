@@ -33,8 +33,8 @@ import java.util.*
  * imagePickerGallery: henry
  */
 open class VideoPickerActivity : BaseSimpleActivity(),
-        VideoPickerCallback,
-        ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
+    VideoPickerCallback,
+    ImagePickerGalleryFragment.OnImagePickerGalleryFragmentListener {
 
     companion object {
         //video recorder const
@@ -56,6 +56,7 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     //catch videoPath uri
     private var videoGalleryPaths = arrayListOf<String>()
+    private var appendedVideoPaths = arrayListOf<String>()
     private var videoPath: String = ""
 
     //saved state of tab layout
@@ -102,9 +103,9 @@ open class VideoPickerActivity : BaseSimpleActivity(),
 
     private fun getPermissions(): Array<String> {
         return arrayOf(
-                PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
-                PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
-                PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO)
+            PermissionCheckerHelper.Companion.PERMISSION_WRITE_EXTERNAL_STORAGE,
+            PermissionCheckerHelper.Companion.PERMISSION_CAMERA,
+            PermissionCheckerHelper.Companion.PERMISSION_RECORD_AUDIO)
     }
 
     private fun initView() {
@@ -150,9 +151,11 @@ open class VideoPickerActivity : BaseSimpleActivity(),
     @SuppressLint("MissingPermission")
     private fun viewPagerAdapter(): ViewPagerAdapter {
         val videoPickerGallery = ImagePickerGalleryFragment.newInstance(
-                GalleryType.VIDEO_ONLY,
-                supportMultipleSelection,
-                minImageResolution)
+            GalleryType.VIDEO_ONLY,
+            supportMultipleSelection,
+            minImageResolution,
+            false,
+            false)
 
         adapter.addFragment(videoPickerGallery, getString(R.string.vidpick_menu_video_picker))
         adapter.addFragment(VideoRecorderFragment(), getString(R.string.vidpick_menu_recorder))
@@ -317,15 +320,18 @@ open class VideoPickerActivity : BaseSimpleActivity(),
      * @method(getMaxFileSize)
      */
 
-    override fun onAlbumItemClicked(item: MediaItem?, isChecked: Boolean) {
+    override fun onAlbumItemClicked(videoPath: String, isChecked: Boolean) {
         //get single image
         isVideoSourcePicker = true
-        videoPath = item?.realPath.toString()
         onVideoTaken(videoPath)
     }
 
-    override fun getImagePath(): ArrayList<String> {
+    override fun getSelectedImagePath(): ArrayList<String> {
         return videoGalleryPaths
+    }
+
+    override fun getAppendedImagePath(): ArrayList<String> {
+        return appendedVideoPaths
     }
 
     override fun isMaxImageReached(): Boolean = false

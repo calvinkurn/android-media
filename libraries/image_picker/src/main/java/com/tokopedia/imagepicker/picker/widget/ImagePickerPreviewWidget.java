@@ -3,20 +3,20 @@ package com.tokopedia.imagepicker.picker.widget;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.widget.FrameLayout;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
-import android.util.AttributeSet;
-import android.view.LayoutInflater;
-import android.widget.FrameLayout;
 
 import com.tokopedia.imagepicker.R;
 import com.tokopedia.imagepicker.picker.adapter.ImagePickerThumbnailAdapter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +29,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
 
     private ImagePickerPreviewWidget.OnImagePickerThumbnailListWidgetListener onImagePickerThumbnailListWidgetListener;
     private RecyclerView recyclerView;
+    private boolean isShown = true;
 
     public interface OnImagePickerThumbnailListWidgetListener {
         void onThumbnailItemLongClicked(String imagePath, int position);
@@ -57,6 +58,10 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
     public ImagePickerPreviewWidget(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
+    }
+
+    public void setShown(boolean shown) {
+        isShown = shown;
     }
 
     private void init() {
@@ -90,6 +95,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
 
     public void addData(String imagePath) {
         imagePickerThumbnailAdapter.addData(imagePath);
+        if (!isShown) return;
         recyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -113,6 +119,7 @@ public class ImagePickerPreviewWidget extends FrameLayout implements ImagePicker
 
     public int removeData(String imagePath) {
         final int position = imagePickerThumbnailAdapter.removeData(imagePath);
+        if (!isShown) return position;
         recyclerView.postDelayed(new Runnable() {
             @Override
             public void run() {

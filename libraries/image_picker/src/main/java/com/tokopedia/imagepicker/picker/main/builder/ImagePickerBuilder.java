@@ -3,6 +3,7 @@ package com.tokopedia.imagepicker.picker.main.builder;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import androidx.annotation.Nullable;
 
 import com.tokopedia.imagepicker.R;
@@ -101,7 +102,26 @@ public class ImagePickerBuilder implements Parcelable {
     }
 
     public boolean supportMultipleSelection() {
-        return imagePickerMultipleSelectionBuilder!= null;
+        return imagePickerMultipleSelectionBuilder != null;
+    }
+
+    public boolean hideThumbnailListPreview() {
+        return imagePickerMultipleSelectionBuilder != null &&
+                imagePickerMultipleSelectionBuilder.getPreviewExtension().hideThumbnailListPreview;
+    }
+
+    public boolean showCounterViewAtSelectedImage() {
+        return imagePickerMultipleSelectionBuilder != null &&
+                imagePickerMultipleSelectionBuilder.getPreviewExtension().showCounterAtSelectedImage;
+    }
+
+    public boolean showBiggerPreview() {
+        return hideThumbnailListPreview() &&
+                imagePickerMultipleSelectionBuilder.getPreviewExtension().showBiggerPreviewWhenThumbnailHidden;
+    }
+
+    public boolean appendInitialImage() {
+        return imagePickerMultipleSelectionBuilder.getPreviewExtension().appendInitialSelectedImageInGallery;
     }
 
     public int getMinResolution() {
@@ -144,14 +164,14 @@ public class ImagePickerBuilder implements Parcelable {
     }
 
     public int getMaximumNoPick() {
-        if (imagePickerMultipleSelectionBuilder!= null) {
+        if (imagePickerMultipleSelectionBuilder != null) {
             return imagePickerMultipleSelectionBuilder.getMaximumNoPick();
         }
         return 1;
     }
 
-    public ArrayList<String> getInitialSelectedImagePathList(){
-        if (imagePickerMultipleSelectionBuilder!= null) {
+    public ArrayList<String> getInitialSelectedImagePathList() {
+        if (imagePickerMultipleSelectionBuilder != null) {
             return imagePickerMultipleSelectionBuilder.getInitialSelectedImagePathList();
         }
         return new ArrayList<>();
@@ -161,8 +181,9 @@ public class ImagePickerBuilder implements Parcelable {
         return imagePickerMultipleSelectionBuilder;
     }
 
-    public @Nullable ArrayList<ImageRatioTypeDef> getRatioOptionList() {
-        if (imagePickerEditorBuilder != null){
+    public @Nullable
+    ArrayList<ImageRatioTypeDef> getRatioOptionList() {
+        if (imagePickerEditorBuilder != null) {
             return imagePickerEditorBuilder.getImageRatioTypeDefs();
         } else {
             return null;

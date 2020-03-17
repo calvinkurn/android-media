@@ -27,6 +27,7 @@
             app:camFlash="off"
             app:cameraPlaySounds="true"
             app:cameraMode="picture"
+            app:camAudio="off"
             app:camFacing="back" />
 
         <ImageButton
