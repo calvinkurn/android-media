@@ -108,6 +108,11 @@ public class GeolocationPresenter implements GeolocationContract.GeolocationPres
         }
     }
 
+    @Override
+    public LocationPass getUpdateLocation() {
+        return locationPass;
+    }
+
     private void getExistingLocation() {
         view.moveMap(GeoLocationUtils.generateLatLng(locationPass.getLatitude(), locationPass.getLongitude()));
     }

@@ -56,7 +56,9 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chips
     implementation rootProject.ext.miscDependencies.flexBoxLayout
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.miscDependencies.loaderviewlibrary
+    implementation rootProject.ext.miscDependencies.lottie
     implementation rootProject.ext.miscDependencies.multiDex
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
@@ -75,15 +77,18 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
 
+
     implementation(rootProject.ext.tkpdLibDependencies.showcase) {
         exclude group: "com.android.support"
     }
 
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.dialog
-    implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.unifyDependencies.empty_state
+    implementation rootProject.ext.unifyDependencies.global_error
+    implementation rootProject.ext.unifyDependencies.principles
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     implementation project(rootProject.ext.libraries.iris)
     implementation project(rootProject.ext.libraries.tkpdabstraction)
@@ -153,9 +158,6 @@ project.ext {
     groupId = 'com.tokopedia.transaction'
     versionName = "0.0.1"
     artifactName = "purchase_platform-release"
-    unitTestKotlinIncludes = [
-            '**/CartListPresenter.*'
-    ]
 }
 
 apply from: "$rootProject.projectDir/publish_local.gradle"

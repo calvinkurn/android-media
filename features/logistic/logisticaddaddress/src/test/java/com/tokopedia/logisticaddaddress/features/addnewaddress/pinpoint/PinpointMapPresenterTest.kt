@@ -90,7 +90,7 @@ object PinpointMapPresenterTest : Spek({
                 presenter.autofill(0.1, 0.1, 0.0f)
             }
             Then("on success is called") {
-                verify { view.onSuccessAutofill(keroMaps.data, keroMaps.messageError[0]) }
+                verify { view.onSuccessAutofill(keroMaps.data) }
             }
         }
 

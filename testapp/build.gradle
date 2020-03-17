@@ -2,8 +2,8 @@ apply plugin: 'com.android.application'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.hansel.preprocessor'
-
 apply from: '../tools/set_debug_tools.gradle'
+
 kapt {
     correctErrorTypes = true
     generateStubs = false
@@ -179,6 +179,7 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation project(rootProject.ext.libraries.track)
+    implementation project(rootProject.ext.libraries.analyticsDebuggerNoop)
 
     implementation rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatch
     kapt rootProject.ext.deeplinkDispatchDependencies.deeplinkDispatchProcessor
@@ -194,12 +195,14 @@ dependencies {
     implementation rootProject.ext.networkDependencies.loggingInterceptor
 
     implementation project(rootProject.ext.libraries.commonNetwork)
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.graphql
     implementation rootProject.ext.tkpdInternalLibDependencies.network
     implementation rootProject.ext.tkpdInternalLibDependencies.authentication
     implementation rootProject.ext.tkpdInternalLibDependencies.usersession
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.cacheapi
+    implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
 
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icon
@@ -227,7 +230,7 @@ dependencies {
 
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
-
+	implementation project(rootProject.ext.features.purchase_platform)
 }
 
 repositories {

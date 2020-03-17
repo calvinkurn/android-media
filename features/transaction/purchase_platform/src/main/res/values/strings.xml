@@ -182,8 +182,8 @@
     <string name="button_mengerti">Mengerti</string>
     <string name="gratis_ongkir">Gratis Ongkir</string>
     <string name="label_continue_to_payment">Tetap lanjut ke pembayaran?</string>
-    <string name="label_promo_not_eligible_info"><![CDATA[Promo yang tidak memenuhi syarat & ketentuan akan dinon-aktifkan untuk pembayaran ini.]]></string>
-    <string name="label_button_continue">Lanjutkan</string>
+    <string name="label_promo_not_eligible_info">Ada promo yang tidak bisa dipakai untuk transaksi ini></string>
+    <string name="label_button_continue">Lanjut Bayar</string>
     <string name="checkout_module_title_wishlist">Wujudkan Wishlist kamu!</string>
     <string name="checkout_module_title_recent_view">Kamu sempat lihat-lihat ini</string>
     <string name="checkout_module_title_recommendation">Rekomendasi</string>
@@ -259,6 +259,27 @@
     <string name="bottomsheet_action_global_error">Lanjutkan Tanpa Template</string>
     <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
+
+    <string name="checkout_module_promo_activity_title">Pakai Kupon/Promo</string>
+
+    <string name="promo_funnel_icon_desc">promo_funnel_icon</string>
+    <string name="promo_funnel_label">Makin hemat pakai promo</string>
+    <string name="promo_benefit_info">3 promo dipakai</string>
+    <string name="promo_funnel_icon_chev_desc">promo_funnel_icon_2</string>
+
+    <string name="cart_empty_with_promo_title">Ada promo menunggumu, nih!</string>
+    <string name="cart_empty_with_promo_desc">Ayo belanja min. Rp100.000 untuk pakai promo cashback 10% maks. Rp50.000!</string>
+    <string name="cart_empty_with_promo_btn">Belanja Pakai Promo</string>
+    <string name="promo_checkout_label_promo_recommendation_title">Ada %d promo terbaik untukmu</string>
+    <string name="promo_checkout_label_promo_recommendation_title_after_apply">%d promo terbaik dipilih</string>
+    <string name="promo_checkout_label_recommendation_benefit">Kamu bisa hemat %s</string>
+    <string name="promo_checkout_label_button_apply_promo">Pakai Promo (%d)</string>
+
+    <string name="promo_checkout_inactive_label">Promo gagal ditampilkan</string>
+    <string name="promo_checkout_inactive_desc">Coba refresh beberapa saat lagi</string>
+
+    <string name="promo_summary_usage_label">Diskon barang</string>
+    <string name="promo_summary_usage_value">Rp20.000</string>
 
     <string name="occ_preference">Pengaturan Beli Langsung</string>
     <string name="preference_list_empty_header">Kamu belum punya pengaturan Beli Langsung</string>

@@ -31,6 +31,16 @@ public class FpmLogger {
             }
 
             @Override
+            public void enableAutoLogFile(boolean status) {
+
+            }
+
+            @Override
+            public boolean isAutoLogFileEnabled() {
+                return false;
+            }
+
+            @Override
             public void enableNotification(boolean status) {
 
             }

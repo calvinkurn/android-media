@@ -22,8 +22,12 @@ data class PropertyPrice(
 
         @SerializedName("extraCharges")
         @Expose
-        val extraCharges: Charge = Charge()
-){
+        val extraCharges: Charge = Charge(),
+
+        @SerializedName("deals")
+        @Expose
+        var deals: PriceDeals = PriceDeals()
+) {
 
     data class Charge(
             @SerializedName("netPrice")
@@ -59,5 +63,19 @@ data class PropertyPrice(
             @SerializedName("priceAmount")
             @Expose
             val priceAmount: Float = 0f
+    )
+
+    data class PriceDeals(
+            @SerializedName("tagging")
+            @Expose
+            val tagging: String = "",
+
+            @SerializedName("price")
+            @Expose
+            val price: String = "",
+
+            @SerializedName("priceAmount")
+            @Expose
+            val priceAmount: Int = 0
     )
 }

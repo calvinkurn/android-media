@@ -10,6 +10,7 @@ import com.tokopedia.purchase_platform.R;
 import com.tokopedia.purchase_platform.features.checkout.domain.model.cartsingleshipment.ShipmentCostModel;
 import com.tokopedia.purchase_platform.features.checkout.view.ShipmentAdapterActionListener;
 import com.tokopedia.design.utils.CurrencyFormatUtil;
+import com.tokopedia.unifyprinciples.Typography;
 
 /**
  * @author Aghny A. Putra on 02/03/18

@@ -119,6 +119,14 @@ fun ImageView.loadImageCenterCrop(url: String){
             .into(this)
 }
 
+fun ImageView.loadImageWithoutPlaceholder(url: String){
+    Glide.with(context)
+            .load(url)
+            .format(DecodeFormat.PREFER_ARGB_8888)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .into(this)
+}
+
 fun ImageView.loadImage(url: String, width: Int, height: Int, skipMemoryCache: Boolean = false, placeholder: Int = -1){
     Glide.with(context)
             .load(url)
