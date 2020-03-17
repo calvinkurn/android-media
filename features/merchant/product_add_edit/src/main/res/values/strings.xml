@@ -19,7 +19,7 @@
     <!-- add edit product name -->
     <string name="add_product_name_header">Isi nama produk yang kamu jual</string>
     <string name="detail_label_product_name">Nama Produk</string>
-    <string name="label_add_product_name_tips">Tips: Jenis Produk + Merek Produk + Keterangan Tambahan</string>
+    <string name="label_add_product_name_tips">Tips: Jenis Produk + Merek Produk + \nKeterangan Tambahan</string>
     <string name="error_empty_product_name">Nama produk tidak boleh kosong</string>
     <string name="error_product_name_exist">Oops, nama produk ini sudah digunakan. Coba cari nama lain, ya!</string>
     <string name="error_restricted_product_name">Nama produk tidak bisa digunakan. Coba cari nama lain, ya!</string>
@@ -44,11 +44,16 @@
     <!-- add edit product wholesale -->
     <string name="add_product_wholesale_header">Grosir</string>
     <string name="label_minimum_quantity">Jumlah minimal</string>
-    <string name="label_wholesale_quantity">Harga grosir</string>
+    <string name="label_wholesale_price">Harga grosir</string>
+    <string name="label_greater_than">></string>
     <string name="action_add_new_wholesale_price">+ Tambah harga grosir</string>
+    <string name="error_empty_wholesale_quantity">Jumlah minimal tidak boleh kosong</string>
+    <string name="error_wholesale_quantity_cant_be_zero">Minimum pemesanan tidak boleh 0</string>
     <string name="error_wholesale_quantity_less_than_two">Stok minimum 2</string>
+    <string name="error_empty_wholesale_price">Harga grosir tidak boleh kosong</string>
+    <string name="error_wholesale_price_cant_be_zero">Harga grosir idak boleh 0</string>
     <string name="error_wholesale_price_exceeding_max_limit">Harga grosir melebihi batas maks. Rp500 juta</string>
-    <string name="error_product_wholesale_price_too_expensive">Harga grosir harus lebih murah dari harga satuan</string>
+    <string name="error_wholesale_price_too_expensive">Harga grosir harus lebih murah dari harga satuan</string>
 
     <!-- add edit product stock -->
     <string name="add_product_stock_header">Stok</string>
@@ -57,16 +62,20 @@
     <string name="error_empty_product_stock">Stok produk tidak boleh kosong</string>
     <string name="error_empty_minimum_order">Minimum pemesanan tidak boleh kosong</string>
     <string name="error_available_stock_quantity_exceeding_max_limit">Stok melebihi batas maks. 999.999</string>
-    <string name="error_available_stock_quantity_cant_be_zero">Stok tidak boleh 0</string>
+    <string name="error_minimum_stock_quantity_is_one">Stok minimal 1</string>
     <string name="error_minimum_order_cant_be_zero">Minimum pemesanan tidak boleh 0</string>
     <string name="error_minimum_order_cant_exceed_available_stock">Minimum pemesanan tidak boleh melebihi jumlah stok</string>
 
-    <!-- activate preOrder state -->
+    <!-- activate pre order state -->
     <string name="action_activate_preorder_state">Aktifkan PreOrder</string>
     <string name="label_duration">Durasi</string>
     <string name="label_duration_amount">Jumlah</string>
-    <string name="error_preorder_duration_cant_be_zero">PreOrder tidak boleh 0</string>
-    <string name="error_preorder_duration_cant_exceed_ninety_days">PreOrder tidak boleh 0</string>
+    <string name="label_day">Hari</string>
+    <string name="label_week">Minggu</string>
+    <string name="error_preorder_duration_cant_be_empty">Durasi tidak boleh kosong</string>
+    <string name="error_preorder_duration_minimum_is_one">Durasi minimal 1</string>
+    <string name="error_preorder_duration_cant_exceed_ninety_days">Durasi melebihi batas maks. \n90 hari</string>
+    <string name="error_preorder_duration_cant_exceed_thirteen_weeks">Durasi melebihi batas maks. \n13 minggu</string>
 
     <!-- add edit product condition -->
     <string name="add_product_condition_header">Kondisi</string>

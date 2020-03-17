@@ -5,7 +5,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.TextFieldUnify
-        android:id="@+id/tfu_duration"
+        android:id="@+id/tfu_sku"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"

@@ -36,6 +36,7 @@
         <com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="Fashion Wanita/Batik Wanita/Dress"
             tools:text="Fashion Pria/Batik Pria/Kemeja" />
 

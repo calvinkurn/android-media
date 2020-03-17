@@ -36,7 +36,7 @@ class ProductPhotoAdapter(private val maxSize: Int,
     fun addItem(productPhotoPath: String) {
         if (productPhotoPaths.size == maxSize) return
         else productPhotoPaths.add(productPhotoPath)
-        notifyItemInserted(productPhotoPaths.indexOf(productPhotoPath))
+        notifyItemInserted(productPhotoPaths.lastIndex)
     }
 
     override fun onDeleteButtonClicked(position: Int) {
