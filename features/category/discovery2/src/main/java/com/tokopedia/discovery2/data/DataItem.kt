@@ -78,7 +78,11 @@ data class DataItem(
         var priceFormat: String? = "",
 
         @field:SerializedName("image_click_url")
-        var imageClickUrl: String? = ""
+        var imageClickUrl: String? = "",
+
+        @SerializedName("video_id")
+        val videoId: String? = ""
+
 ) {
     val leftMargin: Int
         get() {
