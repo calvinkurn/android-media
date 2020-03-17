@@ -6,6 +6,7 @@ import com.tokopedia.product.detail.common.data.model.product.Etalase
 import com.tokopedia.product.detail.common.data.model.product.ProductInfo
 import com.tokopedia.product.detail.data.model.datamodel.*
 import com.tokopedia.product.detail.data.model.variant.VariantDataModel
+import com.tokopedia.variant_common.model.ProductVariantCommon
 
 object DynamicProductDetailMapper {
 
@@ -152,6 +153,17 @@ object DynamicProductDetailMapper {
         if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add("leasing")
 
         return listOf(CartRedirectionParams(campaignId, campaignTypeId, listOfFlags))
+    }
+
+    fun generateCartTypeVariantParams(dynamicProductInfoP1: DynamicProductInfoP1?, productVariant: ProductVariantCommon?): List<CartRedirectionParams> {
+        val listOfFlags = mutableListOf<String>()
+        if (dynamicProductInfoP1?.data?.preOrder?.isActive == true) listOfFlags.add("preorder")
+        if (dynamicProductInfoP1?.basic?.isLeasing == true) listOfFlags.add("leasing")
+
+        return productVariant?.children?.map {
+            CartRedirectionParams(it.campaign?.campaignID?.toIntOrNull() ?: 0,
+                    it.campaign?.campaignType ?: 0, listOfFlags)
+        } ?: listOf()
     }
 
     fun generateButtonAction(it: String, atcButton: Boolean, leasing: Boolean): Int {

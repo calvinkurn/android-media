@@ -1027,11 +1027,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
 
             productId = updatedDynamicProductInfo?.basic?.productID
             viewModel.getDynamicProductInfoP1 = updatedDynamicProductInfo
-            val payload: Int? = if (selectedChild?.hasPicture == true &&
-                    updatedDynamicProductInfo?.data?.media?.firstOrNull()?.uRLOriginal != pdpHashMapUtil?.snapShotMap?.media?.firstOrNull()?.urlOriginal) ProductDetailConstant.PAYLOAD_VARIANT_SELECTED else null
             pdpHashMapUtil?.updateDataP1(updatedDynamicProductInfo)
 
-            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, payload)
+            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
+                    viewModel.p2Login.value?.isExpressCheckoutType ?: false,
+                    hasTopAds(),
+                    viewModel.cartTypeData?.getCartTypeAtPosition(indexOfSelectedVariant ?: -1))
+
+            dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap)
             dynamicAdapter.notifyVariantSection(pdpHashMapUtil?.productNewVariantDataModel, 1)
         })
     }
@@ -1137,12 +1140,14 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
     private fun observeP2Login() {
         viewModel.p2Login.observe(this, Observer {
             topAdsGetProductManage = it.topAdsGetProductManage
-            actionButtonView.renderData(it.isExpressCheckoutType, hasTopAds(), it.newCartTypeResponse.cartRedirection)
+            it.pdpAffiliate?.let { renderAffiliate(it) }
+            actionButtonView.renderData(viewModel.getDynamicProductInfoP1?.basic?.isActive() == false,
+                    it.isExpressCheckoutType, hasTopAds(),
+                    it.newCartTypeResponse.cartRedirection.data.firstOrNull())
 
             if (::performanceMonitoringFull.isInitialized)
                 performanceMonitoringP2Login.stopTrace()
 
-            it.pdpAffiliate?.let { renderAffiliate(it) }
             pdpHashMapUtil?.updateDataP2Login(it)
             dynamicAdapter.notifySnapshotWithPayloads(pdpHashMapUtil?.snapShotMap, ProductDetailConstant.PAYLOAD_WISHLIST)
 
@@ -1672,7 +1677,7 @@ class DynamicProductDetailFragment : BaseListFragment<DynamicPdpDataModel, Dynam
                             productInfo.basic.weight.toFloat(),
                             productInfo.basic.weightUnit,
                             if (viewModel.selectedMultiOrigin.warehouseInfo.isFulfillment)
-                                viewModel.selectedMultiOrigin.warehouseInfo.origin else null,
+                                viewModel.selectedMultiOrigin.warehouseInfo.getOrigin() else null,
                             productInfo.data.isFreeOngkir.isActive,
                             shopInfo.shopCore.shopID,
                             productInfo.basic.productID

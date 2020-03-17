@@ -10,7 +10,7 @@ import com.tokopedia.affiliatecommon.data.pojo.productaffiliate.TopAdsPdpAffilia
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.detail.R
-import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.UnifyButton
@@ -42,7 +42,7 @@ class PartialButtonActionView private constructor(private val view: View,
     var hasTopAdsActive: Boolean = false
     var preOrder: PreOrder? = PreOrder()
     var onSuccessGetCartType = false
-    private var cartTypeData: CartRedirection? = null
+    private var cartTypeData: CartTypeData? = null
 
     companion object {
         fun build(_view: View, _listener: View.OnClickListener) = PartialButtonActionView(_view, _listener)
@@ -60,11 +60,12 @@ class PartialButtonActionView private constructor(private val view: View,
         renderButton()
     }
 
-    fun renderData(isExpressCheckout: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartRedirection) {
+    fun renderData(isWarehouseProduct: Boolean, isExpressCheckout: Boolean, hasTopAdsActive: Boolean, cartTypeData: CartTypeData? = null) {
+        this.isWarehouseProduct = isWarehouseProduct
         this.isExpressCheckout = isExpressCheckout
         this.hasTopAdsActive = hasTopAdsActive
         this.cartTypeData = cartTypeData
-        this.onSuccessGetCartType = cartTypeData.errorMessage.isEmpty() && cartTypeData.data.firstOrNull()?.availableButtons?.isNotEmpty() == true
+        this.onSuccessGetCartType = cartTypeData != null
         renderButton()
     }
 
@@ -81,14 +82,15 @@ class PartialButtonActionView private constructor(private val view: View,
     }
 
     private fun showCartTypeButton() = with(view) {
-        val unavailableButton = cartTypeData?.data?.firstOrNull()?.unavailableButtons ?: listOf()
-        val availableButton = cartTypeData?.data?.firstOrNull()?.availableButtons ?: listOf()
+        val unavailableButton = cartTypeData?.unavailableButtons ?: listOf()
+        val availableButton = cartTypeData?.availableButtons ?: listOf()
 
         bindAbTestChatButton(btn_topchat)
 
         btn_topchat.showWithCondition("chat" !in unavailableButton)
         btn_buy_now.showWithCondition(availableButton.firstOrNull() != null)
         btn_add_to_cart.showWithCondition(availableButton.getOrNull(1) != null)
+        btn_byme.showWithCondition("byme" !in unavailableButton)
 
         btn_buy_now.text = availableButton.getOrNull(0)?.text ?: ""
         btn_add_to_cart.text = availableButton.getOrNull(1)?.text ?: ""

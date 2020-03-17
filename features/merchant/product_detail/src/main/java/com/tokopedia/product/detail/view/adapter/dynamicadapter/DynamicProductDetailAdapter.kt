@@ -21,7 +21,7 @@ class DynamicProductDetailAdapter(
         }
     }
 
-    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int?) {
+    fun notifySnapshotWithPayloads(snapshotData: ProductSnapshotDataModel?, payload: Int? = null) {
         snapshotData?.let {
             val indexOfSnapshot = list.indexOf(it)
             if (payload != null) {

@@ -5,7 +5,6 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.detail.common.data.model.constant.TimeUnitTypeDef
 import com.tokopedia.product.detail.common.data.model.product.PreOrder
 import com.tokopedia.product.detail.common.data.model.warehouse.WarehouseInfo
-import com.tokopedia.variant_common.model.VariantMultiOriginWarehouse
 
 inline fun <reified T> GraphqlResponse.getSuccessData(): T {
     val error = getError(T::class.java)
@@ -17,13 +16,6 @@ inline fun <reified T> GraphqlResponse.getSuccessData(): T {
 }
 
 val WarehouseInfo.origin: String?
-    get() {
-        return if (districtId.isNotBlank() && (postalCode.isNotBlank() || geoLocation.isNotBlank())) {
-            arrayOf(districtId, postalCode, geoLocation).joinToString("|")
-        } else null
-    }
-
-val VariantMultiOriginWarehouse.WarehouseInfo.origin: String?
     get() {
         return if (districtId.isNotBlank() && (postalCode.isNotBlank() || geoLocation.isNotBlank())) {
             arrayOf(districtId, postalCode, geoLocation).joinToString("|")

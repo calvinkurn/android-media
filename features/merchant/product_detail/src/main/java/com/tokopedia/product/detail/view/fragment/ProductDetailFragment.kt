@@ -74,6 +74,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
+import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
 import com.tokopedia.product.detail.common.data.model.constant.ProductStatusTypeDef
 import com.tokopedia.product.detail.common.data.model.product.*
 import com.tokopedia.product.detail.common.data.model.warehouse.MultiOriginWarehouse
@@ -1377,7 +1378,7 @@ class ProductDetailFragment : BaseDaggerFragment(), RecommendationProductAdapter
         p2Login.pdpAffiliate?.let { renderAffiliate(it) }
         isWishlisted = p2Login.isWishlisted
 
-        actionButtonView.renderData(p2Login.isExpressCheckoutType,hasTopAds(), CartRedirection())
+        actionButtonView.renderData(productInfo?.basic?.isActive() == false, p2Login.isExpressCheckoutType,hasTopAds())
     }
 
     private fun renderProductInfo3(productInfoP3: ProductInfoP3) {
