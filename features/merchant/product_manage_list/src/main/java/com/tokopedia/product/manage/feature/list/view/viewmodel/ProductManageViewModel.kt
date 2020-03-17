@@ -6,10 +6,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.product.manage.feature.cashback.data.SetCashbackResult
-import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase
-import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE
-import com.tokopedia.product.manage.feature.cashback.domain.SetCashbackUseCase.Companion.CASHBACK_SUCCESS_CODE
 import com.tokopedia.product.manage.feature.filter.data.model.FilterOptionWrapper
 import com.tokopedia.product.manage.feature.list.view.mapper.ProductMapper.mapToViewModels
 import com.tokopedia.product.manage.feature.list.view.model.GetPopUpResult
@@ -23,6 +19,9 @@ import com.tokopedia.product.manage.feature.list.view.model.ViewState.HideProgre
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.RefreshList
 import com.tokopedia.product.manage.feature.list.view.model.ViewState.ShowProgressDialog
 import com.tokopedia.product.manage.feature.multiedit.data.param.MenuParam
+import com.tokopedia.product.manage.feature.list.view.model.*
+import com.tokopedia.product.manage.feature.list.view.model.MultiEditResult.EditByStatus
+import com.tokopedia.product.manage.feature.list.view.model.ViewState.*
 import com.tokopedia.product.manage.feature.multiedit.data.param.ProductParam
 import com.tokopedia.product.manage.feature.multiedit.data.param.ShopParam
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
@@ -58,7 +57,6 @@ class ProductManageViewModel @Inject constructor(
     private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase,
     private val userSessionInterface: UserSessionInterface,
     private val topAdsGetShopDepositGraphQLUseCase: TopAdsGetShopDepositGraphQLUseCase,
-    private val setCashbackUseCase: SetCashbackUseCase,
     private val popupManagerAddProductUseCase: PopupManagerAddProductUseCase,
     private val getProductListUseCase: GQLGetProductListUseCase,
     private val editFeaturedProductUseCase: EditFeaturedProductUseCase,
@@ -82,8 +80,6 @@ class ProductManageViewModel @Inject constructor(
         get() = _editPriceResult
     val editStockResult: LiveData<Result<EditStockResult>>
         get() = _editStockResult
-    val setCashbackResult: LiveData<Result<SetCashbackResult>>
-        get() = _setCashbackResult
     val getFreeClaimResult: LiveData<Result<DataDeposit>>
         get() = _getFreeClaimResult
     val getPopUpResult: LiveData<Result<GetPopUpResult>>
@@ -104,7 +100,6 @@ class ProductManageViewModel @Inject constructor(
     private val _deleteProductResult = MutableLiveData<Result<DeleteProductResult>>()
     private val _editPriceResult = MutableLiveData<Result<EditPriceResult>>()
     private val _editStockResult = MutableLiveData<Result<EditStockResult>>()
-    private val _setCashbackResult = MutableLiveData<Result<SetCashbackResult>>()
     private val _getFreeClaimResult = MutableLiveData<Result<DataDeposit>>()
     private val _getPopUpResult = MutableLiveData<Result<GetPopUpResult>>()
     private val _setFeaturedProductResult = MutableLiveData<Result<SetFeaturedProductResult>>()
@@ -258,20 +253,6 @@ class ProductManageViewModel @Inject constructor(
             _editStockResult.postValue(Fail(EditStockResult(productName, productId, stock, status, NetworkErrorException())))
         }
         hideProgressDialog()
-    }
-
-    fun setCashback(productId: String, productName: String, cashback: Int) {
-        setCashbackUseCase.params = SetCashbackUseCase.createRequestParams(productId.toIntOrZero(), cashback, false)
-        launchCatchError(block = {
-            val result = setCashbackUseCase.executeOnBackground()
-            when(result.goldSetProductCashback.header.errorCode) {
-                CASHBACK_SUCCESS_CODE -> _setCashbackResult.postValue(Success(SetCashbackResult(productId = productId, cashback = cashback, productName = productName)))
-                CASHBACK_NUMBER_OF_PRODUCT_EXCEED_LIMIT_ERROR_CODE -> _setCashbackResult.postValue(Fail(SetCashbackResult(limitExceeded = true)))
-                else -> _setCashbackResult.postValue(Fail(SetCashbackResult(productId = productId, productName = productName, cashback = cashback)))
-            }
-        }) {
-            _setCashbackResult.postValue(Fail(SetCashbackResult()))
-        }
     }
 
     fun getFreeClaim(graphqlQuery: String, shopId: String) {
