@@ -24,39 +24,39 @@
                     android:path="@string/path_sellerhome"/>
 
                 <data android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_product"/>
 
                 <data android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_chat"/>
 
                 <data android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_som_all_order"/>
 
                 <data android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_som_new_order"/>
 
                 <data android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_som_ready_to_ship"/>
 
                 <data android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_som_in_shipping"/>
 
                 <data android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_som_done"/>
 
                 <data android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_som_cacelled"/>
 
                 <data android:scheme="@string/internal_scheme"
-                    android:host="@string/host_marketplace"
+                    android:host="@string/host_sellerapp"
                     android:path="@string/path_sellerhome_other_settings"/>
             </intent-filter>
 
