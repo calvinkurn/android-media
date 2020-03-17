@@ -9,13 +9,14 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/shopStatusHeader"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
+        android:layout_height="@dimen/setting_header_height"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:scaleType="fitXY"
+        android:background="@drawable/setting_regular_header"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/otherMenuScrollView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -29,31 +30,7 @@
 
             <include
                 android:id="@+id/shopInfoLayout"
-                layout="@layout/setting_shop_info_layout"/>
-
-            <LinearLayout
-                android:id="@+id/shopStatus"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"/>
-
-            <com.tokopedia.unifycomponents.DividerUnify
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/setting_divider_thin"
-                android:background="@color/white"/>
-
-            <include
-                android:id="@+id/saldoBalance"
-                layout="@layout/setting_balance"/>
-
-            <include
-                android:id="@+id/topAdsBalance"
-                layout="@layout/setting_balance"/>
-
-            <com.tokopedia.unifycomponents.DividerUnify
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/setting_divider_thick"
-                app:layout_constraintTop_toTopOf="parent"/>
+                layout="@layout/setting_partial_shop_info_success"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
@@ -67,5 +44,13 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <View
+        android:id="@+id/statusBarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/sah_status_bar_height"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/white"
+        android:visibility="invisible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
