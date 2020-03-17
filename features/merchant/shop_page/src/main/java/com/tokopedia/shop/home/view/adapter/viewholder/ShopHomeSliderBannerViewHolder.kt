@@ -34,6 +34,9 @@ class ShopHomeSliderBannerViewHolder(
     private var carouselShopPage: CarouselUnify? = null
     private var bannerData: ShopHomeDisplayWidgetUiModel? = null
     private var carouselData: ArrayList<Any>? = null
+
+    private var ratioHeight = 0.0F
+
     private var itmListener = { view: View, data: Any ->
         val img: ImageUnify = view.findViewById(R.id.imageCarousel)
         val carouselItem = data as CarouselData
@@ -58,6 +61,11 @@ class ShopHomeSliderBannerViewHolder(
                 }
             }
         }
+
+        val indexZero = getIndexRatio(0)
+        val indexOne = getIndexRatio(1)
+        ratioHeight = (indexZero / indexOne).toFloat()
+
         img.setImage(carouselItem.imageUrl, 0F)
     }
 
@@ -102,6 +110,10 @@ class ShopHomeSliderBannerViewHolder(
             )
             it.invoke()
         }
+    }
+
+    private fun getIndexRatio(index: Int): Int {
+        return bannerData?.header?.ratio?.split(":")?.get(index)?.toInt() ?: 0
     }
 
     private fun dataWidgetToCarouselData(element: ShopHomeDisplayWidgetUiModel): ArrayList<Any> {
