@@ -302,7 +302,6 @@ class PlayFragment : BaseDaggerFragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        playViewModel.destroy()
 
         videoScaleAnimator.cancel()
     }

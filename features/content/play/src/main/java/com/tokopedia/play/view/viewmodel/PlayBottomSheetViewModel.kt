@@ -20,9 +20,7 @@ import com.tokopedia.play.view.wrapper.PlayResult
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelChildren
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 /**
@@ -45,6 +43,10 @@ class PlayBottomSheetViewModel @Inject constructor(
 
     val observableAddToCart: LiveData<CartFeedbackUiModel> = _observableAddToCart
     val observableProductVariant: LiveData<PlayResult<VariantSheetUiModel>> = _observableProductVariant
+
+    override fun flush() {
+        clearJob()
+    }
 
     fun getProductVariant(product: ProductLineUiModel, action: ProductAction) {
         _observableProductVariant.value = PlayResult.Loading(true)
@@ -93,6 +95,16 @@ class PlayBottomSheetViewModel @Inject constructor(
 
             _observableAddToCart.value = mappingResponseCart(responseCart, product, action, type)
         }) { }
+    }
+
+    fun onFreezeBan() {
+        clearJob()
+    }
+
+    private fun clearJob() {
+        if (isActive && !masterJob.isCancelled) {
+            masterJob.cancelChildren()
+        }
     }
 
     private fun mappingResponseCart(addToCartDataModel: AddToCartDataModel,
