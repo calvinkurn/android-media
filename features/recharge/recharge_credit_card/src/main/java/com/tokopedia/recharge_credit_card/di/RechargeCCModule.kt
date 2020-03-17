@@ -96,5 +96,6 @@ class RechargeCCModule {
 
     companion object {
         const val BASE_URL = "https://pay.tokopedia.id/"
+//        const val BASE_URL = "https://pulsa-staging.tokopedia.id/"
     }
 }

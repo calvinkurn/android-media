@@ -24,8 +24,9 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
 
         cc_text_input.textFieldInput.clearFocus()
         cc_text_input.textFiedlLabelText.text = context.getString(R.string.cc_label_input_number)
-        cc_text_input.setFirstIcon(R.drawable.unify_clear_ic)
-        cc_text_input.textFieldIcon1.visibility = View.GONE
+
+        cc_text_input.setSecondIcon(R.drawable.unify_clear_ic)
+        cc_text_input.textFieldIcon2.visibility = View.GONE
 
         cc_text_input.textFieldInput.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(input: Editable?) {
@@ -41,14 +42,15 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
                         if (it.length == TOTAL_SYMBOLS) {
                             val inputDigit = it.toString().replace(" ", "")
                             if (!RechargeCCUtil.isCreditCardValid(inputDigit)) {
-                                cc_text_input.setError(true)
-                                cc_text_input.setMessage(context.getString(R.string.cc_error_invalid_number))
-                                disableBtnNext()
+                                setErrorTextField(context.getString(R.string.cc_error_invalid_number))
                             } else {
+                                listener.onCheckPrefix(inputDigit)
+                                cc_text_input.textFieldIcon1.visibility = View.VISIBLE
                                 cc_text_input.setError(false)
                                 enableBtnNext()
                             }
                         } else {
+                            cc_text_input.textFieldIcon1.visibility = View.GONE
                             disableBtnNext()
                         }
                     }
@@ -62,15 +64,15 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
             override fun onTextChanged(input: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 input?.let {
                     if (it.isEmpty()) {
-                        cc_text_input.textFieldIcon1.visibility = View.GONE
+                        cc_text_input.textFieldIcon2.visibility = View.GONE
                     } else {
-                        cc_text_input.textFieldIcon1.visibility = View.VISIBLE
+                        cc_text_input.textFieldIcon2.visibility = View.VISIBLE
                     }
                 }
             }
         })
 
-        cc_text_input.textFieldIcon1.setOnClickListener {
+        cc_text_input.textFieldIcon2.setOnClickListener {
             cc_text_input.textFieldInput.setText("")
             cc_text_input.setError(false)
         }
@@ -84,8 +86,17 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
         }
     }
 
+    fun setErrorTextField(message: String) {
+        cc_text_input.setError(true)
+        cc_text_input.setMessage(message)
+        disableBtnNext()
+    }
+
     fun setImageIcon(urlImg: String) {
-        cc_text_input.setSecondIcon(urlImg)
+        cc_text_input.setFirstIcon(urlImg)
+        cc_text_input.textFieldIcon1.layoutParams.width = 150
+        cc_text_input.textFieldIcon1.requestLayout()
+        cc_text_input.textFieldIcon1.adjustViewBounds = true
     }
 
     fun getClientNumber(): String {
@@ -110,6 +121,7 @@ class CCClientNumberWidget @JvmOverloads constructor(@NotNull context: Context, 
 
     interface ActionListener {
         fun onClickNextButton(clientNumber: String)
+        fun onCheckPrefix(clientNumber: String)
     }
 
     companion object {

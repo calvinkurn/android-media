@@ -23,6 +23,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.recharge_credit_card.bottomsheet.CCBankListBottomSheet
 import com.tokopedia.recharge_credit_card.di.RechargeCCInstance
 import com.tokopedia.recharge_credit_card.util.RechargeCCUtil
+import com.tokopedia.recharge_credit_card.viewmodel.CatalogPrefixCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeCCViewModel
 import com.tokopedia.recharge_credit_card.viewmodel.RechargeSubmitCCViewModel
 import com.tokopedia.recharge_credit_card.widget.CCClientNumberWidget
@@ -35,6 +36,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     private lateinit var rechargeCCViewModel: RechargeCCViewModel
     private lateinit var rechargeSubmitCCViewModel: RechargeSubmitCCViewModel
+    private lateinit var catalogPrefixCCViewModel: CatalogPrefixCCViewModel
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -42,6 +44,8 @@ class RechargeCCFragment : BaseDaggerFragment() {
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    private var operatorIdSelected: String = ""
+    private var productIdSelected: String = ""
 
     override fun getScreenName(): String {
         return ""
@@ -61,6 +65,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
             val viewModelProvider = ViewModelProviders.of(it, viewModelFactory)
             rechargeCCViewModel = viewModelProvider.get(RechargeCCViewModel::class.java)
             rechargeSubmitCCViewModel = viewModelProvider.get(RechargeSubmitCCViewModel::class.java)
+            catalogPrefixCCViewModel = viewModelProvider.get(CatalogPrefixCCViewModel::class.java)
         }
     }
 
@@ -75,6 +80,10 @@ class RechargeCCFragment : BaseDaggerFragment() {
             override fun onClickNextButton(clientNumber: String) {
                 dialogConfirmation()
             }
+
+            override fun onCheckPrefix(clientNumber: String) {
+                checkPrefixCreditCardNumber(clientNumber)
+            }
         })
 
         list_bank_btn.setOnClickListener {
@@ -85,42 +94,70 @@ class RechargeCCFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun checkPrefixCreditCardNumber(clientNumber: String) {
+        catalogPrefixCCViewModel.getPrefixes(
+                GraphqlHelper.loadRawString(resources, R.raw.query_cc_prefix_operator),
+                clientNumber)
+
+        catalogPrefixCCViewModel.creditCardSelected.observe(viewLifecycleOwner, Observer {
+            operatorIdSelected = it.operatorId.toString()
+            productIdSelected = it.defaultProductId.toString()
+            cc_widget_client_number.setImageIcon(it.imageUrl)
+        })
+
+        catalogPrefixCCViewModel.errorPrefix.observe(viewLifecycleOwner, Observer {
+            showErrorToaster(it)
+        })
+
+        catalogPrefixCCViewModel.bankNotSupported.observe(viewLifecycleOwner, Observer {
+            cc_widget_client_number.setErrorTextField(getString(R.string.cc_bank_is_not_supported))
+        })
+    }
+
+    private fun showErrorToaster(message: String) {
+        view?.run {
+            Toaster.make(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
+        }
+    }
+
     private fun dialogConfirmation() {
-        context?.let {
-            val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
-            dialog.setTitle(getString(R.string.cc_title_dialog))
-            dialog.setDescription(getString(R.string.cc_desc_dialog))
-            dialog.setPrimaryCTAText(getString(R.string.cc_cta_btn_primary))
-            dialog.setSecondaryCTAText(getString(R.string.cc_cta_btn_secondary))
-            dialog.setPrimaryCTAClickListener {
-                dialog.dismiss()
-                submitCreditCard("26", "856", "2695", cc_widget_client_number.getClientNumber())
+        if (operatorIdSelected.isNotEmpty() && productIdSelected.isNotEmpty()) {
+            context?.let {
+                val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.setTitle(getString(R.string.cc_title_dialog))
+                dialog.setDescription(getString(R.string.cc_desc_dialog))
+                dialog.setPrimaryCTAText(getString(R.string.cc_cta_btn_primary))
+                dialog.setSecondaryCTAText(getString(R.string.cc_cta_btn_secondary))
+                dialog.setPrimaryCTAClickListener {
+                    dialog.dismiss()
+                    submitCreditCard(CATEGORY_ID_CREDIT_CARD.toString(), operatorIdSelected,
+                            productIdSelected, cc_widget_client_number.getClientNumber())
+                }
+                dialog.setSecondaryCTAClickListener {
+                    dialog.dismiss()
+                }
+                dialog.show()
             }
-            dialog.setSecondaryCTAClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
+        } else {
+            showErrorToaster(getString(R.string.cc_error_invalid_number))
         }
     }
 
     private fun submitCreditCard(categoryId: String, operatorId: String, productId: String, clientNumber: String) {
         showLoading()
         if (userSession.isLoggedIn) {
-            rechargeCCViewModel.getSignatureCreditCard(GraphqlHelper.loadRawString(resources, R.raw.query_cc_signature), 26)
+            val mapParam = rechargeSubmitCCViewModel.createMapParam(clientNumber, operatorId, productId,
+                    userSession.userId)
 
-            rechargeCCViewModel.signature.observe(this, Observer {
-                //rechargeSubmitCCViewModel.postCreditCard(it)
-                rechargeSubmitCCViewModel.postCreditCard(clientNumber, operatorId, productId, "8785147",
-                    "1f5492f7c5d8c6badfa82f082fdd479e4dd82909")
-            })
-            rechargeCCViewModel.errorSignature.observe(this, Observer {
+            rechargeSubmitCCViewModel.postCreditCard(GraphqlHelper.loadRawString(resources,
+                    R.raw.query_cc_signature), CATEGORY_ID_CREDIT_CARD, mapParam)
+
+            rechargeSubmitCCViewModel.errorSignature.observe(viewLifecycleOwner, Observer {
                 hideLoading()
-                view?.run {
-                    Toaster.make(this, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                }
+                showErrorToaster(it)
             })
 
-            rechargeSubmitCCViewModel.redirectUrl.observe(this, Observer {
+            rechargeSubmitCCViewModel.redirectUrl.observe(viewLifecycleOwner, Observer {
                 val passData = DigitalCheckoutPassData.Builder()
                         .action(DigitalCheckoutPassData.DEFAULT_ACTION)
                         .categoryId(categoryId)
@@ -140,11 +177,9 @@ class RechargeCCFragment : BaseDaggerFragment() {
                 startActivityForResult(intent, REQUEST_CODE_CART)
             })
 
-            rechargeSubmitCCViewModel.errorSubmitCreditCard.observe(this, Observer {
+            rechargeSubmitCCViewModel.errorSubmitCreditCard.observe(viewLifecycleOwner, Observer {
                 hideLoading()
-                view?.run {
-                    Toaster.make(this, it, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                }
+                showErrorToaster(it)
             })
 
         } else {
@@ -173,9 +208,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
                     if (data.hasExtra(DigitalExtraParam.EXTRA_MESSAGE)) {
                         val message = data.getStringExtra(DigitalExtraParam.EXTRA_MESSAGE)
                         if (!TextUtils.isEmpty(message)) {
-                            view?.run {
-                                Toaster.make(this, message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR)
-                            }
+                            showErrorToaster(message)
                         }
                     }
                 }
@@ -192,6 +225,7 @@ class RechargeCCFragment : BaseDaggerFragment() {
 
     companion object {
 
+        const val CATEGORY_ID_CREDIT_CARD = 26
         const val REQUEST_CODE_CART = 1000
         const val REQUEST_CODE_LOGIN = 1001
 
